@@ -1,0 +1,20 @@
+# WordPress uploads (media not versioned)
+/wp-content/uploads/
+
+# Cache directories
+/wp-content/cache/
+
+# WPvivid backups
+/wp-content/wpvividbackups/
+
+# Upgrade temp files
+/wp-content/upgrade/
+
+# WordPress config (contains DB credentials)
+wp-config.php
+
+# OS junk
+.DS_Store
+
+# Logs
+*.log

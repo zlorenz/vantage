@@ -1,0 +1,5 @@
+User-agent: OpenAI
+Disallow:
+
+User-agent: *
+Allow: /

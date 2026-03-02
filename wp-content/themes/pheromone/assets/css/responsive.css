@@ -1,0 +1,277 @@
+@media (max-width: 1499px) {
+    .container.full {
+        padding: 0px 15px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .container.full {
+        padding: 0px 30px;
+        width: 100%;
+    }
+
+    .navbar.top-nav-collapse .container.full {
+        padding: 0px;
+        width: 1270px;
+    }
+}
+
+@media (max-width: 1300px) {
+    .black-search-table-cell div {
+        width: 50%
+    }
+
+    .marg50 {
+        margin-top: 30px;
+    }
+
+    .nav>li>a {
+        padding: 35px 19px;
+        letter-spacing: 0;
+    }
+
+    .navbar-custom.top-nav-collapse .nav>li>a {
+        padding: 25px 17px;
+    }
+
+    .navbar-custom.top-nav-collapse .cart_search_block .insomnia_woo_cart {
+        padding: 0;
+    }
+
+    .navbar-custom.top-nav-collapse .cart_search_block li {
+        padding: 23px 5px 22px 5px;
+    }
+
+    .cart_search_block>li {
+        padding: 34px 10px;
+    }
+
+    .navbar-custom.top-nav-collapse .container.full .cart_search_block>li {
+        padding: 24px 10px;
+    }
+
+    .logo {
+        padding-left: 0px;
+        line-height: 90px;
+    }
+
+    .cart_search_block .menu-divider {
+        margin: 34px 15px 0 15px;
+    }
+
+    .navbar-custom.top-nav-collapse .container.full .cart_search_block>li.menu-divider {
+        margin-top: 24px;
+    }
+
+    .navbar.top-nav-collapse .logo {
+        line-height: 70px;
+    }
+}
+
+@media (min-width: 991px) {
+    .menu-responsive.mobile {
+        display: none;
+    }
+
+    .menu-responsive.desktop {
+        display: block;
+        float: left;
+        line-height: 1;
+    }
+}
+
+@media (max-width: 990px) {
+    .navbar.top-nav-collapse .logo {
+        line-height: 62px;
+    }
+
+    .navbar-custom {
+        padding: 0;
+    }
+
+    .menu-transparent .navbar.top-nav-collapse {
+        padding: 0;
+    }
+
+    .cart_search_block>li {
+        padding: 34px 15px;
+    }
+
+    .navbar-custom.top-nav-collapse .container.full .cart_search_block>li {
+        padding: 20px 15px 20px 15px;
+    }
+
+    .navbar-custom.top-nav-collapse .nav-icon3 span {
+        background: #333;
+    }
+
+    .navbar-custom.top-nav-collapse .nav-icon3 {
+        top: 20px;
+        width: 28px;
+        height: 18px;
+    }
+
+    .navbar-custom.top-nav-collapse .nav-icon3 span:nth-child(3),
+    .navbar-custom.top-nav-collapse .nav-icon3 span:nth-child(4) {
+        top: 8px;
+    }
+
+    .navbar-custom.top-nav-collapse .nav-icon3 span:nth-child(5),
+    .navbar-custom.top-nav-collapse .nav-icon3 span:nth-child(6) {
+        top: 16px;
+    }
+
+    .black-search-table-cell div {
+        width: 75%
+    }
+
+    .logo {
+        padding-left: 0px;
+        line-height: 88px;
+    }
+
+    .menu-responsive.mobile {
+        display: block;
+        float: right;
+        margin-left: 15px;
+    }
+
+    .pheromone_testimonial_content_holder {
+        padding: 0px;
+    }
+
+    .menu-responsive.desktop {
+        display: none;
+    }
+
+    .resp-right {
+        float: right;
+    }
+
+    .resp-left {
+        float: left;
+    }
+
+    .content-wrap .sidebar {
+        margin-top: 50px;
+    }
+
+    .sidebar-right .wrap-content {
+        border-right: 0px;
+        padding-right: 0px;
+    }
+
+    .sidebar-left .wrap-content {
+        border-left: 0px;
+        padding-left: 0px;
+    }
+
+    .content-wrap .sidebar-right {
+        border-right: 0px;
+        padding-right: 15px;
+        float: none;
+    }
+
+    .content-wrap .sidebar-left {
+        border-left: 0px;
+        padding-left: 15px;
+        float: none;
+    }
+
+    .footer-widget {
+        padding: 30px 0;
+    }
+
+    .responsive-menu {
+        position: absolute;
+        top: 90px;
+        right: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .intro .lead li {
+        margin-bottom: 15px;
+    }
+
+    .intro .intro-body {
+        padding: 100px 0 50px;
+    }
+
+    .scroll-top {
+        display: none;
+    }
+
+    .footer-copyright .text-left {
+        text-align: center;
+    }
+
+    .footer-copyright .text-right {
+        text-align: center;
+    }
+
+    .sidebar-right {
+        float: none;
+        margin-right: 0;
+    }
+
+    .sidebar-left {
+        float: none;
+        margin-left: 0;
+    }
+
+    .team-block-two ul.list-inline {
+        margin-top: 15px;
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 600px) {
+    .commentlist .children {
+        margin-left: 0px;
+    }
+}
+
+@media (max-width: 480px) {
+    .post-set.pheromone_mas_item {
+        width: 100%;
+    }
+
+    .black-search-table-cell div {
+        width: 90%
+    }
+
+    .footer-copyright {
+        text-align: center;
+    }
+
+    .author-info {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .content-wrap .sidebar-right {
+        border-right: 0px;
+        padding-right: 15px;
+        float: none;
+    }
+
+    .content-wrap .sidebar-left {
+        border-left: 0px;
+        padding-left: 15px;
+        float: none;
+    }
+
+    .contact-top li {
+        width: 100%;
+        border: none !important;
+        line-height: 1.75;
+        padding: 15px 0 0 0;
+        text-align: center;
+    }
+
+    .contact-top li:last-child {
+        padding-bottom: 15px;
+    }
+}

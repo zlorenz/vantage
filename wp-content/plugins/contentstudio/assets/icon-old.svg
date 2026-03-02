@@ -1,0 +1,23 @@
+<svg id="logo_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255.002 255.001">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0093f6;
+      }
+    </style>
+  </defs>
+  <g id="Group_539" data-name="Group 539" transform="translate(0 0)">
+    <path id="Path_469" data-name="Path 469" class="cls-1" d="M76.942,27.5A30.537,30.537,0,0,0,46.494,57.948V252.053A30.537,30.537,0,0,0,76.942,282.5H271.048A30.537,30.537,0,0,0,301.5,252.053V57.948A30.537,30.537,0,0,0,271.048,27.5ZM174,245.583A90.582,90.582,0,1,1,264.578,155,90.582,90.582,0,0,1,174,245.583Z" transform="translate(-46.494 -27.5)"/>
+  </g>
+  <g id="Group_543" data-name="Group 543" transform="translate(62.109 80.88)">
+    <g id="Group_540" data-name="Group 540" transform="translate(79.876 26.322)">
+      <path id="Path_470" data-name="Path 470" class="cls-1" d="M259.069,225.649c-6.094,8.51-15.885,12.031-21.758,7.824s-5.693-14.61.4-23.12l23.215-32.419c6.094-8.509,15.886-12.03,21.759-7.824s5.693,14.61-.4,23.12Z" transform="translate(-233.021 -168.334)"/>
+    </g>
+    <g id="Group_541" data-name="Group 541" transform="translate(40.187 12.559)">
+      <path id="Path_471" data-name="Path 471" class="cls-1" d="M206.93,207.569c-6.094,8.51-15.885,12.031-21.759,7.825s-5.693-14.61.4-23.12l23.217-32.419c6.093-8.509,15.886-12.031,21.76-7.825s5.694,14.609-.4,23.118Z" transform="translate(-180.881 -150.253)"/>
+    </g>
+    <g id="Group_542" data-name="Group 542">
+      <path id="Path_472" data-name="Path 472" class="cls-1" d="M154.135,191.071c-6.093,8.51-15.885,12.031-21.758,7.823s-5.693-14.611.4-23.121l23.214-32.418c6.093-8.509,15.885-12.03,21.76-7.824s5.694,14.61-.4,23.12Z" transform="translate(-128.087 -133.754)"/>
+    </g>
+  </g>
+</svg>
