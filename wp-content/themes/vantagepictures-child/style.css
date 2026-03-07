@@ -1,0 +1,1280 @@
+/*
+Theme Name: Vantage Pictures (Bootstrap 5.3.8 Starter Theme) Child
+Template: vantagepictures
+Version: 1.0.0
+*/
+
+/* ==========================================================================
+   01. Root Tokens
+   --------------------------------------------------------------------------
+   Global design tokens used across the child theme.
+   Keep visual changes centralized here where possible.
+   ========================================================================== */
+
+:root {
+  --vp-bg: #000;
+  --vp-text: #fff;
+  --vp-text-muted: rgba(255, 255, 255, 0.85);
+  --vp-text-soft: rgba(255, 255, 255, 0.75);
+  --vp-border: rgba(255, 255, 255, 0.6);
+  --vp-border-strong: rgba(255, 255, 255, 0.95);
+  --vp-border-soft: rgba(255, 255, 255, 0.12);
+  --vp-link: #f9db24;
+  --vp-link-hover: #d7bf1f;
+  --vp-overlay-dark: rgba(0, 0, 0, 0.45);
+  --vp-overlay-light: rgba(255, 255, 255, 0.1);
+  --vp-input-bg: rgba(255, 255, 255, 0.08);
+  --vp-input-bg-focus: rgba(255, 255, 255, 0.12);
+  --vp-input-border: rgba(255, 255, 255, 0.25);
+  --vp-input-border-focus: rgba(255, 255, 255, 0.5);
+
+  --vp-font-sans: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --vp-section-y: 4.5rem;
+  --vp-section-y-tight: 3.5rem;
+  --vp-section-y-loose: 5.5rem;
+
+  --vp-transition-fast: 0.15s ease;
+  --vp-transition: 0.2s ease;
+
+  --vp-navbar-link-spacing: 0.125rem;
+  --vp-uppercase-spacing: 0.08em;
+  --vp-heading-spacing: 0.01em;
+
+  --vp-navbar-offset: 0px;
+}
+
+/* ==========================================================================
+   02. Base Document
+   --------------------------------------------------------------------------
+   Core page-level defaults: background, typography, links, and wrappers.
+   ========================================================================== */
+
+html,
+body {
+  background: var(--vp-bg);
+}
+
+body {
+  font-family: var(--vp-font-sans);
+  font-weight: 300;
+  color: var(--vp-text);
+}
+
+#main {
+  margin-top: 0;
+}
+
+.site,
+.site-content,
+main,
+article,
+.entry-content,
+.wp-site-blocks {
+  color: var(--vp-text);
+}
+
+/* ==========================================================================
+   03. Typography
+   --------------------------------------------------------------------------
+   Global type system for headings, body copy, links, and utility heading styles.
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--vp-font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--vp-text);
+  letter-spacing: var(--vp-heading-spacing);
+  line-height: 1.1;
+}
+
+h1 { font-size: clamp(2rem, 3vw, 2.75rem); }
+h2 { font-size: clamp(1.75rem, 2.5vw, 2.25rem); }
+h3 { font-size: clamp(1.5rem, 2vw, 1.75rem); }
+h4 { font-size: 1.35rem; }
+h5 { font-size: 1.15rem; }
+h6 { font-size: 1rem; }
+
+p,
+li,
+blockquote,
+figcaption {
+  font-weight: 300;
+  color: var(--vp-text);
+}
+
+a {
+  color: var(--vp-link);
+  text-decoration: none;
+  transition: color var(--vp-transition-fast);
+}
+
+a:hover,
+a:focus {
+  color: var(--vp-link-hover);
+  text-decoration: none;
+}
+
+.vp-section-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--vp-text);
+  letter-spacing: 0.02em;
+}
+
+.vp-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px #fff;
+  text-stroke: 1px #fff;
+}
+
+/* ==========================================================================
+   04. Section Rhythm
+   --------------------------------------------------------------------------
+   Consistent vertical spacing for major content sections and internal type rhythm.
+   ========================================================================== */
+
+.vp-section {
+  padding-top: var(--vp-section-y);
+  padding-bottom: var(--vp-section-y);
+}
+
+.vp-section--tight {
+  padding-top: var(--vp-section-y-tight);
+  padding-bottom: var(--vp-section-y-tight);
+}
+
+.vp-section--loose {
+  padding-top: var(--vp-section-y-loose);
+  padding-bottom: var(--vp-section-y-loose);
+}
+
+.vp-work-intro .vp-section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.vp-section.border-top {
+  border-top: 1px solid var(--vp-border-soft) !important;
+}
+
+.vp-section p {
+  margin: 0 0 1.25rem;
+}
+
+/* ==========================================================================
+   Content Flow
+   Purpose: Vertical rhythm for long-form text content only
+   ========================================================================== */
+
+.vp-content-flow > :first-child {
+  margin-top: 0;
+}
+
+.vp-content-flow > :last-child {
+  margin-bottom: 0;
+}
+
+.vp-content-flow h1,
+.vp-content-flow h2,
+.vp-content-flow h3,
+.vp-content-flow h4,
+.vp-content-flow h5,
+.vp-content-flow h6 {
+  margin: 0 0 1.25rem;
+  line-height: 1.12;
+}
+
+.vp-content-flow * + h1,
+.vp-content-flow * + h2,
+.vp-content-flow * + h3,
+.vp-content-flow * + h4,
+.vp-content-flow * + h5,
+.vp-content-flow * + h6 {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+/* ==========================================================================
+   05. Buttons and Form Controls
+   --------------------------------------------------------------------------
+   Global button cleanup plus scoped content-area button styling.
+   ========================================================================== */
+
+.btn {
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.125rem;
+  box-shadow: none;
+}
+
+.btn:hover,
+.btn:focus {
+  box-shadow: none;
+}
+
+.btn-primary {
+  background: #fff;
+  color: #000;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #a6a6a6;
+  color: #000;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  border-radius: 0;
+}
+
+.entry-content button,
+.entry-content input[type="submit"],
+.entry-content .wp-block-button__link,
+.entry-content .btn,
+.wp-block-post-content button,
+.wp-block-post-content .btn {
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.entry-content button:hover,
+.entry-content input[type="submit"]:hover,
+.entry-content .wp-block-button__link:hover,
+.entry-content .btn:hover,
+.wp-block-post-content button:hover,
+.wp-block-post-content .btn:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+/* ==========================================================================
+   06. Header / Navbar
+   --------------------------------------------------------------------------
+   Navbar layout, branding, links, dropdowns, and search field styling.
+   ========================================================================== */
+
+.navbar {
+  padding: 1.1rem 0.625rem;
+  background-image: none;
+  --bs-navbar-nav-link-padding-x: 1rem;
+}
+
+.navbar.bg-dark {
+  --bs-bg-opacity: 0;
+}
+
+.navbar .navbar-brand img {
+  display: block;
+  width: auto;
+  height: 90px;
+}
+
+.navbar .navbar-nav {
+  margin-left: auto;
+}
+
+.navbar .navbar-nav .nav-link {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+.nav-link {
+  font-size: 0.875rem;
+  letter-spacing: var(--vp-navbar-link-spacing);
+}
+
+.navbar a,
+.navbar .nav-link {
+  color: #fff;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.navbar a:hover,
+.navbar a:focus,
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Dropdown Menus
+   -------------------------------------------------------------------------- */
+
+.dropdown-menu {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-item {
+  font-size: 0.875rem;
+  letter-spacing: var(--vp-navbar-link-spacing);
+  transition: background var(--vp-transition-fast);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item.active,
+.dropdown-item:active {
+  background: var(--vp-overlay-light);
+  background-image: none;
+}
+
+@media (min-width: 992px) {
+  .navbar .dropdown:hover > .dropdown-menu,
+  .navbar .dropdown:focus-within > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Navbar Search
+   -------------------------------------------------------------------------- */
+
+.vp-search-form {
+  margin-left: 1rem;
+}
+
+.vp-search-wrapper {
+  position: relative;
+}
+
+.vp-search-input {
+  background: var(--vp-input-bg);
+  border: 1px solid var(--vp-input-border);
+  color: #fff;
+  padding: 0.6rem 2.5rem 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  transition: background var(--vp-transition), border-color var(--vp-transition);
+}
+
+.vp-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.vp-search-input:focus {
+  outline: none;
+  background: var(--vp-input-bg-focus);
+  border-color: var(--vp-input-border-focus);
+}
+
+.vp-search-button {
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color var(--vp-transition);
+}
+
+.vp-search-button:hover,
+.vp-search-button:focus {
+  color: #fff;
+}
+
+/* ==========================================================================
+   07. Default Page Hero
+   --------------------------------------------------------------------------
+   Featured-image hero used on standard pages.
+   ========================================================================== */
+
+.vp-page-hero {
+  position: relative;
+  width: 100%;
+  padding-top: clamp(8rem, 12vw, 13rem);
+  padding-bottom: clamp(6rem, 9vw, 10rem);
+  text-align: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.vp-page-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--vp-overlay-dark);
+  pointer-events: none;
+}
+
+.vp-page-hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.vp-page-hero__title {
+  color: #fff;
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.vp-page-hero__title .vp-outline {
+  color: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   08. Homepage Hero Carousel
+   --------------------------------------------------------------------------
+   Full-screen homepage carousel with support for background-image slides
+   or standard img-based Bootstrap carousel slides.
+   ========================================================================== */
+
+.home .carousel,
+.home .carousel-inner,
+.home .carousel-item {
+  height: 100vh;
+}
+
+.home .vp-hero-slide,
+.home .carousel-item {
+  position: relative;
+}
+
+.home .vp-hero-slide {
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+.home .carousel-item > img,
+.home .carousel-item .carousel-img,
+.home .carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home .vp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.home .vp-hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.vp-hero-copy h1 {
+  margin-bottom: 1rem;
+  font-size: clamp(2.25rem, 1.25rem + 3vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.vp-hero-copy .vp-outline {
+  color: rgba(255, 255, 255, 0.08);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  top: 0;
+  bottom: 0;
+  opacity: 0.9;
+  color: #fff;
+  background: none;
+  overflow: hidden;
+}
+
+.carousel-control-prev::before,
+.carousel-control-next::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--vp-transition-fast);
+}
+
+.carousel-control-prev::before {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+}
+
+.carousel-control-next::before {
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+}
+
+.carousel-control-prev:hover::before,
+.carousel-control-prev:focus::before,
+.carousel-control-next:hover::before,
+.carousel-control-next:focus::before {
+  opacity: 1;
+}
+
+.vp-hero-slide .btn {
+  background: var(--vp-input-bg);
+  border: 1px solid var(--vp-input-border);
+  font-weight: 700;
+}
+
+.vp-hero-slide .btn:hover,
+.vp-hero-slide .btn:focus {
+  color: #fff;
+  background: var(--vp-input-bg-focus);
+  border-color: var(--vp-input-border-focus);
+}
+
+/* ==========================================================================
+   09. Footer
+   ========================================================================== */
+
+#footer {
+  background: transparent;
+}
+
+/* ==========================================================================
+   10. Brand Logos
+   ========================================================================== */
+
+.wp-block-gallery.wp-block-gallery-1.brand-logos {
+  gap: 0;
+}
+
+.brand-logos > .wp-block-image {
+  border: 1px solid #5c5c5c;
+}
+
+/* ==========================================================================
+   11. Portfolio: Filters and Controls
+   --------------------------------------------------------------------------
+   Shared styling for portfolio taxonomy tabs and dropdown filter bar.
+   ========================================================================== */
+
+.vp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+  margin: 0 0 1.75rem;
+}
+
+.vp-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--vp-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--vp-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--vp-uppercase-spacing);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color var(--vp-transition-fast),
+    color var(--vp-transition-fast),
+    border-color var(--vp-transition-fast),
+    opacity var(--vp-transition-fast);
+}
+
+.vp-filter + .vp-filter {
+  margin-left: -1px;
+}
+
+.vp-filter:hover,
+.vp-filter:focus {
+  color: #fff;
+  border-color: var(--vp-border-strong);
+}
+
+.vp-filter.is-active,
+.vp-filter[aria-current="page"] {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.vp-filter.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Portfolio Filter Bar
+   -------------------------------------------------------------------------- */
+
+.vp-filterbar {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 1.75rem;
+  padding-top: 1em;
+}
+
+.vp-filterbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.vp-filterbar__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 200px;
+}
+
+.vp-filterbar__label {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: var(--vp-uppercase-spacing);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.vp-select-wrap {
+  position: relative;
+}
+
+.vp-select-wrap::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2px solid rgba(255, 255, 255, 0.75);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+  transform: translateY(-55%) rotate(45deg);
+}
+
+.vp-filterbar__select {
+  width: 100%;
+  padding: 0.45rem 2.2rem 0.45rem 0.9rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid var(--vp-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--vp-text-muted);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--vp-uppercase-spacing);
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background-color var(--vp-transition-fast),
+    color var(--vp-transition-fast),
+    border-color var(--vp-transition-fast),
+    opacity var(--vp-transition-fast);
+}
+
+.vp-filterbar__select:hover {
+  color: #fff;
+  border-color: var(--vp-border-strong);
+}
+
+.vp-filterbar__select:focus,
+.vp-filterbar__select:active {
+  outline: none;
+  border-color: var(--vp-border-strong);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   12. Portfolio: Cards, Load States, and Animations
+   ========================================================================== */
+
+.vp-card__media.ratio {
+  position: relative;
+}
+
+.vp-card__media.ratio > .vp-card__title {
+  position: absolute;
+  top: auto !important;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: auto !important;
+  padding: 1.25em 1em 0.75em;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.0625rem;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.vp-card__media.ratio > .vp-card__overlay {
+  position: absolute;
+  top: auto !important;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 45% !important;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+.vp-card img {
+  transition: transform 0.35s ease;
+}
+
+.vp-card:hover img {
+  transform: scale(1.03);
+}
+
+.vp-load-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 2rem auto;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: vpSpin 0.8s linear infinite;
+}
+
+#vp-load-more {
+  height: 120px;
+}
+
+#vp-load-more.is-done .vp-load-spinner {
+  display: none;
+}
+
+.vp-card-reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  will-change: transform, opacity;
+  animation: vpCardReveal 0.45s ease forwards;
+}
+
+@keyframes vpSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vpCardReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   13. Single Portfolio
+   --------------------------------------------------------------------------
+   Credits list styling for job-title / name layout.
+   ========================================================================== */
+
+.vp-credits__list {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  column-gap: 0.5rem;
+  row-gap: 0.325rem;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.vp-credits__list dt,
+.vp-credits__list dd {
+  margin: 0;
+}
+
+.vp-credits__list dt {
+  color: #fff;
+  font-weight: 700;
+}
+
+.vp-credits__list dd {
+  color: var(--vp-text-muted);
+}
+
+/* ==========================================================================
+   14. Gutenberg Galleries
+   --------------------------------------------------------------------------
+   Caption styling and custom masonry gallery behavior.
+   ========================================================================== */
+
+.wp-block-gallery.has-nested-images figure.wp-block-image figcaption {
+  padding: 1.25em 1em 0.75em;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.0625rem;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   Masonry Gallery
+   -------------------------------------------------------------------------- */
+
+.wp-block-gallery.is-style-vp-masonry {
+  display: block !important;
+  gap: 0 !important;
+  column-gap: 0 !important;
+}
+
+.wp-block-gallery.is-style-vp-masonry.columns-1 { column-count: 1; }
+.wp-block-gallery.is-style-vp-masonry.columns-2 { column-count: 2; }
+.wp-block-gallery.is-style-vp-masonry.columns-3 { column-count: 3; }
+.wp-block-gallery.is-style-vp-masonry.columns-4 { column-count: 4; }
+.wp-block-gallery.is-style-vp-masonry.columns-5 { column-count: 5; }
+.wp-block-gallery.is-style-vp-masonry.columns-6 { column-count: 6; }
+
+.wp-block-gallery.is-style-vp-masonry > .wp-block-image {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  flex: none !important;
+  break-inside: avoid;
+}
+
+.wp-block-gallery.is-style-vp-masonry figure {
+  margin: 0 !important;
+}
+
+.wp-block-gallery.is-style-vp-masonry img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Blog / News
+   Purpose: News index, sidebar widgets, post list, and pagination
+   ========================================================================== */
+
+.vp-news-page {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.vp-news-intro {
+  margin-bottom: 3rem;
+}
+
+.vp-news-title {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  line-height: 0.95;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.vp-news-intro-copy {
+  max-width: 900px;
+}
+
+.vp-news-intro-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.vp-news-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.vp-post-card {
+  display: block;
+}
+
+.vp-post-card__thumb {
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.vp-post-card__thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vp-post-card__title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.4rem, 2vw, 2.25rem);
+  line-height: 1.05;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.vp-post-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.vp-post-card__title a:hover {
+  opacity: 0.8;
+}
+
+.vp-post-card__meta {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vp-post-card__excerpt p:last-child {
+  margin-bottom: 0;
+}
+
+.vp-post-card__actions {
+  margin-top: 1.25rem;
+}
+
+.vp-blog-sidebar {
+  position: sticky;
+  top: 110px;
+}
+
+.vp-blog-widget {
+  margin-bottom: 2.5rem;
+}
+
+.vp-blog-widget__title {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.75rem, 2vw, 3rem);
+  line-height: 0.95;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Blog Search Form
+   Purpose: Custom search field styling for news/blog sidebar
+   ========================================================================== */
+
+.vp-search-form__inner {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.vp-search-form__input {
+  width: 100%;
+  min-height: 54px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-right: 0;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: none;
+}
+
+.vp-search-form__input::placeholder {
+  color: rgba(0,0,0,0.55);
+}
+
+.vp-search-form__input:focus {
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: none;
+}
+
+.vp-search-form__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 0 1rem;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-left: 0;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font-size: 2.75rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.vp-search-form__button:hover,
+.vp-search-form__button:focus {
+  background: #d9d9d9;
+  color: #000;
+}
+
+.vp-search-form__button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.vp-recent-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.vp-recent-post__link {
+  display: block;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: #333;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.15;
+  text-decoration: none;
+}
+
+.vp-recent-post__link:hover {
+  background: #444;
+  color: #fff;
+}
+
+.vp-recent-post__date {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.8);
+  text-transform: uppercase;
+}
+
+.vp-pagination {
+  margin-top: 3rem;
+}
+
+.vp-pagination .nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vp-pagination .page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 0.45rem 0.9rem;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+}
+
+.vp-pagination a.page-numbers:hover {
+  background: #a6a6a6;
+  color: #000;
+}
+
+@media (max-width: 991.98px) {
+  .vp-blog-sidebar {
+    position: static;
+    top: auto;
+  }
+}
+
+/* ==========================================================================
+   Single Blog Post
+   ========================================================================== */
+
+.vp-single {
+  padding-top: clamp(10rem, 10vw, 13rem);
+  padding-bottom: 4rem;
+}
+
+/* ==========================================================================
+   Search Results
+   Purpose: Custom search results page and cards
+   ========================================================================== */
+
+.vp-search-header {
+  padding-top: clamp(10rem, 10vw, 13rem);
+}
+
+.vp-search-page {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.vp-search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.vp-search-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #fff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--vp-input-bg);
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.vp-search-card:hover {
+  background: var(--vp-input-bg-focus);
+}
+
+.vp-search-card__thumb {
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: #111;
+  margin-bottom: 0;
+}
+
+.vp-search-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vp-search-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.vp-search-card__meta {
+  margin-bottom: 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.vp-search-card__meta-sep {
+  margin: 0 0.35rem;
+}
+
+.vp-search-card__title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 1.9vw, 2.4rem);
+  line-height: 0.98;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.vp-search-card__title a {
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.18s ease;
+}
+
+.vp-search-card__title a:hover {
+  opacity: 1;
+}
+
+.vp-search-card__excerpt {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.vp-search-card__excerpt p:last-child {
+  margin-bottom: 0;
+}
+
+.vp-search-card__actions {
+  margin-top: 1rem;
+}
+
+.vp-search-empty {
+  max-width: 760px;
+}
+
+.vp-search-empty__title {
+  margin-bottom: 0.75rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.95;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.vp-search-empty__form {
+  margin-top: 2rem;
+  max-width: 540px;
+}
+
+@media (max-width: 991.98px) {
+  .vp-search-page {
+    padding-top: 2.5rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .vp-search-results-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .vp-search-card__body {
+    padding: 0.95rem 1rem 1.05rem;
+  }
+}
+
+/* ==========================================================================
+   15. Responsive Tweaks
+   --------------------------------------------------------------------------
+   Bootstrap-aligned breakpoints for mobile and gallery fallbacks.
+   ========================================================================== */
+
+@media (max-width: 1199.98px) {
+  .wp-block-gallery.is-style-vp-masonry {
+    column-count: 3 !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .wp-block-gallery.is-style-vp-masonry {
+    column-count: 2 !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .vp-filters {
+    gap: 0.5rem;
+  }
+
+  .vp-filter + .vp-filter {
+    margin-left: 0;
+  }
+
+  .vp-filterbar__group {
+    min-width: 100%;
+  }
+
+  .wp-block-gallery.is-style-vp-masonry {
+    column-count: 1 !important;
+  }
+}

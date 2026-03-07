@@ -1,0 +1,21 @@
+{
+  "apiVersion": 2,
+  "name": "vp/portfolio-gallery",
+  "title": "Portfolio Gallery",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Display a portfolio gallery.",
+  "editorScript": "vp-portfolio-gallery-block",
+  "attributes": {
+    "ids": {
+      "type": "string",
+      "default": ""
+    },
+    "taxonomy": { "type": "string", "default": "video-format" },
+    "terms": { "type": "string", "default": "" },
+    "limit": { "type": "number", "default": 12 },
+    "cols": { "type": "number", "default": 4 },
+    "gutter": { "type": "number", "default": 4 },
+    "include_hidden": { "type": "number", "default": 0 }
+  }
+}

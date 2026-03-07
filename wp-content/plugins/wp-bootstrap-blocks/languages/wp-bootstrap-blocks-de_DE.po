@@ -1,0 +1,516 @@
+# Copyright (C) 2025 Jürg Hunziker
+# This file is distributed under the same license as the Bootstrap Blocks plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Bootstrap Blocks 5.2.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-bootstrap-"
+"blocks\n"
+"POT-Creation-Date: 2025-06-02T12:03:08+00:00\n"
+"PO-Revision-Date: 2020-10-18 22:25+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Domain: wp-bootstrap-blocks\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+#: wp-bootstrap-blocks.php src/class-wp-bootstrap-blocks.php:248
+#: src/settings/class-settings.php:163
+msgid "Bootstrap Blocks"
+msgstr "Bootstrap Blocks"
+
+#. Plugin URI of the plugin
+#: wp-bootstrap-blocks.php
+msgid "https://github.com/tschortsch/bootstrap-blocks-wordpress-plugin"
+msgstr "https://github.com/tschortsch/bootstrap-blocks-wordpress-plugin"
+
+#. Description of the plugin
+#: wp-bootstrap-blocks.php
+msgid "Bootstrap Gutenberg Blocks for WordPress."
+msgstr "Bootstrap Gutenberg Blocks für WordPress."
+
+#. Author of the plugin
+#: wp-bootstrap-blocks.php
+msgid "Jürg Hunziker"
+msgstr "Jürg Hunziker"
+
+#. Author URI of the plugin
+#: wp-bootstrap-blocks.php
+msgid "https://juerghunziker.ch"
+msgstr "https://juerghunziker.ch"
+
+#: src/class-wp-bootstrap-blocks.php:298 src/class-wp-bootstrap-blocks.php:305
+msgid "Cheatin&#8217; huh?"
+msgstr "Hier ist etwas falsch gelaufen"
+
+#: src/settings/class-settings.php:163 src/settings/class-settings.php:267
+msgid "Bootstrap Blocks Settings"
+msgstr "Bootstrap Blocks Einstellungen"
+
+#: src/settings/class-settings.php:174
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: src/settings/class-settings.php:190
+msgid "Bootstrap Version"
+msgstr "Bootstrap Version"
+
+#: src/settings/class-settings.php:191
+msgid ""
+"Depending on the selected Bootstrap version the blocks will be rendered "
+"accordingly and version specific features will be available in the editor."
+msgstr ""
+"Bestehend auf der ausgewählten Bootstrap Version werden die Blöcke "
+"entsprechend gerendert und im Editor werden versionsspezifische Optionen "
+"angezeigt."
+
+#: src/settings/class-settings.php:203
+msgid "Enable CSS grid (Experimental)"
+msgstr "CSS Grid aktivieren (Experimentell)"
+
+#: src/settings/class-settings.php:204
+msgid ""
+"If enabled Bootstrap's CSS grid will be used instead of the default flexbox "
+"grid system. The CSS grid is supported with Bootstrap >= 5.1.0. The `$enable-"
+"cssgrid` Bootstrap setting has to be set to `true` if this option is enabled."
+msgstr ""
+"Wenn diese Option aktiviert ist, verwendet Bootstrap das CSS Grid anstelle "
+"des Flexbox Grids. Das CSS Grid wird von Bootstrap >= 5.1.0 unterstützt. Die "
+"`$enable-cssgrid` Einstellung von Bootstrap muss dafür auf `true` gesetzt "
+"werden."
+
+#: src/settings/class-settings.php:215
+msgid "Main settings"
+msgstr "Haupteinstellungen"
+
+#: src/settings/class-settings.php:263
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Du hast nicht genügend Berechtigungen um diese Seite anzuzeigen."
+
+#: src/settings/class-settings.php:290
+msgid "Field data missing."
+msgstr "Felddaten fehlen."
+
+#. translators: %s contains constant name
+#: src/settings/class-settings.php:349
+#, php-format
+msgctxt "%s contains constant name"
+msgid "Option is defined in the following constant: %s"
+msgstr "Die Option ist in der folgenden Konstante definiert: %s"
+
+#. translators: %s template
+#: src/wp-bootstrap-blocks-functions.php:26
+#, php-format
+msgid "%s does not exist."
+msgstr "%s existiert nicht."
+
+#: build/index.js:31 build/index.js:15
+msgid "Button (Bootstrap)"
+msgstr "Button (Bootstrap)"
+
+#: build/index.js:36 build/index.js:19
+msgid "Button"
+msgstr "Button"
+
+#: build/index.js:36 build/index.js:20
+msgid "Bootstrap Button"
+msgstr "Bootstrap Button"
+
+#: build/index.js:36 build/index.js:284 build/index.js:669 build/index.js:1112
+#: build/index.js:21 build/index.js:262 build/index.js:715 build/index.js:1063
+msgid "Bootstrap"
+msgstr "Bootstrap"
+
+#: build/index.js:87 build/index.js:65
+msgid "Primary"
+msgstr "Primary"
+
+#: build/index.js:92 build/index.js:71
+msgid "Secondary"
+msgstr "Secondary"
+
+#: build/index.js:170 build/index.js:165
+msgid "Add text..."
+msgstr "Text hinzufügen..."
+
+#: build/index.js:180 build/index.js:174
+msgid "Style"
+msgstr "Stil"
+
+#: build/index.js:190 build/index.js:183
+msgid "Link settings"
+msgstr "Link-Einstellungen"
+
+#: build/index.js:192 build/index.js:186
+msgid "Open in new tab"
+msgstr "In einem neuen Tab öffnen"
+
+#: build/index.js:196 build/index.js:194
+msgid "Link rel"
+msgstr "Link rel"
+
+#: build/index.js:208 build/index.js:205
+msgid "Change button alignment"
+msgstr "Ändere die Positionierung des Buttons"
+
+#: build/index.js:226 build/index.js:229
+msgid "Apply"
+msgstr "Übernehmen"
+
+#: build/index.js:278 build/index.js:256
+msgid "Column (Bootstrap)"
+msgstr "Column (Bootstrap)"
+
+#: build/index.js:284 build/index.js:260
+msgid "Column"
+msgstr "Column"
+
+#: build/index.js:284 build/index.js:261
+msgid "Bootstrap Column"
+msgstr "Bootstrap Column"
+
+#: build/index.js:376 build/index.js:370
+msgid "Align content top"
+msgstr "Inhalt oben positionieren"
+
+#: build/index.js:380 build/index.js:375
+msgid "Align content center"
+msgstr "Inhalt zentrieren"
+
+#: build/index.js:384 build/index.js:380
+msgid "Align content bottom"
+msgstr "Inhalt unten positionieren"
+
+#: build/index.js:416 build/index.js:726 build/index.js:1276 build/index.js:419
+#: build/index.js:765 build/index.js:1291
+msgid "None"
+msgstr "Deaktiviert"
+
+#: build/index.js:419 build/index.js:715 build/index.js:1279
+#: build/index.js:1291 build/index.js:1306 build/index.js:420
+#: build/index.js:746 build/index.js:1295 build/index.js:1318
+#: build/index.js:1345
+msgid "Small"
+msgstr "Klein"
+
+#: build/index.js:422 build/index.js:718 build/index.js:1294 build/index.js:421
+#: build/index.js:750 build/index.js:1322
+msgid "Medium"
+msgstr "Mittel"
+
+#: build/index.js:425 build/index.js:721 build/index.js:1282
+#: build/index.js:1297 build/index.js:1309 build/index.js:422
+#: build/index.js:754 build/index.js:1299 build/index.js:1326
+#: build/index.js:1349
+msgid "Large"
+msgstr "Gross"
+
+#: build/index.js:474
+msgid "Column size"
+msgstr "Anzahl Spalten"
+
+#: build/index.js:477 build/index.js:478
+msgid "Xs Column count"
+msgstr "Xs Anzahl Spalten"
+
+#: build/index.js:483 build/index.js:486
+msgid "Xs equal-width"
+msgstr "Xs gleiche Breite (equal-width)"
+
+#: build/index.js:489 build/index.js:498
+msgid "Sm Column count"
+msgstr "Sm Anzahl Spalten"
+
+#: build/index.js:495 build/index.js:506
+msgid "Sm equal-width"
+msgstr "Sm gleiche Breite (equal-width)"
+
+#: build/index.js:501 build/index.js:518
+msgid "Md Column count"
+msgstr "Md Anzahl Spalten"
+
+#: build/index.js:507 build/index.js:526
+msgid "Md equal-width"
+msgstr "Md gleiche Breite (equal-width)"
+
+#: build/index.js:513 build/index.js:538
+msgid "Lg Column count"
+msgstr "Lg Anzahl Spalten"
+
+#: build/index.js:519 build/index.js:546
+msgid "Lg equal-width"
+msgstr "Lg gleiche Breite (equal-width)"
+
+#: build/index.js:525 build/index.js:558
+msgid "Xl Column count"
+msgstr "Xl Anzahl Spalten"
+
+#: build/index.js:531 build/index.js:566
+msgid "Xl equal-width"
+msgstr "Xl gleiche Breite (equal-width)"
+
+#: build/index.js:538 build/index.js:580
+msgid "Xxl Column count"
+msgstr "Xxl Anzahl Spalten"
+
+#: build/index.js:544 build/index.js:591
+msgid "Xxl equal-width"
+msgstr "Xxl gleiche Breite (equal-width)"
+
+#: build/index.js:552 build/index.js:607
+msgid "Background color"
+msgstr "Hintergrundfarbe"
+
+#: build/index.js:576 build/index.js:635
+msgid "Padding (inside column)"
+msgstr "Padding (innerhalb der Spalte)"
+
+#: build/index.js:579 build/index.js:642
+msgid "Size"
+msgstr "Grösse"
+
+#: build/index.js:592 build/index.js:656
+msgid "Change vertical alignment of content"
+msgstr "Ändere die vertikale Positionierung des Inhaltes"
+
+#: build/index.js:664 build/index.js:709
+msgid "Container (Bootstrap)"
+msgstr "Container (Bootstrap)"
+
+#: build/index.js:669 build/index.js:713
+msgid "Container"
+msgstr "Container"
+
+#: build/index.js:669 build/index.js:714
+msgid "Bootstrap Container"
+msgstr "Bootstrap Container"
+
+#: build/index.js:730 build/index.js:773
+msgid "Xl"
+msgstr "Xl"
+
+#: build/index.js:733 build/index.js:777
+msgid "Lg"
+msgstr "Lg"
+
+#: build/index.js:736 build/index.js:781
+msgid "Md"
+msgstr "Md"
+
+#: build/index.js:739 build/index.js:785
+msgid "Sm"
+msgstr "Sm"
+
+#: build/index.js:744 build/index.js:793
+msgid "Xxl"
+msgstr "Xxl"
+
+#: build/index.js:749 build/index.js:802
+msgid "No breakpoint selected"
+msgstr "Kein Breakpoint ausgewählt"
+
+#: build/index.js:776 build/index.js:778 build/index.js:826 build/index.js:828
+msgid "Fluid"
+msgstr "Fluid"
+
+#: build/index.js:786 build/index.js:835
+msgid "Fluid Breakpoint"
+msgstr "Fluid Breakpoint"
+
+#: build/index.js:795 build/index.js:847
+msgid ""
+"Fluid breakpoints only work with Bootstrap v4.4+. The container will be 100% "
+"wide until the specified breakpoint is reached, after which max-widths for "
+"each of the higher breakpoints will be applied."
+msgstr ""
+"Fluid Breakpoints werden erst ab Bootstrap v4.4+ unterstützt. Wenn die "
+"Option aktiviert ist, nimmt der Container 100% der Breite ein bis zum "
+"gewählten Breakpoint. Ab diesem Breakpoint gilt die jeweilige maximale "
+"Breite (max-width) des Containers."
+
+#: build/index.js:798 build/index.js:853
+msgid "Margin"
+msgstr "Margin"
+
+#: build/index.js:800 build/index.js:855
+msgid "Margin After"
+msgstr "Margin unterhalb vom Block"
+
+#: build/index.js:1106 build/index.js:1057
+msgid "Row (Bootstrap)"
+msgstr "Row (Bootstrap)"
+
+#: build/index.js:1112 build/index.js:1061
+msgid "Row"
+msgstr "Row"
+
+#: build/index.js:1112 build/index.js:1062
+msgid "Bootstrap Row"
+msgstr "Bootstrap Row"
+
+#: build/index.js:1183 build/index.js:1135
+msgid "2 Columns (1:1)"
+msgstr "2 Spalten (1:1)"
+
+#: build/index.js:1203 build/index.js:1168
+msgid "2 Columns (1:2)"
+msgstr "2 Spalten (1:2)"
+
+#: build/index.js:1223 build/index.js:1201
+msgid "2 Columns (2:1)"
+msgstr "2 Spalten (2:1)"
+
+#: build/index.js:1243 build/index.js:1234
+msgid "3 Columns (1:1:1)"
+msgstr "3 Spalten (1:1:1)"
+
+#: build/index.js:1269 build/index.js:1282
+msgid "Custom"
+msgstr "Benutzerdefiniert"
+
+#: build/index.js:1287 build/index.js:1314 build/index.js:1310
+#: build/index.js:1360
+msgid "Bootstrap Default (Medium)"
+msgstr "Bootstrap Standardwert (Medium)"
+
+#: build/index.js:1302 build/index.js:1337
+msgid "Bootstrap Default (None)"
+msgstr "Bootstrap Standardwert (Kein Abstand)"
+
+#: build/index.js:1371 build/index.js:1426
+msgid "Align columns left"
+msgstr "Spalten links positionieren"
+
+#: build/index.js:1375 build/index.js:1388 build/index.js:1431
+#: build/index.js:1449
+msgid "Align columns center"
+msgstr "Spalten zentrieren"
+
+#: build/index.js:1379 build/index.js:1436
+msgid "Align columns right"
+msgstr "Spalten rechts positionieren"
+
+#: build/index.js:1384 build/index.js:1444
+msgid "Align columns top"
+msgstr "Spalten oben positionieren"
+
+#: build/index.js:1392 build/index.js:1454
+msgid "Align columns bottom"
+msgstr "Spalten unten positionieren"
+
+#: build/index.js:1399 build/index.js:1464
+msgid "Editor: Display columns stacked"
+msgstr "Editor: Spalten untereinander darstellen"
+
+#: build/index.js:1400 build/index.js:1468
+msgid ""
+"Displays stacked columns in editor to enhance readability of block content. "
+"This option is only used in the editor and won't affect the output of the "
+"row."
+msgstr ""
+"Stellt die Spalten untereinander dar um die Lesbarkeit der Block-Inhalte zu "
+"verbessern. Diese Option wird lediglich für den Editor verwendet und "
+"verändert die Ausgabe des Blocks nicht."
+
+#: build/index.js:1407 build/index.js:1481
+msgid "Change layout"
+msgstr "Layout ändern"
+
+#: build/index.js:1428 build/index.js:1515
+msgid "Row options"
+msgstr "Zeilen Optionen"
+
+#: build/index.js:1430 build/index.js:1517
+msgid "No Gutters"
+msgstr "Keine Abstände zwischen Spalten (No Gutters)"
+
+#: build/index.js:1436 build/index.js:1526
+msgid "Gutters"
+msgstr "Abstände zwischen Spalten"
+
+#: build/index.js:1446 build/index.js:1539
+msgid "Horizontal Gutters"
+msgstr "Horizontale Abstände zwischen Spalten"
+
+#: build/index.js:1455 build/index.js:1552
+msgid "Vertical Gutters"
+msgstr "Vertikale Abstände zwischen Spalten"
+
+#: build/index.js:1470 build/index.js:1574
+msgid "Change horizontal alignment of columns"
+msgstr "Ändere die horizontale Positionierung der Spalten"
+
+#: build/index.js:1477 build/index.js:1585
+msgid "Change vertical alignment of columns"
+msgstr "Ändere die vertikale Positionierung der Spalten"
+
+#: build/button/block.json src/button/block.json
+msgctxt "block title"
+msgid "Button"
+msgstr "Button"
+
+#: build/button/block.json src/button/block.json
+msgctxt "block keyword"
+msgid "Button"
+msgstr "Button"
+
+#: build/button/block.json src/button/block.json
+msgctxt "block keyword"
+msgid "Bootstrap Button"
+msgstr "Bootstrap Button"
+
+#: build/button/block.json build/column/block.json build/container/block.json
+#: build/row/block.json src/button/block.json src/column/block.json
+#: src/container/block.json src/row/block.json
+msgctxt "block keyword"
+msgid "Bootstrap"
+msgstr "Bootstrap"
+
+#: build/column/block.json src/column/block.json
+msgctxt "block title"
+msgid "Column"
+msgstr "Column"
+
+#: build/column/block.json src/column/block.json
+msgctxt "block keyword"
+msgid "Column"
+msgstr "Column"
+
+#: build/column/block.json src/column/block.json
+msgctxt "block keyword"
+msgid "Bootstrap Column"
+msgstr "Bootstrap Column"
+
+#: build/container/block.json src/container/block.json
+msgctxt "block title"
+msgid "Container"
+msgstr "Container"
+
+#: build/container/block.json src/container/block.json
+msgctxt "block keyword"
+msgid "Container"
+msgstr "Container"
+
+#: build/container/block.json src/container/block.json
+msgctxt "block keyword"
+msgid "Bootstrap Container"
+msgstr "Bootstrap Container"
+
+#: build/row/block.json src/row/block.json
+msgctxt "block title"
+msgid "Row"
+msgstr "Row"
+
+#: build/row/block.json src/row/block.json
+msgctxt "block keyword"
+msgid "Row"
+msgstr "Row"
+
+#: build/row/block.json src/row/block.json
+msgctxt "block keyword"
+msgid "Bootstrap Row"
+msgstr "Bootstrap Row"

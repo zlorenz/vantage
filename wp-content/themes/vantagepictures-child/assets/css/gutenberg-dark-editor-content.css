@@ -1,0 +1,42 @@
+/**
+ * Gutenberg Block Editor – Content styles (loads inside editor iframe)
+ * Overrides :where(.editor-styles-wrapper) color:revert from load-styles.php
+ * so headings, paragraphs, and block text are light on dark background.
+ */
+
+.editor-styles-wrapper {
+  background: #0f0f11 !important;
+  color: #ffffff !important;
+}
+
+/* Override color:revert on headings/paragraphs from load-styles.php */
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6,
+.editor-styles-wrapper p,
+.editor-styles-wrapper li,
+.editor-styles-wrapper blockquote,
+.editor-styles-wrapper figcaption,
+.editor-styles-wrapper td,
+.editor-styles-wrapper th,
+.editor-styles-wrapper label,
+.editor-styles-wrapper .block-editor-rich-text__editable,
+.editor-styles-wrapper .wp-block-heading,
+.editor-styles-wrapper .wp-block-paragraph,
+.editor-styles-wrapper .wp-block-quote,
+.editor-styles-wrapper .wp-block-list-item {
+  color: #ffffff !important;
+}
+
+.editor-styles-wrapper a {
+  color: #60a5fa !important;
+}
+
+/* Placeholder text */
+.editor-styles-wrapper .block-editor-rich-text__editable[data-is-placeholder-visible="true"]::before,
+.editor-styles-wrapper .is-selected .block-editor-rich-text__editable[data-is-placeholder-visible="true"]::before {
+  color: #71717a !important;
+}

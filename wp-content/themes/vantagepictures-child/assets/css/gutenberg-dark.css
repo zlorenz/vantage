@@ -1,0 +1,667 @@
+/**
+ * Gutenberg Block Editor Dark Mode
+ * Matches uiXpress admin aesthetic – clean, modern, polished.
+ * Loaded only in the block editor via enqueue_block_editor_assets.
+ *
+ * IMPORTANT: Remove any Gutenberg/block-editor dark mode CSS from
+ * uiXpress → Settings → Custom CSS. Old overrides can conflict.
+ */
+
+/* ==========================================================================
+   Design Tokens (align with uiXpress / modern dark UI)
+   ========================================================================== */
+
+:root {
+  --vp-gb-bg: #0f0f11;
+  --vp-gb-bg-elevated: #18181b;
+  --vp-gb-bg-sidebar: #141416;
+  --vp-gb-bg-header-center: #161618;
+  --vp-gb-bg-input: #0a0a0c;
+  --vp-gb-bg-hover: rgba(255, 255, 255, 0.06);
+  --vp-gb-bg-active: rgba(255, 255, 255, 0.1);
+  --vp-gb-border: #2e2e32;
+  --vp-gb-border-focus: #3b82f6;
+  --vp-gb-text: #ffffff;
+  --vp-gb-text-secondary: rgb(113, 113, 122);
+  --vp-gb-text-muted: #a1a1aa;
+  --vp-gb-text-dim: #71717a;
+  --vp-gb-accent: #3b82f6;
+  --vp-gb-accent-hover: #60a5fa;
+  --vp-gb-success: #22c55e;
+  --vp-gb-warning: #eab308;
+  --vp-gb-warning-bg: rgba(234, 179, 8, 0.15);
+}
+
+/* ==========================================================================
+   TOP BAR – Override WordPress white header (editor-header, admin-ui-page)
+   ========================================================================== */
+
+/* Top bar – must override WordPress default background:#fff */
+.editor-header,
+.edit-post-header,
+.editor-document-bar,
+.admin-ui-page__header,
+.edit-post-header-toolbar,
+.editor-header__toolbar,
+.editor-header__settings {
+  background: var(--vp-gb-bg) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Center document bar – slightly brighter so edges stand out from toolbar */
+.editor-header__center {
+  background: var(--vp-gb-bg-header-center) !important;
+}
+
+/* Toolbar: most items secondary gray; key elements stay white */
+.editor-header *,
+.edit-post-header *,
+.interface-interface-skeleton__header *,
+.admin-ui-page__header * {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.editor-header .components-button,
+.edit-post-header .components-button,
+.interface-pinned-items .components-button {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.editor-header svg,
+.edit-post-header svg,
+.interface-interface-skeleton__header svg,
+.admin-ui-page__header svg {
+  fill: var(--vp-gb-text) !important;
+}
+
+.editor-header .components-button:hover,
+.edit-post-header .components-button:hover,
+.interface-pinned-items .components-button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Translate Page – white text; hover only on the button, not enclosing box */
+#trp-link-id,
+#trp-link-id .button-primary {
+  color: var(--vp-gb-text) !important;
+}
+
+#trp-link-id {
+  background: transparent !important;
+}
+
+#trp-link-id:hover {
+  background: transparent !important;
+}
+
+#trp-link-id .button-primary:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Document bar: single border under entire header, no inner borders */
+/* Single continuous border under entire top bar (no partial/disappearing borders) */
+.interface-interface-skeleton__header {
+  border-bottom: 1px solid var(--vp-gb-border) !important;
+}
+
+/* Admin UI page wrapper (WordPress 6.5+) */
+.admin-ui-page {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.admin-ui-page__header-title,
+.admin-ui-page__header-subtitle {
+  color: var(--vp-gb-text) !important;
+}
+
+/* ==========================================================================
+   Core Layout – Panel background variation (sidebars slightly brighter)
+   ========================================================================== */
+
+.interface-interface-skeleton {
+  background: var(--vp-gb-bg) !important;
+}
+
+.interface-interface-skeleton__content {
+  background: var(--vp-gb-bg) !important;
+}
+
+.interface-interface-skeleton__sidebar,
+.interface-interface-skeleton__secondary-sidebar {
+  background: var(--vp-gb-bg-sidebar) !important;
+  border-left: 1px solid var(--vp-gb-border) !important;
+}
+
+/* ==========================================================================
+   Sidebar & Inspector Panels
+   ========================================================================== */
+
+.interface-complementary-area,
+.interface-complementary-area-header,
+.block-editor-tabbed-sidebar,
+.components-panel {
+  background: var(--vp-gb-bg-sidebar) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.components-panel__body {
+  background: var(--vp-gb-bg-sidebar) !important;
+  border-bottom: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.components-panel__body-title {
+  color: var(--vp-gb-text) !important;
+}
+
+.components-base-control__label,
+.components-base-control label {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.components-base-control__help {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+.components-panel__body-title:hover {
+  background: var(--vp-gb-bg-hover) !important;
+}
+
+.components-panel__body-toggle,
+.components-panel__body-toggle .components-panel__arrow {
+  color: var(--vp-gb-text) !important;
+}
+
+/* ==========================================================================
+   Form Controls – Inputs, Selects, Textareas
+   ========================================================================== */
+
+.components-base-control,
+.components-base-control__field,
+.components-input-control__container,
+.components-select-control__input,
+.components-text-control__input,
+.components-textarea-control__input {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-interface-skeleton input,
+.interface-interface-skeleton textarea,
+.interface-interface-skeleton select,
+.editor-styles-wrapper input,
+.editor-styles-wrapper textarea,
+.editor-styles-wrapper select,
+.components-input-control__input,
+.components-text-control__input,
+.components-textarea-control__input,
+.components-select-control__input {
+  background: var(--vp-gb-bg-input) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+  border-radius: 6px;
+}
+
+.interface-interface-skeleton input:focus,
+.interface-interface-skeleton textarea:focus,
+.interface-interface-skeleton select:focus,
+.components-input-control__input:focus,
+.components-text-control__input:focus,
+.components-textarea-control__input:focus,
+.components-select-control__input:focus {
+  border-color: var(--vp-gb-border-focus) !important;
+  box-shadow: 0 0 0 1px var(--vp-gb-border-focus);
+  outline: none;
+}
+
+.interface-interface-skeleton input::placeholder,
+.interface-interface-skeleton textarea::placeholder {
+  color: var(--vp-gb-text-dim);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.interface-interface-skeleton .components-button {
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-interface-skeleton .components-button:not(.is-primary):not(.is-secondary):hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-interface-skeleton .components-button.is-primary {
+  background: var(--vp-gb-accent) !important;
+  color: #fff !important;
+  border-color: var(--vp-gb-accent);
+}
+
+.interface-interface-skeleton .components-button.is-primary:hover {
+  background: var(--vp-gb-accent-hover) !important;
+}
+
+/* Toggle group (Include/Exclude, S/M/L/XL, etc.) – readable selected & unselected */
+.components-toggle-group-control-option-base {
+  background: var(--vp-gb-bg-input) !important;
+  color: var(--vp-gb-text-secondary) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.components-toggle-group-control-option-base[aria-checked="true"] {
+  background: var(--vp-gb-bg-active) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.components-toggle-group-control-option-base:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* ==========================================================================
+   Dropdowns, Popovers, Menus
+   ========================================================================== */
+
+.components-popover__content,
+.components-dropdown-menu__menu,
+.components-menu-group,
+.components-navigator-provider,
+.components-navigation,
+.components-navigation__container {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.components-dropdown-menu__menu .components-button,
+.components-menu-item__button {
+  color: var(--vp-gb-text) !important;
+}
+
+.components-dropdown-menu__menu .components-button:hover,
+.components-menu-item__button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+}
+
+/* ==========================================================================
+   Tabs
+   ========================================================================== */
+
+.block-editor-tabbed-sidebar__tabs,
+.components-tab-panel__tabs,
+.edit-post-sidebar__panel-tabs {
+  background: var(--vp-gb-bg-sidebar) !important;
+  border-bottom: 1px solid var(--vp-gb-border) !important;
+}
+
+.components-tab-panel__tab-content {
+  background: var(--vp-gb-bg-sidebar) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-tabbed-sidebar__tab,
+.components-tab-panel__tab {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-tabbed-sidebar__tab.is-active,
+.components-tab-panel__tab.is-active {
+  color: var(--vp-gb-text) !important;
+  border-bottom-color: var(--vp-gb-accent);
+}
+
+.block-editor-tabbed-sidebar__close-button {
+  background: transparent !important;
+  color: var(--vp-gb-text-muted) !important;
+}
+
+.block-editor-tabbed-sidebar__close-button:hover {
+  color: var(--vp-gb-text) !important;
+  background: var(--vp-gb-bg-hover) !important;
+}
+
+/* ==========================================================================
+   Block List / Canvas Area
+   ========================================================================== */
+
+.block-editor-block-list__layout,
+.block-editor-writing-flow,
+.block-editor-editor-skeleton__content {
+  background: var(--vp-gb-bg) !important;
+}
+
+/* Editor canvas – where blocks live (keep dark but distinct) */
+.edit-post-visual-editor,
+.editor-styles-wrapper {
+  background: var(--vp-gb-bg) !important;
+}
+
+/* ==========================================================================
+   Editor Content – Override color:revert on headings/paragraphs (load-styles.php)
+   ========================================================================== */
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6,
+.editor-styles-wrapper p,
+.editor-styles-wrapper li,
+.editor-styles-wrapper blockquote,
+.editor-styles-wrapper figcaption,
+.editor-styles-wrapper .block-editor-rich-text__editable,
+.editor-styles-wrapper .wp-block-heading,
+.editor-styles-wrapper .wp-block-paragraph {
+  color: var(--vp-gb-text) !important;
+}
+
+.editor-styles-wrapper a {
+  color: var(--vp-gb-accent) !important;
+}
+
+/* ==========================================================================
+   Icons & SVGs – Force light fill/stroke (override black icons)
+   ========================================================================== */
+
+.interface-interface-skeleton svg,
+.editor-header svg,
+.edit-post-header svg,
+.block-editor-block-toolbar svg,
+.block-editor-block-contextual-toolbar svg,
+.components-button svg,
+.interface-complementary-area svg,
+.components-panel svg,
+.block-editor-inserter__menu svg {
+  fill: var(--vp-gb-text) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-interface-skeleton svg[stroke],
+.block-editor-block-toolbar svg[stroke],
+.components-button svg[stroke] {
+  stroke: var(--vp-gb-text) !important;
+}
+
+/* Yoast SEO – black SVG icon in sidebar (override inline fill) */
+button[aria-label="Yoast SEO"] svg,
+.yst-root svg {
+  fill: var(--vp-gb-text) !important;
+  stroke: var(--vp-gb-text) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Yoast secondary button – was white on white */
+.yst-button.yst-button--secondary {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+}
+
+.yst-button.yst-button--secondary:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Block placeholder text */
+.editor-styles-wrapper .block-editor-rich-text__editable[data-is-placeholder-visible="true"]::before,
+.editor-styles-wrapper .is-selected .block-editor-rich-text__editable[data-is-placeholder-visible="true"]::before {
+  color: var(--vp-gb-text-dim) !important;
+}
+
+/* ==========================================================================
+   Top Bar Center – Document title + post type alignment (no wrap)
+   ========================================================================== */
+
+.editor-header__center .editor-document-bar,
+.editor-header__center .editor-document-tools {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Align title and post type on one line; prevent "· Page" from wrapping */
+.editor-document-bar h1.components-truncate,
+.editor-document-bar .components-text {
+  display: flex !important;
+  align-items: baseline !important;
+  flex-wrap: nowrap !important;
+  gap: 0.35rem !important;
+  min-width: 0 !important;
+}
+
+.editor-document-bar__post-title {
+  color: var(--vp-gb-text) !important;
+  flex-shrink: 0 !important;
+}
+
+.editor-document-bar__post-type-label {
+  color: var(--vp-gb-text-secondary) !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  min-width: fit-content !important;
+}
+
+.editor-header__center .editor-post-title,
+.editor-header__center input {
+  color: var(--vp-gb-text) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.editor-header__center .editor-post-title::placeholder,
+.editor-header__center input::placeholder {
+  color: var(--vp-gb-text-dim) !important;
+}
+
+/* ==========================================================================
+   Borders – Consistent, clean borders (fix jagged/missing)
+   ========================================================================== */
+
+.interface-complementary-area,
+.interface-complementary-area-header {
+  border-left: 1px solid var(--vp-gb-border) !important;
+}
+
+.components-panel__body {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.block-editor-block-inspector .components-panel {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Polish – Rounded corners, refined shadows
+   ========================================================================== */
+
+.components-popover__content {
+  border-radius: 8px !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5) !important;
+}
+
+.block-editor-block-toolbar,
+.block-editor-block-contextual-toolbar {
+  border-radius: 8px !important;
+}
+
+.interface-interface-skeleton__header {
+  border-radius: 0;
+  box-shadow: 0 1px 0 var(--vp-gb-border);
+}
+
+/* ==========================================================================
+   List View (block outline)
+   ========================================================================== */
+
+.block-editor-list-view-leaf .block-editor-list-view-block-contents,
+.block-editor-list-view-block-contents {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents {
+  color: var(--vp-gb-accent) !important;
+}
+
+.block-editor-list-view .components-button {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+/* ==========================================================================
+   Meta Boxes (ACF, Yoast, etc.)
+   ========================================================================== */
+
+.edit-post-meta-boxes-area .postbox,
+.edit-post-meta-boxes-area .stuffbox {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border);
+  border-radius: 8px;
+}
+
+.edit-post-meta-boxes-area .postbox .hndle,
+.edit-post-meta-boxes-area .postbox > h2,
+.edit-post-meta-boxes-area .postbox > h3 {
+  color: var(--vp-gb-text) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area .postbox .inside,
+.edit-post-sidebar .components-panel__body .components-base-control,
+.edit-post-sidebar .post-status-info,
+.edit-post-sidebar .editor-post-publish-panel__link {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-sidebar .post-status-info .components-button {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+/* Right sidebar – post info and panel rows as light gray */
+.editor-post-content-information,
+.editor-post-last-edited-panel,
+.editor-post-content-information span,
+.editor-post-last-edited-panel span {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.editor-post-panel__row-label {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.editor-post-panel__row-control .components-button.is-tertiary,
+.editor-post-status__toggle,
+.editor-post-schedule__dialog-toggle,
+.editor-post-url__panel-toggle,
+.editor-post-author__panel-toggle,
+.editor-post-discussion__panel-toggle,
+.editor-post-parent__panel-toggle,
+.editor-private-post-last-revision__button {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area .postbox .handle-order-lower .order-lower-indicator::before,
+.edit-post-meta-boxes-area .postbox .handle-order-higher .order-higher-indicator::before {
+  color: var(--vp-gb-text-muted);
+}
+
+.acf-field label,
+.acf-field .acf-label {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.acf-field p.description {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+
+.components-notice {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border);
+  color: var(--vp-gb-text) !important;
+}
+
+.components-notice.is-warning {
+  background: var(--vp-gb-warning-bg) !important;
+  border-color: var(--vp-gb-warning);
+  color: var(--vp-gb-text) !important;
+}
+
+.components-notice.is-success {
+  background: rgba(34, 197, 94, 0.15) !important;
+  border-color: var(--vp-gb-success);
+}
+
+/* ==========================================================================
+   WP Bootstrap Blocks – subtle block hover (no jarring highlights)
+   ========================================================================== */
+
+[data-type="wp-bootstrap-blocks/column"]:not(.is-selected):not(.has-child-selected):hover,
+[data-type="wp-bootstrap-blocks/container"]:not(.is-selected):not(.has-child-selected):hover,
+[data-type="wp-bootstrap-blocks/row"]:not(.is-selected):not(.has-child-selected):hover {
+  background: transparent !important;
+}
+
+.wp-bootstrap-blocks-template-selector-button > .components-button.is-active,
+.wp-bootstrap-blocks-template-selector-button > .components-button.is-active:hover {
+  background: var(--vp-gb-bg-active) !important;
+}
+
+/* ==========================================================================
+   Block Inspector – “No block selected” state
+   ========================================================================== */
+
+.block-editor-block-inspector__no-block-tools,
+.block-editor-block-inspector__no-blocks {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* ==========================================================================
+   Block Toolbar (floating toolbar when block selected)
+   ========================================================================== */
+
+.block-editor-block-toolbar,
+.block-editor-block-contextual-toolbar {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.block-editor-block-toolbar .components-button,
+.block-editor-block-contextual-toolbar .components-button {
+  color: var(--vp-gb-text) !important;
+}
+
+/* ==========================================================================
+   Block Inserter (add block modal)
+   ========================================================================== */
+
+.block-editor-inserter__menu,
+.block-editor-inserter__sidebar,
+.block-editor-inserter__panel-content,
+.block-editor-inserter__block-list,
+.block-editor-block-types-list {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__block-list .block-editor-block-types-list__list-item,
+.block-editor-block-types-list__list-item {
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__block-list .block-editor-block-types-list__list-item:hover {
+  background: var(--vp-gb-bg-hover) !important;
+}
