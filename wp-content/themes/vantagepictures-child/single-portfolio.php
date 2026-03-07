@@ -82,9 +82,6 @@ $hero_style = $hero_bg ? 'style="background-image:url(' . esc_url($hero_bg) . ')
             </div>
           <?php endif; ?>
 
-          <?php if (function_exists('vp_portfolio_render_credits')) : ?>
-            <?php vp_portfolio_render_credits($post_id); ?>
-          <?php endif; ?>
         </div>
 
         <!-- Right: Vimeo -->
@@ -125,6 +122,11 @@ $hero_style = $hero_bg ? 'style="background-image:url(' . esc_url($hero_bg) . ')
                 }
               ?>
             </div>
+            
+            <?php if (function_exists('vp_portfolio_render_credits')) : ?>
+              <?php vp_portfolio_render_credits($post_id); ?>
+            <?php endif; ?>
+
           <?php else : ?>
             <div class="bg-dark text-white-50 p-4 rounded">
               No video embed found for this portfolio item.

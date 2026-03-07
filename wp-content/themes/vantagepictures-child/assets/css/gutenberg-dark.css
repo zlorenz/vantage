@@ -101,6 +101,28 @@
   color: var(--vp-gb-text) !important;
 }
 
+/* Top left – site logo: no box, fully transparent to match toolbar */
+.editor-header__back-button,
+.editor-header__back-button > div,
+.editor-header__back-button [class*="css-0"],
+.edit-post-fullscreen-mode-close,
+.edit-post-fullscreen-mode-close__view-mode-toggle,
+.edit-post-fullscreen-mode-close__view-mode-toggle-icon,
+.edit-post-fullscreen-mode-close-site-icon,
+.editor-header__back-button .components-button.edit-post-fullscreen-mode-close,
+.editor-header__back-button a.components-button {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.edit-post-fullscreen-mode-close-site-icon {
+  padding: 6px !important;
+}
+
+.edit-post-fullscreen-mode-close-site-icon__image {
+  display: block !important;
+}
+
 /* Document bar: single border under entire header, no inner borders */
 /* Single continuous border under entire top bar (no partial/disappearing borders) */
 .interface-interface-skeleton__header {
@@ -259,6 +281,32 @@
 }
 
 .components-toggle-group-control-option-base:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Inner div must not get white background on hover (Yoast/block theme can inject it) */
+.components-toggle-group-control-option-base div,
+.components-toggle-group-control-option-base:hover div {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* Content Restriction Mode – override emotion/styled WP component (white bg from --wp-components-color-background) */
+.interface-interface-skeleton__sidebar,
+.interface-complementary-area {
+  --wp-components-color-background: var(--vp-gb-bg-sidebar) !important;
+}
+
+/* Toggle group container (class pattern from emotion CSS-in-JS) */
+[role="radiogroup"][aria-label="Content Restriction Mode"],
+[class*="components-toggle-group-control"][class*="1qd9rl8"] {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+[role="radiogroup"][aria-label="Content Restriction Mode"] button:hover,
+[class*="1qd9rl8"] button:hover {
   background: var(--vp-gb-bg-hover) !important;
   color: var(--vp-gb-text) !important;
 }
@@ -425,7 +473,7 @@ button[aria-label="Yoast SEO"] svg,
   border: none !important;
 }
 
-/* Align title and post type on one line; prevent "· Page" from wrapping */
+/* Align title and post type; long title truncates with ellipsis on one line */
 .editor-document-bar h1.components-truncate,
 .editor-document-bar .components-text {
   display: flex !important;
@@ -437,7 +485,12 @@ button[aria-label="Yoast SEO"] svg,
 
 .editor-document-bar__post-title {
   color: var(--vp-gb-text) !important;
-  flex-shrink: 0 !important;
+  max-width:  min(320px, 40ch) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex-shrink: 1 !important;
+  min-width: 0 !important;
 }
 
 .editor-document-bar__post-type-label {
@@ -507,11 +560,25 @@ button[aria-label="Yoast SEO"] svg,
   color: var(--vp-gb-text-secondary) !important;
 }
 
-.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents {
-  color: var(--vp-gb-accent) !important;
+/* Active list item: white text on dark (avoid blue-on-blue) */
+.block-editor-list-view-leaf.is-selected {
+  background: var(--vp-gb-bg-active) !important;
+}
+
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents,
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents * {
+  color: var(--vp-gb-text) !important;
 }
 
 .block-editor-list-view .components-button {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+/* Left sidebar – Outline tab (Characters, Words, Time to read) */
+.editor-list-view-sidebar__outline,
+.editor-list-view-sidebar__outline span,
+.editor-list-view-sidebar__outline .word-count,
+.editor-list-view-sidebar__outline .time-to-read {
   color: var(--vp-gb-text-secondary) !important;
 }
 
@@ -578,6 +645,385 @@ button[aria-label="Yoast SEO"] svg,
 }
 
 .acf-field p.description {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* ==========================================================================
+   Yoast SEO metabox – full dark theme
+   ========================================================================== */
+
+.edit-post-meta-boxes-area #wpseo_meta.postbox.yoast,
+.edit-post-meta-boxes-area .postbox.yoast.wpseo-metabox {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .postbox-header,
+.edit-post-meta-boxes-area #wpseo_meta .inside,
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-metabox-content {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text-secondary) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .hndle {
+  color: var(--vp-gb-text) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+/* Yoast tabs – override metabox-2711.css #f8f8f8 / #fff */
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-metabox-menu,
+.edit-post-meta-boxes-area #wpseo_meta .yoast-aria-tabs {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-metabox-menu ul li {
+  background-color: var(--vp-gb-bg-sidebar) !important;
+  box-shadow: none !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-metabox-menu ul li.active {
+  background-color: var(--vp-gb-bg-elevated) !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Active content panel – override .wpseo-meta-section.active background: #fff (metabox-2711.css) */
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-meta-section-react.active,
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-meta-section.active {
+  background: var(--vp-gb-bg-elevated) !important;
+  background-color: var(--vp-gb-bg-elevated) !important;
+}
+
+/* yst-button--secondary / ai-secondary – override tailwind/styled white (rgb(255 255 255)) */
+.edit-post-meta-boxes-area #wpseo_meta .yst-root .yst-button--secondary,
+.edit-post-meta-boxes-area #wpseo_meta .yst-root .yst-button--ai-secondary,
+.edit-post-meta-boxes-area #wpseo_meta .yst-root .yst-button--secondary:after,
+.edit-post-meta-boxes-area #wpseo_meta .yst-root .yst-button--ai-secondary::after {
+  background-color: var(--vp-gb-bg-elevated) !important;
+  --tw-bg-opacity: 1 !important;
+}
+
+/* Variable pills in SEO title/description (Title, Page, Separator…) – override .hNPwsX rgb(226,232,240) */
+.edit-post-meta-boxes-area #wpseo_meta .hNPwsX,
+.edit-post-meta-boxes-area #wpseo_meta .yst-replacevar__mention {
+  background-color: var(--vp-gb-bg-input) !important;
+  color: var(--vp-gb-text-muted) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .hNPwsX:hover {
+  background-color: var(--vp-gb-bg-input) !important;
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* React-select / emotion control – override .css-13cymwt-control white background */
+.edit-post-meta-boxes-area #wpseo_meta [class*="css-"][class*="-control"] {
+  background-color: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-meta-section-link {
+  color: var(--vp-gb-text-secondary) !important;
+  background: transparent !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-meta-section-link:hover {
+  color: var(--vp-gb-text) !important;
+  background: var(--vp-gb-bg-hover) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-meta-section-link.yoast-active-tab {
+  color: var(--vp-gb-text) !important;
+  background: var(--vp-gb-bg-active) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .wpseo-meta-section-link svg {
+  fill: currentColor !important;
+}
+
+/* yst-root and yst-* components */
+.edit-post-meta-boxes-area #wpseo_meta .yst-root {
+  background: transparent !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-label,
+.edit-post-meta-boxes-area #wpseo_meta .yst-text-slate-800,
+.edit-post-meta-boxes-area #wpseo_meta .yst-text-slate-500,
+.edit-post-meta-boxes-area #wpseo_meta .yst-text-slate-900,
+.edit-post-meta-boxes-area #wpseo_meta label.sc-gelMue,
+.edit-post-meta-boxes-area #wpseo_meta .sc-lbVpMG,
+.edit-post-meta-boxes-area #wpseo_meta .yst-replacevar__label,
+.edit-post-meta-boxes-area #wpseo_meta legend {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-button {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Override Yoast inline hover that uses white */
+.edit-post-meta-boxes-area #wpseo_meta [class*="hover:yst-bg-"],
+.edit-post-meta-boxes-area #wpseo_meta button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta [class*="yst-border-t"] {
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta [class*="yst-text-slate"],
+.edit-post-meta-boxes-area #wpseo_meta [class*="yst-text-"][class*="555"] {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+/* Collapsible section buttons (Search appearance, SEO analysis, etc.) */
+.edit-post-meta-boxes-area #wpseo_meta .sc-gKPRtg,
+.edit-post-meta-boxes-area #wpseo_meta .sc-kgTSHT button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-hCpPqN button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-gSyvRN button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-gLgtkK button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-gwGGKT button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-cNYriL button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-iLmQsS button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-dUXuUM button,
+.edit-post-meta-boxes-area #wpseo_meta h2.sc-hQPBQE button,
+.edit-post-meta-boxes-area #wpseo_meta h3.sc-hgYirE button,
+.edit-post-meta-boxes-area #wpseo_meta h3.sc-fCYGkp button {
+  background: transparent !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-gKPRtg:hover,
+.edit-post-meta-boxes-area #wpseo_meta .sc-kgTSHT button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-bjfHbI,
+.edit-post-meta-boxes-area #wpseo_meta .sc-idXgbr {
+  color: var(--vp-gb-text) !important;
+}
+
+/* Inputs and editors – force dark (override any inline or plugin white) */
+.edit-post-meta-boxes-area #wpseo_meta input[type="text"],
+.edit-post-meta-boxes-area #wpseo_meta input[type="url"],
+.edit-post-meta-boxes-area #wpseo_meta input[type="search"],
+.edit-post-meta-boxes-area #wpseo_meta .sc-jRwbcX,
+.edit-post-meta-boxes-area #wpseo_meta .sc-jvSYwb,
+.edit-post-meta-boxes-area #wpseo_meta select,
+.edit-post-meta-boxes-area #wpseo_meta [contenteditable="true"],
+.edit-post-meta-boxes-area #wpseo_meta .public-DraftEditor-content {
+  background: var(--vp-gb-bg-input) !important;
+  background-color: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .public-DraftEditor-content,
+.edit-post-meta-boxes-area #wpseo_meta .DraftEditor-editorContainer {
+  background: var(--vp-gb-bg-input) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-replacevar__mention {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* Google snippet preview container – dark card */
+.edit-post-meta-boxes-area #wpseo_meta .yoast-snippet-preview-container,
+.edit-post-meta-boxes-area #wpseo_meta .sc-cHGmPC {
+  background: var(--vp-gb-bg-sidebar) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-dkKxlM,
+.edit-post-meta-boxes-area #wpseo_meta .sc-cLNonn,
+.edit-post-meta-boxes-area #wpseo_meta .sc-uokDu {
+  background: var(--vp-gb-bg-sidebar) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-cxdZMj,
+.edit-post-meta-boxes-area #wpseo_meta .sc-JHWBx {
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-iWOQzb,
+.edit-post-meta-boxes-area #wpseo_meta .sc-jhrdCu,
+.edit-post-meta-boxes-area #wpseo_meta .sc-iQAVnG {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+/* Progress bars */
+.edit-post-meta-boxes-area #wpseo_meta progress,
+.edit-post-meta-boxes-area #wpseo_meta .sc-jIILKH {
+  background: var(--vp-gb-bg-input) !important;
+  color: var(--vp-gb-accent) !important;
+}
+
+/* Readability / analysis lists */
+.edit-post-meta-boxes-area #wpseo_meta .sc-liQGml,
+.edit-post-meta-boxes-area #wpseo_meta .sc-fTJzqL,
+.edit-post-meta-boxes-area #wpseo_meta .sc-bTtZEv {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-bTtZEv a {
+  color: var(--vp-gb-accent) !important;
+}
+
+/* Yoast field groups (Schema, etc.) */
+.edit-post-meta-boxes-area #wpseo_meta .yoast-field-group,
+.edit-post-meta-boxes-area #wpseo_meta .yoast-field-group__title,
+.edit-post-meta-boxes-area #wpseo_meta .field-group-description {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yoast-field-group__title b {
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yoast-help__icon svg {
+  fill: var(--vp-gb-text-muted) !important;
+}
+
+/* Toggle (Mobile/Desktop) */
+.edit-post-meta-boxes-area #wpseo_meta .yst-toggle {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-bg-primary-500 {
+  background: var(--vp-gb-accent) !important;
+}
+
+/* Badges */
+.edit-post-meta-boxes-area #wpseo_meta .yst-badge {
+  background: var(--vp-gb-bg-active) !important;
+  color: var(--vp-gb-text-secondary) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-feature-upsell,
+.edit-post-meta-boxes-area #wpseo_meta .yst-feature-upsell--card {
+  background: var(--vp-gb-bg-sidebar) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-button--upsell {
+  background: var(--vp-gb-accent) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-eSEOys,
+.edit-post-meta-boxes-area #wpseo_meta .sc-fuRDZQ {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta svg.sc-bcXHqe {
+  fill: currentColor !important;
+}
+
+/* Yoast inner panels – force dark backgrounds (override white from styled-components) */
+.edit-post-meta-boxes-area #wpseo_meta .sc-dGQEGF,
+.edit-post-meta-boxes-area #wpseo_meta .sc-gXnjX,
+.edit-post-meta-boxes-area #wpseo_meta .sc-jWOkvS,
+.edit-post-meta-boxes-area #wpseo_meta .sc-dmctIk,
+.edit-post-meta-boxes-area #wpseo_meta .collapsible_content,
+.edit-post-meta-boxes-area #wpseo_meta .sc-jSUZER,
+.edit-post-meta-boxes-area #wpseo_meta .sc-cTcUcm,
+.edit-post-meta-boxes-area #wpseo_meta .sc-caPbAK,
+.edit-post-meta-boxes-area #wpseo_meta .sc-lknQiW,
+.edit-post-meta-boxes-area #wpseo_meta .sc-cZFQFd,
+.edit-post-meta-boxes-area #wpseo_meta .DraftEditor-root,
+.edit-post-meta-boxes-area #wpseo_meta .sc-kiPvrU {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-jmfXTE,
+.edit-post-meta-boxes-area #wpseo_meta .sc-ckLdoV,
+.edit-post-meta-boxes-area #wpseo_meta .sc-gswNZR {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* Add related keyphrase, Track SEO performance, etc. – full-width row buttons */
+.edit-post-meta-boxes-area #wpseo_meta button.yst-flex,
+.edit-post-meta-boxes-area #wpseo_meta .yst-flex.yst-items-center.yst-w-full {
+  background: var(--vp-gb-bg-sidebar) !important;
+  color: var(--vp-gb-text-secondary) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta button.yst-flex:hover,
+.edit-post-meta-boxes-area #wpseo_meta .yst-flex.yst-items-center.yst-w-full:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-flex button.yst-flex span,
+.edit-post-meta-boxes-area #wpseo_meta .yst-font-wp {
+  color: inherit !important;
+}
+
+/* Focus keyphrase input wrapper */
+.edit-post-meta-boxes-area #wpseo_meta .sc-jWOkvS .sc-jRwbcX,
+.edit-post-meta-boxes-area #wpseo_meta #focus-keyword-input-metabox {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Analysis results (Readability) – headings and lists */
+.edit-post-meta-boxes-area #wpseo_meta .sc-nTrUm,
+.edit-post-meta-boxes-area #wpseo_meta .sc-hbWBzy,
+.edit-post-meta-boxes-area #wpseo_meta .sc-hQIyOC,
+.edit-post-meta-boxes-area #wpseo_meta .sc-kgTSHT.cqjhBG {
+  background: transparent !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-fTJzqL span,
+.edit-post-meta-boxes-area #wpseo_meta .sc-fTJzqL a {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-fTJzqL a:hover {
+  color: var(--vp-gb-accent) !important;
+}
+
+/* Yoast SVG icons (score, chevron, etc.) – ensure visible on dark */
+.edit-post-meta-boxes-area #wpseo_meta .yoast-svg-icon,
+.edit-post-meta-boxes-area #wpseo_meta .sc-bcXHqe {
+  fill: currentColor !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yoast-svg-icon-seo-score-bad {
+  fill: #f87171 !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yoast-svg-icon-seo-score-good {
+  fill: var(--vp-gb-success) !important;
+}
+
+/* Image select / social preview placeholder */
+.edit-post-meta-boxes-area #wpseo_meta .yst-image-select-preview,
+.edit-post-meta-boxes-area #wpseo_meta .sc-eYulFz {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .sc-eSEOys.DGhuM {
   color: var(--vp-gb-text-muted) !important;
 }
 
