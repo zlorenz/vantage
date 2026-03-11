@@ -1696,3 +1696,38 @@ textarea {
 }
 
 /* Video Campaign Brief form: see assets/css/video-campaign-brief-form.css (scoped to .gform_wrapper.video-campaign-brief-form_wrapper) */
+
+/* ==========================================================================
+   17. Mobile-specific refinements
+   --------------------------------------------------------------------------
+   Small-screen-only tweaks for nav search, filters, and modals. Desktop
+   behavior remains unchanged.
+   ========================================================================== */
+
+@media (max-width: 575.98px) {
+
+  /* Navbar search: stack under menu and use full width */
+  .navbar .vp-search-form {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
+
+  .navbar .vp-search-wrapper {
+    width: 100%;
+  }
+
+  .navbar .vp-search-input {
+    width: 100%;
+  }
+
+  /* Portfolio filters: add a bit more vertical breathing room between rows */
+  .vp-filters {
+    row-gap: 0.75rem;
+  }
+
+  /* Modals: slightly tighter padding on very small screens */
+  .modal-content {
+    padding: 1.75rem;
+  }
+}

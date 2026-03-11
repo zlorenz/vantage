@@ -97,6 +97,36 @@ add_action( 'gform_enqueue_scripts_1', function ( $form, $ajax ) {
 }, 20, 2 );
 
 /**
+ * Gravity Forms: apply the briefing form front-end class to ALL forms.
+ *
+ * The Video Campaign Brief styles are scoped to the wrapper class
+ * `video-campaign-brief-form_wrapper`. To make those styles universal for
+ * every Gravity Form on the site, we automatically append that CSS class
+ * to the form's `cssClass` setting for all forms at render time.
+ *
+ * This keeps the CSS file unchanged while ensuring new forms inherit the
+ * same styling without manual configuration.
+ */
+function vp_gf_apply_brief_wrapper_class( $form ) {
+	$extra_class = 'video-campaign-brief-form_wrapper';
+	$current     = rgar( $form, 'cssClass' );
+
+	// Avoid duplicates when a form is already using this CSS class.
+	if ( is_string( $current ) && strpos( ' ' . $current . ' ', ' ' . $extra_class . ' ' ) !== false ) {
+		return $form;
+	}
+
+	$form['cssClass'] = trim( $current . ' ' . $extra_class );
+
+	return $form;
+}
+
+add_filter( 'gform_pre_render', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
+add_filter( 'gform_pre_validation', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
+add_filter( 'gform_pre_submission_filter', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
+add_filter( 'gform_admin_pre_render', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
+
+/**
  * Enqueue Google Font (Poppins)
  * Loads global typography for the site (300 + 700 weights)
  * Add to: child theme functions.php
