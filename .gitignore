@@ -1,20 +1,71 @@
-# WordPress uploads (media not versioned)
+# --------------------------------------------------
+# WordPress Core (ignore)
+# --------------------------------------------------
+
+/wp-admin/
+/wp-includes/
+/xmlrpc.php
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+
+# --------------------------------------------------
+# WordPress Configuration
+# --------------------------------------------------
+
+wp-config.php
+.htaccess
+
+# --------------------------------------------------
+# Uploads (media files)
+# --------------------------------------------------
+
 /wp-content/uploads/
 
-# Cache directories
+# --------------------------------------------------
+# Cache
+# --------------------------------------------------
+
 /wp-content/cache/
 
-# WPvivid backups
+# --------------------------------------------------
+# Logs
+# --------------------------------------------------
+
+*.log
+
+# --------------------------------------------------
+# macOS / system junk
+# --------------------------------------------------
+
+.DS_Store
+Thumbs.db
+
+# --------------------------------------------------
+# Node dependencies (if you ever add them)
+/node_modules/
+
+# --------------------------------------------------
+# WordPress plugins
+# Ignore ALL plugins except ones you explicitly whitelist
+# --------------------------------------------------
+
+/wp-content/plugins/*
+
+# WPvivid backup plugin
 /wp-content/wpvividbackups/
 
-# Upgrade temp files
-/wp-content/upgrade/
+# Allow custom plugins to be tracked
+!/wp-content/plugins/vp-content-types
+!/wp-content/plugins/vp-lark-client-brief
 
-# WordPress config (contains DB credentials)
-wp-config.php
+# --------------------------------------------------
+# WordPress themes
+# Ignore all themes except your custom child theme
+# --------------------------------------------------
 
-# OS junk
-.DS_Store
+/wp-content/themes/*
 
-# Logs
-*.log
+# Allow your child theme
+!/wp-content/themes/vantagepictures-child

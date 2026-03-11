@@ -40,3 +40,32 @@
 .editor-styles-wrapper .is-selected .block-editor-rich-text__editable[data-is-placeholder-visible="true"]::before {
   color: #71717a !important;
 }
+
+.editor-styles-wrapper table td,
+.editor-styles-wrapper table th {
+  border-color: #2e2e32 !important;
+  color: #ffffff !important;
+}
+
+.editor-styles-wrapper code,
+.editor-styles-wrapper .wp-block-code {
+  color: #e4e4e7 !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: #2e2e32 !important;
+}
+
+/* Gravity Forms block – field labels, required text, step numbers (override GF dark blue) */
+.editor-styles-wrapper .gfield_label,
+.editor-styles-wrapper .gform-field-label {
+  color: #ffffff !important;
+}
+
+.editor-styles-wrapper .gfield_required,
+.editor-styles-wrapper .gfield_required_text {
+  color: #a1a1aa !important;
+}
+
+.editor-styles-wrapper .gf_step_number {
+  color: #ffffff !important;
+  background: transparent !important;
+}

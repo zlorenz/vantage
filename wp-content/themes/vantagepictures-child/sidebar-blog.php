@@ -1,45 +1,24 @@
 <?php
 /**
  * Blog sidebar
- * Purpose: Search and recent posts for the News page.
+ * Purpose: Categories for the News page (search lives in nav).
  */
 ?>
 
 <aside class="vp-blog-sidebar">
 
-  <div class="vp-blog-widget vp-blog-widget--search">
-    <?php get_search_form(); ?>
-  </div>
-
-  <div class="vp-blog-widget">
-    <h3 class="vp-blog-widget__title">RECENT POSTS</h3>
-
-    <div class="vp-recent-posts">
+  <div class="vp-blog-widget vp-blog-categories">
+    <h3 class="vp-blog-widget__title">BLOG CATEGORIES</h3>
+    <ul class="vp-blog-categories-list">
       <?php
-      $recent_posts = get_posts([
-        'post_type'           => 'post',
-        'posts_per_page'      => 6,
-        'post_status'         => 'publish',
-        'ignore_sticky_posts' => true,
+      wp_list_categories([
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+        'title_li'   => '',
+        'show_count' => false,
       ]);
-
-      if ($recent_posts) :
-        foreach ($recent_posts as $recent_post) :
       ?>
-        <article class="vp-recent-post">
-          <a class="vp-recent-post__link" href="<?php echo esc_url(get_permalink($recent_post->ID)); ?>">
-            <?php echo esc_html(get_the_title($recent_post->ID)); ?>
-          </a>
-          <div class="vp-recent-post__date">
-            <?php echo esc_html(get_the_date('F j, Y', $recent_post->ID)); ?>
-          </div>
-        </article>
-      <?php
-        endforeach;
-        wp_reset_postdata();
-      endif;
-      ?>
-    </div>
+    </ul>
   </div>
 
 </aside>

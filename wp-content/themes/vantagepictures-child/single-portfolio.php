@@ -122,10 +122,6 @@ $hero_style = $hero_bg ? 'style="background-image:url(' . esc_url($hero_bg) . ')
                 }
               ?>
             </div>
-            
-            <?php if (function_exists('vp_portfolio_render_credits')) : ?>
-              <?php vp_portfolio_render_credits($post_id); ?>
-            <?php endif; ?>
 
           <?php else : ?>
             <div class="bg-dark text-white-50 p-4 rounded">
@@ -135,68 +131,79 @@ $hero_style = $hero_bg ? 'style="background-image:url(' . esc_url($hero_bg) . ')
         </div>
 
       </div>
+
+      <?php if ( function_exists( 'vp_portfolio_render_credits' ) ) : ?>
+        <div class="row mt-4">
+          <div class="col-12 offset-lg-1 col-lg-10">
+            <?php vp_portfolio_render_credits( $post_id ); ?>
+          </div>
+        </div>
+      <?php endif; ?>
     </div>
   </section>
 
-<?php endwhile; ?>
-
-<?php
-$prev = vp_portfolio_adjacent('prev', 'video-format'); // same format
-$next = vp_portfolio_adjacent('next', 'video-format'); // same format
-?>
-
-<?php if ($prev || $next) : ?>
+  <?php
+  $additional = function_exists('get_field') ? get_field('additional_videos', $post_id) : null;
+  if (!empty($additional) && is_array($additional)) :
+    foreach ($additional as $idx => $row) :
+      $av_vimeo = isset($row['vimeo_link']) ? trim((string) $row['vimeo_link']) : '';
+      $av_title = isset($row['long_title']) ? trim((string) $row['long_title']) : '';
+      $av_desc  = isset($row['description']) ? trim((string) $row['description']) : '';
+      if (empty($av_vimeo)) continue;
+  ?>
   <section class="vp-section py-5 border-top">
-    <div class="container">
-      <div class="row g-3 g-md-4">
-
-        <div class="col-12 col-md-6">
-          <?php if ($prev) : ?>
-            <a class="d-block text-decoration-none" href="<?php echo esc_url(get_permalink($prev)); ?>">
-              <div class="text-uppercase text-body-secondary fw-semibold mb-2" style="letter-spacing:.08em;font-size:.75rem;">
-                Previous
-              </div>
-
-              <div class="ratio ratio-16x9 overflow-hidden bg-dark">
-                <?php echo get_the_post_thumbnail($prev->ID, 'large', [
-                  'class' => 'w-100 h-100 object-fit-cover',
-                  'loading' => 'lazy',
-                  'alt' => esc_attr(get_the_title($prev)),
-                ]); ?>
-              </div>
-
-              <div class="mt-2 fw-semibold text-white">
-                <?php echo esc_html(function_exists('vp_portfolio_thumb_title') ? vp_portfolio_thumb_title($prev->ID) : get_the_title($prev)); ?>
-              </div>
-            </a>
+    <div class="container-fluid">
+      <div class="row g-4">
+        <div class="col-12 offset-lg-1 col-lg-3 order-2 order-lg-1">
+          <?php if (!empty($av_title)) : ?>
+            <h2 class="mb-3">
+              <?php echo wp_kses($av_title, ['span' => ['class' => true], 'br' => [], 'div' => ['class' => true]]); ?>
+            </h2>
+          <?php endif; ?>
+          <?php if (!empty($av_desc)) : ?>
+            <div class="text-body-secondary mb-4">
+              <?php echo wp_kses_post(wpautop($av_desc)); ?>
+            </div>
           <?php endif; ?>
         </div>
-
-        <div class="col-12 col-md-6 text-md-end">
-          <?php if ($next) : ?>
-            <a class="d-block text-decoration-none" href="<?php echo esc_url(get_permalink($next)); ?>">
-              <div class="text-uppercase text-body-secondary fw-semibold mb-2" style="letter-spacing:.08em;font-size:.75rem;">
-                Next
-              </div>
-
-              <div class="ratio ratio-16x9 overflow-hidden bg-dark">
-                <?php echo get_the_post_thumbnail($next->ID, 'large', [
-                  'class' => 'w-100 h-100 object-fit-cover',
-                  'loading' => 'lazy',
-                  'alt' => esc_attr(get_the_title($next)),
-                ]); ?>
-              </div>
-
-              <div class="mt-2 fw-semibold text-white">
-                <?php echo esc_html(function_exists('vp_portfolio_thumb_title') ? vp_portfolio_thumb_title($next->ID) : get_the_title($next)); ?>
-              </div>
-            </a>
-          <?php endif; ?>
+        <div class="col-12 col-lg-7 order-1 order-lg-2">
+          <div class="ratio ratio-16x9 mb-3">
+            <?php
+              // If ACF oEmbed already returned iframe HTML, use it.
+              if (stripos($av_vimeo, '<iframe') !== false) {
+                echo wp_kses($av_vimeo, [
+                  'iframe' => [
+                    'src' => true, 'width' => true, 'height' => true,
+                    'frameborder' => true, 'allow' => true, 'allowfullscreen' => true,
+                    'title' => true, 'loading' => true, 'referrerpolicy' => true,
+                  ],
+                ]);
+              } else {
+                $embed = wp_oembed_get($av_vimeo);
+                if ($embed) {
+                  echo $embed;
+                } elseif (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $av_vimeo, $m)) {
+                  // Fallback: build iframe when oEmbed fails (e.g. on MAMP/localhost).
+                  $vid_id = (int) $m[1];
+                  echo sprintf(
+                    '<iframe src="https://player.vimeo.com/video/%d" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo"></iframe>',
+                    $vid_id
+                  );
+                } else {
+                  echo '<div class="bg-dark text-white-50 p-4 rounded">Invalid video link.</div>';
+                }
+              }
+            ?>
+          </div>
         </div>
-
       </div>
     </div>
   </section>
-<?php endif; ?>
+  <?php
+    endforeach;
+  endif;
+  ?>
+
+<?php endwhile; ?>
 
 <?php get_footer(); ?>

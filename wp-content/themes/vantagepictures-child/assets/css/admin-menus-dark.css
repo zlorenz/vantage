@@ -1,0 +1,438 @@
+/**
+ * WordPress Menu Editor (Appearance → Menus) Dark Mode
+ * nav-menus.php – tabs, accordions, menu structure, inputs.
+ * Matches gutenberg-dark / ACF / GF admin aesthetic.
+ */
+
+:root {
+  --vp-menus-bg: #0f0f11;
+  --vp-menus-bg-elevated: #18181b;
+  --vp-menus-bg-secondary: #141416;
+  --vp-menus-bg-input: #0a0a0c;
+  --vp-menus-bg-hover: rgba(255, 255, 255, 0.06);
+  --vp-menus-border: #2e2e32;
+  --vp-menus-text: #ffffff;
+  --vp-menus-text-secondary: #a1a1aa;
+  --vp-menus-text-muted: #71717a;
+  --vp-menus-accent: #3b82f6;
+  --vp-menus-accent-hover: #60a5fa;
+  --vp-menus-primary-btn: #0f3d6c;
+  --vp-menus-primary-btn-hover: #134a84;
+}
+
+/* ==========================================================================
+   Body / uixpress container
+   ========================================================================== */
+
+body.nav-menus-php .uix-body-container,
+body[class*="nav-menus"] .uix-body-container {
+  background: var(--vp-menus-bg) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+#wpbody-content .wrap {
+  background: var(--vp-menus-bg) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* ==========================================================================
+   Nav tabs (Edit Menus | Manage Locations)
+   ========================================================================== */
+
+.nav-tab-wrapper,
+.wp-clearfix.nav-tab-wrapper {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-bottom-color: var(--vp-menus-border) !important;
+}
+
+.nav-tab {
+  background: transparent !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text-secondary) !important;
+}
+
+.nav-tab:hover {
+  background: var(--vp-menus-bg-hover) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.nav-tab.nav-tab-active {
+  background: var(--vp-menus-bg) !important;
+  border-bottom-color: var(--vp-menus-bg) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* ==========================================================================
+   Manage menus bar (Select a menu to edit...)
+   ========================================================================== */
+
+.manage-menus,
+.manage-menu {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.manage-menus select,
+.manage-menus .select-wrap select {
+  background: var(--vp-menus-bg-input) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.manage-menus .button {
+  background: var(--vp-menus-primary-btn) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.manage-menus .button:hover {
+  background: var(--vp-menus-primary-btn-hover) !important;
+  color: #fff !important;
+}
+
+/* ==========================================================================
+   Nav menus frame – left column (accordions)
+   ========================================================================== */
+
+#nav-menus-frame,
+#menu-settings-column {
+  background: var(--vp-menus-bg) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+#nav-menu-meta,
+#side-sortables {
+  background: var(--vp-menus-bg) !important;
+  border-color: var(--vp-menus-border) !important;
+}
+
+ul.outer-border,
+#side-sortables ul.outer-border {
+  background: var(--vp-menus-bg-elevated) !important;
+  border-color: var(--vp-menus-border) !important;
+}
+
+#side-sortables li {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Accordion section title / trigger (Pages, Posts, Portfolio, etc.) */
+.accordion-section-title,
+.accordion-trigger,
+h3.accordion-section-title .accordion-trigger,
+#side-sortables .accordion-trigger {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.accordion-trigger:hover {
+  background: var(--vp-menus-bg-hover) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Accordion content (checkboxes, Search, Select All) */
+.accordion-section-content,
+#add-post-type-page-content,
+#add-post-type-post-content,
+#add-post-type-portfolio-content,
+[id$="-content"].accordion-section-content {
+  background: var(--vp-menus-bg-elevated) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.accordion-section-content input[type="text"],
+.accordion-section-content input[type="search"],
+.accordion-section-content .quick-search {
+  background: var(--vp-menus-bg-input) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.accordion-section-content label,
+.accordion-section-content .list-wrap,
+.accordion-section-content .add-to-menu {
+  color: var(--vp-menus-text) !important;
+}
+
+.accordion-section-content .add-to-menu .button {
+  background: var(--vp-menus-primary-btn) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.accordion-section-content .add-to-menu .button:hover {
+  background: var(--vp-menus-primary-btn-hover) !important;
+  color: #fff !important;
+}
+
+/* Checkboxes and links inside accordion content */
+.accordion-section-content input[type="checkbox"] + label,
+.accordion-section-content a {
+  color: var(--vp-menus-text-secondary) !important;
+}
+
+.accordion-section-content a:hover {
+  color: var(--vp-menus-accent) !important;
+}
+
+/* Tabs panels inside accordion (Most Recent, View All, Search) */
+.accordion-section-content .inside,
+.accordion-section-content .tabs-panel,
+.tabs-panel,
+.tabs-panel-active,
+[id^="tabs-panel-"],
+#posttype-page,
+#posttype-post,
+#posttype-portfolio,
+.accordion-section-content [id^="posttype-"] {
+  background: var(--vp-menus-bg-elevated) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.tabs-panel a,
+.tabs-panel label,
+.tabs-panel .list-wrap {
+  color: var(--vp-menus-text) !important;
+}
+
+.tabs-panel a:hover {
+  color: var(--vp-menus-accent) !important;
+}
+
+/* ==========================================================================
+   Menu management – right column (menu structure)
+   ========================================================================== */
+
+#menu-management-liquid,
+#menu-management {
+  background: var(--vp-menus-bg) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Main menu structure panel – override WP white */
+#nav-menus-frame .menu-edit,
+#menu-management .menu-edit,
+form#update-nav-menu .menu-edit,
+.menu-edit {
+  background: var(--vp-menus-bg-elevated) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-edit .menu-edit-group {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Menu item rows and handles */
+.menu-item,
+.menu-item-bar,
+.menu-item-handle,
+.item-edit,
+#menu-management .menu-item,
+#menu-management .menu-item-handle {
+  background: var(--vp-menus-bg-elevated) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-item .item-title,
+.menu-item-handle .item-title,
+.menu-item .menu-item-title {
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-item .item-type,
+.menu-item-handle .item-type {
+  color: var(--vp-menus-text-secondary) !important;
+}
+
+/* Sub-items (indented) */
+.menu-item-depth-1 .item-title,
+.menu-item-depth-2 .item-title,
+.menu-item-depth-1 .item-type,
+.menu-item-depth-2 .item-type {
+  color: var(--vp-menus-text) !important;
+}
+
+/* Menu Settings section (Auto add pages, Display location) */
+.menu-settings,
+.menu-edit .menu-settings,
+#menu-management .menu-settings {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-settings label,
+.menu-settings .field-info,
+.menu-settings-title {
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-settings input[type="checkbox"] {
+  accent-color: var(--vp-menus-accent);
+}
+
+/* Delete Menu link – ensure visible */
+.menu-edit .delete-menu,
+#delete_menu,
+.menu-save .delete-menu,
+.menu-edit a[href*="delete"],
+.menu-edit .submitdelete {
+  color: var(--vp-menus-accent) !important;
+}
+
+.menu-edit .delete-menu:hover,
+#delete_menu:hover,
+.menu-save .delete-menu:hover,
+.menu-edit a[href*="delete"]:hover,
+.menu-edit .submitdelete:hover {
+  color: var(--vp-menus-accent-hover) !important;
+}
+
+/* Menu item settings (expanded panel) */
+.menu-item-settings,
+.menu-item-edit {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-item-settings input[type="text"],
+.menu-item-settings input[type="url"],
+.menu-item-settings input[type="number"],
+.menu-item-settings select,
+.menu-item-settings textarea {
+  background: var(--vp-menus-bg-input) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-item-settings label,
+.menu-item-settings .field-move {
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-item-settings .button-link-delete,
+.menu-item-settings .item-delete {
+  color: var(--vp-menus-accent) !important;
+}
+
+.menu-item-settings .button-link-delete:hover,
+.menu-item-settings .item-delete:hover {
+  color: var(--vp-menus-accent-hover) !important;
+}
+
+/* Submit / Save Menu */
+#nav-menu-meta .button-primary,
+.menu-save .button-primary,
+#update-nav-menu {
+  background: var(--vp-menus-primary-btn) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+#nav-menu-meta .button-primary:hover,
+.menu-save .button-primary:hover {
+  background: var(--vp-menus-primary-btn-hover) !important;
+  color: #fff !important;
+}
+
+/* Instruction text and general content in menu-edit */
+.menu-edit p,
+.menu-edit .description {
+  color: var(--vp-menus-text-secondary) !important;
+}
+
+/* Bulk Select, etc. */
+.menu-edit .bulk-actions .button,
+.menu-edit .button,
+#menu-management .bulk-actions .button {
+  background: var(--vp-menus-bg-input) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+.menu-edit .bulk-actions .button:hover,
+.menu-edit .button:hover {
+  background: var(--vp-menus-bg-hover) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Menu name input */
+.menu-name-wrap input,
+#menu-name {
+  background: var(--vp-menus-bg-input) !important;
+  border-color: var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Misc text and messages */
+.wrap h1,
+.wrap h2,
+.wrap .notice,
+#nav-menus-frame p {
+  color: var(--vp-menus-text) !important;
+}
+
+.wrap .notice a {
+  color: var(--vp-menus-accent) !important;
+}
+
+/* Header and footer of menu-edit panel */
+#nav-menu-header,
+form#update-nav-menu #nav-menu-header {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-bottom: 1px solid var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+#nav-menu-header h2,
+#nav-menu-header .menu-header,
+#nav-menu-header label {
+  color: var(--vp-menus-text) !important;
+}
+
+#post-body,
+#post-body-content {
+  background: var(--vp-menus-bg-elevated) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Bulk Select toggle + label */
+.bulk-select-button,
+label.bulk-select-button {
+  background: var(--vp-menus-bg-input) !important;
+  border: 1px solid var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+  border-radius: 4px;
+  padding: 4px 10px;
+}
+
+.bulk-select-button:hover,
+label.bulk-select-button:hover {
+  background: var(--vp-menus-bg-hover) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+#nav-menu-footer,
+form#update-nav-menu #nav-menu-footer {
+  background: var(--vp-menus-bg-secondary) !important;
+  border-top: 1px solid var(--vp-menus-border) !important;
+  color: var(--vp-menus-text) !important;
+}
+
+/* Divider / empty state */
+.menu-item-depth-0 + .menu-item-depth-0 {
+  border-top-color: var(--vp-menus-border) !important;
+}

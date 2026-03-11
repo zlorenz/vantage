@@ -1,0 +1,19 @@
+# Prevent AI interaction with heavy generated assets
+
+/wp-content/uploads/**
+/wp-content/wpvividbackups/**
+/wp-content/wpvivid_staging/**
+/wp-content/upgrade/**
+/wp-content/upgrade-temp-backup/**
+
+# Git internals
+/.git/**
+
+# Environment files
+**/.env
+**/.env.*
+**/*.log
+
+# OS junk
+**/.DS_Store
+**/Thumbs.db

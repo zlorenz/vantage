@@ -1,0 +1,22 @@
+---
+description: 
+alwaysApply: true
+---
+
+WordPress core editor styles (reference only)
+
+The following directories are part of WordPress core and are indexed only so the agent can inspect Gutenberg and admin UI styles when implementing custom dashboard styling or dark mode:
+
+- wp-admin/css
+- wp-includes/css/dist
+- wp-includes/blocks
+
+These folders belong to WordPress core and must never be modified.
+
+They are included in the index for reference purposes only.
+
+All styling changes must be implemented in the project's custom codebase, primarily in:
+
+wp-content/themes/vantagepictures-child
+or approved custom plugins within:
+wp-content/plugins/

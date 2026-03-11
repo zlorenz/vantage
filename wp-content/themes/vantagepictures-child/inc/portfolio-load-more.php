@@ -27,6 +27,7 @@ function vp_portfolio_load_more() {
   $term     = isset($_POST['term']) ? sanitize_key(wp_unslash($_POST['term'])) : '';
 
   $context  = isset($_POST['context']) ? sanitize_key(wp_unslash($_POST['context'])) : 'public';
+  $layout   = isset($_POST['layout']) ? sanitize_key(wp_unslash($_POST['layout'])) : '';
 
   // New multi-filter inputs (dropdowns)
   $format   = isset($_POST['format']) ? sanitize_key(wp_unslash($_POST['format'])) : '';
@@ -114,13 +115,15 @@ function vp_portfolio_load_more() {
 
   $query = vp_get_portfolio_query($args);
 
+  $col_class = ($layout === 'taxonomy') ? 'col-12 col-md-6 col-lg-4' : 'col-12 col-sm-6 col-md-4 col-lg-3';
+
   ob_start();
 
   if ($query->have_posts()) {
     while ($query->have_posts()) {
       $query->the_post();
       ?>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="<?php echo esc_attr($col_class); ?>">
         <?php get_template_part('template-parts/portfolio/card'); ?>
       </div>
       <?php

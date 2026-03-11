@@ -25,10 +25,6 @@
     <div class="vp-post-card__excerpt">
       <?php the_excerpt(); ?>
     </div>
-
-    <div class="vp-post-card__actions">
-      <a class="btn btn-primary btn-sm" href="<?php the_permalink(); ?>">Read More</a>
-    </div>
   </div>
 
 </article>

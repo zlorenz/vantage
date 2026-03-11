@@ -25,6 +25,7 @@
   --vp-gb-text-secondary: rgb(113, 113, 122);
   --vp-gb-text-muted: #a1a1aa;
   --vp-gb-text-dim: #71717a;
+  --vp-gb-text-bright: #b4b4be; /* Lighter gray for better contrast on dark panels */
   --vp-gb-accent: #3b82f6;
   --vp-gb-accent-hover: #60a5fa;
   --vp-gb-success: #22c55e;
@@ -72,6 +73,19 @@
 .edit-post-header svg,
 .interface-interface-skeleton__header svg,
 .admin-ui-page__header svg {
+  fill: var(--vp-gb-text) !important;
+}
+
+/* Yoast top-nav SVG uses explicit black fills; override child shapes */
+.editor-header svg path,
+.editor-header svg circle,
+.edit-post-header svg path,
+.edit-post-header svg circle {
+  fill: var(--vp-gb-text) !important;
+}
+
+.editor-header svg [class*="yoast-icon"],
+.edit-post-header svg [class*="yoast-icon"] {
   fill: var(--vp-gb-text) !important;
 }
 
@@ -156,6 +170,7 @@
 .interface-interface-skeleton__secondary-sidebar {
   background: var(--vp-gb-bg-sidebar) !important;
   border-left: 1px solid var(--vp-gb-border) !important;
+  border-top: 1px solid var(--vp-gb-border) !important;
 }
 
 /* ==========================================================================
@@ -340,6 +355,10 @@
 /* ==========================================================================
    Tabs
    ========================================================================== */
+
+.block-editor-tabbed-sidebar__tablist-and-close-button {
+  border-bottom: 1px solid var(--vp-gb-border) !important;
+}
 
 .block-editor-tabbed-sidebar__tabs,
 .components-tab-panel__tabs,
@@ -582,6 +601,23 @@ button[aria-label="Yoast SEO"] svg,
   color: var(--vp-gb-text-secondary) !important;
 }
 
+/* Document outline panel – headings list (was dark on dark) */
+.document-outline .document-outline__item-content,
+.document-outline .document-outline__item-content em {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+/* Block card (inserter) – icons visible, description lighter than title */
+.block-editor-block-card svg,
+.block-editor-block-card [class*="icon"] {
+  fill: var(--vp-gb-text) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-card__description {
+  color: var(--vp-gb-text-muted) !important;
+}
+
 /* ==========================================================================
    Meta Boxes (ACF, Yoast, etc.)
    ========================================================================== */
@@ -598,6 +634,30 @@ button[aria-label="Yoast SEO"] svg,
 .edit-post-meta-boxes-area .postbox > h3 {
   color: var(--vp-gb-text) !important;
   border-color: var(--vp-gb-border) !important;
+}
+
+/* Postbox header – prevent white on hover (table headers, Video Credits, etc.) */
+.edit-post-meta-boxes-area .postbox-header,
+.edit-post-meta-boxes-area .postbox .postbox-header,
+.edit-post-meta-boxes-area .postbox .hndle {
+  background: var(--vp-gb-bg-elevated) !important;
+}
+
+.edit-post-meta-boxes-area .postbox-header:hover,
+.edit-post-meta-boxes-area .postbox .postbox-header:hover,
+.edit-post-meta-boxes-area .postbox .hndle:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .postbox-header .hndle,
+.edit-post-meta-boxes-area .postbox-header h2 {
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .postbox-header:hover .hndle,
+.edit-post-meta-boxes-area .postbox-header:hover h2 {
+  color: var(--vp-gb-text) !important;
 }
 
 .edit-post-meta-boxes-area .postbox .inside,
@@ -620,7 +680,7 @@ button[aria-label="Yoast SEO"] svg,
 }
 
 .editor-post-panel__row-label {
-  color: var(--vp-gb-text-secondary) !important;
+  color: var(--vp-gb-text-bright) !important;
 }
 
 .editor-post-panel__row-control .components-button.is-tertiary,
@@ -631,7 +691,7 @@ button[aria-label="Yoast SEO"] svg,
 .editor-post-discussion__panel-toggle,
 .editor-post-parent__panel-toggle,
 .editor-private-post-last-revision__button {
-  color: var(--vp-gb-text-secondary) !important;
+  color: var(--vp-gb-text-bright) !important;
 }
 
 .edit-post-meta-boxes-area .postbox .handle-order-lower .order-lower-indicator::before,
@@ -642,6 +702,114 @@ button[aria-label="Yoast SEO"] svg,
 .acf-field label,
 .acf-field .acf-label {
   color: var(--vp-gb-text-secondary) !important;
+}
+
+/* ACF field rows: dark top border (override bright white) */
+.edit-post-meta-boxes-area .acf-fields > .acf-field {
+  border-top: 1px solid var(--vp-gb-border) !important;
+  border-left: 1px solid var(--vp-gb-border) !important;
+}
+
+/* ACF left-label layout: label cell dark background and light text */
+.edit-post-meta-boxes-area .acf-fields.-left > .acf-field::before {
+  background: var(--vp-gb-bg-sidebar) !important;
+  color: var(--vp-gb-text-bright) !important;
+}
+
+/* ACF Portfolio Credits – tab header and tabs (Credits Guide, Production, Camera, etc.)
+   Scoped to sidebar containers; override ACF's white/light-gray tab backgrounds */
+.interface-complementary-area .acf-tab-wrap,
+.edit-post-meta-boxes-area .acf-tab-wrap,
+.components-panel .acf-tab-wrap,
+.block-editor-tabbed-sidebar .acf-tab-wrap,
+.interface-complementary-area .acf-hl.acf-tab-group,
+.interface-complementary-area .acf-tab-wrap ul.acf-tab-group,
+.edit-post-meta-boxes-area .acf-hl.acf-tab-group,
+.components-panel .acf-hl.acf-tab-group {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+/* Tab buttons (links) – ACF sets background:#f1f1f1 / #fff; override for dark mode */
+.interface-complementary-area .acf-tab-group li a,
+.edit-post-meta-boxes-area .acf-tab-group li a,
+.components-panel .acf-tab-group li a {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.interface-complementary-area .acf-tab-group li a:hover,
+.edit-post-meta-boxes-area .acf-tab-group li a:hover,
+.components-panel .acf-tab-group li a:hover {
+  background: var(--vp-gb-bg-active) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-complementary-area .acf-tab-group li.active a,
+.edit-post-meta-boxes-area .acf-tab-group li.active a,
+.components-panel .acf-tab-group li.active a {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-accent) !important;
+}
+
+/* Fallback: ACF tabs inside block editor sidebar (edit-post-sidebar, acf-fields) */
+#editor .acf-tab-wrap,
+#editor .acf-fields > .acf-tab-wrap,
+#editor .acf-tab-group {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+#editor .acf-tab-group li a {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+#editor .acf-tab-group li a:hover {
+  background: var(--vp-gb-bg-active) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+#editor .acf-tab-group li.active a {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-accent) !important;
+}
+
+/* ACF oEmbed (Vimeo embed) – dark mode */
+.edit-post-meta-boxes-area .acf-oembed,
+.edit-post-meta-boxes-area .acf-oembed .title,
+.edit-post-meta-boxes-area .acf-oembed .canvas {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .acf-oembed .input-search,
+.edit-post-meta-boxes-area .acf-oembed .input-value {
+  background: var(--vp-gb-bg) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .acf-oembed .input-search::placeholder {
+  color: var(--vp-gb-text-dim) !important;
+}
+
+.edit-post-meta-boxes-area .acf-oembed .canvas-media {
+  background: var(--vp-gb-bg-input) !important;
+}
+
+.edit-post-meta-boxes-area .acf-oembed .acf-icon.-cancel,
+.edit-post-meta-boxes-area .acf-oembed .acf-icon.-picture {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+.edit-post-meta-boxes-area .acf-oembed .acf-actions .acf-icon:hover {
+  color: var(--vp-gb-text) !important;
 }
 
 .acf-field p.description {
@@ -889,8 +1057,34 @@ button[aria-label="Yoast SEO"] svg,
   color: var(--vp-gb-text-secondary) !important;
 }
 
-.edit-post-meta-boxes-area #wpseo_meta .yoast-field-group__title b {
-  color: var(--vp-gb-text) !important;
+.edit-post-meta-boxes-area #wpseo_meta .yoast-field-group__title,
+.edit-post-meta-boxes-area #wpseo_meta .yoast-field-group__title b,
+.edit-post-meta-boxes-area #wpseo_meta label[for="yoast-meta-robots-noindex-metabox"] {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+/* Yoast: brighter gray for section titles and labels (Search appearance, SEO analysis, etc.) */
+.edit-post-meta-boxes-area #wpseo_meta .sc-idXgbr.AyOHV,
+.edit-post-meta-boxes-area #wpseo_meta legend.sc-jmfXTE,
+.edit-post-meta-boxes-area #wpseo_meta .sc-fxTzYC,
+.edit-post-meta-boxes-area #wpseo_meta .sc-JHWBx,
+.edit-post-meta-boxes-area #wpseo_meta .lfcwzz.yst-replacevar__label,
+.edit-post-meta-boxes-area #wpseo_meta .yst-replacevar__label,
+.edit-post-meta-boxes-area #wpseo_meta .components-panel__body .yoast-analysis-check,
+.edit-post-meta-boxes-area #wpseo_meta .edit-post-meta-boxes-area .components-panel__body,
+.edit-post-meta-boxes-area #wpseo_meta .yst-grow.yst-font-wp,
+.edit-post-meta-boxes-area #wpseo_meta p .yst-font-wp {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .yst-text-\[\#555\],
+.edit-post-meta-boxes-area #wpseo_meta [class*="yst-text-[#555]"] {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+.edit-post-meta-boxes-area #wpseo_meta .collapsible_content p,
+.edit-post-meta-boxes-area #wpseo_meta .edit-post-meta-boxes-area#wpseo_meta [class*="sc-"] {
+  color: var(--vp-gb-text-bright) !important;
 }
 
 .edit-post-meta-boxes-area #wpseo_meta .yoast-help__icon svg {
@@ -1027,6 +1221,131 @@ button[aria-label="Yoast SEO"] svg,
   color: var(--vp-gb-text-muted) !important;
 }
 
+/* VP Hero Title (ACF) – label brighter */
+.edit-post-meta-boxes-area label[for="acf-field_69a6ea5eaa411"],
+.edit-post-meta-boxes-area .acf-field-69a6ea5eaa411 .acf-label {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+/* ==========================================================================
+   ACF – Hero Carousel / repeater (full dark mode)
+   ========================================================================== */
+
+.edit-post-meta-boxes-area .acf-table,
+.edit-post-meta-boxes-area .acf-table td,
+.edit-post-meta-boxes-area .acf-table th {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.edit-post-meta-boxes-area .acf-row-handle,
+.edit-post-meta-boxes-area .acf-row-handle .acf-row-number {
+  background: var(--vp-gb-bg-sidebar) !important;
+  color: var(--vp-gb-text-bright) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.edit-post-meta-boxes-area .acf-icon.-plus,
+.edit-post-meta-boxes-area .acf-icon.-minus,
+.edit-post-meta-boxes-area .acf-icon.-duplicate {
+  background: transparent !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .select2-selection__rendered,
+.edit-post-meta-boxes-area .select2-container--default .select2-selection--single,
+.edit-post-meta-boxes-area .select2-dropdown {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .select2-results__option {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.edit-post-meta-boxes-area .select2-results__option--highlighted {
+  background: var(--vp-gb-bg-hover) !important;
+}
+
+.edit-post-meta-boxes-area .select2-search__field {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* ==========================================================================
+   Modals – Preferences & Keyboard shortcuts (full dark)
+   ========================================================================== */
+
+.components-modal__frame.preferences-modal,
+.components-modal__frame.preferences-modal .components-modal__content,
+.components-modal__frame.preferences-modal .preferences__tabs,
+.components-modal__frame.preferences-modal .preferences__tabs-tablist,
+.components-modal__frame.preferences-modal .preferences__tabs-tabpanel,
+.components-modal__frame.preferences-modal .preferences-modal__section,
+.components-modal__frame.preferences-modal .preferences-modal__section-content {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.components-modal__frame.preferences-modal .components-modal__header,
+.components-modal__frame.preferences-modal .components-modal__header-heading {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text) !important;
+  border-bottom: 1px solid var(--vp-gb-border) !important;
+}
+
+.components-modal__frame.preferences-modal .preferences__tabs-tab,
+.components-modal__frame.preferences-modal .preferences-modal__section-title,
+.components-modal__frame.preferences-modal .preferences-modal__section-legend,
+.components-modal__frame.preferences-modal .components-toggle-control__label,
+.components-modal__frame.preferences-modal .components-base-control__help {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+.components-modal__frame.preferences-modal .preferences__tabs-tab:hover,
+.components-modal__frame.preferences-modal .preferences__tabs-tab[aria-selected="true"] {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.components-modal__frame.preferences-modal .components-button.has-icon {
+  color: var(--vp-gb-text) !important;
+}
+
+.components-modal__frame.preferences-modal .components-form-toggle__track {
+  background: var(--vp-gb-bg-input) !important;
+}
+
+.components-modal__frame.preferences-modal .components-form-toggle.is-checked .components-form-toggle__track {
+  background: var(--vp-gb-accent) !important;
+}
+
+/* Keyboard shortcut help modal */
+.components-modal__frame.editor-keyboard-shortcut-help-modal,
+.components-modal__frame.editor-keyboard-shortcut-help-modal .components-modal__content,
+.components-modal__frame.editor-keyboard-shortcut-help-modal .components-modal__header {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.components-modal__frame.editor-keyboard-shortcut-help-modal .components-modal__header-heading,
+.components-modal__frame.editor-keyboard-shortcut-help-modal kbd,
+.components-modal__frame.editor-keyboard-shortcut-help-modal .edit-post-keyboard-shortcut-help__section-title,
+.components-modal__frame.editor-keyboard-shortcut-help-modal .edit-post-keyboard-shortcut-help__shortcut {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+.components-modal__frame.editor-keyboard-shortcut-help-modal .edit-post-keyboard-shortcut-help__shortcut-key {
+  background: var(--vp-gb-bg-input) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
 /* ==========================================================================
    Notices
    ========================================================================== */
@@ -1108,6 +1427,63 @@ button[aria-label="Yoast SEO"] svg,
   color: var(--vp-gb-text) !important;
 }
 
+/* Block type names (e.g. "Vimeo Embed") – force readable text */
+.block-editor-block-types-list__item-title,
+.block-editor-block-types-list__item-title .components-truncate,
+.block-editor-block-types-list__item-title span {
+  color: var(--vp-gb-text) !important;
+}
+
 .block-editor-inserter__block-list .block-editor-block-types-list__list-item:hover {
   background: var(--vp-gb-bg-hover) !important;
+}
+
+/* ==========================================================================
+   Gravity Forms Block (form selector placeholder in editor)
+   ========================================================================== */
+
+.wp-block-gravityforms-form .components-placeholder,
+.wp-block-gravityforms-form .gform-block__placeholder,
+.gform-block__placeholder.is-large {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.wp-block-gravityforms-form .components-placeholder__label,
+.wp-block-gravityforms-form .gform-block__placeholder-brand,
+.wp-block-gravityforms-form .gform-block__placeholder-brand p {
+  color: var(--vp-gb-text) !important;
+}
+
+.wp-block-gravityforms-form .gform-icon svg,
+.wp-block-gravityforms-form .gform-icon path {
+  fill: var(--vp-gb-text-secondary) !important;
+}
+
+.wp-block-gravityforms-form .gform-block__placeholder form select {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.wp-block-gravityforms-form .gform-block__placeholder form select option {
+  background: var(--vp-gb-bg-input);
+  color: var(--vp-gb-text);
+}
+
+/* Gravity Forms block – form preview (labels, required text, step numbers) */
+.wp-block-gravityforms-form .gfield_label,
+.wp-block-gravityforms-form .gform-field-label {
+  color: var(--vp-gb-text) !important;
+}
+
+.wp-block-gravityforms-form .gfield_required,
+.wp-block-gravityforms-form .gfield_required_text {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.wp-block-gravityforms-form .gf_step_number {
+  color: var(--vp-gb-text) !important;
+  background: transparent !important;
 }

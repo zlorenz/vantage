@@ -4,6 +4,21 @@
  */
 
 /**
+ * Single post entry meta for child template: date only (no time), no author.
+ * Used by content-single.php in place of parent's vantagepictures_article_posted_on().
+ */
+function vp_single_posted_on() {
+	$date_only = get_the_date();
+	printf(
+		wp_kses_post( __( '<span class="sep">Posted on </span><a href="%1$s" title="%2$s" rel="bookmark"><time class="entry-date" datetime="%3$s">%4$s</time></a>', 'vantagepictures' ) ),
+		esc_url( get_permalink() ),
+		esc_attr( $date_only ),
+		esc_attr( get_the_date( 'c' ) ),
+		esc_html( $date_only )
+	);
+}
+
+/**
  * Editor styles for iframed block editor – dark mode content (headings, paragraphs, etc.)
  * Loads inside the editor iframe via add_editor_style. Overrides :where(.editor-styles-wrapper) color:revert.
  */
@@ -29,7 +44,57 @@ add_action('wp_enqueue_scripts', function () {
         wp_get_theme()->get('Version')
     );
 
-}, 20);
+    // File block overrides – after child style so our .btn-primary + H3 filename win
+    wp_enqueue_style(
+        'vp-file-block',
+        get_stylesheet_directory_uri() . '/assets/css/file-block.css',
+        ['vantagepictures-child-style'],
+        wp_get_theme()->get('Version')
+    );
+
+    // Video Campaign Brief form – dark theme integration (scoped to .video-campaign-brief-form)
+    wp_enqueue_style(
+        'vp-video-campaign-brief-form',
+        get_stylesheet_directory_uri() . '/assets/css/video-campaign-brief-form.css',
+        ['vantagepictures-child-style'],
+        wp_get_theme()->get('Version')
+    );
+
+}, 30);
+
+/**
+ * Gravity Forms: Disable built-in theme framework CSS for Form ID 1 only.
+ *
+ * Gravity Forms 2.5+ uses the Theme Framework (e.g. Orbital) which enqueues its own CSS files
+ * (including `gravity-forms-theme-framework.min.css`). The `gform_disable_form_theme_css` filter
+ * only disables the older `gform_theme` stylesheet and does not affect the Orbital framework.
+ *
+ * For the Video Campaign Brief (Form ID 1), we explicitly dequeue the Theme Framework styles
+ * after Gravity Forms enqueues assets, so our scoped stylesheet can fully control presentation.
+ *
+ * Docs:
+ * - https://docs.gravityforms.com/gform_disable_form_theme_css/
+ * - https://docs.gravityforms.com/gform_disable_form_legacy_css/
+ */
+add_action( 'gform_enqueue_scripts_1', function ( $form, $ajax ) {
+	// Theme Framework (Orbital) styles.
+	wp_dequeue_style( 'gravity_forms_theme_framework' );
+	wp_dequeue_style( 'gravity_forms_theme_foundation' );
+	wp_dequeue_style( 'gravity_forms_theme_reset' );
+	wp_dequeue_style( 'gravity_forms_orbital_theme' );
+
+	// Legacy theme handles (harmless if not enqueued).
+	wp_dequeue_style( 'gform_theme' );
+
+	// Move/format the validation summary for this form only.
+	wp_enqueue_script(
+		'vp-gf-brief-validation-placement',
+		get_stylesheet_directory_uri() . '/assets/js/gf-brief-validation-placement.js',
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+}, 20, 2 );
 
 /**
  * Enqueue Google Font (Poppins)
@@ -109,6 +174,11 @@ add_filter('render_block', function ($block_content, $block) {
  * so it overrides WordPress core and uiXpress.
  */
 add_action('enqueue_block_editor_assets', function () {
+  global $pagenow;
+  /* Don't apply dark mode on Site Editor – it breaks the Manage Patterns page (white-on-white) */
+  if (isset($pagenow) && 'site-editor.php' === $pagenow) {
+    return;
+  }
   wp_enqueue_style(
     'vp-gutenberg-dark',
     get_stylesheet_directory_uri() . '/assets/css/gutenberg-dark.css',
@@ -128,7 +198,7 @@ add_action('enqueue_block_editor_assets', function () {
 }, 20);
 
 add_action('admin_enqueue_scripts', function ($hook) {
-  $edit_screens = ['post.php', 'post-new.php', 'site-editor.php', 'page.php', 'page-new.php'];
+  $edit_screens = ['post.php', 'post-new.php', 'page.php', 'page-new.php'];
   if (!in_array($hook, $edit_screens, true)) {
     return;
   }
@@ -140,13 +210,68 @@ add_action('admin_enqueue_scripts', function ($hook) {
   );
 }, 9999);
 
+/* ACF Pro admin dark mode – Field Groups list and field group editor */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $is_acf_list = ('edit.php' === $hook && isset($_GET['post_type']) && 'acf-field-group' === $_GET['post_type']);
+  $screen = get_current_screen();
+  $is_acf_edit = $screen && ('post.php' === $hook || 'post-new.php' === $hook) && 'acf-field-group' === $screen->post_type;
+  if ($is_acf_list || $is_acf_edit) {
+    wp_enqueue_style(
+      'vp-acf-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/acf-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Yoast SEO admin dark mode – Dashboard, Task list, Settings, Tools, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_yoast = $screen && (strpos($screen->id, 'wpseo') !== false || strpos($screen->id, 'yoast') !== false);
+  if ($is_yoast) {
+    wp_enqueue_style(
+      'vp-yoast-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/yoast-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Gravity Forms admin dark mode – Forms, Entries, Settings, Form editor, Add-ons, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_gf = $screen && (strpos($screen->id, 'gf_') !== false || strpos($screen->id, 'forms_page') !== false);
+  if ($is_gf) {
+    wp_enqueue_style(
+      'vp-gf-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/gf-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Menu editor dark mode – Appearance → Menus (nav-menus.php) */
+add_action('admin_enqueue_scripts', function ($hook) {
+  if ($hook === 'nav-menus.php') {
+    wp_enqueue_style(
+      'vp-admin-menus-dark',
+      get_stylesheet_directory_uri() . '/assets/css/admin-menus-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
 /**
  * Critical Gutenberg dark overrides – injected in footer to load last.
  * Ensures top bar and text stay dark even if uiXpress/WordPress load later.
  */
 add_action('admin_footer', function () {
   global $pagenow;
-  $edit_pages = ['post.php', 'post-new.php', 'page.php', 'page-new.php', 'site-editor.php'];
+  $edit_pages = ['post.php', 'post-new.php', 'page.php', 'page-new.php'];
   if (!in_array($pagenow ?? '', $edit_pages, true)) {
     return;
   }
@@ -166,10 +291,17 @@ add_action('admin_footer', function () {
 }, 99999);
 
 /**
- * WPBakery Content Migration Tool
- * One-time cleanup for posts built with WPBakery/Pheromone. Tools → VP WPBakery Migrate
+ * ACF + Tools: global includes.
+ * - WPBakery migration tools
+ * - Portfolio credits migration
+ * - Page hero visibility field group
+ * - Global contact modal options
  */
 require_once get_stylesheet_directory() . '/inc/wpbakery-migrate.php';
+require_once get_stylesheet_directory() . '/inc/wpbakery-migrate-portfolio-videos.php';
+require_once get_stylesheet_directory() . '/inc/portfolio-credits-migrate.php';
+require_once get_stylesheet_directory() . '/inc/acf-page-hero.php';
+require_once get_stylesheet_directory() . '/inc/acf-contact-modal.php';
 
 /* ==========================================================================
    Portfolio System
@@ -210,8 +342,10 @@ require_once get_stylesheet_directory() . '/inc/wpbakery-migrate.php';
      vp_portfolio_header_title()      Hero title with fallback
      vp_portfolio_long_title()        Video title with fallback
      vp_portfolio_thumb_title()       Gallery thumbnail title with fallback
-     vp_portfolio_credit_fields()     List of available credit roles
-     vp_portfolio_render_credits()    Outputs formatted credits list
+   vp_portfolio_credits_config()           Department config (labels, fields, repeaters)
+   vp_portfolio_credits_get_department()  Gather credits for one department
+   vp_portfolio_credits_get_all_departments()  Gather all populated departments
+   vp_portfolio_render_credits()          Outputs credits grouped by department
 
    Templates Using These Helpers
    -----------------------------
@@ -256,119 +390,280 @@ function vp_portfolio_thumb_title($post_id = null) {
   return $t !== '' ? $t : get_the_title($post_id ?: get_the_ID());
 }
 
-function vp_portfolio_credit_fields() {
-  return [
-    'client' => 'Client',
-    'agency' => 'Agency',
-    'creative_director' => 'Creative Director',
-    'agency_producer' => 'Agency Producer',
-    'production_company' => 'Production Company',
-    'exec_producer' => 'Executive Producer',
-    'production_service' => 'Production Services',
-    'director' => 'Director',
-    'dir_assist' => "Director's Assistant",
-    'hop' => 'Head of Production',
-    'producer' => 'Producer',
-    'line_producer' => 'Line Producer',
-    'assistant_producer' => 'Assistant Producer',
-    '1st_ad' => '1st AD',
-    '2nd_ad' => '2nd AD',
-    'production_manager' => 'Production Manager',
-    'assistant_production_manager' => 'Assistant Production Manager',
-    'production_coordinator' => 'Production Coordinator',
-    'production_assist' => 'Production Assistant',
-    'chaperone' => 'Client Chaperone',
-    'product_tech' => 'Product Technician',
-    'translator' => 'Translator',
-    'dop' => 'DOP',
-    'camera_op' => 'Camera Operator',
-    '1st_ac' => '1st AC',
-    '2nd_ac' => '2nd AC',
-    'focus' => 'Focus Puller',
-    'camera_asst' => 'Camera Assistants',
-    'dit' => 'DIT',
-    'live-stream_tech' => 'Live-Stream Technician',
-    'steadicam' => 'Steadicam Operator',
-    'moco' => 'Motion Control',
-    'drone_op' => 'Drone Operator',
-    'gaffer' => 'Gaffer',
-    'key_grip' => 'Key Grip',
-    'bbg' => 'Best Boy Grip',
-    'grip' => 'Grips',
-    'bbe' => 'Best Boy Electric',
-    'electric' => 'Electricians',
-    'ge' => 'Grip & Lighting',
-    'rental_house' => 'Rental House',
-    'sound_engineer' => 'Sound Engineer',
-    'production_designer' => 'Production Designer',
-    'art_director' => 'Art Director',
-    'propsmaster' => 'Props Master',
-    'art_assist' => 'Art Assistants',
-    'food_stylist' => 'Food Stylist',
-    'wardrobe' => 'Wardrobe',
-    'wardrobe_assistant' => 'Wardrobe Assistant',
-    'makeup' => 'Make-up Artist',
-    'hair_stylist' => 'Hair Stylist',
-    'talent' => 'Talent',
-    'casting_director' => 'Casting Director',
-    'casting' => 'Casting Manager',
-    'stunt_coordinator' => 'Stunt Coordinator',
-    'dance_choreographer' => 'Dance Choreographer',
-    'sfx_technician' => 'SFX Technician',
-    'locations' => 'Location Manager',
-    'photographer' => 'Photographer',
-    'photo_assist' => 'Photography Assistant',
-    'animal_wrangler' => 'Animal Wrangler',
-    'bts' => 'Behind the Scenes',
-    'catering' => 'Catering',
-    'drivers' => 'Drivers',
-    'medic' => 'Medic',
-    'storyboards' => 'Storyboard Artist',
-    'post_house' => 'Post House',
-    'post_producer' => 'Post Supervisor',
-    'editor' => 'Editor',
-    'edit_assist' => 'Assistant Editor',
-    'colorist' => 'Colorist',
-    'sound_design' => 'Sound Mix & Design',
-    'music' => 'Music',
-    'vfx_sup' => 'VFX Supervisor',
-    '3d' => '3D Animation',
-    'vfx' => 'VFX',
-    'mgfx' => 'Motion Graphic Artist',
-    'account_manager' => 'Account Manager',
-  ];
+/**
+ * Portfolio credits: department configuration.
+ * Defines labels and field mappings for the department-based credits system.
+ *
+ * @return array[] Each item: 'key', 'label', 'fields' => [slug=>label], 'repeater' => slug
+ */
+function vp_portfolio_credits_config() {
+	return [
+		'production' => [
+			'label'    => 'Production',
+			'fields'   => [
+				'prod_brand'               => 'Brand',
+				'prod_agency'              => 'Agency',
+				'prod_production_company'  => 'Production Company',
+				'prod_production_service'  => 'Production Service',
+				'prod_executive_producer'  => 'EP',
+				'prod_director'            => 'Director',
+				'prod_producer'            => 'Producer',
+				'prod_line_producer'       => 'Line Producer',
+				'prod_production_manager'  => 'Production Manager',
+				'prod_production_coordinator' => 'Production Coordinator',
+				'prod_1st_ad'              => '1st AD',
+				'prod_2nd_ad'              => '2nd AD',
+				'prod_production_assistant' => 'PA',
+				'prod_product_technician'  => 'Product Technician',
+				'prod_account_manager'     => 'Account Manager',
+				'prod_transport'          => 'Transport',
+				'prod_chaperone'           => 'Chaperone',
+				'prod_bts'                 => 'BTS',
+			],
+			'repeater' => 'prod_additional',
+		],
+		'camera' => [
+			'label'    => 'Camera',
+			'fields'   => [
+				'cam_dop'           => 'DOP',
+				'cam_camera_op'     => 'Camera Op',
+				'cam_steadicam_op'   => 'Steadicam Op',
+				'cam_1st_ac'        => '1st AC',
+				'cam_2nd_ac'        => '2nd AC',
+				'cam_focus_puller'  => 'Focus Puller',
+				'cam_dit'           => 'DIT',
+				'cam_qtake'         => 'QTake',
+				'cam_drone_op'      => 'Drone Op',
+				'cam_motion_control' => 'Motion Control',
+			],
+			'repeater' => 'cam_additional',
+		],
+		'ge' => [
+			'label'    => 'G&E',
+			'fields'   => [
+				'ge_rental_house' => 'Rental House',
+				'ge_gaffer'       => 'Gaffer',
+				'ge_key_grip'     => 'Key Grip',
+				'ge_grip'         => 'Grip',
+				'ge_electrician'  => 'Electrician',
+			],
+			'repeater' => 'ge_additional',
+		],
+		'art' => [
+			'label'    => 'Art',
+			'fields'   => [
+				'art_production_designer' => 'Production Designer',
+				'art_art_director'        => 'Art Director',
+				'art_art_assistant'       => 'Art Assistant',
+				'art_props_master'         => 'Props Master',
+				'art_wardrobe'             => 'Wardrobe',
+				'art_hair_makeup'          => 'Hair & Makeup',
+				'art_location_manager'     => 'Location Manager',
+				'art_storyboard_artist'     => 'Storyboards',
+			],
+			'repeater' => 'art_additional',
+		],
+		'casting' => [
+			'label'    => 'Casting',
+			'fields'   => [
+				'cast_casting_director'  => 'Casting Director',
+				'cast_casting_manager'   => 'Casting Manager',
+				'cast_talent'            => 'Talent',
+				'cast_stunt_coordinator' => 'Stunt Coordinator',
+				'cast_choreographer'     => 'Choreographer',
+				'cast_animal_wrangler'   => 'Animal Wrangler',
+			],
+			'repeater' => 'cast_additional',
+		],
+		'stills' => [
+			'label'    => 'Stills',
+			'fields'   => [
+				'stills_photographer'         => 'Photographer',
+				'stills_photography_producer' => 'Photography Producer',
+				'stills_kv_art_director'      => 'KV Art Director',
+				'stills_photography_assistant' => 'Photography Assistant',
+				'stills_photo_talent'         => 'Photo Talent',
+			],
+			'repeater' => 'stills_additional',
+		],
+		'post' => [
+			'label'    => 'Post',
+			'fields'   => [
+				'post_post_supervisor'  => 'Post Supervisor',
+				'post_on_set_editor'   => 'On-Set Editor',
+				'post_editor'          => 'Editor',
+				'post_assistant_editor' => 'Assistant Editors',
+				'post_colorist'        => 'Colorist',
+				'post_sound_design_mix' => 'Sound Design & Mix',
+				'post_composer'        => 'Composer',
+				'post_voice_over'      => 'Voice Over',
+				'post_vfx'             => 'VFX',
+				'post_online'          => 'Online',
+				'post_3d_animation'     => '3D Animation',
+			],
+			'repeater' => 'post_additional',
+		],
+	];
 }
 
-function vp_portfolio_render_credits($post_id = null) {
-  $post_id = $post_id ?: get_the_ID();
-  $fields = vp_portfolio_credit_fields();
+/**
+ * Pluralize a role label when names contain multiple entries (comma-separated).
+ *
+ * @param string $role  Singular role label.
+ * @param string $names Comma-separated names value.
+ * @return string Singular or plural form of the role.
+ */
+function vp_portfolio_credits_pluralize_role( $role, $names ) {
+	$has_multiple = strpos( $names, ',' ) !== false;
+	if ( ! $has_multiple ) {
+		return $role;
+	}
 
-  $rows = [];
-  foreach ($fields as $key => $label) {
-    $val = trim((string) vp_portfolio_get($key, $post_id));
-    if ($val !== '') {
-      $rows[] = ['label' => $label, 'value' => $val];
-    }
-  }
+	$irregular = [
+		'Production Company'  => 'Production Companies',
+		'Production Service'   => 'Production Services',
+		'Talent'              => 'Talent',
+		'Transport'           => 'Transport',
+		'G&E'                 => 'G&E',
+		'BTS'                 => 'BTS',
+		'Hair & Makeup'       => 'Hair & Makeup',
+		'VFX'                 => 'VFX',
+		'Storyboards'         => 'Storyboards',
+		'Assistant Editors'   => 'Assistant Editors',
+		'Sound Design & Mix'   => 'Sound Design & Mix',
+	];
 
-  if (!$rows) return;
+	if ( isset( $irregular[ $role ] ) ) {
+		return $irregular[ $role ];
+	}
 
-  echo '<div class="vp-credits">';
-  echo '<dl class="vp-credits__list">';
-  foreach ($rows as $r) {
-    echo '<dt>' . esc_html($r['label']) . '</dt>';
-    echo '<dd>' . wp_kses($r['value'], [
-      'a'      => ['href' => true, 'title' => true, 'target' => true, 'rel' => true],
-      'br'     => [],
-      'strong' => [],
-      'b'      => [],
-      'em'     => [],
-      'i'      => [],
-      'span'   => ['class' => true],
-    ]) . '</dd>';
-  }
-  echo '</dl>';
-  echo '</div>';
+	$abbrev_plural = [
+		'1st AD'     => '1st ADs',
+		'2nd AD'     => '2nd ADs',
+		'PA'         => 'PAs',
+		'EP'         => 'EPs',
+		'DOP'        => 'DOPs',
+		'1st AC'     => '1st ACs',
+		'2nd AC'     => '2nd ACs',
+		'DIT'        => 'DITs',
+	];
+
+	if ( isset( $abbrev_plural[ $role ] ) ) {
+		return $abbrev_plural[ $role ];
+	}
+
+	if ( preg_match( '/s$|x$|ch$|sh$/i', $role ) ) {
+		return $role;
+	}
+	return $role . 's';
+}
+
+/**
+ * Gather populated credits for a single department.
+ *
+ * @param string $dept_key Department key (e.g. 'production', 'camera').
+ * @param int    $post_id  Portfolio post ID.
+ * @return array[] List of ['role' => string, 'names' => string].
+ */
+function vp_portfolio_credits_get_department( $dept_key, $post_id = null ) {
+	$post_id = $post_id ?: get_the_ID();
+	$config  = vp_portfolio_credits_config();
+	if ( ! isset( $config[ $dept_key ] ) ) {
+		return [];
+	}
+	$dept   = $config[ $dept_key ];
+	$pairs  = [];
+
+	foreach ( $dept['fields'] as $slug => $label ) {
+		$val = trim( (string) vp_portfolio_get( $slug, $post_id ) );
+		if ( $val !== '' ) {
+			$role = vp_portfolio_credits_pluralize_role( $label, $val );
+			$pairs[] = [ 'role' => $role, 'names' => $val ];
+		}
+	}
+
+	if ( ! empty( $dept['repeater'] ) ) {
+		$rows = vp_portfolio_get( $dept['repeater'], $post_id );
+		if ( is_array( $rows ) ) {
+			foreach ( $rows as $row ) {
+				$role  = isset( $row['role'] ) ? trim( (string) $row['role'] ) : '';
+				$names = isset( $row['names'] ) ? trim( (string) $row['names'] ) : '';
+				if ( $role !== '' || $names !== '' ) {
+					$display_role = $role !== '' ? vp_portfolio_credits_pluralize_role( $role, $names ) : '—';
+					$pairs[] = [ 'role' => $display_role, 'names' => $names ];
+				}
+			}
+		}
+	}
+
+	return $pairs;
+}
+
+/**
+ * Gather all departments that have at least one populated credit.
+ *
+ * @param int $post_id Portfolio post ID.
+ * @return array[] List of ['key' => string, 'label' => string, 'credits' => array].
+ */
+function vp_portfolio_credits_get_all_departments( $post_id = null ) {
+	$post_id   = $post_id ?: get_the_ID();
+	$config    = vp_portfolio_credits_config();
+	$result    = [];
+
+	foreach ( $config as $key => $dept ) {
+		$credits = vp_portfolio_credits_get_department( $key, $post_id );
+		if ( ! empty( $credits ) ) {
+			$result[] = [
+				'key'     => $key,
+				'label'  => $dept['label'],
+				'credits' => $credits,
+			];
+		}
+	}
+
+	return $result;
+}
+
+/**
+ * Render portfolio credits grouped by department.
+ * Output uses .vp-credits, .vp-credits__row, .vp-credits__dept, .vp-credits__content,
+ * .vp-credit-pair, .vp-credit-role, .vp-credit-names.
+ *
+ * @param int $post_id Portfolio post ID.
+ */
+function vp_portfolio_render_credits( $post_id = null ) {
+	$post_id  = $post_id ?: get_the_ID();
+	$departments = vp_portfolio_credits_get_all_departments( $post_id );
+	if ( empty( $departments ) ) {
+		return;
+	}
+
+	$allowed = [
+		'a'      => [ 'href' => true, 'title' => true, 'target' => true, 'rel' => true, 'class' => true ],
+		'br'     => [],
+		'strong' => [],
+		'b'      => [],
+		'em'     => [],
+		'i'      => [],
+		'span'   => [ 'class' => true ],
+	];
+
+	echo '<section class="vp-credits">';
+	foreach ( $departments as $dept ) {
+		echo '<div class="vp-credits__row">';
+		echo '<div class="vp-credits__dept">' . esc_html( $dept['label'] ) . '</div>';
+		echo '<div class="vp-credits__content">';
+		foreach ( $dept['credits'] as $pair ) {
+			$names_safe = wp_kses( $pair['names'], $allowed );
+			echo '<span class="vp-credit-pair">';
+			echo '<span class="vp-credit-role">' . esc_html( $pair['role'] ) . '</span> ';
+			echo '<span class="vp-credit-names">' . $names_safe . '</span>';
+			echo '</span> ';
+		}
+		echo '</div>';
+		echo '</div>';
+	}
+	echo '</section>';
 }
 
 // ===== Portfolio next/prev navigation =====
@@ -435,6 +730,7 @@ function vp_portfolio_adjacent($direction = 'prev', $taxonomy = 'video-format') 
 require_once get_stylesheet_directory() . '/inc/portfolio-query.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-filters.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-load-more.php';
+require_once get_stylesheet_directory() . '/inc/blog-load-more.php';
 
 /**
  * Portfolio Infinite Scroll Script
@@ -444,8 +740,8 @@ require_once get_stylesheet_directory() . '/inc/portfolio-load-more.php';
 
 add_action('wp_enqueue_scripts', function () {
 
-  // Use page slugs (reliable for custom page-*.php templates)
-  if (is_page('work') || is_page('work-internal')) {
+  // Use page slugs (reliable for custom page-*.php templates) or portfolio taxonomy archives
+  if (is_page('work') || is_page('work-internal') || is_tax('industry') || is_tax('market') || is_tax('video-format')) {
 
     wp_enqueue_script(
       'vp-portfolio-load-more',
@@ -462,6 +758,38 @@ add_action('wp_enqueue_scripts', function () {
   }
 
 });
+
+/**
+ * Blog: limit initial query to 9 posts on blog index, category, and date/author archives (infinite scroll loads more).
+ */
+add_action('pre_get_posts', function ($query) {
+  if (is_admin() || !$query->is_main_query()) {
+    return;
+  }
+  if ($query->is_home() || $query->is_category() || $query->is_search() || ($query->is_archive() && !$query->is_post_type_archive())) {
+    $query->set('posts_per_page', 9);
+  }
+}, 10);
+
+/**
+ * Blog infinite scroll script – load on blog index, category, and post archives.
+ */
+add_action('wp_enqueue_scripts', function () {
+  if (!is_home() && !is_category() && !is_search() && !(is_archive() && !is_post_type_archive())) {
+    return;
+  }
+  wp_enqueue_script(
+    'vp-blog-load-more',
+    get_stylesheet_directory_uri() . '/assets/js/blog-load-more.js',
+    [],
+    wp_get_theme()->get('Version'),
+    true
+  );
+  wp_localize_script('vp-blog-load-more', 'vpBlogLoadMore', [
+    'ajaxUrl' => admin_url('admin-ajax.php'),
+    'nonce'   => wp_create_nonce('vp_blog_load_more'),
+  ]);
+}, 25);
 
 require_once get_stylesheet_directory() . '/inc/shortcodes/portfolio-gallery.php';
 
@@ -554,3 +882,51 @@ add_action('init', function () {
     ]);
   }
 });
+
+/**
+ * WP Bootstrap Blocks: remove default margin classes (e.g. mb-2) from Container blocks.
+ * Lets our own section rhythm / spacing rules control vertical spacing instead of per-block margins.
+ */
+add_filter('wp_bootstrap_blocks_container_classes', function ($classes, $attributes) {
+  $filtered = [];
+
+  foreach ((array) $classes as $class) {
+    // Strip any Bootstrap margin-bottom utility (mb-0 .. mb-5 etc).
+    if (strpos($class, 'mb-') === 0) {
+      continue;
+    }
+    $filtered[] = $class;
+  }
+
+  return $filtered;
+}, 20, 2);
+
+/**
+ * Navigation: route the main "Contact" menu item to the contact modal.
+ * Keeps the /contact page available for direct URL / SEO while turning the main nav item into a modal trigger.
+ */
+add_filter(
+  'nav_menu_link_attributes',
+  function ($atts, $item, $args) {
+    if (empty($args->theme_location) || 'main-menu' !== $args->theme_location) {
+      return $atts;
+    }
+
+    $title = isset($item->title) ? trim((string) $item->title) : '';
+
+    if ('' === $title || 'Contact' !== $title) {
+      return $atts;
+    }
+
+    $atts['href']           = '#vp-contact-modal';
+    $atts['data-bs-toggle'] = 'modal';
+    $atts['data-bs-target'] = '#vp-contact-modal';
+    $atts['role']           = 'button';
+    $atts['aria-haspopup']  = 'dialog';
+    $atts['aria-expanded']  = 'false';
+
+    return $atts;
+  },
+  10,
+  3
+);

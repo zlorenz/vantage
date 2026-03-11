@@ -1,0 +1,297 @@
+/**
+ * Yoast SEO Admin Dark Mode
+ * Dashboard, Task list, Alert center, Settings, Integrations, Tools, etc.
+ * Matches gutenberg-dark / acf-admin-dark aesthetic.
+ */
+
+:root {
+  --vp-yoast-bg: #0f0f11;
+  --vp-yoast-bg-elevated: #18181b;
+  --vp-yoast-bg-hover: rgba(255, 255, 255, 0.06);
+  --vp-yoast-border: #2e2e32;
+  --vp-yoast-text: #ffffff;
+  --vp-yoast-text-secondary: rgb(113, 113, 122);
+  --vp-yoast-text-muted: #a1a1aa;
+  --vp-yoast-text-bright: #e4e4e7;
+  --vp-yoast-accent: #3b82f6;
+  --vp-yoast-accent-hover: #60a5fa;
+  --vp-yoast-primary: #a4286a;
+}
+
+/* ==========================================================================
+   Panels & Paper containers
+   ========================================================================== */
+
+.yst-paper,
+.yst-paper.yst-shadow-md {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+.yst-paper__content {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* White background overrides in Yoast utility classes */
+.yst-bg-white {
+  background: var(--vp-yoast-bg-elevated) !important;
+}
+
+/* Premium upsell card – magenta border, white bg override */
+.yst-p-6.yst-rounded-lg.yst-text-slate-600.yst-bg-white,
+.yst-p-6.yst-rounded-lg.yst-text-slate-600.yst-bg-white.yst-shadow,
+div.yst-p-6.yst-rounded-lg[class*="yst-bg-white"],
+.yst-border.yst-border-primary-300 {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border-color: var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+.yst-title,
+.yst-title--1,
+.yst-title--2,
+.yst-title--4 {
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-title--2.yst-text-xl.yst-font-semibold.yst-text-primary-500,
+.yst-title--4.yst-text-base.yst-text-primary-500 {
+  color: var(--vp-yoast-primary) !important;
+}
+
+.yst-text-tiny,
+.yst-text-slate-600,
+.yst-text-slate-500,
+.yst-text-slate-800 {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-font-medium.yst-text-slate-800,
+.yst-text-center.yst-text-xs.yst-font-medium.yst-text-slate-800 {
+  color: var(--vp-yoast-text-bright) !important;
+}
+
+.yst-label,
+.yst-autocomplete-field__label {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+.yst-link,
+.yst-link--default {
+  color: var(--vp-yoast-accent) !important;
+}
+
+.yst-link:hover {
+  color: var(--vp-yoast-accent-hover) !important;
+}
+
+/* ==========================================================================
+   Form inputs & autocomplete
+   ========================================================================== */
+
+.yst-validation-input,
+.yst-validation-input__input,
+.yst-autocomplete__button,
+.yst-autocomplete__input {
+  background: var(--vp-yoast-bg) !important;
+  border-color: var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-validation-input__input:focus,
+.yst-autocomplete__input:focus {
+  border-color: var(--vp-yoast-accent) !important;
+}
+
+.yst-autocomplete__action-icon {
+  color: var(--vp-yoast-text-muted) !important;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.yst-button--primary {
+  background: var(--vp-yoast-accent) !important;
+  border-color: var(--vp-yoast-accent) !important;
+  color: #fff !important;
+}
+
+.yst-button--primary:hover {
+  background: var(--vp-yoast-accent-hover) !important;
+  border-color: var(--vp-yoast-accent-hover) !important;
+  color: #fff !important;
+}
+
+.yst-button--secondary,
+.yst-button--secondary.yst-button--small {
+  background: var(--vp-yoast-bg) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-button--secondary:hover,
+.yst-button--secondary.yst-button--small:hover {
+  background: var(--vp-yoast-bg-hover) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-button--tertiary {
+  background: transparent !important;
+  color: var(--vp-yoast-accent) !important;
+}
+
+.yst-button--tertiary:hover {
+  color: var(--vp-yoast-accent-hover) !important;
+}
+
+.yst-button--upsell {
+  background: #fbbf24 !important;
+  color: #1f2937 !important;
+}
+
+.yst-button--upsell:hover {
+  background: #f59e0b !important;
+  color: #1f2937 !important;
+}
+
+/* ==========================================================================
+   Badges & status indicators
+   ========================================================================== */
+
+.yst-badge,
+.yst-badge--plain {
+  background: var(--vp-yoast-bg) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+  border-color: var(--vp-yoast-border) !important;
+}
+
+/* ==========================================================================
+   Stepper (Site Kit integration)
+   ========================================================================== */
+
+.yst-stepper {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-step__circle {
+  border-color: var(--vp-yoast-border) !important;
+}
+
+.yst-step--active .yst-step__circle {
+  border-color: var(--vp-yoast-primary) !important;
+}
+
+.yst-step__icon.yst-bg-primary-500 {
+  background: var(--vp-yoast-primary) !important;
+}
+
+.yst-progress-bar {
+  background: var(--vp-yoast-border) !important;
+}
+
+.yst-progress-bar__progress {
+  background: var(--vp-yoast-primary) !important;
+}
+
+/* ==========================================================================
+   Dividers & borders
+   ========================================================================== */
+
+.yst-bg-slate-200,
+hr.yst-bg-slate-200 {
+  background: var(--vp-yoast-border) !important;
+  border-color: var(--vp-yoast-border) !important;
+}
+
+.yst-border-t.yst-border-slate-200,
+.yst-border-slate-200 {
+  border-color: var(--vp-yoast-border) !important;
+}
+
+/* List item borders */
+.yst-border-b {
+  border-color: var(--vp-yoast-border) !important;
+}
+
+/* ==========================================================================
+   Dropdown / menu trigger
+   ========================================================================== */
+
+.yst-dropdown-menu__icon-trigger {
+  color: var(--vp-yoast-text-muted) !important;
+}
+
+.yst-dropdown-menu__icon-trigger:hover,
+.hover\:yst-text-slate-600:hover {
+  color: var(--vp-yoast-text) !important;
+}
+
+/* ==========================================================================
+   Lists & feature items
+   ========================================================================== */
+
+.yst-list-outside.yst-text-slate-600 li,
+.yst-list-outside li {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-list-outside li svg.yst-text-green-500,
+.yst-flex li svg.yst-text-green-400 {
+  color: #22c55e !important;
+}
+
+/* ==========================================================================
+   Tooltips
+   ========================================================================== */
+
+.yst-tooltip {
+  background: var(--vp-yoast-bg) !important;
+  color: var(--vp-yoast-text) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+}
+
+/* ==========================================================================
+   Charts (donut) – canvas background via wrapper
+   ========================================================================== */
+
+.yst-w-\[calc\(11\.5rem\+3px\)\].yst-aspect-square {
+  background: transparent;
+}
+
+/* ==========================================================================
+   Learn SEO panel
+   ========================================================================== */
+
+.yst-paper.yst-p-6.yst-space-y-3 {
+  background: var(--vp-yoast-bg-elevated) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-paper.yst-p-6.yst-space-y-3 p {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* ==========================================================================
+   Premium upsell – "Now includes" pills
+   ========================================================================== */
+
+[class*="yst-text-"][class*="slate"] {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* Pill tags (Local SEO, News SEO, etc.) – keep readable on dark */
+.yst-rounded-full.yst-bg-primary-100,
+[class*="yst-bg-"][class*="primary"]:not(.yst-bg-primary-500) {
+  background: rgba(164, 40, 106, 0.25) !important;
+  color: #e9d5e5 !important;
+}

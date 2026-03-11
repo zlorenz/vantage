@@ -48,7 +48,7 @@ $page_content = $page_id ? get_post_field('post_content', $page_id) : '';
   </header>
 <?php endif; ?>
 
-<section class="vp-news-page vp-section">
+<section class="vp-news-page vp-section vp-blog-archive">
   <div class="container">
     <div class="row g-5">
 
@@ -67,19 +67,12 @@ $page_content = $page_id ? get_post_field('post_content', $page_id) : '';
 
         <div class="vp-news-posts">
           <?php if (have_posts()) : ?>
-            <?php while (have_posts()) : the_post(); ?>
-              <?php get_template_part('template-parts/blog/card', 'list'); ?>
-            <?php endwhile; ?>
-
-            <nav class="vp-pagination">
-              <?php
-              the_posts_pagination([
-                'mid_size'  => 1,
-                'prev_text' => '&laquo;',
-                'next_text' => '&raquo;',
-              ]);
-              ?>
-            </nav>
+            <div id="vp-blog-grid">
+              <?php while (have_posts()) : the_post(); ?>
+                <?php get_template_part('template-parts/blog/card', 'list'); ?>
+              <?php endwhile; ?>
+            </div>
+            <div id="vp-blog-load-more" class="vp-load-more-sentinel" data-offset="9" data-per-page="5" aria-hidden="true"></div>
           <?php else : ?>
             <article class="vp-post-card">
               <h2 class="vp-post-card__title">Nothing found</h2>

@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+WordPress modification hierarchy
+
+When implementing changes in this project, follow the WordPress override hierarchy and never modify upstream code unless explicitly instructed.
+
+Priority order for modifications:
+
+1. Child theme  
+   wp-content/themes/vantagepictures-child  
+   This is the primary location for all custom code, styling, templates, and overrides.
+
+2. Custom plugins  
+   wp-content/plugins/vp-*  
+   Use only when functionality should not belong to the theme.
+
+3. Parent theme (reference only)  
+   wp-content/themes/vantagepictures  
+   Inspect for structure and behavior, but do not modify unless explicitly instructed.
+
+4. Third-party plugins (reference only)  
+   wp-content/plugins/*  
+   Never modify plugin source code unless explicitly instructed.
+
+5. WordPress core (never modify)  
+   wp-admin  
+   wp-includes  
+
+If a change appears to require editing plugin or core files, implement the change using:
+- child theme overrides
+- hooks or filters
+- custom CSS/JS
+- wrapper functions
+- custom plugins
+
+Direct modification of WordPress core or third-party plugins is prohibited.

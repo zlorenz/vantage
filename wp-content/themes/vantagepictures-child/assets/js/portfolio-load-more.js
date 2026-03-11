@@ -80,6 +80,9 @@
       taxonomy: sentinel.dataset.taxonomy || "",
       term: sentinel.dataset.term || "",
 
+      // Layout (taxonomy pages use 3-col grid)
+      layout: sentinel.dataset.layout || "",
+
       // Context
       context: sentinel.dataset.context || "public",
 

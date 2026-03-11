@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+Primary implementation target:
+wp-content/themes/vantagepictures-child
+
+Prefer child theme overrides instead of editing the parent theme.
+
+Only modify plugin files if explicitly required.
