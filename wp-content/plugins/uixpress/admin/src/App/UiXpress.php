@@ -90,6 +90,7 @@ class UiXpress
     }
 
     add_action('admin_head', [$this, 'layer_wordpress_styles'], 1);
+    add_action('wp_head', [$this, 'layer_frontend_admin_bar_styles'], 99);
     add_action('admin_head', [$this, 'output_custom_font_css'], 2);
     add_action('login_head', [$this, 'output_custom_font_css'], 2);
     add_action('wp_head', [$this, 'output_custom_font_css'], 2);
@@ -338,10 +339,68 @@ class UiXpress
         layerOrderStyle.textContent = '@layer ' + layerNames.join(', ') + ';';
         document.head.insertBefore(layerOrderStyle, document.head.firstChild);
         
-        // Now replace each stylesheet with its layered @import
+        // Replace each stylesheet with its layered @import (or fetch+strip for vitepos)
         layerData.forEach(data => {
             if (data.excluded) return;
             
+            const isVitepos = data.layerName.toLowerCase().includes('vitepos');
+            if (isVitepos) {
+                // Fetch vitepos CSS, strip !important, inject - prevents !important from overriding uix-theme
+                data.link.remove();
+                fetch(data.href)
+                    .then(r => r.text())
+                    .then(css => {
+                        const stripped = css.replace(/\s*!important\s*/gi, ' ');
+                        const style = document.createElement('style');
+                        style.textContent = '@layer ' + data.layerName + ' {\n' + stripped + '\n}';
+                        document.head.appendChild(style);
+                    })
+                    .catch(err => console.warn('UiXpress: Failed to fetch vitepos CSS:', data.href, err));
+            } else {
+                const style = document.createElement('style');
+                style.textContent = '@import url("' + data.href + '") layer(' + data.layerName + ');';
+                data.link.replaceWith(style);
+            }
+        });
+    })();
+    </script>
+    <?php
+  }
+
+  /**
+   * Layers the admin-bar stylesheet on the frontend when logged in.
+   * Ensures admin-bar.min.css is scoped in a CSS layer so uix-theme overrides it.
+   *
+   * @since 1.0.0
+   */
+  public function layer_frontend_admin_bar_styles()
+  {
+    if (is_admin() || is_login() || !is_admin_bar_showing()) {
+      return;
+    }
+    ?>
+    <script>
+    (function() {
+        const ADMIN_BAR_PATTERN = 'admin-bar';
+        const existingLinks = document.querySelectorAll('link[rel="stylesheet"]');
+        const layerData = [];
+
+        existingLinks.forEach(link => {
+            const href = link.href || '';
+            if (!href.includes(ADMIN_BAR_PATTERN)) return;
+            layerData.push({ link, href, layerName: 'wp-admin-bar' });
+        });
+
+        if (layerData.length === 0) return;
+
+        const layerNames = layerData.map(d => d.layerName);
+        layerNames.push('uix-theme');
+
+        const layerOrderStyle = document.createElement('style');
+        layerOrderStyle.textContent = '@layer ' + layerNames.join(', ') + ';';
+        document.head.insertBefore(layerOrderStyle, document.head.firstChild);
+
+        layerData.forEach(data => {
             const style = document.createElement('style');
             style.textContent = '@import url("' + data.href + '") layer(' + data.layerName + ');';
             data.link.replaceWith(style);
@@ -778,8 +837,12 @@ class UiXpress
     add_filter('uixpress/style-layering/exclude', function($excluded_patterns) {
       $bricks = "/bricks/assets";
       $mailerPress = "/mailerpress/build/dist/css/";
+      $gravityForms = "/gravityforms/";
+      $wpSEO = "/wordpress-seo/";
       $excluded_patterns[] = $bricks;
       $excluded_patterns[] = $mailerPress;
+      $excluded_patterns[] = $wpSEO;
+      $excluded_patterns[] = $gravityForms;
       return $excluded_patterns;
     });
   }

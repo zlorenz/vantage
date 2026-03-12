@@ -84,7 +84,7 @@ $query = new WP_Query([
     <?php endif; ?>
 
     <?php if ($query->have_posts()) : ?>
-      <div id="vp-portfolio-grid" class="row g-3 g-md-4">
+      <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-4">
         <?php while ($query->have_posts()) : $query->the_post(); ?>
           <div class="col-12 col-md-6 col-lg-4">
             <?php get_template_part('template-parts/portfolio/card'); ?>

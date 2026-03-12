@@ -60,6 +60,15 @@ add_action('wp_enqueue_scripts', function () {
         wp_get_theme()->get('Version')
     );
 
+    // Mobile navbar: reliable dropdown toggling when collapsed (≤768px).
+    wp_enqueue_script(
+        'vp-mobile-nav',
+        get_stylesheet_directory_uri() . '/assets/js/vp-mobile-nav.js',
+        array(),
+        wp_get_theme()->get('Version'),
+        true
+    );
+
 }, 30);
 
 /**
@@ -293,6 +302,66 @@ add_action('admin_enqueue_scripts', function ($hook) {
       wp_get_theme()->get('Version')
     );
   }
+}, 9999);
+
+/* Admin dark mode – Tools, Import, Site Health, Yoast SEO Support */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $load = false;
+  if (in_array($hook, ['tools.php', 'import.php', 'tools_page_import', 'site-health.php'], true)) {
+    $load = true;
+  } else {
+    $screen = get_current_screen();
+    if ($screen && (strpos($screen->id, 'wpseo') !== false || strpos($screen->id, 'yoast') !== false)) {
+      $load = true;
+    }
+  }
+  if ($load) {
+    wp_enqueue_style(
+      'vp-admin-tools-health-yoast-dark',
+      get_stylesheet_directory_uri() . '/assets/css/admin-tools-health-yoast-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Users admin dark mode – Profile, Add New User, Edit User */
+add_action('admin_enqueue_scripts', function ($hook) {
+  if (in_array($hook, ['profile.php', 'user-new.php', 'user-edit.php'], true)) {
+    wp_enqueue_style(
+      'vp-admin-users-dark',
+      get_stylesheet_directory_uri() . '/assets/css/admin-users-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* TranslatePress admin dark mode – Settings, Language Switcher, Addons, License, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_trp = $screen && (strpos($screen->id, 'trp') !== false || strpos($screen->id, 'translate') !== false);
+  if ($is_trp) {
+    wp_enqueue_style(
+      'vp-trp-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/trp-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* TranslatePress translation editor sidebar dark mode – front-end (live translator) */
+add_action('wp_enqueue_scripts', function () {
+  if (!is_user_logged_in()) {
+    return;
+  }
+  wp_enqueue_style(
+    'vp-trp-admin-dark',
+    get_stylesheet_directory_uri() . '/assets/css/trp-admin-dark.css',
+    [],
+    wp_get_theme()->get('Version')
+  );
 }, 9999);
 
 /**

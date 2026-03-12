@@ -96,7 +96,7 @@ $carousel_id = 'vpHomeCarousel';
                 </h1>
 
                 <?php if (!empty($subheadline)): ?>
-                  <p class="lead mb-4">
+                  <p class="mb-4">
                     <?php echo esc_html($subheadline); ?>
                   </p>
                 <?php endif; ?>

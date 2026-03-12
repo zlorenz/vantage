@@ -3,7 +3,7 @@
  * Plugin Name: uiXpress
  * Plugin URI: https://uipress.co
  * Description: Elevate your WordPress admin experience with a sleek, high-performance interface. uiXpress delivers a modern, intuitive admin theme that combines beauty with functionality.
- * Version: 1.2.18  
+ * Version: 1.2.20
  * Author: uipress
  * Text Domain: uixpress
  * Domain Path: /languages/
@@ -17,7 +17,7 @@
 // If this file is called directly, abort.
 !defined("ABSPATH") ? exit() : "";
 
-define("uixpress_plugin_version", "1.2.18");
+define("uixpress_plugin_version", "1.2.20");
 define("uixpress_plugin_path", plugin_dir_path(__FILE__));
 
 require uixpress_plugin_path . "admin/vendor/autoload.php";

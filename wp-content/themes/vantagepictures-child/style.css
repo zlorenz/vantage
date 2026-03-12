@@ -185,6 +185,13 @@ a:focus {
   margin: 0 0 1.25rem;
 }
 
+@media (max-width: 575.98px) {
+  .vp-section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
 /**
  * Page content wrapper (default page template).
  * No padding — spacing comes from .vp-section on inner blocks (injected on
@@ -358,6 +365,9 @@ textarea {
   color: #fff;
   font-weight: 300;
   text-transform: uppercase;
+  transition:
+    color var(--vp-transition-fast),
+    background-color var(--vp-transition-fast);
 }
 
 .navbar a:hover,
@@ -386,7 +396,9 @@ textarea {
 .dropdown-item {
   font-size: 0.875rem;
   letter-spacing: var(--vp-navbar-link-spacing);
-  transition: background var(--vp-transition-fast);
+  transition:
+    background-color var(--vp-transition-fast),
+    color var(--vp-transition-fast);
 }
 
 .dropdown-item:hover,
@@ -649,6 +661,21 @@ textarea {
   margin-right: 0.75rem;
 }
 
+#footer .vp-footer-social a {
+  transition: color var(--vp-transition-fast);
+}
+
+@media (max-width: 575.98px) {
+  #footer {
+    text-align: center;
+  }
+
+  #footer .vp-footer-social {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
 /* ==========================================================================
    10. Brand Logos
    ========================================================================== */
@@ -658,7 +685,15 @@ textarea {
 }
 
 .brand-logos > .wp-block-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #5c5c5c;
+}
+
+.brand-logos > .wp-block-image img {
+  transform: scale(0.7);
+  transform-origin: center;
 }
 
 /* ==========================================================================
@@ -904,7 +939,7 @@ textarea {
 .vp-credits {
   font-size: 0.9rem;
   line-height: 1.325;
-  color: #e6e6e6;
+  color: #bfbfbf;
 }
 
 .vp-credits__row {
@@ -913,7 +948,6 @@ textarea {
   gap: 0.5rem 1.5rem;
   align-items: start;
   padding: 0.25rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0);
 }
 
 .vp-credits__row:last-child {
@@ -924,7 +958,6 @@ textarea {
   font-weight: 700;
   font-size: 1.125rem;
   text-transform: uppercase;
-  color: #e6e6e6;
   flex-shrink: 0;
 }
 
@@ -948,7 +981,6 @@ textarea {
 .vp-credit-names {
   font-weight: 400;
   text-transform: uppercase;
-  color: #e6e6e6;
   letter-spacing: -0.025rem;
 }
 
@@ -956,11 +988,17 @@ textarea {
 @media (max-width: 767.98px) {
   .vp-credits__row {
     grid-template-columns: 1fr;
-    gap: 0.25rem;
+    gap: 0.125rem;
+    padding: 0.75rem 0 0;
   }
 
   .vp-credits__dept {
-    padding-bottom: 0.125rem;
+    padding-bottom: 0;
+  }
+
+  .vp-credits__content {
+    text-align: left;
+    text-align-last: left;
   }
 }
 
@@ -1020,11 +1058,6 @@ textarea {
    Purpose: News index, sidebar widgets, post list, and pagination
    ========================================================================== */
 
-.vp-news-page {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-}
-
 .vp-news-intro {
   margin-bottom: 3rem;
 }
@@ -1047,7 +1080,6 @@ textarea {
 }
 
 /* Blog archive + taxonomy: top padding for fixed navbar */
-.vp-blog-archive,
 .vp-portfolio-taxonomy {
   padding-top: clamp(6.25rem, 8.5vw, 7rem) !important;
 }
@@ -1200,34 +1232,6 @@ textarea {
   text-transform: uppercase;
 }
 
-.vp-pagination {
-  margin-top: 3rem;
-}
-
-.vp-pagination .nav-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.vp-pagination .page-numbers {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  padding: 0.45rem 0.9rem;
-  background: #fff;
-  color: #000;
-  font-weight: 700;
-  text-decoration: none;
-  border: none;
-}
-
-.vp-pagination a.page-numbers:hover {
-  background: #a6a6a6;
-  color: #000;
-}
-
 @media (max-width: 991.98px) {
   .vp-blog-sidebar {
     position: static;
@@ -1267,6 +1271,9 @@ textarea {
   border-radius: 0;
   line-height: 1.25;
   vertical-align: middle;
+  transition:
+    background-color var(--vp-transition-fast),
+    color var(--vp-transition-fast);
 }
 
 .entry-header .entry-meta .entry-meta__sep {
@@ -1277,6 +1284,22 @@ textarea {
 .entry-header .entry-meta .vp-category-pill:hover {
   background: #a6a6a6;
   color: #000;
+}
+
+@media (max-width: 575.98px) {
+  /* Mobile: stack entry meta cleanly (date line + category pills) */
+  .entry-header .entry-meta .entry-meta__sep {
+    display: none;
+  }
+
+  /* Force a line break after the date link */
+  .entry-header .entry-meta > a:not(.vp-category-pill)::after {
+    content: '';
+    display: block;
+    margin-top: 0.6rem;
+  }
+
+  /* Pills stay inline; only the date is on its own line above */
 }
 
 /* ==========================================================================
@@ -1290,11 +1313,11 @@ textarea {
   font-size: 0.9rem;
   border-top: 1px solid var(--vp-border);
   border-bottom: 1px solid var(--vp-border);
+  padding: 0.9rem 0;
 }
 
 .vp-content-flow footer.entry-meta hr {
-  border: none;
-  margin: 0.5rem 0;
+  display: none;
 }
 
 .vp-content-flow footer.entry-meta a {
@@ -1704,21 +1727,203 @@ textarea {
    behavior remains unchanged.
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Mobile navbar (expanded panel) – 768px and below
+   Logo, panel layout, alignment, dropdowns (accordion-style), search hidden.
+   Desktop unchanged. Dropdown visibility controlled by .vp-dropdown-open (JS).
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+
+  /* Logo: smaller so it doesn’t dominate the header */
+  #header .navbar-brand img {
+    height: 51px;
+  }
+
+  /* Expanded panel: strong dark backdrop, balanced padding, full-bleed to edges */
+  #header .navbar-collapse {
+    background: rgba(0, 0, 0, 0.84);
+    margin-left: -0.625rem;
+    margin-right: -0.625rem;
+    margin-top: 0.5rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border-radius: 0;
+  }
+
+  /* Mobile toggler: no border box; hamburger -> X when expanded */
+  #header .navbar-toggler {
+    border: 0;
+    box-shadow: none;
+    padding: 0.5rem 0.625rem;
+  }
+
+  #header .navbar-toggler:focus {
+    box-shadow: none;
+  }
+
+  #header .navbar-toggler .navbar-toggler-icon {
+    background-image: none;
+    width: 1.75rem;
+    height: 1.25rem;
+    position: relative;
+  }
+
+  /* Hamburger (default/closed): 3 lines */
+  #header .navbar-toggler[aria-expanded="false"] .navbar-toggler-icon::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 2px;
+    box-shadow: 0 0.5rem 0 0 rgba(255, 255, 255, 0.92), 0 1rem 0 0 rgba(255, 255, 255, 0.92);
+  }
+
+  #header .navbar-toggler[aria-expanded="false"] .navbar-toggler-icon::after {
+    content: none;
+  }
+
+  /* X (open): 2 lines */
+  #header .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before,
+  #header .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 2px;
+  }
+
+  #header .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+    transform: rotate(45deg);
+  }
+
+  #header .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    transform: rotate(-45deg);
+  }
+
+  /* Override ms-auto: full-width nav list, centered/inset so items aren’t stuck left */
+  #header .navbar-collapse .navbar-nav {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  #header .navbar-collapse .navbar-nav .nav-item {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Top-level links: tight vertical rhythm, translucent pill, balanced horizontal padding */
+  #header .navbar-collapse .navbar-nav .nav-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0;
+    background: transparent;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+  }
+
+  #header .navbar-collapse .navbar-nav .nav-link:hover,
+  #header .navbar-collapse .navbar-nav .nav-link:focus {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #header .navbar-collapse .navbar-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Dropdown parent: same pill style, no extra gap */
+  #header .navbar-collapse .dropdown {
+    margin-bottom: 0.25rem;
+  }
+
+  #header .navbar-collapse .dropdown .dropdown-toggle {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border-radius: 4px;
+    margin: 0;
+  }
+
+  #header .navbar-collapse .dropdown .dropdown-toggle:hover,
+  #header .navbar-collapse .dropdown .dropdown-toggle:focus {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #header .navbar-collapse .dropdown.vp-dropdown-open .dropdown-toggle {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Submenu: hidden by default; shown when .vp-dropdown-open or .show on parent */
+  #header .navbar-collapse .dropdown-menu {
+    display: block;
+    position: static;
+    float: none;
+    margin: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.35);
+    border: none;
+    border-radius: 4px;
+    box-shadow: none;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: max-height 0.24s ease, opacity 0.18s ease, transform 0.24s ease;
+  }
+
+  #header .navbar-collapse .dropdown.vp-dropdown-open .dropdown-menu,
+  #header .navbar-collapse .dropdown.show .dropdown-menu,
+  #header .navbar-collapse .dropdown-menu.show {
+    max-height: 480px;
+    padding: 0.35rem 0 0.5rem 0.5rem;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  #header .navbar-collapse .dropdown-item {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  #header .navbar-collapse .dropdown-item .trp-ls-language-name {
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  #header .navbar-collapse .dropdown-item:hover,
+  #header .navbar-collapse .dropdown-item:focus {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.98);
+  }
+
+  /* Hide search in mobile nav – keep nav to menu items only */
+  #header .navbar-collapse .vp-search-form {
+    display: none;
+  }
+}
+
 @media (max-width: 575.98px) {
 
-  /* Navbar search: stack under menu and use full width */
-  .navbar .vp-search-form {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 0.75rem;
+  /* Slightly smaller logo on very small phones */
+  #header .navbar-brand img {
+    height: 46px;
   }
 
-  .navbar .vp-search-wrapper {
-    width: 100%;
-  }
-
-  .navbar .vp-search-input {
-    width: 100%;
+  /* Slightly tighter panel padding */
+  #header .navbar-collapse {
+    padding: 1rem 1.25rem 1.25rem;
   }
 
   /* Portfolio filters: add a bit more vertical breathing room between rows */
@@ -1729,5 +1934,43 @@ textarea {
   /* Modals: slightly tighter padding on very small screens */
   .modal-content {
     padding: 1.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Portfolio galleries – mobile full-bleed grid (site-wide)
+   Remove Bootstrap gutters inside .vp-portfolio-gallery only.
+   Keeps a 1em top offset so the first tile doesn't touch the heading.
+   -------------------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+  /* Pull gallery to the viewport edges inside Bootstrap containers */
+  .vp-portfolio-gallery {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+  }
+
+  /* Zero the row gutters + remove the column padding/margins that create gaps */
+  .vp-portfolio-gallery.row,
+  .vp-portfolio-gallery > .row {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+  }
+
+  .vp-portfolio-gallery.row > *,
+  .vp-portfolio-gallery > .row > * {
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Homepage hero carousel – mobile only
+   Hide large prev/next overlay controls (swipe + indicators remain).
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  #vpHomeCarousel .carousel-control-prev,
+  #vpHomeCarousel .carousel-control-next {
+    display: none;
   }
 }

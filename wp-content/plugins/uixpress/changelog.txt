@@ -1,5 +1,27 @@
 == Changelog ==
 
+= 1.2.20 =
+* Release Date 11 March 2026 *
+
+*Hot fix for '.fixed' class causing issues on post tables.
+
+= 1.2.19 =
+* Release Date 11 March 2026 *
+
+* Fixed toolbar items not showing on hover *
+* Fixed conflict with VITEPOS *
+* Fixed frontend links display in the toolbar *
+* Fixed hidden Product type selector in woocommerce. *
+* Fixed font selection for google that would bug out when a font was set. *
+* Fixed conflict with woocommerce class 'fixed' which does not mean position fixed. *
+* Fixed issue with RankMath not displaying in the menu *
+* Improved admin menu hover behavior by disabling hover menu behaviour on mobile *
+* When creating new role in role editor, it gives you option to Choose a role here if you want a starting point instead of building capabilities from scratch. *
+* Added stability improvements to menu creator and better cache and invalidation logic. *
+* Added important flag in the Admin Notices UI so you can flag notices to show at the top of the admin page. *
+
+
+
 = 1.2.18 =
 * Release Date * February 2026 *
 

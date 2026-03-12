@@ -61,9 +61,5 @@
 				esc_html_e( 'This entry was posted.', 'vantagepictures' );
 			}
 			?>
-		<hr>
-		<?php
-			get_template_part( 'author', 'bio' );
-		?>
 	</footer><!-- /.entry-meta -->
 </article><!-- /#post-<?php the_ID(); ?> -->

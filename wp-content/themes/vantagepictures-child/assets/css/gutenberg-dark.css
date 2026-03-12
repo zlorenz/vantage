@@ -173,6 +173,39 @@
   border-top: 1px solid var(--vp-gb-border) !important;
 }
 
+/* Editor footer – block breadcrumb (Page › Client Briefing Form CTA) */
+.interface-interface-skeleton__footer,
+.admin-ui-navigable-region.interface-interface-skeleton__footer {
+  background: var(--vp-gb-bg) !important;
+  border-top: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-breadcrumb {
+  background: transparent !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-block-breadcrumb__button {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-block-breadcrumb__button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-breadcrumb__current {
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-breadcrumb__separator {
+  fill: var(--vp-gb-text-muted) !important;
+}
+
 /* ==========================================================================
    Sidebar & Inspector Panels
    ========================================================================== */
@@ -283,6 +316,19 @@
   background: var(--vp-gb-accent-hover) !important;
 }
 
+/* Badges (e.g. "Homepage" indicator) – dark background, light text */
+.components-badge,
+.components-badge.is-default {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.components-badge__flex-wrapper,
+.components-badge__content {
+  color: var(--vp-gb-text) !important;
+}
+
 /* Toggle group (Include/Exclude, S/M/L/XL, etc.) – readable selected & unselected */
 .components-toggle-group-control-option-base {
   background: var(--vp-gb-bg-input) !important;
@@ -324,6 +370,21 @@
 [class*="1qd9rl8"] button:hover {
   background: var(--vp-gb-bg-hover) !important;
   color: var(--vp-gb-text) !important;
+}
+
+/* Block visibility – “X blocks are hidden” notification */
+.editor-block-visibility__disabled-blocks-count {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.editor-block-visibility__disabled-blocks-count .components-button.is-link {
+  color: var(--vp-gb-accent) !important;
+}
+
+.editor-block-visibility__disabled-blocks-count .components-button.is-link:hover {
+  color: var(--vp-gb-accent-hover) !important;
 }
 
 /* ==========================================================================
@@ -391,6 +452,14 @@
 .block-editor-tabbed-sidebar__close-button:hover {
   color: var(--vp-gb-text) !important;
   background: var(--vp-gb-bg-hover) !important;
+}
+
+/* Block editor block icons (preferences, inserter, block list) – white for visibility */
+.block-editor-block-icon,
+.block-editor-block-icon svg,
+.block-editor-block-icon path {
+  fill: var(--vp-gb-text) !important;
+  color: var(--vp-gb-text) !important;
 }
 
 /* ==========================================================================
@@ -1436,6 +1505,157 @@ button[aria-label="Yoast SEO"] svg,
 
 .block-editor-inserter__block-list .block-editor-block-types-list__list-item:hover {
   background: var(--vp-gb-bg-hover) !important;
+}
+
+/* Block Inserter – pattern tabs (My patterns, Synced, etc.) – dark gray on gray fix */
+.block-editor-inserter__menu [role="tab"],
+.block-editor-inserter__sidebar [role="tab"],
+.block-editor-inserter__panel-content [role="tab"],
+[id*="Pattern"][role="tab"],
+button[id*="Pattern"] {
+  background: transparent !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__menu [role="tab"] span,
+.block-editor-inserter__sidebar [role="tab"] span,
+button[id*="Pattern"] span {
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__menu [role="tab"]:hover,
+.block-editor-inserter__sidebar [role="tab"]:hover,
+.block-editor-inserter__panel-content [role="tab"]:hover,
+button[id*="Pattern"]:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__menu [role="tab"] svg,
+.block-editor-inserter__sidebar [role="tab"] svg,
+button[id*="Pattern"] svg {
+  fill: var(--vp-gb-text) !important;
+}
+
+/* ==========================================================================
+   Block Inserter – Patterns category panel (popout: All, pattern list, pagination)
+   ========================================================================== */
+
+.block-editor-inserter__category-panel {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__patterns-category-panel-header,
+.block-editor-inserter__patterns-category-panel-title,
+.components-heading.block-editor-inserter__patterns-category-panel-title {
+  background: var(--vp-gb-bg-secondary) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__help-text,
+.block-editor-inserter__category-panel .components-text {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-inserter__category-panel .components-dropdown-menu__toggle,
+.block-editor-inserter__category-panel .components-button {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__category-panel .components-button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-inserter__category-panel .components-button svg {
+  fill: var(--vp-gb-text) !important;
+}
+
+/* Pattern list and list items */
+.block-editor-block-patterns-list {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-patterns-list__list-item {
+  border-color: var(--vp-gb-border) !important;
+}
+
+.block-editor-block-patterns-list__item,
+.block-editor-patterns__pattern-details {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-patterns-list__item:hover,
+.block-editor-block-patterns-list__item[data-active-item="true"] {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.block-editor-block-patterns-list__item-title {
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-patterns__pattern-icon,
+.block-editor-patterns__pattern-icon-wrapper svg {
+  fill: var(--vp-gb-text-secondary) !important;
+}
+
+/* Pattern preview container – subtle border only (preview iframe left as-is) */
+.block-editor-block-preview__container {
+  border-color: var(--vp-gb-border) !important;
+}
+
+/* Draggable chip (when dragging a pattern) */
+.block-editor-block-draggable-chip,
+.block-editor-block-draggable-chip__content {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-block-draggable-chip .block-editor-block-icon svg {
+  fill: var(--vp-gb-text) !important;
+}
+
+/* Pagination (62 items, 1 of 4, « ‹ › ») */
+.block-editor-patterns__grid-pagination-wrapper,
+.block-editor-patterns__grid-pagination,
+.block-editor-patterns__grid-pagination-previous,
+.block-editor-patterns__grid-pagination-next {
+  background: transparent !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-patterns__grid-pagination-wrapper .components-text,
+.block-editor-patterns__grid-pagination span {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.block-editor-patterns__grid-pagination-button {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-patterns__grid-pagination-button:hover:not([aria-disabled="true"]) {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* VStack / HStack wrappers inside category panel (emotion classes) */
+.block-editor-inserter__category-panel .components-v-stack,
+.block-editor-inserter__category-panel .components-h-stack {
+  color: var(--vp-gb-text) !important;
 }
 
 /* ==========================================================================

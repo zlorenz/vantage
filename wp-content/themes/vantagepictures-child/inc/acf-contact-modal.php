@@ -1,7 +1,7 @@
 <?php
 /**
- * ACF: Global Contact Modal options.
- * Registers a sitewide options page + field group for the contact modal content.
+ * ACF: Global Contact Info options.
+ * Registers a sitewide options page for contact modal content and footer (email + social links).
  *
  * @package vantagepictures-child
  */
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'acf/init', 'vp_register_acf_contact_modal_options' );
 
 /**
- * Register the "Contact Modal" ACF options page and fields.
+ * Register the "Contact Info" ACF options page and fields.
  */
 function vp_register_acf_contact_modal_options() {
 	if ( ! function_exists( 'acf_add_options_page' ) || ! function_exists( 'acf_add_local_field_group' ) ) {
@@ -22,8 +22,8 @@ function vp_register_acf_contact_modal_options() {
 
 	$page = acf_add_options_page(
 		array(
-			'page_title' => 'Contact Modal',
-			'menu_title' => 'Contact Modal',
+			'page_title' => 'Contact Info',
+			'menu_title' => 'Contact Info',
 			'menu_slug'  => 'vp-contact-modal',
 			'capability' => 'manage_options',
 			'redirect'   => false,
@@ -38,7 +38,7 @@ function vp_register_acf_contact_modal_options() {
 	acf_add_local_field_group(
 		array(
 			'key'                   => 'group_vp_contact_modal',
-			'title'                 => 'Contact Modal Content',
+			'title'                 => 'Contact Info',
 			'fields'                => array(
 				array(
 					'key'           => 'field_vp_contact_modal_title',
@@ -73,7 +73,7 @@ function vp_register_acf_contact_modal_options() {
 					'label'         => 'Email address',
 					'name'          => 'contact_email',
 					'type'          => 'email',
-					'instructions'  => 'Primary email address for general contact. Shown as a mailto: link.',
+					'instructions'  => 'Primary email for contact modal and footer. Shown as a mailto: link.',
 					'default_value' => '',
 				),
 				array(
@@ -117,6 +117,55 @@ function vp_register_acf_contact_modal_options() {
 					'type'          => 'url',
 					'instructions'  => 'Destination URL for the primary call-to-action button (e.g. /client-brief/).',
 					'default_value' => '',
+				),
+				// Footer social links (one URL per platform; leave empty to hide).
+				array(
+					'key'           => 'field_vp_social_vimeo',
+					'label'         => 'Vimeo URL',
+					'name'          => 'social_vimeo',
+					'type'          => 'url',
+					'instructions'  => 'Shown in the footer. Leave empty to hide.',
+					'default_value' => 'https://vimeo.com/vantagepictures',
+				),
+				array(
+					'key'           => 'field_vp_social_instagram',
+					'label'         => 'Instagram URL',
+					'name'          => 'social_instagram',
+					'type'          => 'url',
+					'instructions'  => 'Shown in the footer. Leave empty to hide.',
+					'default_value' => 'https://www.instagram.com/vantage.pictures/',
+				),
+				array(
+					'key'           => 'field_vp_social_facebook',
+					'label'         => 'Facebook URL',
+					'name'          => 'social_facebook',
+					'type'          => 'url',
+					'instructions'  => 'Shown in the footer. Leave empty to hide.',
+					'default_value' => 'https://www.facebook.com/vantagepictures',
+				),
+				array(
+					'key'           => 'field_vp_social_linkedin',
+					'label'         => 'LinkedIn URL',
+					'name'          => 'social_linkedin',
+					'type'          => 'url',
+					'instructions'  => 'Shown in the footer. Leave empty to hide.',
+					'default_value' => 'https://www.linkedin.com/company/vantage-pictures',
+				),
+				array(
+					'key'           => 'field_vp_social_youtube',
+					'label'         => 'YouTube URL',
+					'name'          => 'social_youtube',
+					'type'          => 'url',
+					'instructions'  => 'Shown in the footer. Leave empty to hide.',
+					'default_value' => 'https://www.youtube.com/@vantage.pictures',
+				),
+				array(
+					'key'           => 'field_vp_social_xinpianchang',
+					'label'         => 'Xinpianchang URL',
+					'name'          => 'social_xinpianchang',
+					'type'          => 'url',
+					'instructions'  => 'Shown in the footer. Leave empty to hide.',
+					'default_value' => 'https://www.xinpianchang.com/u11835825',
 				),
 			),
 			'location'              => array(

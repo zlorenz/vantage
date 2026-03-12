@@ -118,6 +118,18 @@ class AdminNotices
             },
         ]);
 
+        // important
+        register_post_meta("uixpress_notice", "important", [
+            "type" => "boolean",
+            "single" => true,
+            "default" => false,
+            "show_in_rest" => true,
+            "sanitize_callback" => "rest_sanitize_boolean",
+            "auth_callback" => function () {
+                return is_user_logged_in();
+            },
+        ]);
+
         // seen_by (array of integers)
         register_post_meta("uixpress_notice", "seen_by", [
             "type" => "array",

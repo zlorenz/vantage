@@ -116,7 +116,7 @@ if (has_post_thumbnail(get_queried_object_id())) {
     <?php vp_portfolio_filter_dropdowns(); ?>
 
     <?php if ($query->have_posts()) : ?>
-      <div id="vp-portfolio-grid" class="row g-3 g-md-3">
+      <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-3">
         <?php while ($query->have_posts()) : $query->the_post(); ?>
           <div class="col-12 col-sm-6 col-md-4 col-lg-3">
             <?php get_template_part('template-parts/portfolio/card'); ?>

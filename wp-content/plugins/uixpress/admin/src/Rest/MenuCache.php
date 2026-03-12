@@ -59,6 +59,11 @@ class MenuCache
    */
   public function check_permissions($request)
   {
+    // Any logged-in user can read the cache key for client-side sync.
+    if ($request->get_method() === 'GET') {
+      return is_user_logged_in();
+    }
+
     return RestPermissionChecker::check_permissions($request, 'manage_options');
   }
 

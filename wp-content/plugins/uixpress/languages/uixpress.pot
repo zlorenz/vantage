@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uiXpress\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-26T07:46:39.226Z\n"
-"PO-Revision-Date: 2026-02-26T07:46:39.226Z\n"
+"POT-Creation-Date: 2026-03-11T14:20:06.628Z\n"
+"PO-Revision-Date: 2026-03-11T14:20:06.628Z\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -111,7 +111,7 @@ msgstr ""
 #: admin/src/Rest/CustomFields/OptionPagesRepository.php:253
 #: app/src/apps/js/Plugins.js:29
 #: app/src/pages/settings/index.vue:129
-#: app/src/pages/role-editor/src/role-details-view.vue:183
+#: app/src/pages/role-editor/src/role-details-view.vue:185
 #: app/src/components/app/frontend-panel/PanelContent.vue:129
 #: app/src/pages/dashboard/src/cards/server-health/component.vue:328
 msgid "Plugins"
@@ -241,7 +241,7 @@ msgstr ""
 
 #: admin/src/Pages/MenuBuilder.php:65
 #: app/src/apps/js/MenuCreator.js:38
-#: app/src/pages/menu-creator/src/menu-list-view.vue:387
+#: app/src/pages/menu-creator/src/menu-list-view.vue:416
 #: app/src/components/utility/remote-site-select/index.vue:228
 msgid "Menu Creator"
 msgstr ""
@@ -284,7 +284,7 @@ msgstr ""
 
 #: admin/src/Pages/RoleEditorPage.php:44
 #: app/src/apps/js/RoleEditor.js:38
-#: app/src/pages/role-editor/src/role-list-view.vue:436
+#: app/src/pages/role-editor/src/role-list-view.vue:512
 #: app/src/components/utility/remote-site-select/index.vue:233
 msgid "Role Editor"
 msgstr ""
@@ -292,10 +292,10 @@ msgstr ""
 #: admin/src/Pages/Settings.php:46
 #: admin/src/Rest/CustomFields/OptionPagesRepository.php:250
 #: app/src/pages/settings/index.vue:259
-#: app/src/pages/menu-creator/src/edit.vue:706
-#: app/src/pages/role-editor/src/role-details-view.vue:185
-#: app/src/pages/plugins/src/plugin-card.vue:621
+#: app/src/pages/menu-creator/src/edit.vue:767
+#: app/src/pages/role-editor/src/role-details-view.vue:187
 #: app/src/pages/posts/src/table-filters.vue:163
+#: app/src/pages/plugins/src/plugin-card.vue:621
 #: app/src/components/app/frontend-panel/PanelContent.vue:141
 msgid "Settings"
 msgstr ""
@@ -347,9 +347,9 @@ msgstr ""
 msgid "Persistent admin notices for uiXpress."
 msgstr ""
 
-#: admin/src/Rest/AdminNotices.php:183
+#: admin/src/Rest/AdminNotices.php:195
 #: app/src/apps/js/AdminNotices.js:39
-#: app/src/pages/admin-notices/src/table.vue:233
+#: app/src/pages/admin-notices/src/table.vue:237
 #: app/src/components/utility/remote-site-select/index.vue:232
 msgid "Admin Notices"
 msgstr ""
@@ -361,7 +361,7 @@ msgstr ""
 #: admin/src/Rest/AdminStatus.php:227
 #: admin/src/Rest/CustomFields/OptionPagesRepository.php:255
 #: app/src/pages/settings/index.vue:150
-#: app/src/pages/role-editor/src/role-details-view.vue:181
+#: app/src/pages/role-editor/src/role-details-view.vue:183
 #: app/src/components/app/frontend-panel/PanelContent.vue:117
 msgid "Media"
 msgstr ""
@@ -474,10 +474,10 @@ msgstr ""
 
 #: admin/src/Rest/CustomFields/LocationDataProvider.php:116 admin/src/Rest/CustomFields/LocationDataProvider.php:164 admin/src/Rest/CustomFields/LocationDataProvider.php:222 admin/src/Rest/CustomFields/LocationDataProvider.php:291 admin/src/Rest/CustomFields/LocationDataProvider.php:319 admin/src/Rest/CustomFields/LocationDataProvider.php:371
 #: app/src/pages/media/src/media-list-view.vue:1447
-#: app/src/pages/users/src/user-list-view.vue:997
-#: app/src/pages/menu-creator/src/menu-list-view.vue:442
-#: app/src/pages/comments/src/comment-list-view.vue:548
 #: app/src/pages/posts/src/constants.js:18
+#: app/src/pages/menu-creator/src/menu-list-view.vue:471
+#: app/src/pages/comments/src/comment-list-view.vue:548
+#: app/src/pages/users/src/user-list-view.vue:997
 msgid "All"
 msgstr ""
 
@@ -492,7 +492,7 @@ msgid ""
 msgstr ""
 
 #: admin/src/Rest/CustomFields/OptionPageRenderer.php:75
-#: app/src/pages/role-editor/src/role-details-view.vue:747 app/src/pages/role-editor/src/role-details-view.vue:936
+#: app/src/pages/role-editor/src/role-details-view.vue:753 app/src/pages/role-editor/src/role-details-view.vue:962
 #: app/src/pages/media/src/media-list-view.vue:2001
 #: app/src/pages/users/src/user-list-view.vue:1646
 msgid "Save Changes"
@@ -562,10 +562,10 @@ msgstr ""
 #: admin/src/Rest/CustomFields/OptionPagesRepository.php:254
 #: app/src/apps/js/Users.js:38
 #: app/src/pages/settings/index.vue:156
-#: app/src/pages/role-editor/src/role-details-view.vue:182
-#: app/src/pages/users/src/user-list-view.vue:925
-#: app/src/components/utility/multiselect-roles-and-users/index.vue:66
+#: app/src/pages/role-editor/src/role-details-view.vue:184
 #: app/src/pages/posts/src/inline-user-select.vue:61
+#: app/src/components/utility/multiselect-roles-and-users/index.vue:66
+#: app/src/pages/users/src/user-list-view.vue:925
 #: app/src/components/app/frontend-panel/PanelContent.vue:135
 msgid "Users"
 msgstr ""
@@ -575,20 +575,20 @@ msgstr ""
 #: app/src/apps/js/Comments.js:37
 #: app/src/pages/settings/index.vue:162
 #: app/src/pages/comments/src/comment-list-view.vue:519
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:391
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:393
 msgid "Comments"
 msgstr ""
 
 #: admin/src/Rest/CustomFields/OptionPagesRepository.php:257
 #: app/src/pages/settings/index.vue:123
 #: app/src/pages/posts/index.vue:601 app/src/pages/posts/index.vue:771
-#: app/src/pages/role-editor/src/role-details-view.vue:179
+#: app/src/pages/role-editor/src/role-details-view.vue:181
 #: app/src/components/app/frontend-panel/PanelContent.vue:105
 msgid "Posts"
 msgstr ""
 
 #: admin/src/Rest/CustomFields/OptionPagesRepository.php:258
-#: app/src/pages/role-editor/src/role-details-view.vue:180
+#: app/src/pages/role-editor/src/role-details-view.vue:182
 #: app/src/components/app/frontend-panel/PanelContent.vue:111
 msgid "Pages"
 msgstr ""
@@ -1011,8 +1011,8 @@ msgstr ""
 #: admin/src/Rest/MediaTags.php:140
 #: app/src/pages/media/src/media-details-view.vue:963
 #: app/src/pages/media/src/media-list-view.vue:1613
-#: app/src/pages/posts/src/batch-edit.vue:147
 #: app/src/pages/posts/src/post-preview.vue:467
+#: app/src/pages/posts/src/batch-edit.vue:147
 #: app/src/pages/posts/src/tag-select.vue:362
 msgid "Tags"
 msgstr ""
@@ -1073,24 +1073,24 @@ msgstr ""
 msgid "Invalid media item"
 msgstr ""
 
-#: admin/src/Rest/MenuCache.php:93
+#: admin/src/Rest/MenuCache.php:98
 msgid ""
 "Menu cache key rotated successfully. All client caches have been "
 "invalidated."
 msgstr ""
 
 #: admin/src/Rest/PostsTables.php:354
-#: app/src/pages/menu-creator/src/edit.vue:920
-#: app/src/pages/posts/src/batch-edit.vue:158
+#: app/src/pages/menu-creator/src/edit.vue:981
 #: app/src/pages/posts/src/post-preview.vue:430
+#: app/src/pages/posts/src/batch-edit.vue:158
 #: app/src/pages/comments/src/comment-details-view.vue:474
 msgid "Status"
 msgstr ""
 
 #: admin/src/Rest/PostsTables.php:373 admin/src/Rest/PostsTables.php:632
 #: app/src/pages/media/src/media-details-view.vue:1124
-#: app/src/pages/admin-notices/src/table.vue:184
-#: app/src/pages/menu-creator/src/menu-list-view.vue:451
+#: app/src/pages/admin-notices/src/table.vue:188
+#: app/src/pages/menu-creator/src/menu-list-view.vue:480
 #: app/src/pages/menu-creator/src/menu-list.vue:80
 #: app/src/pages/dashboard/src/cards/recent-posts/component.vue:221
 #: app/src/components/app/search/state/constants.js:91
@@ -1112,8 +1112,8 @@ msgid "%s from now"
 msgstr ""
 
 #: admin/src/Rest/PostsTables.php:622 admin/src/Rest/PostsTables.php:638
-#: app/src/pages/media/src/media-details-view.vue:1076
 #: app/src/pages/posts/index.vue:902
+#: app/src/pages/media/src/media-details-view.vue:1076
 #: app/src/pages/posts/src/post-preview.vue:371
 #: app/src/components/utility/media-library/index.vue:144
 msgid "Modified"
@@ -1180,7 +1180,7 @@ msgid "Role name updated successfully."
 msgstr ""
 
 #: admin/src/Rest/RoleEditor.php:373
-#: app/src/pages/role-editor/src/role-list-view.vue:303
+#: app/src/pages/role-editor/src/role-list-view.vue:373
 msgid ""
 "Role slug can only contain lowercase letters, numbers, hyphens, and "
 "underscores."
@@ -1220,10 +1220,14 @@ msgstr ""
 msgid "New Users"
 msgstr ""
 
+#: app/src/apps/js/ActivityLog.js:45
+msgid "Activity Log Details"
+msgstr ""
+
 #: app/src/apps/js/Media.js:38
 #: app/src/pages/media/src/media-list-view.vue:1370
-#: app/src/components/utility/media-library/index.vue:733
 #: app/src/components/utility/media-library-v2/index.vue:152
+#: app/src/components/utility/media-library/index.vue:733
 msgid "Media Library"
 msgstr ""
 
@@ -1239,17 +1243,12 @@ msgstr ""
 msgid "Edit Image"
 msgstr ""
 
-#: app/src/apps/js/ActivityLog.js:45
-msgid "Activity Log Details"
+#: app/src/apps/js/AdminNotices.js:45
+msgid "Edit Notice"
 msgstr ""
 
 #: app/src/apps/js/MenuCreator.js:44
 msgid "Menu editor"
-msgstr ""
-
-#: app/src/apps/js/Comments.js:43
-#: app/src/pages/comments/src/comment-list-view.vue:706
-msgid "Comment Details"
 msgstr ""
 
 #: app/src/apps/js/Users.js:44
@@ -1268,12 +1267,13 @@ msgid "SQL Query Editor"
 msgstr ""
 
 #: app/src/apps/js/RoleEditor.js:45
-#: app/src/pages/role-editor/src/role-list-view.vue:546
+#: app/src/pages/role-editor/src/role-list-view.vue:639
 msgid "Role Details"
 msgstr ""
 
-#: app/src/apps/js/AdminNotices.js:45
-msgid "Edit Notice"
+#: app/src/apps/js/Comments.js:43
+#: app/src/pages/comments/src/comment-list-view.vue:706
+msgid "Comment Details"
 msgstr ""
 
 #: app/src/pages/dashboard/index.vue:237
@@ -1297,7 +1297,7 @@ msgid "Invalid remote site configuration"
 msgstr ""
 
 #: app/src/pages/settings/index.vue:90
-#: app/src/pages/role-editor/src/role-details-view.vue:178
+#: app/src/pages/role-editor/src/role-details-view.vue:180
 msgid "General"
 msgstr ""
 
@@ -1401,7 +1401,7 @@ msgid "No settings found"
 msgstr ""
 
 #: app/src/pages/settings/index.vue:347
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:746
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:747
 #: app/src/components/app/menu/components/MenuSearch.vue:438
 msgid "Try a different search term"
 msgstr ""
@@ -1416,6 +1416,211 @@ msgstr ""
 
 #: app/src/pages/settings/index.vue:426
 msgid "Select a category from the list to configure your settings."
+msgstr ""
+
+#: app/src/pages/posts/index.vue:618 app/src/pages/posts/index.vue:732 app/src/pages/posts/index.vue:832 app/src/pages/posts/index.vue:860
+msgid "New post"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:651
+msgid "Search posts..."
+msgstr ""
+
+#: app/src/pages/posts/index.vue:677
+#: app/src/pages/media/src/media-list-view.vue:1686
+#: app/src/pages/activity-log/src/activity-list-view.vue:366
+msgid "item"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:678
+#: app/src/pages/media/src/media-list-view.vue:1687
+#: app/src/pages/activity-log/src/activity-list-view.vue:367
+msgid "items"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:681
+#: app/src/pages/media/src/media-details-view.vue:1120
+#: app/src/pages/admin-notices/src/table.vue:354
+#: app/src/pages/database/src/table-view.vue:697
+#: app/src/pages/activity-log/src/activity-list-view.vue:370
+#: app/src/pages/menu-creator/src/menu-list-view.vue:498
+#: app/src/pages/comments/src/comment-list-view.vue:632
+#: app/src/pages/users/src/user-list-view.vue:1101
+msgid "Page"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:690
+#: app/src/pages/activity-log/src/activity-list-view.vue:380
+#: app/src/pages/menu-creator/src/menu-list-view.vue:508
+#: app/src/pages/comments/src/comment-list-view.vue:642
+#: app/src/pages/users/src/user-list-view.vue:1111
+msgid "Previous"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:701
+#: app/src/pages/activity-log/src/activity-list-view.vue:392
+#: app/src/pages/menu-creator/src/menu-list-view.vue:520
+#: app/src/pages/comments/src/comment-list-view.vue:654
+#: app/src/pages/users/src/user-list-view.vue:1123
+msgid "Next"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:719
+msgid "Loading posts..."
+msgstr ""
+
+#: app/src/pages/posts/index.vue:729
+#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:320
+msgid "No posts found"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:740 app/src/pages/posts/index.vue:840 app/src/pages/posts/index.vue:868
+#: app/src/pages/settings/src/custom-renders/external-stylesheets.vue:91
+msgid "Add new"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:792
+msgid "Sidebar View"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:810
+#: app/src/components/app/search/state/constants.js:26
+msgid "Search posts"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:853
+msgid "Nothing found"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:854
+msgid "When you create new items they will show up here."
+msgstr ""
+
+#: app/src/pages/posts/index.vue:971
+msgid "%s child items"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:977
+msgid "%s child item"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:1035
+msgid "item selected"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:1036
+msgid "items selected"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:1043
+msgid "Publish items"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:1057
+msgid "Duplicate items"
+msgstr ""
+
+#: app/src/pages/posts/index.vue:1071
+msgid "Delete items"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:113
+msgid "Activity log entry not found"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:186
+#: app/src/pages/activity-log/src/activity-list.vue:133
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:110
+#: app/src/components/app/search/utils/formatRelativeDate.js:17
+msgid "Just now"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:192
+#: app/src/pages/activity-log/src/activity-list.vue:139
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:116
+msgid "1 minute ago"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:193
+#: app/src/pages/activity-log/src/activity-list.vue:140
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:117
+msgid "%d minutes ago"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:199
+#: app/src/pages/activity-log/src/activity-list.vue:146
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:123
+msgid "1 hour ago"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:200
+#: app/src/pages/activity-log/src/activity-list.vue:147
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:124
+msgid "%d hours ago"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:206
+#: app/src/pages/activity-log/src/activity-list.vue:153
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:130
+msgid "1 day ago"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:207
+#: app/src/pages/activity-log/src/activity-list.vue:154
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:131
+msgid "%d days ago"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:302
+#: app/src/pages/media/src/media-edit-view.vue:206
+#: app/src/pages/media/src/media-details-view.vue:798
+#: app/src/pages/users/src/user-details-view.vue:338
+#: app/src/pages/role-editor/src/role-details-view.vue:632
+#: app/src/pages/comments/src/comment-details-view.vue:384
+msgid "Loading..."
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:308 app/src/pages/activity-log/src/activity-details-view.vue:357
+#: app/src/pages/activity-log/src/activity-list-view.vue:422
+msgid "Activity Details"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:332
+msgid "User Information"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:360
+msgid "Timestamp"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:366
+msgid "IP Address"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:372
+msgid "User Agent"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:380
+msgid "Changes"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:383
+msgid "Before"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:387
+msgid "After"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:394
+#: app/src/pages/media/src/media-details-view.vue:1065
+#: app/src/pages/users/src/components/index.js:14
+msgid "Details"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-details-view.vue:400
+msgid "Metadata"
 msgstr ""
 
 #: app/src/pages/media/src/media-edit-view.vue:76
@@ -1434,15 +1639,6 @@ msgstr ""
 
 #: app/src/pages/media/src/media-edit-view.vue:151
 msgid "Failed to save image"
-msgstr ""
-
-#: app/src/pages/media/src/media-edit-view.vue:206
-#: app/src/pages/media/src/media-details-view.vue:798
-#: app/src/pages/activity-log/src/activity-details-view.vue:302
-#: app/src/pages/users/src/user-details-view.vue:338
-#: app/src/pages/role-editor/src/role-details-view.vue:626
-#: app/src/pages/comments/src/comment-details-view.vue:384
-msgid "Loading..."
 msgstr ""
 
 #: app/src/pages/media/src/media-edit-view.vue:221
@@ -1468,18 +1664,18 @@ msgstr ""
 
 #: app/src/pages/media/src/media-details-view.vue:332 app/src/pages/media/src/media-details-view.vue:1057
 #: app/src/pages/plugins/src/plugin-inspect.vue:459
-#: app/src/pages/menu-creator/src/edit.vue:663
-#: app/src/pages/role-editor/src/role-details-view.vue:568
+#: app/src/pages/menu-creator/src/edit.vue:724
+#: app/src/pages/role-editor/src/role-details-view.vue:574
 #: app/src/pages/media/src/media-list-view.vue:1878
-#: app/src/pages/users/src/user-list-view.vue:1535
 #: app/src/pages/posts/src/post-actions.vue:82
-#: app/src/components/app/menu/components/FavoritesSection.vue:189
+#: app/src/pages/users/src/user-list-view.vue:1535
 #: app/src/pages/media/src/media-list.vue:437
+#: app/src/components/app/menu/components/FavoritesSection.vue:208
 #: app/src/pages/plugins/src/plugin-actions.vue:244
 #: app/src/pages/menu-creator/src/menu-list.vue:152
-#: app/src/pages/users/src/user-list.vue:229
 #: app/src/pages/comments/src/comment-list.vue:270
 #: app/src/pages/comments/src/comment-details-view.vue:578
+#: app/src/pages/users/src/user-list.vue:229
 msgid "Delete"
 msgstr ""
 
@@ -1489,9 +1685,9 @@ msgstr ""
 
 #: app/src/pages/media/src/media-details-view.vue:356
 #: app/src/pages/media/src/media-list-view.vue:892
-#: app/src/pages/users/src/user-list-view.vue:614
-#: app/src/pages/menu-creator/src/menu-list-view.vue:189
+#: app/src/pages/menu-creator/src/menu-list-view.vue:191
 #: app/src/pages/comments/src/comment-list-view.vue:411
+#: app/src/pages/users/src/user-list-view.vue:614
 msgid "Delete failed"
 msgstr ""
 
@@ -1588,15 +1784,15 @@ msgid "Uploaded"
 msgstr ""
 
 #: app/src/pages/media/src/media-details-view.vue:934
-#: app/src/pages/admin-notices/src/edit.vue:381
+#: app/src/pages/admin-notices/src/edit.vue:388
 #: app/src/pages/media/src/media-list-view.vue:1950
 #: app/src/components/utility/media-library/index.vue:146 app/src/components/utility/media-library/index.vue:1027
 msgid "Title"
 msgstr ""
 
 #: app/src/pages/media/src/media-details-view.vue:939
-#: app/src/pages/posts/src/posts-list.vue:249
 #: app/src/pages/posts/src/post-preview.vue:347
+#: app/src/pages/posts/src/posts-list.vue:249
 #: app/src/pages/menu-creator/src/menu-list.vue:121 app/src/pages/menu-creator/src/menu-list.vue:125
 msgid "Untitled"
 msgstr ""
@@ -1648,12 +1844,6 @@ msgstr ""
 msgid "Replace Image"
 msgstr ""
 
-#: app/src/pages/media/src/media-details-view.vue:1065
-#: app/src/pages/activity-log/src/activity-details-view.vue:394
-#: app/src/pages/users/src/components/index.js:14
-msgid "Details"
-msgstr ""
-
 #: app/src/pages/media/src/media-details-view.vue:1068
 msgid "Filename"
 msgstr ""
@@ -1680,26 +1870,15 @@ msgstr ""
 msgid "Post"
 msgstr ""
 
-#: app/src/pages/media/src/media-details-view.vue:1120
-#: app/src/pages/posts/index.vue:681
-#: app/src/pages/admin-notices/src/table.vue:347
-#: app/src/pages/database/src/table-view.vue:697
-#: app/src/pages/activity-log/src/activity-list-view.vue:370
-#: app/src/pages/users/src/user-list-view.vue:1101
-#: app/src/pages/menu-creator/src/menu-list-view.vue:469
-#: app/src/pages/comments/src/comment-list-view.vue:632
-msgid "Page"
-msgstr ""
-
 #: app/src/pages/media/src/media-details-view.vue:1121
 msgid "Widget"
 msgstr ""
 
 #: app/src/pages/media/src/media-details-view.vue:1125
-#: app/src/pages/admin-notices/src/table.vue:185
-#: app/src/pages/admin-notices/src/edit.vue:327
-#: app/src/pages/menu-creator/src/edit.vue:133
-#: app/src/pages/menu-creator/src/menu-list-view.vue:460
+#: app/src/pages/admin-notices/src/edit.vue:334
+#: app/src/pages/admin-notices/src/table.vue:189
+#: app/src/pages/menu-creator/src/edit.vue:149
+#: app/src/pages/menu-creator/src/menu-list-view.vue:489
 #: app/src/pages/menu-creator/src/menu-list.vue:81
 #: app/src/pages/dashboard/src/cards/recent-posts/component.vue:225
 #: app/src/components/app/search/state/constants.js:92
@@ -1712,9 +1891,174 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: app/src/pages/admin-notices/src/edit.vue:126
+msgid "Info"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:129
+msgid "Success"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:135
+msgid "Warning"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:141
 #: app/src/pages/plugins/index.vue:282 app/src/pages/plugins/index.vue:290
-#: app/src/pages/admin-notices/src/edit.vue:136
 msgid "Error"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:270
+msgid "Notice updated"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:271
+#: app/src/pages/admin-notices/src/table.vue:175
+msgid "Notice created"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:299
+msgid "Notice deleted"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:324
+msgid "Untitled Notice"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:333 app/src/pages/admin-notices/src/edit.vue:530
+#: app/src/pages/menu-creator/src/edit.vue:153
+#: app/src/pages/plugins/src/plugin-card.vue:344
+msgid "Active"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:350
+msgid "Update Notice"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:351
+msgid "Create Notice"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:375
+msgid "Created"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:385
+msgid "Basic Information"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:393
+msgid "Enter notice title"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:398
+msgid "Content"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:402
+msgid "Enter notice content..."
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:409
+#: app/src/pages/posts/src/post-preview.vue:493
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1062
+msgid "Preview"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:448
+msgid "Notice Title"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:462
+msgid "Notice content will appear here..."
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:480
+msgid "Display Settings"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:483
+msgid "Notice Type"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:492
+msgid "Target Roles"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:501
+msgid "Dismissible"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:502
+msgid "Allow users to dismiss this notice"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:514
+#: app/src/pages/admin-notices/src/table.vue:336
+msgid "Important"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:515
+msgid "Show this notice at the top of backend pages"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:531
+msgid "Display this notice to users"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:545 app/src/pages/admin-notices/src/edit.vue:569
+msgid "Dismissed By"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:577
+msgid "No users have dismissed this notice yet"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/edit.vue:593
+msgid "Loading Notice..."
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:153
+msgid "Draft notice"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:272
+msgid "Search notices..."
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:288
+msgid "Loading notices..."
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:298
+msgid "No notices found"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:306
+msgid "Create Your First Notice"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:339
+msgid "Seen by"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:354
+#: app/src/pages/database/src/table-view.vue:684
+msgid "of"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:423
+msgid "Notice Editor"
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:424
+msgid ""
+"Select a notice from the list to edit it, or create a new one to get "
+"started."
+msgstr ""
+
+#: app/src/pages/admin-notices/src/table.vue:439
+msgid "Create New Notice"
 msgstr ""
 
 #: app/src/pages/plugins/index.vue:283 app/src/pages/plugins/index.vue:291
@@ -1749,85 +2093,6 @@ msgstr ""
 msgid "Select a plugin from the list to view its details and manage settings."
 msgstr ""
 
-#: app/src/pages/plugins/src/plugin-inspect.vue:211
-#: app/src/pages/plugins/src/plugin-repo-card.vue:117
-msgid "Plugin installed"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:272
-msgid "There was an error fetching this plugins information"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:298
-msgid "Back to plugins"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:334
-#: app/src/pages/plugins/src/plugin-repo.vue:57
-msgid "Rating"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:338
-msgid "Installs"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:342
-msgid "Downloads"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:346
-#: app/src/pages/plugins/src/plugin-card.vue:465
-msgid "Version"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:350
-#: app/src/pages/plugins/src/plugin-repo.vue:65
-msgid "Last updated"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:356
-#: app/src/pages/media/src/media-list-view.vue:1975
-#: app/src/components/utility/media-library/index.vue:1060
-msgid "Description"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:368
-msgid "Screenshots"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:390
-msgid "Installation"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:402
-msgid "FAQ"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:414
-msgid "Reviews"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:426
-msgid "Changelog"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:446
-msgid "Install plugin"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:472
-#: app/src/pages/plugins/src/plugin-card.vue:415
-#: app/src/pages/plugins/src/plugin-actions.vue:173
-msgid "Deactivate"
-msgstr ""
-
-#: app/src/pages/plugins/src/plugin-inspect.vue:485
-#: app/src/pages/plugins/src/plugin-card.vue:381
-#: app/src/pages/settings/src/custom-renders/license-key.vue:88
-#: app/src/pages/plugins/src/plugin-actions.vue:166
-msgid "Activate"
-msgstr ""
-
 #: app/src/pages/plugins/src/plugin-details-view.vue:74
 msgid "Plugin not found"
 msgstr ""
@@ -1837,10 +2102,10 @@ msgid "The plugin you are looking for could not be found."
 msgstr ""
 
 #: app/src/pages/plugins/src/plugin-repo.vue:55
-#: app/src/pages/menu-creator/src/edit.vue:1039
+#: app/src/pages/menu-creator/src/edit.vue:1100
 #: app/src/pages/database/src/table-view.vue:541 app/src/pages/database/src/table-view.vue:578
 #: app/src/pages/users/src/user-list-view.vue:1442 app/src/pages/users/src/user-list-view.vue:1592
-#: app/src/components/app/menu/components/FavoritesSection.vue:122
+#: app/src/components/app/menu/components/FavoritesSection.vue:141
 #: app/src/pages/users/src/components/user-details-form/user-details-form.vue:234
 msgid "Name"
 msgstr ""
@@ -1848,6 +2113,11 @@ msgstr ""
 #: app/src/pages/plugins/src/plugin-repo.vue:56
 #: app/src/components/utility/media-library/index.vue:145
 msgid "Slug"
+msgstr ""
+
+#: app/src/pages/plugins/src/plugin-repo.vue:57
+#: app/src/pages/plugins/src/plugin-inspect.vue:334
+msgid "Rating"
 msgstr ""
 
 #: app/src/pages/plugins/src/plugin-repo.vue:58
@@ -1861,6 +2131,11 @@ msgstr ""
 #: app/src/pages/plugins/src/plugin-repo.vue:61
 #: app/src/pages/plugins/src/plugin-repo-card.vue:186
 msgid "Active installs"
+msgstr ""
+
+#: app/src/pages/plugins/src/plugin-repo.vue:65
+#: app/src/pages/plugins/src/plugin-inspect.vue:350
+msgid "Last updated"
 msgstr ""
 
 #: app/src/pages/plugins/src/plugin-repo.vue:168
@@ -1974,9 +2249,9 @@ msgid "Method"
 msgstr ""
 
 #: app/src/pages/plugins/src/plugin-performance.vue:537
-#: app/src/pages/menu-creator/src/edit.vue:1054
+#: app/src/pages/menu-creator/src/edit.vue:1115
 #: app/src/pages/posts/src/post-preview.vue:482
-#: app/src/components/app/menu/components/FavoritesSection.vue:132
+#: app/src/components/app/menu/components/FavoritesSection.vue:151
 #: app/src/components/utility/media-library/index.vue:1071
 msgid "URL"
 msgstr ""
@@ -2006,88 +2281,257 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:113
-msgid "Activity log entry not found"
+#: app/src/pages/plugins/src/plugin-inspect.vue:211
+#: app/src/pages/plugins/src/plugin-repo-card.vue:117
+msgid "Plugin installed"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:186
-#: app/src/pages/activity-log/src/activity-list.vue:133
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:110
-#: app/src/components/app/search/utils/formatRelativeDate.js:17
-msgid "Just now"
+#: app/src/pages/plugins/src/plugin-inspect.vue:272
+msgid "There was an error fetching this plugins information"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:192
-#: app/src/pages/activity-log/src/activity-list.vue:139
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:116
-msgid "1 minute ago"
+#: app/src/pages/plugins/src/plugin-inspect.vue:298
+msgid "Back to plugins"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:193
-#: app/src/pages/activity-log/src/activity-list.vue:140
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:117
-msgid "%d minutes ago"
+#: app/src/pages/plugins/src/plugin-inspect.vue:338
+msgid "Installs"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:199
-#: app/src/pages/activity-log/src/activity-list.vue:146
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:123
-msgid "1 hour ago"
+#: app/src/pages/plugins/src/plugin-inspect.vue:342
+msgid "Downloads"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:200
-#: app/src/pages/activity-log/src/activity-list.vue:147
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:124
-msgid "%d hours ago"
+#: app/src/pages/plugins/src/plugin-inspect.vue:346
+#: app/src/pages/plugins/src/plugin-card.vue:465
+msgid "Version"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:206
-#: app/src/pages/activity-log/src/activity-list.vue:153
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:130
-msgid "1 day ago"
+#: app/src/pages/plugins/src/plugin-inspect.vue:356
+#: app/src/pages/media/src/media-list-view.vue:1975
+#: app/src/components/utility/media-library/index.vue:1060
+msgid "Description"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:207
-#: app/src/pages/activity-log/src/activity-list.vue:154
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:131
-msgid "%d days ago"
+#: app/src/pages/plugins/src/plugin-inspect.vue:368
+msgid "Screenshots"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:308 app/src/pages/activity-log/src/activity-details-view.vue:357
-#: app/src/pages/activity-log/src/activity-list-view.vue:422
-msgid "Activity Details"
+#: app/src/pages/plugins/src/plugin-inspect.vue:390
+msgid "Installation"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:332
-msgid "User Information"
+#: app/src/pages/plugins/src/plugin-inspect.vue:402
+msgid "FAQ"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:360
-msgid "Timestamp"
+#: app/src/pages/plugins/src/plugin-inspect.vue:414
+msgid "Reviews"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:366
-msgid "IP Address"
+#: app/src/pages/plugins/src/plugin-inspect.vue:426
+msgid "Changelog"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:372
-msgid "User Agent"
+#: app/src/pages/plugins/src/plugin-inspect.vue:446
+msgid "Install plugin"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:380
-msgid "Changes"
+#: app/src/pages/plugins/src/plugin-inspect.vue:472
+#: app/src/pages/plugins/src/plugin-card.vue:415
+#: app/src/pages/plugins/src/plugin-actions.vue:173
+msgid "Deactivate"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:383
-msgid "Before"
+#: app/src/pages/plugins/src/plugin-inspect.vue:485
+#: app/src/pages/plugins/src/plugin-card.vue:381
+#: app/src/pages/settings/src/custom-renders/license-key.vue:88
+#: app/src/pages/plugins/src/plugin-actions.vue:166
+msgid "Activate"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:387
-msgid "After"
+#: app/src/pages/menu-creator/src/edit.vue:289
+msgid "Menu audience required"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-details-view.vue:400
-msgid "Metadata"
+#: app/src/pages/menu-creator/src/edit.vue:290
+msgid ""
+"To activate this menu, enable \"Apply menu to everyone\" or add at least "
+"one role/user in \"Apply to roles or users\"."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:318
+msgid "Menu updated"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:341
+#: app/src/pages/media/src/media-list-view.vue:845
+#: app/src/pages/posts/src/batchPublishPosts.js:21
+#: app/src/pages/posts/src/batchDeletePosts.js:21
+#: app/src/pages/posts/src/post-actions.vue:162
+#: app/src/components/app/batch-options/index.vue:62
+#: app/src/pages/plugins/src/plugin-card.vue:292
+#: app/src/pages/comments/src/comment-list-view.vue:331
+#: app/src/pages/users/src/user-list-view.vue:565
+#: app/src/components/utility/media-library/index.vue:377 app/src/components/utility/media-library/index.vue:467
+msgid "Are you sure?"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:342
+msgid "Deleted menus cannot be retrieved."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:343
+#: app/src/pages/posts/src/post-actions.vue:167
+#: app/src/components/utility/media-library/index.vue:379
+msgid "Yes delete it"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:362
+msgid "Menu deleted"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:557
+msgid "Custom menu item"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:570
+msgid "Custom Separator"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:611
+#: app/src/pages/settings/src/useSettingsData.js:287
+msgid "Please provide a valid JSON file"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:624 app/src/pages/menu-creator/src/edit.vue:633
+msgid "Invalid menu_meta: must be an object"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:650
+msgid "Error uploading menu"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:660
+msgid "Menu imported"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:663
+msgid "Unable to upload menu"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:713
+msgid "Back to list"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:735
+msgid "Export"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:747
+msgid "Import"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:779
+#: app/src/pages/posts/src/batch-edit.vue:196
+#: app/src/pages/plugins/src/plugin-card.vue:449
+#: app/src/pages/plugins/src/plugin-actions.vue:159
+msgid "Update"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:807
+msgid "New Separator"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:816
+msgid "New Link"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:977
+msgid "Menu Settings"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:982
+msgid "Whether this menu is active or not"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:994
+msgid "Menu name"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:995
+msgid "Name of your custom menu."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1007
+msgid "Apply menu to everyone"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1008
+msgid "This menu will be applied to everyone if enabled."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1025
+msgid "Apply to roles or users"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1026
+msgid "Set specific roles or users this menu applies to."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1040
+msgid "Exclude roles or users"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1041
+msgid "Set specific roles or users this menu won't apply to."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1070
+msgid "Separator"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1082
+msgid "Delete item"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1093
+msgid "Reset item"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1101
+msgid "Rename menu item"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1116
+msgid "Change the link of the URL"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1128
+#: app/src/components/app/menu/components/FavoritesSection.vue:161
+msgid "Icon"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1129
+msgid ""
+"Choose custom icon from the list or add a Base64 encoded Data URI. Icons "
+"only show for top level items. "
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1151
+msgid "Open in new tab"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1152
+msgid "This link will open in a new tab"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1165
+msgid "Hidden"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/edit.vue:1166
+msgid "The item will not be shown if hidden"
 msgstr ""
 
 #: app/src/pages/users/src/user-details-view.vue:202
@@ -2106,429 +2550,66 @@ msgstr ""
 msgid "No components available for this tab"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:618 app/src/pages/posts/index.vue:732 app/src/pages/posts/index.vue:832 app/src/pages/posts/index.vue:860
-msgid "New post"
+#: app/src/pages/database/src/layout.vue:242
+msgid "Search tables..."
 msgstr ""
 
-#: app/src/pages/posts/index.vue:651
-msgid "Search posts..."
+#: app/src/pages/database/src/layout.vue:256
+msgid "Ascending"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:677
-#: app/src/pages/media/src/media-list-view.vue:1686
-#: app/src/pages/activity-log/src/activity-list-view.vue:366
-msgid "item"
+#: app/src/pages/database/src/layout.vue:257
+msgid "Descending"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:678
-#: app/src/pages/media/src/media-list-view.vue:1687
-#: app/src/pages/activity-log/src/activity-list-view.vue:367
-msgid "items"
+#: app/src/pages/database/src/layout.vue:308
+msgid "Show non-WordPress tables only"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:690
-#: app/src/pages/activity-log/src/activity-list-view.vue:380
-#: app/src/pages/users/src/user-list-view.vue:1111
-#: app/src/pages/menu-creator/src/menu-list-view.vue:479
-#: app/src/pages/comments/src/comment-list-view.vue:642
-msgid "Previous"
+#: app/src/pages/database/src/layout.vue:312
+#: app/src/pages/media/src/media-list-view.vue:1562
+#: app/src/pages/comments/src/comment-list-view.vue:600
+#: app/src/pages/users/src/user-list-view.vue:1058
+msgid "Sort By"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:701
-#: app/src/pages/activity-log/src/activity-list-view.vue:392
-#: app/src/pages/users/src/user-list-view.vue:1123
-#: app/src/pages/menu-creator/src/menu-list-view.vue:491
-#: app/src/pages/comments/src/comment-list-view.vue:654
-msgid "Next"
+#: app/src/pages/database/src/layout.vue:347
+msgid "table"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:719
-msgid "Loading posts..."
+#: app/src/pages/database/src/layout.vue:348
+msgid "tables"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:729
-#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:320
-msgid "No posts found"
+#: app/src/pages/database/src/layout.vue:359
+msgid "Loading tables..."
 msgstr ""
 
-#: app/src/pages/posts/index.vue:740 app/src/pages/posts/index.vue:840 app/src/pages/posts/index.vue:868
-#: app/src/pages/settings/src/custom-renders/external-stylesheets.vue:91
-msgid "Add new"
+#: app/src/pages/database/src/layout.vue:370
+msgid "No tables found"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:792
-msgid "Sidebar View"
+#: app/src/pages/database/src/layout.vue:371
+msgid "No tables available"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:810
-#: app/src/components/app/search/state/constants.js:26
-msgid "Search posts"
+#: app/src/pages/database/src/layout.vue:404
+#: app/src/pages/database/src/table-view.vue:479
+#: app/src/pages/database/src/query-editor.vue:301 app/src/pages/database/src/query-editor.vue:329
+#: app/src/pages/users/src/user-import.vue:527
+msgid "rows"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:853
-msgid "Nothing found"
+#: app/src/pages/database/src/layout.vue:437
+msgid "Table Details"
 msgstr ""
 
-#: app/src/pages/posts/index.vue:854
-msgid "When you create new items they will show up here."
+#: app/src/pages/database/src/layout.vue:438
+msgid "Select a table from the list to view its structure and data."
 msgstr ""
 
-#: app/src/pages/posts/index.vue:971
-msgid "%s child items"
-msgstr ""
-
-#: app/src/pages/posts/index.vue:977
-msgid "%s child item"
-msgstr ""
-
-#: app/src/pages/posts/index.vue:1035
-msgid "item selected"
-msgstr ""
-
-#: app/src/pages/posts/index.vue:1036
-msgid "items selected"
-msgstr ""
-
-#: app/src/pages/posts/index.vue:1043
-msgid "Publish items"
-msgstr ""
-
-#: app/src/pages/posts/index.vue:1057
-msgid "Duplicate items"
-msgstr ""
-
-#: app/src/pages/posts/index.vue:1071
-msgid "Delete items"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:149
-msgid "Draft notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:171
-#: app/src/pages/admin-notices/src/edit.vue:264
-msgid "Notice created"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:268
-msgid "Search notices..."
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:284
-msgid "Loading notices..."
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:294
-msgid "No notices found"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:302
-msgid "Create Your First Notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:332
-msgid "Seen by"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:347
-#: app/src/pages/database/src/table-view.vue:684
-msgid "of"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:416
-msgid "Notice Editor"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:417
-msgid ""
-"Select a notice from the list to edit it, or create a new one to get "
-"started."
-msgstr ""
-
-#: app/src/pages/admin-notices/src/table.vue:432
-msgid "Create New Notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:121
-msgid "Info"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:124
-msgid "Success"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:130
-msgid "Warning"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:263
-msgid "Notice updated"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:292
-msgid "Notice deleted"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:317
-msgid "Untitled Notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:326 app/src/pages/admin-notices/src/edit.vue:507
-#: app/src/pages/menu-creator/src/edit.vue:137
-#: app/src/pages/plugins/src/plugin-card.vue:344
-msgid "Active"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:343
-msgid "Update Notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:344
-msgid "Create Notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:368
-msgid "Created"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:378
-msgid "Basic Information"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:386
-msgid "Enter notice title"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:391
-msgid "Content"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:395
-msgid "Enter notice content..."
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:402
-#: app/src/pages/posts/src/post-preview.vue:493
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1061
-msgid "Preview"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:441
-msgid "Notice Title"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:455
-msgid "Notice content will appear here..."
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:473
-msgid "Display Settings"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:476
-msgid "Notice Type"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:485
-msgid "Target Roles"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:494
-msgid "Dismissible"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:495
-msgid "Allow users to dismiss this notice"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:508
-msgid "Display this notice to users"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:522 app/src/pages/admin-notices/src/edit.vue:546
-msgid "Dismissed By"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:554
-msgid "No users have dismissed this notice yet"
-msgstr ""
-
-#: app/src/pages/admin-notices/src/edit.vue:570
-msgid "Loading Notice..."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:274
-msgid "Menu updated"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:297
-#: app/src/pages/media/src/media-list-view.vue:845
-#: app/src/pages/plugins/src/plugin-card.vue:292
-#: app/src/pages/users/src/user-list-view.vue:565
-#: app/src/pages/comments/src/comment-list-view.vue:331
-#: app/src/components/app/batch-options/index.vue:62
-#: app/src/pages/posts/src/batchPublishPosts.js:21
-#: app/src/pages/posts/src/batchDeletePosts.js:21
-#: app/src/pages/posts/src/post-actions.vue:162
-#: app/src/components/utility/media-library/index.vue:377 app/src/components/utility/media-library/index.vue:467
-msgid "Are you sure?"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:298
-msgid "Deleted menus cannot be retrieved."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:299
-#: app/src/pages/posts/src/post-actions.vue:167
-#: app/src/components/utility/media-library/index.vue:379
-msgid "Yes delete it"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:318
-msgid "Menu deleted"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:506
-msgid "Custom menu item"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:519
-msgid "Custom Separator"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:560
-#: app/src/pages/settings/src/useSettingsData.js:287
-msgid "Please provide a valid JSON file"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:573 app/src/pages/menu-creator/src/edit.vue:582
-msgid "Invalid menu_meta: must be an object"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:599
-msgid "Error uploading menu"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:609
-msgid "Menu imported"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:612
-msgid "Unable to upload menu"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:652
-msgid "Back to list"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:674
-msgid "Export"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:686
-msgid "Import"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:718
-#: app/src/pages/plugins/src/plugin-card.vue:449
-#: app/src/pages/posts/src/batch-edit.vue:196
-#: app/src/pages/plugins/src/plugin-actions.vue:159
-msgid "Update"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:746
-msgid "New Separator"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:755
-msgid "New Link"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:916
-msgid "Menu Settings"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:921
-msgid "Whether this menu is active or not"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:933
-msgid "Menu name"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:934
-msgid "Name of your custom menu."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:946
-msgid "Apply menu to everyone"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:947
-msgid "This menu will be applied to everyone if enabled."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:964
-msgid "Apply to roles or users"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:965
-msgid "Set specific roles or users this menu applies to."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:979
-msgid "Exclude roles or users"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:980
-msgid "Set specific roles or users this menu won't apply to."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1009
-msgid "Separator"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1021
-msgid "Delete item"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1032
-msgid "Reset item"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1040
-msgid "Rename menu item"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1055
-msgid "Change the link of the URL"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1067
-#: app/src/components/app/menu/components/FavoritesSection.vue:142
-msgid "Icon"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1068
-msgid ""
-"Choose custom icon from the list or add a Base64 encoded Data URI. Icons "
-"only show for top level items. "
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1090
-msgid "Open in new tab"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1091
-msgid "This link will open in a new tab"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1104
-msgid "Hidden"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/edit.vue:1105
-msgid "The item will not be shown if hidden"
+#: app/src/pages/database/src/layout.vue:452
+msgid "Open SQL Editor"
 msgstr ""
 
 #: app/src/pages/database/src/table-view.vue:162
@@ -2575,13 +2656,6 @@ msgstr ""
 
 #: app/src/pages/database/src/table-view.vue:437
 msgid "Error deleting table"
-msgstr ""
-
-#: app/src/pages/database/src/table-view.vue:479
-#: app/src/pages/database/src/layout.vue:404
-#: app/src/pages/database/src/query-editor.vue:301 app/src/pages/database/src/query-editor.vue:329
-#: app/src/pages/users/src/user-import.vue:527
-msgid "rows"
 msgstr ""
 
 #: app/src/pages/database/src/table-view.vue:494
@@ -2666,18 +2740,18 @@ msgid "Enter your password"
 msgstr ""
 
 #: app/src/pages/database/src/table-view.vue:775
-#: app/src/pages/role-editor/src/role-details-view.vue:470 app/src/pages/role-editor/src/role-details-view.vue:569 app/src/pages/role-editor/src/role-details-view.vue:704 app/src/pages/role-editor/src/role-details-view.vue:921
+#: app/src/pages/role-editor/src/role-details-view.vue:472 app/src/pages/role-editor/src/role-details-view.vue:575 app/src/pages/role-editor/src/role-details-view.vue:710 app/src/pages/role-editor/src/role-details-view.vue:947
 #: app/src/pages/media/src/media-list-view.vue:1990
+#: app/src/pages/posts/src/batch-edit.vue:185
 #: app/src/components/utility/image-editor/index.vue:1489 app/src/components/utility/image-editor/index.vue:2133
 #: app/src/pages/users/src/user-list-view.vue:1222 app/src/pages/users/src/user-list-view.vue:1635 app/src/pages/users/src/user-list-view.vue:1722
-#: app/src/pages/posts/src/batch-edit.vue:185
-#: app/src/pages/role-editor/src/role-list-view.vue:634
+#: app/src/pages/role-editor/src/role-list-view.vue:771
 #: app/src/pages/settings/src/custom-renders/google-analytics-connection.vue:717
-#: app/src/components/app/menu/components/FavoritesSection.vue:176
+#: app/src/components/app/menu/components/FavoritesSection.vue:195
 #: app/src/components/utility/remote-site-select/index.vue:247
-#: app/src/pages/users/src/user-import.vue:659
-#: app/src/components/utility/media-library/index.vue:1201
 #: app/src/components/utility/date-range-picker/index.vue:140
+#: app/src/components/utility/media-library/index.vue:1201
+#: app/src/pages/users/src/user-import.vue:659
 #: app/src/components/app/search/layout-fix-dialog.vue:973
 msgid "Cancel"
 msgstr ""
@@ -2688,61 +2762,6 @@ msgstr ""
 
 #: app/src/pages/database/src/table-view.vue:791
 msgid "Verify"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:242
-msgid "Search tables..."
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:256
-msgid "Ascending"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:257
-msgid "Descending"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:308
-msgid "Show non-WordPress tables only"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:312
-#: app/src/pages/media/src/media-list-view.vue:1562
-#: app/src/pages/users/src/user-list-view.vue:1058
-#: app/src/pages/comments/src/comment-list-view.vue:600
-msgid "Sort By"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:347
-msgid "table"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:348
-msgid "tables"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:359
-msgid "Loading tables..."
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:370
-msgid "No tables found"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:371
-msgid "No tables available"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:437
-msgid "Table Details"
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:438
-msgid "Select a table from the list to view its structure and data."
-msgstr ""
-
-#: app/src/pages/database/src/layout.vue:452
-msgid "Open SQL Editor"
 msgstr ""
 
 #: app/src/pages/database/src/query-editor.vue:92
@@ -2798,96 +2817,96 @@ msgstr ""
 msgid "No results yet. Execute a query to see results."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:184
+#: app/src/pages/role-editor/src/role-details-view.vue:186
 #: app/src/pages/dashboard/src/cards/server-health/component.vue:335
 msgid "Themes"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:186
+#: app/src/pages/role-editor/src/role-details-view.vue:188
 msgid "Other"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:210 app/src/pages/role-editor/src/role-details-view.vue:556
-#: app/src/pages/role-editor/src/role-list-view.vue:189
+#: app/src/pages/role-editor/src/role-details-view.vue:212 app/src/pages/role-editor/src/role-details-view.vue:562
+#: app/src/pages/role-editor/src/role-list-view.vue:215
 msgid "Invalid role format"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:230
+#: app/src/pages/role-editor/src/role-details-view.vue:232
 msgid "Role not found"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:245
+#: app/src/pages/role-editor/src/role-details-view.vue:247
 msgid "Failed to load role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:356
-#: app/src/pages/role-editor/src/role-list-view.vue:289
+#: app/src/pages/role-editor/src/role-details-view.vue:358
+#: app/src/pages/role-editor/src/role-list-view.vue:359
 msgid "Invalid role name"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:357
-#: app/src/pages/role-editor/src/role-list-view.vue:290
+#: app/src/pages/role-editor/src/role-details-view.vue:359
+#: app/src/pages/role-editor/src/role-list-view.vue:360
 msgid "Role name must be between 1 and 100 characters."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:380
+#: app/src/pages/role-editor/src/role-details-view.vue:382
 msgid "Role name updated"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:390
+#: app/src/pages/role-editor/src/role-details-view.vue:392
 msgid "Failed to update role name"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:455
+#: app/src/pages/role-editor/src/role-details-view.vue:457
 msgid "Invalid capabilities format"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:464
+#: app/src/pages/role-editor/src/role-details-view.vue:466
 msgid "Warning: Administrator Role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:465
+#: app/src/pages/role-editor/src/role-details-view.vue:467
 msgid ""
 "You are about to modify the administrator role capabilities. This is "
 "extremely dangerous and could lock you out of your site permanently. Are "
 "you absolutely sure you want to proceed?"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:469
+#: app/src/pages/role-editor/src/role-details-view.vue:471
 msgid "Yes, I understand the risk"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:494
+#: app/src/pages/role-editor/src/role-details-view.vue:496
 msgid "Capabilities updated"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:502
+#: app/src/pages/role-editor/src/role-details-view.vue:504
 msgid "Failed to update capabilities"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:563 app/src/pages/role-editor/src/role-details-view.vue:732
+#: app/src/pages/role-editor/src/role-details-view.vue:569 app/src/pages/role-editor/src/role-details-view.vue:738
 msgid "Delete Role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:564
+#: app/src/pages/role-editor/src/role-details-view.vue:570
 msgid ""
 "Are you sure you want to delete the role \"%s\"? This action cannot be "
 "undone."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:587
+#: app/src/pages/role-editor/src/role-details-view.vue:593
 msgid "Role deleted successfully"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:598
+#: app/src/pages/role-editor/src/role-details-view.vue:604
 msgid "Failed to delete role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:646
+#: app/src/pages/role-editor/src/role-details-view.vue:652
 msgid "Extreme Caution Required"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:647
+#: app/src/pages/role-editor/src/role-details-view.vue:653
 msgid ""
 "You are editing the Administrator role. Modifying capabilities incorrectly "
 "could permanently lock you out of your WordPress site. Only make changes if "
@@ -2895,72 +2914,286 @@ msgid ""
 "recommended to test changes on a staging site first."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:667
+#: app/src/pages/role-editor/src/role-details-view.vue:673
 msgid "Edit role name"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:693
+#: app/src/pages/role-editor/src/role-details-view.vue:699
 #: app/src/pages/settings/src/settings-panel.vue:133
 #: app/src/components/utility/image-editor/index.vue:2142
 #: app/src/pages/settings/src/custom-renders/google-analytics-connection.vue:559
-#: app/src/components/app/menu/components/FavoritesSection.vue:166
+#: app/src/components/app/menu/components/FavoritesSection.vue:185
 msgid "Save"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:710
+#: app/src/pages/role-editor/src/role-details-view.vue:716
 msgid "Admin"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:714
+#: app/src/pages/role-editor/src/role-details-view.vue:720
 #: app/src/pages/users/src/user-list-view.vue:1097
-#: app/src/pages/role-editor/src/role-list-view.vue:517
+#: app/src/pages/role-editor/src/role-list-view.vue:593
 msgid "user"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:715
+#: app/src/pages/role-editor/src/role-details-view.vue:721
 #: app/src/pages/users/src/user-list-view.vue:1098
-#: app/src/pages/role-editor/src/role-list-view.vue:518
+#: app/src/pages/role-editor/src/role-list-view.vue:594
 msgid "users"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:715
+#: app/src/pages/role-editor/src/role-details-view.vue:721
 msgid "with this role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:760
+#: app/src/pages/role-editor/src/role-details-view.vue:766
 msgid "capabilities selected"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:781
+#: app/src/pages/role-editor/src/role-details-view.vue:787
 msgid "Search capabilities..."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:809
+#: app/src/pages/role-editor/src/role-details-view.vue:815
 msgid "No capabilities found"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:810
+#: app/src/pages/role-editor/src/role-details-view.vue:816
 msgid "Try adjusting your search terms"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:837
+#: app/src/pages/role-editor/src/role-details-view.vue:843
 msgid "All selected"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:846
+#: app/src/pages/role-editor/src/role-details-view.vue:852
 msgid "Select All"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:850
+#: app/src/pages/role-editor/src/role-details-view.vue:856
 msgid "Deselect All"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:909
+#: app/src/pages/role-editor/src/role-details-view.vue:888
+msgid ""
+"Legacy WordPress user levels are kept for backward compatibility with older "
+"plugins. Modern permissions are usually controlled by named capabilities "
+"instead."
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-details-view.vue:898
+msgid "Legacy level"
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-details-view.vue:935
 msgid "You have unsaved changes"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-details-view.vue:911
+#: app/src/pages/role-editor/src/role-details-view.vue:937
 msgid "Admin Role"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:452
+msgid "1 item selected"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:453
+msgid "%d items selected"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:660
+#: app/src/components/utility/media-library/index.vue:456
+msgid "Files duplicated"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:666
+msgid "Error duplicating files"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:747
+msgid "Media updated successfully"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:753
+msgid "Error updating media"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:795
+msgid "Download started"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:816
+msgid "Files downloaded"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:823
+msgid "Error downloading files"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:840
+msgid "this file"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:841
+msgid "these %d files"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:846
+#: app/src/pages/comments/src/comment-list-view.vue:332
+#: app/src/pages/users/src/user-list-view.vue:566
+msgid "Are you sure you want to delete %s? This action cannot be undone."
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:850
+#: app/src/pages/comments/src/comment-list-view.vue:336
+#: app/src/pages/users/src/user-list-view.vue:570
+msgid "Yes, delete"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:884
+msgid "Media deleted successfully!"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1106 app/src/pages/media/src/media-list-view.vue:1132
+msgid "Upload failed"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1124
+msgid "Files uploaded successfully!"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1125
+msgid "%d file(s) uploaded"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1427
+msgid "Search media..."
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1459
+msgid "Images"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1471
+msgid "Videos"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1483
+msgid "Docs"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1495
+msgid "Fonts"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1517
+msgid "Grid View"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1518
+msgid "List View"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1590
+msgid "Date Range"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1640
+#: app/src/components/utility/tag-input/index.vue:494
+msgid "No tags available"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1645
+msgid "Options"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1660
+msgid "Unused Media Only"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1676
+msgid "Clear All Filters"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1716
+msgid "Drop files to upload"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1717
+msgid "Release to start uploading"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1732
+msgid "Loading media..."
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1743
+msgid "No media found"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1744
+msgid "No media files"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1750
+msgid "Clear filters"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1789
+msgid "Select a media file from the list to view details and edit properties."
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1836
+#: app/src/pages/posts/src/post-actions.vue:50
+#: app/src/pages/posts/src/post-preview.vue:421
+#: app/src/pages/comments/src/comment-list-view.vue:751
+#: app/src/pages/users/src/user-list-view.vue:1515
+msgid "View"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1846
+#: app/src/pages/users/src/user-list-view.vue:1525
+msgid "Bulk Edit"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1857
+msgid "Download"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1868
+#: app/src/pages/posts/src/post-actions.vue:57
+msgid "Duplicate"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1888
+#: app/src/pages/comments/src/comment-list-view.vue:801
+#: app/src/pages/users/src/user-list-view.vue:1545
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:702
+#: app/src/components/utility/media-library/index.vue:1186
+msgid "Clear selection"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1904
+#: app/src/components/app/menu/components/MenuSearch.vue:485
+#: app/src/components/app/search/components/EmptyStateInitial.vue:101
+msgid "Select"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1933
+msgid "Bulk Edit Media"
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1940
+msgid "Editing 1 item. Leave fields empty to keep existing values."
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1944
+msgid "Editing %d items. Leave fields empty to keep existing values."
+msgstr ""
+
+#: app/src/pages/media/src/media-list-view.vue:1954 app/src/pages/media/src/media-list-view.vue:1962 app/src/pages/media/src/media-list-view.vue:1970 app/src/pages/media/src/media-list-view.vue:1979
+#: app/src/pages/users/src/user-list-view.vue:1596 app/src/pages/users/src/user-list-view.vue:1605 app/src/pages/users/src/user-list-view.vue:1615 app/src/pages/users/src/user-list-view.vue:1624
+msgid "Leave empty to keep existing"
 msgstr ""
 
 #: app/src/pages/settings/src/settings-config.js:25
@@ -3341,7 +3574,7 @@ msgid ""
 msgstr ""
 
 #: app/src/pages/settings/src/settings-config.js:629
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:914
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:915
 msgid "Enable Font Uploads"
 msgstr ""
 
@@ -3493,207 +3726,32 @@ msgid ""
 "logs indefinitely."
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:452
-msgid "1 item selected"
+#: app/src/pages/settings/src/useLicense.js:42 app/src/pages/settings/src/useLicense.js:51
+msgid "Failed to activate key"
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:453
-msgid "%d items selected"
+#: app/src/pages/settings/src/useLicense.js:65
+msgid "Key already activated for this site"
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:660
-#: app/src/components/utility/media-library/index.vue:456
-msgid "Files duplicated"
+#: app/src/pages/settings/src/useLicense.js:66
+msgid "Key successfully activated"
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:666
-msgid "Error duplicating files"
+#: app/src/pages/settings/src/useLicense.js:73
+msgid "Network error during activation"
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:747
-msgid "Media updated successfully"
+#: app/src/pages/settings/src/useLicense.js:127 app/src/pages/settings/src/useLicense.js:169
+msgid "Instance removed"
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:753
-msgid "Error updating media"
+#: app/src/pages/settings/src/useLicense.js:156 app/src/pages/settings/src/useLicense.js:165
+msgid "Failed to remove activation"
 msgstr ""
 
-#: app/src/pages/media/src/media-list-view.vue:795
-msgid "Download started"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:816
-msgid "Files downloaded"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:823
-msgid "Error downloading files"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:840
-msgid "this file"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:841
-msgid "these %d files"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:846
-#: app/src/pages/users/src/user-list-view.vue:566
-#: app/src/pages/comments/src/comment-list-view.vue:332
-msgid "Are you sure you want to delete %s? This action cannot be undone."
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:850
-#: app/src/pages/users/src/user-list-view.vue:570
-#: app/src/pages/comments/src/comment-list-view.vue:336
-msgid "Yes, delete"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:884
-msgid "Media deleted successfully!"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1106 app/src/pages/media/src/media-list-view.vue:1132
-msgid "Upload failed"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1124
-msgid "Files uploaded successfully!"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1125
-msgid "%d file(s) uploaded"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1427
-msgid "Search media..."
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1459
-msgid "Images"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1471
-msgid "Videos"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1483
-msgid "Docs"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1495
-msgid "Fonts"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1517
-msgid "Grid View"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1518
-msgid "List View"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1590
-msgid "Date Range"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1640
-#: app/src/components/utility/tag-input/index.vue:494
-msgid "No tags available"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1645
-msgid "Options"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1660
-msgid "Unused Media Only"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1676
-msgid "Clear All Filters"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1716
-msgid "Drop files to upload"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1717
-msgid "Release to start uploading"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1732
-msgid "Loading media..."
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1743
-msgid "No media found"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1744
-msgid "No media files"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1750
-msgid "Clear filters"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1789
-msgid "Select a media file from the list to view details and edit properties."
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1836
-#: app/src/pages/users/src/user-list-view.vue:1515
-#: app/src/pages/comments/src/comment-list-view.vue:751
-#: app/src/pages/posts/src/post-actions.vue:50
-#: app/src/pages/posts/src/post-preview.vue:421
-msgid "View"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1846
-#: app/src/pages/users/src/user-list-view.vue:1525
-msgid "Bulk Edit"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1857
-msgid "Download"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1868
-#: app/src/pages/posts/src/post-actions.vue:57
-msgid "Duplicate"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1888
-#: app/src/pages/users/src/user-list-view.vue:1545
-#: app/src/pages/comments/src/comment-list-view.vue:801
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:701
-#: app/src/components/utility/media-library/index.vue:1186
-msgid "Clear selection"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1904
-#: app/src/components/app/menu/components/MenuSearch.vue:485
-#: app/src/components/app/search/components/EmptyStateInitial.vue:101
-msgid "Select"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1933
-msgid "Bulk Edit Media"
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1940
-msgid "Editing 1 item. Leave fields empty to keep existing values."
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1944
-msgid "Editing %d items. Leave fields empty to keep existing values."
-msgstr ""
-
-#: app/src/pages/media/src/media-list-view.vue:1954 app/src/pages/media/src/media-list-view.vue:1962 app/src/pages/media/src/media-list-view.vue:1970 app/src/pages/media/src/media-list-view.vue:1979
-#: app/src/pages/users/src/user-list-view.vue:1596 app/src/pages/users/src/user-list-view.vue:1605 app/src/pages/users/src/user-list-view.vue:1615 app/src/pages/users/src/user-list-view.vue:1624
-msgid "Leave empty to keep existing"
+#: app/src/pages/settings/src/useLicense.js:178
+msgid "Network error during removal"
 msgstr ""
 
 #: app/src/pages/settings/src/useSettingsData.js:198
@@ -3741,40 +3799,219 @@ msgstr ""
 msgid "Try a different search term or check another category."
 msgstr ""
 
-#: app/src/pages/settings/src/useLicense.js:42 app/src/pages/settings/src/useLicense.js:51
-msgid "Failed to activate key"
+#: app/src/components/app/toolbar/index.vue:138
+msgid "Toggle menu"
 msgstr ""
 
-#: app/src/pages/settings/src/useLicense.js:65
-msgid "Key already activated for this site"
-msgstr ""
-
-#: app/src/pages/settings/src/useLicense.js:66
-msgid "Key successfully activated"
-msgstr ""
-
-#: app/src/pages/settings/src/useLicense.js:73
-msgid "Network error during activation"
-msgstr ""
-
-#: app/src/pages/settings/src/useLicense.js:127 app/src/pages/settings/src/useLicense.js:169
-msgid "Instance removed"
-msgstr ""
-
-#: app/src/pages/settings/src/useLicense.js:156 app/src/pages/settings/src/useLicense.js:165
-msgid "Failed to remove activation"
-msgstr ""
-
-#: app/src/pages/settings/src/useLicense.js:178
-msgid "Network error during removal"
-msgstr ""
-
-#: app/src/components/app/menu/index.vue:603
+#: app/src/components/app/menu/index.vue:660
 msgid "Minify menu"
 msgstr ""
 
-#: app/src/components/app/toolbar/index.vue:127
-msgid "Toggle menu"
+#: app/src/components/app/admin-notices/ImportantNotices.vue:208
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:476
+msgid "Show less"
+msgstr ""
+
+#: app/src/components/app/admin-notices/ImportantNotices.vue:209
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:477
+msgid "Show more"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-list-view.vue:319
+msgid "Search activities..."
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-list-view.vue:327
+#: app/src/pages/settings/src/sections/RemoteSitesSection.vue:240
+msgid "Action"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-list-view.vue:345
+msgid "Object Type"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-list-view.vue:351
+msgid "All Types"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-list-view.vue:423
+msgid "Select an activity from the list to view detailed information."
+msgstr ""
+
+#: app/src/pages/posts/src/batchDuplicatePosts.js:47
+msgid "Items duplicated"
+msgstr ""
+
+#: app/src/pages/posts/src/batchPublishPosts.js:22
+msgid "Are you sure you want to publish these items?"
+msgstr ""
+
+#: app/src/pages/posts/src/batchPublishPosts.js:23
+msgid "Yes publish them"
+msgstr ""
+
+#: app/src/pages/posts/src/batchPublishPosts.js:45
+msgid "Items published"
+msgstr ""
+
+#: app/src/pages/posts/src/inline-user-select.vue:61
+#: app/src/components/utility/multiselect-roles-and-users/index.vue:66
+#: app/src/pages/users/src/user-list-view.vue:1471 app/src/pages/users/src/user-list-view.vue:1609
+#: app/src/pages/users/src/user-import.vue:118
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:294
+msgid "Roles"
+msgstr ""
+
+#: app/src/pages/posts/src/inline-user-select.vue:142
+msgid "Unknown user"
+msgstr ""
+
+#: app/src/pages/posts/src/inline-user-select.vue:151
+msgid "Update author"
+msgstr ""
+
+#: app/src/pages/posts/src/inline-user-select.vue:156
+#: app/src/pages/posts/src/table-filters.vue:185
+#: app/src/pages/posts/src/inline-status-select.vue:98
+#: app/src/components/utility/media-library/index.vue:751
+msgid "Search"
+msgstr ""
+
+#: app/src/pages/posts/src/batchDeletePosts.js:22
+#: app/src/components/app/batch-options/index.vue:63
+msgid "Are you sure you want to delete these items? This action cannot be undone."
+msgstr ""
+
+#: app/src/pages/posts/src/batchDeletePosts.js:23
+#: app/src/components/app/batch-options/index.vue:64
+#: app/src/components/utility/media-library/index.vue:469
+msgid "Yes delete them"
+msgstr ""
+
+#: app/src/pages/posts/src/batchDeletePosts.js:45
+msgid "Items deleted"
+msgstr ""
+
+#: app/src/pages/posts/src/inlineTitleUpdate.js:27
+msgid "Item title updated"
+msgstr ""
+
+#: app/src/pages/posts/src/updatePostAuthor.js:20
+msgid "Item author updated"
+msgstr ""
+
+#: app/src/pages/posts/src/updatePostStatus.js:18
+msgid "Item status updated"
+msgstr ""
+
+#: app/src/pages/posts/src/post-actions.vue:66
+msgid "Restore"
+msgstr ""
+
+#: app/src/pages/posts/src/post-actions.vue:155
+msgid "Item duplicated"
+msgstr ""
+
+#: app/src/pages/posts/src/post-actions.vue:163
+#: app/src/components/utility/media-library/index.vue:378
+msgid "Are you sure you want to delete this item? This action cannot be undone."
+msgstr ""
+
+#: app/src/pages/posts/src/post-actions.vue:185
+msgid "Item deleted"
+msgstr ""
+
+#: app/src/pages/posts/src/post-actions.vue:201
+msgid "Item restored"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:174
+msgid "Filters"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:179
+#: app/src/pages/posts/src/post-preview.vue:452
+#: app/src/pages/posts/src/batch-edit.vue:134
+#: app/src/pages/posts/src/category-select.vue:362
+msgid "Categories"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:190
+msgid "Date range"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:198
+msgid "Table settings"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:201
+msgid "Per page"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:212
+msgid "Order"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:221
+msgid "Order by"
+msgstr ""
+
+#: app/src/pages/posts/src/table-filters.vue:230
+msgid "Expand all posts"
+msgstr ""
+
+#: app/src/pages/posts/src/inline-status-select.vue:93
+msgid "Update status"
+msgstr ""
+
+#: app/src/pages/posts/src/constants.js:19
+msgid "Drafts"
+msgstr ""
+
+#: app/src/pages/posts/src/inline-image-select.vue:65
+msgid "Featured image updated"
+msgstr ""
+
+#: app/src/pages/posts/src/post-preview.vue:328
+msgid "Post Details"
+msgstr ""
+
+#: app/src/pages/posts/src/post-preview.vue:329
+msgid "Select a post from the list to view details and edit properties."
+msgstr ""
+
+#: app/src/pages/posts/src/post-preview.vue:441
+#: app/src/pages/posts/src/batch-edit.vue:168
+#: app/src/pages/plugins/src/plugin-card.vue:578
+msgid "Author"
+msgstr ""
+
+#: app/src/pages/posts/src/posts-list.vue:269
+msgid "child"
+msgstr ""
+
+#: app/src/pages/posts/src/posts-list.vue:270
+msgid "children"
+msgstr ""
+
+#: app/src/pages/posts/src/batch-edit.vue:57
+msgid "Publish changes?"
+msgstr ""
+
+#: app/src/pages/posts/src/batch-edit.vue:58
+msgid "Are you sure you want to batch update these items?"
+msgstr ""
+
+#: app/src/pages/posts/src/batch-edit.vue:59
+msgid "Yes update them"
+msgstr ""
+
+#: app/src/pages/posts/src/batch-edit.vue:89
+msgid "Items updated"
+msgstr ""
+
+#: app/src/pages/posts/src/batch-edit.vue:118 app/src/pages/posts/src/batch-edit.vue:129
+msgid "Batch edit"
 msgstr ""
 
 #: app/src/components/utility/image-editor/index.vue:248
@@ -3941,6 +4178,36 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
+#: app/src/components/utility/tag-input/index.vue:406
+msgid "Remove tag"
+msgstr ""
+
+#: app/src/components/utility/tag-input/index.vue:490
+msgid "Create tag"
+msgstr ""
+
+#: app/src/components/utility/multiselect-roles-and-users/index.vue:171
+#: app/src/components/utility/post-type-select/index.vue:114
+msgid "Items selected"
+msgstr ""
+
+#: app/src/components/utility/multiselect-roles-and-users/index.vue:172
+msgid "Select users or roles"
+msgstr ""
+
+#: app/src/components/app/batch-options/index.vue:77
+msgid "Selection deleted"
+msgstr ""
+
+#: app/src/components/app/batch-options/index.vue:98
+msgid "Bulk options"
+msgstr ""
+
+#: app/src/components/app/batch-options/index.vue:119
+#: app/src/components/utility/media-library/index.vue:1161
+msgid "Delete selected"
+msgstr ""
+
 #: app/src/pages/plugins/src/plugin-card.vue:293
 msgid "Are you sure you want to delete this plugin? This action cannot be undone."
 msgstr ""
@@ -3989,12 +4256,6 @@ msgstr ""
 msgid "Plugin Page"
 msgstr ""
 
-#: app/src/pages/plugins/src/plugin-card.vue:578
-#: app/src/pages/posts/src/batch-edit.vue:168
-#: app/src/pages/posts/src/post-preview.vue:441
-msgid "Author"
-msgstr ""
-
 #: app/src/pages/plugins/src/plugin-card.vue:593
 msgid "Plugin Information"
 msgstr ""
@@ -4023,18 +4284,6 @@ msgstr ""
 msgid "Allow WordPress to update this plugin automatically"
 msgstr ""
 
-#: app/src/pages/plugins/src/deactivatePlugin.js:24
-msgid "Plugin deactivated"
-msgstr ""
-
-#: app/src/components/utility/tag-input/index.vue:406
-msgid "Remove tag"
-msgstr ""
-
-#: app/src/components/utility/tag-input/index.vue:490
-msgid "Create tag"
-msgstr ""
-
 #: app/src/pages/plugins/src/plugin-repo-card.vue:169
 msgid "Install"
 msgstr ""
@@ -4043,25 +4292,168 @@ msgstr ""
 msgid "Installed"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-list-view.vue:319
-msgid "Search activities..."
+#: app/src/pages/menu-creator/src/menu-list-view.vue:183
+msgid "Menu deleted successfully!"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-list-view.vue:327
-#: app/src/pages/settings/src/sections/RemoteSitesSection.vue:240
-msgid "Action"
+#: app/src/pages/menu-creator/src/menu-list-view.vue:207
+msgid "Draft menu"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-list-view.vue:345
-msgid "Object Type"
+#: app/src/pages/menu-creator/src/menu-list-view.vue:243
+msgid "Menu created"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-list-view.vue:351
-msgid "All Types"
+#: app/src/pages/menu-creator/src/menu-list-view.vue:298
+msgid "Menu cache cleared"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-list-view.vue:423
-msgid "Select an activity from the list to view detailed information."
+#: app/src/pages/menu-creator/src/menu-list-view.vue:299
+msgid ""
+"The menu cache has been cleared successfully. All users will see fresh menu "
+"data."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:425
+msgid "Clear Cache"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:454
+msgid "Search menus..."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:494
+msgid "menu"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:495
+msgid "menus"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:538
+msgid "Loading menus..."
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:549
+msgid "No menus found"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:550
+msgid "No menus yet"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:560
+msgid "New menu"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:586
+msgid "Menu Editor"
+msgstr ""
+
+#: app/src/pages/menu-creator/src/menu-list-view.vue:587
+msgid "Select a menu from the list to edit its structure and settings."
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:294
+msgid "1 comment selected"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:295
+msgid "%d comments selected"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:327
+msgid "this comment"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:328
+msgid "these %d comments"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:368
+msgid "Comments updated successfully"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:373
+msgid "Error updating comments"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:404
+msgid "Comment deleted successfully!"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:529
+msgid "Search comments..."
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:557
+#: app/src/pages/comments/src/comment-details-view.vue:103
+#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:229
+msgid "Approved"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:566
+#: app/src/pages/comments/src/comment-details-view.vue:111
+#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:233
+#: app/src/pages/users/src/components/woocommerce-customer/woocommerce-customer.vue:198
+#: app/src/components/app/search/state/constants.js:93
+msgid "Pending"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:575
+#: app/src/pages/comments/src/comment-details-view.vue:119
+#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:237
+msgid "Spam"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:584 app/src/pages/comments/src/comment-list-view.vue:781
+#: app/src/pages/comments/src/comment-details-view.vue:127
+msgid "Trash"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:628
+msgid "comment"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:629
+msgid "comments"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:672
+msgid "Loading comments..."
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:683
+#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:295
+msgid "No comments found"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:684
+msgid "No comments yet"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:707
+msgid "Select a comment from the list to view details and edit properties."
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:761
+msgid "Approve"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:771
+msgid "Mark as Spam"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-list-view.vue:791
+msgid "Delete Permanently"
+msgstr ""
+
+#: app/src/pages/plugins/src/deactivatePlugin.js:24
+msgid "Plugin deactivated"
+msgstr ""
+
+#: app/src/components/utility/icon-select/index.vue:143
+msgid "Search icons"
 msgstr ""
 
 #: app/src/pages/users/src/user-list-view.vue:365
@@ -4174,8 +4566,8 @@ msgstr ""
 
 #: app/src/pages/users/src/user-list-view.vue:1255 app/src/pages/users/src/user-list-view.vue:1600
 #: app/src/pages/users/src/user-import.vue:111
-#: app/src/pages/users/src/components/woocommerce-customer/woocommerce-customer.vue:676
 #: app/src/pages/users/src/components/user-details-form/user-details-form.vue:243
+#: app/src/pages/users/src/components/woocommerce-customer/woocommerce-customer.vue:676
 msgid "Email"
 msgstr ""
 
@@ -4231,7 +4623,7 @@ msgid "Website"
 msgstr ""
 
 #: app/src/pages/users/src/user-list-view.vue:1456
-#: app/src/components/app/menu/components/FavoritesSection.vue:138
+#: app/src/components/app/menu/components/FavoritesSection.vue:157
 #: app/src/pages/comments/src/comment-details-view.vue:443
 #: app/src/pages/users/src/components/user-details-form/user-details-form.vue:269
 msgid "https://example.com"
@@ -4246,14 +4638,6 @@ msgstr ""
 #: app/src/pages/users/src/user-list-view.vue:1465
 #: app/src/pages/users/src/components/user-details-form/user-details-form.vue:278
 msgid "About the user"
-msgstr ""
-
-#: app/src/pages/users/src/user-list-view.vue:1471 app/src/pages/users/src/user-list-view.vue:1609
-#: app/src/components/utility/multiselect-roles-and-users/index.vue:66
-#: app/src/pages/posts/src/inline-user-select.vue:61
-#: app/src/pages/users/src/user-import.vue:118
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:294
-msgid "Roles"
 msgstr ""
 
 #: app/src/pages/users/src/user-list-view.vue:1477
@@ -4321,440 +4705,172 @@ msgstr ""
 msgid "Commerce"
 msgstr ""
 
-#: app/src/pages/menu-creator/src/menu-list-view.vue:181
-msgid "Menu deleted successfully!"
+#: app/src/pages/role-editor/src/role-list-view.vue:132
+msgid "Start from scratch"
 msgstr ""
 
-#: app/src/pages/menu-creator/src/menu-list-view.vue:205
-msgid "Draft menu"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:221
-msgid "Menu created"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:269
-msgid "Menu cache cleared"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:270
-msgid ""
-"The menu cache has been cleared successfully. All users will see fresh menu "
-"data."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:396
-msgid "Clear Cache"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:425
-msgid "Search menus..."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:465
-msgid "menu"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:466
-msgid "menus"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:509
-msgid "Loading menus..."
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:520
-msgid "No menus found"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:521
-msgid "No menus yet"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:531
-msgid "New menu"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:557
-msgid "Menu Editor"
-msgstr ""
-
-#: app/src/pages/menu-creator/src/menu-list-view.vue:558
-msgid "Select a menu from the list to edit its structure and settings."
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:294
-msgid "1 comment selected"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:295
-msgid "%d comments selected"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:327
-msgid "this comment"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:328
-msgid "these %d comments"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:368
-msgid "Comments updated successfully"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:373
-msgid "Error updating comments"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:404
-msgid "Comment deleted successfully!"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:529
-msgid "Search comments..."
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:557
-#: app/src/pages/comments/src/comment-details-view.vue:103
-#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:229
-msgid "Approved"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:566
-#: app/src/pages/comments/src/comment-details-view.vue:111
-#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:233
-#: app/src/pages/users/src/components/woocommerce-customer/woocommerce-customer.vue:198
-#: app/src/components/app/search/state/constants.js:93
-msgid "Pending"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:575
-#: app/src/pages/comments/src/comment-details-view.vue:119
-#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:237
-msgid "Spam"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:584 app/src/pages/comments/src/comment-list-view.vue:781
-#: app/src/pages/comments/src/comment-details-view.vue:127
-msgid "Trash"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:628
-msgid "comment"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:629
-msgid "comments"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:672
-msgid "Loading comments..."
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:683
-#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:295
-msgid "No comments found"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:684
-msgid "No comments yet"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:707
-msgid "Select a comment from the list to view details and edit properties."
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:761
-msgid "Approve"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:771
-msgid "Mark as Spam"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-list-view.vue:791
-msgid "Delete Permanently"
-msgstr ""
-
-#: app/src/components/utility/multiselect-roles-and-users/index.vue:171
-#: app/src/components/utility/post-type-select/index.vue:114
-msgid "Items selected"
-msgstr ""
-
-#: app/src/components/utility/multiselect-roles-and-users/index.vue:172
-msgid "Select users or roles"
-msgstr ""
-
-#: app/src/components/app/batch-options/index.vue:63
-#: app/src/pages/posts/src/batchDeletePosts.js:22
-msgid "Are you sure you want to delete these items? This action cannot be undone."
-msgstr ""
-
-#: app/src/components/app/batch-options/index.vue:64
-#: app/src/pages/posts/src/batchDeletePosts.js:23
-#: app/src/components/utility/media-library/index.vue:469
-msgid "Yes delete them"
-msgstr ""
-
-#: app/src/components/app/batch-options/index.vue:77
-msgid "Selection deleted"
-msgstr ""
-
-#: app/src/components/app/batch-options/index.vue:98
-msgid "Bulk options"
-msgstr ""
-
-#: app/src/components/app/batch-options/index.vue:119
-#: app/src/components/utility/media-library/index.vue:1161
-msgid "Delete selected"
-msgstr ""
-
-#: app/src/pages/posts/src/batchPublishPosts.js:22
-msgid "Are you sure you want to publish these items?"
-msgstr ""
-
-#: app/src/pages/posts/src/batchPublishPosts.js:23
-msgid "Yes publish them"
-msgstr ""
-
-#: app/src/pages/posts/src/batchPublishPosts.js:45
-msgid "Items published"
-msgstr ""
-
-#: app/src/pages/posts/src/batchDeletePosts.js:45
-msgid "Items deleted"
-msgstr ""
-
-#: app/src/pages/posts/src/inlineTitleUpdate.js:27
-msgid "Item title updated"
-msgstr ""
-
-#: app/src/pages/posts/src/updatePostAuthor.js:20
-msgid "Item author updated"
-msgstr ""
-
-#: app/src/pages/posts/src/batchDuplicatePosts.js:47
-msgid "Items duplicated"
-msgstr ""
-
-#: app/src/pages/posts/src/updatePostStatus.js:18
-msgid "Item status updated"
-msgstr ""
-
-#: app/src/pages/posts/src/inline-user-select.vue:142
-msgid "Unknown user"
-msgstr ""
-
-#: app/src/pages/posts/src/inline-user-select.vue:151
-msgid "Update author"
-msgstr ""
-
-#: app/src/pages/posts/src/inline-user-select.vue:156
-#: app/src/pages/posts/src/inline-status-select.vue:98
-#: app/src/pages/posts/src/table-filters.vue:185
-#: app/src/components/utility/media-library/index.vue:751
-msgid "Search"
-msgstr ""
-
-#: app/src/pages/posts/src/post-actions.vue:66
-msgid "Restore"
-msgstr ""
-
-#: app/src/pages/posts/src/post-actions.vue:155
-msgid "Item duplicated"
-msgstr ""
-
-#: app/src/pages/posts/src/post-actions.vue:163
-#: app/src/components/utility/media-library/index.vue:378
-msgid "Are you sure you want to delete this item? This action cannot be undone."
-msgstr ""
-
-#: app/src/pages/posts/src/post-actions.vue:185
-msgid "Item deleted"
-msgstr ""
-
-#: app/src/pages/posts/src/post-actions.vue:201
-msgid "Item restored"
-msgstr ""
-
-#: app/src/pages/posts/src/inline-status-select.vue:93
-msgid "Update status"
-msgstr ""
-
-#: app/src/pages/posts/src/inline-image-select.vue:65
-msgid "Featured image updated"
-msgstr ""
-
-#: app/src/pages/posts/src/batch-edit.vue:57
-msgid "Publish changes?"
-msgstr ""
-
-#: app/src/pages/posts/src/batch-edit.vue:58
-msgid "Are you sure you want to batch update these items?"
-msgstr ""
-
-#: app/src/pages/posts/src/batch-edit.vue:59
-msgid "Yes update them"
-msgstr ""
-
-#: app/src/pages/posts/src/batch-edit.vue:89
-msgid "Items updated"
-msgstr ""
-
-#: app/src/pages/posts/src/batch-edit.vue:118 app/src/pages/posts/src/batch-edit.vue:129
-msgid "Batch edit"
-msgstr ""
-
-#: app/src/pages/posts/src/batch-edit.vue:134
-#: app/src/pages/posts/src/table-filters.vue:179
-#: app/src/pages/posts/src/post-preview.vue:452
-#: app/src/pages/posts/src/category-select.vue:362
-msgid "Categories"
-msgstr ""
-
-#: app/src/pages/posts/src/constants.js:19
-msgid "Drafts"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:174
-msgid "Filters"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:190
-msgid "Date range"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:198
-msgid "Table settings"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:201
-msgid "Per page"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:212
-msgid "Order"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:221
-msgid "Order by"
-msgstr ""
-
-#: app/src/pages/posts/src/table-filters.vue:230
-msgid "Expand all posts"
-msgstr ""
-
-#: app/src/pages/posts/src/posts-list.vue:269
-msgid "child"
-msgstr ""
-
-#: app/src/pages/posts/src/posts-list.vue:270
-msgid "children"
-msgstr ""
-
-#: app/src/pages/posts/src/post-preview.vue:328
-msgid "Post Details"
-msgstr ""
-
-#: app/src/pages/posts/src/post-preview.vue:329
-msgid "Select a post from the list to view details and edit properties."
-msgstr ""
-
-#: app/src/pages/role-editor/src/role-list-view.vue:140
+#: app/src/pages/role-editor/src/role-list-view.vue:166
 msgid "Failed to load roles"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:280
+#: app/src/pages/role-editor/src/role-list-view.vue:232
+msgid "Copy of %s"
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:237
+msgid "Copy %2$d of %1$s"
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:350
 msgid "Role name is required"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:302
+#: app/src/pages/role-editor/src/role-list-view.vue:372
 msgid "Invalid role slug"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:315
+#: app/src/pages/role-editor/src/role-list-view.vue:385
 msgid "Role slug too long"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:316
+#: app/src/pages/role-editor/src/role-list-view.vue:386
 msgid "Role slug must be 60 characters or less."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:339
+#: app/src/pages/role-editor/src/role-list-view.vue:415
 msgid "Role created successfully"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:352
+#: app/src/pages/role-editor/src/role-list-view.vue:428
 msgid "Failed to create role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:447
+#: app/src/pages/role-editor/src/role-list-view.vue:523
 msgid "New Role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:460
+#: app/src/pages/role-editor/src/role-list-view.vue:536
 msgid "Search roles..."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:469
+#: app/src/pages/role-editor/src/role-list-view.vue:545
 msgid "role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:470
+#: app/src/pages/role-editor/src/role-list-view.vue:546
 msgid "roles"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:481
+#: app/src/pages/role-editor/src/role-list-view.vue:557
 msgid "Loading roles..."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:492
+#: app/src/pages/role-editor/src/role-list-view.vue:568
 msgid "No roles found"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:493
+#: app/src/pages/role-editor/src/role-list-view.vue:569
 msgid "No roles available"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:547
+#: app/src/pages/role-editor/src/role-list-view.vue:599
+msgid "Duplicate this role"
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:640
 msgid "Select a role from the list to view and edit its capabilities."
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:588
+#: app/src/pages/role-editor/src/role-list-view.vue:681
 msgid "Create New Role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:601
+#: app/src/pages/role-editor/src/role-list-view.vue:694
 msgid "Role Name"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:605
+#: app/src/pages/role-editor/src/role-list-view.vue:698
 msgid "e.g., Manager"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:609
+#: app/src/pages/role-editor/src/role-list-view.vue:702
 msgid "The display name for this role"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:612
+#: app/src/pages/role-editor/src/role-list-view.vue:705
 msgid "Role Slug"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:616
+#: app/src/pages/role-editor/src/role-list-view.vue:709
 msgid "e.g., manager"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:621
+#: app/src/pages/role-editor/src/role-list-view.vue:714
 msgid "Lowercase letters, numbers, hyphens, and underscores only"
 msgstr ""
 
-#: app/src/pages/role-editor/src/role-list-view.vue:645
+#: app/src/pages/role-editor/src/role-list-view.vue:721
+msgid "Start from Existing Role"
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:726
+msgid ""
+"This copies the selected role capabilities so you do not have to rebuild "
+"them manually. It is especially useful for legacy WordPress capability "
+"levels such as level_1 or level_5."
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:748
+msgid ""
+"This will copy all capabilities from %s, including legacy capability levels "
+"used by some older plugins."
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:756
+msgid ""
+"Choose a role here if you want a starting point instead of building "
+"capabilities from scratch."
+msgstr ""
+
+#: app/src/pages/role-editor/src/role-list-view.vue:782
 msgid "Create Role"
 msgstr ""
 
-#: app/src/components/utility/icon-select/index.vue:143
-msgid "Search icons"
+#: app/src/components/app/frontend-panel/PanelContent.vue:149
+#: app/src/components/app/menu/components/UserDetails.vue:467
+msgid "System"
+msgstr ""
+
+#: app/src/components/app/frontend-panel/PanelContent.vue:198
+msgid "Admin panel"
+msgstr ""
+
+#: app/src/components/app/frontend-panel/PanelContent.vue:207
+msgid "Close panel"
+msgstr ""
+
+#: app/src/components/app/frontend-panel/PanelContent.vue:225
+msgid "Toolbar"
+msgstr ""
+
+#: app/src/components/app/frontend-panel/PanelContent.vue:231
+msgid "Quick links"
+msgstr ""
+
+#: app/src/components/app/frontend-panel/PanelContent.vue:302
+msgid "Logout"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/layout-selector.vue:43
+msgid "Rounded"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/layout-selector.vue:47
+msgid "Bubble"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/color-scale.vue:125
+msgid "Clear custom properties"
 msgstr ""
 
 #: app/src/pages/settings/src/custom-renders/license-key.vue:57
@@ -4771,166 +4887,6 @@ msgstr ""
 
 #: app/src/pages/settings/src/custom-renders/license-key.vue:94
 msgid "Development server detected, no need to activate your licence key."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/color-scale.vue:125
-msgid "Clear custom properties"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/code-editor.vue:89
-msgid "Update settings"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/code-editor.vue:100
-msgid "Loading editor..."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/layout-selector.vue:43
-msgid "Rounded"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/layout-selector.vue:47
-msgid "Bubble"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:230
-msgid "System Default"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:231
-msgid "Google Fonts"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:232
-msgid "Custom URL"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:233
-msgid "Upload Font"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:645
-msgid "Font Source"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:679
-msgid "Select Font"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:696
-msgid "Click to change"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:715
-msgid "Search fonts..."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:745
-msgid "No fonts found"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:804
-msgid "Or enter custom:"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:808
-msgid "Font name..."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:817
-msgid "Font Weights"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:840
-msgid "Select weights to include. At least one is required."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:851
-msgid "Font Stylesheet URL"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:857
-msgid "https://fonts.googleapis.com/css2?family=..."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:868
-msgid "Enter the URL to an external font stylesheet (CSS file)"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:874 app/src/pages/settings/src/custom-renders/font-selector.vue:920
-msgid "Font Family Name"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:878
-msgid "e.g., Inter, Roboto, Custom Font"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:883
-msgid "The exact font-family name as defined in the stylesheet"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:901
-msgid "Font Uploads Disabled"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:902
-msgid ""
-"Font file uploads are currently disabled. Enable font uploads in the Media "
-"settings to upload custom font files (.woff2, .woff, .ttf, .otf)."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:924
-msgid "e.g., My Custom Font"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:929
-msgid "Choose a name for your custom font family"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:932
-msgid "Font Files"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:951 app/src/pages/settings/src/custom-renders/font-selector.vue:1017
-msgid "Opening Media Library..."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:952
-msgid "Click to select font files"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:953
-msgid "Supported formats: .woff2, .woff, .ttf, .otf"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:966
-msgid "Enable font uploads to add font files"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1024
-msgid "Select Font File"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1033
-msgid ""
-"Select font files from your media library. Supported: .woff2, .woff, .ttf, "
-".otf"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1056
-msgid "Loading font..."
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1063
-msgid "Weight:"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1098
-msgid "weights loaded"
-msgstr ""
-
-#: app/src/pages/settings/src/custom-renders/font-selector.vue:1115
-msgid "Reset to system default"
 msgstr ""
 
 #: app/src/pages/settings/src/sections/RemoteSitesSection.vue:98
@@ -5003,6 +4959,14 @@ msgstr ""
 msgid ""
 "Application passwords can be created in WordPress under Users > Profile > "
 "Application Passwords"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/code-editor.vue:89
+msgid "Update settings"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/code-editor.vue:100
+msgid "Loading editor..."
 msgstr ""
 
 #: app/src/pages/settings/src/custom-renders/google-analytics-connection.vue:235
@@ -5212,6 +5176,158 @@ msgstr ""
 msgid "Connect Google Analytics"
 msgstr ""
 
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:230
+msgid "System Default"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:231
+msgid "Google Fonts"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:232
+msgid "Custom URL"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:233
+msgid "Upload Font"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:646
+msgid "Font Source"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:680
+msgid "Select Font"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:697
+msgid "Click to change"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:716
+msgid "Search fonts..."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:746
+msgid "No fonts found"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:805
+msgid "Or enter custom:"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:809
+msgid "Font name..."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:818
+msgid "Font Weights"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:841
+msgid "Select weights to include. At least one is required."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:852
+msgid "Font Stylesheet URL"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:858
+msgid "https://fonts.googleapis.com/css2?family=..."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:869
+msgid "Enter the URL to an external font stylesheet (CSS file)"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:875 app/src/pages/settings/src/custom-renders/font-selector.vue:921
+msgid "Font Family Name"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:879
+msgid "e.g., Inter, Roboto, Custom Font"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:884
+msgid "The exact font-family name as defined in the stylesheet"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:902
+msgid "Font Uploads Disabled"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:903
+msgid ""
+"Font file uploads are currently disabled. Enable font uploads in the Media "
+"settings to upload custom font files (.woff2, .woff, .ttf, .otf)."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:925
+msgid "e.g., My Custom Font"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:930
+msgid "Choose a name for your custom font family"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:933
+msgid "Font Files"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:952 app/src/pages/settings/src/custom-renders/font-selector.vue:1018
+msgid "Opening Media Library..."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:953
+msgid "Click to select font files"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:954
+msgid "Supported formats: .woff2, .woff, .ttf, .otf"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:967
+msgid "Enable font uploads to add font files"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1025
+msgid "Select Font File"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1034
+msgid ""
+"Select font files from your media library. Supported: .woff2, .woff, .ttf, "
+".otf"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1057
+msgid "Loading font..."
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1064
+msgid "Weight:"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1099
+msgid "weights loaded"
+msgstr ""
+
+#: app/src/pages/settings/src/custom-renders/font-selector.vue:1116
+msgid "Reset to system default"
+msgstr ""
+
+#: app/src/pages/media/src/media-list.vue:413
+msgid "Loading more..."
+msgstr ""
+
+#: app/src/pages/media/src/media-list.vue:416
+msgid "No more items"
+msgstr ""
+
+#: app/src/pages/activity-log/src/activity-list.vue:317
+msgid "No activities found"
+msgstr ""
+
 #: app/src/components/app/menu/components/UserDetails.vue:227
 msgid "Edit Profile"
 msgstr ""
@@ -5236,11 +5352,6 @@ msgstr ""
 msgid "Dark Mode"
 msgstr ""
 
-#: app/src/components/app/menu/components/UserDetails.vue:467
-#: app/src/components/app/frontend-panel/PanelContent.vue:149
-msgid "System"
-msgstr ""
-
 #: app/src/components/app/menu/components/UserDetails.vue:478
 #: app/src/components/app/search/components/QuickActions.vue:42
 msgid "Quick Actions"
@@ -5248,6 +5359,18 @@ msgstr ""
 
 #: app/src/components/app/menu/components/UserDetails.vue:491
 msgid "Focus Search"
+msgstr ""
+
+#: app/src/components/app/menu/components/FavoritesSection.vue:110
+msgid "Shortcuts"
+msgstr ""
+
+#: app/src/components/app/menu/components/FavoritesSection.vue:147
+msgid "Shortcut name"
+msgstr ""
+
+#: app/src/components/app/menu/components/FavoritesSection.vue:174
+msgid "icon name"
 msgstr ""
 
 #: app/src/components/app/menu/components/MenuSearch.vue:385
@@ -5271,53 +5394,9 @@ msgstr ""
 msgid "Navigate"
 msgstr ""
 
-#: app/src/components/app/menu/components/FavoritesSection.vue:91
-msgid "Shortcuts"
-msgstr ""
-
-#: app/src/components/app/menu/components/FavoritesSection.vue:128
-msgid "Shortcut name"
-msgstr ""
-
-#: app/src/components/app/menu/components/FavoritesSection.vue:155
-msgid "icon name"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:301
-msgid "Back to menu"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:314
-#: app/src/components/app/admin-notices/index.vue:147
+#: app/src/components/app/admin-notices/index.vue:149
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:316
 msgid "Notifications"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:318
-msgid "unread"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:330
-msgid "Updates Available"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:403
-msgid "Awaiting moderation"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:424
-msgid "You're all caught up"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:425
-msgid "No new notifications"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:474
-msgid "Show less"
-msgstr ""
-
-#: app/src/components/app/admin-notices/NotificationsPanel.vue:475
-msgid "Show more"
 msgstr ""
 
 #: app/src/components/utility/remote-site-select/index.vue:94 app/src/components/utility/remote-site-select/index.vue:114 app/src/components/utility/remote-site-select/index.vue:145 app/src/components/utility/remote-site-select/index.vue:358
@@ -5368,12 +5447,41 @@ msgstr ""
 msgid "No sites found"
 msgstr ""
 
-#: app/src/pages/media/src/media-list.vue:413
-msgid "Loading more..."
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:303
+msgid "Back to menu"
 msgstr ""
 
-#: app/src/pages/media/src/media-list.vue:416
-msgid "No more items"
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:320
+msgid "unread"
+msgstr ""
+
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:332
+msgid "Updates Available"
+msgstr ""
+
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:405
+msgid "Awaiting moderation"
+msgstr ""
+
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:426
+msgid "You're all caught up"
+msgstr ""
+
+#: app/src/components/app/admin-notices/NotificationsPanel.vue:427
+msgid "No new notifications"
+msgstr ""
+
+#: app/src/pages/posts/src/category-select.vue:411 app/src/pages/posts/src/category-select.vue:414
+#: app/src/pages/posts/src/tag-select.vue:411 app/src/pages/posts/src/tag-select.vue:414
+msgid "No products found"
+msgstr ""
+
+#: app/src/components/utility/date-range-picker/index.vue:108
+msgid "Select date"
+msgstr ""
+
+#: app/src/components/utility/date-range-picker/index.vue:154
+msgid "Set date"
 msgstr ""
 
 #: app/src/pages/plugins/src/plugin-actions.vue:133
@@ -5404,28 +5512,140 @@ msgstr ""
 msgid "Auto update disabled"
 msgstr ""
 
-#: app/src/components/app/frontend-panel/PanelContent.vue:198
-msgid "Admin panel"
+#: app/src/components/utility/media-library/index.vue:142
+#: app/src/pages/comments/src/comment-details-view.vue:412 app/src/pages/comments/src/comment-details-view.vue:552
+msgid "Date"
 msgstr ""
 
-#: app/src/components/app/frontend-panel/PanelContent.vue:207
-msgid "Close panel"
+#: app/src/components/utility/media-library/index.vue:366
+msgid "File updated"
 msgstr ""
 
-#: app/src/components/app/frontend-panel/PanelContent.vue:225
-msgid "Toolbar"
+#: app/src/components/utility/media-library/index.vue:391
+msgid "File deleted"
 msgstr ""
 
-#: app/src/components/app/frontend-panel/PanelContent.vue:231
-msgid "Quick links"
+#: app/src/components/utility/media-library/index.vue:468
+msgid "Are you sure you want to delete these files? This action cannot be undone."
 msgstr ""
 
-#: app/src/components/app/frontend-panel/PanelContent.vue:302
-msgid "Logout"
+#: app/src/components/utility/media-library/index.vue:485
+msgid "Files deleted"
 msgstr ""
 
-#: app/src/pages/activity-log/src/activity-list.vue:317
-msgid "No activities found"
+#: app/src/components/utility/media-library/index.vue:585
+msgid "File uploaded"
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:762
+msgid "File type"
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:864
+msgid "Upload"
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:997
+#: app/src/components/app/search/components/EmptyStateNoResults.vue:37
+msgid "No results found"
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:998
+msgid "Edit your search criteria, or upload a new file."
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:1038
+msgid "Alt text"
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:1174
+msgid "Duplicate selected"
+msgstr ""
+
+#: app/src/components/utility/media-library/index.vue:1210
+msgid "Done"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:169
+msgid "Comment not found"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:252
+msgid "Comment updated successfully"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:261
+msgid "Failed to update comment"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:277
+msgid "Are you sure you want to delete this comment? This action cannot be undone."
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:298
+msgid "Comment deleted successfully"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:305
+msgid "Failed to delete comment"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:407
+msgid "Anonymous"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:411
+msgid "Comment ID"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:419
+msgid "Author Name"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:423
+msgid "Author name"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:428
+msgid "Author Email"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:433
+msgid "author@example.com"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:438
+msgid "Author URL"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:544
+msgid "Comment"
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:548
+msgid "Comment content..."
+msgstr ""
+
+#: app/src/pages/comments/src/comment-details-view.vue:567
+msgid "Update Comment"
+msgstr ""
+
+#: app/src/components/app/toolbar/src/buttons/view-site/component.vue:35
+#: app/src/components/app/search/composables/useQuickActions.js:61
+msgid "View site"
+msgstr ""
+
+#: app/src/components/app/toolbar/src/buttons/view-site/component.vue:54
+#: app/src/components/app/search/composables/useQuickActions.js:55
+msgid "View dashboard"
+msgstr ""
+
+#: app/src/components/app/toolbar/src/buttons/screen-options/component.vue:64
+msgid "Screen options"
+msgstr ""
+
+#: app/src/components/app/toolbar/src/buttons/help/component.vue:63
+msgid "Help"
 msgstr ""
 
 #: app/src/pages/users/src/user-list.vue:115
@@ -5560,135 +5780,22 @@ msgstr ""
 msgid "Start Import"
 msgstr ""
 
-#: app/src/components/utility/media-library/index.vue:142
-#: app/src/pages/comments/src/comment-details-view.vue:412 app/src/pages/comments/src/comment-details-view.vue:552
-msgid "Date"
+#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:210
+msgid "Recent Posts"
 msgstr ""
 
-#: app/src/components/utility/media-library/index.vue:366
-msgid "File updated"
+#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:211
+msgid "Latest content activity"
 msgstr ""
 
-#: app/src/components/utility/media-library/index.vue:391
-msgid "File deleted"
+#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:215
+#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:223
+msgid "total"
 msgstr ""
 
-#: app/src/components/utility/media-library/index.vue:468
-msgid "Are you sure you want to delete these files? This action cannot be undone."
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:485
-msgid "Files deleted"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:585
-msgid "File uploaded"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:762
-msgid "File type"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:864
-msgid "Upload"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:997
-#: app/src/components/app/search/components/EmptyStateNoResults.vue:37
-msgid "No results found"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:998
-msgid "Edit your search criteria, or upload a new file."
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:1038
-msgid "Alt text"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:1174
-msgid "Duplicate selected"
-msgstr ""
-
-#: app/src/components/utility/media-library/index.vue:1210
-msgid "Done"
-msgstr ""
-
-#: app/src/pages/posts/src/tag-select.vue:411 app/src/pages/posts/src/tag-select.vue:414
-#: app/src/pages/posts/src/category-select.vue:411 app/src/pages/posts/src/category-select.vue:414
-msgid "No products found"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:169
-msgid "Comment not found"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:252
-msgid "Comment updated successfully"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:261
-msgid "Failed to update comment"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:277
-msgid "Are you sure you want to delete this comment? This action cannot be undone."
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:298
-msgid "Comment deleted successfully"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:305
-msgid "Failed to delete comment"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:407
-msgid "Anonymous"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:411
-msgid "Comment ID"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:419
-msgid "Author Name"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:423
-msgid "Author name"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:428
-msgid "Author Email"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:433
-msgid "author@example.com"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:438
-msgid "Author URL"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:544
-msgid "Comment"
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:548
-msgid "Comment content..."
-msgstr ""
-
-#: app/src/pages/comments/src/comment-details-view.vue:567
-msgid "Update Comment"
-msgstr ""
-
-#: app/src/components/utility/date-range-picker/index.vue:108
-msgid "Select date"
-msgstr ""
-
-#: app/src/components/utility/date-range-picker/index.vue:154
-msgid "Set date"
+#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:325
+#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:300
+msgid "View all"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/recent-comments/component.vue:218
@@ -5699,62 +5806,48 @@ msgstr ""
 msgid "Latest comments and discussions"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:223
-#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:215
-msgid "total"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:225
+msgid "Server Health"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/recent-comments/component.vue:300
-#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:325
-msgid "View all"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:226
+msgid "System performance and updates"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:226
-msgid "Loading user analytics..."
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:232
+msgid "updates"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:236
-msgid "Failed to load user analytics"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:263
+msgid "WordPress"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:240
-#: app/src/pages/dashboard/src/cards/media-analytics/component.vue:209
-#: app/src/pages/dashboard/src/cards/scheduled-posts/component.vue:223
-#: app/src/pages/dashboard/src/cards/page-views-chart/component.vue:431
-#: app/src/pages/dashboard/src/cards/analytics-map/component.vue:508
-msgid "Try again"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:273
+msgid "PHP"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:248
-msgid "User Analytics"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:285
+msgid "Memory Usage"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:249
-msgid "User registration trends"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:307
+msgid "Disk Space"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:256
-msgid "Total Users"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:342
+msgid "Core"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:260
-msgid "In Range"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:351
+msgid "SSL:"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:264
-msgid "Recent (7d)"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:358
+msgid "Timezone:"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/users-chart/component.vue:287
-msgid "No user data available"
-msgstr ""
-
-#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:210
-msgid "Recent Posts"
-msgstr ""
-
-#: app/src/pages/dashboard/src/cards/recent-posts/component.vue:211
-msgid "Latest content activity"
+#: app/src/pages/dashboard/src/cards/server-health/component.vue:369
+msgid "No health data available"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/media-analytics/component.vue:195
@@ -5763,6 +5856,14 @@ msgstr ""
 
 #: app/src/pages/dashboard/src/cards/media-analytics/component.vue:205
 msgid "Failed to load media analytics"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/media-analytics/component.vue:209
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:240
+#: app/src/pages/dashboard/src/cards/scheduled-posts/component.vue:223
+#: app/src/pages/dashboard/src/cards/page-views-chart/component.vue:431
+#: app/src/pages/dashboard/src/cards/analytics-map/component.vue:508
+msgid "Try again"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/media-analytics/component.vue:217
@@ -5809,48 +5910,36 @@ msgstr ""
 msgid "No media data available"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:225
-msgid "Server Health"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:226
+msgid "Loading user analytics..."
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:226
-msgid "System performance and updates"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:236
+msgid "Failed to load user analytics"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:232
-msgid "updates"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:248
+msgid "User Analytics"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:263
-msgid "WordPress"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:249
+msgid "User registration trends"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:273
-msgid "PHP"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:256
+msgid "Total Users"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:285
-msgid "Memory Usage"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:260
+msgid "In Range"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:307
-msgid "Disk Space"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:264
+msgid "Recent (7d)"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:342
-msgid "Core"
-msgstr ""
-
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:351
-msgid "SSL:"
-msgstr ""
-
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:358
-msgid "Timezone:"
-msgstr ""
-
-#: app/src/pages/dashboard/src/cards/server-health/component.vue:369
-msgid "No health data available"
+#: app/src/pages/dashboard/src/cards/users-chart/component.vue:287
+msgid "No user data available"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/scheduled-posts/component.vue:209
@@ -5916,13 +6005,13 @@ msgid "Users currently browsing"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/active-users/component.vue:177
-#: app/src/pages/dashboard/src/cards/page-views-chart/component.vue:464
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:261
-#: app/src/pages/dashboard/src/cards/top-countries/component.vue:303
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:263
-#: app/src/pages/dashboard/src/cards/analytics-map/component.vue:541
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:316
 #: app/src/pages/dashboard/src/cards/device-usage/component.vue:264
+#: app/src/pages/dashboard/src/cards/page-views-chart/component.vue:464
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:263
+#: app/src/pages/dashboard/src/cards/top-countries/component.vue:303
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:316
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:261
+#: app/src/pages/dashboard/src/cards/analytics-map/component.vue:541
 msgid "Retry"
 msgstr ""
 
@@ -5932,6 +6021,26 @@ msgstr ""
 
 #: app/src/pages/dashboard/src/cards/active-users/component.vue:198
 msgid "Last 5 minutes"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/device-usage/component.vue:235
+msgid "Device Usage"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/device-usage/component.vue:236
+msgid "Device type distribution"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/device-usage/component.vue:277
+msgid "unique visitors"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/device-usage/component.vue:299
+msgid "No device data available"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/device-usage/component.vue:300
+msgid "Device data will appear when visitors browse your site"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/page-views-chart/component.vue:417
@@ -5955,34 +6064,34 @@ msgstr ""
 msgid "Website traffic trends"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:227
-msgid "Top Referrers"
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:234
+msgid "Top Pages"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:228
-msgid "Most traffic sources"
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:235
+msgid "Most visited pages"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:232
-msgid "sources"
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:239
+msgid "pages"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:266
-msgid "SOURCE"
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:268
+msgid "PAGE"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:267
-#: app/src/pages/dashboard/src/cards/top-countries/component.vue:309
 #: app/src/pages/dashboard/src/cards/top-pages/component.vue:269
+#: app/src/pages/dashboard/src/cards/top-countries/component.vue:309
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:267
 msgid "VISITORS"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:317
-msgid "No referrer data available"
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:302
+msgid "No page data available"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:318
-msgid "Referrer data will appear when visitors arrive from external sources"
+#: app/src/pages/dashboard/src/cards/top-pages/component.vue:303
+msgid "Page data will appear when visitors browse your site"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/top-countries/component.vue:269
@@ -6010,28 +6119,52 @@ msgstr ""
 msgid "Country data will appear when visitors browse your site"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:234
-msgid "Top Pages"
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:291
+msgid "Engagement"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:235
-msgid "Most visited pages"
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:292
+msgid "User behavior metrics"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:239
-msgid "pages"
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:323
+msgid "Bounce Rate"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:268
-msgid "PAGE"
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:360
+msgid "Avg. Time on Site"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:302
-msgid "No page data available"
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:400
+msgid "No engagement data available"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/top-pages/component.vue:303
-msgid "Page data will appear when visitors browse your site"
+#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:401
+msgid "Engagement data will appear when users interact with your site"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:227
+msgid "Top Referrers"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:228
+msgid "Most traffic sources"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:232
+msgid "sources"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:266
+msgid "SOURCE"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:317
+msgid "No referrer data available"
+msgstr ""
+
+#: app/src/pages/dashboard/src/cards/top-referrers/component.vue:318
+msgid "Referrer data will appear when visitors arrive from external sources"
 msgstr ""
 
 #: app/src/pages/dashboard/src/cards/analytics-map/component.vue:474
@@ -6078,48 +6211,44 @@ msgstr ""
 msgid "Location data will appear when visitors browse your site"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:291
-msgid "Engagement"
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:285
+msgid "Recent Activity"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:292
-msgid "User behavior metrics"
+#: app/src/pages/users/src/components/user-activity/user-activity.vue:330
+msgid "No recent activity"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:323
-msgid "Bounce Rate"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:173
+msgid "User updated successfully"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:360
-msgid "Avg. Time on Site"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:183
+msgid "Failed to update user"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:400
-msgid "No engagement data available"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:229
+msgid "Update User"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/bounce-rate-time/component.vue:401
-msgid "Engagement data will appear when users interact with your site"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:238
+msgid "User name"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/device-usage/component.vue:235
-msgid "Device Usage"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:261
+msgid "Username cannot be changed"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/device-usage/component.vue:236
-msgid "Device type distribution"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:284
+msgid "New Password"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/device-usage/component.vue:277
-msgid "unique visitors"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:289
+msgid "Leave blank to keep current password"
 msgstr ""
 
-#: app/src/pages/dashboard/src/cards/device-usage/component.vue:299
-msgid "No device data available"
-msgstr ""
-
-#: app/src/pages/dashboard/src/cards/device-usage/component.vue:300
-msgid "Device data will appear when visitors browse your site"
+#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:308
+msgid "Send an email notification to the user about the changes."
 msgstr ""
 
 #: app/src/pages/users/src/components/woocommerce-customer/woocommerce-customer.vue:199
@@ -6198,62 +6327,16 @@ msgstr ""
 msgid "No WooCommerce customer data found for this user"
 msgstr ""
 
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:173
-msgid "User updated successfully"
+#: app/src/pages/settings/src/text-pairs.vue:41
+msgid "Find"
 msgstr ""
 
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:183
-msgid "Failed to update user"
+#: app/src/pages/settings/src/text-pairs.vue:47
+msgid "Replace"
 msgstr ""
 
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:229
-msgid "Update User"
-msgstr ""
-
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:238
-msgid "User name"
-msgstr ""
-
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:261
-msgid "Username cannot be changed"
-msgstr ""
-
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:284
-msgid "New Password"
-msgstr ""
-
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:289
-msgid "Leave blank to keep current password"
-msgstr ""
-
-#: app/src/pages/users/src/components/user-details-form/user-details-form.vue:308
-msgid "Send an email notification to the user about the changes."
-msgstr ""
-
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:285
-msgid "Recent Activity"
-msgstr ""
-
-#: app/src/pages/users/src/components/user-activity/user-activity.vue:330
-msgid "No recent activity"
-msgstr ""
-
-#: app/src/components/app/toolbar/src/buttons/help/component.vue:63
-msgid "Help"
-msgstr ""
-
-#: app/src/components/app/toolbar/src/buttons/screen-options/component.vue:64
-msgid "Screen options"
-msgstr ""
-
-#: app/src/components/app/toolbar/src/buttons/view-site/component.vue:35
-#: app/src/components/app/search/composables/useQuickActions.js:61
-msgid "View site"
-msgstr ""
-
-#: app/src/components/app/toolbar/src/buttons/view-site/component.vue:54
-#: app/src/components/app/search/composables/useQuickActions.js:55
-msgid "View dashboard"
+#: app/src/pages/settings/src/text-pairs.vue:67
+msgid "New item"
 msgstr ""
 
 #: app/src/components/utility/code-editor/index.vue:222
@@ -6262,6 +6345,34 @@ msgstr ""
 
 #: app/src/components/utility/code-editor/index.vue:265
 msgid "Finished"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:43
+msgid "New Post"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:49
+msgid "New Page"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:67
+msgid "Site settings"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:74
+msgid "Dark mode"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:81
+msgid "Light mode"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:88
+msgid "Enable magic dark mode for this page"
+msgstr ""
+
+#: app/src/components/app/search/composables/useQuickActions.js:95
+msgid "Disable magic dark mode for this page"
 msgstr ""
 
 #: app/src/components/app/search/layout-fix-dialog.vue:111
@@ -6397,56 +6508,54 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: app/src/components/app/search/composables/useQuickActions.js:43
-msgid "New Post"
-msgstr ""
-
-#: app/src/components/app/search/composables/useQuickActions.js:49
-msgid "New Page"
-msgstr ""
-
-#: app/src/components/app/search/composables/useQuickActions.js:67
-msgid "Site settings"
-msgstr ""
-
-#: app/src/components/app/search/composables/useQuickActions.js:74
-msgid "Dark mode"
-msgstr ""
-
-#: app/src/components/app/search/composables/useQuickActions.js:81
-msgid "Light mode"
-msgstr ""
-
-#: app/src/components/app/search/composables/useQuickActions.js:88
-msgid "Enable magic dark mode for this page"
-msgstr ""
-
-#: app/src/components/app/search/composables/useQuickActions.js:95
-msgid "Disable magic dark mode for this page"
-msgstr ""
-
-#: app/src/pages/settings/src/text-pairs.vue:41
-msgid "Find"
-msgstr ""
-
-#: app/src/pages/settings/src/text-pairs.vue:47
-msgid "Replace"
-msgstr ""
-
-#: app/src/pages/settings/src/text-pairs.vue:67
-msgid "New item"
+#: app/src/components/utility/image-select/index.vue:106
+msgid "url"
 msgstr ""
 
 #: app/src/components/utility/post-type-select/index.vue:115
 msgid "Select post types"
 msgstr ""
 
+#: app/src/components/app/search/state/constants.js:33
+msgid "Find users"
+msgstr ""
+
+#: app/src/components/app/search/state/constants.js:40
+msgid "Quick actions"
+msgstr ""
+
+#: app/src/components/app/search/state/constants.js:47
+msgid "View commands"
+msgstr ""
+
+#: app/src/components/app/search/state/constants.js:94
+msgid "Private"
+msgstr ""
+
 #: app/src/components/app/search/components/SearchInput.vue:60
 msgid "Search posts, pages, categories, users..."
 msgstr ""
 
-#: app/src/components/utility/image-select/index.vue:106
-msgid "url"
+#: app/src/components/app/search/components/SearchOnboarding.vue:55
+msgid "Welcome to Global Search"
+msgstr ""
+
+#: app/src/components/app/search/components/SearchOnboarding.vue:56
+msgid ""
+"Quickly find posts, pages, users, and more. Here are some tips to get "
+"started:"
+msgstr ""
+
+#: app/src/components/app/search/components/SearchOnboarding.vue:101
+msgid "Press"
+msgstr ""
+
+#: app/src/components/app/search/components/SearchOnboarding.vue:103
+msgid "to open search"
+msgstr ""
+
+#: app/src/components/app/search/components/SearchOnboarding.vue:110
+msgid "Got it, thanks!"
 msgstr ""
 
 #: app/src/components/app/search/components/EmptyStateInitial.vue:64
@@ -6473,58 +6582,8 @@ msgstr ""
 msgid "Show tutorial again"
 msgstr ""
 
-#: app/src/components/app/search/components/SearchOnboarding.vue:55
-msgid "Welcome to Global Search"
-msgstr ""
-
-#: app/src/components/app/search/components/SearchOnboarding.vue:56
-msgid ""
-"Quickly find posts, pages, users, and more. Here are some tips to get "
-"started:"
-msgstr ""
-
-#: app/src/components/app/search/components/SearchOnboarding.vue:101
-msgid "Press"
-msgstr ""
-
-#: app/src/components/app/search/components/SearchOnboarding.vue:103
-msgid "to open search"
-msgstr ""
-
-#: app/src/components/app/search/components/SearchOnboarding.vue:110
-msgid "Got it, thanks!"
-msgstr ""
-
-#: app/src/components/app/search/components/EmptyStateNoResults.vue:38
-msgid "Try a different search term or use command syntax to filter results."
-msgstr ""
-
-#: app/src/components/app/search/components/EmptyStateNoResults.vue:46
-msgid "View Commands"
-msgstr ""
-
-#: app/src/components/app/search/components/EmptyStateNoResults.vue:50
-msgid "Clear Search"
-msgstr ""
-
-#: app/src/components/app/search/components/RecentlyAccessed.vue:46
-msgid "Recently Accessed"
-msgstr ""
-
 #: app/src/components/app/search/components/SearchHistory.vue:44
 msgid "Recent Searches"
-msgstr ""
-
-#: app/src/components/app/search/components/KeyboardShortcuts.vue:30
-msgid "to navigate"
-msgstr ""
-
-#: app/src/components/app/search/components/KeyboardShortcuts.vue:36
-msgid "to select"
-msgstr ""
-
-#: app/src/components/app/search/components/KeyboardShortcuts.vue:40
-msgid "to close"
 msgstr ""
 
 #: app/src/components/app/search/components/CommandHelp.vue:20
@@ -6551,24 +6610,36 @@ msgstr ""
 msgid "Show only quick actions"
 msgstr ""
 
-#: app/src/components/app/search/state/constants.js:33
-msgid "Find users"
-msgstr ""
-
-#: app/src/components/app/search/state/constants.js:40
-msgid "Quick actions"
-msgstr ""
-
-#: app/src/components/app/search/state/constants.js:47
-msgid "View commands"
-msgstr ""
-
-#: app/src/components/app/search/state/constants.js:94
-msgid "Private"
+#: app/src/components/app/search/components/RecentlyAccessed.vue:46
+msgid "Recently Accessed"
 msgstr ""
 
 #: app/src/components/app/search/components/FrequentlyUsed.vue:46
 msgid "Frequently Used"
+msgstr ""
+
+#: app/src/components/app/search/components/KeyboardShortcuts.vue:30
+msgid "to navigate"
+msgstr ""
+
+#: app/src/components/app/search/components/KeyboardShortcuts.vue:36
+msgid "to select"
+msgstr ""
+
+#: app/src/components/app/search/components/KeyboardShortcuts.vue:40
+msgid "to close"
+msgstr ""
+
+#: app/src/components/app/search/components/EmptyStateNoResults.vue:38
+msgid "Try a different search term or use command syntax to filter results."
+msgstr ""
+
+#: app/src/components/app/search/components/EmptyStateNoResults.vue:46
+msgid "View Commands"
+msgstr ""
+
+#: app/src/components/app/search/components/EmptyStateNoResults.vue:50
+msgid "Clear Search"
 msgstr ""
 
 #: app/src/components/app/search/composables/useMagicDarkMode.js:85
@@ -6638,16 +6709,16 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: app/src/components/utility/rich-text/index.vue:83
-msgid "Write something..."
-msgstr ""
-
 #: app/src/pages/posts/src/table-filters.vue:54
 msgid "Ascending"
 msgstr ""
 
 #: app/src/pages/posts/src/table-filters.vue:55
 msgid "Descending"
+msgstr ""
+
+#: app/src/components/utility/rich-text/index.vue:83
+msgid "Write something..."
 msgstr ""
 
 #: app/src/components/utility/rich-text/src/link-picker.vue:145

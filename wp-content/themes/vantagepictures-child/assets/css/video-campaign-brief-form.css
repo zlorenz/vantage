@@ -142,17 +142,100 @@
 
 /* Mobile: allow horizontal scroll if needed */
 @media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper #gf_page_steps_1,
   .gform_wrapper.video-campaign-brief-form_wrapper .gf_page_steps {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    position: relative;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 0 0.75rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 1.75rem; /* space for active step title below */
+    overflow-x: visible;
+    -webkit-overflow-scrolling: auto;
+    border-bottom: none;
   }
 
+  /* Steps: centered vertical stack with numbered circle */
   .gform_wrapper.video-campaign-brief-form_wrapper .gf_step {
     flex-shrink: 0;
-    font-size: 0.85rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  /* Disable desktop icon glyphs; use the real number instead */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step::before,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_active::before,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_completed::before,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_pending::before {
+    content: none;
+  }
+
+  /* Base number circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step .gf_step_number {
+    position: static;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0;
+    padding: 0;
+    clip: auto;
+    overflow: visible;
+    white-space: normal;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1;
+    transform: translate(0.5px, 1px); /* subtle optical centering tweak */
+  }
+
+  /* Active step: solid circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_active .gf_step_number {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+  }
+
+  /* Completed steps: subtle filled circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_completed .gf_step_number {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-color: #fff;
+  }
+
+  /* Pending steps: outline only, muted text */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_pending .gf_step_number {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* Hide in-bar labels; show active label as a heading below the row */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step .gf_step_label {
+    display: none;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_page_steps .gf_step.gf_step_active .gf_step_label {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    transform: none;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: var(--vp-heading-spacing, 0.01em);
+    line-height: 1.1;
+    text-align: left;
+    white-space: nowrap;
   }
 }
 
@@ -220,15 +303,52 @@
   grid-column: 1 / -1;
 }
 
-/* Stack everything on mobile. */
+/* Stack everything on mobile with simple document flow. */
 @media (max-width: 767.98px) {
+  /* Turn off grid layout; let fields flow vertically. */
   .gform_wrapper.video-campaign-brief-form_wrapper .gform_fields {
-    grid-template-columns: minmax(0, 1fr);
-    column-gap: 0;
+    display: block;
+    padding-top: 2rem; /* breathing room below the step title */
   }
 
   .gform_wrapper.video-campaign-brief-form_wrapper .gfield {
-    grid-column: 1 / -1 !important;
+    display: block;
+    grid-column: auto;
+    margin: 0 0 0.85rem;
+  }
+
+  /* Labels: natural height, simple margin below. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield_label {
+    display: block;
+    align-items: normal;
+    height: auto;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Complex/name fields: stack parts vertically. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row {
+    display: block;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row .gform-grid-col {
+    margin-bottom: 0.5rem; /* extra space between First / Last on mobile */
+  }
+
+  /* Containers: no enforced height. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield .ginput_container,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield .ginput_complex {
+    min-height: 0;
+  }
+
+  /* Slight extra breathing room around textarea fields. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-textarea {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Structural section fields: more top margin before a new section. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-section {
+    margin-top: 1.75rem;
   }
 }
 
@@ -259,6 +379,13 @@
   }
 }
 
+@media (max-width: 767.98px) {
+  /* Consistent spacing after section titles before the next field. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-section + .gfield {
+    margin-top: 0.75rem;
+  }
+}
+
 .gform_wrapper.video-campaign-brief-form_wrapper .gfield_label {
   display: flex;
   align-items: flex-end;
@@ -270,6 +397,31 @@
   font-size: 1rem;
   line-height: 1.25;
   overflow-wrap: normal;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile override: disable desktop flex/grid label layout
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_fields {
+    display: block;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield {
+    display: block;
+    grid-column: auto;
+    margin: 0 0 0.85rem;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield_label {
+    display: block;
+    align-items: normal;
+    height: auto;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row {
+    display: block;
+  }
 }
 
 /* Required asterisk directly beside label */
@@ -287,6 +439,7 @@
   color: rgba(255, 255, 255, 0.55);
   font-size: 0.8rem;
   font-weight: 400;
+  line-height: 1rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -406,6 +559,13 @@
   font-size: 0.875rem;
 }
 
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .gsection_title {
+    line-height: 1.12;
+    font-size: clamp(1.5rem, 2vw, 1.75rem);
+  }
+}
+
 /* --------------------------------------------------------------------------
    File upload – dark dropzone
    -------------------------------------------------------------------------- */
@@ -447,6 +607,14 @@
   line-height: 1;
   margin-bottom: 0.65rem;
   color: var(--vp-brief-text-soft);
+}
+
+@media (max-width: 767.98px) {
+  /* Mobile: no drag-and-drop text, just icon + button */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_instructions,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_area span {
+    display: none !important;
+  }
 }
 
 .gform_wrapper.video-campaign-brief-form_wrapper .gform_button_select_files,
@@ -499,7 +667,10 @@
   letter-spacing: 0.125rem !important;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background-color var(--vp-transition),
+    color var(--vp-transition),
+    border-color var(--vp-transition);
 }
 
 .gform_wrapper.video-campaign-brief-form_wrapper .gform_previous_button:hover,
@@ -527,7 +698,9 @@
   letter-spacing: 0.125rem !important;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background-color var(--vp-transition),
+    color var(--vp-transition);
 }
 
 .gform_wrapper.video-campaign-brief-form_wrapper .gform_next_button:hover,
