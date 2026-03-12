@@ -1,7 +1,7 @@
 /**
  * ACF Pro Admin Dark Mode
- * Field Groups list and dashboard – matches gutenberg-dark aesthetic.
- * Loaded only on ACF admin screens (edit.php?post_type=acf-field-group, post.php for field groups).
+ * Field Groups list and dashboard – matches gutenberg-dark / admin-global-dark aesthetic.
+ * Loaded on all ACF admin screens.
  */
 
 :root {
@@ -16,6 +16,247 @@
   --vp-acf-text-bright: #e4e4e7;
   --vp-acf-accent: #3b82f6;
   --vp-acf-accent-hover: #60a5fa;
+}
+
+/* ==========================================================================
+   Global ACF admin wrappers (Taxonomies, Post Types, Options, Tools, Updates)
+   ========================================================================== */
+
+body.acf-admin-page,
+body[class*="acf_page_"] {
+  background: var(--vp-acf-bg) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page #wpbody-content,
+body.acf-admin-page #wpbody-content .wrap {
+  background: var(--vp-acf-bg) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page .acf-wrap,
+body.acf-admin-page .acf-admin-wrap {
+  background: var(--vp-acf-bg) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page .acf-box,
+body.acf-admin-page .acf-ui-card,
+body.acf-admin-page .acf-postbox,
+body.acf-admin-page .acf-card,
+body.acf-admin-page .acf-admin-toolbar,
+body.acf-admin-page .acf-admin-toolbar .acf-admin-toolbar-inner {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text-secondary) !important;
+}
+
+body.acf-admin-page .acf-box h2,
+body.acf-admin-page .acf-box h3,
+body.acf-admin-page .acf-ui-card h2,
+body.acf-admin-page .acf-ui-card h3,
+body.acf-admin-page .acf-admin-toolbar h2,
+body.acf-admin-page .acf-admin-toolbar h1 {
+  color: var(--vp-acf-text-bright) !important;
+}
+
+body.acf-admin-page .acf-ui-card p,
+body.acf-admin-page .acf-ui-card span,
+body.acf-admin-page .acf-ui-card li {
+  color: var(--vp-acf-text-secondary) !important;
+}
+
+body.acf-admin-page .acf-ui-card a {
+  color: var(--vp-acf-accent) !important;
+}
+
+body.acf-admin-page .acf-ui-card a:hover {
+  color: var(--vp-acf-accent-hover) !important;
+}
+
+body.acf-admin-page .acf-notice,
+body.acf-admin-page .acf-admin-notice {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text-secondary) !important;
+}
+
+/* ACF Tools / Updates large white panels */
+body.acf-admin-page .acf-admin-tools,
+body.acf-admin-page .acf-admin-settings,
+body.acf-admin-page .acf-admin-panel {
+  background: var(--vp-acf-bg-elevated) !important;
+  border: 1px solid var(--vp-acf-border) !important;
+  color: var(--vp-acf-text-secondary) !important;
+}
+
+/* Classic editor areas inside ACF screens */
+body.acf-admin-page .wp-editor-container,
+body.acf-admin-page .wp-editor-container textarea.wp-editor-area,
+body.acf-admin-page .quicktags-toolbar,
+body.acf-admin-page .wp-media-buttons {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+/* Empty-state cell (Post Types, Taxonomies, Options Pages) – dark by default */
+body.acf-admin-page tr.no-item,
+body.acf-admin-page td.colspanchange,
+body.acf-admin-page tr.no-item td.colspanchange {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text-secondary) !important;
+}
+
+body.acf-admin-page .wp-list-table.widefat tbody tr.no-item td {
+  border-color: var(--vp-acf-border) !important;
+}
+
+body.acf-admin-page td.colspanchange h2,
+body.acf-admin-page td.colspanchange h3,
+body.acf-admin-page td.colspanchange p,
+body.acf-admin-page td.colspanchange span,
+body.acf-admin-page td.colspanchange a,
+body.acf-admin-page td.colspanchange label {
+  color: var(--vp-acf-text-secondary) !important;
+}
+
+body.acf-admin-page td.colspanchange a:hover {
+  color: var(--vp-acf-accent-hover) !important;
+}
+
+body.acf-admin-page td.colspanchange .acf-btn,
+body.acf-admin-page td.colspanchange .button {
+  background: var(--vp-acf-accent) !important;
+  border-color: var(--vp-acf-accent) !important;
+  color: #fff !important;
+}
+
+body.acf-admin-page td.colspanchange .acf-btn:hover,
+body.acf-admin-page td.colspanchange .button:hover {
+  background: var(--vp-acf-accent-hover) !important;
+  border-color: var(--vp-acf-accent-hover) !important;
+  color: #fff !important;
+}
+
+/* ACF Tools – Export & Import panels (high specificity to override WP/ACF) */
+body.acf-admin-page #acf-admin-tools,
+body.acf-admin-page #acf-admin-tools .acf-meta-box-wrap,
+body.acf-admin-page #acf-admin-tools #normal-sortables,
+body.acf-admin-page #acf-admin-tools .postbox,
+body.acf-admin-page #acf-admin-tool-export,
+body.acf-admin-page #acf-admin-tool-import,
+body.acf-admin-page #acf-admin-tool-export.postbox,
+body.acf-admin-page #acf-admin-tool-import.postbox,
+body.acf-admin-page #acf-admin-tool-export .inside,
+body.acf-admin-page #acf-admin-tool-import .inside,
+body.acf-admin-page #acf-admin-tool-export form,
+body.acf-admin-page #acf-admin-tool-import form,
+body.acf-admin-page #acf-admin-tool-export .acf-postbox-inner,
+body.acf-admin-page #acf-admin-tool-import .acf-postbox-inner {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page #acf-admin-tool-export .acf-field,
+body.acf-admin-page #acf-admin-tool-import .acf-field,
+body.acf-admin-page #acf-admin-tool-export .acf-field-checkbox,
+body.acf-admin-page #acf-admin-tool-import .acf-field-file,
+body.acf-admin-page #acf-admin-tool-export .acf-label,
+body.acf-admin-page #acf-admin-tool-import .acf-label,
+body.acf-admin-page #acf-admin-tool-export .acf-input,
+body.acf-admin-page #acf-admin-tool-import .acf-input,
+body.acf-admin-page #acf-admin-tool-export label,
+body.acf-admin-page #acf-admin-tool-import label,
+body.acf-admin-page #acf-admin-tool-export p,
+body.acf-admin-page #acf-admin-tool-import p,
+body.acf-admin-page #acf-admin-tool-export p.description,
+body.acf-admin-page #acf-admin-tool-import p.description,
+body.acf-admin-page #acf-admin-tool-export .acf-label label,
+body.acf-admin-page #acf-admin-tool-import .acf-label label,
+body.acf-admin-page #acf-admin-tool-export ul.acf-checkbox-list,
+body.acf-admin-page #acf-admin-tool-export ul.acf-checkbox-list li,
+body.acf-admin-page #acf-admin-tool-export .acf-checkbox-list li label,
+body.acf-admin-page #acf-admin-tool-import .acf-file-uploader,
+body.acf-admin-page #acf-admin-tool-import .acf-file-uploader label,
+body.acf-admin-page #acf-admin-tool-import .hide-if-value,
+body.acf-admin-page #acf-admin-tool-import .hide-if-value label {
+  background: transparent !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+/* .acf-checkbox-list li label and .acf-file-uploader already get color above */
+body.acf-admin-page #acf-admin-tools .button {
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page #acf-admin-tools input[type="file"],
+body.acf-admin-page #acf-admin-tools .acf-file-uploader input {
+  background: var(--vp-acf-bg) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page #acf-admin-tools .button-secondary {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page #acf-admin-tools .button-secondary:hover {
+  background: var(--vp-acf-bg-hover) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+body.acf-admin-page #acf-admin-tools .postbox .hndle,
+body.acf-admin-page #acf-admin-tools .postbox .postbox-header {
+  background: var(--vp-acf-bg) !important;
+  border-bottom-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+/* ACF Tools – fallback when body class differs (e.g. UIXPress) */
+#wpbody-content #acf-admin-tools .postbox,
+#wpbody-content #acf-admin-tools .postbox .inside,
+#wpbody-content #acf-admin-tool-export,
+#wpbody-content #acf-admin-tool-import,
+#wpbody-content #acf-admin-tool-export .inside,
+#wpbody-content #acf-admin-tool-import .inside,
+#wpbody-content #acf-admin-tool-export .acf-postbox-inner,
+#wpbody-content #acf-admin-tool-import .acf-postbox-inner,
+#wpbody-content #acf-admin-tool-export form,
+#wpbody-content #acf-admin-tool-import form {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+#wpbody-content #acf-admin-tool-export .acf-field,
+#wpbody-content #acf-admin-tool-import .acf-field,
+#wpbody-content #acf-admin-tool-export .acf-label,
+#wpbody-content #acf-admin-tool-import .acf-label,
+#wpbody-content #acf-admin-tool-export .acf-input,
+#wpbody-content #acf-admin-tool-import .acf-input,
+#wpbody-content #acf-admin-tool-export label,
+#wpbody-content #acf-admin-tool-import label,
+#wpbody-content #acf-admin-tool-export p,
+#wpbody-content #acf-admin-tool-import p,
+#wpbody-content #acf-admin-tool-export ul.acf-checkbox-list li,
+#wpbody-content #acf-admin-tool-export .acf-checkbox-list li label,
+#wpbody-content #acf-admin-tool-import .acf-file-uploader,
+#wpbody-content #acf-admin-tool-import .acf-label .description {
+  background: transparent !important;
+  color: var(--vp-acf-text) !important;
+}
+
+#wpbody-content #acf-admin-tools .postbox .hndle,
+#wpbody-content #acf-admin-tools .postbox .postbox-header {
+  background: var(--vp-acf-bg) !important;
+  border-bottom-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
 }
 
 /* ==========================================================================

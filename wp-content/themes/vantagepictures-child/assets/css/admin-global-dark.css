@@ -1,0 +1,108 @@
+/**
+ * Global Admin Dark Mode Normalization
+ * Lightweight token layer for wp-admin surfaces, borders, and form controls.
+ * Plugin-specific files (ACF, GF, Yoast, TRP, etc.) use their own --vp-*-* tokens
+ * for isolation; this file defines the global --admin-* baseline.
+ *
+ * IMPORTANT: This file is admin-only (enqueued via admin_enqueue_scripts).
+ * It must not affect front-end styles.
+ */
+
+:root {
+  --admin-bg: #0f0f11;
+  --admin-surface: #18181b;
+  --admin-surface-alt: #141416;
+  --admin-border: #2e2e32;
+  --admin-text: #ffffff;
+  --admin-text-muted: #a1a1aa;
+  --admin-accent: #3b82f6;
+  --admin-accent-hover: #60a5fa;
+}
+
+/* Base admin canvas */
+body.wp-admin {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Primary admin content wrapper */
+body.wp-admin #wpbody-content,
+body.wp-admin #wpbody-content .wrap {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Common panel containers (WordPress + many plugins) */
+body.wp-admin .wrap .postbox,
+body.wp-admin .wrap .postbox .inside,
+body.wp-admin .wrap .card,
+body.wp-admin .metabox-holder .postbox,
+body.wp-admin .metabox-holder .postbox .inside {
+  background: var(--admin-surface) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Postbox headers */
+body.wp-admin .postbox .hndle,
+body.wp-admin .postbox h2.hndle,
+body.wp-admin .postbox .postbox-header {
+  background: var(--admin-surface-alt) !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Form tables (settings-style screens) */
+body.wp-admin .form-table th,
+body.wp-admin .form-table td {
+  background: transparent !important;
+  border-top: 1px solid var(--admin-border) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Generic admin inputs / selects / textareas */
+body.wp-admin input[type="text"],
+body.wp-admin input[type="email"],
+body.wp-admin input[type="url"],
+body.wp-admin input[type="number"],
+body.wp-admin input[type="search"],
+body.wp-admin input[type="password"],
+body.wp-admin textarea,
+body.wp-admin select,
+body.wp-admin .regular-text {
+  background: var(--admin-surface-alt) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--admin-text) !important;
+}
+
+body.wp-admin input::placeholder,
+body.wp-admin textarea::placeholder {
+  color: var(--admin-text-muted) !important;
+}
+
+/* Core buttons when not overridden by plugin-specific styles */
+body.wp-admin .wp-core-ui .button,
+body.wp-admin .wp-core-ui .button-secondary {
+  background: var(--admin-surface-alt) !important;
+  border-color: var(--admin-border) !important;
+  color: var(--admin-text) !important;
+}
+
+body.wp-admin .wp-core-ui .button:hover,
+body.wp-admin .wp-core-ui .button-secondary:hover {
+  background: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
+}
+
+body.wp-admin .wp-core-ui .button-primary {
+  background: var(--admin-accent) !important;
+  border-color: var(--admin-accent) !important;
+  color: var(--admin-text) !important;
+}
+
+body.wp-admin .wp-core-ui .button-primary:hover {
+  background: var(--admin-accent-hover) !important;
+  border-color: var(--admin-accent-hover) !important;
+  color: var(--admin-text) !important;
+}
+

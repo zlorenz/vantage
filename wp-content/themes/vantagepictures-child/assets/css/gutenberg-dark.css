@@ -101,15 +101,10 @@
 #trp-link-id .button-primary {
   color: var(--vp-gb-text) !important;
 }
-
-#trp-link-id {
-  background: transparent !important;
-}
-
+#trp-link-id,
 #trp-link-id:hover {
   background: transparent !important;
 }
-
 #trp-link-id .button-primary:hover {
   background: var(--vp-gb-bg-hover) !important;
   color: var(--vp-gb-text) !important;
@@ -152,6 +147,82 @@
 .admin-ui-page__header-title,
 .admin-ui-page__header-subtitle {
   color: var(--vp-gb-text) !important;
+}
+
+/* Site Editor – Patterns data view (All patterns / Manage patterns) */
+#site-editor .admin-ui-page__header {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+#site-editor .admin-ui-page__header * {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+/* Data views wrapper, header actions & footer */
+#site-editor .dataviews-wrapper,
+#site-editor .dataviews__view-actions,
+#site-editor .dataviews-footer {
+  background: var(--vp-gb-bg) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+#site-editor .dataviews-footer {
+  border-top: 1px solid var(--vp-gb-border) !important;
+}
+
+/* Search input and prefix icon */
+#site-editor .components-search-control__input,
+#site-editor .components-input-control__input {
+  background: var(--vp-gb-bg-input) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+#site-editor .components-input-control-prefix-wrapper,
+#site-editor .components-input-control-prefix-wrapper svg {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* Filter chips (Sync status, etc.) */
+#site-editor .dataviews-filters__summary-chip {
+  background: var(--vp-gb-bg-input) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+#site-editor .dataviews-filters__summary-chip:hover,
+#site-editor .dataviews-filters__summary-chip[aria-pressed="true"],
+#site-editor .dataviews-filters__summary-chip[aria-expanded="true"] {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Pattern grid cards */
+#site-editor .dataviews-view-grid-items,
+#site-editor .dataviews-view-grid__card {
+  background: var(--vp-gb-bg-elevated) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+#site-editor .dataviews-view-grid__card:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+#site-editor .dataviews-view-grid__card h2,
+#site-editor .dataviews-view-grid__card h3,
+#site-editor .dataviews-view-grid__card h4,
+#site-editor .dataviews-view-grid__card span {
+  color: var(--vp-gb-text) !important;
+}
+
+/* Synced badge / status */
+#site-editor .dataviews-view-grid__badge-fields {
+  background: transparent !important;
+  color: var(--vp-gb-text-muted) !important;
 }
 
 /* ==========================================================================

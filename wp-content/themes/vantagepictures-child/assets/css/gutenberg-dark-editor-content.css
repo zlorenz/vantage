@@ -1,7 +1,8 @@
 /**
- * Gutenberg Block Editor – Content styles (loads inside editor iframe)
+ * Gutenberg Block Editor – Content styles (loads inside editor iframe via add_editor_style).
  * Overrides :where(.editor-styles-wrapper) color:revert from load-styles.php
  * so headings, paragraphs, and block text are light on dark background.
+ * Parent :root tokens are not available in the iframe; colors are set here.
  */
 
 .editor-styles-wrapper {

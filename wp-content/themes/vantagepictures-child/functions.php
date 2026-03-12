@@ -214,10 +214,6 @@ add_filter('render_block', function ($block_content, $block) {
  */
 add_action('enqueue_block_editor_assets', function () {
   global $pagenow;
-  /* Don't apply dark mode on Site Editor – it breaks the Manage Patterns page (white-on-white) */
-  if (isset($pagenow) && 'site-editor.php' === $pagenow) {
-    return;
-  }
   wp_enqueue_style(
     'vp-gutenberg-dark',
     get_stylesheet_directory_uri() . '/assets/css/gutenberg-dark.css',
@@ -236,6 +232,16 @@ add_action('enqueue_block_editor_assets', function () {
   wp_add_inline_style('vp-gutenberg-dark', $critical);
 }, 20);
 
+/* Global admin dark normalization – tokens + base surfaces */
+add_action('admin_enqueue_scripts', function () {
+  wp_enqueue_style(
+    'vp-admin-global-dark',
+    get_stylesheet_directory_uri() . '/assets/css/admin-global-dark.css',
+    [],
+    wp_get_theme()->get('Version')
+  );
+}, 20);
+
 add_action('admin_enqueue_scripts', function ($hook) {
   $edit_screens = ['post.php', 'post-new.php', 'page.php', 'page-new.php'];
   if (!in_array($hook, $edit_screens, true)) {
@@ -249,16 +255,15 @@ add_action('admin_enqueue_scripts', function ($hook) {
   );
 }, 9999);
 
-/* ACF Pro admin dark mode – Field Groups list and field group editor */
+/* ACF Pro admin dark mode – Field Groups, Post Types, Taxonomies, Options, Tools, Updates */
 add_action('admin_enqueue_scripts', function ($hook) {
-  $is_acf_list = ('edit.php' === $hook && isset($_GET['post_type']) && 'acf-field-group' === $_GET['post_type']);
   $screen = get_current_screen();
-  $is_acf_edit = $screen && ('post.php' === $hook || 'post-new.php' === $hook) && 'acf-field-group' === $screen->post_type;
-  if ($is_acf_list || $is_acf_edit) {
+  $is_acf = $screen && (strpos($screen->id, 'acf') !== false || (!empty($screen->post_type) && strpos($screen->post_type, 'acf') !== false));
+  if ($is_acf) {
     wp_enqueue_style(
       'vp-acf-admin-dark',
       get_stylesheet_directory_uri() . '/assets/css/acf-admin-dark.css',
-      [],
+      array( 'acf-global' ), // Load after ACF so our overrides win
       wp_get_theme()->get('Version')
     );
   }

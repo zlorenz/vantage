@@ -132,6 +132,17 @@ div.yst-p-6.yst-rounded-lg[class*="yst-bg-white"],
   color: #fff !important;
 }
 
+/* Ensure Academy CTAs always have white text */
+#yoast-seo-academy .yst-button--primary {
+  color: #fff !important;
+}
+
+/* Ensure Plans / Upsell CTAs always have white text */
+#yoast-seo-plans .yst-button--primary,
+.yst-button.yst-button--primary {
+  color: #fff !important;
+}
+
 .yst-button--secondary,
 .yst-button--secondary.yst-button--small {
   background: var(--vp-yoast-bg) !important;
@@ -294,4 +305,222 @@ hr.yst-bg-slate-200 {
 [class*="yst-bg-"][class*="primary"]:not(.yst-bg-primary-500) {
   background: rgba(164, 40, 106, 0.25) !important;
   color: #e9d5e5 !important;
+}
+
+/* ==========================================================================
+   Sidebar navigation (Dashboard, Task list, Settings, Redirects, etc.)
+   ========================================================================== */
+
+.yst-sidebar-navigation__link,
+.yst-sidebar-navigation__collapsible-button {
+  background: transparent !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-sidebar-navigation__link .yst-inline-flex,
+.yst-sidebar-navigation__link span {
+  color: inherit !important;
+}
+
+.yst-sidebar-navigation__link:hover,
+.yst-sidebar-navigation__collapsible-button:hover {
+  background: var(--vp-yoast-bg-hover) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-sidebar-navigation__item--active,
+.yst-sidebar-navigation__link.yst-sidebar-navigation__item--active,
+.yst-sidebar-navigation__link[aria-current="page"] {
+  background: var(--vp-yoast-bg-elevated) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Disabled sidebar items (Redirects upsell) */
+.yst-cursor-not-allowed.yst-opacity-50 {
+  color: var(--vp-yoast-text-muted) !important;
+}
+
+.yst-cursor-not-allowed.yst-opacity-50 svg {
+  color: var(--vp-yoast-text-muted) !important;
+}
+
+/* ==========================================================================
+   Dropdown menus (card kebab menus, etc.)
+   ========================================================================== */
+
+.yst-dropdown-menu__list {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-dropdown-menu__list [role="menuitem"],
+.yst-dropdown-menu__list button,
+.yst-dropdown-menu__list a {
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-dropdown-menu__list [role="menuitem"]:hover,
+.yst-dropdown-menu__list button:hover,
+.yst-dropdown-menu__list a:hover {
+  background: var(--vp-yoast-bg-hover) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* ==========================================================================
+   Cards & integrations / plans grids
+   ========================================================================== */
+
+.yst-card {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-card h2,
+.yst-card h3,
+.yst-card h4,
+.yst-card strong,
+.yst-card .yst-title,
+.yst-card .yst-title--2 {
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-card p,
+.yst-card span {
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yst-card a {
+  color: var(--vp-yoast-accent) !important;
+}
+
+.yst-card a:hover {
+  color: var(--vp-yoast-accent-hover) !important;
+}
+
+/* Integrations / upsell “Use Semrush…”, “Track your rankings…”, etc. */
+#wpseo-integrations .yst-text-base,
+#wpseo-integrations .yst-text-base strong {
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Yoast Premium upsell & sidebar blocks */
+.yoast_premium_upsell--container,
+.yoast-sidebar__product,
+.yoast-sidebar__section {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+.yoast_premium_upsell--container h2,
+.yoast_premium_upsell--container h3,
+.yoast_premium_upsell--container h4,
+.yoast_premium_upsell--container strong,
+.yoast-sidebar__product h2,
+.yoast-sidebar__product h3,
+.yoast-sidebar__product h4,
+.yoast-sidebar__product strong,
+.yoast-sidebar__section h2,
+.yoast-sidebar__section h3,
+.yoast-sidebar__section h4,
+.yoast-sidebar__section strong {
+  color: var(--vp-yoast-text) !important;
+}
+
+.yoast_premium_upsell--container a,
+.yoast-sidebar__product a,
+.yoast-sidebar__section a {
+  color: var(--vp-yoast-accent) !important;
+}
+
+.yoast_premium_upsell--container a:hover,
+.yoast-sidebar__product a:hover,
+.yoast-sidebar__section a:hover {
+  color: var(--vp-yoast-accent-hover) !important;
+}
+
+/* ==========================================================================
+   Settings: title separator radios, replacevar editors, toggles, code samples
+   ========================================================================== */
+
+/* Title separator radio options */
+#yoast-seo-settings .yst-radio__label {
+  background: var(--vp-yoast-bg-input) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+#yoast-seo-settings .yst-radio__label:hover {
+  background: var(--vp-yoast-bg-hover) !important;
+  border-color: var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Replace variables preview/editor */
+#yoast-seo-settings .yst-replacevar__editor {
+  background: var(--vp-yoast-bg-input) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Toggles (Remove shortlinks, REST API links, etc.) */
+#yoast-seo-settings .yst-toggle {
+  background: var(--vp-yoast-bg-input) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+#yoast-seo-settings .yst-toggle[aria-checked="true"],
+#yoast-seo-settings .yst-toggle[data-headlessui-state~="checked"] {
+  background: var(--vp-yoast-accent) !important;
+  border-color: var(--vp-yoast-accent) !important;
+  color: #fff !important;
+}
+
+/* Code examples */
+#yoast-seo-settings .yst-code,
+#yoast-seo-settings .yst-code--block {
+  background: var(--vp-yoast-bg-input) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Settings descriptive copy & labels – slightly brighter for readability */
+#yoast-seo-settings .yst-mb-1,
+#yoast-seo-settings .yst-mt-2,
+#yoast-seo-settings .yst-toggle-field__description,
+#yoast-seo-settings .yst-replacevar__label {
+  color: var(--vp-yoast-text-bright) !important;
+}
+
+/* ==========================================================================
+   Dashboard → Task list table (headers, rows, footer)
+   ========================================================================== */
+
+/* Table headers */
+.yst-table-header {
+  background: var(--vp-yoast-bg-secondary) !important;
+  border-bottom: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Table cells */
+.yst-table-cell {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border-bottom: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* Footer / promo row with light background utility */
+.yst-bg-slate-50 {
+  background: var(--vp-yoast-bg-elevated) !important;
+  color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* Hover state for rows that use group-hover:yst-bg-slate-50 */
+.group-hover\:yst-bg-slate-50:hover {
+  background: var(--vp-yoast-bg-hover) !important;
+  color: var(--vp-yoast-text) !important;
 }
