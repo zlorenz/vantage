@@ -71,6 +71,14 @@ add_action('wp_enqueue_scripts', function () {
 
 }, 30);
 
+// Ensure child stylesheet only loads once by removing any auto-enqueued theme style handle.
+add_action('wp_enqueue_scripts', function () {
+  wp_dequeue_style('style');
+  wp_deregister_style('style');
+  wp_dequeue_style('style-css');
+  wp_deregister_style('style-css');
+}, 100);
+
 /**
  * Gravity Forms: Disable built-in theme framework CSS for Form ID 1 only.
  *
@@ -137,13 +145,13 @@ add_filter( 'gform_admin_pre_render', 'vp_gf_apply_brief_wrapper_class', 10, 1 )
 
 /**
  * Enqueue Google Font (Poppins)
- * Loads global typography for the site (300 + 700 weights)
- * Add to: child theme functions.php
+ * Loads global typography for the site using the full Poppins family
+ * (100–900, normal + italic), matching the live site's font delivery.
  */
 add_action('wp_enqueue_scripts', function () {
   wp_enqueue_style(
     'vp-google-fonts',
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@0,300;0,500;0,700;0,800;1,300;1,500;1,700;1,800&display=swap',
+    'https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap',
     [],
     null
   );

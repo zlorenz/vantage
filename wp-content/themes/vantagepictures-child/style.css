@@ -69,6 +69,13 @@ body {
   color: var(--vp-text);
 }
 
+p,
+.wp-block-paragraph,
+.entry-content p {
+  font-family: var(--vp-font-sans);
+  font-weight: 300;
+}
+
 #main {
   margin-top: 0;
 }
@@ -620,6 +627,36 @@ textarea {
   color: #fff;
   background: var(--vp-input-bg-focus);
   border-color: var(--vp-input-border-focus);
+}
+
+/* Mobile: strengthen heading weights slightly on small touch devices to
+   better match desktop visual weight, without affecting body copy. */
+@media (max-width: 767.98px) and (hover: none) and (pointer: coarse) {
+  /* Base headings: 700 -> 800 */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  .wp-block-heading {
+    font-weight: 800;
+  }
+
+  /* Display-style headings already at 800: 800 -> 900 */
+  .vp-hero-copy h1,
+  .vp-page-hero__title,
+  .vp-section-title,
+  .vp-credits__dept,
+  .vp-credit-role {
+    font-weight: 900;
+  }
 }
 
 /* ==========================================================================
