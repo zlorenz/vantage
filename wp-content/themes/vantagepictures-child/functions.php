@@ -263,7 +263,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
     wp_enqueue_style(
       'vp-acf-admin-dark',
       get_stylesheet_directory_uri() . '/assets/css/acf-admin-dark.css',
-      array( 'acf-global' ), // Load after ACF so our overrides win
+      array( 'acf-global', 'common' ), // Load after ACF and WP common so Tools .postbox .inside overrides win
       wp_get_theme()->get('Version')
     );
   }
@@ -350,6 +350,20 @@ add_action('admin_enqueue_scripts', function ($hook) {
     wp_enqueue_style(
       'vp-trp-admin-dark',
       get_stylesheet_directory_uri() . '/assets/css/trp-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* WPvivid Backup admin dark mode – Dashboard, Manual Backup, Export/Import, Schedule, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_wpvivid = $screen && strpos($screen->id, 'wpvivid') !== false;
+  if ($is_wpvivid) {
+    wp_enqueue_style(
+      'vp-wpvivid-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/wpvivid-admin-dark.css',
       [],
       wp_get_theme()->get('Version')
     );

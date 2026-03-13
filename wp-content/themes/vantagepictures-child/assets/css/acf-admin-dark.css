@@ -234,6 +234,36 @@ body.acf-admin-page #acf-admin-tools .postbox .postbox-header {
   color: var(--vp-acf-text) !important;
 }
 
+/* ACF Tools – force inner panels (Export/Import) – highest specificity for .inside */
+#acf-admin-tools #acf-admin-tool-export.postbox > div.inside,
+#acf-admin-tools #acf-admin-tool-import.postbox > div.inside,
+#acf-admin-tool-export > div.inside,
+#acf-admin-tool-import > div.inside,
+#acf-admin-tools .acf-postbox-inner,
+#acf-admin-tools .acf-fields,
+#acf-admin-tools .acf-submit,
+#acf-admin-tools p.acf-submit {
+  background: var(--vp-acf-bg-elevated) !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
+#acf-admin-tools #acf-admin-tool-export .acf-label,
+#acf-admin-tools #acf-admin-tool-export .acf-input,
+#acf-admin-tools #acf-admin-tool-export .acf-checkbox-list,
+#acf-admin-tools #acf-admin-tool-export .acf-checkbox-list li,
+#acf-admin-tools #acf-admin-tool-export .acf-checkbox-list li label,
+#acf-admin-tools #acf-admin-tool-import .acf-label,
+#acf-admin-tools #acf-admin-tool-import .acf-input,
+#acf-admin-tools #acf-admin-tool-import .acf-file-uploader,
+#acf-admin-tools #acf-admin-tool-import .description,
+#acf-admin-tools #acf-admin-tool-export .acf-btn,
+#acf-admin-tools #acf-admin-tool-import .acf-btn {
+  background: transparent !important;
+  border-color: var(--vp-acf-border) !important;
+  color: var(--vp-acf-text) !important;
+}
+
 #wpbody-content #acf-admin-tool-export .acf-field,
 #wpbody-content #acf-admin-tool-import .acf-field,
 #wpbody-content #acf-admin-tool-export .acf-label,
