@@ -1,0 +1,277 @@
+/**
+ * SiteGround Optimizer Admin Dark Mode
+ * Applies to SiteGround SPA-based admin UIs:
+ * - Speed Optimizer (sg-cachepress): Dashboard, Caching, Media, Frontend, Environment
+ * - Security Optimizer (sg-security): Dashboard, Site Security, Login, Activity Log, Post-hack Actions
+ *
+ * Admin-only – does NOT affect front-end output.
+ */
+
+:root {
+  --vp-sgo-bg: #0f0f11;
+  --vp-sgo-bg-elevated: #18181b;
+  --vp-sgo-bg-secondary: #141416;
+  --vp-sgo-bg-input: #0a0a0c;
+  --vp-sgo-bg-hover: rgba(255, 255, 255, 0.06);
+  --vp-sgo-border: #2e2e32;
+  --vp-sgo-text: #ffffff;
+  --vp-sgo-text-secondary: #a1a1aa;
+  --vp-sgo-text-muted: #71717a;
+}
+
+/* Base layout canvas */
+.sg-layout__page,
+.sg-page.sg-optimizer,
+.sg-page.sg-security,
+.sg-optimizer .sg-layout,
+.sg-optimizer .sg-page,
+.sg-security .sg-layout,
+.sg-security .sg-page {
+  background: var(--vp-sgo-bg) !important;
+  color: var(--vp-sgo-text) !important;
+}
+
+.sg-optimizer .sg-section,
+.sg-optimizer .sg-section__content,
+.sg-security .sg-section,
+.sg-security .sg-section__content {
+  background: transparent !important;
+  color: var(--vp-sgo-text) !important;
+}
+
+/* Primary cards / containers */
+.sg-optimizer .sg-card,
+.sg-optimizer .sg-card--outline-shadow,
+.sg-optimizer .sg-container.sg-container--elevation-1,
+.sg-optimizer .sg-card-notifications,
+.sg-optimizer .sg-caching-tile,
+.sg-optimizer .sg-container.rate,
+.sg-security .sg-card,
+.sg-security .sg-card--outline-shadow,
+.sg-security .sg-container.sg-container--elevation-1,
+.sg-security .sg-card-notifications,
+.sg-security .sg-container.rate {
+  background: var(--vp-sgo-bg-elevated) !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--vp-sgo-border) !important;
+  box-shadow: none !important;
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+.sg-optimizer .sg-card__content-wrapper,
+.sg-optimizer .sg-card__content,
+.sg-security .sg-card__content-wrapper,
+.sg-security .sg-card__content {
+  background: transparent !important;
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+/* Titles & text */
+.sg-optimizer .sg-title.sg-with-color--color-dark,
+.sg-optimizer .sg-typography.sg-with-color--color-dark,
+.sg-optimizer .sg-title,
+.sg-optimizer .sg-optimizer-hardening-column h4,
+.sg-security .sg-title.sg-with-color--color-dark,
+.sg-security .sg-typography.sg-with-color--color-dark,
+.sg-security .sg-title,
+.sg-security .sg-security-hardening-column h4 {
+  color: var(--vp-sgo-text) !important;
+}
+
+.sg-optimizer .sg-text.sg-with-color--color-dark,
+.sg-optimizer .sg-text,
+.sg-security .sg-text.sg-with-color--color-dark,
+.sg-security .sg-text {
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+.sg-optimizer .sg-typography--weight-bold,
+.sg-security .sg-typography--weight-bold {
+  color: var(--vp-sgo-text) !important;
+}
+
+/* Tabs within Optimizer (PageSpeed, Caching, Frontend, etc.) */
+.sg-optimizer .sg-tabs,
+.sg-optimizer .sg-tabs__tablist,
+.sg-security .sg-tabs,
+.sg-security .sg-tabs__tablist {
+  background: var(--vp-sgo-bg-secondary) !important;
+  border-bottom: 1px solid var(--vp-sgo-border) !important;
+}
+
+.sg-optimizer .sg-tabs__tab,
+.sg-security .sg-tabs__tab {
+  background: transparent !important;
+  color: var(--vp-sgo-text-secondary) !important;
+  border-color: transparent !important;
+}
+
+.sg-optimizer .sg-tabs__tab[aria-selected="true"],
+.sg-optimizer .sg-tabs__tab--active,
+.sg-security .sg-tabs__tab[aria-selected="true"],
+.sg-security .sg-tabs__tab--active {
+  background: var(--vp-sgo-bg-elevated) !important;
+  color: var(--vp-sgo-text) !important;
+  border-bottom-color: var(--vp-sgo-bg-elevated) !important;
+}
+
+.sg-optimizer .sg-tabs__tab:hover,
+.sg-security .sg-tabs__tab:hover {
+  background: var(--vp-sgo-bg-hover) !important;
+  color: var(--vp-sgo-text) !important;
+}
+
+/* Labels / badges (RECOMMENDED, DISABLED, etc.) */
+.sg-optimizer .sg-label.sg-label--type-default,
+.sg-security .sg-label.sg-label--type-default {
+  background: var(--vp-sgo-bg-secondary) !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--vp-sgo-border) !important;
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+/* Respect semantic colors for success / error labels */
+.sg-optimizer .sg-label--type-default.sg-with-color--color-error .sg-label__text,
+.sg-security .sg-label--type-default.sg-with-color--color-error .sg-label__text {
+  color: #f87171 !important;
+}
+
+.sg-optimizer .sg-label--type-default.sg-with-color--color-success .sg-label__text,
+.sg-security .sg-label--type-default.sg-with-color--color-success .sg-label__text {
+  color: #22c55e !important;
+}
+
+/* Buttons */
+.sg-optimizer .sg-button.sg-button--secondary,
+.sg-optimizer .sg-button.sg-button--neutral,
+.sg-security .sg-button.sg-button--secondary,
+.sg-security .sg-button.sg-button--neutral {
+  background: var(--vp-sgo-bg-secondary) !important;
+  border-color: var(--vp-sgo-border) !important;
+  color: var(--vp-sgo-text) !important;
+}
+
+.sg-optimizer .sg-button.sg-button--secondary:hover,
+.sg-optimizer .sg-button.sg-button--neutral:hover,
+.sg-security .sg-button.sg-button--secondary:hover,
+.sg-security .sg-button.sg-button--neutral:hover {
+  background: var(--vp-sgo-bg-hover) !important;
+  color: var(--vp-sgo-text) !important;
+}
+
+.sg-optimizer .sg-button.sg-button--primary,
+.sg-security .sg-button.sg-button--primary {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.sg-optimizer .sg-button.sg-button--primary:hover,
+.sg-security .sg-button.sg-button--primary:hover {
+  background: #60a5fa !important;
+  border-color: #60a5fa !important;
+}
+
+/* Inputs / selects in forms */
+.sg-optimizer input[type="text"],
+.sg-optimizer input[type="url"],
+.sg-optimizer input[type="number"],
+.sg-optimizer input[type="email"],
+.sg-optimizer select,
+.sg-optimizer textarea,
+.sg-security input[type="text"],
+.sg-security input[type="url"],
+.sg-security input[type="number"],
+.sg-security input[type="email"],
+.sg-security select,
+.sg-security textarea {
+  background: var(--vp-sgo-bg-input) !important;
+  border: 1px solid var(--vp-sgo-border) !important;
+  color: var(--vp-sgo-text) !important;
+}
+
+.sg-optimizer input::placeholder,
+.sg-optimizer textarea::placeholder,
+.sg-security input::placeholder,
+.sg-security textarea::placeholder {
+  color: var(--vp-sgo-text-muted) !important;
+}
+
+/* Notification cards */
+.sg-optimizer .sg-card-notification,
+.sg-optimizer .sg-card-notifications .sg-card,
+.sg-security .sg-card-notification,
+.sg-security .sg-card-notifications .sg-card {
+  background: var(--vp-sgo-bg-elevated) !important;
+  border-color: var(--vp-sgo-border) !important;
+}
+
+.sg-optimizer .sg-card-notification h6,
+.sg-optimizer .sg-card-notification p,
+.sg-security .sg-card-notification h6,
+.sg-security .sg-card-notification p {
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+/* Rate Us card */
+.sg-optimizer .rate,
+.sg-optimizer .rate__wrapper,
+.sg-security .rate,
+.sg-security .rate__wrapper {
+  background: var(--vp-sgo-bg-elevated) !important;
+  border-color: var(--vp-sgo-border) !important;
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+.sg-optimizer .rate h4,
+.sg-optimizer .rate p,
+.sg-optimizer .rate .sg-presentational-link-text,
+.sg-security .rate h4,
+.sg-security .rate p,
+.sg-security .rate .sg-presentational-link-text {
+  color: var(--vp-sgo-text) !important;
+}
+
+/* Icons – keep brand color but avoid bright white backgrounds */
+.sg-optimizer .sg-icon--fill-lighter,
+.sg-security .sg-icon--fill-lighter {
+  background: transparent !important;
+}
+
+/* Sidebar promo / banner */
+.sg-optimizer .sg-optimizer-ebook,
+.sg-optimizer .sg-optimizer-ebook-button,
+.sg-security .sg-security-ebook,
+.sg-security .sg-security-ebook-button {
+  border-radius: 8px !important;
+}
+
+/* Activity Log tables (Security Optimizer) */
+.sg-security .sg-table-wrapper {
+  background: transparent !important;
+}
+
+.sg-security .sg-table__head.sg-table__head--background-default {
+  background: var(--vp-sgo-bg-secondary) !important;
+  border-bottom: 1px solid var(--vp-sgo-border) !important;
+}
+
+.sg-security .sg-table__head-cell {
+  background: transparent !important;
+  color: var(--vp-sgo-text) !important;
+  border-color: var(--vp-sgo-border) !important;
+}
+
+.sg-security .sg-table__body .sg-table__row,
+.sg-security .sg-table__body .sg-table__cell {
+  background: var(--vp-sgo-bg-elevated) !important;
+  border-bottom: 1px solid var(--vp-sgo-border) !important;
+  color: var(--vp-sgo-text-secondary) !important;
+}
+
+.sg-security .sg-table__row:hover .sg-table__cell,
+.sg-security .sg-table__row:hover {
+  background: var(--vp-sgo-bg-hover) !important;
+  color: var(--vp-sgo-text) !important;
+}
+

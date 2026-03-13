@@ -378,6 +378,30 @@ add_action('admin_enqueue_scripts', function ($hook) {
   }
 }, 9999);
 
+/* SiteGround Optimizer admin dark mode – Speed & Security SPAs */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $page = isset($_GET['page']) ? (string) $_GET['page'] : '';
+
+  $is_sg_optimizer = ($screen && (
+      strpos($screen->id, 'sg-cachepress') !== false
+      || strpos($screen->id, 'sg-security') !== false
+      || strpos($screen->id, 'security-optimizer') !== false
+    ))
+    || (strpos($page, 'sgo_') === 0)
+    || ($page === 'sg-security')
+    || in_array($page, ['site-security', 'login-settings', 'activity-log', 'post-hack-actions'], true);
+
+  if ($is_sg_optimizer) {
+    wp_enqueue_style(
+      'vp-sg-optimizer-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/sg-optimizer-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
 /* TranslatePress translation editor sidebar dark mode – front-end (live translator) */
 add_action('wp_enqueue_scripts', function () {
   if (!is_user_logged_in()) {
