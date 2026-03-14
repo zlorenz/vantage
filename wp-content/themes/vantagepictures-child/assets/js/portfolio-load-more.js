@@ -17,12 +17,21 @@
 
   if (!sentinel || !grid || !window.vpLoadMore) return;
 
+  const filterBar = document.querySelector(".vp-filterbar");
+
   let loading = false;
   let done = false;
+  let filterRequestId = 0;
+  let filterAbortController = null;
 
   const setLoading = (isLoading) => {
-    if (isLoading) sentinel.classList.add("loading");
-    else sentinel.classList.remove("loading");
+    if (isLoading) {
+      sentinel.classList.add("loading");
+      if (filterBar) filterBar.classList.add("vp-filterbar--loading");
+    } else {
+      sentinel.classList.remove("loading");
+      if (filterBar) filterBar.classList.remove("vp-filterbar--loading");
+    }
   };
 
   const readDropdownFilters = () => {
@@ -107,7 +116,7 @@
     if (io) io.unobserve(sentinel);
   };
 
-  const fetchPage = async (pageToLoad) => {
+  const fetchPage = async (pageToLoad, signal = null) => {
     const payload = getPayload(pageToLoad);
     const body = new URLSearchParams(payload);
 
@@ -115,6 +124,7 @@
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
       body,
+      signal,
     });
 
     // If PHP warnings leak, this will throw (good: we stop instead of looping)
@@ -160,20 +170,23 @@
     }
   };
 
-  // Apply ALL filters: load page 1 and replace grid
+  // Apply ALL filters: load page 1 and replace grid (abort previous request; only apply latest)
   const applyFilters = async (pushStateUrl = null) => {
-    if (loading) return;
+    if (filterAbortController) filterAbortController.abort();
+    filterAbortController = new AbortController();
+    const signal = filterAbortController.signal;
+    const thisRequestId = ++filterRequestId;
 
     loading = true;
     done = false;
     sentinel.classList.remove("is-done");
     setLoading(true);
 
-    // Reset paging whenever filters change
     sentinel.dataset.page = "1";
 
     try {
-      const result = await fetchPage(1);
+      const result = await fetchPage(1, signal);
+      if (thisRequestId !== filterRequestId) return;
       if (!result) {
         stopForever();
         return;
@@ -182,7 +195,6 @@
       const html = (result.html || "").trim();
       grid.innerHTML = html;
 
-      // Reveal animation
       Array.from(grid.children).forEach((card, i) => {
         card.classList.add("vp-card-reveal");
         card.style.animationDelay = `${i * 40}ms`;
@@ -190,7 +202,6 @@
 
       if (!result.has_more) stopForever();
 
-      // Legacy tab UI: keep active state in sync with format param (if tabs still exist)
       if (filtersNav && legacyFilters.length) {
         const params = new URLSearchParams(window.location.search);
         const activeFormat = params.get("format") || "";
@@ -200,7 +211,6 @@
         });
       }
 
-      // Update URL without reload (optional)
       if (pushStateUrl) {
         history.pushState({}, "", pushStateUrl);
       }
@@ -211,12 +221,15 @@
       if (gridTop < -50 || gridTop > window.innerHeight) {
         grid.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-
     } catch (e) {
+      if (e.name === "AbortError") return;
+      if (thisRequestId !== filterRequestId) return;
       stopForever();
     } finally {
-      loading = false;
-      setLoading(false);
+      if (thisRequestId === filterRequestId) {
+        loading = false;
+        setLoading(false);
+      }
     }
   };
 
@@ -313,4 +326,9 @@
   );
 
   io.observe(sentinel);
+
+  // If the server sent an empty grid (AJAX-first to improve TTFB), load page 1 immediately
+  if (sentinel.dataset.initialEmpty === "1" || !grid.querySelector(".vp-card")) {
+    loadMore();
+  }
 })();

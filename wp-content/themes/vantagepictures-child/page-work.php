@@ -55,12 +55,15 @@ if ($active_term && !is_wp_error($active_term)) {
   ]];
 }
 
-$query = vp_get_portfolio_query($args);
+// Skip the portfolio query on first page load so the HTML is sent fast (TTFB).
+// The first 12 items are loaded via AJAX in portfolio-load-more.js (same as "load more").
+$initial_load_via_ajax = ($paged === 1);
+$query = $initial_load_via_ajax ? null : vp_get_portfolio_query($args);
 
 $hero_style = '';
 
 if (has_post_thumbnail(get_queried_object_id())) {
-  $bg_url = get_the_post_thumbnail_url(get_queried_object_id(), 'full');
+  $bg_url = get_the_post_thumbnail_url(get_queried_object_id(), 'large');
   if ($bg_url) {
     $hero_style = 'style="background-image: url(' . esc_url($bg_url) . ');"';
   }
@@ -115,7 +118,19 @@ if (has_post_thumbnail(get_queried_object_id())) {
 
     <?php vp_portfolio_filter_dropdowns(); ?>
 
-    <?php if ($query->have_posts()) : ?>
+    <?php if ($initial_load_via_ajax) : ?>
+      <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-3"></div>
+      <div id="vp-load-more"
+           class="vp-load-more"
+           data-page="0"
+           data-per-page="12"
+           data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
+           data-term="<?php echo esc_attr($active_term && !is_wp_error($active_term) ? $active_term->slug : ''); ?>"
+           data-context="public"
+           data-initial-empty="1">
+        <div class="vp-load-spinner"></div>
+      </div>
+    <?php elseif ($query && $query->have_posts()) : ?>
       <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-3">
         <?php while ($query->have_posts()) : $query->the_post(); ?>
           <div class="col-12 col-sm-6 col-md-4 col-lg-3">

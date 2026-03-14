@@ -879,6 +879,15 @@ textarea {
   background: rgba(255, 255, 255, 0.15);
 }
 
+/* Filter bar loading state (portfolio filter request in progress) */
+.vp-filterbar.vp-filterbar--loading {
+  opacity: 0.85;
+  pointer-events: auto;
+}
+.vp-filterbar.vp-filterbar--loading .vp-filterbar__select {
+  cursor: wait;
+}
+
 /* ==========================================================================
    12. Portfolio: Cards, Load States, and Animations
    ========================================================================== */

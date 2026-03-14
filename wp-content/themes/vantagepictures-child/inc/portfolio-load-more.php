@@ -12,6 +12,23 @@
 add_action('wp_ajax_vp_portfolio_load_more', 'vp_portfolio_load_more');
 add_action('wp_ajax_nopriv_vp_portfolio_load_more', 'vp_portfolio_load_more');
 
+/** Purge cached first-page HTML when portfolio content changes. */
+add_action('save_post_portfolio', 'vp_portfolio_purge_page1_cache');
+add_action('transition_post_status', function ($new_status, $old_status, $post) {
+  if ($post->post_type === 'portfolio') {
+    vp_portfolio_purge_page1_cache($post->ID);
+  }
+}, 10, 3);
+
+function vp_portfolio_purge_page1_cache( $post_id = 0 ) {
+  delete_transient('vp_portfolio_page1_public');
+  $keys = get_option('vp_portfolio_filter_cache_keys', []);
+  foreach ($keys as $key) {
+    delete_transient($key);
+  }
+  update_option('vp_portfolio_filter_cache_keys', []);
+}
+
 function vp_portfolio_load_more() {
 
   // Basic nonce check
@@ -33,6 +50,20 @@ function vp_portfolio_load_more() {
   $format   = isset($_POST['format']) ? sanitize_key(wp_unslash($_POST['format'])) : '';
   $industry = isset($_POST['industry']) ? sanitize_key(wp_unslash($_POST['industry'])) : '';
   $market   = isset($_POST['market']) ? sanitize_key(wp_unslash($_POST['market'])) : '';
+
+  // Serve cached HTML for page 1, public (no filter or any filter combo) — faster filter UX.
+  $is_first_page_public = ($page === 1 && $context === 'public');
+  if ($is_first_page_public) {
+    $cache_key = 'vp_portfolio_p1_public_' . $format . '_' . $industry . '_' . $market;
+    $cached = get_transient($cache_key);
+    if (is_array($cached) && !empty($cached['html'])) {
+      wp_send_json_success([
+        'html'      => $cached['html'],
+        'has_more'  => !empty($cached['has_more']),
+        'next_page' => 2,
+      ]);
+    }
+  }
 
   $args = [
     'posts_per_page' => $per_page,
@@ -133,9 +164,21 @@ function vp_portfolio_load_more() {
 
   $html = ob_get_clean();
 
-  wp_send_json_success([
+  $payload = [
     'html'      => $html,
     'has_more'  => ($page < (int) $query->max_num_pages),
     'next_page' => $page + 1,
-  ]);
+  ];
+
+  if ($is_first_page_public) {
+    $cache_key = 'vp_portfolio_p1_public_' . $format . '_' . $industry . '_' . $market;
+    set_transient($cache_key, $payload, 10 * MINUTE_IN_SECONDS);
+    $keys = get_option('vp_portfolio_filter_cache_keys', []);
+    if (!in_array($cache_key, $keys, true)) {
+      $keys[] = $cache_key;
+      update_option('vp_portfolio_filter_cache_keys', array_slice($keys, -100));
+    }
+  }
+
+  wp_send_json_success($payload);
 }

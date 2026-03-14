@@ -26,6 +26,14 @@ add_action('after_setup_theme', function () {
   add_editor_style('assets/css/gutenberg-dark-editor-content.css');
 }, 20);
 
+/**
+ * Portfolio card thumbnail: retina-ready 16:9 size (1024×576).
+ * Used in template-parts/portfolio/card.php. Pair with WebP/AVIF (e.g. Speed Optimizer) to keep file size down.
+ */
+add_action('after_setup_theme', function () {
+  add_image_size('vp-portfolio-card', 1024, 576, true);
+}, 21);
+
 add_action('wp_enqueue_scripts', function () {
 
     // Load parent theme stylesheet

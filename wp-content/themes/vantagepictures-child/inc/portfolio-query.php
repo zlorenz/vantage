@@ -56,7 +56,7 @@ if (!function_exists('vp_get_portfolio_query')) {
     $defaults = [
       'post_type'           => 'portfolio',
       'post_status'         => 'publish',
-      'posts_per_page'      => -1,
+      'posts_per_page'      => 12,
       'ignore_sticky_posts' => true,
 
       // If you use page-attributes ordering (menu_order)
