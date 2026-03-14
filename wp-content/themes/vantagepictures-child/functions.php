@@ -882,6 +882,10 @@ require_once get_stylesheet_directory() . '/inc/portfolio-filters.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-load-more.php';
 require_once get_stylesheet_directory() . '/inc/blog-load-more.php';
 require_once get_stylesheet_directory() . '/inc/yoast-schema-portfolio.php';
+require_once get_stylesheet_directory() . '/inc/yoast-schema-about-founders.php';
+require_once get_stylesheet_directory() . '/inc/yoast-schema-work-page.php';
+require_once get_stylesheet_directory() . '/inc/yoast-schema-organization-taxonomies.php';
+require_once get_stylesheet_directory() . '/inc/yoast-seo-tweaks.php';
 
 /**
  * Portfolio Infinite Scroll Script
