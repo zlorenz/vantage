@@ -111,6 +111,14 @@ add_action( 'gform_enqueue_scripts_1', function ( $form, $ajax ) {
 		wp_get_theme()->get( 'Version' ),
 		true
 	);
+	// dataLayer push on briefing form submit (for GTM conversion tracking).
+	wp_enqueue_script(
+		'vp-gf-brief-datalayer',
+		get_stylesheet_directory_uri() . '/assets/js/gf-brief-datalayer.js',
+		array( 'jquery' ),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
 }, 20, 2 );
 
 /**
@@ -142,6 +150,75 @@ add_filter( 'gform_pre_render', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
 add_filter( 'gform_pre_validation', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
 add_filter( 'gform_pre_submission_filter', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
 add_filter( 'gform_admin_pre_render', 'vp_gf_apply_brief_wrapper_class', 10, 1 );
+
+/**
+ * Client briefing form (Gravity Forms ID 1): push submit success to GTM.
+ *
+ * Why this approach:
+ * - gform_confirmation_loaded only fires for "message/page" confirmations (not redirects).
+ * - AJAX "redirect" confirmations return only a redirect script (no form markup to match).
+ * - By appending a query string to the redirect URL, we can reliably fire a dataLayer event
+ *   on the landing page for both AJAX and non-AJAX submissions.
+ *
+ * GTM Custom Event trigger: vp_brief_form_submit
+ *
+ * @param string|array $confirmation Confirmation message or redirect array.
+ * @param array        $form         Form object.
+ * @param array        $entry       Entry.
+ * @param bool         $ajax        Whether request is AJAX.
+ * @return string|array Modified confirmation.
+ */
+function vp_gf_brief_confirmation_tracking( $confirmation, $form, $entry, $ajax ) {
+	$form_id = isset( $form['id'] ) ? (int) $form['id'] : 0;
+	if ( $form_id !== 1 ) {
+		return $confirmation;
+	}
+
+	// Redirect confirmation: add a query arg to the target URL so we can fire on landing.
+	if ( is_array( $confirmation ) && ! empty( $confirmation['redirect'] ) ) {
+		$confirmation['redirect'] = add_query_arg(
+			[
+				'vp_brief_submitted' => '1',
+			],
+			$confirmation['redirect']
+		);
+		return $confirmation;
+	}
+
+	// Message/page confirmation (HTML): append inline script to fire immediately.
+	if ( is_string( $confirmation ) && $confirmation !== '' ) {
+		$script = "<script>(function(){window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'vp_brief_form_submit',formId:'1',formName:'client_brief'});})();</script>";
+		return $confirmation . $script;
+	}
+
+	return $confirmation;
+}
+add_filter( 'gform_confirmation', 'vp_gf_brief_confirmation_tracking', 20, 4 );
+
+/**
+ * Landing-page handler for redirect confirmations.
+ * If a successful submission redirected here with vp_brief_submitted=1, push the dataLayer event.
+ */
+function vp_gf_brief_tracking_landing_page() {
+	if ( empty( $_GET['vp_brief_submitted'] ) || (string) $_GET['vp_brief_submitted'] !== '1' ) {
+		return;
+	}
+	?>
+	<script>
+	(function() {
+		window.dataLayer = window.dataLayer || [];
+		window.dataLayer.push({ event: 'vp_brief_form_submit', formId: '1', formName: 'client_brief' });
+		// Clean URL so refresh doesn't double-count.
+		try {
+			var url = new URL(window.location.href);
+			url.searchParams.delete('vp_brief_submitted');
+			window.history.replaceState({}, document.title, url.toString());
+		} catch (e) {}
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'vp_gf_brief_tracking_landing_page', 4 );
 
 /**
  * Enqueue Google Font (Poppins)
@@ -452,6 +529,7 @@ require_once get_stylesheet_directory() . '/inc/wpbakery-migrate-portfolio-video
 require_once get_stylesheet_directory() . '/inc/portfolio-credits-migrate.php';
 require_once get_stylesheet_directory() . '/inc/acf-page-hero.php';
 require_once get_stylesheet_directory() . '/inc/acf-contact-modal.php';
+require_once get_stylesheet_directory() . '/inc/gtm.php';
 
 /* ==========================================================================
    Portfolio System
@@ -913,6 +991,23 @@ add_action('wp_enqueue_scripts', function () {
   }
 
 });
+
+/**
+ * Vimeo portfolio: dataLayer events (play, progress, complete) for GTM → GA4.
+ * Loaded only on single portfolio pages.
+ */
+add_action('wp_enqueue_scripts', function () {
+  if (!is_singular('portfolio')) {
+    return;
+  }
+  wp_enqueue_script(
+    'vp-vimeo-datalayer',
+    get_stylesheet_directory_uri() . '/assets/js/vimeo-datalayer.js',
+    array(),
+    wp_get_theme()->get('Version'),
+    true
+  );
+}, 25);
 
 /**
  * Blog: limit initial query to 9 posts on blog index, category, and date/author archives (infinite scroll loads more).
