@@ -98,10 +98,18 @@ function vp_portfolio_load_more() {
   $industry_norm = vp_portfolio_normalize_filter_for_cache($industry);
   $market_norm   = vp_portfolio_normalize_filter_for_cache($market);
 
+  // TranslatePress: use current language in cache key so /work/ and /zh/工作/ get separate cached HTML (permalinks differ).
+  $trp_lang = 'en_US';
+  if (class_exists('TRP_Translate_Press')) {
+    global $TRP_LANGUAGE;
+    $trp_lang = isset($TRP_LANGUAGE) && is_string($TRP_LANGUAGE) ? $TRP_LANGUAGE : 'en_US';
+  }
+  $lang_suffix = sanitize_key($trp_lang);
+
   // Serve cached HTML for page 1, public (no filter or any filter combo) — faster filter UX.
   $is_first_page_public = ($page === 1 && $context === 'public');
   if ($is_first_page_public) {
-    $cache_key = 'vp_portfolio_p1_public_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
+    $cache_key = 'vp_portfolio_p1_public_' . $lang_suffix . '_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
     $cached = get_transient($cache_key);
     if (is_array($cached) && !empty($cached['html'])) {
       header('Cache-Control: public, max-age=600');
@@ -220,7 +228,7 @@ function vp_portfolio_load_more() {
   ];
 
   if ($is_first_page_public) {
-    $cache_key = 'vp_portfolio_p1_public_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
+    $cache_key = 'vp_portfolio_p1_public_' . $lang_suffix . '_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
     set_transient($cache_key, $payload, 30 * MINUTE_IN_SECONDS);
     $keys = get_option('vp_portfolio_filter_cache_keys', []);
     if (!in_array($cache_key, $keys, true)) {

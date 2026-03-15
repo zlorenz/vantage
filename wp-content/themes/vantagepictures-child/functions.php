@@ -19,6 +19,70 @@ function vp_single_posted_on() {
 }
 
 /**
+ * TranslatePress: when viewing in Chinese, output Chinese for blog entry-meta and comment form
+ * (vantagepictures gettext). Ensures these strings appear in Chinese even if TP's gettext
+ * dictionary doesn't have them (e.g. form nodes get data-no-translation and stay English).
+ */
+add_filter( 'gettext', 'vp_trp_blog_chinese_strings', 10, 3 );
+function vp_trp_blog_chinese_strings( $translated, $text, $domain ) {
+	if ( $domain !== 'vantagepictures' ) {
+		return $translated;
+	}
+	global $TRP_LANGUAGE;
+	if ( ! isset( $TRP_LANGUAGE ) || $TRP_LANGUAGE !== 'zh_CN' ) {
+		return $translated;
+	}
+	$strings = [
+		'This entry was posted in %1$s.' => '本文章发表于 %1$s。',
+		'This entry was posted.'         => '本文章发表于。',
+		'No Comments yet!'               => '暂无评论！',
+		'Comments are closed.'           => '评论已关闭。',
+		'Cancel reply'                   => '取消回复',
+		'Your Email address will not be published.' => '您的电子邮箱地址不会被公开。',
+		'Comment'                        => '评论',
+		'Name'                           => '姓名',
+		'Email'                          => '电子邮箱',
+		'Save my name, email, and website in this browser for the next time I comment.' => '下次发表评论时，请在此浏览器中保存我的姓名、电子邮箱和网站。',
+		'Post Comment'                   => '发表评论',
+		'Comment navigation'             => '评论导航',
+		'&larr; Older Comments'          => '&larr; 较早评论',
+		'Newer Comments &rarr;'           => '较新评论 &rarr;',
+	];
+	return isset( $strings[ $text ] ) ? $strings[ $text ] : $translated;
+}
+
+/**
+ * Blog category slug => Chinese name map for when viewing in Chinese (TranslatePress zh_CN).
+ * Used by content-single.php so entry-meta category links show translated names.
+ * Add new categories here as needed.
+ *
+ * @return array<string, string> Slug => Chinese name.
+ */
+function vp_blog_category_zh_names() {
+	return [
+		'creative' => '活动创意',
+		'press'    => '新闻报道',
+	];
+}
+
+/**
+ * Return category display name for current language. When zh_CN, use vp_blog_category_zh_names() map; else term name.
+ *
+ * @param \WP_Term $cat Category term.
+ * @return string
+ */
+function vp_category_display_name( $cat ) {
+	global $TRP_LANGUAGE;
+	if ( isset( $TRP_LANGUAGE ) && $TRP_LANGUAGE === 'zh_CN' ) {
+		$zh = vp_blog_category_zh_names();
+		if ( isset( $zh[ $cat->slug ] ) ) {
+			return $zh[ $cat->slug ];
+		}
+	}
+	return $cat->name;
+}
+
+/**
  * Editor styles for iframed block editor – dark mode content (headings, paragraphs, etc.)
  * Loads inside the editor iframe via add_editor_style. Overrides :where(.editor-styles-wrapper) color:revert.
  */
@@ -75,6 +139,14 @@ add_action('wp_enqueue_scripts', function () {
         array(),
         wp_get_theme()->get('Version'),
         true
+    );
+
+    // TranslatePress ALD popup: dark theme, readable text, visible close icon (no dashicons on front).
+    wp_enqueue_style(
+        'vp-trp-ald-popup-overrides',
+        get_stylesheet_directory_uri() . '/assets/css/trp-ald-popup-overrides.css',
+        ['vantagepictures-child-style'],
+        wp_get_theme()->get('Version')
     );
 
 }, 30);
@@ -524,6 +596,94 @@ add_action('admin_footer', function () {
   echo '.interface-interface-skeleton svg,.editor-header svg,.edit-post-header svg,.block-editor-block-toolbar svg,.block-editor-block-contextual-toolbar svg,.components-button svg,.interface-complementary-area svg,.components-panel svg,.block-editor-inserter__menu svg{fill:#fff!important;stroke:#fff!important;color:#fff!important}';
   echo '</style>';
 }, 99999);
+
+/**
+ * TranslatePress: when the URL has no language prefix (e.g. /work/, /news/), always use default
+ * language for content and link generation. Prevents English pages from outputting Chinese URLs
+ * (e.g. portfolio links on /work/ pointing to /zh/portfolio/...) when a cookie or preference
+ * would otherwise set TRP_LANGUAGE to Chinese.
+ */
+add_filter('trp_needed_language', function ($needed_language, $lang_from_url, $settings, $trp) {
+  if ($lang_from_url === null) {
+    return $settings['default-language'] ?? $needed_language;
+  }
+  return $needed_language;
+}, 10, 4);
+
+/**
+ * TranslatePress: redirect /zh/[english-slug] to /zh/[chinese-slug] so content is in Chinese.
+ * When the URL is under /zh/ but uses the default-language (English) slug, TP can show English.
+ * Redirect to the canonical Chinese URL (with translated slug) so the page renders in Chinese.
+ * Explicit fallbacks for /zh/work/ and /zh/news/ in case TP slug translation isn't set for those pages.
+ */
+add_action('template_redirect', function () {
+  if (is_admin() || !isset($_SERVER['REQUEST_URI'])) {
+    return;
+  }
+  if (!class_exists('TRP_Translate_Press')) {
+    return;
+  }
+  $trp = TRP_Translate_Press::get_trp_instance();
+  $url_converter = $trp->get_component('url_converter');
+  $settings = $trp->get_component('settings')->get_settings();
+  $default_lang = $settings['default-language'] ?? 'en_US';
+  $zh_code = null;
+  foreach (array_keys($settings['url-slugs'] ?? []) as $code) {
+    if (($settings['url-slugs'][$code] ?? '') === 'zh') {
+      $zh_code = $code;
+      break;
+    }
+  }
+  if (!$zh_code) {
+    return;
+  }
+  $current_url = $url_converter->cur_page_url(true);
+  $current_url = str_replace('#TRPLINKPROCESSED', '', $current_url);
+  $lang_from_url = $url_converter->get_lang_from_url_string($current_url);
+  if ($lang_from_url !== $zh_code) {
+    return;
+  }
+  $path = rtrim(parse_url($current_url, PHP_URL_PATH), '/') ?: '/';
+  $path_lower = mb_strtolower($path);
+
+  // Explicit redirects when TP slug translation may be missing for these pages.
+  $zh_work_news_slugs = [
+    '/zh/work'   => '/zh/工作',
+    '/zh/news'   => '/zh/新闻',
+  ];
+  foreach ($zh_work_news_slugs as $en_path => $zh_path) {
+    if ($path_lower === $en_path || $path_lower === $en_path . '/') {
+      $redirect = home_url($zh_path . '/');
+      wp_safe_redirect($redirect, 301);
+      exit;
+    }
+  }
+
+  $default_lang_url = $url_converter->get_url_for_language($default_lang, $current_url, '');
+  $default_lang_url = str_replace('#TRPLINKPROCESSED', '', $default_lang_url);
+  $chinese_canonical = $url_converter->get_url_for_language($zh_code, $default_lang_url, '');
+  $chinese_canonical = str_replace('#TRPLINKPROCESSED', '', $chinese_canonical);
+  $cur_normalized = rtrim(parse_url($current_url, PHP_URL_PATH), '/') ?: '/';
+  $canon_normalized = rtrim(parse_url($chinese_canonical, PHP_URL_PATH), '/') ?: '/';
+  if ($cur_normalized !== $canon_normalized) {
+    wp_safe_redirect($chinese_canonical, 301);
+    exit;
+  }
+}, 2);
+
+/**
+ * TranslatePress: remove duplicate trailing English period after Chinese full stop (。. → 。).
+ * TP sometimes leaves the original "." at the end of paragraphs when the translation adds 。.
+ */
+add_filter( 'trp_translated_html', function ( $final_html, $TRP_LANGUAGE, $language_code, $preview_mode ) {
+	if ( $language_code !== 'zh_CN' && $TRP_LANGUAGE !== 'zh_CN' ) {
+		return $final_html;
+	}
+	// Chinese full stop + English period (with optional space) → Chinese full stop only.
+	$final_html = str_replace( '。.', '。', $final_html );
+	$final_html = str_replace( '。 .', '。', $final_html );
+	return $final_html;
+}, 10, 4 );
 
 /**
  * ACF + Tools: global includes.

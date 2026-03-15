@@ -21,7 +21,7 @@
 					printf(
 						'<a href="%1$s" class="vp-category-pill">%2$s</a> ',
 						esc_url( get_category_link( $cat ) ),
-						esc_html( $cat->name )
+						esc_html( vp_category_display_name( $cat ) )
 					);
 				}
 			}
@@ -52,10 +52,17 @@
 	<footer class="entry-meta">
 		<hr>
 		<?php
-			/* translators: used between list items, there is a space after the comma */
-			$category_list = get_the_category_list( __( ', ', 'vantagepictures' ) );
-
-			if ( '' !== $category_list ) {
+			$categories = get_the_category();
+			if ( ! empty( $categories ) ) {
+				$links = array();
+				foreach ( $categories as $cat ) {
+					$links[] = sprintf(
+						'<a href="%1$s" rel="category tag">%2$s</a>',
+						esc_url( get_category_link( $cat ) ),
+						esc_html( vp_category_display_name( $cat ) )
+					);
+				}
+				$category_list = implode( __( ', ', 'vantagepictures' ), $links );
 				printf( __( 'This entry was posted in %1$s.', 'vantagepictures' ), $category_list );
 			} else {
 				esc_html_e( 'This entry was posted.', 'vantagepictures' );
