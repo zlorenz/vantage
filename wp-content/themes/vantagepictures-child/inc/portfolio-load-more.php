@@ -12,6 +12,36 @@
 add_action('wp_ajax_vp_portfolio_load_more', 'vp_portfolio_load_more');
 add_action('wp_ajax_nopriv_vp_portfolio_load_more', 'vp_portfolio_load_more');
 
+/**
+ * For page-1 public portfolio load, always send cache-friendly headers so the browser can cache
+ * both HIT and MISS responses. WordPress calls nocache_headers() early in admin-ajax.php.
+ */
+add_filter('nocache_headers', function ($headers) {
+  if (!isset($_POST['action']) || $_POST['action'] !== 'vp_portfolio_load_more') {
+    return $headers;
+  }
+  $page    = isset($_POST['page']) ? max(1, (int) $_POST['page']) : 1;
+  $context = isset($_POST['context']) ? sanitize_key(wp_unslash($_POST['context'] ?? '')) : '';
+  if ($page !== 1 || $context !== 'public') {
+    return $headers;
+  }
+  return [
+    'Expires'       => gmdate('D, d M Y H:i:s', time() + 600) . ' GMT',
+    'Cache-Control' => 'public, max-age=600',
+  ];
+}, 10, 1);
+
+/**
+ * Normalize filter value for cache key (and query): treat "" and "all" as "no filter".
+ * Ensures format=brand-film&industry=all&market=all and industry=&market= use the same cache key.
+ */
+function vp_portfolio_normalize_filter_for_cache( $value ) {
+  if ($value === '' || strtolower((string) $value) === 'all') {
+    return '';
+  }
+  return $value;
+}
+
 /** Purge cached first-page HTML when portfolio content changes. */
 add_action('save_post_portfolio', 'vp_portfolio_purge_page1_cache');
 add_action('transition_post_status', function ($new_status, $old_status, $post) {
@@ -29,11 +59,25 @@ function vp_portfolio_purge_page1_cache( $post_id = 0 ) {
   update_option('vp_portfolio_filter_cache_keys', []);
 }
 
+/**
+ * Secret for internal pre-warm requests; allows bypassing nonce. Empty if AUTH_KEY not set.
+ */
+function vp_get_prewarm_secret() {
+  return defined('AUTH_KEY') ? 'vp_prewarm_' . AUTH_KEY : '';
+}
+
 function vp_portfolio_load_more() {
 
-  // Basic nonce check
-  if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'vp_portfolio_load_more')) {
-    wp_send_json_error(['message' => 'Invalid nonce']);
+  // Allow internal pre-warm to bypass nonce when secret is present and valid
+  $is_prewarm = (
+    isset($_POST['vp_prewarm_secret']) &&
+    vp_get_prewarm_secret() !== '' &&
+    sanitize_text_field(wp_unslash($_POST['vp_prewarm_secret'])) === vp_get_prewarm_secret()
+  );
+  if (!$is_prewarm) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'vp_portfolio_load_more')) {
+      wp_send_json_error(['message' => 'Invalid nonce']);
+    }
   }
 
   $page     = isset($_POST['page']) ? max(1, (int) $_POST['page']) : 1;
@@ -50,13 +94,18 @@ function vp_portfolio_load_more() {
   $format   = isset($_POST['format']) ? sanitize_key(wp_unslash($_POST['format'])) : '';
   $industry = isset($_POST['industry']) ? sanitize_key(wp_unslash($_POST['industry'])) : '';
   $market   = isset($_POST['market']) ? sanitize_key(wp_unslash($_POST['market'])) : '';
+  $format_norm   = vp_portfolio_normalize_filter_for_cache($format);
+  $industry_norm = vp_portfolio_normalize_filter_for_cache($industry);
+  $market_norm   = vp_portfolio_normalize_filter_for_cache($market);
 
   // Serve cached HTML for page 1, public (no filter or any filter combo) — faster filter UX.
   $is_first_page_public = ($page === 1 && $context === 'public');
   if ($is_first_page_public) {
-    $cache_key = 'vp_portfolio_p1_public_' . $format . '_' . $industry . '_' . $market;
+    $cache_key = 'vp_portfolio_p1_public_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
     $cached = get_transient($cache_key);
     if (is_array($cached) && !empty($cached['html'])) {
+      header('Cache-Control: public, max-age=600');
+      header('X-VP-Cache: HIT');
       wp_send_json_success([
         'html'      => $cached['html'],
         'has_more'  => !empty($cached['has_more']),
@@ -96,28 +145,28 @@ function vp_portfolio_load_more() {
    */
   $tax_query = [];
 
-  // Dropdowns
-  if ($format) {
+  // Dropdowns (use normalized values so "all" does not add a clause)
+  if ($format_norm) {
     $tax_query[] = [
       'taxonomy' => 'video-format',
       'field'    => 'slug',
-      'terms'    => [$format],
+      'terms'    => [$format_norm],
     ];
   }
 
-  if ($industry) {
+  if ($industry_norm) {
     $tax_query[] = [
       'taxonomy' => 'industry',
       'field'    => 'slug',
-      'terms'    => [$industry],
+      'terms'    => [$industry_norm],
     ];
   }
 
-  if ($market) {
+  if ($market_norm) {
     $tax_query[] = [
       'taxonomy' => 'market',
       'field'    => 'slug',
-      'terms'    => [$market],
+      'terms'    => [$market_norm],
     ];
   }
 
@@ -126,9 +175,9 @@ function vp_portfolio_load_more() {
   if ($taxonomy && $term) {
 
     $is_duplicate =
-      ($taxonomy === 'video-format' && $term === $format) ||
-      ($taxonomy === 'industry' && $term === $industry) ||
-      ($taxonomy === 'market' && $term === $market);
+      ($taxonomy === 'video-format' && $term === $format_norm) ||
+      ($taxonomy === 'industry' && $term === $industry_norm) ||
+      ($taxonomy === 'market' && $term === $market_norm);
 
     if (!$is_duplicate) {
       $tax_query[] = [
@@ -171,13 +220,14 @@ function vp_portfolio_load_more() {
   ];
 
   if ($is_first_page_public) {
-    $cache_key = 'vp_portfolio_p1_public_' . $format . '_' . $industry . '_' . $market;
-    set_transient($cache_key, $payload, 10 * MINUTE_IN_SECONDS);
+    $cache_key = 'vp_portfolio_p1_public_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
+    set_transient($cache_key, $payload, 30 * MINUTE_IN_SECONDS);
     $keys = get_option('vp_portfolio_filter_cache_keys', []);
     if (!in_array($cache_key, $keys, true)) {
       $keys[] = $cache_key;
       update_option('vp_portfolio_filter_cache_keys', array_slice($keys, -100));
     }
+    header('X-VP-Cache: MISS');
   }
 
   wp_send_json_success($payload);

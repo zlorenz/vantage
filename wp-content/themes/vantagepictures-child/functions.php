@@ -966,6 +966,7 @@ function vp_portfolio_adjacent($direction = 'prev', $taxonomy = 'video-format') 
 require_once get_stylesheet_directory() . '/inc/portfolio-query.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-filters.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-load-more.php';
+require_once get_stylesheet_directory() . '/inc/portfolio-prewarm.php';
 require_once get_stylesheet_directory() . '/inc/blog-load-more.php';
 require_once get_stylesheet_directory() . '/inc/yoast-schema-portfolio.php';
 require_once get_stylesheet_directory() . '/inc/yoast-schema-about-founders.php';

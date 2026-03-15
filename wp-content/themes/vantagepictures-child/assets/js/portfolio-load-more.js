@@ -23,6 +23,7 @@
   let done = false;
   let filterRequestId = 0;
   let filterAbortController = null;
+  let loadMoreAbortController = null;
 
   const setLoading = (isLoading) => {
     if (isLoading) {
@@ -134,18 +135,31 @@
     return data.data || null;
   };
 
-  // Infinite scroll: load NEXT page and append
+  // Infinite scroll: load NEXT page and append (abort when filters change; ignore response if filter state changed)
   const loadMore = async () => {
     if (loading || done) return;
+    if (loadMoreAbortController) loadMoreAbortController.abort();
+    loadMoreAbortController = new AbortController();
+    const loadMoreSignal = loadMoreAbortController.signal;
+
+    const current = parseInt(sentinel.dataset.page || "1", 10);
+    const nextPage = current + 1;
+    const filtersWhenSent = readDropdownFilters();
+
     loading = true;
     setLoading(true);
 
     try {
-      const current = parseInt(sentinel.dataset.page || "1", 10);
-      const nextPage = current + 1;
-
-      const result = await fetchPage(nextPage);
+      const result = await fetchPage(nextPage, loadMoreSignal);
       if (!result) return stopForever();
+
+      if (
+        filtersWhenSent.format !== readDropdownFilters().format ||
+        filtersWhenSent.industry !== readDropdownFilters().industry ||
+        filtersWhenSent.market !== readDropdownFilters().market
+      ) {
+        return;
+      }
 
       const html = (result.html || "").trim();
       if (!html) return stopForever();
@@ -159,10 +173,9 @@
 
       if (!result.has_more) stopForever();
 
-      // Re-arm observer so it triggers smoothly even if sentinel stays visible
       resetObserver();
-
     } catch (e) {
+      if (e.name === "AbortError") return;
       stopForever();
     } finally {
       loading = false;
@@ -170,9 +183,14 @@
     }
   };
 
+  const clearGridLoadingState = () => {
+    grid.classList.remove("vp-portfolio-gallery--loading");
+  };
+
   // Apply ALL filters: load page 1 and replace grid (abort previous request; only apply latest)
   const applyFilters = async (pushStateUrl = null) => {
     if (filterAbortController) filterAbortController.abort();
+    if (loadMoreAbortController) loadMoreAbortController.abort();
     filterAbortController = new AbortController();
     const signal = filterAbortController.signal;
     const thisRequestId = ++filterRequestId;
@@ -181,6 +199,7 @@
     done = false;
     sentinel.classList.remove("is-done");
     setLoading(true);
+    grid.classList.add("vp-portfolio-gallery--loading");
 
     sentinel.dataset.page = "1";
 
@@ -194,6 +213,7 @@
 
       const html = (result.html || "").trim();
       grid.innerHTML = html;
+      clearGridLoadingState();
 
       Array.from(grid.children).forEach((card, i) => {
         card.classList.add("vp-card-reveal");
@@ -215,7 +235,7 @@
         history.pushState({}, "", pushStateUrl);
       }
 
-      resetObserver();
+      setTimeout(resetObserver, 400);
 
       const gridTop = grid.getBoundingClientRect().top;
       if (gridTop < -50 || gridTop > window.innerHeight) {
@@ -229,6 +249,7 @@
       if (thisRequestId === filterRequestId) {
         loading = false;
         setLoading(false);
+        clearGridLoadingState();
       }
     }
   };

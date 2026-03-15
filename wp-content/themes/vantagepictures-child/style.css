@@ -888,6 +888,13 @@ textarea {
   cursor: wait;
 }
 
+/* Grid loading state (filter change in progress — immediate visual feedback) */
+.vp-portfolio-gallery.vp-portfolio-gallery--loading {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 /* ==========================================================================
    12. Portfolio: Cards, Load States, and Animations
    ========================================================================== */
