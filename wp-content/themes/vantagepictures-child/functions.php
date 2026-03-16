@@ -12,7 +12,7 @@ add_filter( 'jpeg_quality', function( $quality ) {
 } );
 
 add_filter( 'wp_editor_set_quality', function( $quality, $mime_type ) {
-	return 95;
+  return 95;
 }, 10, 2 );
 
 /**
@@ -792,9 +792,6 @@ add_filter( 'trp_translated_html', function ( $final_html, $TRP_LANGUAGE, $langu
  * - Page hero visibility field group
  * - Global contact modal options
  */
-require_once get_stylesheet_directory() . '/inc/wpbakery-migrate.php';
-require_once get_stylesheet_directory() . '/inc/wpbakery-migrate-portfolio-videos.php';
-require_once get_stylesheet_directory() . '/inc/portfolio-credits-migrate.php';
 require_once get_stylesheet_directory() . '/inc/acf-page-hero.php';
 require_once get_stylesheet_directory() . '/inc/acf-contact-modal.php';
 require_once get_stylesheet_directory() . '/inc/gtm.php';
