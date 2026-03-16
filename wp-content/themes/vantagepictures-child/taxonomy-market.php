@@ -76,35 +76,35 @@ $query = new WP_Query([
         <?php endforeach; ?>
       </nav>
     <?php endif; ?>
+  </div>
 
-    <?php if ($query->have_posts()) : ?>
-      <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-4">
-        <?php while ($query->have_posts()) : $query->the_post(); ?>
-          <div class="col-12 col-md-6 col-lg-4">
-            <?php get_template_part('template-parts/portfolio/card'); ?>
-          </div>
-        <?php endwhile; wp_reset_postdata(); ?>
-      </div>
-
-      <?php if ($query->max_num_pages > 1) : ?>
-        <div id="vp-load-more"
-          class="vp-load-more"
-          data-page="1"
-          data-per-page="12"
-          data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
-          data-term="<?php echo esc_attr($term->slug); ?>"
-          data-context="public"
-          data-layout="taxonomy"
-          aria-hidden="true">
+  <?php if ($query->have_posts()) : ?>
+    <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-4">
+      <?php while ($query->have_posts()) : $query->the_post(); ?>
+        <div class="col-12 col-md-6 col-lg-4">
+          <?php get_template_part('template-parts/portfolio/card'); ?>
         </div>
-      <?php endif; ?>
+      <?php endwhile; wp_reset_postdata(); ?>
+    </div>
 
-    <?php else : ?>
-      <div class="text-center text-body-secondary py-5">
-        No portfolio items found in this market.
+    <?php if ($query->max_num_pages > 1) : ?>
+      <div id="vp-load-more"
+        class="vp-load-more"
+        data-page="1"
+        data-per-page="12"
+        data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
+        data-term="<?php echo esc_attr($term->slug); ?>"
+        data-context="public"
+        data-layout="taxonomy"
+        aria-hidden="true">
       </div>
     <?php endif; ?>
-  </div>
+
+  <?php else : ?>
+    <div class="text-center text-body-secondary py-5">
+      No portfolio items found in this market.
+    </div>
+  <?php endif; ?>
 </section>
 
 <?php get_footer(); ?>

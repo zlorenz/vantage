@@ -17,6 +17,8 @@
 
   if (!sentinel || !grid || !window.vpLoadMore) return;
 
+  const isTaxLayout = sentinel.dataset.layout === "taxonomy";
+
   const filterBar = document.querySelector(".vp-filterbar");
 
   let loading = false;
@@ -258,7 +260,7 @@
    * Dropdown change handler (EXCLUSIVE MODE)
    * When you select one filter, the other two are cleared.
    */
-  if (dropdowns.length) {
+  if (dropdowns.length && !isTaxLayout) {
     dropdowns.forEach((sel) => {
       sel.addEventListener("change", () => {
 
@@ -284,7 +286,7 @@
    * Interprets tab click as setting ONLY format=term, and clearing other dropdowns if they exist.
    * Keeps href working when JS is off.
    */
-  if (filtersNav && legacyFilters.length) {
+  if (filtersNav && legacyFilters.length && !isTaxLayout) {
     legacyFilters.forEach((a) => {
       a.addEventListener("click", (e) => {
         e.preventDefault();
@@ -326,7 +328,7 @@
 
       applyFilters(null);
     });
-  } else {
+  } else if (!isTaxLayout) {
     // Even if legacy tabs don’t exist, still handle popstate for dropdown UX
     window.addEventListener("popstate", () => {
       setDropdownsFromUrl();
@@ -334,8 +336,10 @@
     });
   }
 
-  // On first load, sync dropdowns to URL params (so refresh/share links work)
-  setDropdownsFromUrl();
+  // On first load, sync dropdowns to URL params (so refresh/share links work) on Work pages only
+  if (!isTaxLayout) {
+    setDropdownsFromUrl();
+  }
 
   io = new IntersectionObserver(
     (entries) => {

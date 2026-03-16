@@ -13,16 +13,15 @@ add_action('wp_ajax_vp_portfolio_load_more', 'vp_portfolio_load_more');
 add_action('wp_ajax_nopriv_vp_portfolio_load_more', 'vp_portfolio_load_more');
 
 /**
- * For page-1 public portfolio load, always send cache-friendly headers so the browser can cache
+ * For public portfolio loads, send cache-friendly headers so the browser can cache
  * both HIT and MISS responses. WordPress calls nocache_headers() early in admin-ajax.php.
  */
 add_filter('nocache_headers', function ($headers) {
   if (!isset($_POST['action']) || $_POST['action'] !== 'vp_portfolio_load_more') {
     return $headers;
   }
-  $page    = isset($_POST['page']) ? max(1, (int) $_POST['page']) : 1;
   $context = isset($_POST['context']) ? sanitize_key(wp_unslash($_POST['context'] ?? '')) : '';
-  if ($page !== 1 || $context !== 'public') {
+  if ($context !== 'public') {
     return $headers;
   }
   return [
@@ -106,50 +105,51 @@ function vp_portfolio_load_more() {
   }
   $lang_suffix = sanitize_key($trp_lang);
 
-  // Serve cached HTML for page 1, public (no filter or any filter combo) — faster filter UX.
-  $is_first_page_public = ($page === 1 && $context === 'public');
-  if ($is_first_page_public) {
-    $cache_key = 'vp_portfolio_p1_public_' . $lang_suffix . '_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
+  // Cache all public pages (page-aware) so both filters and load-more benefit from caching.
+  $is_cacheable_public = ($context === 'public');
+
+  // Cache key includes language, page, normalized filters, context and legacy taxonomy/term.
+  $legacy_suffix = '';
+  if ($taxonomy && $term) {
+    $legacy_suffix = '_' . $taxonomy . '_' . $term;
+  }
+
+  if ($is_cacheable_public) {
+    $cache_key = sprintf(
+      'vp_portfolio_%s_p%d_%s_%s_%s_%s%s',
+      $lang_suffix,
+      $page,
+      $format_norm !== '' ? $format_norm : 'all',
+      $industry_norm !== '' ? $industry_norm : 'all',
+      $market_norm !== '' ? $market_norm : 'all',
+      $context,
+      $legacy_suffix
+    );
+
     $cached = get_transient($cache_key);
     if (is_array($cached) && !empty($cached['html'])) {
       header('Cache-Control: public, max-age=600');
       header('X-VP-Cache: HIT');
-      wp_send_json_success([
-        'html'      => $cached['html'],
-        'has_more'  => !empty($cached['has_more']),
-        'next_page' => 2,
-      ]);
+      wp_send_json_success($cached);
     }
   }
 
   $args = [
-    'posts_per_page' => $per_page,
+    // Use "per_page + 1" so we can cheaply determine if there's another page
+    // without using FOUND_ROWS(). We render at most $per_page items and use
+    // the extra one (if present) to set has_more.
+    'posts_per_page' => $per_page + 1,
     'paged'          => $page,
+    'no_found_rows'  => true,
     'orderby'        => 'date',
     'order'          => 'DESC',
   ];
-
-  // PUBLIC page should hide items
-  if ($context === 'public') {
-    $args['meta_query'] = [
-      'relation' => 'OR',
-      [
-        'key'     => 'hide_from_public',
-        'value'   => 0,
-        'compare' => '=',
-        'type'    => 'NUMERIC',
-      ],
-      [
-        'key'     => 'hide_from_public',
-        'compare' => 'NOT EXISTS',
-      ],
-    ];
-  }
 
   /**
    * Build a combined tax_query supporting:
    * - dropdown filters (format/industry/market)
    * - legacy single filter (taxonomy + term)
+   * - visibility filter (exclude portfolio_visibility=hidden)
    */
   $tax_query = [];
 
@@ -196,6 +196,15 @@ function vp_portfolio_load_more() {
     }
   }
 
+  // Visibility: exclude items explicitly marked as "hidden".
+  // Items with no portfolio_visibility term are treated as public.
+  $tax_query[] = [
+    'taxonomy' => 'portfolio_visibility',
+    'field'    => 'slug',
+    'terms'    => ['hidden'],
+    'operator' => 'NOT IN',
+  ];
+
   if (!empty($tax_query)) {
     $tax_query['relation'] = 'AND';
     $args['tax_query'] = $tax_query;
@@ -203,13 +212,24 @@ function vp_portfolio_load_more() {
 
   $query = vp_get_portfolio_query($args);
 
-  $col_class = ($layout === 'taxonomy') ? 'col-12 col-md-6 col-lg-4' : 'col-12 col-sm-6 col-md-4 col-lg-3';
+  $col_class = 'col-12 col-sm-6 col-md-4 col-lg-3';
 
   ob_start();
+
+  $rendered = 0;
+  $has_more = false;
 
   if ($query->have_posts()) {
     while ($query->have_posts()) {
       $query->the_post();
+      $rendered++;
+
+      // We requested per_page + 1 posts. If we hit the extra record, don't render it
+      // but record that there is another page.
+      if ($rendered > $per_page) {
+        $has_more = true;
+        break;
+      }
       ?>
       <div class="<?php echo esc_attr($col_class); ?>">
         <?php get_template_part('template-parts/portfolio/card'); ?>
@@ -223,12 +243,25 @@ function vp_portfolio_load_more() {
 
   $payload = [
     'html'      => $html,
-    'has_more'  => ($page < (int) $query->max_num_pages),
+    'has_more'  => $has_more,
     'next_page' => $page + 1,
   ];
 
-  if ($is_first_page_public) {
-    $cache_key = 'vp_portfolio_p1_public_' . $lang_suffix . '_' . $format_norm . '_' . $industry_norm . '_' . $market_norm;
+  if ($is_cacheable_public) {
+    // Cache this page payload. We track all keys in an option so purge can clear them.
+    if (!isset($cache_key)) {
+      $cache_key = sprintf(
+        'vp_portfolio_%s_p%d_%s_%s_%s_%s%s',
+        $lang_suffix,
+        $page,
+        $format_norm !== '' ? $format_norm : 'all',
+        $industry_norm !== '' ? $industry_norm : 'all',
+        $market_norm !== '' ? $market_norm : 'all',
+        $context,
+        $legacy_suffix
+      );
+    }
+
     set_transient($cache_key, $payload, 30 * MINUTE_IN_SECONDS);
     $keys = get_option('vp_portfolio_filter_cache_keys', []);
     if (!in_array($cache_key, $keys, true)) {

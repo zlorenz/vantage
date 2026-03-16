@@ -30,25 +30,21 @@ $filter_terms = get_terms([
 ]);
 
 $query = new WP_Query([
-  'post_type' => 'portfolio',
+  'post_type'      => 'portfolio',
   'posts_per_page' => 12,
-  'paged' => 1,
-  'tax_query' => [[
-    'taxonomy' => $taxonomy,
-    'field' => 'term_id',
-    'terms' => (int) $term->term_id,
-  ]],
-
-  'meta_query' => [
-    'relation' => 'OR',
+  'paged'          => 1,
+  'tax_query'      => [
+    'relation' => 'AND',
     [
-      'key' => 'hide_from_public',
-      'compare' => 'NOT EXISTS',
+      'taxonomy' => $taxonomy,
+      'field'    => 'term_id',
+      'terms'    => (int) $term->term_id,
     ],
     [
-      'key' => 'hide_from_public',
-      'value' => '1',
-      'compare' => '!=',
+      'taxonomy' => 'portfolio_visibility',
+      'field'    => 'slug',
+      'terms'    => ['hidden'],
+      'operator' => 'NOT IN',
     ],
   ],
 ]);
@@ -69,9 +65,6 @@ $query = new WP_Query([
 
     <?php if (!is_wp_error($filter_terms) && !empty($filter_terms)) : ?>
       <nav class="vp-filters" aria-label="Filter portfolio by format">
-        <a class="vp-filter<?php echo is_page('work') ? ' is-active' : ''; ?>"
-           href="<?php echo esc_url(home_url('/work/')); ?>">All</a>
-
         <?php foreach ($filter_terms as $t) :
           $is_active = ($t->term_id === $term->term_id);
         ?>
@@ -82,35 +75,35 @@ $query = new WP_Query([
         <?php endforeach; ?>
       </nav>
     <?php endif; ?>
+  </div>
 
-    <?php if ($query->have_posts()) : ?>
-      <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-4">
-        <?php while ($query->have_posts()) : $query->the_post(); ?>
-          <div class="col-12 col-md-6 col-lg-4">
-            <?php get_template_part('template-parts/portfolio/card'); ?>
-          </div>
-        <?php endwhile; wp_reset_postdata(); ?>
-      </div>
-
-      <?php if ($query->max_num_pages > 1) : ?>
-        <div id="vp-load-more"
-          class="vp-load-more"
-          data-page="1"
-          data-per-page="12"
-          data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
-          data-term="<?php echo esc_attr($term->slug); ?>"
-          data-context="public"
-          data-layout="taxonomy"
-          aria-hidden="true">
+  <?php if ($query->have_posts()) : ?>
+    <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-4">
+      <?php while ($query->have_posts()) : $query->the_post(); ?>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <?php get_template_part('template-parts/portfolio/card'); ?>
         </div>
-      <?php endif; ?>
+      <?php endwhile; wp_reset_postdata(); ?>
+    </div>
 
-    <?php else : ?>
-      <div class="text-center text-body-secondary py-5">
-        No portfolio items found in this category.
+    <?php if ($query->max_num_pages > 1) : ?>
+      <div id="vp-load-more"
+        class="vp-load-more"
+        data-page="1"
+        data-per-page="12"
+        data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
+        data-term="<?php echo esc_attr($term->slug); ?>"
+        data-context="public"
+        data-layout="taxonomy"
+        aria-hidden="true">
       </div>
     <?php endif; ?>
-  </div>
+
+  <?php else : ?>
+    <div class="text-center text-body-secondary py-5">
+      No portfolio items found in this category.
+    </div>
+  <?php endif; ?>
 </section>
 
 <?php get_footer(); ?>

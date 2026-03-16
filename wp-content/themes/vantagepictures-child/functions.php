@@ -98,6 +98,43 @@ add_action('after_setup_theme', function () {
   add_image_size('vp-portfolio-card', 1024, 576, true);
 }, 21);
 
+// Portfolio visibility taxonomy: "public" (default) vs "hidden".
+add_action('init', function () {
+  $labels = [
+    'name'              => __('Portfolio Visibility', 'vantagepictures'),
+    'singular_name'     => __('Portfolio Visibility', 'vantagepictures'),
+    'search_items'      => __('Search Visibility', 'vantagepictures'),
+    'all_items'         => __('All Visibility States', 'vantagepictures'),
+    'edit_item'         => __('Edit Visibility', 'vantagepictures'),
+    'update_item'       => __('Update Visibility', 'vantagepictures'),
+    'add_new_item'      => __('Add New Visibility', 'vantagepictures'),
+    'new_item_name'     => __('New Visibility Name', 'vantagepictures'),
+    'menu_name'         => __('Visibility', 'vantagepictures'),
+  ];
+
+  $args = [
+    'hierarchical'      => false,
+    'labels'            => $labels,
+    'show_ui'           => true,
+    'show_admin_column' => true,
+    'query_var'         => true,
+    'rewrite'           => [
+      'slug' => 'portfolio-visibility',
+    ],
+    'show_in_rest'      => true,
+  ];
+
+  register_taxonomy('portfolio_visibility', ['portfolio'], $args);
+
+  // Ensure the core terms exist so editors can use them.
+  if (!term_exists('public', 'portfolio_visibility')) {
+    wp_insert_term('public', 'portfolio_visibility');
+  }
+  if (!term_exists('hidden', 'portfolio_visibility')) {
+    wp_insert_term('hidden', 'portfolio_visibility');
+  }
+});
+
 add_action('wp_enqueue_scripts', function () {
 
     // Load parent theme stylesheet
@@ -158,6 +195,42 @@ add_action('wp_enqueue_scripts', function () {
   wp_dequeue_style('style-css');
   wp_deregister_style('style-css');
 }, 100);
+
+/**
+ * Preload LCP image to start the critical image request as early as possible.
+ * Homepage: first hero carousel slide (ACF slides → portfolio_item featured image).
+ * Work page: hero background (page featured image). Only runs on front or work page.
+ */
+add_action('wp_head', function () {
+  $url = null;
+
+  if (is_front_page() && function_exists('get_field')) {
+    $front_id = (int) get_queried_object_id();
+    $slides = $front_id ? get_field('slides', $front_id) : null;
+    if (!empty($slides) && is_array($slides)) {
+      $first = reset($slides);
+      $portfolio_id = isset($first['portfolio_item']) ? $first['portfolio_item'] : null;
+      if (is_object($portfolio_id) && !empty($portfolio_id->ID)) {
+        $portfolio_id = (int) $portfolio_id->ID;
+      } else {
+        $portfolio_id = (int) $portfolio_id;
+      }
+      if ($portfolio_id > 0) {
+        $url = get_the_post_thumbnail_url($portfolio_id, 'full');
+      }
+    }
+  } elseif (is_page('work')) {
+    $page_id = (int) get_queried_object_id();
+    if ($page_id && has_post_thumbnail($page_id)) {
+      $url = get_the_post_thumbnail_url($page_id, 'large');
+    }
+  }
+
+  if (empty($url) || !is_string($url)) {
+    return;
+  }
+  echo '<link rel="preload" as="image" href="' . esc_url($url) . '">' . "\n";
+}, 5);
 
 /**
  * Gravity Forms: Disable built-in theme framework CSS for Form ID 1 only.
@@ -596,6 +669,21 @@ add_action('admin_footer', function () {
   echo '.interface-interface-skeleton svg,.editor-header svg,.edit-post-header svg,.block-editor-block-toolbar svg,.block-editor-block-contextual-toolbar svg,.components-button svg,.interface-complementary-area svg,.components-panel svg,.block-editor-inserter__menu svg{fill:#fff!important;stroke:#fff!important;color:#fff!important}';
   echo '</style>';
 }, 99999);
+
+/**
+ * Ensure TranslatePress Automatic Language Detection scripts never load.
+ * This prevents the ALD JS from enqueueing and avoids requests to
+ * trp-ald-ajax.php even if the add-on is accidentally re-enabled.
+ */
+add_filter( 'trp_ald_enqueue_redirecting_script', '__return_false' );
+
+/**
+ * Safety: dequeue ALD script if anything ever enqueues it.
+ * Ensures trp-language-cookie.js never loads; no-op if handle was not enqueued.
+ */
+add_action( 'wp_enqueue_scripts', function () {
+	wp_dequeue_script( 'trp-language-cookie' );
+}, 999 );
 
 /**
  * TranslatePress: when the URL has no language prefix (e.g. /work/, /news/), always use default
@@ -1349,3 +1437,82 @@ add_filter(
   10,
   3
 );
+
+/**
+ * Lightweight frontend cleanup – remove unnecessary WordPress assets/meta.
+ *
+ * Applies only on the public frontend (not wp-admin).
+ */
+add_action( 'init', function () {
+	if ( is_admin() ) {
+		return;
+	}
+
+	/**
+	 * 1–2. Disable WordPress emojis (script + styles).
+	 * Removes emoji detection script/styles from head, feeds, emails, etc.
+	 */
+	remove_action( 'wp_head',       'print_emoji_detection_script', 7 );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'wp_print_styles',     'print_emoji_styles' );
+	remove_action( 'admin_print_styles',  'print_emoji_styles' );
+	remove_filter( 'the_content_feed',    'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss',    'wp_staticize_emoji' );
+	remove_filter( 'wp_mail',             'wp_staticize_emoji_for_email' );
+
+	/**
+	 * 3. Remove oEmbed discovery links from <head>.
+	 * Keeps oEmbed functionality available, but stops outputting discovery links.
+	 */
+	remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+	remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+} );
+
+/**
+ * 4–7. Dequeue/disable unneeded frontend scripts and styles.
+ */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() ) {
+		return;
+	}
+
+	// 4. Remove wp-embed.js (legacy embed support script).
+	wp_deregister_script( 'wp-embed' );
+
+	// 5. Disable jQuery Migrate on the frontend, but keep core jQuery.
+	// Safe if your theme/plugins don't rely on deprecated jQuery APIs.
+	if ( ! is_admin() && ! wp_doing_ajax() ) {
+		add_filter( 'wp_default_scripts', function ( WP_Scripts $scripts ) {
+			if ( isset( $scripts->registered['jquery'] ) ) {
+				$jquery = $scripts->registered['jquery'];
+
+				// Remove jquery-migrate from the dependency list, if present.
+				if ( ! empty( $jquery->deps ) ) {
+					$jquery->deps = array_diff( $jquery->deps, array( 'jquery-migrate' ) );
+				}
+			}
+		} );
+	}
+
+	// 6. Remove block editor (Gutenberg) frontend styles if not used.
+	wp_dequeue_style( 'wp-block-library' );
+	wp_dequeue_style( 'wp-block-library-theme' );
+
+	// 7. Remove global styles generated by theme.json.
+	wp_dequeue_style( 'global-styles' );
+}, 20 );
+
+/**
+ * 8. Remove REST API discovery links from <head> only.
+ * Does NOT disable the REST API endpoints themselves.
+ */
+add_action( 'init', function () {
+	if ( is_admin() ) {
+		return;
+	}
+
+	// <link rel="https://api.w.org/" ...> tag in <head>.
+	remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
+	// REST API link in HTTP headers.
+	remove_action( 'template_redirect', 'rest_output_link_header', 11 );
+} );
