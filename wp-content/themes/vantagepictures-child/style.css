@@ -120,6 +120,18 @@ h6 { font-size: 1rem; }
   margin-bottom: 1rem;
 }
 
+.has-text-align-center {
+  text-align: center;
+}
+
+.has-text-align-left {
+  text-align: left;
+}
+
+.has-text-align-right {
+  text-align: right;
+}
+
 p,
 li,
 blockquote,
@@ -382,6 +394,18 @@ textarea {
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {
   color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   TranslatePress Language Switcher
+   -------------------------------------------------------------------------- */
+
+.navbar .trp-flag-image {
+  width: var(--flag-size, 20px) !important;
+}
+
+.navbar .trp-menu-ls-label .trp-flag-image {
+  margin: -2px 3px 0 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -1948,10 +1972,6 @@ textarea {
     padding: 0.4rem 0.75rem;
     font-size: 0.8125rem;
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.92);
-  }
-
-  #header .navbar-collapse .dropdown-item .trp-ls-language-name {
     color: rgba(255, 255, 255, 0.92);
   }
 

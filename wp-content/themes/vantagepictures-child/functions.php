@@ -4,6 +4,18 @@
  */
 
 /**
+ * Global image quality for generated thumbnails (JPEG/WebP).
+ * Higher value preserves more detail for cinematic frames.
+ */
+add_filter( 'jpeg_quality', function( $quality ) {
+	return 95;
+} );
+
+add_filter( 'wp_editor_set_quality', function( $quality, $mime_type ) {
+	return 95;
+}, 10, 2 );
+
+/**
  * Single post entry meta for child template: date only (no time), no author.
  * Used by content-single.php in place of parent's vantagepictures_article_posted_on().
  */
@@ -91,11 +103,11 @@ add_action('after_setup_theme', function () {
 }, 20);
 
 /**
- * Portfolio card thumbnail: retina-ready 16:9 size (1024×576).
- * Used in template-parts/portfolio/card.php. Pair with WebP/AVIF (e.g. Speed Optimizer) to keep file size down.
+ * Portfolio card thumbnail: high-res 16:9 size (1920×1080).
+ * Used in template-parts/portfolio/card.php. Pair with WebP/AVIF (e.g. Speed Optimizer) to keep file size reasonable.
  */
 add_action('after_setup_theme', function () {
-  add_image_size('vp-portfolio-card', 1024, 576, true);
+  add_image_size('vp-portfolio-card', 1920, 1080, true);
 }, 21);
 
 // Portfolio visibility taxonomy: "public" (default) vs "hidden".

@@ -10,11 +10,11 @@
   <div class="vp-card__media ratio ratio-16x9 bg-dark overflow-hidden">
     <?php if (has_post_thumbnail()) : ?>
       <?php
-      // Retina-ready size; WordPress outputs srcset automatically. WebP/AVIF via Speed Optimizer keeps file size down.
-      the_post_thumbnail('vp-portfolio-card', [
-        'class'  => 'w-100 h-100 object-fit-cover vp-card-img',
+      // Use medium_large for cards; rely on ratio + object-fit for 16:9 crop.
+      the_post_thumbnail('medium_large', [
+        'class'   => 'w-100 h-100 object-fit-cover vp-card-img',
         'loading' => 'lazy',
-        'sizes'  => '(max-width: 576px) 100vw, (max-width: 768px) 50vw, (max-width: 992px) 33vw, 25vw',
+        'sizes'   => '(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw',
       ]);
       ?>
     <?php else : ?>
