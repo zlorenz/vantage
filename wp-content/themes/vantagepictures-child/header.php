@@ -52,6 +52,8 @@ if ($navbar_position === 'fixed_top') {
           ?>
         </a>
 
+        <div class="vp-mobile-lang-slot" aria-label="<?php esc_attr_e( 'Language', 'vantagepictures' ); ?>"></div>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
           aria-controls="navbar" aria-expanded="false" aria-label="<?php esc_attr_e('Toggle navigation', 'vantagepictures'); ?>">
           <span class="navbar-toggler-icon"></span>

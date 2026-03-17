@@ -316,6 +316,13 @@ textarea {
   border-color: #fff;
 }
 
+.vp-section .wp-block-file>a:not(.wp-block-file__button) {
+  overflow-wrap: anywhere;
+}
+.vp-section .wp-block-file *+.wp-block-file__button {
+  margin-top: 1rem;
+}
+
 /* ==========================================================================
    06. Header / Navbar
    --------------------------------------------------------------------------
@@ -400,12 +407,42 @@ textarea {
    TranslatePress Language Switcher
    -------------------------------------------------------------------------- */
 
-.navbar .trp-flag-image {
+.navbar .trp-menu-ls-label .trp-flag-image {
   width: var(--flag-size, 20px) !important;
+  height: var(--flag-size, 20px) !important;
+  border-radius: 50% !important;
+  object-fit: cover;
+  object-position: left;
+  margin: -2px 3px 0 0;
 }
 
-.navbar .trp-menu-ls-label .trp-flag-image {
-  margin: -2px 3px 0 0;
+/* Mobile: pull TranslatePress language switcher out by hamburger */
+@media (max-width: 767.98px) {
+  #header .vp-mobile-lang-slot {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 0.25rem;
+  }
+
+  .navbar .trp-menu-ls-label .trp-flag-image {
+    margin: 2px 3px 0 0;
+  }
+
+  /* The switcher is a <li> moved out of the <ul> */
+  #header .vp-mobile-lang-slot li {
+    list-style: none;
+  }
+
+  #header .vp-mobile-lang-slot .nav-link {
+    padding: 0.5rem 0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  #header .vp-mobile-lang-slot {
+    display: none;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1313,6 +1350,20 @@ textarea {
   .vp-blog-sidebar {
     position: static;
     top: auto;
+  }
+}
+
+/* Mobile-only: remove blog sidebar (categories) on small phones */
+@media (max-width: 767.98px) {
+  .vp-blog-archive .vp-blog-sidebar {
+    display: none;
+  }
+}
+
+/* Mobile-only: prevent horizontal overflow from Bootstrap .row.g-5 gutters on blog archives */
+@media (max-width: 575.98px) {
+  .vp-blog-archive .row.g-5 {
+    --bs-gutter-x: 1.5rem;
   }
 }
 
