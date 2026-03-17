@@ -818,8 +818,9 @@ require_once get_stylesheet_directory() . '/inc/gtm.php';
      market               (Market)
 
    Key ACF Fields
-     vimeo_link       Vimeo embed source
-     long_title       Full video title (displayed beside player)
+     vimeo_link         Vimeo embed source
+     xinpianchang_link  Xinpianchang embed URL (China pages; fallback to Vimeo if empty)
+     long_title         Full video title (displayed beside player)
      header_title     Hero header title (top of single page)
      thumb_title      Title used in gallery thumbnails
      description      Video description under title
@@ -832,6 +833,11 @@ require_once get_stylesheet_directory() . '/inc/gtm.php';
    Helper Functions
    ----------------
      vp_portfolio_get()               Safe wrapper for ACF/meta retrieval
+     vp_xinpianchang_to_embed_url()   Validates embed URL (requires aid and mid)
+     vp_portfolio_has_video_embed()   True when vimeo or valid Xinpianchang URL exists
+     vp_portfolio_is_chinese()        True when TranslatePress language is zh_CN
+     vp_portfolio_render_video_embed_content() Renders embed given vimeo + xinpianchang raw values
+     vp_portfolio_render_video_embed() Renders main video (uses vimeo_link + xinpianchang_link)
      vp_portfolio_header_title()      Hero title with fallback
      vp_portfolio_long_title()        Video title with fallback
      vp_portfolio_thumb_title()       Gallery thumbnail title with fallback
@@ -866,6 +872,155 @@ function vp_portfolio_get($key, $post_id = null) {
     return get_field($key, $post_id);
   }
   return get_post_meta($post_id, $key, true);
+}
+
+/* --- Portfolio video embed: Chinese (Xinpianchang) vs Vimeo --- */
+
+/**
+ * Validates a Xinpianchang embed URL. The player REQUIRES both aid and mid to load video.
+ * Page URLs (xinpianchang.com/a123) cannot be converted—mid is only in the embed from the share dialog.
+ *
+ * Accepts only: https://player.xinpianchang.com/?aid=11955262&mid=zqd9g4rmDOJwv86Z
+ *
+ * @param string $url Xinpianchang embed URL (must include aid and mid).
+ * @return string Embed URL if valid, or empty string.
+ */
+function vp_xinpianchang_to_embed_url( $url ) {
+	$raw = trim( (string) $url );
+	if ( $raw === '' ) {
+		return '';
+	}
+	$parsed = wp_parse_url( $raw );
+	$host   = isset( $parsed['host'] ) ? strtolower( $parsed['host'] ) : '';
+	$query  = isset( $parsed['query'] ) ? $parsed['query'] : '';
+
+	// Must be player.xinpianchang.com with BOTH aid and mid (required for video to load).
+	if ( $host === 'player.xinpianchang.com' && $query !== '' && strpos( $query, 'aid=' ) !== false && strpos( $query, 'mid=' ) !== false ) {
+		return 'https://player.xinpianchang.com/?' . $query;
+	}
+
+	return '';
+}
+
+/**
+ * Returns true when the portfolio item has at least one embeddable video source.
+ * Used to decide whether to show the ratio wrapper or the empty state.
+ */
+function vp_portfolio_has_video_embed( $post_id ) {
+	$vimeo = trim( (string) vp_portfolio_get( 'vimeo_link', $post_id ) );
+	if ( $vimeo !== '' ) {
+		return true;
+	}
+	if ( ! vp_portfolio_is_chinese() ) {
+		return false;
+	}
+	$raw   = trim( (string) vp_portfolio_get( 'xinpianchang_link', $post_id ) );
+	$embed = vp_xinpianchang_to_embed_url( $raw );
+	return $embed !== '';
+}
+
+/**
+ * Returns true when the current page is in Chinese (TranslatePress zh_CN).
+ * Used for portfolio video embed switching (Xinpianchang vs Vimeo).
+ */
+function vp_portfolio_is_chinese() {
+	global $TRP_LANGUAGE;
+	return isset( $TRP_LANGUAGE ) && $TRP_LANGUAGE === 'zh_CN';
+}
+
+/**
+ * Renders video embed content given raw Vimeo and Xinpianchang values.
+ * On Chinese pages, uses Xinpianchang when valid; otherwise Vimeo.
+ *
+ * @param string $vimeo_raw       Raw vimeo_link value (URL or iframe HTML).
+ * @param string $xinpianchang_raw Raw xinpianchang_link value (URL).
+ * @param string $empty_message   Message when no valid source (default: Invalid video link).
+ */
+function vp_portfolio_render_video_embed_content( $vimeo_raw, $xinpianchang_raw, $empty_message = '' ) {
+	$vimeo_raw       = trim( (string) $vimeo_raw );
+	$xinpianchang_raw = trim( (string) $xinpianchang_raw );
+	$empty_message   = $empty_message !== '' ? $empty_message : __( 'Invalid video link.', 'vantagepictures' );
+
+	$xpc_embed_url = '';
+	if ( vp_portfolio_is_chinese() && $xinpianchang_raw !== '' ) {
+		$embed = vp_xinpianchang_to_embed_url( $xinpianchang_raw );
+		if ( $embed !== '' ) {
+			$xpc_embed_url = $embed;
+		}
+	}
+
+	if ( $xpc_embed_url !== '' ) {
+		$src = esc_url( $xpc_embed_url, array( 'https' ) );
+		if ( $src !== '' ) {
+			printf(
+				'<iframe src="%s" width="640" height="360" frameborder="0" allow="fullscreen" allowfullscreen title="%s"></iframe>',
+				$src,
+				esc_attr__( 'Video', 'vantagepictures' )
+			);
+			return;
+		}
+	}
+
+	if ( $vimeo_raw === '' ) {
+		echo '<div class="bg-dark text-white-50 p-4 rounded">' . esc_html( $empty_message ) . '</div>';
+		return;
+	}
+
+	if ( stripos( $vimeo_raw, '<iframe' ) !== false ) {
+		echo wp_kses(
+			$vimeo_raw,
+			array(
+				'iframe' => array(
+					'src'             => true,
+					'width'           => true,
+					'height'          => true,
+					'frameborder'     => true,
+					'allow'           => true,
+					'allowfullscreen' => true,
+					'title'           => true,
+					'loading'         => true,
+					'referrerpolicy'  => true,
+					'data-src'        => true,
+					'class'           => true,
+					'style'           => true,
+				),
+			)
+		);
+		return;
+	}
+
+	$embed = wp_oembed_get( $vimeo_raw );
+	if ( $embed ) {
+		echo $embed;
+		return;
+	}
+
+	if ( preg_match( '/vimeo\.com\/(?:video\/)?(\d+)/', $vimeo_raw, $m ) ) {
+		printf(
+			'<iframe src="https://player.vimeo.com/video/%d" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="%s"></iframe>',
+			(int) $m[1],
+			esc_attr__( 'Vimeo', 'vantagepictures' )
+		);
+		return;
+	}
+
+	echo '<div class="bg-dark text-white-50 p-4 rounded">' . esc_html( $empty_message ) . '</div>';
+}
+
+/**
+ * Renders the main portfolio video embed (Vimeo or Xinpianchang).
+ * Uses vimeo_link and xinpianchang_link from the post.
+ *
+ * @param int $post_id Portfolio post ID.
+ */
+function vp_portfolio_render_video_embed( $post_id ) {
+	$vimeo       = vp_portfolio_get( 'vimeo_link', $post_id );
+	$xinpianchang = vp_portfolio_get( 'xinpianchang_link', $post_id );
+	vp_portfolio_render_video_embed_content(
+		$vimeo,
+		$xinpianchang,
+		__( 'No video embed found for this portfolio item.', 'vantagepictures' )
+	);
 }
 
 function vp_portfolio_header_title($post_id = null) {
