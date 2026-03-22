@@ -145,69 +145,82 @@ function vp_portfolio_load_more() {
     'order'          => 'DESC',
   ];
 
-  /**
-   * Build a combined tax_query supporting:
-   * - dropdown filters (format/industry/market)
-   * - legacy single filter (taxonomy + term)
-   * - visibility filter (exclude portfolio_visibility=hidden)
-   */
-  $tax_query = [];
+  if ($context === 'internal') {
 
-  // Dropdowns (use normalized values so "all" does not add a clause)
-  if ($format_norm) {
-    $tax_query[] = [
-      'taxonomy' => 'video-format',
-      'field'    => 'slug',
-      'terms'    => [$format_norm],
-    ];
-  }
+    /**
+     * Internal Work: crew taxonomies only (POST). No portfolio_visibility; show all items.
+     */
+    $crew_clauses = function_exists('vp_portfolio_build_internal_crew_tax_query_from_request')
+      ? vp_portfolio_build_internal_crew_tax_query_from_request()
+      : [];
 
-  if ($industry_norm) {
-    $tax_query[] = [
-      'taxonomy' => 'industry',
-      'field'    => 'slug',
-      'terms'    => [$industry_norm],
-    ];
-  }
+    if (!empty($crew_clauses)) {
+      $crew_clauses['relation'] = 'AND';
+      $args['tax_query'] = $crew_clauses;
+    }
+  } else {
 
-  if ($market_norm) {
-    $tax_query[] = [
-      'taxonomy' => 'market',
-      'field'    => 'slug',
-      'terms'    => [$market_norm],
-    ];
-  }
+    /**
+     * Public / taxonomy archives: format, industry, market, legacy tab, portfolio_visibility.
+     */
+    $tax_query = [];
 
-  // Legacy tabs (taxonomy + term) — only apply if it doesn’t duplicate a dropdown
-  // This keeps your old `.vp-filters` UI working while you transition to dropdowns.
-  if ($taxonomy && $term) {
-
-    $is_duplicate =
-      ($taxonomy === 'video-format' && $term === $format_norm) ||
-      ($taxonomy === 'industry' && $term === $industry_norm) ||
-      ($taxonomy === 'market' && $term === $market_norm);
-
-    if (!$is_duplicate) {
+    // Dropdowns (use normalized values so "all" does not add a clause)
+    if ($format_norm) {
       $tax_query[] = [
-        'taxonomy' => $taxonomy,
+        'taxonomy' => 'video-format',
         'field'    => 'slug',
-        'terms'    => [$term],
+        'terms'    => [$format_norm],
       ];
     }
-  }
 
-  // Visibility: exclude items explicitly marked as "hidden".
-  // Items with no portfolio_visibility term are treated as public.
-  $tax_query[] = [
-    'taxonomy' => 'portfolio_visibility',
-    'field'    => 'slug',
-    'terms'    => ['hidden'],
-    'operator' => 'NOT IN',
-  ];
+    if ($industry_norm) {
+      $tax_query[] = [
+        'taxonomy' => 'industry',
+        'field'    => 'slug',
+        'terms'    => [$industry_norm],
+      ];
+    }
 
-  if (!empty($tax_query)) {
-    $tax_query['relation'] = 'AND';
-    $args['tax_query'] = $tax_query;
+    if ($market_norm) {
+      $tax_query[] = [
+        'taxonomy' => 'market',
+        'field'    => 'slug',
+        'terms'    => [$market_norm],
+      ];
+    }
+
+    // Legacy tabs (taxonomy + term) — only apply if it doesn’t duplicate a dropdown
+    // This keeps your old `.vp-filters` UI working while you transition to dropdowns.
+    if ($taxonomy && $term) {
+
+      $is_duplicate =
+        ($taxonomy === 'video-format' && $term === $format_norm) ||
+        ($taxonomy === 'industry' && $term === $industry_norm) ||
+        ($taxonomy === 'market' && $term === $market_norm);
+
+      if (!$is_duplicate) {
+        $tax_query[] = [
+          'taxonomy' => $taxonomy,
+          'field'    => 'slug',
+          'terms'    => [$term],
+        ];
+      }
+    }
+
+    // Visibility: exclude items explicitly marked as "hidden".
+    // Items with no portfolio_visibility term are treated as public.
+    $tax_query[] = [
+      'taxonomy' => 'portfolio_visibility',
+      'field'    => 'slug',
+      'terms'    => ['hidden'],
+      'operator' => 'NOT IN',
+    ];
+
+    if (!empty($tax_query)) {
+      $tax_query['relation'] = 'AND';
+      $args['tax_query'] = $tax_query;
+    }
   }
 
   $query = vp_get_portfolio_query($args);

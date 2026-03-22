@@ -1,18 +1,16 @@
 # =========================================================
 # Cursor indexing ignore for Vantage local WordPress project
-# Focus indexing on themes and key plugins only
+# Focus indexing on active theme code and selected reference sources
 # =========================================================
 
 # ---------------------------------------------------------
 # Git internals
 # ---------------------------------------------------------
-
 /.git/**
 
 # ---------------------------------------------------------
 # WordPress generated / backup / upload content
 # ---------------------------------------------------------
-
 /wp-content/uploads/**
 /wp-content/upgrade/**
 /wp-content/upgrade-temp-backup/**
@@ -21,9 +19,8 @@
 
 # ---------------------------------------------------------
 # WordPress core
-# Ignore most of it but keep specific areas for styling
+# Ignore most of it, but allow specific CSS/block reference areas
 # ---------------------------------------------------------
-
 /wp-admin/**
 !/wp-admin/css/**
 !/wp-admin/css/**/*.css
@@ -36,50 +33,38 @@
 # ---------------------------------------------------------
 # Ignore all plugins by default
 # ---------------------------------------------------------
-
 /wp-content/plugins/**
 
 # ---------------------------------------------------------
-# Allowlist plugins we actually care about
+# Allowlist plugins we actively reference
 # ---------------------------------------------------------
-
 !/wp-content/plugins/advanced-custom-fields-pro/**
 !/wp-content/plugins/gravityforms/**
 !/wp-content/plugins/uixpress/**
 !/wp-content/plugins/vp-content-types/**
 !/wp-content/plugins/wp-bootstrap-blocks/**
+!/wp-content/plugins/wordpress-seo/**
 
 # ---------------------------------------------------------
-# Wordpress SEO — only CSS + JS needed for styling reference
+# Trim heavy folders inside allowed plugins
 # ---------------------------------------------------------
-
-!/wp-content/plugins/wordpress-seo/css/**
-!/wp-content/plugins/wordpress-seo/js/**
-
-# ---------------------------------------------------------
-# Remove heavy vendor/build folders inside allowed plugins
-# ---------------------------------------------------------
-
 /wp-content/plugins/advanced-custom-fields-pro/vendor/**
 /wp-content/plugins/gravityforms/vendor/**
-/wp-content/plugins/gravityforms/build/**
-/wp-content/plugins/gravityforms/dist/**
+/wp-content/plugins/gravityforms/node_modules/**
 /wp-content/plugins/uixpress/**/vendor/**
-/wp-content/plugins/uixpress/**/dist/**
+/wp-content/plugins/uixpress/**/node_modules/**
 /wp-content/plugins/uixpress/**/.vite/**
 /wp-content/plugins/wordpress-seo/vendor/**
 /wp-content/plugins/wordpress-seo/vendor_prefixed/**
 /wp-content/plugins/wordpress-seo/packages/**
-/wp-content/plugins/wordpress-seo/**/build/**
+/wp-content/plugins/wordpress-seo/node_modules/**
 
 # ---------------------------------------------------------
-# Node / build junk anywhere
+# Ignore local dependency/cache junk anywhere
+# Be careful with dist/build because many WP plugins/themes
+# store useful compiled assets there
 # ---------------------------------------------------------
-
 **/node_modules/**
-**/vendors/**
-**/dist/**
-**/build/**
 **/.vite/**
 **/.cache/**
 **/coverage/**
@@ -88,13 +73,12 @@
 # ---------------------------------------------------------
 # OS junk
 # ---------------------------------------------------------
-
 **/.DS_Store
 **/Thumbs.db
 
 # ---------------------------------------------------------
-# Themes — keep both parent and child fully indexed
+# Themes
+# Keep both parent and child indexed
 # ---------------------------------------------------------
-
 !/wp-content/themes/vantagepictures/**
 !/wp-content/themes/vantagepictures-child/**

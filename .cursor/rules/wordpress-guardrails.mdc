@@ -1,0 +1,84 @@
+---
+alwaysApply: true
+---
+
+# Vantage Pictures WordPress Guardrails
+
+This project is a custom WordPress site built on a Bootstrap-based parent theme with a custom child theme.
+
+## Primary implementation target
+
+Make all code changes in:
+
+- `wp-content/themes/vantagepictures-child`
+
+This is the default location for custom templates, PHP logic, CSS, JS, and overrides.
+
+## Modification hierarchy
+
+When implementing changes, follow this priority order:
+
+1. Child theme  
+   `wp-content/themes/vantagepictures-child`
+
+2. Custom plugins  
+   `wp-content/plugins/vp-*`  
+   Use only when functionality should not belong to the theme.
+
+3. Parent theme (reference only)  
+   `wp-content/themes/vantagepictures`  
+   Inspect for structure and behavior, but do not modify unless explicitly instructed.
+
+4. Third-party plugins (reference only)  
+   `wp-content/plugins/*`  
+   Never modify plugin source code unless explicitly instructed.
+
+5. WordPress core (never modify)  
+   `wp-admin`  
+   `wp-includes`
+
+## Core restrictions
+
+Do not modify:
+- WordPress core
+- parent theme files
+- third-party plugin source code
+
+If a change appears to require editing plugin or core files, implement it using:
+- child theme overrides
+- hooks or filters
+- custom CSS or JS
+- wrapper functions
+- approved custom plugins
+
+## WordPress standards
+
+Follow WordPress coding standards and native architecture.
+
+Prefer:
+- existing WordPress functions
+- hooks and filters
+- template overrides
+- theme-level customization
+
+Do not duplicate native WordPress functionality if an existing API, hook, or filter already solves the problem.
+
+## Admin and block editor reference paths
+
+The following directories may be inspected for reference when working on dashboard styling, editor behavior, or Gutenberg-related UI:
+
+- `wp-admin/css`
+- `wp-includes/css/dist`
+- `wp-includes/blocks`
+
+These are reference-only and must never be modified.
+
+## Working style
+
+When suggesting code changes:
+- target the child theme first
+- preserve existing architecture where possible
+- prefer minimal, maintainable edits
+- avoid unnecessary rewrites
+- explain exactly which file should be edited
+- provide copy-paste-ready code whenever possible

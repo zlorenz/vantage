@@ -9,38 +9,16 @@ get_header();
 // Hero title (ACF optional)
 $hero_title = function_exists('get_field') ? get_field('vp_hero_title') : '';
 
-// Filters
-$taxonomy = 'video-format';
-$exclude_term_ids = [37];
-
-$filter_terms = get_terms([
-  'taxonomy'   => $taxonomy,
-  'hide_empty' => true,
-  'orderby'    => 'name',
-  'order'      => 'ASC',
-  'exclude'    => $exclude_term_ids,
-]);
-
-$active_slug = isset($_GET['format']) ? sanitize_key(wp_unslash($_GET['format'])) : '';
-$active_term = $active_slug ? get_term_by('slug', $active_slug, $taxonomy) : null;
-
-// Query
+// Query — crew filters from GET; includes hidden items (no portfolio_visibility clause)
 $paged = max(1, (int) get_query_var('paged'));
 
 $args = [
-  'posts_per_page' => 12,
-  'paged'          => $paged,
-  'orderby'        => 'date',
-  'order'          => 'DESC',
+  'posts_per_page'   => 12,
+  'paged'            => $paged,
+  'orderby'          => 'date',
+  'order'            => 'DESC',
+  'vp_internal_crew' => true,
 ];
-
-if ($active_term && !is_wp_error($active_term)) {
-  $args['tax_query'] = [[
-    'taxonomy' => $taxonomy,
-    'field'    => 'term_id',
-    'terms'    => (int) $active_term->term_id,
-  ]];
-}
 
 $query = vp_get_portfolio_query($args);
 
@@ -100,7 +78,7 @@ if (has_post_thumbnail(get_queried_object_id())) {
     endif;
     ?>
 
-    <?php vp_portfolio_filter_dropdowns(); ?>
+    <?php vp_portfolio_internal_crew_filters(); ?>
 
     <?php if ($query->have_posts()) : ?>
       <div id="vp-portfolio-grid" class="vp-portfolio-gallery row g-3 g-md-3">
@@ -114,12 +92,10 @@ if (has_post_thumbnail(get_queried_object_id())) {
       <div id="vp-load-more"
            data-page="1"
            data-per-page="12"
-           data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
-           data-term="<?php echo esc_attr($active_term && !is_wp_error($active_term) ? $active_term->slug : ''); ?>"
            data-context="internal">
 
            <div class="vp-load-spinner"></div>
-           
+
       </div>
 
     <?php else : ?>

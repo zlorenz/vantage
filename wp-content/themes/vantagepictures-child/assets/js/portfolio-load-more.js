@@ -1,8 +1,8 @@
 /**
  * Portfolio infinite scroll + filters
  * - Infinite scroll appends next pages
- * - Supports multi-taxonomy dropdown filters: format, industry, market
- * - Keeps backward compatibility with legacy tab filters (.vp-filters)
+ * - Public Work: format, industry, market (+ legacy .vp-filters)
+ * - Internal Work: client, director, dop, art-director (crew index taxonomies)
  */
 (() => {
   const sentinel = document.getElementById("vp-load-more");
@@ -12,12 +12,16 @@
   const filtersNav = document.querySelector(".vp-filters");
   const legacyFilters = filtersNav ? filtersNav.querySelectorAll(".vp-filter") : [];
 
-  // New dropdowns (optional)
+  // Public Work dropdowns (optional)
   const dropdowns = document.querySelectorAll(".vp-tax-filter");
+
+  // Internal Work crew dropdowns (optional)
+  const crewDropdowns = document.querySelectorAll(".vp-internal-crew-filter");
 
   if (!sentinel || !grid || !window.vpLoadMore) return;
 
   const isTaxLayout = sentinel.dataset.layout === "taxonomy";
+  const isInternal = (sentinel.dataset.context || "public") === "internal";
 
   const filterBar = document.querySelector(".vp-filterbar");
 
@@ -48,6 +52,34 @@
     return out;
   };
 
+  const readInternalCrewFilters = () => {
+    const out = { client: "", director: "", dop: "", "art-director": "" };
+    crewDropdowns.forEach((sel) => {
+      const name = sel.getAttribute("name");
+      if (name && Object.prototype.hasOwnProperty.call(out, name)) {
+        out[name] = sel.value || "";
+      }
+    });
+    return out;
+  };
+
+  const readFilterSnapshot = () => {
+    if (isInternal) return readInternalCrewFilters();
+    return readDropdownFilters();
+  };
+
+  const filtersEqual = (a, b) => {
+    if (isInternal) {
+      return (
+        a.client === b.client &&
+        a.director === b.director &&
+        a.dop === b.dop &&
+        a["art-director"] === b["art-director"]
+      );
+    }
+    return a.format === b.format && a.industry === b.industry && a.market === b.market;
+  };
+
   const setDropdownsFromUrl = () => {
     if (!dropdowns.length) return;
 
@@ -64,41 +96,63 @@
     });
   };
 
-  const buildUrlWithFilters = (filters) => {
-    const url = new URL(window.location.href);
+  const setInternalCrewFromUrl = () => {
+    if (!crewDropdowns.length) return;
+    const params = new URLSearchParams(window.location.search);
+    crewDropdowns.forEach((sel) => {
+      const name = sel.getAttribute("name");
+      if (!name) return;
+      const v = params.get(name);
+      sel.value = v || "";
+    });
+  };
 
-    // Keep any existing params, but update these three
+  const buildUrlWithPublicFilters = (filters) => {
+    const url = new URL(window.location.href);
     ["format", "industry", "market"].forEach((key) => {
       if (filters[key]) url.searchParams.set(key, filters[key]);
       else url.searchParams.delete(key);
     });
+    return url.toString();
+  };
 
+  const buildUrlWithInternalCrew = (filters) => {
+    const url = new URL(window.location.href);
+    ["client", "director", "dop", "art-director"].forEach((key) => {
+      if (filters[key]) url.searchParams.set(key, filters[key]);
+      else url.searchParams.delete(key);
+    });
     return url.toString();
   };
 
   const getPayload = (pageToLoad) => {
     const perPage = parseInt(sentinel.dataset.perPage || sentinel.dataset.per_page || "12", 10);
 
-    // New: read dropdown filters and send them
-    const dd = readDropdownFilters();
-
-    return {
+    const base = {
       action: "vp_portfolio_load_more",
       nonce: vpLoadMore.nonce,
       page: pageToLoad,
       per_page: perPage,
-
-      // Legacy single-filter fields (kept)
       taxonomy: sentinel.dataset.taxonomy || "",
       term: sentinel.dataset.term || "",
-
-      // Layout (taxonomy pages use 3-col grid)
       layout: sentinel.dataset.layout || "",
-
-      // Context
       context: sentinel.dataset.context || "public",
+    };
 
-      // New multi-filter fields
+    if (isInternal) {
+      const crew = readInternalCrewFilters();
+      return {
+        ...base,
+        client: crew.client || "",
+        director: crew.director || "",
+        dop: crew.dop || "",
+        "art-director": crew["art-director"] || "",
+      };
+    }
+
+    const dd = readDropdownFilters();
+    return {
+      ...base,
       format: dd.format || "",
       industry: dd.industry || "",
       market: dd.market || "",
@@ -130,14 +184,12 @@
       signal,
     });
 
-    // If PHP warnings leak, this will throw (good: we stop instead of looping)
     const data = await res.json();
 
     if (!data?.success) return null;
     return data.data || null;
   };
 
-  // Infinite scroll: load NEXT page and append (abort when filters change; ignore response if filter state changed)
   const loadMore = async () => {
     if (loading || done) return;
     if (loadMoreAbortController) loadMoreAbortController.abort();
@@ -146,7 +198,7 @@
 
     const current = parseInt(sentinel.dataset.page || "1", 10);
     const nextPage = current + 1;
-    const filtersWhenSent = readDropdownFilters();
+    const filtersWhenSent = readFilterSnapshot();
 
     loading = true;
     setLoading(true);
@@ -155,11 +207,7 @@
       const result = await fetchPage(nextPage, loadMoreSignal);
       if (!result) return stopForever();
 
-      if (
-        filtersWhenSent.format !== readDropdownFilters().format ||
-        filtersWhenSent.industry !== readDropdownFilters().industry ||
-        filtersWhenSent.market !== readDropdownFilters().market
-      ) {
+      if (!filtersEqual(filtersWhenSent, readFilterSnapshot())) {
         return;
       }
 
@@ -189,7 +237,6 @@
     grid.classList.remove("vp-portfolio-gallery--loading");
   };
 
-  // Apply ALL filters: load page 1 and replace grid (abort previous request; only apply latest)
   const applyFilters = async (pushStateUrl = null) => {
     if (filterAbortController) filterAbortController.abort();
     if (loadMoreAbortController) loadMoreAbortController.abort();
@@ -257,16 +304,13 @@
   };
 
   /**
-   * Dropdown change handler (EXCLUSIVE MODE)
-   * When you select one filter, the other two are cleared.
+   * Public Work: exclusive dropdowns (format / industry / market).
    */
-  if (dropdowns.length && !isTaxLayout) {
+  if (dropdowns.length && !isTaxLayout && !isInternal) {
     dropdowns.forEach((sel) => {
       sel.addEventListener("change", () => {
+        const changed = sel.getAttribute("name");
 
-        const changed = sel.getAttribute("name"); // "format" | "industry" | "market"
-
-        // Clear the other dropdowns so filters are mutually exclusive
         dropdowns.forEach((other) => {
           const otherName = other.getAttribute("name");
           if (otherName && otherName !== changed) {
@@ -275,28 +319,34 @@
         });
 
         const filters = readDropdownFilters();
-        const url = buildUrlWithFilters(filters);
-        applyFilters(url);
+        applyFilters(buildUrlWithPublicFilters(filters));
       });
     });
   }
 
   /**
-   * Legacy tabs click handler (optional):
-   * Interprets tab click as setting ONLY format=term, and clearing other dropdowns if they exist.
-   * Keeps href working when JS is off.
+   * Internal Work: crew filters (AND across dropdowns).
    */
-  if (filtersNav && legacyFilters.length && !isTaxLayout) {
+  if (crewDropdowns.length && isInternal && !isTaxLayout) {
+    crewDropdowns.forEach((sel) => {
+      sel.addEventListener("change", () => {
+        const filters = readInternalCrewFilters();
+        applyFilters(buildUrlWithInternalCrew(filters));
+      });
+    });
+  }
+
+  /**
+   * Legacy tabs (public Work / taxonomy nav).
+   */
+  if (filtersNav && legacyFilters.length && !isTaxLayout && !isInternal) {
     legacyFilters.forEach((a) => {
       a.addEventListener("click", (e) => {
         e.preventDefault();
 
-        const term = a.dataset.term || ""; // this is a format slug in your old system
+        const term = a.dataset.term || "";
         const href = a.getAttribute("href") || window.location.href;
 
-        // If dropdowns exist, keep them in sync:
-        // - set format dropdown to term
-        // - clear industry + market dropdowns (so behavior is predictable)
         if (dropdowns.length) {
           dropdowns.forEach((sel) => {
             const name = sel.getAttribute("name");
@@ -306,10 +356,8 @@
           });
         }
 
-        // Also keep sentinel legacy dataset.term updated (harmless; keeps old code assumptions intact)
         sentinel.dataset.term = term || "";
 
-        // Loading state on clicked filter
         a.classList.add("is-loading");
 
         applyFilters(href).finally(() => {
@@ -317,28 +365,24 @@
         });
       });
     });
+  }
 
-    // Handle back/forward navigation (sync dropdowns + reload)
+  if (!isTaxLayout) {
     window.addEventListener("popstate", () => {
-      setDropdownsFromUrl();
-
-      // Also keep sentinel legacy dataset.term in sync with format
-      const params = new URLSearchParams(window.location.search);
-      sentinel.dataset.term = params.get("format") || "";
-
-      applyFilters(null);
-    });
-  } else if (!isTaxLayout) {
-    // Even if legacy tabs don’t exist, still handle popstate for dropdown UX
-    window.addEventListener("popstate", () => {
-      setDropdownsFromUrl();
+      if (isInternal) {
+        setInternalCrewFromUrl();
+      } else {
+        setDropdownsFromUrl();
+        const params = new URLSearchParams(window.location.search);
+        sentinel.dataset.term = params.get("format") || "";
+      }
       applyFilters(null);
     });
   }
 
-  // On first load, sync dropdowns to URL params (so refresh/share links work) on Work pages only
   if (!isTaxLayout) {
-    setDropdownsFromUrl();
+    if (isInternal) setInternalCrewFromUrl();
+    else setDropdownsFromUrl();
   }
 
   io = new IntersectionObserver(
@@ -352,7 +396,6 @@
 
   io.observe(sentinel);
 
-  // If the server sent an empty grid (AJAX-first to improve TTFB), load page 1 immediately
   if (sentinel.dataset.initialEmpty === "1" || !grid.querySelector(".vp-card")) {
     loadMore();
   }

@@ -1375,6 +1375,8 @@ function vp_portfolio_adjacent($direction = 'prev', $taxonomy = 'video-format') 
   return ($q->have_posts()) ? $q->posts[0] : null;
 }
 
+require_once get_stylesheet_directory() . '/inc/portfolio-crew-taxonomies.php';
+require_once get_stylesheet_directory() . '/inc/portfolio-crew-sync.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-query.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-filters.php';
 require_once get_stylesheet_directory() . '/inc/portfolio-load-more.php';
@@ -1401,7 +1403,7 @@ add_action('wp_enqueue_scripts', function () {
       'vp-portfolio-load-more',
       get_stylesheet_directory_uri() . '/assets/js/portfolio-load-more.js',
       [],
-      '1.0.0',
+      '1.1.0',
       true
     );
 

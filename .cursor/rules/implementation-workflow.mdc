@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+---
+
+# Implementation Workflow
+
+When helping on this project:
+
+- Assume the site is already live and functioning.
+- Prefer small, surgical edits over broad refactors unless explicitly requested.
+- Preserve the current architecture and naming conventions.
+- Before suggesting a change, identify the exact file(s) that should be modified.
+- When providing code, make it copy-paste-ready.
+- Include a short comment header at the top of every code snippet explaining what it does.
+- When relevant, explain exactly where the code should be inserted.
+- Avoid suggesting edits to parent theme, plugin source, or WordPress core unless explicitly instructed.
+- Treat existing custom functionality as production code and avoid breaking changes.
+- For WordPress tasks, prefer child theme templates, hooks, filters, and custom JS/CSS.
+- For performance-sensitive features, avoid solutions that introduce unnecessary database-heavy logic.
