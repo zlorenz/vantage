@@ -7,6 +7,8 @@
 :root {
   --vp-acf-bg: #0f0f11;
   --vp-acf-bg-elevated: #18181b;
+  --vp-acf-bg-secondary: #141416;
+  --vp-acf-bg-input: #0a0a0c;
   --vp-acf-bg-hover: rgba(255, 255, 255, 0.06);
   --vp-acf-bg-active: rgba(255, 255, 255, 0.1);
   --vp-acf-border: #2e2e32;

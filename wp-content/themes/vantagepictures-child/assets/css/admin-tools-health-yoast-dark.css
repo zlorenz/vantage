@@ -130,41 +130,4 @@ body[class*="health-check"] #wpbody-content {
   color: var(--vp-misc-text) !important;
 }
 
-/* ==========================================================================
-   Yoast SEO Support (#yoast-seo-support, .yst-card)
-   ========================================================================== */
-
-#yoast-seo-support .uix-body-container,
-body[class*="wpseo"] #yoast-seo-support {
-  background: var(--vp-misc-bg) !important;
-  color: var(--vp-misc-text) !important;
-}
-
-#yoast-seo-support .yst-root,
-#yoast-seo-support .yst-paper,
-#yoast-seo-support .yst-paper__content {
-  background: var(--vp-misc-bg) !important;
-  color: var(--vp-misc-text) !important;
-}
-
-#yoast-seo-support .yst-card {
-  background: var(--vp-misc-bg-elevated) !important;
-  border: 1px solid var(--vp-misc-border) !important;
-  color: var(--vp-misc-text) !important;
-}
-
-#yoast-seo-support .yst-card h3,
-#yoast-seo-support .yst-card h4,
-#yoast-seo-support .yst-card p,
-#yoast-seo-support .yst-card span,
-#yoast-seo-support .yst-card a {
-  color: var(--vp-misc-text) !important;
-}
-
-#yoast-seo-support .yst-card a[href] {
-  color: var(--vp-misc-accent) !important;
-}
-
-#yoast-seo-support .yst-card a[href]:hover {
-  color: var(--vp-misc-accent-hover) !important;
-}
+/* Yoast SEO Support styling lives in yoast-admin-dark.css */

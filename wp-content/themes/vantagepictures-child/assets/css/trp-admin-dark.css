@@ -833,6 +833,13 @@ body[class*="trp"] .select2-container--default .select2-results__option--highlig
   color: var(--vp-trp-text) !important;
 }
 
+/* Machine Translation page: license status notice (was white-on-white) */
+body.admin_page_trp_machine_translation #trp-settings-page .trp-automatic-translation-license-notice__wrapper {
+  background: var(--vp-trp-bg-elevated) !important;
+  border: 1px solid var(--vp-trp-border) !important;
+  color: var(--vp-trp-text) !important;
+}
+
 #trp-settings-page .trp-switch input[type="checkbox"] {
   accent-color: var(--vp-trp-accent);
 }

@@ -1420,6 +1420,183 @@ button[aria-label="Yoast SEO"] svg,
    Modals – Preferences & Keyboard shortcuts (full dark)
    ========================================================================== */
 
+.media-modal,
+#wp-media-modal,
+.media-frame,
+.media-frame-content,
+.media-frame-router,
+.media-frame-toolbar,
+.media-frame-menu,
+.media-toolbar,
+.media-toolbar-secondary,
+.media-toolbar-primary {
+  background: var(--vp-gb-bg) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Media modal inner panels */
+.media-frame-title,
+.media-frame-title h1,
+.media-frame-title h2,
+.media-frame-title h3 {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-bottom: 1px solid var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.media-modal-close,
+.media-modal-close span,
+.media-modal-close .media-modal-icon {
+  color: var(--vp-gb-text) !important;
+}
+
+.media-router,
+.media-router a {
+  background: transparent !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.media-router a:hover,
+.media-router a.active {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Left side "Upload files" / "Media Library" buttons are <button>, not <a> */
+.media-router .media-menu-item,
+.media-router button.media-menu-item,
+.media-router button[role="tab"] {
+  background: transparent !important;
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.media-router .media-menu-item:hover,
+.media-router button.media-menu-item:hover,
+.media-router button[role="tab"]:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.media-router .media-menu-item.active,
+.media-router button.media-menu-item.active,
+.media-router button[role="tab"][aria-selected="true"] {
+  background: var(--vp-gb-bg-active) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+/* Attachment browser grid + sidebar */
+.attachments-browser,
+.attachments-browser .attachments,
+.attachments-browser .uploader-inline,
+.attachments-browser .media-toolbar,
+.attachments-browser .attachments-wrapper,
+.media-sidebar,
+.attachment-details,
+.attachment-info,
+.attachment-info .details,
+.attachment-details .details {
+  background: var(--vp-gb-bg) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.media-sidebar .setting,
+.attachment-details label,
+.attachment-details .setting .name,
+.attachment-details .setting input,
+.attachment-details .setting textarea,
+.attachment-details .setting select,
+.media-sidebar .setting .name {
+  color: var(--vp-gb-text) !important;
+}
+
+/* Toolbar labels ("Filter media", etc.) */
+.media-frame .media-toolbar label,
+.media-frame .media-toolbar h2,
+.media-frame .media-toolbar .media-attachments-filter-heading {
+  color: var(--vp-gb-text-bright) !important;
+}
+
+.media-sidebar .filename,
+.attachment-info .filename,
+.attachment-details .filename {
+  color: var(--vp-gb-text) !important;
+}
+
+.media-sidebar .uploaded,
+.media-sidebar .file-size,
+.media-sidebar .dimensions,
+.media-sidebar .compat-meta,
+.media-sidebar .details,
+.media-sidebar .details * {
+  color: var(--vp-gb-text-secondary) !important;
+}
+
+.attachment-details input[type="text"],
+.attachment-details input[type="search"],
+.attachment-details input[type="url"],
+.attachment-details textarea,
+.media-frame input[type="text"],
+.media-frame input[type="search"],
+.media-frame select {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.attachment-details input::placeholder,
+.attachment-details textarea::placeholder,
+.media-frame input::placeholder {
+  color: var(--vp-gb-text-muted) !important;
+}
+
+/* Attachment tiles */
+.attachments .attachment,
+.attachments .attachment-preview,
+.attachments .attachment .thumbnail {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.attachments .attachment:hover .attachment-preview,
+.attachments .attachment:focus .attachment-preview,
+.attachments .attachment.selected .attachment-preview {
+  box-shadow: 0 0 0 2px var(--vp-gb-accent) !important;
+}
+
+/* Footer buttons (Select/Set featured image, etc.) */
+.media-frame .media-button,
+.media-frame .button,
+.media-frame .button-secondary {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.media-frame .media-button:hover,
+.media-frame .button:hover,
+.media-frame .button-secondary:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.media-frame .button-primary,
+.media-frame .media-button.media-button-select,
+.media-frame .media-button.media-button-insert {
+  background: var(--vp-gb-accent) !important;
+  border-color: var(--vp-gb-accent) !important;
+  color: #fff !important;
+}
+
+.media-frame .button-primary:hover,
+.media-frame .media-button.media-button-select:hover,
+.media-frame .media-button.media-button-insert:hover {
+  background: var(--vp-gb-accent-hover) !important;
+  border-color: var(--vp-gb-accent-hover) !important;
+  color: #fff !important;
+}
+
 .components-modal__frame.preferences-modal,
 .components-modal__frame.preferences-modal .components-modal__content,
 .components-modal__frame.preferences-modal .preferences__tabs,

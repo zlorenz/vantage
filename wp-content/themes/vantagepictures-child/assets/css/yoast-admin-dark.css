@@ -7,6 +7,8 @@
 :root {
   --vp-yoast-bg: #0f0f11;
   --vp-yoast-bg-elevated: #18181b;
+  --vp-yoast-bg-secondary: #141416;
+  --vp-yoast-bg-input: #0a0a0c;
   --vp-yoast-bg-hover: rgba(255, 255, 255, 0.06);
   --vp-yoast-border: #2e2e32;
   --vp-yoast-text: #ffffff;
@@ -523,4 +525,43 @@ hr.yst-bg-slate-200 {
 .group-hover\:yst-bg-slate-50:hover {
   background: var(--vp-yoast-bg-hover) !important;
   color: var(--vp-yoast-text) !important;
+}
+
+/* ==========================================================================
+   Yoast SEO Support page (moved from admin-tools-health-yoast-dark.css)
+   ========================================================================== */
+
+#yoast-seo-support .uix-body-container,
+body[class*="wpseo"] #yoast-seo-support {
+  background: var(--vp-yoast-bg) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+#yoast-seo-support .yst-root,
+#yoast-seo-support .yst-paper,
+#yoast-seo-support .yst-paper__content {
+  background: var(--vp-yoast-bg) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+#yoast-seo-support .yst-card {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+#yoast-seo-support .yst-card h3,
+#yoast-seo-support .yst-card h4,
+#yoast-seo-support .yst-card p,
+#yoast-seo-support .yst-card span,
+#yoast-seo-support .yst-card a {
+  color: var(--vp-yoast-text) !important;
+}
+
+#yoast-seo-support .yst-card a[href] {
+  color: var(--vp-yoast-accent) !important;
+}
+
+#yoast-seo-support .yst-card a[href]:hover {
+  color: var(--vp-yoast-accent-hover) !important;
 }

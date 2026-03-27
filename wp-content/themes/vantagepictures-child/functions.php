@@ -1386,6 +1386,7 @@ require_once get_stylesheet_directory() . '/inc/yoast-schema-portfolio.php';
 require_once get_stylesheet_directory() . '/inc/yoast-schema-about-founders.php';
 require_once get_stylesheet_directory() . '/inc/yoast-schema-work-page.php';
 require_once get_stylesheet_directory() . '/inc/yoast-schema-organization-taxonomies.php';
+require_once get_stylesheet_directory() . '/inc/yoast-translatepress-canonical-schema.php';
 require_once get_stylesheet_directory() . '/inc/yoast-seo-tweaks.php';
 
 /**
