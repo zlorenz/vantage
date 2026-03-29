@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Incremental_Backup_addon
  */
@@ -538,9 +538,7 @@ class WPvivid_Incremental_Backup_addon
                     $last_message='N/A';
                 }
                 else {
-                    $offset=get_option('gmt_offset');
-                    $time = $message['status']['start_time'] + ($offset * 60 * 60);
-                    $time=date("H:i:s - F-d-Y ", $time);
+                    $time=WPvivid_Time::format_local("H:i:s - F-d-Y ", $message['status']['start_time']);
 
                     if($message['status']['str'] == 'completed') {
                         $last_message=$time;
@@ -564,9 +562,7 @@ class WPvivid_Incremental_Backup_addon
                     $last_message='N/A';
                 }
                 else {
-                    $offset=get_option('gmt_offset');
-                    $time = $message['status']['start_time'] + ($offset * 60 * 60);
-                    $time=date("H:i:s - F-d-Y ", $time);
+                    $time=WPvivid_Time::format_local("H:i:s - F-d-Y ", $message['status']['start_time']);
 
                     if($message['status']['str'] == 'completed') {
                         $last_message=$time;
@@ -590,9 +586,7 @@ class WPvivid_Incremental_Backup_addon
                     $last_message='N/A';
                 }
                 else {
-                    $offset=get_option('gmt_offset');
-                    $time = $message['status']['start_time'] + ($offset * 60 * 60);
-                    $time=date("H:i:s - F-d-Y ", $time);
+                    $time=WPvivid_Time::format_local("H:i:s - F-d-Y ", $message['status']['start_time']);
 
                     if($message['status']['str'] == 'completed') {
                         $last_message=$time;
@@ -641,6 +635,34 @@ class WPvivid_Incremental_Backup_addon
         return $ret;
     }
 
+    private static function wpvivid_get_wp_timezone()
+    {
+        // WP 5.3+
+        if (function_exists('wp_timezone')) {
+            return wp_timezone(); // DateTimeZone
+        }
+
+        // WP < 5.3 fallback
+        $timezone_string = get_option('timezone_string');
+        if (!empty($timezone_string)) {
+            try
+            {
+                return new DateTimeZone($timezone_string);
+            }
+            catch (Exception $e) {
+                // fall through to gmt_offset
+            }
+        }
+
+        // gmt_offset fallback (supports half-hour offsets too)
+        $offset  = (float) get_option('gmt_offset');
+        $hours   = (int) $offset;
+        $minutes = (int) round(abs($offset - $hours) * 60);
+
+        $sign = ($offset >= 0) ? '+' : '-';
+        return new DateTimeZone(sprintf('%s%02d:%02d', $sign, abs($hours), $minutes));
+    }
+
     public static function check_incremental_schedule($backup_files,$schedule_id)
     {
         $schedule_options=WPvivid_Schedule::get_schedule($schedule_id);
@@ -658,84 +680,97 @@ class WPvivid_Incremental_Backup_addon
                 $incremental_backup_data[$schedule_id][$backup_files]['versions']['skip_files_time']=0;
                 $incremental_backup_data[$schedule_id][$backup_files]['current_start']=$old_time;
                 $recurrence = $schedule_options['incremental_recurrence'];
-                if($recurrence=='wpvivid_2hours')
+
+                $now_ts = time();
+                $tz = self::wpvivid_get_wp_timezone();
+                $now = new DateTimeImmutable('now', $tz);
+                $time_str = $schedule_options[$backup_files . '_current_day'];
+                list($h, $m) = array_map('intval', explode(':', $time_str));
+                $next_ts = null;
+
+                if ($recurrence === 'wpvivid_2hours' || $recurrence === 'wpvivid_6hours' || $recurrence === 'wpvivid_12hours')
                 {
-                    $start_time = $old_time + 3600 * 2;
-                    while( strtotime('now') > $start_time )
-                    {
-                        $start_time = $start_time + 3600 * 2;
+                    $hours_map = array(
+                        'wpvivid_2hours'  => 2,
+                        'wpvivid_6hours'  => 6,
+                        'wpvivid_12hours' => 12,
+                    );
+                    $step = $hours_map[$recurrence] * 3600;
+
+                    $start_time = $old_time + $step;
+                    while ($now_ts > $start_time) {
+                        $start_time += $step;
                     }
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=$start_time;
+                    $next_ts = $start_time;
                 }
-                else if($recurrence=='wpvivid_6hours')
+                else if ($recurrence === 'wpvivid_daily' || $recurrence === 'wpvivid_3days')
                 {
-                    $start_time = $old_time + 3600 * 6;
-                    while( strtotime('now') > $start_time )
-                    {
-                        $start_time = $start_time + 3600 * 6;
+                    $days_map = array(
+                        'wpvivid_daily' => 1,
+                        'wpvivid_3days' => 3,
+                    );
+                    $d = $days_map[$recurrence];
+
+                    // next local HH:MM today; if passed then +d days
+                    $target = $now->setTime($h, $m, 0);
+                    if ($target <= $now) {
+                        $target = $target->modify('+' . $d . ' days');
                     }
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=$start_time;
+                    $next_ts = $target->getTimestamp();
                 }
-                else if($recurrence=='wpvivid_12hours')
+                else if ($recurrence === 'wpvivid_weekly')
                 {
-                    $start_time = $old_time + 3600 * 12;
-                    while( strtotime('now') > $start_time )
-                    {
-                        $start_time = $start_time + 3600 * 12;
+                    $dow = strtolower($schedule_options['incremental_recurrence_week']); // mon/tue/...
+                    $target = $now->modify("$dow this week")->setTime($h, $m, 0);
+                    if ($target <= $now) {
+                        $target = $target->modify('+1 week');
                     }
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=$start_time;
+                    $next_ts = $target->getTimestamp();
                 }
-                else if($recurrence=='wpvivid_daily')
+                else if ($recurrence === 'wpvivid_fortnightly')
                 {
-                    if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                        $start_time = $schedule_options[$backup_files.'_current_day'].' +1 day';
+                    $dow = strtolower($schedule_options['incremental_recurrence_week']);
+                    $target = $now->modify("$dow this week")->setTime($h, $m, 0);
+                    if ($target <= $now) {
+                        $target = $target->modify('+1 week');
                     }
-                    else{
-                        $start_time = $schedule_options[$backup_files.'_current_day'];
-                    }
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
+                    // fortnightly = next weekly occurrence + 1 extra week
+                    $target = $target->modify('+1 week');
+                    $next_ts = $target->getTimestamp();
                 }
-                else if($recurrence=='wpvivid_3days')
+                else if ($recurrence === 'wpvivid_monthly')
                 {
-                    if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                        $start_time = $schedule_options[$backup_files.'_current_day'].' +3 day';
-                    }
-                    else{
-                        $start_time = $schedule_options[$backup_files.'_current_day'];
-                    }
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-                }
-                if($recurrence=='wpvivid_weekly')
-                {
-                    $start_time = $schedule_options['incremental_recurrence_week'].' '.$schedule_options[$backup_files.'_current_day'].' next week';
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-                }
-                else if($recurrence=='wpvivid_fortnightly')
-                {
-                    $start_time = $schedule_options['incremental_recurrence_week'].' '.$schedule_options[$backup_files.'_current_day'].' +2 week';
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-                }
-                else if($recurrence=='wpvivid_monthly')
-                {
-                    $day=$schedule_options['incremental_recurrence_day'];
-                    if($day<10)
-                    {
-                        $day='0'.$day;
+                    $day = intval($schedule_options['incremental_recurrence_day']); // 1..31
+
+                    $year  = intval($now->format('Y'));
+                    $month = intval($now->format('m'));
+
+                    $first_of_month = $now->setDate($year, $month, 1)->setTime($h, $m, 0);
+                    $days_in_month  = intval($first_of_month->format('t'));
+                    $use_day        = min(max($day, 1), $days_in_month);
+
+                    $target = $first_of_month->setDate($year, $month, $use_day);
+
+                    if ($target <= $now) {
+                        $next_month_base = $first_of_month->modify('+1 month');
+                        $ny = intval($next_month_base->format('Y'));
+                        $nm = intval($next_month_base->format('m'));
+
+                        $days_in_next_month = intval($next_month_base->format('t'));
+                        $use_day = min(max($day, 1), $days_in_next_month);
+
+                        $target = $next_month_base->setDate($ny, $nm, $use_day);
                     }
 
-                    $date_now = date("Y-m-",time());
-                    $monthly_tmp = $date_now.$day.' '.$schedule_options[$backup_files.'_current_day'];
-                    if(strtotime('now')>strtotime($monthly_tmp)){
-                        $date_now = date("Y-m-",strtotime('+1 month'));
-                        $monthly_start_time = $date_now.$day.' '.$schedule_options[$backup_files.'_current_day'];
-                    }
-                    else{
-                        $monthly_start_time = $monthly_tmp;
-                    }
-                    $start_time = strtotime($monthly_start_time);
-                    //$start_time=strtotime(date('m', strtotime('+1 month')).'/'.$day.'/'.date('Y').' '.$schedule_options[$backup_files.'_current_day']);
-                    $incremental_backup_data[$schedule_id][$backup_files]['next_start']=$start_time;
+                    $next_ts = $target->getTimestamp();
                 }
+
+                // Fallback (shouldn't happen, but keep safe)
+                if ($next_ts === null) {
+                    $next_ts = $now_ts + 300;
+                }
+
+                $incremental_backup_data[$schedule_id][$backup_files]['next_start'] = $next_ts;
             }
         }
         else
@@ -746,88 +781,93 @@ class WPvivid_Incremental_Backup_addon
             $recurrence = $schedule_options['incremental_recurrence'];
             $incremental_backup_data[$schedule_id][$backup_files]['current_start']=time();
 
-            if($recurrence=='wpvivid_2hours')
-            {
-                if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                    $start_time = $schedule_options[$backup_files.'_current_day'].' +2 hour';
-                }
-                else{
-                    $start_time = $schedule_options[$backup_files.'_current_day'];
-                }
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-            }
-            else if($recurrence=='wpvivid_6hours')
-            {
-                if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                    $start_time = $schedule_options[$backup_files.'_current_day'].' +6 hour';
-                }
-                else{
-                    $start_time = $schedule_options[$backup_files.'_current_day'];
-                }
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-            }
-            else if($recurrence=='wpvivid_12hours')
-            {
-                if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                    $start_time = $schedule_options[$backup_files.'_current_day'].' +12 hour';
-                }
-                else{
-                    $start_time = $schedule_options[$backup_files.'_current_day'];
-                }
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-            }
-            else if($recurrence=='wpvivid_daily')
-            {
-                if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                    $start_time = $schedule_options[$backup_files.'_current_day'].' +1 day';
-                }
-                else{
-                    $start_time = $schedule_options[$backup_files.'_current_day'];
-                }
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-            }
-            else if($recurrence=='wpvivid_3days')
-            {
-                if(strtotime('now')>strtotime($schedule_options[$backup_files.'_current_day'])){
-                    $start_time = $schedule_options[$backup_files.'_current_day'].' +3 day';
-                }
-                else{
-                    $start_time = $schedule_options[$backup_files.'_current_day'];
-                }
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
-            }
-            if($recurrence=='wpvivid_weekly')
-            {
-                $start_time = $schedule_options['incremental_recurrence_week'].' '.$schedule_options[$backup_files.'_current_day'].' next week';
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
+            $tz = self::wpvivid_get_wp_timezone();
+            $now = new DateTimeImmutable('now', $tz);
+            $time_str = $schedule_options[$backup_files . '_current_day'];
+            list($h, $m) = array_map('intval', explode(':', $time_str));
+            $next_ts = null;
 
+            if ($recurrence === 'wpvivid_2hours' || $recurrence === 'wpvivid_6hours' || $recurrence === 'wpvivid_12hours') {
+                // Keep your original semantics:
+                // next_start = today HH:MM if still in future; otherwise +N hours from HH:MM (not "align to clock hour multiples")
+                $hours_map = array(
+                    'wpvivid_2hours'  => 2,
+                    'wpvivid_6hours'  => 6,
+                    'wpvivid_12hours' => 12,
+                );
+                $n = $hours_map[$recurrence];
+
+                $target = $now->setTime($h, $m, 0);
+                if ($target <= $now) {
+                    $target = $target->modify('+' . $n . ' hours');
+                }
+                $next_ts = $target->getTimestamp();
             }
-            else if($recurrence=='wpvivid_fortnightly')
-            {
-                $start_time = $schedule_options['incremental_recurrence_week'].' '.$schedule_options[$backup_files.'_current_day'].' +2 week';
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=strtotime($start_time);
+            else if ($recurrence === 'wpvivid_daily' || $recurrence === 'wpvivid_3days') {
+                $days_map = array(
+                    'wpvivid_daily' => 1,
+                    'wpvivid_3days' => 3,
+                );
+                $d = $days_map[$recurrence];
+
+                $target = $now->setTime($h, $m, 0);
+                if ($target <= $now) {
+                    $target = $target->modify('+' . $d . ' days');
+                }
+                $next_ts = $target->getTimestamp();
             }
-            else if($recurrence=='wpvivid_monthly')
-            {
-                $day=$schedule_options['incremental_recurrence_day'];
-                if($day<10)
-                {
-                    $day='0'.$day;
+            else if ($recurrence === 'wpvivid_weekly') {
+                $dow = strtolower($schedule_options['incremental_recurrence_week']); // 'mon', 'tue', ...
+                $target = $now->modify("$dow this week")->setTime($h, $m, 0);
+                if ($target <= $now) {
+                    $target = $target->modify('+1 week');
+                }
+                $next_ts = $target->getTimestamp();
+            }
+            else if ($recurrence === 'wpvivid_fortnightly') {
+                $dow = strtolower($schedule_options['incremental_recurrence_week']);
+                $target = $now->modify("$dow this week")->setTime($h, $m, 0);
+                if ($target <= $now) {
+                    $target = $target->modify('+1 week');
+                }
+                // next occurrence should be 2 weeks apart; since we already picked the next weekly occurrence,
+                // add one more week to make it "fortnightly"
+                $target = $target->modify('+1 week');
+                $next_ts = $target->getTimestamp();
+            }
+            else if ($recurrence === 'wpvivid_monthly') {
+                $day = intval($schedule_options['incremental_recurrence_day']); // 1..31
+
+                // Build target in current month at HH:MM
+                $year  = intval($now->format('Y'));
+                $month = intval($now->format('m'));
+
+                $first_of_month = $now->setDate($year, $month, 1)->setTime($h, $m, 0);
+                $days_in_month  = intval($first_of_month->format('t'));
+                $use_day        = min(max($day, 1), $days_in_month);
+
+                $target = $first_of_month->setDate($year, $month, $use_day);
+
+                // If passed, move to next month (and clamp day again)
+                if ($target <= $now) {
+                    $next_month_base = $first_of_month->modify('+1 month');
+                    $ny = intval($next_month_base->format('Y'));
+                    $nm = intval($next_month_base->format('m'));
+
+                    $days_in_next_month = intval($next_month_base->format('t'));
+                    $use_day = min(max($day, 1), $days_in_next_month);
+
+                    $target = $next_month_base->setDate($ny, $nm, $use_day);
                 }
 
-                $date_now = date("Y-m-",time());
-                $monthly_tmp = $date_now.$day.' '.$schedule_options[$backup_files.'_current_day'];
-                if(strtotime('now')>strtotime($monthly_tmp)){
-                    $date_now = date("Y-m-",strtotime('+1 month'));
-                    $monthly_start_time = $date_now.$day.' '.$schedule_options[$backup_files.'_current_day'];
-                }
-                else{
-                    $monthly_start_time = $monthly_tmp;
-                }
-                $start_time = strtotime($monthly_start_time);
-                //$start_time=strtotime(date('m', strtotime('+1 month')).'/'.$day.'/'.date('Y').' '.$schedule_options[$backup_files.'_current_day']);
-                $incremental_backup_data[$schedule_id][$backup_files]['next_start']=$start_time;
+                $next_ts = $target->getTimestamp();
             }
+
+            if ($next_ts === null) {
+                $next_ts = time() + 300;
+            }
+
+            $incremental_backup_data[$schedule_id][$backup_files]['next_start'] = $next_ts;
         }
         $incremental_backup_data[$schedule_id][$backup_files]['versions']['backup_time']=time();
         WPvivid_Setting::update_option('wpvivid_incremental_backup_data',$incremental_backup_data);
@@ -854,8 +894,8 @@ class WPvivid_Incremental_Backup_addon
             $current_time=$incremental_backup_data[$schedule_id][$backup_files]['current_start'];
         }
 
-        $remote_folder1=date('Y_m_d',$current_time);
-        $remote_folder2=date('Y_m_d',$next_time);
+        $remote_folder1=WPvivid_Time::format_utc('Y_m_d',$current_time);
+        $remote_folder2=WPvivid_Time::format_utc('Y_m_d',$next_time);
         $remote_folder=$remote_folder1.'_to_'.$remote_folder2;
         return $remote_folder;
     }

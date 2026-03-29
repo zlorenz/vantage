@@ -4216,9 +4216,7 @@ class WPvivid_Interface_MainWP_addon
 
             if (isset($schedule['last_backup_time']))
             {
-                $offset=get_option('gmt_offset');
-                $localtime = $schedule['last_backup_time'] + $offset * 60 * 60;
-                $last_backup_time = date("H:i:s - F-d-Y ", $localtime);
+                $last_backup_time = WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['last_backup_time']);
             } else {
                 $last_backup_time = 'N/A';
             }
@@ -4254,16 +4252,11 @@ class WPvivid_Interface_MainWP_addon
                     $schedule_data['start_time']=$timestamp;
 
                     wp_schedule_event($schedule['start_time'], $schedule['type'], $schedule['id'],array($schedule['id']));
-
-                    $offset = get_option('gmt_offset');
-                    $localtime = $schedule['start_time'] + $offset * 60 * 60;
-                    $next_start = date("H:i:s - F-d-Y ", $localtime);
+                    $next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['start_time']);
                 }
                 else {
                     $schedule['next_start'] = $timestamp;
-                    $offset = get_option('gmt_offset');
-                    $localtime = $schedule['next_start'] + $offset * 60 * 60;
-                    $next_start = date("H:i:s - F-d-Y ", $localtime);
+                    $next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['next_start']);
                 }
             } else {
                 $next_start = 'N/A';
@@ -4633,14 +4626,6 @@ class WPvivid_Interface_MainWP_addon
                 $time['type'] = $new_schedule['type'];
                 $time['start_time']['week'] = $new_schedule['week'];
                 $time['start_time']['day'] = $new_schedule['day'];
-                /*if($start_time_local_utc === 'utc') {
-                    $time['start_time']['current_day'] = $new_schedule['current_day'];
-                }
-                else{
-                    $offset=get_option('gmt_offset');
-                    $utc_time = strtotime($new_schedule['current_day']) - $offset * 60 * 60;
-                    $time['start_time']['current_day'] = date("H:i", $utc_time);
-                }*/
                 $time['start_time']['current_day'] = $new_schedule['current_day'];
                 $timestamp = WPvivid_Schedule_addon::get_start_time($time);
                 $new_schedules[$new_schedule_id]['current_day'] = $time['start_time']['current_day'];
@@ -4911,9 +4896,9 @@ class WPvivid_Interface_MainWP_addon
         if(!empty($message['id'])) {
             $ret['id'] = $message['id'];
             $ret['status'] = $message['status'];
-            $ret['status']['start_time'] = date("M d, Y H:i", $ret['status']['start_time']);
-            $ret['status']['run_time'] = date("M d, Y H:i", $ret['status']['run_time']);
-            $ret['status']['timeout'] = date("M d, Y H:i", $ret['status']['timeout']);
+            $ret['status']['start_time'] = WPvivid_Time::format_local("M d, Y H:i", $ret['status']['start_time']);
+            $ret['status']['run_time'] = WPvivid_Time::format_local("M d, Y H:i", $ret['status']['run_time']);
+            $ret['status']['timeout'] = WPvivid_Time::format_local("M d, Y H:i", $ret['status']['timeout']);
             if(isset($message['options']['log_file_name']))
                 $ret['log_file_name'] = $message['options']['log_file_name'];
             else
@@ -4925,19 +4910,18 @@ class WPvivid_Interface_MainWP_addon
             $last_message=__('The last backup message not found.', 'wpvivid');
         }
         else{
-            $offset=get_option('gmt_offset');
-            $localtime = strtotime($message['status']['start_time']) + $offset * 60 * 60;
+            $localtime = strtotime($message['status']['start_time']);
             if($message['status']['str'] == 'completed'){
                 $backup_status='Succeeded';
-                $last_message=$backup_status.', (Local Time) '.date("l, F-d-Y H:i", $localtime);
+                $last_message=$backup_status.', (Local Time) '.WPvivid_Time::format_local("l, F-d-Y H:i", $localtime);
             }
             elseif($message['status']['str'] == 'error'){
                 $backup_status='Failed';
-                $last_message=$backup_status.', (Local Time) '.date("l, F-d-Y H:i", $localtime);
+                $last_message=$backup_status.', (Local Time) '.WPvivid_Time::format_local("l, F-d-Y H:i", $localtime);
             }
             elseif($message['status']['str'] == 'cancel'){
                 $backup_status='Failed';
-                $last_message=$backup_status.', (Local Time) '.date("l, F-d-Y H:i", $localtime);
+                $last_message=$backup_status.', (Local Time) '.WPvivid_Time::format_local("l, F-d-Y H:i", $localtime);
             }
             else{
                 $last_message=__('The last backup message not found.', 'wpvivid');
@@ -5144,9 +5128,8 @@ class WPvivid_Interface_MainWP_addon
                 {
                     $next_start_of_all_files=time();
                 }
-                $next_start_of_all_files = $next_start_of_all_files + $offset * 60 * 60;
                 if ($next_start_of_all_files > 0) {
-                    $next_start_of_all_files = date("H:i:s - F-d-Y ", $next_start_of_all_files);
+                    $next_start_of_all_files = WPvivid_Time::format_local("H:i:s - F-d-Y ", $next_start_of_all_files);
                 } else {
                     $next_start_of_all_files = 'N/A';
                 }
@@ -5156,9 +5139,9 @@ class WPvivid_Interface_MainWP_addon
             }
 
             if($files_next_start !== false) {
-                $localtime = $files_next_start + $offset * 60 * 60;
+                $localtime = $files_next_start;
                 if ($localtime > 0) {
-                    $files_next_start = date("H:i:s - F-d-Y ", $localtime);
+                    $files_next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                 } else {
                     $files_next_start = 'N/A';
                 }
@@ -5169,9 +5152,9 @@ class WPvivid_Interface_MainWP_addon
             $timestamp = wp_next_scheduled($db_schedule_id, array($schedule['id']));
             $db_next_start = $timestamp;
             if($db_next_start !== false) {
-                $localtime = $db_next_start + $offset * 60 * 60;
+                $localtime = $db_next_start;
                 if ($localtime > 0) {
-                    $db_next_start = date("H:i:s - F-d-Y ", $localtime);
+                    $db_next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                 } else {
                     $db_next_start = 'N/A';
                 }
@@ -5202,8 +5185,7 @@ class WPvivid_Interface_MainWP_addon
             $last_message='N/A.';
         }
         else {
-            $offset=get_option('gmt_offset');
-            $time = $message['status']['start_time'] + ($offset * 60 * 60);
+            $time = $message['status']['start_time'];
             if(isset($message['incremental_backup_files']))
             {
                 $backup_files='Backup '.$message['incremental_backup_files'].' ';
@@ -5212,7 +5194,7 @@ class WPvivid_Interface_MainWP_addon
             {
                 $backup_files='';
             }
-            $time=', (Local Time) '.date("l, F-d-Y H:i", $time);
+            $time=', (Local Time) '.WPvivid_Time::format_local("l, F-d-Y H:i", $time);
 
             if(isset($message['no_files']))
             {
@@ -5309,9 +5291,8 @@ class WPvivid_Interface_MainWP_addon
                     if($next_start_of_full_backup=='now') {
                         $next_start_of_full_backup=time();
                     }
-                    $next_start_of_full_backup = $next_start_of_full_backup + $offset * 60 * 60;
                     if ($next_start_of_full_backup > 0) {
-                        $next_start_of_full_backup = date("H:i:s - F-d-Y ", $next_start_of_full_backup);
+                        $next_start_of_full_backup = WPvivid_Time::format_local("H:i:s - F-d-Y ", $next_start_of_full_backup);
                     } else {
                         $next_start_of_full_backup = 'N/A';
                     }
@@ -5322,9 +5303,9 @@ class WPvivid_Interface_MainWP_addon
 
                 //incremental backup
                 if($files_next_start !== false) {
-                    $localtime = $files_next_start + $offset * 60 * 60;
+                    $localtime = $files_next_start;
                     if ($localtime > 0) {
-                        $next_start_of_incremental_backup = date("H:i:s - F-d-Y ", $localtime);
+                        $next_start_of_incremental_backup = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                     } else {
                         $next_start_of_incremental_backup = 'N/A';
                     }
@@ -5337,9 +5318,9 @@ class WPvivid_Interface_MainWP_addon
                 $timestamp = wp_next_scheduled($db_schedule_id, array($schedule['id']));
                 $db_next_start = $timestamp;
                 if($db_next_start !== false) {
-                    $localtime = $db_next_start + $offset * 60 * 60;
+                    $localtime = $db_next_start;
                     if ($localtime > 0) {
-                        $next_start_of_database_backup = date("H:i:s - F-d-Y ", $localtime);
+                        $next_start_of_database_backup = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                     } else {
                         $next_start_of_database_backup = 'N/A';
                     }
@@ -5940,11 +5921,10 @@ class WPvivid_Interface_MainWP_addon
                 return $ret;
             }
 
-            $offset = get_option('gmt_offset');
             if($schedule_data['files_start_time'] !== false) {
-                $localtime = $schedule_data['files_start_time'] + $offset * 60 * 60;
+                $localtime = $schedule_data['files_start_time'];
                 if ($localtime > 0) {
-                    $ret['data']['next_start_of_all_files'] = $ret['data']['files_next_start'] = date("H:i:s - F-d-Y ", $localtime);
+                    $ret['data']['next_start_of_all_files'] = $ret['data']['files_next_start'] = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                 } else {
                     $ret['data']['next_start_of_all_files'] = $ret['data']['files_next_start'] = 0;
                 }
@@ -5954,9 +5934,9 @@ class WPvivid_Interface_MainWP_addon
             }
 
             if($schedule_data['db_start_time'] !== false) {
-                $localtime = $schedule_data['db_start_time'] + $offset * 60 * 60;
+                $localtime = $schedule_data['db_start_time'];
                 if ($localtime > 0) {
-                    $ret['data']['db_next_start'] = date("H:i:s - F-d-Y ", $localtime);
+                    $ret['data']['db_next_start'] = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                 } else {
                     $ret['data']['db_next_start'] = 0;
                 }
@@ -6450,32 +6430,6 @@ class WPvivid_Interface_MainWP_addon
 
 
             $incremental_schedule_enable = $incremental_schedule_data['incremental_backup_status'];
-
-            /*if($incremental_schedule_data['file_start_time_zone'] === 'utc') {
-                //$incremental_schedule_data['files_current_day'] = $incremental_schedule_data['files_current_day'];
-                $offset=get_option('gmt_offset');
-                $utc_time = strtotime($incremental_schedule_data['files_current_day']) + $offset * 60 * 60;
-                $incremental_schedule_data['files_current_day_hour'] = date("H", $utc_time);
-                $incremental_schedule_data['files_current_day_minute'] = date("i", $utc_time);
-            }
-            else{
-                $offset=get_option('gmt_offset');
-                $utc_time = strtotime($incremental_schedule_data['files_current_day']) - $offset * 60 * 60;
-                $incremental_schedule_data['files_current_day'] = date("H:i", $utc_time);
-            }
-
-            if($incremental_schedule_data['db_start_time_zone'] === 'utc'){
-                $offset=get_option('gmt_offset');
-                $utc_time = strtotime($incremental_schedule_data['db_current_day']) + $offset * 60 * 60;
-                $incremental_schedule_data['db_current_day_hour'] = date("H", $utc_time);
-                $incremental_schedule_data['db_current_day_minute'] = date("i", $utc_time);
-            }
-            else{
-                $offset=get_option('gmt_offset');
-                $utc_time = strtotime($incremental_schedule_data['db_current_day']) - $offset * 60 * 60;
-                $incremental_schedule_data['db_current_day'] = date("H:i", $utc_time);
-            }*/
-
             $new_incremental_schedule[$incremental_schedule_id]['id'] = $incremental_schedule_data['id'];
             $new_incremental_schedule[$incremental_schedule_id]['files_schedule_id'] = $incremental_schedule_data['files_schedule_id'];
             $new_incremental_schedule[$incremental_schedule_id]['db_schedule_id'] = $incremental_schedule_data['db_schedule_id'];

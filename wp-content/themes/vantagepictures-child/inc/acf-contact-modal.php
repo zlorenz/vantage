@@ -167,6 +167,14 @@ function vp_register_acf_contact_modal_options() {
 					'instructions'  => 'Shown in the footer. Leave empty to hide.',
 					'default_value' => 'https://www.xinpianchang.com/u11835825',
 				),
+				array(
+					'key'           => 'field_vp_social_xiaohongshu',
+					'label'         => 'Xiaohongshu (小红书 / Rednote) URL',
+					'name'          => 'social_xiaohongshu',
+					'type'          => 'url',
+					'instructions'  => 'Profile link for Xiaohongshu / Rednote. Shown in the footer to the right of Xinpianchang when set. Leave empty to hide.',
+					'default_value' => '',
+				),
 			),
 			'location'              => array(
 				array(

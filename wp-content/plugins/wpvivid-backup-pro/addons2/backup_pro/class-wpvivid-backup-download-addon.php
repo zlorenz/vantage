@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Admin_load: yes
  * Interface Name: WPvivid_Backup_Download_Addon
@@ -108,12 +108,12 @@ class WPvivid_Backup_Download_Addon
                         $files_list->display();
                         $ret['list'] = ob_get_clean();
                         $ret['is_incremental']=true;
-                        $ret['full_backup_start_time']=date("F-d-Y H:i",$incremental_data['full_backup_start_time']);
-                        $ret['start_date']=date("Y-m-d",$incremental_data['full_backup_start_time']);
-                        $ret['end_date']=date("Y-m-d",$incremental_data['last_backup_time']);
+                        $ret['full_backup_start_time']=WPvivid_Time::format_local("F-d-Y H:i", $incremental_data['full_backup_start_time']);
+                        $ret['start_date']=WPvivid_Time::format_local("Y-m-d", $incremental_data['full_backup_start_time']);
+                        $ret['end_date']=WPvivid_Time::format_local("Y-m-d", $incremental_data['last_backup_time']);
 
-                        $ret['start_time']=date("H:i",$incremental_data['full_backup_start_time']);
-                        $ret['end_time']=date("H:i",$incremental_data['last_backup_time']+60);
+                        $ret['start_time']=WPvivid_Time::format_local("H:i", $incremental_data['full_backup_start_time']);
+                        $ret['end_time']=WPvivid_Time::format_local("H:i", $incremental_data['last_backup_time']+60);
                     }
                 }
                 else
@@ -2051,6 +2051,10 @@ class WPvivid_Backup_Download_Addon
                 {
                     $type_list['Wordpress Core']['files'][$file_name]=$value;
                 }
+                else if(WPvivid_backup_pro_function::is_wpvivid_mu_plugins_backup($file_name))
+                {
+                    $type_list['mu-plugins']['files'][$file_name]=$value;
+                }
                 else if(WPvivid_backup_pro_function::is_wpvivid_other_backup($file_name))
                 {
                     $type_list['Others']['files'][$file_name]=$value;
@@ -2186,6 +2190,17 @@ class WPvivid_Backup_Download_Addon
                         else
                         {
                             $type_list['Wordpress Core']['files']=array_merge($type_list['Wordpress Core']['files'],$files);
+                        }
+                    }
+                    if($backup_content === 'mu-plugins')
+                    {
+                        if(!array_key_exists('mu-plugins', $type_list))
+                        {
+                            $type_list['mu-plugins']['files']=$files;
+                        }
+                        else
+                        {
+                            $type_list['mu-plugins']['files']=array_merge($type_list['mu-plugins']['files'],$files);
                         }
                     }
                     if($backup_content === 'custom')

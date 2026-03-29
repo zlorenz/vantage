@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Admin_load: yes
  * Need_init: yes
  * Interface Name: WPvivid_Migrate_MU_Single_Site_Display

@@ -159,6 +159,14 @@
   color: var(--vp-gb-text-secondary) !important;
 }
 
+/* Primary header actions (e.g. Add Pattern) – header * rule must not gray out label on accent */
+#site-editor .admin-ui-page__header .components-button.is-primary,
+#site-editor .admin-ui-page__header .components-button.is-primary:hover,
+#site-editor .admin-ui-page__header .components-dropdown-menu__toggle.is-primary,
+#site-editor .admin-ui-page__header .components-dropdown-menu__toggle.is-primary:hover {
+  color: #fff !important;
+}
+
 /* Data views wrapper, header actions & footer */
 #site-editor .dataviews-wrapper,
 #site-editor .dataviews__view-actions,
@@ -169,6 +177,10 @@
 
 #site-editor .dataviews-footer {
   border-top: 1px solid var(--vp-gb-border) !important;
+}
+
+#site-editor .dataviews-bulk-actions-footer__item-count {
+  color: var(--vp-gb-text-bright) !important;
 }
 
 /* Search input and prefix icon */
@@ -385,6 +397,49 @@
 
 .interface-interface-skeleton .components-button.is-primary:hover {
   background: var(--vp-gb-accent-hover) !important;
+}
+
+/* Form token field (Document sidebar, template terms) – core uses #ddd pills; skeleton + svg rules force white on the remove button/icon */
+.interface-complementary-area .components-form-token-field__input-container,
+.interface-interface-skeleton .components-form-token-field__input-container {
+  background: var(--vp-gb-bg-input) !important;
+  border: 1px solid var(--vp-gb-border) !important;
+}
+
+.interface-complementary-area .components-form-token-field__input-container.is-disabled,
+.interface-interface-skeleton .components-form-token-field__input-container.is-disabled {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+}
+
+.interface-complementary-area .components-form-token-field__token,
+.interface-interface-skeleton .components-form-token-field__token {
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-complementary-area .components-form-token-field__token-text,
+.interface-interface-skeleton .components-form-token-field__token-text {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-complementary-area .components-form-token-field__remove-token.components-button,
+.interface-interface-skeleton .components-form-token-field__remove-token.components-button {
+  background: var(--vp-gb-bg-elevated) !important;
+  color: var(--vp-gb-text-muted) !important;
+}
+
+.interface-complementary-area .components-form-token-field__remove-token.components-button:hover,
+.interface-interface-skeleton .components-form-token-field__remove-token.components-button:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.interface-complementary-area .components-form-token-field__remove-token.components-button svg,
+.interface-complementary-area .components-form-token-field__remove-token.components-button path,
+.interface-interface-skeleton .components-form-token-field__remove-token.components-button svg,
+.interface-interface-skeleton .components-form-token-field__remove-token.components-button path {
+  fill: currentColor !important;
 }
 
 /* Badges (e.g. "Homepage" indicator) – dark background, light text */

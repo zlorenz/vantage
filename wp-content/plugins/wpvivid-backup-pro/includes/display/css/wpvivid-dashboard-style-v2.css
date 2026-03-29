@@ -1694,6 +1694,11 @@
 	font-size: 12px;
 	font-weight: 600;
 }
+.wpvivid-v2-license-status.wpvivid-v2-status-error {
+	background: #fceaea;
+	color: #b90000;
+	border: 1px solid #f5b5b5;
+}
 .wpvivid-v2-license-link {
 	color: #0073aa;
 	font-size: 13px;
@@ -3255,11 +3260,16 @@ input:checked + .wpvivid-slider:before {
 	flex-direction: column;
 	align-items: center;
 	flex: 1;
+}
 
-@media (max-width: 768px) {
-	font-size: 12px;
+@media (max-width: 768px)
+{
+	.wpvivid-stepper-item
+	{
+		font-size: 12px;
+	}
 }
-}
+
 
 .wpvivid-stepper-item::before {
 	position: absolute;
@@ -4818,4 +4828,37 @@ input:checked + .wpvivid-slider:before {
 	.wpvivid-v2-db-row > * {
 		width: 100%;
 	}
+}
+
+/* reset dashboard li pollution for jstree */
+.wpvivid-dashboard .wpvivid-custom-exclude-tree-info li,
+.wpvivid-dashboard .wpvivid-custom-exclude-tree-info .jstree-node,
+.wpvivid-dashboard .wpvivid-custom-additional-folder-tree-info li,
+.wpvivid-dashboard .wpvivid-custom-additional-folder-tree-info .jstree-node {
+	border: none !important;
+	padding: 0 !important;
+	box-sizing: content-box !important;
+}
+
+/* remove clearfix injected by dashboard li */
+.wpvivid-dashboard .wpvivid-custom-exclude-tree-info li::after,
+.wpvivid-dashboard .wpvivid-custom-exclude-tree-info .jstree-node::after,
+.wpvivid-dashboard .wpvivid-custom-additional-folder-tree-info li::after,
+.wpvivid-dashboard .wpvivid-custom-additional-folder-tree-info .jstree-node::after {
+	content: none !important;
+	display: none !important;
+}
+
+/* restore jstree indentation */
+.wpvivid-dashboard .wpvivid-custom-exclude-tree-info .jstree-default .jstree-node,
+.wpvivid-dashboard .wpvivid-custom-additional-folder-tree-info .jstree-default .jstree-node {
+	margin-left: 24px !important;
+	min-width: 24px;
+}
+
+/* top-level nodes should not be indented */
+.wpvivid-dashboard .wpvivid-custom-exclude-tree-info .jstree-default > .jstree-container-ul > .jstree-node,
+.wpvivid-dashboard .wpvivid-custom-additional-folder-tree-info .jstree-default > .jstree-container-ul > .jstree-node {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
 }

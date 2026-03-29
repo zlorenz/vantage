@@ -453,6 +453,69 @@ class WPvivid_Dashboard_Connect_server
         }
     }
 
+    private function is_cloudflare_block($response)
+    {
+        if (is_wp_error($response)) {
+            return false;
+        }
+
+        $code = 0;
+        if (is_array($response) && isset($response['response']['code'])) {
+            $code = (int) $response['response']['code'];
+        } else {
+            $code = (int) wp_remote_retrieve_response_code($response);
+        }
+
+        if ($code !== 403 && $code !== 429 && $code !== 503) {
+            return false;
+        }
+
+        $body = '';
+        if (is_array($response) && isset($response['body'])) {
+            $body = (string) $response['body'];
+        } else {
+            $body = (string) wp_remote_retrieve_body($response);
+        }
+
+        if ($body === '') {
+            return false;
+        }
+
+        $body_lc = strtolower($body);
+
+        if ($code === 403 &&
+            strpos($body_lc, '403 forbidden') !== false &&
+            strpos($body_lc, 'cloudflare') !== false
+        ) {
+            return true;
+        }
+
+        if (strpos($body_lc, '<center>cloudflare</center>') !== false) {
+            return true;
+        }
+
+        $headers = null;
+        if (is_array($response) && isset($response['headers'])) {
+            $headers = $response['headers'];
+        } else {
+            $headers = wp_remote_retrieve_headers($response);
+        }
+
+        if (!empty($headers)) {
+            if (is_array($headers) && isset($headers['server'])) {
+                if (stripos($headers['server'], 'cloudflare') !== false) {
+                    return true;
+                }
+            } elseif (is_object($headers) && isset($headers->server)) {
+                if (stripos($headers->server, 'cloudflare') !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function get_key()
     {
         $options=array();
@@ -501,6 +564,16 @@ class WPvivid_Dashboard_Connect_server
                 $error_messages = $request->get_error_messages();
                 $error_msg = implode(', ', $error_messages);
                 if (preg_match('/cURL error 28/i', $error_msg))
+                {
+                    $direct_ret=$this->direct_get_key();
+                    return $direct_ret;
+                }
+            }
+            else
+            {
+                $code = (int) wp_remote_retrieve_response_code($request);
+
+                if ($code === 403 || $this->is_cloudflare_block($request))
                 {
                     $direct_ret=$this->direct_get_key();
                     return $direct_ret;

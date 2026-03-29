@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Admin_load: yes
  * Interface Name: WPvivid_Uploads_Cleaner_addon
@@ -2961,8 +2961,7 @@ class WPvivid_Uploads_Cleaner_addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>

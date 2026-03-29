@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Encrypt_DB
  */
@@ -197,7 +197,18 @@ class WPvivid_Encrypt_DB_PclZip_Class
 
         $general_setting=WPvivid_Setting::get_setting(true, "");
         $password=$general_setting['options']['wpvivid_common_setting']['encrypt_db_password'];
-        $crypt=new WPvivid_Crypt_File($password);
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+            $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+            if($vendor_mode === 'modern') {
+                $crypt=new WPvivid_Crypt_File_Ex($password);
+            }
+            else{
+                $crypt=new WPvivid_Crypt_File($password);
+            }
+        }
+        else {
+            $crypt=new WPvivid_Crypt_File($password);
+        }
 
         if(file_exists($name))
             @unlink($name);

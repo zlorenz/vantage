@@ -1,6 +1,8 @@
 <?php
 
-namespace WPvividProGuzzleHttp\Promise;
+declare(strict_types=1);
+
+namespace WPvividGuzzleHttp\Promise;
 
 /**
  * Exception that is set as the reason for a promise that has been cancelled.

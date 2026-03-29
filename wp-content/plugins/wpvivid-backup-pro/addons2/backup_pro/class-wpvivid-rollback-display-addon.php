@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Admin_load: yes
  * Need_init: yes
  * Interface Name: WPvivid_Rollback_Display_Addon
@@ -174,8 +174,7 @@ class WPvivid_Rollback_Plugins_List extends WP_List_Table
                 <?php
                 if(isset($plugin['rollback_data']['update_time']))
                 {
-                    $offset=get_option('gmt_offset');
-                    $time =date("Y-m-d H:i:s",$plugin['rollback_data']['update_time']+$offset*60*60);
+                    $time =WPvivid_Time::format_local("Y-m-d H:i:s", $plugin['rollback_data']['update_time']);
                     echo $time;
                 }
                 else
@@ -859,8 +858,7 @@ class WPvivid_Themes_List extends WP_List_Table
                 <?php
                 if(isset($theme['rollback_data']['update_time']))
                 {
-                    $offset=get_option('gmt_offset');
-                    $time =date("Y-m-d H:i:s",$theme['rollback_data']['update_time']+$offset*60*60);
+                    $time =WPvivid_Time::format_local("Y-m-d H:i:s", $theme['rollback_data']['update_time']);
                     echo $time;
                 }
                 else
@@ -1781,6 +1779,7 @@ class WPvivid_Rollback_List extends WP_List_Table
 {
     public $page_num;
     public $rollback_list;
+    public $plugins_list;
 
     public function __construct( $args = array() )
     {
@@ -2966,8 +2965,7 @@ class WPvivid_Rollback_Display_Addon
             $mail_title = '';
         }
 
-        $offset=get_option('gmt_offset');
-        $localtime=gmdate('m-d-Y H:i:s', time()+$offset*60*60);
+        $localtime=WPvivid_Time::format_local('m-d-Y H:i:s', time());
         $subject='['.$mail_title.'Backup '.$status.']'.$localtime.sprintf(' - By %s', apply_filters('wpvivid_white_label_display', 'WPvivid Backup Plugin'));
         return $subject;
     }
@@ -2995,8 +2993,7 @@ class WPvivid_Rollback_Display_Addon
             $mail_title = '';
         }
 
-        $offset=get_option('gmt_offset');
-        $localtime=gmdate('m-d-Y H:i:s', time()+$offset*60*60);
+        $localtime=WPvivid_Time::format_local('m-d-Y H:i:s', time());
         $subject='['.$mail_title.']'.$localtime.sprintf(' - By %s', apply_filters('wpvivid_white_label_display', 'WPvivid Backup Plugin'));
         return $subject;
     }
@@ -3012,8 +3009,7 @@ class WPvivid_Rollback_Display_Addon
             $status='Failed';
         }
 
-        $offset=get_option('gmt_offset');
-        $end_time=date("m-d-Y H:i:s",time()+$offset*60*60);
+        $end_time=WPvivid_Time::format_local("m-d-Y H:i:s", time());
 
         global $wpdb;
         $home_url = home_url();
@@ -3417,8 +3413,7 @@ class WPvivid_Rollback_Display_Addon
 
     public function set_plugin_theme_mail_body($backup_what, $backup_success, $backup_failed, $backup_path='')
     {
-        $offset=get_option('gmt_offset');
-        $end_time=date("m-d-Y H:i:s",time()+$offset*60*60);
+        $end_time=WPvivid_Time::format_local("m-d-Y H:i:s", time());
 
         global $wpdb;
         $home_url = home_url();
@@ -5009,8 +5004,7 @@ class WPvivid_Rollback_Display_Addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>
@@ -8439,7 +8433,7 @@ class WPvivid_Rollback_Display_Addon
                         $file_name=$path . '/' . $file.'/wordpress.zip';
                         $info['id']=$file;
                         $info['version']=$file;
-                        $info['date']=date('M d Y h:i A', filemtime($file_name));
+                        $info['date']=WPvivid_Time::format_utc('M d Y h:i A', filemtime($file_name));
                         $info['size']=size_format(filesize($file_name),2);
                         $core_list[$file]=$info;
                     }
@@ -8457,7 +8451,7 @@ class WPvivid_Rollback_Display_Addon
         $path=WPvivid_Custom_Interface_addon::wpvivid_get_local_backup_abspath().'/'.'rollback/'.$type.'/'.$slug.'/'.$version.'/'.$file;
         if(file_exists($path))
         {
-            $info['date']=date('M d Y h:i A', filemtime($path));
+            $info['date']=WPvivid_Time::format_utc('M d Y h:i A', filemtime($path));
             $info['size']=size_format(filesize($path),2);
             return $info;
         }
@@ -8947,7 +8941,7 @@ class WPvivid_Rollback_Display_Addon
                     {
                         $rollback['version']=$version;
                         $rollback['slug']=$slug;
-                        $rollback['date']=date('M d Y h:i A', $data['file']['modified']);
+                        $rollback['date']=WPvivid_Time::format_utc('M d Y h:i A', $data['file']['modified']);
                         $rollback['size']=size_format($data['file']['size'],2);
                         $rollback_list[$version]=$rollback;
                     }
@@ -8987,7 +8981,7 @@ class WPvivid_Rollback_Display_Addon
                     {
                         $rollback['version']=$version;
                         $rollback['slug']=$slug;
-                        $rollback['date']=date('M d Y h:i A', $data['file']['modified']);
+                        $rollback['date']=WPvivid_Time::format_utc('M d Y h:i A', $data['file']['modified']);
                         $rollback['size']=size_format($data['file']['size'],2);
                         $rollback_list[$version]=$rollback;
                     }
@@ -9440,7 +9434,7 @@ class WPvivid_Rollback_Display_Addon
                     {
                         $rollback['version']=$version;
                         $rollback['slug']=$slug;
-                        $rollback['date']=date('M d Y h:i A', $data['file']['modified']);
+                        $rollback['date']=WPvivid_Time::format_utc('M d Y h:i A', $data['file']['modified']);
                         $rollback['size']=size_format($data['file']['size'],2);
                         $rollback_list[$version]=$rollback;
                     }
@@ -9552,7 +9546,7 @@ class WPvivid_Rollback_Display_Addon
                     {
                         $rollback['version']=$version;
                         $rollback['slug']=$slug;
-                        $rollback['date']=date('M d Y h:i A', $data['file']['modified']);
+                        $rollback['date']=WPvivid_Time::format_utc('M d Y h:i A', $data['file']['modified']);
                         $rollback['size']=size_format($data['file']['size'],2);
                         $rollback_list[$version]=$rollback;
                     }
@@ -10150,7 +10144,7 @@ class WPvivid_Rollback_Display_Addon
                             {
                                 $rollback['version']=$version;
                                 $rollback['slug']=$slug;
-                                $rollback['date']=date('M d Y h:i A', $data['file']['modified']);
+                                $rollback['date']=WPvivid_Time::format_utc('M d Y h:i A', $data['file']['modified']);
                                 $rollback['size']=size_format($data['file']['size'],2);
                                 $rollback_list[$version]=$rollback;
                             }
@@ -10254,7 +10248,7 @@ class WPvivid_Rollback_Display_Addon
                             {
                                 $rollback['version']=$version;
                                 $rollback['slug']=$slug;
-                                $rollback['date']=date('M d Y h:i A', $data['file']['modified']);
+                                $rollback['date']=WPvivid_Time::format_utc('M d Y h:i A', $data['file']['modified']);
                                 $rollback['size']=size_format($data['file']['size'],2);
                                 $rollback_list[$version]=$rollback;
                             }

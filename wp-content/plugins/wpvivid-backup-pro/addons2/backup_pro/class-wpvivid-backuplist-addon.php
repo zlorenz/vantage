@@ -5,7 +5,7 @@
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
  * Admin_load: yes
- * Version: 2.2.41
+ * Version: 2.2.43
  */
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
 {
@@ -129,12 +129,7 @@ class WPvivid_New_Backup_List extends WP_List_Table
             $lock_class = 'dashicons-lock';
         }
 
-        //$offset=get_option('gmt_offset');
-        //$localtime = $backup['create_time'] + $offset * 60 * 60;
         $localtime = $backup['create_time'];
-
-        $offset=get_option('gmt_offset');
-        $utc_time = $backup['create_time'] - $offset * 60 * 60;
 
         if(isset($backup['log']))
         {
@@ -148,7 +143,7 @@ class WPvivid_New_Backup_List extends WP_List_Table
         $html='<td class="tablelistcolumn">
                     <div class="backuptime"  title="">
 						<span class="dashicons '.$lock_class.' wpvivid-dashicons-blue wpvivid-lock" style="cursor:pointer;"></span>																
-						<span>'.date('M-d-Y H:i', $localtime).'</span>
+						<span>'.WPvivid_Time::format_local('M-d-Y H:i', $localtime).'</span>
 						<span style="margin:0 0 0 5px; opacity: 0.5;">|</span>
 						<span class="dashicons dashicons-welcome-write-blog wpvivid-dashicons-grey" style="cursor:pointer;" title="Backup Log" onclick="wpvivid_backup_open_log(\''.$log_name.'\');"></span>
 						<span style="margin:0 5px 0 0; opacity: 0.5;">|</span> <span><strong>Type: </strong></span>
@@ -356,7 +351,7 @@ class WPvivid_New_Backup_List extends WP_List_Table
                 {
                     $content['custom']=true;
                 }
-                else if($type==='themes' || $type==='plugins' || $type==='uploads' || $type==='wp-content' || $type==='Wordpress Core')
+                else if($type==='themes' || $type==='plugins' || $type==='uploads' || $type==='wp-content' || $type==='Wordpress Core' || $type==='mu-plugins')
                 {
                     $content['files']=true;
                 }
@@ -418,6 +413,13 @@ class WPvivid_New_Backup_List extends WP_List_Table
                     $has_file = true;
                     if(!in_array('Wordpress Core', $type_list)) {
                         $type_list[] = 'Wordpress Core';
+                    }
+                }
+                else if(WPvivid_backup_pro_function::is_wpvivid_mu_plugins_backup($file_name))
+                {
+                    $has_file = true;
+                    if(!in_array('mu-plugins', $type_list)) {
+                        $type_list[] = 'mu-plugins';
                     }
                 }
                 else if(WPvivid_backup_pro_function::is_wpvivid_other_backup($file_name))
@@ -524,6 +526,14 @@ class WPvivid_New_Backup_List extends WP_List_Table
                         if(!in_array('Wordpress Core', $type_list))
                         {
                             $type_list[] = 'Wordpress Core';
+                        }
+                    }
+                    if($backup_content === 'mu-plugins')
+                    {
+                        $has_file = true;
+                        if(!in_array('mu-plugins', $type_list))
+                        {
+                            $type_list[] = 'mu-plugins';
                         }
                     }
                     if($backup_content === 'custom')
@@ -966,7 +976,7 @@ class WPvivid_Incremental_Files_List extends WP_List_Table
     public function _column_wpvivid_i_date($file)
     {
         echo "<td class=\"tablelistcolumn\">			
-				<span>".date("F-d-Y H:i",$file['date'])."</span>
+				<span>".WPvivid_Time::format_local("F-d-Y H:i",$file['date'])."</span>
 			</td>";
     }
 

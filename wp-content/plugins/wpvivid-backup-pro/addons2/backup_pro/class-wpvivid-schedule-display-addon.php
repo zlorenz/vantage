@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Admin_load: yes
  * Need_init: yes
  * Interface Name: WPvivid_Schedule_Display_Addon
@@ -81,20 +81,11 @@ class WPvivid_Schedule_List extends WP_List_Table
     public function get_columns()
     {
         $columns = array();
-        /*$columns['cb'] = __( 'cb', 'wpvivid' );
-        $columns['wpvivid_status'] = __( 'Status', 'wpvivid' );
-        $columns['wpvivid_backup_cycles'] =__( 'Backup Cycles', 'wpvivid'  );
-        $columns['wpvivid_last_backup'] = __( 'Last Backup', 'wpvivid'  );
-        $columns['wpvivid_next_backup'] = __( 'Next Backup', 'wpvivid'  );
-        $columns['wpvivid_backup_type'] = __( 'Backup Type', 'wpvivid'  );
-        $columns['wpvivid_storage'] = __( 'Storage', 'wpvivid'  );
-        $columns['wpvivid_actions'] = __( 'Actions', 'wpvivid'  );*/
         $columns['wpvivid_backup_type'] = __( 'Backup Type', 'wpvivid'  );
         $columns['wpvivid_backup_cycles'] = __( 'Backup Cycles', 'wpvivid'  );
         $columns['wpvivid_last_backup'] = __( 'Last Backup', 'wpvivid'  );
         $columns['wpvivid_next_backup'] = __( 'Next Backup', 'wpvivid'  );
         $columns['wpvivid_storage'] = __( 'Storage', 'wpvivid'  );
-        //$columns['wpvivid_status'] = __( 'Status', 'wpvivid' );
         $columns['wpvivid_on_off_control'] = __( 'On/off', 'wpvivid'  );
         $columns['wpvivid_actions'] = __( 'Actions', 'wpvivid'  );
         return $columns;
@@ -151,12 +142,6 @@ class WPvivid_Schedule_List extends WP_List_Table
     public function  column_cb( $schedule )
     {
         echo '<input type="checkbox" />';
-        /*if ($schedule['status'] == 'Active')
-        {
-            echo '<input type="checkbox" checked/>';
-        } else {
-            echo '<input type="checkbox"/>';
-        }*/
     }
 
     public function _column_wpvivid_status( $schedule )
@@ -1341,161 +1326,7 @@ class WPvivid_Schedule_Display_Addon
 
     public static function get_start_time($time,$local_time=true)
     {
-        if(!is_array( $time ) )
-        {
-            return false;
-        }
-
-        if(!isset($time['type']))
-        {
-            return false;
-        }
-
-        $week=$time['start_time']['week'];
-        $day=$time['start_time']['day'];
-        $current_day=$time['start_time']['current_day'];
-
-        $default_time_zone = date_default_timezone_get();
-        $offset=get_option('gmt_offset');
-        $time_zone = self::get_time_zone($offset);
-
-        if($time_zone !== 'not_found')
-        {
-            date_default_timezone_set($time_zone);
-            if((strtotime('now'))>strtotime($current_day)){
-                $daily_start_time = $current_day.' +1 day';
-            }
-            else{
-                $daily_start_time = $current_day;
-            }
-
-            $weekly_tmp = $week.' '.$current_day;
-            if((strtotime('now'))>strtotime($weekly_tmp)) {
-                $weekly_start_time = $week.' '.$weekly_tmp.' next week';
-            }
-            else{
-                $weekly_start_time = $weekly_tmp;
-            }
-
-            $date_now = date("Y-m-",time());
-            $monthly_tmp = $date_now.$day.' '.$current_day;
-            if((strtotime('now'))>strtotime($monthly_tmp)){
-                $date_now = date("Y-m-",strtotime('first day of next month'));
-                $monthly_start_time = $date_now.$day.' '.$current_day;
-            }
-            else{
-                $monthly_start_time = $monthly_tmp;
-            }
-        }
-        else
-        {
-            $offset=$offset * 60 * 60;
-
-            if((strtotime('now')+$offset)>strtotime($current_day)){
-                $daily_start_time = $current_day.' +1 day';
-            }
-            else{
-                $daily_start_time = $current_day;
-            }
-
-            $weekly_tmp = $week.' '.$current_day;
-            if((strtotime('now')+$offset)>strtotime($weekly_tmp)) {
-                $weekly_start_time = $week.' '.$weekly_tmp.' next week';
-            }
-            else{
-                $weekly_start_time = $weekly_tmp;
-            }
-
-            $date_now = date("Y-m-",time());
-            $monthly_tmp = $date_now.$day.' '.$current_day;
-            if((strtotime('now')+$offset)>strtotime($monthly_tmp)){
-                $date_now = date("Y-m-",strtotime('first day of next month'));
-                $monthly_start_time = $date_now.$day.' '.$current_day;
-            }
-            else{
-                $monthly_start_time = $monthly_tmp;
-            }
-        }
-
-        $schedule_type_ex = array(
-            'wpvivid_hourly'=>'Every hour',
-            'wpvivid_2hours'=>'Every 2 hours',
-            'wpvivid_4hours'=>'Every 4 hours',
-            'wpvivid_6hours'=>'Every 6 hours',
-            'wpvivid_8hours'=>'Every 8 hours',
-            'wpvivid_12hours'=>'12Hours',
-            'twicedaily'=>'12Hours',
-            'wpvivid_daily'=>'Daily',
-            'wpvivid_2days'=>'Every 2 days',
-            'wpvivid_3days'=>'Every 3 days',
-            'daily'=>'Daily',
-            'onceday'=>'Daily',
-            'wpvivid_weekly'=>'Weekly',
-            'weekly'=>'Weekly',
-            'wpvivid_fortnightly'=>'Fortnightly',
-            'fortnightly'=>'Fortnightly',
-            'wpvivid_monthly'=>'Monthly',
-            'monthly'=>'Monthly',
-            'montly'=>'Monthly'
-        );
-
-        $display_array = array(
-            'Every hour'=>$daily_start_time,
-            'Every 2 hours'=>$daily_start_time,
-            'Every 4 hours'=>$daily_start_time,
-            'Every 6 hours'=>$daily_start_time,
-            'Every 8 hours'=>$daily_start_time,
-            'Every 12 hours'=>$daily_start_time,
-            'wpvivid_12hours'=>'12Hours',
-            "12Hours"=>$daily_start_time,
-            "Daily"=>$daily_start_time,
-            "Every 2 days"=>$daily_start_time,
-            'Every 3 days'=>$daily_start_time,
-            "Weekly"=>$weekly_start_time,
-            "Fortnightly"=>$weekly_start_time,
-            "Monthly"=>$monthly_start_time
-        );
-        foreach ($schedule_type_ex as $key => $value)
-        {
-            if($key == $time['type'])
-            {
-                foreach ($display_array as $display_key => $display_value)
-                {
-                    if($value == $display_key)
-                    {
-                        if($local_time)
-                        {
-                            if($time_zone !== 'not_found')
-                            {
-                                $start_time = strtotime($display_value);
-                                date_default_timezone_set($default_time_zone);
-                                return $start_time;
-                            }
-                            else
-                            {
-                                $offset=get_option('gmt_offset');
-                                $offset=$offset * 60 * 60;
-                                return strtotime($display_value)-$offset;
-                            }
-                        }
-                        else
-                        {
-                            if($time_zone !== 'not_found')
-                            {
-                                $start_time = strtotime($display_value);
-                                date_default_timezone_set($default_time_zone);
-                                return $start_time;
-                            }
-                            else
-                            {
-                                return strtotime($display_value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        WPvivid_Schedule_Time::get_next_run_timestamp($time, $local_time);
     }
     /***** useful function end *****/
 
@@ -1889,40 +1720,6 @@ class WPvivid_Schedule_Display_Addon
                 $ret['schedule_info']['backup'] = $this->get_backup_data_from_schedule($ret['schedule_info']['backup']);
                 if (isset($ret['schedule_info']['current_day'])) {
                     $dt = DateTime::createFromFormat("H:i", $ret['schedule_info']['current_day']);
-                    /*$offset = get_option('gmt_offset');
-                    $hours = $dt->format('H');
-                    $minutes = $dt->format('i');
-                    $hour = (float)$hours + $offset;
-
-                    $whole = floor($hour);
-                    $fraction = $hour - $whole;
-                    $minute = (float)(60 * ($fraction)) + (int)$minutes;
-
-                    $hour = (int)$hour;
-                    $minute = (int)$minute;
-
-                    if ($minute >= 60) {
-                        $hour = (int)$hour + 1;
-                        $minute = (int)$minute - 60;
-                    }
-
-                    if ($hour >= 24) {
-                        $hour = $hour - 24;
-                    } else if ($hour < 0) {
-                        $hour = 24 - abs($hour);
-                    }
-
-                    if ($hour < 10) {
-                        $hour = '0' . (int)$hour;
-                    } else {
-                        $hour = (string)$hour;
-                    }
-
-                    if ($minute < 10) {
-                        $minute = '0' . (int)$minute;
-                    } else {
-                        $minute = (string)$minute;
-                    }*/
                     $hour = $dt->format('H');
                     $minute = $dt->format('i');
                     $ret['schedule_info']['hours'] = $hour;
@@ -2504,8 +2301,7 @@ class WPvivid_Schedule_Display_Addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>
@@ -2705,9 +2501,7 @@ class WPvivid_Schedule_Display_Addon
                 $schedule['backup_cycles'] = $schedule_type;
 
                 if (isset($schedule['last_backup_time'])) {
-                    $offset=get_option('gmt_offset');
-                    $localtime = $schedule['last_backup_time'] + $offset * 60 * 60;
-                    $last_backup_time = date("H:i:s - F-d-Y ", $localtime);
+                    $last_backup_time = WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['last_backup_time']);
                 } else {
                     $last_backup_time = 'N/A';
                 }
@@ -2742,16 +2536,11 @@ class WPvivid_Schedule_Display_Addon
                         $schedule_data['start_time']=$timestamp;
 
                         wp_schedule_event($schedule['start_time'], $schedule['type'], $schedule['id'],array($schedule['id']));
-
-                        $offset = get_option('gmt_offset');
-                        $localtime = $schedule['start_time'] + $offset * 60 * 60;
-                        $next_start = date("H:i:s - F-d-Y ", $localtime);
+                        $next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['start_time']);
                     }
                     else {
                         $schedule['next_start'] = $timestamp;
-                        $offset = get_option('gmt_offset');
-                        $localtime = $schedule['next_start'] + $offset * 60 * 60;
-                        $next_start = date("H:i:s - F-d-Y ", $localtime);
+                        $next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['next_start']);
                     }
                 } else {
                     $next_start = 'N/A';
@@ -2912,8 +2701,8 @@ class WPvivid_Schedule_Display_Addon
         //
         $default = false;
         $schedules = get_option('wpvivid_schedule_addon_setting', $default);
-        $local_time=date( 'H:i:s - F-d-Y ', current_time( 'timestamp', 0 ) );
-        $utc_time=date( 'H:i:s - F-d-Y ', time() );
+        $local_time=WPvivid_Time::format_local( 'H:i:s - F-d-Y ', time() );
+        $utc_time=WPvivid_Time::format_utc( 'H:i:s - F-d-Y ', time() );
         $offset=get_option('gmt_offset');
 
         $general_setting=WPvivid_Setting::get_setting(true, "");
@@ -4745,8 +4534,8 @@ class WPvivid_Schedule_Display_Addon
 
     public function output_update_full_backup()
     {
-        $local_time=date( 'H:i:s - F-d-Y ', current_time( 'timestamp', 0 ) );
-        $utc_time=date( 'H:i:s - F-d-Y ', time() );
+        $local_time=WPvivid_Time::format_local( 'H:i:s - F-d-Y ', time() );
+        $utc_time=WPvivid_Time::format_utc( 'H:i:s - F-d-Y ', time() );
         $offset=get_option('gmt_offset');
 
         $general_setting=WPvivid_Setting::get_setting(true, "");
@@ -5010,6 +4799,7 @@ class WPvivid_Schedule_Display_Addon
                     var plugin_check = true;
                     var uploads_check = true;
                     var content_check = true;
+                    var mu_plugins_check = false;
                     var other_check = false;
                     var additional_db = false;
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-core-check').prop('checked', core_check);
@@ -5018,6 +4808,7 @@ class WPvivid_Schedule_Display_Addon
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-plugins-check').prop('checked', plugin_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-uploads-check').prop('checked', uploads_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-content-check').prop('checked', content_check);
+                    jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-mu-plugin-check').prop('checked', mu_plugins_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-folder-check').prop('checked', other_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-database-check').prop('checked', additional_db);
                 }
@@ -5028,6 +4819,7 @@ class WPvivid_Schedule_Display_Addon
                     var plugin_check = true;
                     var uploads_check = true;
                     var content_check = true;
+                    var mu_plugins_check = false;
                     var other_check = false;
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-core-check').prop('checked', core_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-database-check').prop('checked', database_check);
@@ -5035,6 +4827,7 @@ class WPvivid_Schedule_Display_Addon
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-plugins-check').prop('checked', plugin_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-uploads-check').prop('checked', uploads_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-content-check').prop('checked', content_check);
+                    jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-mu-plugin-check').prop('checked', mu_plugins_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-folder-check').prop('checked', other_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-database-check').prop('checked', additional_db);
                 }
@@ -5045,6 +4838,7 @@ class WPvivid_Schedule_Display_Addon
                     var plugin_check = false;
                     var uploads_check = false;
                     var content_check = false;
+                    var mu_plugins_check = false;
                     var other_check = false;
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-core-check').prop('checked', core_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-database-check').prop('checked', database_check);
@@ -5052,6 +4846,7 @@ class WPvivid_Schedule_Display_Addon
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-plugins-check').prop('checked', plugin_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-uploads-check').prop('checked', uploads_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-content-check').prop('checked', content_check);
+                    jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-mu-plugin-check').prop('checked', mu_plugins_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-folder-check').prop('checked', other_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-database-check').prop('checked', additional_db);
                 }
@@ -5064,6 +4859,7 @@ class WPvivid_Schedule_Display_Addon
                     var themes_check = true;
                     var plugin_check = true;
                     var uploads_check = true;
+                    var mu_plugins_check = false;
                     var other_check = true;
 
                     var custom_all_check = true;
@@ -5108,6 +4904,12 @@ class WPvivid_Schedule_Display_Addon
                     if(backupinfo.custom_dirs.uploads_check != 1){
                         uploads_check = false;
                     }
+                    if(backupinfo.custom_dirs.mu_plugins_check != 1){
+                        mu_plugins_check = false;
+                    }
+                    else{
+                        mu_plugins_check = true;
+                    }
                     if(backupinfo.custom_dirs.other_check != 1){
                         other_check = false;
                     }
@@ -5120,6 +4922,7 @@ class WPvivid_Schedule_Display_Addon
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-themes-check').prop('checked', themes_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-plugins-check').prop('checked', plugin_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-uploads-check').prop('checked', uploads_check);
+                    jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-mu-plugin-check').prop('checked', mu_plugins_check);
                     jQuery('#wpvivid_custom_update_schedule_backup').find('.wpvivid-custom-additional-folder-check').prop('checked', other_check);
 
                     var include_other = '';

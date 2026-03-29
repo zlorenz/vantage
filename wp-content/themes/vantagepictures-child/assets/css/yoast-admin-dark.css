@@ -18,6 +18,11 @@
   --vp-yoast-accent: #3b82f6;
   --vp-yoast-accent-hover: #60a5fa;
   --vp-yoast-primary: #a4286a;
+  /* Info alerts: light UI uses pale blue bg + dark blue text; dark = low blue luminance + light blue text */
+  --vp-yoast-alert-info-bg: rgba(37, 99, 235, 0.16);
+  --vp-yoast-alert-info-border: rgba(96, 165, 250, 0.42);
+  --vp-yoast-alert-info-text: #c7d2fe;
+  --vp-yoast-alert-info-icon: #93c5fd;
 }
 
 /* ==========================================================================
@@ -48,6 +53,33 @@ div.yst-p-6.yst-rounded-lg[class*="yst-bg-white"],
   background: var(--vp-yoast-bg-elevated) !important;
   border-color: var(--vp-yoast-border) !important;
   color: var(--vp-yoast-text-secondary) !important;
+}
+
+/* ==========================================================================
+   Alerts (Yoast UI: yst-alert--info, etc. — keep blue hue, dark “inverted” shell)
+   ========================================================================== */
+
+.yst-alert.yst-alert--info {
+  background: var(--vp-yoast-alert-info-bg) !important;
+  border: 1px solid var(--vp-yoast-alert-info-border) !important;
+  color: var(--vp-yoast-alert-info-text) !important;
+  box-shadow: none !important;
+}
+
+.yst-alert--info .yst-text-slate-600,
+.yst-alert--info .yst-text-slate-500,
+.yst-alert--info .yst-text-slate-800 {
+  color: var(--vp-yoast-alert-info-text) !important;
+}
+
+.yst-alert--info a,
+.yst-alert--info .yst-link {
+  color: var(--vp-yoast-accent-hover) !important;
+}
+
+.yst-alert--info svg {
+  color: var(--vp-yoast-alert-info-icon) !important;
+  fill: currentColor !important;
 }
 
 /* ==========================================================================
@@ -116,6 +148,54 @@ div.yst-p-6.yst-rounded-lg[class*="yst-bg-white"],
 
 .yst-autocomplete__action-icon {
   color: var(--vp-yoast-text-muted) !important;
+}
+
+/* ==========================================================================
+   Select / listbox (Headless UI, e.g. Redirects → Redirect Type)
+   Open panel defaults to white; options use slate text on white.
+   ========================================================================== */
+
+.yst-select__options,
+ul.yst-select__options[role="listbox"] {
+  background: var(--vp-yoast-bg-elevated) !important;
+  border: 1px solid var(--vp-yoast-border) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45) !important;
+}
+
+.yst-select__option {
+  background: transparent !important;
+  color: var(--vp-yoast-text-bright) !important;
+}
+
+.yst-select__option:hover {
+  background: var(--vp-yoast-bg-hover) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+/* Keyboard / pointer “active” row (Headless UI state) — plugin uses primary/magenta on white */
+.yst-select__option--active,
+.yst-select__option[data-headlessui-state~="active"] {
+  background: var(--vp-yoast-bg-hover) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-select__option[aria-selected="true"],
+.yst-select__option--selected {
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: var(--vp-yoast-text) !important;
+}
+
+.yst-select__option svg {
+  color: var(--vp-yoast-text) !important;
+  fill: currentColor !important;
+}
+
+/* Closed trigger — ensure border/text match dark shell if utilities slip through */
+.yst-select-field .yst-select,
+.yst-select-field__select .yst-select {
+  background: var(--vp-yoast-bg) !important;
+  border-color: var(--vp-yoast-border) !important;
+  color: var(--vp-yoast-text) !important;
 }
 
 /* ==========================================================================

@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Send_to_site_addon
  */
@@ -80,10 +80,25 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
         return array('result' => WPVIVID_SUCCESS,'test'=>$this->options['url']);
     }
 
+    public function load_autoloader()
+    {
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+            $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+            if($vendor_mode === 'modern') {
+                include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'vendor/autoload.php';
+            }
+            else{
+                include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+            }
+        }
+        else {
+            include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+        }
+    }
+
     public function upload($task_id, $files, $callback = '')
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
-
+        $this->load_autoloader();
         global $wpvivid_plugin;
         global $wpvivid_backup_pro;
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Connect site ','notice');
@@ -136,7 +151,6 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
         }
         $result=$this->upload_finish($task_id);
         return $result;
-        //return array('result' =>WPVIVID_SUCCESS);
     }
 
     public function _upload($task_id, $file,$callback)
@@ -282,7 +296,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
         $json['backup_id']=$task_id;
         $json=json_encode($json);
-        $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+            $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($this->options['token']));
+        }
+        else {
+            $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        }
         $data=$crypt->encrypt_message($json);
 
         $data=base64_encode($data);
@@ -342,7 +361,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
         $json['backup_id']=$task_id;
         $json=json_encode($json);
-        $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+            $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($this->options['token']));
+        }
+        else {
+            $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        }
         $data=$crypt->encrypt_message($json);
 
         $data=base64_encode($data);
@@ -422,7 +446,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
         $json['data']=base64_encode($data);
         $json=json_encode($json);
 
-        $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+            $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($this->options['token']));
+        }
+        else {
+            $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        }
         $data=$crypt->encrypt_message($json);
 
         $data=base64_encode($data);
@@ -518,7 +547,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
         $json['backup_id']=$task_id;
         $json=json_encode($json);
 
-        $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+            $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($this->options['token']));
+        }
+        else {
+            $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        }
         $data=$crypt->encrypt_message($json);
 
         $data=base64_encode($data);
@@ -568,7 +602,7 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
     public function send_to_site_connect()
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+        $this->load_autoloader();
         try {
             if (isset($_POST['wpvivid_content'])) {
                 $default = array();
@@ -580,7 +614,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
                     die();
                 }
 
-                $crypt = new WPvivid_crypt(base64_decode($option['private_key']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($option['private_key']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($option['private_key']));
+                }
                 $body = base64_decode($_POST['wpvivid_content']);
                 $data = $crypt->decrypt_message($body);
                 if (!is_string($data)) {
@@ -638,7 +677,7 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
     public function send_to_site()
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+        $this->load_autoloader();
         $test_log=new WPvivid_Log_Ex_addon();
         $test_log->CreateLogFile('test_backup','no_folder','transfer');
         $test_log->WriteLog('test upload.','notice');
@@ -659,7 +698,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
                 {
                     die();
                 }
-                $crypt=new WPvivid_crypt(base64_decode($option['private_key']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($option['private_key']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($option['private_key']));
+                }
                 $body=base64_decode($_POST['wpvivid_content']);
                 $data=$crypt->decrypt_message($body);
                 if (!is_string($data))
@@ -772,7 +816,7 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
     public function send_to_site_finish()
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+        $this->load_autoloader();
         try {
             if (isset($_POST['wpvivid_content'])) {
                 $default = array();
@@ -783,7 +827,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
                 if ($option['expires'] != 0 && $option['expires'] < time()) {
                     die();
                 }
-                $crypt = new WPvivid_crypt(base64_decode($option['private_key']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($option['private_key']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($option['private_key']));
+                }
                 $body = base64_decode($_POST['wpvivid_content']);
                 $data = $crypt->decrypt_message($body);
 
@@ -944,7 +993,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
         $json['file_size']=$file_size;
         $json['md5']=$md5;
         $json=json_encode($json);
-        $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+            $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($this->options['token']));
+        }
+        else {
+            $crypt=new WPvivid_crypt(base64_decode($this->options['token']));
+        }
         $data=$crypt->encrypt_message($json);
         $data=base64_encode($data);
         global $wp_version;
@@ -994,7 +1048,7 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
     public function send_to_site_file_status()
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+        $this->load_autoloader();
         try {
             if (isset($_POST['wpvivid_content'])) {
                 $default = array();
@@ -1006,7 +1060,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
                     die();
                 }
 
-                $crypt = new WPvivid_crypt(base64_decode($option['private_key']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($option['private_key']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($option['private_key']));
+                }
                 $body = base64_decode($_POST['wpvivid_content']);
                 $data = $crypt->decrypt_message($body);
                 if (!is_string($data)) {
@@ -1095,7 +1154,7 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
 
     public function clear_backup_cache()
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-crypt.php';
+        $this->load_autoloader();
         try {
             if (isset($_POST['wpvivid_content'])) {
                 $default = array();
@@ -1107,7 +1166,12 @@ class WPvivid_Send_to_site_addon extends WPvivid_Remote_addon
                     die();
                 }
 
-                $crypt = new WPvivid_crypt(base64_decode($option['private_key']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($option['private_key']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($option['private_key']));
+                }
                 $body = base64_decode($_POST['wpvivid_content']);
                 $data = $crypt->decrypt_message($body);
 

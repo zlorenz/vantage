@@ -2,32 +2,24 @@
 
 Contributors: WPvivid Team
 Requires at least: 4.5
-Tested up to: 6.9
+Tested up to: 6.9.4
 Requires PHP: 5.3
-Stable tag: 2.2.41
+Stable tag: 2.2.43
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
  
 == Description ==
 
-WPvivid Plugins Pro is a centralized dashboard plugin for managing all WPvivid plugins(addons), including WPvivid Backup Pro addon, WPvivid Image Optimization Pro addon, and the free versions of the two addons.
- 
-WPvivid Backup Pro addon is an advanced version based on the free version.
-It provides more exciting features that are specifically designed for migrating WordPress websites and backing up your money websites.
+WPvivid Plugins Pro is a centralized dashboard plugin for installing, managing, and updating all WPvivid Pro addons, including Backup & Migration Pro, Staging Pro, White Label, and Roles & Capabilities.
 
-The free version of the plugin has been trusted by 100,000+ happy users over the past three months with almost 400 five-star ratings, which proves that it has reliable quality.
+WPvivid Backup Pro addon is an advanced version based on the free version. It provides more exciting features specifically designed for migrating WordPress websites and backing up important websites.
 
-== Features Highlights==
-= WPvivid Plugins Pro =
-- One-click installer for all WPvivid plugins/addons
-- Access all WPvivid pro features from a centralized dashboard
-- One-click update for all WPvivid pro addons.
-= WPvivid Backup Pro Addon =
-- Customize everything to backup
+== WPvivid Pro Features Highlights==
+- Advanced custom backups
 - Create staging sites and push staging to live site
 - Incremental backups
 - Database backups encryption
-- Auto backup WordPress core, themes, and plugins
+- Rollback (Auto-backup Before Update) 
 - Unused images cleaner
 - WordPress Multisite backup
 - Create a staging for a WordPress MU
@@ -39,9 +31,23 @@ The free version of the plugin has been trusted by 100,000+ happy users over the
 - Migrate a childsite (MU) to a single WordPress install
 - White label
 - Edit user roles capabilities
+For more details, please visit [WPvivid features page](https://wpvivid.com/free-vs-pro).
 
 == Cloud Storage Supported ==
-Dropbox, Google Drive, Microsoft OneDrive, Amazon S3, DigitalOcean Spaces, SFTP, FTP, pCloud, Wasabi, Backblaze and more are coming soon.
+1. Google Drive
+2. Dropbox
+3. OneDrive
+4. OneDrive Shared Drives
+5. Amazon S3
+6. S3-Compatible Storage
+7. Backblaze
+8. Wasabi
+9. pCloud
+10. WebDAV
+11. NextCloud
+12. FTP
+13. FTP2
+14. sFTP
 
 == Support ==
 We provide 7*24 support with top priority for pro users via our ticket system.
@@ -63,7 +69,7 @@ Payment Information
 Purchasing any premium subscription plan on our site will not give us any information or access to your payment account. All payments handled by the service providers on their sites, for example, PayPal at www.paypal.com.
 
 Support Terms
-WPvivid will provide customers support services including helping solving all the questions and issues regarding the installation and operation of the WPvivid Backup Plugin. Unless otherwise mutually agreed, WPvivid will have no obligation to provide on-site support services at Customer’s location.
+WPvivid will provide customers support services including helping solving all the questions and issues regarding the installation and operation of the WPvivid Backup Plugin. Unless otherwise mutually agreed, WPvivid will have no obligation to provide on-site support services at Customers location.
 
 Service Suspension
 Any abusive behaviors towards our facilities and staff may result in a termination or suspension of access to parts or all of our service without prior notice or refund, under our sole discretion.
@@ -84,7 +90,7 @@ Here is our step-by-step guide to [activate WPvivid Backup Pro](https://wpvivid.
 You will have annual access namely one-year or lifetime access to updates and support, depending on which subscription period you choose.
 
 4.How many sites can I use a license for?
-You can use a license for 3, 20, 100, or unlimited websites, depending on which subscription plan you choose.
+You can use a license for 2, 10, 50, or unlimited websites, depending on which subscription plan you choose.
 
 5.Do you provide a trail or refund?
 We do not provide a trail. But we do offer 100% refund within 30 days after purchase, no question asked.
@@ -107,6 +113,20 @@ It's sad to see. But you can still use the pro version, without any barriers. Yo
 Please feel free to contact us using the form [here](https://wpvivid.com/contact-us).
 
 == Changelog ==
+= 2.2.43 =
+- Added an option to exclude specific files or folders within the mu-plugins directory.
+- Fixed: Unable to authenticate or upload backups to Google Drive in certain server environments.
+- Fixed: Uploads to OneDrive could fail in specific environments.
+- Fixed: Backup failures occurring when the database encryption password was too long.
+- Fixed: Time display issues in certain localized environments.
+- Fixed some UI bugs.
+= 2.2.42 =
+- Upgraded third-party libraries for remote storage, including Google Drive and SFTP.
+- Added an option to select the mu-plugins folder for backup and restoration.
+- Fixed: Scheduled tasks for cleaning logs and cache files failed to execute in certain server environments.
+- Fixed: The 'Next Run' time for incremental backups did not match settings due to site timezone conflicts.
+- Fixed several UI bugs.
+- Successfully tested with WordPress 6.9.4.
 = 2.2.41 =
 - Updated: json files of backup information are excluded automatically during the backup upload process.
 - Fixed: Error notices would not display when adding certain remote storage failed.

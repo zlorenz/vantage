@@ -775,7 +775,7 @@ function wpvivid_advanced_settings()
                     <select option="setting" name="max_resume_count">
                         <?php
                         for($resume_count=3; $resume_count<10; $resume_count++){
-                            if($resume_count === $wpvivid_max_resume_count){
+                            if($resume_count == $wpvivid_max_resume_count){
                                 echo '<option selected="selected" value="'.esc_attr($resume_count).'">'.esc_html($resume_count).'</option>';
                             }
                             else{

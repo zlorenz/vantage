@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: Wpvivid_S3Compat_addon
  */
@@ -83,6 +83,135 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
         return $remote;
     }
 
+    private function wpvivid_normalize_endpoint($ep)
+    {
+        $ep = trim((string)$ep);
+        if ($ep === '') return '';
+
+        $ep = preg_replace('#^https?://#i', '', $ep);
+
+        $ep = rtrim($ep, '/');
+
+        return strtolower($ep);
+    }
+
+    private function wpvivid_find_remote_id_by_options($opts)
+    {
+        if (!class_exists('WPvivid_Setting'))
+        {
+            return false;
+        }
+
+        $remoteslist=WPvivid_Setting::get_all_remote_options();
+        if(isset($remoteslist) && !empty($remoteslist))
+        {
+            foreach ($remoteslist as $remote_id => $value)
+            {
+                if($remote_id === 'remote_selected')
+                {
+                    continue;
+                }
+                if (!isset($value['type']) || $value['type'] !== WPVIVID_REMOTE_S3COMPAT)
+                {
+                    continue;
+                }
+
+                $keys = array('name', 'access','bucket','path','endpoint','type');
+                $ok = true;
+                foreach ($keys as $key)
+                {
+                    $a = isset($opts[$key]) ? (string)$opts[$key] : '';
+                    $b = isset($value[$key]) ? (string)$value[$key] : '';
+                    if ($key === 'endpoint')
+                    {
+                        $a = $this->wpvivid_normalize_endpoint($a);
+                        $b = $this->wpvivid_normalize_endpoint($b);
+                    }
+                    if ($a !== $b)
+                    {
+                        $ok = false;
+                        break;
+                    }
+                }
+                if ($ok)
+                {
+                    return $remote_id;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function wpvivid_probe_and_persist_legacy_flags($secret, $path_style)
+    {
+        $signature_versions = array('v4', 'v2');
+
+        $temp_file = 'wpvivid_probe_' . md5(wp_rand()) . '_' . time();
+        $root_path='wpvividbackuppro';
+        if(isset($this->options['root_path']))
+        {
+            $root_path=$this->options['root_path'];
+        }
+
+        foreach ($signature_versions as $signature_version)
+        {
+            $client_args = array(
+                'access_key' => $this->options['access'],
+                'secret_key' => $secret,
+                'region' => $this->region,
+                'endpoint' => $this->options['endpoint'],
+                'path_style' => $path_style,
+                'signature_version' => $signature_version,
+                'verify_ssl' => true,
+                'multipart_threshold' => 5 * 1024 * 1024,
+                'ca_bundle' => WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/resources/cacert.pem',
+            );
+
+            $s3compat = WPvivid_Pro_S3_Client_Factory::create($client_args);
+
+            try
+            {
+                $result = $s3compat->putObject(
+                    array(
+                        'Bucket'=>$this->bucket,
+                        'Key' =>  $root_path.'/'.$this->options['path'].'/'.$temp_file,
+                        'Body' => $temp_file,
+                    )
+                );
+                $etag = $result->get('ETag');
+                if(!isset($etag))
+                {
+                    continue;
+                }
+                $result = $s3compat->deleteObject(array(
+                    'Bucket' => $this -> bucket,
+                    'Key'    => $root_path.'/'.$this -> options['path'].'/'.$temp_file,
+                ));
+                $this->options['signature_version'] = $signature_version;
+
+                $remote_id = false;
+                if (isset($this->options['remote_id'])) $remote_id = $this->options['remote_id'];
+                if (!$remote_id) $remote_id = $this->wpvivid_find_remote_id_by_options($this->options);
+                if ($remote_id)
+                {
+                    $saved = WPvivid_Setting::get_remote_option($remote_id);
+                    if (is_array($saved))
+                    {
+                        $saved['signature_version'] = $signature_version;
+                        WPvivid_Setting::update_remote_option($remote_id, $saved);
+                    }
+                }
+
+                return;
+            }
+            catch(Exception $e)
+            {
+                continue;
+            }
+        }
+    }
+
     public function getClient()
     {
         $res = $this -> compare_php_version();
@@ -133,25 +262,36 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
         else {
             $secret = $this->options['secret'];
         }
-        include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR.'vendor/autoload.php';
 
-        $credentials = new WPvividProAws\Credentials\Credentials($this -> options['access'], $secret);
-        $options=array(
-            'credentials' =>$credentials,
-            'version' => 'latest',
-            'region'  => $this -> region,
-            'endpoint' => $this -> options['endpoint'],
-            'http'    => [
-                'verify' => WPVIVID_BACKUP_PRO_PLUGIN_DIR.'includes/resources/cacert.pem'
-            ]
-        );
-        if(isset($this -> options['use_path_style_endpoint'])&&$this -> options['use_path_style_endpoint'])
+        // Use factory to create client (PHP >= 8.1 uses Free S3Lite, otherwise fall back to Pro AWS SDK).
+        if (!class_exists('WPvivid_Pro_S3_Client_Factory'))
         {
-            $options['use_path_style_endpoint']=true;
+            include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'addons2/backup_pro/class-wpvivid-s3-client-factory.php';
         }
-        $s3compat = new WPvividProAws\S3\S3Client($options);
 
-        return $s3compat;
+        $path_style = (isset($this->options['use_path_style_endpoint']) && $this->options['use_path_style_endpoint']) ? true : false;
+
+        if (version_compare(PHP_VERSION, '8.1', '>=') )
+        {
+            if(!isset($this->options['signature_version']) || $this->options['signature_version'] === '')
+            {
+                $this->wpvivid_probe_and_persist_legacy_flags($secret, $path_style);
+            }
+        }
+
+        $client_args = array(
+            'access_key' => $this->options['access'],
+            'secret_key' => $secret,
+            'region' => $this->region,
+            'endpoint' => $this->options['endpoint'],
+            'path_style' => $path_style,
+            'signature_version' => $this->options['signature_version'],
+            'verify_ssl' => true,
+            'multipart_threshold' => 5 * 1024 * 1024,
+            'ca_bundle' => WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/resources/cacert.pem',
+        );
+
+        return WPvivid_Pro_S3_Client_Factory::create($client_args);
     }
 
     public function get_test_connect_client($region)
@@ -191,25 +331,28 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
         else {
             $secret = $this->options['secret'];
         }
-        include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR.'vendor/autoload.php';
 
-        $credentials = new WPvividProAws\Credentials\Credentials($this -> options['access'], $secret);
-        $options=array(
-            'credentials' =>$credentials,
-            'version' => 'latest',
-            'region'  => $region, //$this -> region,
-            'endpoint' => $this -> options['endpoint'],
-            'http'    => [
-                'verify' => WPVIVID_BACKUP_PRO_PLUGIN_DIR.'includes/resources/cacert.pem'
-            ]
-        );
-        if(isset($this -> options['use_path_style_endpoint'])&&$this -> options['use_path_style_endpoint'])
+        // Use factory to create client (PHP >= 8.1 uses Free S3Lite, otherwise fall back to Pro AWS SDK).
+        if (!class_exists('WPvivid_Pro_S3_Client_Factory'))
         {
-            $options['use_path_style_endpoint']=true;
+            include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'addons2/backup_pro/class-wpvivid-s3-client-factory.php';
         }
-        $s3compat = new WPvividProAws\S3\S3Client($options);
 
-        return $s3compat;
+        $path_style = (isset($this->options['use_path_style_endpoint']) && $this->options['use_path_style_endpoint']) ? true : false;
+
+        $client_args = array(
+            'access_key' => $this->options['access'],
+            'secret_key' => $secret,
+            'region' => $region,
+            'endpoint' => $this->options['endpoint'],
+            'path_style' => $path_style,
+            'signature_version' => $this->options['signature_version'],
+            'verify_ssl' => true,
+            'multipart_threshold' => 5 * 1024 * 1024,
+            'ca_bundle' => WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/resources/cacert.pem',
+        );
+
+        return WPvivid_Pro_S3_Client_Factory::create($client_args);
     }
 
     public function test_connect_ex($region)
@@ -251,7 +394,7 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                 return array('result'=>WPVIVID_PRO_FAILED,'error'=>'We successfully accessed the bucket, and create test file succeed, but delete test file failed.');
             }
         }
-        catch(S3Exception $e)
+        catch(Exception $e)
         {
             if(preg_match('/cURL error 6: Could not resolve host.*$/', $e -> getMessage()))
             {
@@ -259,13 +402,12 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
             }
             else
             {
-                return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
+                $aws_code = '';
+                if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                    $aws_code = $e->getAwsErrorCode();
+                }
+                return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
             }
-
-        }
-        catch(Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
         }
         return array('result' => WPVIVID_PRO_SUCCESS);
     }
@@ -398,128 +540,75 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
         {
             if($this->current_file_size > $this->upload_chunk_size)
             {
-                /*$result = $s3compat ->createMultipartUpload(array(
-                    'Bucket'       => $this -> bucket,
-                    'Key'          => $path,
-                ));
-
-                if (is_object($result) && method_exists($result, 'get') && '' != $result->get('UploadId'))
+                if (is_object($s3compat) && method_exists($s3compat, 'uploadAuto'))
                 {
-                    $uploadId = $result->get('UploadId');
+                    $ret = $s3compat->uploadAuto($this->bucket, $path, $file, $this->upload_chunk_size, array(), $callback, array());
+                    if (is_array($ret) && isset($ret['result']) && $ret['result'] === WPVIVID_PRO_FAILED)
+                    {
+                        return $ret;
+                    }
+
+                    if(is_callable($callback))
+                    {
+                        call_user_func_array($callback, array(
+                            $this->current_file_size,
+                            $this->current_file_name,
+                            $this->current_file_size,
+                            $this->last_time,
+                            $this->last_size
+                        ));
+                    }
+                    return array('result' => WPVIVID_PRO_SUCCESS);
                 }
                 else
                 {
-                    return array('result' => WPVIVID_PRO_FAILED, 'error' => 'Get UploadId failed. Please try again.');
-                }
+                    $source = $file;
+                    $this->offset = 0;
+                    $this->task_id = $task_id;
+                    $uploader = new MultipartUploader($s3compat, $source, [
+                        'bucket' => $this -> bucket,
+                        'key' => $path,
+                        'before_upload' => function () {
+                            $this->offset += $this -> upload_chunk_size;
+                            $job_data=array();
+                            $upload_data=array();
+                            $upload_data['offset']=min($this->offset,$this -> current_file_size);
+                            $upload_data['current_name']=$this -> current_file_name;
+                            $upload_data['current_size']=$this->current_file_size;
+                            $upload_data['last_time']=$this -> last_time;
+                            $upload_data['last_size']=$this -> last_size;
+                            $upload_data['descript']='Uploading '.$this -> current_file_name;
 
-                $fh = fopen($file,'rb');
-                $partNumber = 1;
-                $parts = array();
-                $offset = 0;
-                while(!feof($fh))
-                {
-                    $data = fread($fh,$this -> upload_chunk_size);
+                            if((time() - $this -> last_time) >3)
+                            {
+                                $v =( $upload_data['offset'] - $this -> last_size ) / (time() - $this -> last_time);
+                                $v /= 1000;
+                                $v=round($v,2);
 
-                    $result = $this -> _upload_loop($s3compat,$uploadId,$path,$data,$partNumber,$parts);
-                    if($result['result'] === WPVIVID_PRO_FAILED)
-                    {
-                        return $result;
-                    }
+                                global $wpvivid_plugin;
+                                global $wpvivid_backup_pro;
+                                $backup_task=new WPvivid_New_Backup_Task($this->task_id);
+                                $backup_task->check_cancel_backup();
 
-                    $partNumber ++;
-                    $offset += $this -> upload_chunk_size;
-                    if((time() - $this -> last_time) >3)
-                    {
-                        if(is_callable($callback))
-                        {
-                            call_user_func_array($callback,array(min($offset,$this -> current_file_size),$this -> current_file_name,
-                                $this->current_file_size,$this -> last_time,$this -> last_size));
-                        }
-                        $this -> last_size = $offset;
-                        $this -> last_time = time();
-                    }
-                }
-                fclose($fh);
+                                $message='Uploading '.$this -> current_file_name.' Total size: '.size_format($this->current_file_size,2).' Uploaded: '.size_format($upload_data['offset'],2).' speed:'.$v.'kb/s';
+                                $wpvivid_backup_pro->wpvivid_pro_log->WriteLog($message,'notice');
+                                $progress=intval(($upload_data['offset']/$this->current_file_size)*100);
+                                WPvivid_taskmanager::update_backup_main_task_progress($this->task_id,'upload',$progress,0);
+                                WPvivid_taskmanager::update_backup_sub_task_progress($this->task_id,'upload','',WPVIVID_UPLOAD_UNDO,$message, $job_data, $upload_data);
 
-                if($result['result'] === WPVIVID_PRO_SUCCESS)
-                {
-                    $completeParams =array(
-                        'Bucket' => $this -> bucket,
-                        'Key' => $path,
-                        'Parts' => $parts,
-                        'UploadId' => $uploadId,
-                    );
-                    $completeParams['MultipartUpload'] = array('Parts' => $parts);
-                    $ret = $s3compat ->completeMultipartUpload($completeParams);
-
-                    if (is_object($ret) && method_exists($ret, 'get') && '' != $ret->get('ETag'))
-                    {
+                                $this -> last_size = $this->offset;
+                                $this -> last_time = time();
+                            }
+                        },
+                        'before_initiate' => array($this, 'wpvivid_before_initiate'),
+                        'before_complete' => array($this, 'wpvivid_before_complete'),
+                    ]);
+                    try {
+                        $result = $uploader->upload();
                         $result = array('result' => WPVIVID_PRO_SUCCESS);
+                    } catch (MultipartUploadException $e) {
+                        return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
                     }
-                    else
-                    {
-                        $result = array('result' => WPVIVID_PRO_FAILED, 'error' => 'Merging multipart failed. File name: '.$this -> current_file_name);
-                    }
-                }
-                else
-                {
-                    $params =array(
-                    'Bucket' => $this -> bucket,
-                    'Key' => $path,
-                    'UploadId' => $uploadId);
-
-                    $s3compat->abortMultipartUpload($params);
-                    $result = array('result' => WPVIVID_PRO_FAILED , 'error' => 'Merging multipart failed. File name: '.$this -> current_file_name);
-                }*/
-
-                //
-
-                $source = $file;
-                $this->offset = 0;
-                $this->task_id = $task_id;
-                $uploader = new MultipartUploader($s3compat, $source, [
-                    'bucket' => $this -> bucket,
-                    'key' => $path,
-                    'before_upload' => function () {
-                        $this->offset += $this -> upload_chunk_size;
-                        $job_data=array();
-                        $upload_data=array();
-                        $upload_data['offset']=min($this->offset,$this -> current_file_size);
-                        $upload_data['current_name']=$this -> current_file_name;
-                        $upload_data['current_size']=$this->current_file_size;
-                        $upload_data['last_time']=$this -> last_time;
-                        $upload_data['last_size']=$this -> last_size;
-                        $upload_data['descript']='Uploading '.$this -> current_file_name;
-
-                        if((time() - $this -> last_time) >3)
-                        {
-                            $v =( $upload_data['offset'] - $this -> last_size ) / (time() - $this -> last_time);
-                            $v /= 1000;
-                            $v=round($v,2);
-
-                            global $wpvivid_plugin;
-                            global $wpvivid_backup_pro;
-                            $backup_task=new WPvivid_New_Backup_Task($this->task_id);
-                            $backup_task->check_cancel_backup();
-
-                            $message='Uploading '.$this -> current_file_name.' Total size: '.size_format($this->current_file_size,2).' Uploaded: '.size_format($upload_data['offset'],2).' speed:'.$v.'kb/s';
-                            $wpvivid_backup_pro->wpvivid_pro_log->WriteLog($message,'notice');
-                            $progress=intval(($upload_data['offset']/$this->current_file_size)*100);
-                            WPvivid_taskmanager::update_backup_main_task_progress($this->task_id,'upload',$progress,0);
-                            WPvivid_taskmanager::update_backup_sub_task_progress($this->task_id,'upload','',WPVIVID_UPLOAD_UNDO,$message, $job_data, $upload_data);
-
-                            $this -> last_size = $this->offset;
-                            $this -> last_time = time();
-                        }
-                    },
-                    'before_initiate' => array($this, 'wpvivid_before_initiate'),
-                    'before_complete' => array($this, 'wpvivid_before_complete'),
-                ]);
-                try {
-                    $result = $uploader->upload();
-                    $result = array('result' => WPVIVID_PRO_SUCCESS);
-                } catch (MultipartUploadException $e) {
-                    return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
                 }
             }
             else {
@@ -539,16 +628,17 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                 }
             }
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
         return $result;
     }
+
     public function _upload_loop($s3compat,$uploadId,$path,$data,$partNumber,&$parts)
     {
         $last_e=false;
@@ -640,60 +730,68 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
 
             $start_offset = file_exists($local_path) ? filesize($local_path) : 0;
 
-            $time_limit = 30;
-            $start_time = time();
-
-            while ($start_offset < $this->current_file_size)
+            if (is_object($s3compat) && method_exists($s3compat, 'downloadAuto'))
             {
-                $last_byte = min($start_offset + $this->download_chunk_size - 1, $this->current_file_size - 1);
-                $headers['Range'] = "bytes=$start_offset-$last_byte";
+                $ret = $s3compat->downloadAuto($this->bucket, $url, $local_path, $this->download_chunk_size, $start_offset, $this->current_file_name, $this->current_file_size, $download_info, $callback, $fh);
+                return $ret;
+            }
+            else
+            {
+                $time_limit = 30;
+                $start_time = time();
 
-                $args=array(
-                    'Bucket' => $this -> bucket,
-                    'Key'    => $url,
-                    'Range'  => $headers['Range']
-                );
-
-                $response = $s3compat->getObject($args);
-                if (!$response)
-                    return array('result' => WPVIVID_PRO_FAILED, 'error' => 'download ' . $url. ' failed.');
-
-                $bodyStream = $response->get('Body');
-                if (is_resource($bodyStream)) {
-                    $bytes_written = stream_copy_to_stream($bodyStream, $fh);
-                } elseif (method_exists($bodyStream, 'detach')) {
-                    $raw = $bodyStream->detach();
-                    $bytes_written = stream_copy_to_stream($raw, $fh);
-                } else {
-                    $bytes_written = fwrite($fh, (string)$bodyStream);
-                }
-                if ($bytes_written === false || $bytes_written === 0) {
-                    return array('result' => WPVIVID_PRO_FAILED, 'error' => 'Write failed at offset ' . $start_offset);
-                }
-
-                clearstatcache();
-
-                $state = stat($local_path);
-                $start_offset = $state['size'];
-
-                if ((time() - $this->last_time) > 3)
+                while ($start_offset < $this->current_file_size)
                 {
-                    if (is_callable($callback)) {
-                        call_user_func_array($callback, array($start_offset, $this->current_file_name,
-                            $this->current_file_size, $this->last_time, $this->last_size));
+                    $last_byte = min($start_offset + $this->download_chunk_size - 1, $this->current_file_size - 1);
+                    $headers['Range'] = "bytes=$start_offset-$last_byte";
+
+                    $args=array(
+                        'Bucket' => $this -> bucket,
+                        'Key'    => $url,
+                        'Range'  => $headers['Range']
+                    );
+
+                    $response = $s3compat->getObject($args);
+                    if (!$response)
+                        return array('result' => WPVIVID_PRO_FAILED, 'error' => 'download ' . $url. ' failed.');
+
+                    $bodyStream = $response->get('Body');
+                    if (is_resource($bodyStream)) {
+                        $bytes_written = stream_copy_to_stream($bodyStream, $fh);
+                    } elseif (method_exists($bodyStream, 'detach')) {
+                        $raw = $bodyStream->detach();
+                        $bytes_written = stream_copy_to_stream($raw, $fh);
+                    } else {
+                        $bytes_written = fwrite($fh, (string)$bodyStream);
                     }
-                    $this->last_size = $start_offset;
-                    $this->last_time = time();
-                }
+                    if ($bytes_written === false || $bytes_written === 0) {
+                        return array('result' => WPVIVID_PRO_FAILED, 'error' => 'Write failed at offset ' . $start_offset);
+                    }
 
-                $time_taken = microtime(true) - $start_time;
-                if($time_taken >= $time_limit)
-                {
-                    @fclose($fh);
-                    $result['result']='success';
-                    $result['finished']=0;
-                    $result['offset']=$start_offset;
-                    return $result;
+                    clearstatcache();
+
+                    $state = stat($local_path);
+                    $start_offset = $state['size'];
+
+                    if ((time() - $this->last_time) > 3)
+                    {
+                        if (is_callable($callback)) {
+                            call_user_func_array($callback, array($start_offset, $this->current_file_name,
+                                $this->current_file_size, $this->last_time, $this->last_size));
+                        }
+                        $this->last_size = $start_offset;
+                        $this->last_time = time();
+                    }
+
+                    $time_taken = microtime(true) - $start_time;
+                    if($time_taken >= $time_limit)
+                    {
+                        @fclose($fh);
+                        $result['result']='success';
+                        $result['finished']=0;
+                        $result['offset']=$start_offset;
+                        return $result;
+                    }
                 }
             }
 
@@ -786,15 +884,15 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
 
             return array('result' => WPVIVID_PRO_SUCCESS);
         }
-        catch (S3Exception $e) {
-            return array('result' => WPVIVID_PRO_FAILED, 'error' => $e->getAwsErrorCode() . $e->getMessage());
-        }
-        catch (Exception $error){
-            $message = 'An exception has occurred. class: '.get_class($error).';msg: '.$error->getMessage().';code: '.$error->getCode().';line: '.$error->getLine().';in_file: '.$error->getFile().';';
-            error_log($message);
-            return array('result'=>WPVIVID_PRO_FAILED, 'error'=>$message);
+        catch (Exception $e){
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
+
     public function _download_loop($file,$s3compat,$range,$fh)
     {
         try
@@ -827,12 +925,14 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                 }
             }
             return array('result'=>WPVIVID_PRO_FAILED, 'error' => 'download '.$this -> current_file_name.' failed.');
-        }catch(S3Exception $e)
+        }
+        catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }catch(Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -1008,7 +1108,7 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                 ));
                 //$s3compat->deleteMatchingObjects($this -> bucket, basename($file['file_name']));
 
-            }catch (S3Exception $e){}catch (Exception $e){}
+            }catch (Exception $e){}
         }
 
         return array('result'=>WPVIVID_PRO_SUCCESS);
@@ -1148,30 +1248,7 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                             </div>
                         </td>
                     </tr>
-                    <!--<tr>
-                        <td class="plugin-title column-primary">
-                            <div class="wpvivid-storage-form">
-                                <input type="text" class="regular-text wpvivid-remote-backup-retain" autocomplete="off" option="s3compat" name="backup_retain" value="30" />
-                            </div>
-                        </td>
-                        <td class="column-description desc">
-                            <div class="wpvivid-storage-form-desc">
-                                <i>Total number of non-database only and non-incremental backup copies to be retained in this storage.</i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="plugin-title column-primary">
-                            <div class="wpvivid-storage-form">
-                                <input type="text" class="regular-text wpvivid-remote-backup-db-retain" autocomplete="off" option="s3compat" name="backup_db_retain" value="30" />
-                            </div>
-                        </td>
-                        <td class="column-description desc">
-                            <div class="wpvivid-storage-form-desc">
-                                <i>Total number of database backup copies to be retained in this storage.</i>
-                            </div>
-                        </td>
-                    </tr>-->
+
                     <?php do_action('wpvivid_remote_storage_backup_retention', 's3compat', 'add'); ?>
 
                     <tr>
@@ -1188,6 +1265,30 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                             </div>
                         </td>
                     </tr>
+
+                    <?php
+                    if (version_compare(PHP_VERSION, '8.1', '>=')) {
+                        ?>
+                        <tr>
+                            <td class="plugin-title column-primary">
+                                <div class="wpvivid-storage-select">
+                                    <fieldset>
+                                        <select option="s3compat" name="signature_version">
+                                            <option value="v4" selected="selected">v4 (AWS4-HMAC-SHA256)</option>
+                                            <option value="v2">v2 (HMAC-SHA1)</option>
+                                        </select>
+                                    </fieldset>
+                                </div>
+                            </td>
+                            <td class="column-description desc">
+                                <div class="wpvivid-storage-form-desc">
+                                    <i>Signature version.</i>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
 
                     <tr>
                         <td class="plugin-title column-primary">
@@ -1365,30 +1466,30 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                         </td>
                     </tr>
 
-                    <!--<tr>
-                        <td class="plugin-title column-primary">
-                            <div class="wpvivid-storage-form">
-                                <input type="text" class="regular-text wpvivid-remote-backup-retain" autocomplete="off" option="edit-s3compat" name="backup_retain" value="30" />
-                            </div>
-                        </td>
-                        <td class="column-description desc">
-                            <div class="wpvivid-storage-form-desc">
-                                <i>Total number of non-database only and non-incremental backup copies to be retained in this storage.</i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="plugin-title column-primary">
-                            <div class="wpvivid-storage-form">
-                                <input type="text" class="regular-text wpvivid-remote-backup-db-retain" autocomplete="off" option="edit-s3compat" name="backup_db_retain" value="30" />
-                            </div>
-                        </td>
-                        <td class="column-description desc">
-                            <div class="wpvivid-storage-form-desc">
-                                <i>Total number of database backup copies to be retained in this storage.</i>
-                            </div>
-                        </td>
-                    </tr>-->
+                    <?php
+                    if (version_compare(PHP_VERSION, '8.1', '>=')) {
+                        ?>
+                        <tr>
+                            <td class="plugin-title column-primary">
+                                <div class="wpvivid-storage-select">
+                                    <fieldset>
+                                        <select option="edit-s3compat" name="signature_version">
+                                            <option value="v4" selected="selected">v4 (AWS4-HMAC-SHA256)</option>
+                                            <option value="v2">v2 (HMAC-SHA1)</option>
+                                        </select>
+                                    </fieldset>
+                                </div>
+                            </td>
+                            <td class="column-description desc">
+                                <div class="wpvivid-storage-form-desc">
+                                    <i>Signature version.</i>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+
                     <?php do_action('wpvivid_remote_storage_backup_retention', 's3compat', 'edit'); ?>
 
                 </form>
@@ -1605,7 +1706,15 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
                 return $ret;
             }
         }
-        //
+
+        if (isset($this->options['signature_version'])) {
+            $sv = strtolower(sanitize_text_field($this->options['signature_version']));
+            if ($sv !== 'v2' && $sv !== 'v4') $sv = 'v4';
+            $this->options['signature_version'] = $sv;
+        }
+        else {
+            $this->options['signature_version'] = 'v4';
+        }
 
         $ret['result']=WPVIVID_PRO_SUCCESS;
         $ret['options']=$this->options;
@@ -1880,13 +1989,13 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
 
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -2019,13 +2128,13 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
 
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -2536,13 +2645,13 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
 
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -2734,13 +2843,13 @@ class Wpvivid_S3Compat_addon extends WPvivid_Remote_addon
 
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 

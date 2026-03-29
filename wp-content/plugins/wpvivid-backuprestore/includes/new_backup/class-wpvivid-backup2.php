@@ -670,13 +670,7 @@ class WPvivid_Backup_2
 
             try
             {
-                if (is_object($this->task) && method_exists($this->task, 'update_backup_task_status')) {
-                    $this->task->update_backup_task_status(false, 'running', true);
-                }
-                else
-                {
-                    WPvivid_taskmanager::update_backup_task_status($this->current_task_id, false, 'running', true);
-                }
+                $this->update_backup_task_status($this->current_task_id,false, 'running', true);
             }
             catch (Exception $e)
             {

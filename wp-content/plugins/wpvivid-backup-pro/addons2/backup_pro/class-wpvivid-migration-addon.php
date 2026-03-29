@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Migration_Page_addon
  */
@@ -88,7 +88,7 @@ class WPvivid_Migration_Page_addon
                 }
                 else{
                     $time_diff = $expires - time();
-                    $key_status = '<p><span>The key will expire in: </span><span>'.date("H:i:s",$time_diff).'</span></p>
+                    $key_status = '<p><span>The key will expire in: </span><span>'.WPvivid_Time::format_local("H:i:s",$time_diff).'</span></p>
                                    <p><span>Connection Status:</span><span class="wpvivid-rectangle wpvivid-green">OK</span></p>
                                    <p><span>Now you can transfer the site <code>'.$source_dir.'</code> to the site <code>'.$target_dir.'</code></span></p>';
                 }
@@ -280,7 +280,12 @@ class WPvivid_Migration_Page_addon
 
                 $json['test_connect']=1;
                 $json=json_encode($json);
-                $crypt=new WPvivid_crypt(base64_decode($options[$url]['token']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($options[$url]['token']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($options[$url]['token']));
+                }
                 $data=$crypt->encrypt_message($json);
                 $data=base64_encode($data);
                 $args['body']=array('wpvivid_content'=>$data,'wpvivid_action'=>'send_to_site_connect');

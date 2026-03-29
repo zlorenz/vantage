@@ -121,9 +121,8 @@ class WPvivid_MainWP_Function
                 {
                     $next_start_of_all_files=time();
                 }
-                $next_start_of_all_files = $next_start_of_all_files + $offset * 60 * 60;
                 if ($next_start_of_all_files > 0) {
-                    $next_start_of_all_files = date("H:i:s - F-d-Y ", $next_start_of_all_files);
+                    $next_start_of_all_files = WPvivid_Time::format_local("H:i:s - F-d-Y ", $next_start_of_all_files);
                 } else {
                     $next_start_of_all_files = 'N/A';
                 }
@@ -133,9 +132,9 @@ class WPvivid_MainWP_Function
             }
 
             if($files_next_start !== false) {
-                $localtime = $files_next_start + $offset * 60 * 60;
+                $localtime = $files_next_start;
                 if ($localtime > 0) {
-                    $files_next_start = date("H:i:s - F-d-Y ", $localtime);
+                    $files_next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                 } else {
                     $files_next_start = 'N/A';
                 }
@@ -146,9 +145,9 @@ class WPvivid_MainWP_Function
             $timestamp = wp_next_scheduled($db_schedule_id, array($schedule['id']));
             $db_next_start = $timestamp;
             if($db_next_start !== false) {
-                $localtime = $db_next_start + $offset * 60 * 60;
+                $localtime = $db_next_start;
                 if ($localtime > 0) {
-                    $db_next_start = date("H:i:s - F-d-Y ", $localtime);
+                    $db_next_start = WPvivid_Time::format_local("H:i:s - F-d-Y ", $localtime);
                 } else {
                     $db_next_start = 'N/A';
                 }
@@ -179,8 +178,7 @@ class WPvivid_MainWP_Function
             $last_message='N/A.';
         }
         else {
-            $offset=get_option('gmt_offset');
-            $time = $message['status']['start_time'] + ($offset * 60 * 60);
+            $time = $message['status']['start_time'];
             if(isset($message['incremental_backup_files']))
             {
                 $backup_files='Backup '.$message['incremental_backup_files'].' ';
@@ -189,7 +187,7 @@ class WPvivid_MainWP_Function
             {
                 $backup_files='';
             }
-            $time=', (Local Time) '.date("l, F-d-Y H:i", $time);
+            $time=', (Local Time) '.WPvivid_Time::format_local("l, F-d-Y H:i", $time);
 
             if(isset($message['no_files']))
             {

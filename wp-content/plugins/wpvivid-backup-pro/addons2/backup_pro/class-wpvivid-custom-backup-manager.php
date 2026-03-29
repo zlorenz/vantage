@@ -5,7 +5,7 @@
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
  * Admin_load: yes
- * Version: 2.2.41
+ * Version: 2.2.43
  */
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
 {
@@ -303,6 +303,7 @@ class WPvivid_Custom_Backup_Manager
             $plugins_check = 'checked="checked"';
             $uploads_check = 'checked="checked"';
             $content_check = 'checked="checked"';
+            $mu_plugins_check = '';
             $additional_folder_check = '';
         }
         else
@@ -312,6 +313,7 @@ class WPvivid_Custom_Backup_Manager
             $plugins_check = 'checked="checked"';
             $uploads_check = 'checked="checked"';
             $content_check = 'checked="checked"';
+            $mu_plugins_check = '';
             $additional_folder_check = '';
 
             if($this->option === 'manual_backup' || $this->option === 'migration_backup' ||
@@ -345,6 +347,11 @@ class WPvivid_Custom_Backup_Manager
                     if(isset($custom_backup_history['custom_dirs']['content_check'])) {
                         if ($custom_backup_history['custom_dirs']['content_check'] != '1') {
                             $content_check = '';
+                        }
+                    }
+                    if(isset($custom_backup_history['custom_dirs']['mu_plugins_check'])) {
+                        if($custom_backup_history['custom_dirs']['mu_plugins_check'] == '1') {
+                            $mu_plugins_check = 'checked="checked"';
                         }
                     }
                     if(isset($custom_backup_history['custom_dirs']['other_check'])) {
@@ -395,6 +402,14 @@ class WPvivid_Custom_Backup_Manager
                         if ($custom_incremental_file_history['custom_dirs']['content_check'] != '1')
                         {
                             $content_check = '';
+                        }
+                    }
+
+                    if(isset($custom_incremental_file_history['custom_dirs']['mu_plugins_check']))
+                    {
+                        if($custom_incremental_file_history['custom_dirs']['mu_plugins_check'] == '1')
+                        {
+                            $mu_plugins_check = 'checked="checked"';
                         }
                     }
 
@@ -454,7 +469,16 @@ class WPvivid_Custom_Backup_Manager
             $uploads_style = '';
         }
 
-        if($core_check === '' && $content_check === '' && $themes_check === '' && $plugins_check === '' && $uploads_check === '')
+        if($mu_plugins_check === '')
+        {
+            $mu_plugins_style = 'display: none';
+        }
+        else
+        {
+            $mu_plugins_style = '';
+        }
+
+        if($core_check === '' && $content_check === '' && $themes_check === '' && $plugins_check === '' && $uploads_check === '' && $mu_plugins_check === '')
         {
             $file_style = 'display: none;';
         }
@@ -477,12 +501,14 @@ class WPvivid_Custom_Backup_Manager
         $themes_size=isset($website_size[$key]['themes_size'])?$website_size[$key]['themes_size']:0;
         $plugins_size=isset($website_size[$key]['plugins_size'])?$website_size[$key]['plugins_size']:0;
         $uploads_size=isset($website_size[$key]['uploads_size'])?$website_size[$key]['uploads_size']:0;
-        $file_size = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
+        $mu_plugins_size=isset($website_size[$key]['mu_plugins_size'])?$website_size[$key]['mu_plugins_size']:0;
+        $file_size = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
         $core_size = size_format($core_size, 2);
         $themes_size = size_format($themes_size, 2);
         $plugins_size = size_format($plugins_size, 2);
         $uploads_size = size_format($uploads_size, 2);
         $content_size = size_format($content_size, 2);
+        $mu_plugins_size = size_format($mu_plugins_size, 2);
         if(isset($website_size[$key]) && !empty($website_size[$key]))
         {
         }
@@ -493,6 +519,7 @@ class WPvivid_Custom_Backup_Manager
             $themes_style = 'display: none;';
             $plugins_style = 'display: none;';
             $uploads_style = 'display: none;';
+            $mu_plugins_style = 'display: none';
             $file_style = 'display: none;';
         }
 
@@ -513,6 +540,7 @@ class WPvivid_Custom_Backup_Manager
             <p><span><input type="checkbox" class="wpvivid-custom-themes-check" <?php esc_attr_e($themes_check); ?>><span><strong>themes</strong><span style="<?php esc_attr_e($themes_style); ?>"> (</span><span class="wpvivid-themes-size wpvivid-size wpvivid-file-size" style="<?php esc_attr_e($themes_style); ?>"><?php _e($themes_size); ?></span><span style="<?php esc_attr_e($themes_style); ?>">)</span></span></span></p>
             <p><span><input type="checkbox" class="wpvivid-custom-plugins-check" <?php esc_attr_e($plugins_check); ?>><span><strong>plugins</strong><span style="<?php esc_attr_e($plugins_style); ?>"> (</span><span class="wpvivid-plugins-size wpvivid-size wpvivid-file-size" style="<?php esc_attr_e($plugins_style); ?>"><?php _e($plugins_size); ?></span><span style="<?php esc_attr_e($plugins_style); ?>">)</span></span></span></p>
             <p><span><input type="checkbox" class="wpvivid-custom-uploads-check" <?php esc_attr_e($uploads_check); ?>><span><strong>uploads</strong><span style="<?php esc_attr_e($uploads_style); ?>"> (</span><span class="wpvivid-uploads-size wpvivid-size wpvivid-file-size" style="<?php esc_attr_e($uploads_style); ?>"><?php _e($uploads_size); ?></span><span style="<?php esc_attr_e($uploads_style); ?>">)</span></span></span></p>
+            <p><span><input type="checkbox" class="wpvivid-custom-mu-plugin-check" <?php esc_attr_e($mu_plugins_check); ?>><span><strong>mu-plugins</strong><span style="<?php esc_attr_e($mu_plugins_style); ?>"> (</span><span class="wpvivid-mu-plugins-size wpvivid-size wpvivid-file-size" style="<?php esc_attr_e($mu_plugins_style); ?>"><?php _e($mu_plugins_size); ?></span><span style="<?php esc_attr_e($mu_plugins_style); ?>">)</span></span></span></p>
             <p>
                 <input type="checkbox" class="wpvivid-custom-additional-folder-check" <?php esc_attr_e($additional_folder_check); ?>>
                 <span class="wpvivid-handle-additional-folder-detail" style="cursor:pointer;"><strong><span style="color:green;">(optional)</span>Include Non-wordpress Files/Folders</strong></span>
@@ -1837,7 +1865,7 @@ class WPvivid_Custom_Backup_Manager
 
                 wpvivid_get_need_calc(type, backup_data, 'file', '<?php echo $this->parent_id; ?>');
 
-                var website_item_arr = new Array('core', 'content', 'themes', 'plugins', 'uploads');
+                var website_item_arr = new Array('core', 'content', 'themes', 'plugins', 'uploads', 'mu-plugins');
 
                 var total_file_size = 0;
                 wpvivid_recalc_backup_size_ex(website_item_arr, backup_data, '<?php echo $this->parent_id; ?>', type, 'file', total_file_size);
@@ -1892,7 +1920,7 @@ class WPvivid_Custom_Backup_Manager
                             }
                             else
                             {
-                                var need_calc_list = new Array('core', 'content', 'themes', 'plugins', 'uploads');
+                                var need_calc_list = new Array('core', 'content', 'themes', 'plugins', 'uploads', 'mu-plugins');
 
                                 jQuery.each(need_calc_list, function (index, value) {
                                     if(value === 'core')
@@ -1914,6 +1942,10 @@ class WPvivid_Custom_Backup_Manager
                                     if(value === 'uploads')
                                     {
                                         var json_reponse = jsonarray.uploads_calc;
+                                    }
+                                    if(value === 'mu-plugins')
+                                    {
+                                        var json_reponse = jsonarray.mu_plugins_calc;
                                     }
                                     if(json_reponse)
                                     {
@@ -2187,6 +2219,12 @@ class WPvivid_Custom_Backup_Manager
                     json['uploads_check'] = '1';
                 }
 
+                //mu-plugins
+                json['mu_plugins_check'] = '0';
+                if(jQuery('#'+parent_id).find('.wpvivid-custom-mu-plugin-check').prop('checked')){
+                    json['mu_plugins_check'] = '1';
+                }
+
                 //additional folders/files
                 json['other_check'] = '0';
                 json['other_list'] = [];
@@ -2309,6 +2347,12 @@ class WPvivid_Custom_Backup_Manager
                         json['uploads_check'] = '1';
                     }
 
+                    //mu-plugins
+                    json['mu_plugins_check'] = '0';
+                    if(jQuery('#'+parent_id).find('.wpvivid-custom-mu-plugin-check').prop('checked')){
+                        json['mu_plugins_check'] = '1';
+                    }
+
                     //additional folders/files
                     json['other_check'] = '0';
                     json['other_list'] = [];
@@ -2418,6 +2462,10 @@ class WPvivid_Custom_Backup_Manager
                                 if(website_item === 'uploads')
                                 {
                                     jQuery('#'+parent_id).find('.wpvivid-uploads-size').html(jsonarray.uploads_size);
+                                }
+                                if(website_item === 'mu-plugins')
+                                {
+                                    jQuery('#'+parent_id).find('.wpvivid-mu-plugins-size').html(jsonarray.mu_plugins_size);
                                 }
                                 wpvivid_recalc_backup_size_ex(website_item_arr, custom_option, parent_id, type, what, jsonarray.total_file_size);
                             }

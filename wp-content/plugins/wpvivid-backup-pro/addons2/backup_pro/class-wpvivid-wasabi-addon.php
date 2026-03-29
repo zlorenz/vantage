@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: Wpvivid_WasabiS3_addon
  */
@@ -92,25 +92,26 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
         else {
             $secret = $this->options['secret'];
         }
-        include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR.'/vendor/autoload.php';
 
-        $credentials = new WPvividProAws\Credentials\Credentials($this -> options['access'], $secret);
-        $options=array(
-            'credentials' =>$credentials,
-            'version' => 'latest',
-            'region'  => $region,
-            'endpoint' => $this -> options['endpoint'],
-            'http'    => [
-                'verify' => WPVIVID_BACKUP_PRO_PLUGIN_DIR.'includes/resources/cacert.pem'
-            ]
-        );
-        if(isset($this -> options['use_path_style_endpoint'])&&$this -> options['use_path_style_endpoint'])
+        // Use factory to create client (PHP >= 8.1 uses Free S3Lite, otherwise fall back to Pro AWS SDK).
+        if (!class_exists('WPvivid_Pro_S3_Client_Factory'))
         {
-            $options['use_path_style_endpoint']=true;
+            include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'addons2/backup_pro/class-wpvivid-s3-client-factory.php';
         }
-        $s3compat = new WPvividProAws\S3\S3Client($options);
+        $path_style = (isset($this->options['use_path_style_endpoint']) && $this->options['use_path_style_endpoint']) ? true : false;
 
-        return $s3compat;
+        $client_args = array(
+            'access_key' => $this->options['access'],
+            'secret_key' => $secret,
+            'region' => $region,
+            'endpoint' => $this->options['endpoint'],
+            'path_style' => $path_style,
+            'verify_ssl' => true,
+            'multipart_threshold' => 5 * 1024 * 1024,
+            'ca_bundle' => WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/resources/cacert.pem',
+        );
+
+        return WPvivid_Pro_S3_Client_Factory::create($client_args);
     }
 
     public function test_connect()
@@ -155,14 +156,13 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
                 }
             }
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            $message = 'An exception has occurred. class: '.get_class($e).';msg: '.$e->getMessage().';code: '.$e->getCode().';line: '.$e->getLine().';in_file: '.$e->getFile().';';
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
         return array('result' => WPVIVID_PRO_SUCCESS);
     }
@@ -218,8 +218,10 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
             }
             $upload_job['job_data'][basename($file)]['uploaded']=1;
             $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
-            WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+            WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
         }
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading completed.',$upload_job['job_data']);
+
         return array('result' => WPVIVID_PRO_SUCCESS);
     }
 
@@ -246,104 +248,75 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
         {
             if($this->current_file_size > $this->upload_chunk_size)
             {
-                /*$result = $s3compat ->createMultipartUpload(array(
-                    'Bucket'       => $this -> bucket,
-                    'Key'          => $path,
-                ));
-                if(!isset($result['UploadId']))
-                    return array('result' => WPVIVID_PRO_FAILED, 'error' => 'Creating upload task failed. Please try again.');
-
-                $uploadId = $result['UploadId'];
-                $fh = fopen($file,'rb');
-                $partNumber = 1;
-                $parts = array();
-                $offset = 0;
-                while(!feof($fh))
+                if (is_object($s3compat) && method_exists($s3compat, 'uploadAuto'))
                 {
-                    $data = fread($fh,$this -> upload_chunk_size);
-
-                    $result = $this -> _upload_loop($s3compat,$uploadId,$path,$data,$partNumber,$parts);
-                    if($result['result'] === WPVIVID_PRO_FAILED)
-                        break;
-
-                    $partNumber ++;
-                    $offset += $this -> upload_chunk_size;
-                    if((time() - $this -> last_time) >3)
+                    $ret = $s3compat->uploadAuto($this->bucket, $path, $file, $this->upload_chunk_size, array(), $callback, array());
+                    if (is_array($ret) && isset($ret['result']) && $ret['result'] === WPVIVID_PRO_FAILED)
                     {
-                        if(is_callable($callback))
-                        {
-                            call_user_func_array($callback,array(min($offset,$this -> current_file_size),$this -> current_file_name,
-                                $this->current_file_size,$this -> last_time,$this -> last_size));
-                        }
-                        $this -> last_size = $offset;
-                        $this -> last_time = time();
+                        return $ret;
                     }
+
+                    if(is_callable($callback))
+                    {
+                        call_user_func_array($callback, array(
+                            $this->current_file_size,
+                            $this->current_file_name,
+                            $this->current_file_size,
+                            $this->last_time,
+                            $this->last_size
+                        ));
+                    }
+                    return array('result' => WPVIVID_PRO_SUCCESS);
                 }
-                fclose($fh);
-
-                if($result['result'] === WPVIVID_PRO_SUCCESS)
+                else
                 {
-                    $ret = $s3compat ->completeMultipartUpload
-                    (
-                        array(
-                            'Bucket' => $this -> bucket,
-                            'Key' => $path,
-                            'Parts' => $parts,
-                            'UploadId' => $uploadId,
-                        )
-                    );
-                    if(!isset($ret['Location']))
-                    {
-                        $result = array('result' => WPVIVID_PRO_FAILED, 'error' => 'Merging multipart failed. File name: '.$this -> current_file_name);
+                    $source = $file;
+                    $this->offset = 0;
+                    $this->task_id = $task_id;
+                    $uploader = new MultipartUploader($s3compat, $source, [
+                        'bucket' => $this -> bucket,
+                        'key' => $path,
+                        'before_upload' => function () {
+                            $this->offset += $this -> upload_chunk_size;
+                            $job_data=array();
+                            $upload_data=array();
+                            $upload_data['offset']=min($this->offset,$this -> current_file_size);
+                            $upload_data['current_name']=$this -> current_file_name;
+                            $upload_data['current_size']=$this->current_file_size;
+                            $upload_data['last_time']=$this -> last_time;
+                            $upload_data['last_size']=$this -> last_size;
+                            $upload_data['descript']='Uploading '.$this -> current_file_name;
+
+                            if((time() - $this -> last_time) >3)
+                            {
+                                $v =( $upload_data['offset'] - $this -> last_size ) / (time() - $this -> last_time);
+                                $v /= 1000;
+                                $v=round($v,2);
+
+                                global $wpvivid_plugin;
+                                global $wpvivid_backup_pro;
+                                $backup_task=new WPvivid_New_Backup_Task($this->task_id);
+                                $backup_task->check_cancel_backup();
+
+                                $message='Uploading '.$this -> current_file_name.' Total size: '.size_format($this->current_file_size,2).' Uploaded: '.size_format($upload_data['offset'],2).' speed:'.$v.'kb/s';
+                                $wpvivid_backup_pro->wpvivid_pro_log->WriteLog($message,'notice');
+                                $progress=intval(($upload_data['offset']/$this->current_file_size)*100);
+                                WPvivid_taskmanager::update_backup_main_task_progress($this->task_id,'upload',$progress,0);
+                                WPvivid_taskmanager::update_backup_sub_task_progress($this->task_id,'upload','',WPVIVID_UPLOAD_UNDO,$message, $job_data, $upload_data);
+
+                                $this -> last_size = $this->offset;
+                                $this -> last_time = time();
+                            }
+                        },
+                        'before_initiate' => array($this, 'wpvivid_before_initiate'),
+                        'before_complete' => array($this, 'wpvivid_before_complete'),
+                    ]);
+                    try {
+                        $result = $uploader->upload();
+                        $result = array('result' => WPVIVID_PRO_SUCCESS);
+                    } catch (MultipartUploadException $e) {
+                        return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
                     }
-                }*/
-
-                $source = $file;
-                $this->offset = 0;
-                $this->task_id = $task_id;
-                $uploader = new MultipartUploader($s3compat, $source, [
-                    'bucket' => $this -> bucket,
-                    'key' => $path,
-                    'before_upload' => function () {
-                        $this->offset += $this -> upload_chunk_size;
-                        $job_data=array();
-                        $upload_data=array();
-                        $upload_data['offset']=min($this->offset,$this -> current_file_size);
-                        $upload_data['current_name']=$this -> current_file_name;
-                        $upload_data['current_size']=$this->current_file_size;
-                        $upload_data['last_time']=$this -> last_time;
-                        $upload_data['last_size']=$this -> last_size;
-                        $upload_data['descript']='Uploading '.$this -> current_file_name;
-
-                        if((time() - $this -> last_time) >3)
-                        {
-                            $v =( $upload_data['offset'] - $this -> last_size ) / (time() - $this -> last_time);
-                            $v /= 1000;
-                            $v=round($v,2);
-
-                            global $wpvivid_plugin;
-                            global $wpvivid_backup_pro;
-                            $backup_task=new WPvivid_New_Backup_Task($this->task_id);
-                            $backup_task->check_cancel_backup();
-
-                            $message='Uploading '.$this -> current_file_name.' Total size: '.size_format($this->current_file_size,2).' Uploaded: '.size_format($upload_data['offset'],2).' speed:'.$v.'kb/s';
-                            $wpvivid_backup_pro->wpvivid_pro_log->WriteLog($message,'notice');
-                            $progress=intval(($upload_data['offset']/$this->current_file_size)*100);
-                            WPvivid_taskmanager::update_backup_main_task_progress($this->task_id,'upload',$progress,0);
-                            WPvivid_taskmanager::update_backup_sub_task_progress($this->task_id,'upload','',WPVIVID_UPLOAD_UNDO,$message, $job_data, $upload_data);
-
-                            $this -> last_size = $this->offset;
-                            $this -> last_time = time();
-                        }
-                    },
-                    'before_initiate' => array($this, 'wpvivid_before_initiate'),
-                    'before_complete' => array($this, 'wpvivid_before_complete'),
-                ]);
-                try {
-                    $result = $uploader->upload();
-                    $result = array('result' => WPVIVID_PRO_SUCCESS);
-                } catch (MultipartUploadException $e) {
-                    return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
                 }
             }
             else {
@@ -363,13 +336,13 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
                 }
             }
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
         return $result;
     }
@@ -463,48 +436,56 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
 
             $start_offset = file_exists($local_path) ? filesize($local_path) : 0;
 
-            $time_limit = 30;
-            $start_time = time();
-
-            while ($start_offset < $this->current_file_size)
+            if (is_object($s3compat) && method_exists($s3compat, 'downloadAuto'))
             {
-                $last_byte = min($start_offset + $this->download_chunk_size - 1, $this->current_file_size - 1);
-                $headers['Range'] = "bytes=$start_offset-$last_byte";
+                $ret = $s3compat->downloadAuto($this->bucket, $url, $local_path, $this->download_chunk_size, $start_offset, $this->current_file_name, $this->current_file_size, $download_info, $callback, $fh);
+                return $ret;
+            }
+            else
+            {
+                $time_limit = 30;
+                $start_time = time();
 
-                $args=array(
-                    'Bucket' => $this -> bucket,
-                    'Key'    => $url,
-                    'Range'  => $headers['Range']
-                );
-
-                $response = $s3compat->getObject($args);
-                if (!$response)
-                    return array('result' => WPVIVID_PRO_FAILED, 'error' => 'download ' . $url. ' failed.');
-
-                fwrite($fh,$response['Body']);
-
-                clearstatcache();
-                $state = stat($local_path);
-                $start_offset = $state['size'];
-
-                if ((time() - $this->last_time) > 3)
+                while ($start_offset < $this->current_file_size)
                 {
-                    if (is_callable($callback)) {
-                        call_user_func_array($callback, array($start_offset, $this->current_file_name,
-                            $this->current_file_size, $this->last_time, $this->last_size));
+                    $last_byte = min($start_offset + $this->download_chunk_size - 1, $this->current_file_size - 1);
+                    $headers['Range'] = "bytes=$start_offset-$last_byte";
+
+                    $args=array(
+                        'Bucket' => $this -> bucket,
+                        'Key'    => $url,
+                        'Range'  => $headers['Range']
+                    );
+
+                    $response = $s3compat->getObject($args);
+                    if (!$response)
+                        return array('result' => WPVIVID_PRO_FAILED, 'error' => 'download ' . $url. ' failed.');
+
+                    fwrite($fh,$response['Body']);
+
+                    clearstatcache();
+                    $state = stat($local_path);
+                    $start_offset = $state['size'];
+
+                    if ((time() - $this->last_time) > 3)
+                    {
+                        if (is_callable($callback)) {
+                            call_user_func_array($callback, array($start_offset, $this->current_file_name,
+                                $this->current_file_size, $this->last_time, $this->last_size));
+                        }
+                        $this->last_size = $start_offset;
+                        $this->last_time = time();
                     }
-                    $this->last_size = $start_offset;
-                    $this->last_time = time();
-                }
 
-                $time_taken = microtime(true) - $start_time;
-                if($time_taken >= $time_limit)
-                {
-                    @fclose($fh);
-                    $result['result']='success';
-                    $result['finished']=0;
-                    $result['offset']=$start_offset;
-                    return $result;
+                    $time_taken = microtime(true) - $start_time;
+                    if($time_taken >= $time_limit)
+                    {
+                        @fclose($fh);
+                        $result['result']='success';
+                        $result['finished']=0;
+                        $result['offset']=$start_offset;
+                        return $result;
+                    }
                 }
             }
 
@@ -597,13 +578,12 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
 
             return array('result' => WPVIVID_PRO_SUCCESS);
         }
-        catch (S3Exception $e) {
-            return array('result' => WPVIVID_PRO_FAILED, 'error' => $e->getAwsErrorCode() . $e->getMessage());
-        }
-        catch (Exception $error){
-            $message = 'An exception has occurred. class: '.get_class($error).';msg: '.$error->getMessage().';code: '.$error->getCode().';line: '.$error->getLine().';in_file: '.$error->getFile().';';
-            error_log($message);
-            return array('result'=>WPVIVID_PRO_FAILED, 'error'=>$message);
+        catch (Exception $e){
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
     public function _download_loop($file,$s3compat,$range,$fh)
@@ -636,12 +616,14 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
                 }
             }
             return array('result'=>WPVIVID_PRO_FAILED, 'error' => 'download '.$this -> current_file_name.' failed.');
-        }catch(S3Exception $e)
+        }
+        catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }catch(Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -816,7 +798,7 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
                     'Key'    => $key
                 ));
                 //$s3compat->deleteMatchingObjects($this -> bucket, basename($file['file_name']));
-            }catch (S3Exception $e){}catch (Exception $e){}
+            }catch (Exception $e){}
         }
 
         return array('result'=>WPVIVID_PRO_SUCCESS);
@@ -877,7 +859,7 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
                     'Key'    => $key
                 ));
                 //$s3compat->deleteMatchingObjects($this -> bucket, basename($file['file_name']));
-            }catch (S3Exception $e){}catch (Exception $e){}
+            }catch (Exception $e){}
         }
 
         return array('result'=>WPVIVID_PRO_SUCCESS);
@@ -1624,13 +1606,13 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
             }
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -1697,13 +1679,13 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
             }
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -2085,13 +2067,13 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
 
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 
@@ -2213,13 +2195,13 @@ class Wpvivid_WasabiS3_addon extends WPvivid_Remote_addon
 
             return $ret;
         }
-        catch(S3Exception $e)
-        {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getAwsErrorCode().$e -> getMessage());
-        }
         catch(Exception $e)
         {
-            return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
+            $aws_code = '';
+            if (is_object($e) && method_exists($e, 'getAwsErrorCode')) {
+                $aws_code = $e->getAwsErrorCode();
+            }
+            return array('result' => WPVIVID_PRO_FAILED, 'error' => $aws_code . $e->getMessage());
         }
     }
 

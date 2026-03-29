@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Schedule_Event_Addon
  */
@@ -30,39 +30,50 @@ class WPvivid_Schedule_Event_Addon
             }
         }
 
-        $options=get_option('wpvivid_common_setting',array());
+        add_action('wpvivid_clean_local_storage_event', array($this, 'clean_local_storage_event'));
+        add_action('wpvivid_calc_site_size_event', array($this, 'calc_site_size_event'));
+        add_action('init', array($this, 'maybe_schedule_clean_local_storage_event'), 30);
+        add_action('init', array($this, 'maybe_schedule_calc_site_size_event'), 30);
+    }
 
+    public function maybe_schedule_clean_local_storage_event()
+    {
+        if (defined('DOING_CRON') && DOING_CRON) {
+            return;
+        }
+
+        $options=get_option('wpvivid_common_setting',array());
+        $enable = false;
         if(isset($options['clean_local_storage']))
         {
-            add_action('wpvivid_clean_local_storage_event',array( $this,'clean_local_storage_event'));
-
             if($options['clean_local_storage']['log'] || $options['clean_local_storage']['backup_cache']|| $options['clean_local_storage']['junk_files'])
             {
-                $recurrence=$options['clean_local_storage']['recurrence'];
-                if(!defined( 'DOING_CRON' ))
-                {
-                    if(wp_get_schedule('wpvivid_clean_local_storage_event')===false)
-                    {
-                        $offset=get_option('gmt_offset');
-                        $timestamp=strtotime('00:00');
-                        $timestamp=$timestamp+$offset*60*60;
-                        wp_schedule_event($timestamp, $recurrence, 'wpvivid_clean_local_storage_event');
-                    }
-                }
+                $enable = true;
             }
             else
             {
-                if(wp_get_schedule('wpvivid_clean_local_storage_event'))
-                {
-                    wp_clear_scheduled_hook('wpvivid_clean_local_storage_event');
-                    $timestamp = wp_next_scheduled('wpvivid_clean_local_storage_event');
-                    wp_unschedule_event($timestamp,'wpvivid_clean_local_storage_event');
-                }
+                $enable = false;
             }
         }
+        $recurrence = isset($options['clean_local_storage']['recurrence']) ? $options['clean_local_storage']['recurrence'] : 'wpvivid_weekly';
 
-        add_action('wpvivid_calc_site_size_event', array($this, 'calc_site_size_event'));
-        add_action('init', array($this, 'maybe_schedule_calc_site_size_event'), 30);
+        if ($enable) {
+            $current = wp_get_schedule('wpvivid_clean_local_storage_event');
+            if ($current === false || $current !== $recurrence) {
+                wp_clear_scheduled_hook('wpvivid_clean_local_storage_event');
+                $offset = get_option('gmt_offset');
+                $timestamp = strtotime('00:00') + $offset*60*60 + 300;
+                if($timestamp <= time()){
+                    $timestamp = time() + 300;
+                }
+                wp_schedule_event($timestamp, $recurrence, 'wpvivid_clean_local_storage_event');
+            }
+        }
+        else {
+            if (wp_get_schedule('wpvivid_clean_local_storage_event') !== false) {
+                wp_clear_scheduled_hook('wpvivid_clean_local_storage_event');
+            }
+        }
     }
 
     public function maybe_schedule_calc_site_size_event()

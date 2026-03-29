@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: WPvivid_Log_Ex_addon
  */
@@ -41,8 +41,7 @@ class WPvivid_Log_Ex_addon
         $this->log_file_handle = fopen($this->log_file, 'a');
         if ($this->log_file_handle)
         {
-            $offset=get_option('gmt_offset');
-            $time =date("Y-m-d H:i:s",time()+$offset*60*60);
+            $time =WPvivid_Time::format_local("Y-m-d H:i:s",time());
             $text='Log created: '.$time."\n";
             $text.='Type: '.$describe."\n";
             fwrite($this->log_file_handle,$text);
@@ -74,8 +73,7 @@ class WPvivid_Log_Ex_addon
     {
         if ($this->log_file_handle)
         {
-            $offset=get_option('gmt_offset');
-            $time =date("Y-m-d H:i:s",time()+$offset*60*60);
+            $time =WPvivid_Time::format_local("Y-m-d H:i:s",time());
             $text='['.$time.']'.'['.$type.']'.$log."\n";
             fwrite($this->log_file_handle,$text );
         }
@@ -181,8 +179,7 @@ class WPvivid_Log_Ex_addon
                 $log.=' is_multisite:0';
             }
 
-            $offset=get_option('gmt_offset');
-            $time =date("Y-m-d H:i:s",time()+$offset*60*60);
+            $time =WPvivid_Time::format_local("Y-m-d H:i:s",time());
             $text='['.$time.']'.'[notice]'.$log."\n";
             fwrite($this->log_file_handle,$text );
         }

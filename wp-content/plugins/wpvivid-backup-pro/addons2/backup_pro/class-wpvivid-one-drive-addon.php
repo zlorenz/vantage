@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: WPvivid_one_drive_addon
  */
@@ -784,6 +784,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
     {
         global $wpvivid_plugin;
         global $wpvivid_backup_pro;
+
+        $this->set_token();
+
         if($this->need_refresh())
         {
             $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('The token expired and will go to the server to refresh the token.','notice');
@@ -857,6 +860,8 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
                 }
             }
         }
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading completed.',$upload_job['job_data']);
+
         return array('result' =>WPVIVID_PRO_SUCCESS);
     }
 
@@ -1079,7 +1084,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
         $http_code = array_key_exists('http_code', $http_info) ? (int) $http_info['http_code'] : null;
         if($result !== false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==401)
             {
                 $this->refresh_token();
@@ -1109,7 +1116,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
         {
             $ret['result']='failed';
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
     }
@@ -1620,7 +1629,7 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
         {
             $upload_job['job_data'][basename($file)]['uploaded']=1;
             $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
-            WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+            WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
             return array('result' =>WPVIVID_PRO_SUCCESS);
         }
         else
@@ -1696,7 +1705,7 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
         fclose($handle);
         $upload_job['job_data'][basename($file)]['uploaded']=1;
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
-        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
         return array('result' =>WPVIVID_PRO_SUCCESS);
     }
 
@@ -1815,7 +1824,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
 
         if($response!=false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==202)
             {
                 $json=json_decode($response,1);
@@ -1912,7 +1923,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
                 $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('retry times: '.$retry_count.', http code :'.$http_code,'notice');
                 $ret['result']=WPVIVID_PRO_FAILED;
                 $ret['error']=curl_error($curl);
-                curl_close($curl);
+                if (PHP_VERSION_ID < 80500) {
+                    curl_close($curl);
+                }
                 return $ret;
             }
         }
@@ -2792,7 +2805,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
         $http_code = array_key_exists('http_code', $http_info) ? (int) $http_info['http_code'] : null;
         if($result !== false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==401)
             {
                 $this->refresh_token();
@@ -2822,7 +2837,9 @@ class WPvivid_one_drive_addon extends WPvivid_Remote_addon
         {
             $ret['result']=WPVIVID_PRO_FAILED;
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
     }

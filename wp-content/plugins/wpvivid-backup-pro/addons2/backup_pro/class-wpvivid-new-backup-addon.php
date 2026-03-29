@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_New_Backup_Page_addon
  */
@@ -69,6 +69,8 @@ class WPvivid_New_Backup_Page_addon
         add_action('wp_ajax_wpvivid_backup_cancel_ex',array( $this,'backup_cancel'));
         add_action('wp_ajax_wpvivid_shutdown_backup',array( $this,'shutdown_backup'));
 
+        add_action('wp_ajax_wpvivid_hide_wp_rollback_notice', array($this, 'hide_wp_rollback_notice'));
+
         add_action('admin_notices', array($this, 'check_disk_free_space'));
         add_action('admin_notices', array($this, 'render_update_backup_warning_notice'));
         add_filter( 'wpvivid_v2_collect_warnings', array( $this, 'check_disk_free_space_ex' ) );
@@ -77,6 +79,7 @@ class WPvivid_New_Backup_Page_addon
         add_filter('wpvivid_get_auto_backup_menu', array($this, 'get_auto_backup_menu'), 10);
 
         add_filter('wpvivid_pre_new_backup_for_mainwp', array($this, 'pre_new_backup_for_mainwp'), 10);
+        add_filter('wpvivid_start_new_backup_ex', array($this, 'start_new_backup_ex'), 10, 2);
         add_action('wpvivid_backup_now_for_mainwp', array($this, 'backup_now_for_mainwp'), 10);
 
         add_filter('wpvivid_export_setting_addon', array($this, 'export_setting_addon'), 11);
@@ -237,19 +240,47 @@ class WPvivid_New_Backup_Page_addon
             return;
         }
 
-        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
-        if (!$screen || $screen->id !== 'update-core') {
-            return;
+        $hide_notice = get_option('wpvivid_hide_wp_rollback_notice', false);
+        if(!$hide_notice)
+        {
+            $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+            if (!$screen || $screen->id !== 'update-core') {
+                return;
+            }
+
+            $wpvivid_common_setting = get_option('wpvivid_common_setting', array());
+            if(!empty($wpvivid_common_setting))
+            {
+                if(isset($wpvivid_common_setting['hide_admin_update_notice']) && $wpvivid_common_setting['hide_admin_update_notice'])
+                {
+                    return;
+                }
+            }
+
+            $backup_url = apply_filters('wpvivid_white_label_page_redirect', 'admin.php?page=wpvivid-backup', 'wpvivid-backup');
+
+            echo '<div class="notice notice-warning notice-wp-rollback">';
+            echo '<p>';
+            echo '<strong>Note:</strong> As a safety precaution, it is highly recommended to back up your entire site before applying any updates. ';
+            echo '<a class="wpvivid-notice-rollback" style="cursor: pointer;"><strong>I got it.</strong></a>';
+            echo '</p>';
+            echo '</div>';
+            ?>
+            <script>
+                jQuery(document).on('click', '.wpvivid-notice-rollback', function(){
+                    var ajax_data = {
+                        'action': 'wpvivid_hide_wp_rollback_notice'
+                    };
+                    wpvivid_post_request(ajax_data, function(res){
+                        jQuery('.notice-wp-rollback').fadeOut(300, function() {
+                            jQuery(this).remove();
+                        });
+                    }, function(XMLHttpRequest, textStatus, errorThrown) {
+                    });
+                });
+            </script>
+            <?php
         }
-
-        $backup_url = apply_filters('wpvivid_white_label_page_redirect', 'admin.php?page=wpvivid-backup', 'wpvivid-backup');
-
-        echo '<div class="notice notice-warning">';
-        echo '<p>';
-        echo '<strong>Warning:</strong> As a safety precaution, it is highly recommended to back up your entire site before applying any updates. ';
-        echo '<a href="' . esc_url($backup_url) . '"><strong>[Backup Now]</strong></a>';
-        echo '</p>';
-        echo '</div>';
     }
 
     public function check_backup_completeness($check_res, $task_id)
@@ -406,8 +437,8 @@ class WPvivid_New_Backup_Page_addon
         $exclude_default[12]['path'] = WP_CONTENT_DIR.'/'.'backup';
         $exclude_default[13]['type'] = 'folder';
         $exclude_default[13]['path'] = WP_CONTENT_DIR.'/'.'Dropbox_Backup';
-        $exclude_default[14]['type'] = 'folder';
-        $exclude_default[14]['path'] = WP_CONTENT_DIR.'/'.'mu-plugins';
+        //$exclude_default[14]['type'] = 'folder';
+        //$exclude_default[14]['path'] = WP_CONTENT_DIR.'/'.'mu-plugins';
         $exclude_default[15]['type'] = 'folder';
         $exclude_default[15]['path'] = WP_CONTENT_DIR.'/'.'backups-dup-pro';    // duplicator backup directory
         $exclude_default[16]['type'] = 'folder';
@@ -1911,8 +1942,7 @@ class WPvivid_New_Backup_Page_addon
                     <span>
                         <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                             <?php
-                            $offset=get_option('gmt_offset');
-                            echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                            echo WPvivid_Time::format_local("l, F-d-Y H:i", time());
                             ?>
                         </a>
                     </span>
@@ -3206,7 +3236,16 @@ class WPvivid_New_Backup_Page_addon
                         $ret['uploads_calc'] = false;
                     }
 
-                    if(!$ret['core_calc'] && !$ret['content_calc'] && !$ret['themes_calc'] && !$ret['plugins_calc'] && !$ret['uploads_calc'])
+                    if($json['custom_dirs']['mu_plugins_check'] == '1')
+                    {
+                        $ret['mu_plugins_calc'] = true;
+                    }
+                    else
+                    {
+                        $ret['mu_plugins_calc'] = false;
+                    }
+
+                    if(!$ret['core_calc'] && !$ret['content_calc'] && !$ret['themes_calc'] && !$ret['plugins_calc'] && !$ret['uploads_calc'] && !$ret['mu_plugins_calc'])
                     {
                         $ret['file_calc'] = false;
                     }
@@ -3249,6 +3288,7 @@ class WPvivid_New_Backup_Page_addon
                     $json['custom_dirs']['themes_check']='1';
                     $json['custom_dirs']['plugins_check']='1';
                     $json['custom_dirs']['uploads_check']='1';
+                    $json['custom_dirs']['mu_plugins_check']='1';
                     $json['custom_dirs']['other_check']='0';
                     $json['custom_dirs']['additional_database_check']='0';
                     $manual_backup_history=WPvivid_Custom_Backup_Manager::wpvivid_get_new_backup_history();
@@ -3310,7 +3350,7 @@ class WPvivid_New_Backup_Page_addon
                     $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
                     $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
                     $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 if($website_item === 'core')
@@ -3371,8 +3411,9 @@ class WPvivid_New_Backup_Page_addon
                     $themes_size=isset($website_size[$type]['themes_size'])?$website_size[$type]['themes_size']:0;
                     $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
                     $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
-                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $mu_plugins_size=isset($website_size[$type]['mu_plugins_size'])?$website_size[$type]['mu_plugins_size']:0;
+                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 if($website_item === 'content')
@@ -3408,10 +3449,10 @@ class WPvivid_New_Backup_Page_addon
                     $local_setting = get_option('wpvivid_local_setting', array());
                     if(!empty($local_setting))
                     {
-                        $content_folder_exclude_list = array($content_path.'plugins', $content_path.'themes', $content_path.'uploads', $content_path.'wpvividbackups', $content_path.$local_setting['path'], $content_path.'wpvivid_image_optimization');
+                        $content_folder_exclude_list = array($content_path.'plugins', $content_path.'themes', $content_path.'uploads', $content_path.'mu-plugins', $content_path.'wpvividbackups', $content_path.$local_setting['path'], $content_path.'wpvivid_image_optimization');
                     }
                     else {
-                        $content_folder_exclude_list = array($content_path.'plugins', $content_path.'themes', $content_path.'uploads', $content_path.'wpvividbackups', $content_path.'wpvivid_image_optimization');
+                        $content_folder_exclude_list = array($content_path.'plugins', $content_path.'themes', $content_path.'uploads', $content_path.'mu-plugins', $content_path.'wpvividbackups', $content_path.'wpvivid_image_optimization');
                     }
                     $content_file_exclude_list = array();
 
@@ -3441,8 +3482,9 @@ class WPvivid_New_Backup_Page_addon
                     $themes_size=isset($website_size[$type]['themes_size'])?$website_size[$type]['themes_size']:0;
                     $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
                     $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
-                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $mu_plugins_size=isset($website_size[$type]['mu_plugins_size'])?$website_size[$type]['mu_plugins_size']:0;
+                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 if($website_item === 'themes')
@@ -3502,8 +3544,9 @@ class WPvivid_New_Backup_Page_addon
                     $themes_size=isset($website_size[$type]['themes_size'])?$website_size[$type]['themes_size']:0;
                     $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
                     $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
-                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $mu_plugins_size=isset($website_size[$type]['mu_plugins_size'])?$website_size[$type]['mu_plugins_size']:0;
+                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 if($website_item === 'plugins')
@@ -3563,8 +3606,9 @@ class WPvivid_New_Backup_Page_addon
                     $themes_size=isset($website_size[$type]['themes_size'])?$website_size[$type]['themes_size']:0;
                     $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
                     $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
-                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $mu_plugins_size=isset($website_size[$type]['mu_plugins_size'])?$website_size[$type]['mu_plugins_size']:0;
+                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 if($website_item === 'uploads')
@@ -3625,8 +3669,69 @@ class WPvivid_New_Backup_Page_addon
                     $themes_size=isset($website_size[$type]['themes_size'])?$website_size[$type]['themes_size']:0;
                     $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
                     $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
-                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $mu_plugins_size=isset($website_size[$type]['mu_plugins_size'])?$website_size[$type]['mu_plugins_size']:0;
+                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
+                }
+
+                if($website_item === 'mu-plugins')
+                {
+                    $mu_plugins_dir = WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'mu-plugins';
+                    $path = str_replace('\\','/',$mu_plugins_dir);
+                    $mu_plugins_dir = $path.'/';
+                    if(isset($_POST['incremental']))
+                    {
+                        $type = 'incremental';
+                        if($json['custom_dirs']['mu_plugins_check'] == '1')
+                        {
+                            $is_select_mu_plugins = true;
+                        }
+                        else
+                        {
+                            $is_select_mu_plugins = false;
+                        }
+                    }
+                    else
+                    {
+                        $type = 'general';
+                        if($json['custom_dirs']['mu_plugins_check'] == '1')
+                        {
+                            $is_select_mu_plugins = true;
+                        }
+                        else
+                        {
+                            $is_select_mu_plugins = false;
+                        }
+                    }
+
+                    $mu_plugins_folder_exclude_list = array();
+                    $mu_plugins_file_exclude_list = array();
+                    $this->get_exclude_list($json, $website_item, $mu_plugins_folder_exclude_list, $mu_plugins_file_exclude_list);
+
+                    if($is_select_mu_plugins)
+                    {
+                        $mu_plugins_size = self::get_custom_path_size('mu-plugins', $mu_plugins_dir, $mu_plugins_folder_exclude_list, $mu_plugins_file_exclude_list);
+                    }
+                    else
+                    {
+                        $mu_plugins_size = 0;
+                    }
+                    $website_size = get_option('wpvivid_custom_select_website_size_ex', array());
+                    if(empty($website_size))
+                        $website_size = array();
+                    $website_size[$type]['mu_plugins_size'] = $mu_plugins_size;
+                    $website_size[$type]['calctime'] = time();
+                    update_option('wpvivid_custom_select_website_size_ex', $website_size, 'no');
+                    $ret['mu_plugins_size'] = size_format($mu_plugins_size, 2);
+
+                    $core_size=isset($website_size[$type]['core_size'])?$website_size[$type]['core_size']:0;
+                    $content_size=isset($website_size[$type]['content_size'])?$website_size[$type]['content_size']:0;
+                    $themes_size=isset($website_size[$type]['themes_size'])?$website_size[$type]['themes_size']:0;
+                    $plugins_size=isset($website_size[$type]['plugins_size'])?$website_size[$type]['plugins_size']:0;
+                    $uploads_size=isset($website_size[$type]['uploads_size'])?$website_size[$type]['uploads_size']:0;
+                    $mu_plugins_size=isset($website_size[$type]['mu_plugins_size'])?$website_size[$type]['mu_plugins_size']:0;
+                    $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$mu_plugins_size, 2);
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 if($website_item === 'additional_folder')
@@ -3689,7 +3794,7 @@ class WPvivid_New_Backup_Page_addon
                     $additional_size=isset($website_size[$type]['additional_size'])?$website_size[$type]['additional_size']:0;
 
                     $ret['total_file_size'] = size_format($core_size+$themes_size+$plugins_size+$uploads_size+$content_size+$additional_size, 2);
-                    $ret['last_calculated_time'] = date('M d, Y — H:i', time());
+                    $ret['last_calculated_time'] = WPvivid_Time::format_local("M d, Y — H:i", time());
                 }
 
                 echo json_encode($ret);
@@ -3886,9 +3991,13 @@ class WPvivid_New_Backup_Page_addon
                         $plugins_path = str_replace('\\','/', WP_PLUGIN_DIR);
                         $plugins_path = $plugins_path.'/';
 
+                        $mu_plugins_path = WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'mu-plugins';
+                        $path = str_replace('\\','/',$mu_plugins_path);
+                        $mu_plugins_path = $path.'/';
+
                         if($website_item === 'content')
                         {
-                            if(preg_match('#'.$content_path.'#', $exclude_path) && !preg_match('#'.$uploads_path.'#', $exclude_path) && !preg_match('#'.$themes_path.'#', $exclude_path) && !preg_match('#'.$plugins_path.'#', $exclude_path))
+                            if(preg_match('#'.$content_path.'#', $exclude_path) && !preg_match('#'.$uploads_path.'#', $exclude_path) && !preg_match('#'.$themes_path.'#', $exclude_path) && !preg_match('#'.$plugins_path.'#', $exclude_path) && !preg_match('#'.$mu_plugins_path.'#', $exclude_path))
                             {
                                 if($value['type'] === 'folder')
                                 {
@@ -3931,6 +4040,20 @@ class WPvivid_New_Backup_Page_addon
                         else if($website_item === 'plugins')
                         {
                             if(preg_match('#'.$plugins_path.'#', $exclude_path))
+                            {
+                                if($value['type'] === 'folder')
+                                {
+                                    $folder_list[] = $exclude_path;
+                                }
+                                else if($value['type'] === 'file')
+                                {
+                                    $file_list[] = $exclude_path;
+                                }
+                            }
+                        }
+                        else if($website_item === 'mu-plugins')
+                        {
+                            if(preg_match('#'.$mu_plugins_path.'#', $exclude_path))
                             {
                                 if($value['type'] === 'folder')
                                 {
@@ -4890,6 +5013,12 @@ class WPvivid_New_Backup_Page_addon
                     $backup_content['backup_core']='backup_core';
                 }
 
+                //mu_plugins_check
+                if(isset($custom_options['mu_plugins_check'])&&$custom_options['mu_plugins_check']==1)
+                {
+                    $backup_content['backup_mu_plugins']='backup_mu_plugins';
+                }
+
                 //other_check
                 if(isset($custom_options['other_check'])&&$custom_options['other_check']==1)
                 {
@@ -5041,6 +5170,11 @@ class WPvivid_New_Backup_Page_addon
         $backup=new WPvivid_New_Backup_Task();
         $ret=$backup->new_backup_task($options,$settings,$backup_content);
         return $ret;
+    }
+
+    public function start_new_backup_ex($ret, $backup_options)
+    {
+        return $this->pre_new_backup($backup_options);
     }
 
     public function backup_now_for_mainwp($task_id)
@@ -5211,8 +5345,14 @@ class WPvivid_New_Backup_Page_addon
 
             try
             {
-                $backup_info_file=$this->task->get_backup_info_file();
-                $files[]=$backup_info_file;
+                if(isset($remote_option['type']) && $remote_option['type'] === 'send_to_site_ex')
+                {
+                }
+                else
+                {
+                    $backup_info_file=$this->task->get_backup_info_file();
+                    $files[]=$backup_info_file;
+                }
                 $result=$remote->upload($task_id,$files,array($this,'upload_callback'));
                 if($result['result']==WPVIVID_PRO_SUCCESS)
                 {
@@ -5266,7 +5406,15 @@ class WPvivid_New_Backup_Page_addon
         $upload_data['last_time']=$last_time;
         $upload_data['last_size']=$last_size;
         $upload_data['descript']='Uploading '.$current_name;
-        $v =( $offset - $last_size ) / (time() - $last_time);
+
+        $dt = time() - (int)$last_time;
+        if ($dt <= 0) $dt = 1;
+
+        $delta = (int)$offset - (int)$last_size;
+        if ($delta < 0) $delta = 0;
+
+        //$v =( $offset - $last_size ) / (time() - $last_time);
+        $v = $delta / $dt;
         $v /= 1000;
         $v=round($v,2);
 
@@ -6034,14 +6182,13 @@ class WPvivid_New_Backup_Page_addon
         }
 
         $task->wpvivid_schedule_backup_estimate_size();
-
-        if($this->task->need_upload())
+        if($task->need_upload())
         {
             $task->update_incremental_backup_data();
             $task->set_remote_lock();
 
             $backup=false;
-            $remote_options=$this->task->get_remote_options();
+            $remote_options=$task->get_remote_options();
             foreach ($remote_options as $remote_id=>$remote_option)
             {
                 $backup=$backup_list->get_remote_backup($remote_id,$task_id);
@@ -6060,7 +6207,7 @@ class WPvivid_New_Backup_Page_addon
                 $task->add_new_remote_backup();
             }
 
-            if(!$this->task->is_save_local())
+            if(!$task->is_save_local())
             {
                 $task->clean_local_files();
             }
@@ -6350,7 +6497,12 @@ class WPvivid_New_Backup_Page_addon
 
                 $json['test_connect']=1;
                 $json=json_encode($json);
-                $crypt=new WPvivid_crypt(base64_decode($options[$url]['token']));
+                if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                    $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($options[$url]['token']));
+                }
+                else {
+                    $crypt=new WPvivid_crypt(base64_decode($options[$url]['token']));
+                }
                 $data=$crypt->encrypt_message($json);
                 $data=base64_encode($data);
                 $args['body']=array('wpvivid_content'=>$data,'wpvivid_action'=>'send_to_site_connect');
@@ -6751,8 +6903,7 @@ class WPvivid_New_Backup_Page_addon
             $mail_title = '';
         }
 
-        $offset=get_option('gmt_offset');
-        $localtime=gmdate('m-d-Y H:i:s', $task->get_start_time()+$offset*60*60);
+        $localtime=WPvivid_Time::format_local("m-d-Y H:i:s", $task->get_start_time());
         $subject='['.$mail_title.'Backup '.$status.']'.$localtime.sprintf(' - By %s', apply_filters('wpvivid_white_label_display', 'WPvivid Backup Plugin'));
         return $subject;
     }
@@ -6775,9 +6926,8 @@ class WPvivid_New_Backup_Page_addon
         {
             $type = 'Cron-Schedule';
         }
-        $offset=get_option('gmt_offset');
-        $start_time=date("m-d-Y H:i:s",$task->get_start_time()+$offset*60*60);
-        $end_time=date("m-d-Y H:i:s",time()+$offset*60*60);
+        $start_time=WPvivid_Time::format_local("m-d-Y H:i:s", $task->get_start_time());
+        $end_time=WPvivid_Time::format_local("m-d-Y H:i:s", time());
         $running_time=($task->get_end_time()-$task->get_start_time()).'s';
         $remote_options=$task->get_remote_options();
         if($remote_options!==false)
@@ -7366,6 +7516,16 @@ class WPvivid_New_Backup_Page_addon
         }
 
         echo json_encode($ret);
+        die();
+    }
+
+    public function hide_wp_rollback_notice()
+    {
+        global $wpvivid_backup_pro;
+        $wpvivid_backup_pro->ajax_check_security('wpvivid-can-backup');
+        update_option('wpvivid_hide_wp_rollback_notice', true, 'no');
+        $ret['result']=WPVIVID_PRO_SUCCESS;
+        echo wp_json_encode($ret);
         die();
     }
 

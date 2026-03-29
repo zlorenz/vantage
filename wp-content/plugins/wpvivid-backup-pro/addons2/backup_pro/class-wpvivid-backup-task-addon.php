@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  */
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
@@ -134,9 +134,9 @@ if(class_exists('WPvivid_Backup_Task'))
             $this->task['options']['backup_prefix']=$backup_prefix;
             $offset=get_option('gmt_offset');
             if(empty($backup_prefix))
-                $this->task['options']['file_prefix'] = $this->task['id'] . '_' . date('Y-m-d-H-i', $this->task['status']['start_time']+$offset*60*60);
+                $this->task['options']['file_prefix'] = $this->task['id'] . '_' . WPvivid_Time::format_local("Y-m-d-H-i", $this->task['status']['start_time']);
             else
-                $this->task['options']['file_prefix'] = $backup_prefix . '_' . $this->task['id'] . '_' . date('Y-m-d-H-i', $this->task['status']['start_time']+$offset*60*60);
+                $this->task['options']['file_prefix'] = $backup_prefix . '_' . $this->task['id'] . '_' . WPvivid_Time::format_local("Y-m-d-H-i", $this->task['status']['start_time']);
 
             $this->task['options']['file_prefix'] = apply_filters('wpvivid_backup_file_prefix',$this->task['options']['file_prefix'],$backup_prefix,$this->task['id'],$this->task['status']['start_time']);
 

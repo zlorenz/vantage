@@ -1,6 +1,6 @@
 <?php
 
-namespace WPvividProGuzzleHttp\Exception;
+namespace WPvividGuzzleHttp\Exception;
 
 final class InvalidArgumentException extends \InvalidArgumentException implements GuzzleException
 {

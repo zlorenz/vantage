@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Admin_load: yes
  * Interface Name: WPvivid_Restore_addon
@@ -717,6 +717,18 @@ class WPvivid_Restore_addon
                     }
                 });
 
+                jQuery('input:checkbox[option=restore_options][name=mu-plugins]').each(function()
+                {
+                    if(jQuery(this).prop('checked'))
+                    {
+                        selected['mu-plugins']=1;
+                    }
+                    else
+                    {
+                        selected['mu-plugins']=0;
+                    }
+                });
+
                 jQuery('input:checkbox[option=restore_options][name=custom]').each(function()
                 {
                     if(jQuery(this).prop('checked'))
@@ -1270,7 +1282,7 @@ class WPvivid_Restore_addon
             return;
         }
 
-        $this->backup_data['create_time']=date('M-d-Y H:i', $backup['create_time']);
+        $this->backup_data['create_time']=WPvivid_Time::format_local('M-d-Y H:i', $backup['create_time']);
         $this->backup_data['comment']=isset($backup['backup_prefix'])?$backup['backup_prefix']:'N/A';
         $this->backup_data['type']=$backup['type'];
         if(isset($backup['remote'])&&!empty($backup['remote']))
@@ -1308,78 +1320,6 @@ class WPvivid_Restore_addon
             $this->get_backup_zero_date($backup_item);
             $this->get_backup_is_mu($backup_item);
             return;
-            /*
-            $backup_file_info=$this->get_restore_files_info($backup_item,false,true);
-
-            $root_path=$backup_item->get_local_path();
-            $offset = get_option('gmt_offset');
-            foreach ($backup_file_info as $type=>$files_info)
-            {
-                $this->backup_data['restore_info'][$type]['size']=0;
-
-                if($type=='databases'||$type=='db')
-                {
-                    $this->backup_data['has_db']=true;
-                }
-                if($type=='wp-core')
-                {
-                    $this->backup_data['has_core']=true;
-                }
-                foreach ($files_info['files'] as $file)
-                {
-                    if(isset($file['options']['php_version']))
-                    {
-                        //7.3.27-1~deb10u1
-                        preg_match("/((?:[0-9]+\.?)+)/i",  $file['options']['php_version'], $matches);
-                        $this->backup_data['php_version']= $matches[1];
-                    }
-                    if(isset($file['options']['mysql_version']))
-                    {
-                        $this->backup_data['mysql_version']= $file['options']['mysql_version'];
-                    }
-
-                    if(isset($file['options']['wp_version']))
-                    {
-                        $this->backup_data['wp_version']=$file['options']['wp_version'];
-                    }
-
-                    if(file_exists($root_path.$file['file_name']))
-                    {
-                        $this->backup_data['restore_info'][$type]['size']+=filesize($root_path.$file['file_name']);
-                    }
-
-                    if(isset($file['options']['themes']))
-                    {
-                        $this->backup_data['restore_info'][$type]['themes']=$file['options']['themes'];
-                    }
-
-                    if(isset($file['options']['plugin']))
-                    {
-                        $this->backup_data['restore_info'][$type]['plugins']=$file['options']['plugin'];
-                    }
-
-                    if(isset($file['options']['tables']))
-                    {
-                        $this->backup_data['restore_info'][$type]['tables']=$file['options']['tables'];
-                    }
-
-                    if(isset($file['has_version'])&&$file['has_version']==true)
-                    {
-                        $this->backup_data['has_version']=true;
-                        $version=$file['version'];
-                        $localtime = $file['options']['backup_time'] + $offset * 60 * 60;
-                        $localtime = __(date('M d, Y H:i', $localtime));
-                        $this->backup_data['versions'][$version]['version']=$version;
-                        $this->backup_data['versions'][$version]['date']=$localtime;
-                    }
-
-                    if(isset($file['options']['is_crypt'])&&$file['options']['is_crypt']==1)
-                    {
-                        $this->backup_data['is_db_crypt']=true;
-                    }
-                }
-            }
-            */
         }
     }
 
@@ -2354,8 +2294,8 @@ class WPvivid_Restore_addon
                 {
                     $this->backup_data['has_version']=true;
                     $version=$file['version'];
-                    $localtime = $file['options']['backup_time'] + $offset * 60 * 60;
-                    $localtime = __(date('M d, Y H:i', $localtime));
+                    $localtime = $file['options']['backup_time'];
+                    $localtime = __(WPvivid_Time::format_local('M d, Y H:i', $localtime));
                     $this->backup_data['versions'][$version]['version']=$version;
                     $this->backup_data['versions'][$version]['date']=$localtime;
                 }
@@ -2400,6 +2340,7 @@ class WPvivid_Restore_addon
             ||isset( $this->backup_data['restore_info']['plugin'])
             ||isset( $this->backup_data['restore_info']['wp-content'])
             ||isset( $this->backup_data['restore_info']['upload'])
+            ||isset( $this->backup_data['restore_info']['mu-plugins'])
             ||isset( $this->backup_data['restore_info']['custom']))
         {
             $has_folder=true;
@@ -2574,6 +2515,28 @@ class WPvivid_Restore_addon
                             </span>
                             <span class="wpvivid_restore_progress" id="wpvivid_restore_core_progress" style="display: none"></span>
                             <p class="wpvivid-v2-subinfo wpvivid_restore_progress_detail" id="wpvivid_restore_core_progress_detail" style="display: none"></p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+
+                    <!-- Mu-plugins  -->
+                    <?php
+                    if(isset( $this->backup_data['restore_info']['mu-plugins']))
+                    {
+                        ?>
+                        <div class="wpvivid-v2-restore-item">
+                            <label><input type="checkbox" option="restore_options" name="mu-plugins"> Mu-plugins</label>
+                            <span class="wpvivid-v2-db-size">
+                                <?php
+                                if($this->backup_data['restore_info']['mu-plugins']['size']>0)
+                                {
+                                    echo ' ('.size_format($this->backup_data['restore_info']['mu-plugins']['size'],2).')';
+                                }
+                                ?>
+                            </span>
+                            <span class="wpvivid_restore_progress" id="wpvivid_restore_mu_plugins_progress" style="display: none"></span>
+                            <p class="wpvivid-v2-subinfo wpvivid_restore_progress_detail" id="wpvivid_restore_mu_plugins_progress_detail" style="display: none"></p>
                         </div>
                         <?php
                     }
@@ -3079,6 +3042,28 @@ class WPvivid_Restore_addon
                     }
                     ?>
 
+                    <!-- Mu-plugins  -->
+                    <?php
+                    if(isset( $this->backup_data['restore_info']['mu-plugins']))
+                    {
+                        ?>
+                        <div class="wpvivid-v2-restore-item">
+                            <label><input type="checkbox" option="restore_options" name="mu-plugins"> Mu-plugins</label>
+                            <span class="wpvivid-v2-db-size">
+                                <?php
+                                if($this->backup_data['restore_info']['mu-plugins']['size']>0)
+                                {
+                                    echo ' ('.size_format($this->backup_data['restore_info']['mu-plugins']['size'],2).')';
+                                }
+                                ?>
+                            </span>
+                            <span class="wpvivid_restore_progress" id="wpvivid_restore_mu_plugins_progress" style="display: none"></span>
+                            <p class="wpvivid-v2-subinfo wpvivid_restore_progress_detail" id="wpvivid_restore_mu_plugins_progress_detail" style="display: none"></p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+
                     <!-- Additional Folder -->
                     <?php
                     if(isset( $this->backup_data['restore_info']['custom']))
@@ -3244,8 +3229,8 @@ class WPvivid_Restore_addon
             foreach ($info as $type_name => $type) {
                 if (isset($type['version'])) {
                     foreach ($type['version'] as $version => $backup_time) {
-                        $localtime = $backup_time + $offset * 60 * 60;
-                        $localtime = __(date('M d, Y H:i', $localtime));
+                        $localtime = $backup_time;
+                        $localtime = __(WPvivid_Time::format_local('M d, Y H:i', $localtime));
                         $versions[$version]['version'] = $version;
                         $versions[$version]['date'] = $localtime;
                     }
@@ -3277,125 +3262,6 @@ class WPvivid_Restore_addon
             $ret['result'] = WPVIVID_PRO_SUCCESS;
             $ret['html'] = $html;
             echo json_encode($ret);
-
-            /*if (isset($_POST['page']))
-            {
-                $page = $_POST['page'];
-            } else {
-                $page = 1;
-            }
-
-            if (isset($_POST['backup_id']) && !empty($_POST['backup_id']) && is_string($_POST['backup_id']))
-            {
-                $backup_id = $_POST['backup_id'];
-            } else {
-                die();
-            }
-
-            $backup_list=new WPvivid_New_BackupList();
-            $backup = $backup_list->get_backup_by_id($backup_id);
-
-            $backup_item = new WPvivid_New_Backup_Item($backup);
-
-            $files = $backup_item->get_files(false);
-            $files_info = array();
-
-            foreach ($files as $file) {
-                $files_info[$file] = $backup_item->get_file_info($file);
-            }
-            $info = array();
-
-            $has_version = false;
-            foreach ($files_info as $file_name => $file_info) {
-                if (isset($file_info['has_child'])) {
-                    if (isset($file_info['child_file'])) {
-                        $version_num = 0;
-                        foreach ($file_info['child_file'] as $child_file_name => $child_file_info) {
-                            if (isset($child_file_info['file_type'])) {
-                                $info[$child_file_info['file_type']]['files'][] = $child_file_name;
-                                if ($child_file_info['file_type'] == 'themes') {
-                                    if (isset($info[$child_file_info['file_type']]['list']))
-                                        $info[$child_file_info['file_type']]['list'] = array_merge($info[$child_file_info['file_type']]['list'], $child_file_info['themes']);
-                                    else
-                                        $info[$child_file_info['file_type']]['list'] = $child_file_info['themes'];
-                                } else if ($child_file_info['file_type'] == 'plugin') {
-                                    if (isset($info[$child_file_info['file_type']]['list']))
-                                        $info[$child_file_info['file_type']]['list'] = array_merge($info[$child_file_info['file_type']]['list'], $child_file_info['plugin']);
-                                    else
-                                        $info[$child_file_info['file_type']]['list'] = $child_file_info['plugin'];
-                                } else if ($child_file_info['file_type'] == 'additional_databases') {
-                                    $info[$child_file_info['file_type']]['list'][] = $child_file_info['database'];
-                                }
-
-                                if (isset($child_file_info['version'])) {
-                                    $info[$child_file_info['file_type']]['version'][$child_file_info['version']] = $child_file_info['backup_time'];
-                                    $has_version = true;
-                                    $version_num = $child_file_info['version'];
-                                }
-                            }
-                        }
-                        if ($has_version) {
-                            $info['file_size'][$version_num] = filesize(WPvivid_Custom_Interface_addon::wpvivid_get_local_backup_abspath() . DIRECTORY_SEPARATOR . $file_name);
-                        }
-                    }
-                } else {
-                    if (isset($file_info['file_type'])) {
-                        $info[$file_info['file_type']]['files'][] = $file_name;
-                        if ($file_info['file_type'] == 'themes' && isset($file_info['themes'])) {
-                            $info[$file_info['file_type']]['list'] = $file_info['themes'];
-                        } else if ($file_info['file_type'] == 'plugin' && isset($file_info['plugin'])) {
-                            $info[$file_info['file_type']]['list'] = $file_info['plugin'];
-                        } else if ($file_info['file_type'] == 'additional_databases' && isset($file_info['database'])) {
-                            $info[$file_info['file_type']]['list'][] = $file_info['database'];
-                        }
-
-                        if (isset($file_info['version'])) {
-                            $info[$file_info['file_type']]['version'][$file_info['version']] = $file_info['backup_time'];
-                        }
-                    }
-                }
-            }
-
-            $versions = array();
-            $offset = get_option('gmt_offset');
-
-            foreach ($info as $type_name => $type) {
-                if (isset($type['version'])) {
-                    foreach ($type['version'] as $version => $backup_time) {
-                        $localtime = $backup_time + $offset * 60 * 60;
-                        $localtime = __(date('M d, Y H:i', $localtime));
-                        $versions[$version]['version'] = $version;
-                        $versions[$version]['date'] = $localtime;
-                    }
-                }
-            }
-
-            usort($versions, function ($a, $b)
-            {
-                if ($a['version'] == $b['version'])
-                {
-                    return 0;
-                }
-
-                if($a['version'] > $b['version'])
-                {
-                    return 1;
-                }
-                else
-                {
-                    return -1;
-                }
-            });
-
-            $ret['result'] = WPVIVID_PRO_SUCCESS;
-            $version_list = new WPvivid_Incremental_Files_Restore_List_Ex();
-            $version_list->set_versions($versions, $page);
-            $version_list->prepare_items();
-            ob_start();
-            $version_list->display();
-            $ret['html'] = ob_get_clean();
-            $ret['page'] = $version_list->get_pagenum();
-            echo json_encode($ret);*/
         }
         catch (Exception $error) {
             $message = 'An exception has occurred. class: '.get_class($error).';msg: '.$error->getMessage().';code: '.$error->getCode().';line: '.$error->getLine().';in_file: '.$error->getFile().';';
@@ -3493,8 +3359,8 @@ class WPvivid_Restore_addon
             foreach ($info as $type_name => $type) {
                 if (isset($type['version'])) {
                     foreach ($type['version'] as $version => $backup_time) {
-                        $localtime = $backup_time + $offset * 60 * 60;
-                        $localtime = __(date('M d, Y H:i', $localtime));
+                        $localtime = $backup_time;
+                        $localtime = __(WPvivid_Time::format_local('M d, Y H:i', $localtime));
                         $versions[$version]['version'] = $version;
                         $versions[$version]['date'] = $localtime;
                     }
@@ -4451,6 +4317,11 @@ class WPvivid_Restore_addon
                                 $sub_progress_id='wpvivid_restore_core_progress';
                                 $sub_progress_detail_id='wpvivid_restore_core_progress_detail';
                             }
+                            else if($sub_task['type']=='mu-plugins')
+                            {
+                                $sub_progress_id='wpvivid_restore_mu_plugins_progress';
+                                $sub_progress_detail_id='wpvivid_restore_mu_plugins_progress_detail';
+                            }
                             else if($sub_task['type']=='custom')
                             {
                                 $sub_progress_id='wpvivid_restore_custom_progress';
@@ -4826,7 +4697,7 @@ class WPvivid_Restore_addon
         }
 
         $siteurl = get_option( 'siteurl' );
-        echo '<p><a class="wpvivid-v2-congra-btn" href="'.$siteurl.'" target="_blank">Visit Site</a><span> </span><a class="wpvivid-v2-congra-btn wpvivid-restore-view-log" href="#" data-id="'.$restore_task['log'].'">View Log</a></p>';
+        echo '<p><a class="wpvivid-v2-congra-btn" href="'.$siteurl.'" target="_blank">Visit Site</a><span> </span></p>';
 
         delete_option('wpvivid_restore_task');
 
@@ -5477,6 +5348,15 @@ class WPvivid_Restore_addon
                 $task['unzip_file']['last_unzip_file']='';
                 $task['unzip_file']['last_unzip_file_index']=0;
             }
+            else if($key=='mu-plugins')
+            {
+                $task['priority']=7;
+                $task['unzip_file']['files']=$files_info['files'];
+                $task['unzip_file']['unzip_finished']=0;
+                $task['unzip_file']['last_action']='waiting...';
+                $task['unzip_file']['last_unzip_file']='';
+                $task['unzip_file']['last_unzip_file_index']=0;
+            }
             else if($key=='db'||$key=='databases')
             {
                 $task['type']='databases';
@@ -5513,7 +5393,7 @@ class WPvivid_Restore_addon
                 }
                 $task['exec_sql']['db_id']=$uid;
                 $task['exec_sql']['sql_files']=array();
-                $task['priority']=8;
+                $task['priority']=9;
                 $restore_task['restore_db']=1;
             }
             else if($key=='additional_databases')
@@ -5543,12 +5423,12 @@ class WPvivid_Restore_addon
                 }
                 $task['exec_sql']['db_id']=$uid;
                 $task['exec_sql']['sql_files']=array();
-                $task['priority']=9;
+                $task['priority']=10;
                 $restore_task['restore_db']=1;
             }
             else
             {
-                $task['priority']=7;
+                $task['priority']=8;
                 $task['unzip_file']['files']=$files_info['files'];
                 $task['unzip_file']['unzip_finished']=0;
                 $task['unzip_file']['last_action']='waiting...';

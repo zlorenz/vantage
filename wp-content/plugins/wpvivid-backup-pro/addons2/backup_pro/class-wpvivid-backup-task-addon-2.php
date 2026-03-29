@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  */
 
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
@@ -172,11 +172,11 @@ class WPvivid_New_Backup_Task
 
         if(empty($this->task['options']['backup_prefix']))
         {
-            $this->task['options']['file_prefix'] = $this->task['id'] . '_' . date('Y-m-d-H-i', time()+$offset*60*60);
+            $this->task['options']['file_prefix'] = $this->task['id'] . '_' . WPvivid_Time::format_local("Y-m-d-H-i", time());
         }
         else
         {
-            $this->task['options']['file_prefix'] =  $this->task['options']['backup_prefix'] . '_' . $this->task['id'] . '_' . date('Y-m-d-H-i', time()+$offset*60*60);
+            $this->task['options']['file_prefix'] =  $this->task['options']['backup_prefix'] . '_' . $this->task['id'] . '_' . WPvivid_Time::format_local("Y-m-d-H-i", time());
         }
         $this->task['options']['file_prefix'] = apply_filters('wpvivid_backup_file_prefix',$this->task['options']['file_prefix'],$this->task['options']['backup_prefix'],$this->task['id'],$this->task['status']['start_time']);
 
@@ -381,6 +381,19 @@ class WPvivid_New_Backup_Task
             $index++;
         }
 
+        if(isset($backup_content['backup_mu_plugins']))
+        {
+            if(is_dir(WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'mu-plugins') && file_exists(WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'mu-plugins'))
+            {
+                $this->task['jobs'][$index]['backup_type']='backup_mu_plugins';
+                $this->task['jobs'][$index]['finished']=0;
+                $this->task['jobs'][$index]['progress']=0;
+                $this->task['jobs'][$index]['file_index']=1;
+                $this->task['jobs'][$index]['index']=0;
+                $index++;
+            }
+        }
+
         if(isset($backup_content['backup_custom_other']))
         {
             $this->task['jobs'][$index]['backup_type']='backup_custom_other';
@@ -470,6 +483,7 @@ class WPvivid_New_Backup_Task
             $exclude_regex[]='#^'.preg_quote($this -> transfer_path(WP_CONTENT_DIR).'/'.'plugins', '/').'#';
             $exclude_regex[]='#^'.preg_quote($this -> transfer_path($upload_dir['basedir']), '/').'$#';
             $exclude_regex[]='#^'.preg_quote($this->transfer_path(get_theme_root()), '/').'#';
+            $exclude_regex[]='#^'.preg_quote($this -> transfer_path(WP_CONTENT_DIR).'/'.'mu-plugins', '/').'#';
         }
         else if($backup_type=='backup_uploads')
         {
@@ -880,7 +894,6 @@ class WPvivid_New_Backup_Task
         $compress_file_use_cache= $this->task['setting']['compress_file_use_cache'];
 
         $replace_path=$this->get_replace_path($backup_type);
-
         if($compress_file_use_cache)
         {
             if(!$this->check_cache_files())
@@ -1155,6 +1168,10 @@ class WPvivid_New_Backup_Task
         {
             return $this -> transfer_path(ABSPATH);
         }
+        else if($backup_type=='backup_mu_plugins')
+        {
+            return $this->transfer_path(WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'mu-plugins');
+        }
         else if($backup_type=='backup_custom_other')
         {
             return $this -> transfer_path(ABSPATH);
@@ -1189,6 +1206,10 @@ class WPvivid_New_Backup_Task
             return $this -> transfer_path($upload_dir['basedir'].'/');
         }
         else if($backup_type=='backup_content')
+        {
+            return $this->transfer_path(WP_CONTENT_DIR.'/');
+        }
+        else if($backup_type=='backup_mu_plugins')
         {
             return $this->transfer_path(WP_CONTENT_DIR.'/');
         }
@@ -2016,6 +2037,10 @@ class WPvivid_New_Backup_Task
             {
                 $type='Wordpress Core';
             }
+            else if($job['backup_type']=='backup_mu_plugins')
+            {
+                $type='mu-plugins';
+            }
             else if($job['backup_type']=='backup_custom_other')
             {
                 $type='Others';
@@ -2103,6 +2128,10 @@ class WPvivid_New_Backup_Task
             else if($job['backup_type']=='backup_core')
             {
                 $type='Wordpress Core';
+            }
+            else if($job['backup_type']=='backup_mu_plugins')
+            {
+                $type='mu-plugins';
             }
             else if($job['backup_type']=='backup_custom_other')
             {
@@ -2354,6 +2383,14 @@ class WPvivid_New_Backup_Task
             $json['wp_core']=1;
             $json['root_flag']='root';
             $json['home_url']=home_url();
+        }
+        else if($backup_type=='backup_mu_plugins')
+        {
+            $json['file_type']='mu-plugins';
+            $json['root_flag']='wp-content';
+            $json['php_version']=phpversion();
+            $json['mysql_version']=$wpdb->db_version();
+            $json['wp_version'] = get_bloginfo( 'version' );
         }
         else if($backup_type=='backup_custom_other')
         {
@@ -2997,7 +3034,18 @@ class WPvivid_New_Backup_Task
 
         if($this->task['options']['encrypt_db']==1)
         {
-            $crypt=new WPvivid_Crypt_File($this->task['options']['encrypt_db_password']);
+            if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+                $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+                if($vendor_mode === 'modern') {
+                    $crypt=new WPvivid_Crypt_File_Ex($this->task['options']['encrypt_db_password']);
+                }
+                else{
+                    $crypt=new WPvivid_Crypt_File($this->task['options']['encrypt_db_password']);
+                }
+            }
+            else {
+                $crypt=new WPvivid_Crypt_File($this->task['options']['encrypt_db_password']);
+            }
         }
 
         foreach ($files as $file)
@@ -3452,7 +3500,18 @@ class WPvivid_New_Backup_Task
 
         if($this->task['options']['encrypt_db']==1)
         {
-            $crypt=new WPvivid_Crypt_File($this->task['options']['encrypt_db_password']);
+            if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+                $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+                if($vendor_mode === 'modern') {
+                    $crypt=new WPvivid_Crypt_File_Ex($this->task['options']['encrypt_db_password']);
+                }
+                else{
+                    $crypt=new WPvivid_Crypt_File($this->task['options']['encrypt_db_password']);
+                }
+            }
+            else {
+                $crypt=new WPvivid_Crypt_File($this->task['options']['encrypt_db_password']);
+            }
         }
 
         foreach ($files as $file)
@@ -3504,7 +3563,7 @@ class WPvivid_New_Backup_Task
 
         $offset=get_option('gmt_offset');
 
-        $backup_data['create_time']=$this->task['status']['start_time'] + $offset * 60 * 60;
+        $backup_data['create_time']=$this->task['status']['start_time'];
         $backup_data['manual_delete']=0;
         $backup_data['local']['path']=$this->task['options']['backup_dir'];
         $backup_data['compress']['compress_type']='zip';
@@ -3608,7 +3667,7 @@ class WPvivid_New_Backup_Task
         $backup_data['type']=$this->task['type'];
         $offset=get_option('gmt_offset');
 
-        $backup_data['create_time']=$this->task['status']['start_time'] + $offset * 60 * 60;
+        $backup_data['create_time']=$this->task['status']['start_time'];
         $backup_data['manual_delete']=0;
         $backup_data['local']['path']=$this->task['options']['backup_dir'];
         $backup_data['compress']['compress_type']='zip';
@@ -3765,10 +3824,14 @@ class WPvivid_New_Backup_Task
                         $current_size = $list_tasks['data']['upload_data']['current_size'];
                         $last_time = $list_tasks['data']['upload_data']['last_time'];
                         $last_size = $list_tasks['data']['upload_data']['last_size'];
-                        $speed = ($offset - $last_size) / (time() - $last_time);
-                        $speed /= 1000;
-                        $speed = round($speed, 2);
-                        $speed .= 'kb/s';
+                        if (time() - $last_time != 0) {
+                            $speed = ($offset - $last_size) / (time() - $last_time);
+                            $speed /= 1000;
+                            $speed = round($speed, 2);
+                            $speed .= 'kb/s';
+                        } else {
+                            $speed = '0 kb/s';
+                        }
                         if(!empty($current_size)) {
                             $list_tasks['task_info']['total'] = size_format($current_size,2);
                         }
@@ -3910,18 +3973,18 @@ class WPvivid_New_Backup_Task
 
     public function get_backup_tasks_progress()
     {
-        $current_time=date("Y-m-d H:i:s");
-        $create_time=date("Y-m-d H:i:s",$this->task['status']['start_time']);
+        $current_time=WPvivid_Time::format_utc("Y-m-d H:i:s", time());
+        $create_time=WPvivid_Time::format_utc("Y-m-d H:i:s", $this->task['status']['start_time']);
         $time_diff=strtotime($current_time)-strtotime($create_time);
         $running_time='';
-        if(date("G",$time_diff) > 0){
-            $running_time .= date("G",$time_diff).' hour(s)';
+        if(WPvivid_Time::format_utc("G",$time_diff) > 0){
+            $running_time .= WPvivid_Time::format_utc("G",$time_diff).' hour(s)';
         }
-        if(intval(date("i",$time_diff)) > 0){
-            $running_time .= intval(date("i",$time_diff)).' min(s)';
+        if(intval(WPvivid_Time::format_utc("i",$time_diff)) > 0){
+            $running_time .= intval(WPvivid_Time::format_utc("i",$time_diff)).' min(s)';
         }
-        if(intval(date("s",$time_diff)) > 0){
-            $running_time .= intval(date("s",$time_diff)).' second(s)';
+        if(intval(WPvivid_Time::format_utc("s",$time_diff)) > 0){
+            $running_time .= intval(WPvivid_Time::format_utc("s",$time_diff)).' second(s)';
         }
         else
         {

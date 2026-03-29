@@ -1188,3 +1188,28 @@ body.acf-admin-page #acf-admin-tools .postbox .postbox-header {
 .post-type-acf-field-group .postbox h2.hndle {
   color: var(--vp-acf-text-bright) !important;
 }
+
+/* ==========================================================================
+   uiXpress – Field Group editor (post.php): Fields / Settings metabox titles
+   Plugin chrome can override .post-type-acf-field-group rules; win with IDs + wrapper.
+   ========================================================================== */
+
+body.post-type-acf-field-group #acf-field-group-fields .postbox-header,
+body.post-type-acf-field-group #acf-field-group-options .postbox-header,
+body.post-type-acf-field-group #acf-field-group-fields h2.hndle,
+body.post-type-acf-field-group #acf-field-group-options h2.hndle,
+body.post-type-acf-field-group #uixpress-app-wrapper #acf-field-group-fields .postbox-header,
+body.post-type-acf-field-group #uixpress-app-wrapper #acf-field-group-options .postbox-header,
+body.post-type-acf-field-group #uixpress-app-wrapper #acf-field-group-fields h2.hndle,
+body.post-type-acf-field-group #uixpress-app-wrapper #acf-field-group-options h2.hndle {
+  color: var(--vp-acf-text) !important;
+  -webkit-text-fill-color: var(--vp-acf-text) !important;
+}
+
+body.post-type-acf-field-group #acf-field-group-fields .postbox-header:hover h2.hndle,
+body.post-type-acf-field-group #acf-field-group-options .postbox-header:hover h2.hndle,
+body.post-type-acf-field-group #uixpress-app-wrapper #acf-field-group-fields .postbox-header:hover h2.hndle,
+body.post-type-acf-field-group #uixpress-app-wrapper #acf-field-group-options .postbox-header:hover h2.hndle {
+  color: var(--vp-acf-text) !important;
+  -webkit-text-fill-color: var(--vp-acf-text) !important;
+}

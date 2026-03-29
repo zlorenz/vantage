@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Setting_addon
  */
@@ -311,8 +311,7 @@ class WPvivid_Setting_addon
             $mail_title = '';
         }
 
-        $offset=get_option('gmt_offset');
-        $localtime=gmdate('m-d-Y H:i:s', $task['status']['start_time']+$offset*60*60);
+        $localtime=WPvivid_Time::format_local('m-d-Y H:i:s', $task['status']['start_time']);
         $subject='['.$mail_title.'Backup '.$status.']'.$localtime.sprintf(' - By %s', apply_filters('wpvivid_white_label_display', 'WPvivid Backup Plugin'));
         return $subject;
     }
@@ -332,9 +331,8 @@ class WPvivid_Setting_addon
         {
             $type = 'Cron-Schedule';
         }
-        $offset=get_option('gmt_offset');
-        $start_time=date("m-d-Y H:i:s",$task['status']['start_time']+$offset*60*60);
-        $end_time=date("m-d-Y H:i:s",time()+$offset*60*60);
+        $start_time=WPvivid_Time::format_local("m-d-Y H:i:s",$task['status']['start_time']);
+        $end_time=WPvivid_Time::format_local("m-d-Y H:i:s",time());
         $running_time=($task['status']['run_time']-$task['status']['start_time']).'s';
         $remote_options= $task['options']['remote_options'];
         if($remote_options!==false)
@@ -2746,7 +2744,7 @@ class WPvivid_Setting_addon
                         </p>
                         <p>
                             <label class="wpvivid-checkbox">
-                                <span>Backup symlink folders, recommended not check this option</span>
+                                <span>Back up symlink folders. Including symlink folders may cause backup/migration failure. Uncheck this option unless you know how symlink folders work.</span>
                                 <input type="checkbox" option="setting" name="backup_symlink_folder" <?php esc_attr_e($backup_symlink_folder); ?>>
                                 <span class="wpvivid-checkbox-checkmark"></span>
                             </label>
@@ -3862,6 +3860,16 @@ class WPvivid_Setting_addon
                             alert('Please ensure the directory accessibility by clicking the \'Test Path\' button. Untested paths may lead to backup failures.');
                             return;
                         }
+                    }
+                }
+
+                var encrypt_db_checked = jQuery('#wpvivid_encrypt_db').prop('checked');
+                if (encrypt_db_checked) {
+                    var pw = jQuery.trim(jQuery('#wpvivid_encrypt_db_pw').val());
+                    if (pw === '') {
+                        alert('Please enter a password for database encryption.');
+                        jQuery('#wpvivid_encrypt_db_pw').focus();
+                        return;
                     }
                 }
 

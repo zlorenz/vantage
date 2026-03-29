@@ -30,6 +30,198 @@ class WPvivid_Updater
         add_filter('http_request_args', array($this, 'http_request_args'), 10, 2);
 
         add_filter( 'site_transient_update_plugins', array( $this, 'site_transient_update_plugins' ) );
+
+        add_filter( 'plugins_api', array($this, 'wpvivid_pro_plugins_api'), 10, 3 );
+    }
+
+    private function build_wpvivid_pro_changelog_html( $data, $changelog_url = '' ) {
+        $html = '';
+
+        if ( is_array( $data ) ) {
+            foreach ( $data as $entry ) {
+                if ( empty( $entry['version'] ) ) {
+                    continue;
+                }
+
+                $html .= '<h4>' . esc_html( $entry['version'] ) . '</h4>';
+
+                if ( ! empty( $entry['items'] ) && is_array( $entry['items'] ) ) {
+                    $html .= '<ul>';
+                    foreach ( $entry['items'] as $item ) {
+                        $html .= '<li>' . esc_html( $item ) . '</li>';
+                    }
+                    $html .= '</ul>';
+                }
+            }
+        }
+
+        if ( ! empty( $changelog_url ) ) {
+            $html .= '<p><a href="' . esc_url( $changelog_url ) . '" target="_blank" rel="noopener noreferrer">View full changelog</a></p>';
+        }
+
+        return $html;
+    }
+
+    private function build_wpvivid_pro_installation_html( $data ) {
+        $html = '';
+
+        if ( ! empty( $data['steps'] ) && is_array( $data['steps'] ) ) {
+            $html .= '<ol>';
+            foreach ( $data['steps'] as $step ) {
+                $step = preg_replace_callback(
+                    '/\((.*?)\) \[(.*?)\]/',
+                    function ($matches) {
+                        return '<a href="' . esc_url( $matches[2] ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $matches[1] ) . '</a>';
+                    },
+                    $step
+                );
+                $html .= '<li>' . wp_kses_post( $step ) . '</li>';
+            }
+            $html .= '</ol>';
+        }
+
+        return $html;
+    }
+
+    private function build_wpvivid_pro_description_html( $data ) {
+        $html = '';
+
+        if ( ! empty( $data['title'] ) ) {
+            $html .= '<h3>' . esc_html( $data['title'] ) . '</h3>';
+        }
+
+        if ( ! empty( $data['summary'] ) ) {
+            $html .= '<p>' . esc_html( $data['summary'] ) . '</p>';
+        }
+
+        if ( ! empty( $data['intro'] ) ) {
+            $html .= '<p>' . esc_html( $data['intro'] ) . '</p>';
+        }
+
+        if ( ! empty( $data['features_groups'] ) && is_array( $data['features_groups'] ) ) {
+            foreach ( $data['features_groups'] as $group ) {
+                if ( ! empty( $group['title'] ) ) {
+                    $html .= '<h4>' . esc_html( $group['title'] ) . '</h4>';
+                }
+
+                if ( ! empty( $group['items'] ) && is_array( $group['items'] ) ) {
+                    $html .= '<ul>';
+                    foreach ( $group['items'] as $item ) {
+                        $html .= '<li>' . esc_html( $item ) . '</li>';
+                    }
+                    $html .= '</ul>';
+                }
+            }
+        }
+
+        if ( ! empty( $data['support'] ) ) {
+            $html .= '<h4>Support</h4>';
+            $html .= '<p>' . esc_html( $data['support'] );
+
+            if ( ! empty( $data['support_url'] ) ) {
+                $html .= ' <a href="' . esc_url( $data['support_url'] ) . '" target="_blank" rel="noopener noreferrer">Submit a ticket</a>';
+            }
+
+            $html .= '</p>';
+        }
+
+        return $html;
+    }
+
+    private function get_wpvivid_pro_plugin_info_data() {
+        $remote_url = 'https://download.wpvivid.com/download/wpvivid_pro_info_data/get-plugin-info.php';
+        $slug = 'wpvivid-backup-pro';
+        $timestamp = time();
+        $token = '704cc191fb1d6495926c304febb75527';
+        $secret_key = 'f9881d9eeb7e7229e5d4d974dd9daa49ccf99bdfd1cbaef81b4b3cd0d0b2974c';
+        $signature = hash_hmac('sha256', $slug . '|' . $timestamp . '|' . $token, $secret_key);
+        $response = wp_remote_get(
+            $remote_url,
+            array(
+                'timeout' => 30,
+                'sslverify' => false,
+                'body' => array(
+                    'slug' => $slug,
+                    'timestamp' => $timestamp,
+                    'token' => $token,
+                    'signature' => $signature
+                ),
+            )
+        );
+
+        if ( ! is_wp_error( $response ) ) {
+            $code = wp_remote_retrieve_response_code( $response );
+            $body = wp_remote_retrieve_body( $response );
+
+            if ( 200 === (int) $code && ! empty( $body ) ) {
+                $json = json_decode( $body, true );
+                if ( is_array( $json ) ) {
+                    return $json;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    function wpvivid_pro_plugins_api( $result, $action, $args ) {
+        if ( 'plugin_information' !== $action ) {
+            return $result;
+        }
+
+        if ( empty( $args->slug ) || 'wpvivid-backup-pro' !== $args->slug ) {
+            return $result;
+        }
+
+        $data = $this->get_wpvivid_pro_plugin_info_data();
+
+        if ( empty( $data ) || ! is_array( $data ) ) {
+            return $result;
+        }
+
+        $info = new stdClass();
+
+        $info->name          = ! empty( $data['name'] ) ? $data['name'] : 'WPvivid Backup Pro';
+        $info->slug          = ! empty( $data['slug'] ) ? $data['slug'] : 'wpvivid-backup-pro';
+        $info->version       = ! empty( $data['version'] ) ? $data['version'] : WPVIVID_BACKUP_PRO_VERSION;
+        $info->author        = ! empty( $data['author'] ) ? '<a href="' . esc_url( $data['author_homepage'] ) . '">' . esc_html( $data['author'] ) . '</a>' : '';
+        $info->homepage      = ! empty( $data['homepage'] ) ? esc_url( $data['homepage'] ) : '';
+        $info->last_updated  = ! empty( $data['last_updated'] ) ? $data['last_updated'] : '';
+        $info->requires      = ! empty( $data['requires'] ) ? $data['requires'] : '';
+        $info->tested        = ! empty( $data['tested'] ) ? $data['tested'] : '';
+        $info->requires_php  = ! empty( $data['requires_php'] ) ? $data['requires_php'] : '';
+        $info->download_link = ! empty( $data['download_link'] ) ? esc_url_raw( $data['download_link'] ) : '';
+
+        $info->banners = array();
+        if ( ! empty( $data['banners'] ) && is_array( $data['banners'] ) ) {
+            foreach ( $data['banners'] as $size => $url ) {
+                $info->banners[ $size ] = esc_url_raw( $url );
+            }
+        }
+
+        $info->icons = array();
+        if ( ! empty( $data['icons'] ) && is_array( $data['icons'] ) ) {
+            foreach ( $data['icons'] as $size => $url ) {
+                $info->icons[ $size ] = esc_url_raw( $url );
+            }
+        }
+
+        $info->sections = array();
+
+        if ( ! empty( $data['sections']['description'] ) ) {
+            $info->sections['description'] = $this->build_wpvivid_pro_description_html( $data['sections']['description'] );
+        }
+
+        if ( ! empty( $data['sections']['installation'] ) ) {
+            $info->sections['installation'] = $this->build_wpvivid_pro_installation_html( $data['sections']['installation'] );
+        }
+
+        if ( ! empty( $data['sections']['changelog'] ) ) {
+            $changelog_url = ! empty( $data['changelog_url'] ) ? $data['changelog_url'] : '';
+            $info->sections['changelog'] = $this->build_wpvivid_pro_changelog_html( $data['sections']['changelog'], $changelog_url );
+        }
+
+        return $info;
     }
 
     public function check_admin_notices()
@@ -441,6 +633,31 @@ class WPvivid_Updater
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'set_site_transient_update_plugins' ) );
     }
 
+    private function get_requirements_from_readme() {
+        $result = array(
+            'requires'     => '',
+            'tested'       => '',
+            'requires_php' => '',
+        );
+
+        $readme_file = WPVIVID_BACKUP_PRO_PLUGIN_DIR . '/readme.txt';
+
+        if ( ! file_exists( $readme_file ) ) {
+            return $result;
+        }
+
+        $content = file_get_contents( $readme_file );
+        if ( false === $content || '' === $content ) {
+            return $result;
+        }
+
+        if ( preg_match( '/^Tested up to:\s*(.+)$/mi', $content, $matches ) ) {
+            $result['tested'] = trim( $matches[1] );
+        }
+
+        return $result;
+    }
+
     public function set_site_transient_update_plugins($_transient_data)
     {
         global $pagenow;
@@ -456,6 +673,13 @@ class WPvivid_Updater
         {
             return $_transient_data;
         }
+
+        $version_info->icons = array(
+            '1x' => 'https://download.wpvivid.com/download/wpvivid_pro_info_data/icon-128x128.png',
+            '2x' => 'https://download.wpvivid.com/download/wpvivid_pro_info_data/icon-256x256.png',
+        );
+        $requirements = $this->get_requirements_from_readme();
+        $version_info->tested       = ! empty( $requirements['tested'] ) ? $requirements['tested'] : '';
 
         if ( version_compare( WPVIVID_BACKUP_PRO_VERSION, $version_info->new_version, '<' ) ) {
 

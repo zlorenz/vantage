@@ -9,7 +9,7 @@ if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Multi_Remote_addon
  */
@@ -1323,8 +1323,7 @@ class WPvivid_Multi_Remote_addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>
@@ -1441,7 +1440,7 @@ class WPvivid_Multi_Remote_addon
 
             function wpvivid_add_remote_storage(storage_type)
             {
-                var remote_from = wpvivid_ajax_data_transfer(storage_type);
+                var remote_from = wpvivid_ajax_data_transfer_addon(storage_type);
                 var ajax_data = {
                     'action': 'wpvivid_add_remote',
                     'remote': remote_from,
@@ -1869,7 +1868,7 @@ class WPvivid_Multi_Remote_addon
 
             function wpvivid_edit_remote_storage() {
                 var data_tran = 'edit-'+wpvivid_editing_storage_type;
-                var remote_data = wpvivid_ajax_data_transfer(data_tran);
+                var remote_data = wpvivid_ajax_data_transfer_addon(data_tran);
                 var ajax_data = {
                     'action': 'wpvivid_edit_remote_ex',
                     'remote': remote_data,
@@ -2027,6 +2026,11 @@ class WPvivid_Multi_Remote_addon
                                         jQuery('.wpvivid-region-tr-edit-s3compat').hide();
                                     }
                                 }
+                            });
+                            jQuery('select[option=edit-'+jsonarray.type+']').each(function(){
+                                var key = jQuery(this).prop('name');
+                                var value = jsonarray[key];
+                                jQuery(this).val(value);
                             });
                             if(wpvivid_editing_storage_type === 'wasabi'){
                                 if(jsonarray.endpoint === 's3.wasabisys.com'){
@@ -2405,8 +2409,7 @@ class WPvivid_Multi_Remote_addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>

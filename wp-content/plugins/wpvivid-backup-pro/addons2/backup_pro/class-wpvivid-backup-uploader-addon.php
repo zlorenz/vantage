@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Admin_load: yes
  * Need_init: yes
  * Interface Name: Wpvivid_BackupUploader_addon
@@ -1024,7 +1024,7 @@ class Wpvivid_BackupUploader_addon
                     if($value['id'] === $backup_id)
                     {
                         $localtime = $this->wpvivid_tran_backup_time_to_local($value);
-                        $localtime = date('M-d-Y H:i', $localtime);
+                        $localtime = WPvivid_Time::format_local('M-d-Y H:i', $localtime);
 
                         if(isset($value['backup_prefix']) && !empty($value['backup_prefix']))
                         {

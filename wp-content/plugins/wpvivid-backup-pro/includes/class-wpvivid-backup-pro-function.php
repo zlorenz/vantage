@@ -840,6 +840,26 @@ class WPvivid_backup_pro_function
         }
     }
 
+    public static function is_wpvivid_mu_plugins_backup($file_name)
+    {
+        if(preg_match('/wpvivid-.*_.*_backup_mu_plugins.*\.zip$/',$file_name,$matches))
+        {
+            return true;
+        }
+        else if(preg_match('/'.apply_filters('wpvivid_white_label_file_prefix', 'wpvivid').'-.*_.*_backup_mu_plugins.*\.zip$/',$file_name,$matches))
+        {
+            return true;
+        }
+        else if (preg_match('/.*-.*_.*_backup_mu_plugins.*\.zip$/',$file_name,$matches))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public static function is_wpvivid_other_backup($file_name)
     {
         if(preg_match('/wpvivid-.*_.*_backup_other.*\.zip$/',$file_name,$matches))

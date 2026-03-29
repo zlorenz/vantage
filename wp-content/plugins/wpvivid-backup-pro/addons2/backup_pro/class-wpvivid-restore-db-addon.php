@@ -4,7 +4,7 @@
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
  * Admin_load: yes
- * Version: 2.2.41
+ * Version: 2.2.43
  */
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
 {
@@ -427,7 +427,18 @@ class WPvivid_Restore_DB_Addon
             $password = stripslashes($password);
         }
 
-        $crypt=new WPvivid_Crypt_File($password);
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+            $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+            if($vendor_mode === 'modern') {
+                $crypt=new WPvivid_Crypt_File_Ex($password);
+            }
+            else{
+                $crypt=new WPvivid_Crypt_File($password);
+            }
+        }
+        else {
+            $crypt=new WPvivid_Crypt_File($password);
+        }
 
         $ret=$crypt->decrypt($local_path.$file);
         if($ret['result']=='success')

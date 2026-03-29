@@ -95,6 +95,26 @@ function vp_category_display_name( $cat ) {
 }
 
 /**
+ * Site Editor (Appearance → Design): Core “classic + Style Book” eligibility.
+ *
+ * wp-admin/site-editor.php passes supportsLayout => wp_theme_has_theme_json(). Without a theme.json in
+ * the active (child) or parent theme, that stays false. isClassicThemeWithStyleBookSupport() then requires
+ * editor-styles from REST; a minimal child theme.json makes supportsLayout true and aligns layout with the
+ * parent content width (800px) and align-wide (1200px).
+ *
+ * Explicit add_theme_support here ensures the active child theme declares editor-styles / wp-block-styles
+ * (parent already does; this keeps REST/theme checks unambiguous for the stylesheet in use).
+ */
+add_action(
+  'after_setup_theme',
+  function () {
+    add_theme_support( 'editor-styles' );
+    add_theme_support( 'wp-block-styles' );
+  },
+  11
+);
+
+/**
  * Editor styles for iframed block editor – dark mode content (headings, paragraphs, etc.)
  * Loads inside the editor iframe via add_editor_style. Overrides :where(.editor-styles-wrapper) color:revert.
  */
@@ -464,15 +484,20 @@ add_filter('render_block', function ($block_content, $block) {
  */
 add_action('enqueue_block_editor_assets', function () {
   global $pagenow;
+  // Site Editor loads wp-edit-site, not wp-edit-post; wrong dependency can mis-order CSS and contribute to a blank UI.
+  $is_site_editor = ( isset( $pagenow ) && 'site-editor.php' === $pagenow )
+    || ( function_exists( 'get_current_screen' ) && get_current_screen() && 'site-editor' === get_current_screen()->base );
+  $editor_dep = $is_site_editor ? 'wp-edit-site' : 'wp-edit-post';
   wp_enqueue_style(
     'vp-gutenberg-dark',
     get_stylesheet_directory_uri() . '/assets/css/gutenberg-dark.css',
-    ['wp-edit-post'],
+    array( $editor_dep ),
     wp_get_theme()->get('Version')
   );
+  // Avoid .admin-ui-page * — it is too broad for the Site Editor root and can fight core layout/contrast. Header chrome only.
   $critical = '
     .editor-header,.edit-post-header,.interface-interface-skeleton__header,.editor-document-bar,.admin-ui-page,.admin-ui-page__header{background:#0f0f11!important;border-bottom-color:#27272a!important;color:#fff!important}
-    .editor-header *,.edit-post-header *,.interface-interface-skeleton__header *,.admin-ui-page__header *,.admin-ui-page *{color:#fff!important}
+    .editor-header *,.edit-post-header *,.interface-interface-skeleton__header *,.admin-ui-page__header *{color:#fff!important}
     .editor-header svg,.edit-post-header svg,.interface-interface-skeleton__header svg,.admin-ui-page__header svg{fill:#fff!important}
     .interface-complementary-area,.interface-complementary-area-header,.block-editor-tabbed-sidebar,.components-panel,.components-panel__body{background:#0f0f11!important;color:#fff!important}
     .interface-complementary-area *,.interface-complementary-area-header *,.components-panel *,.components-panel__body *,.block-editor-block-inspector *{color:#fff!important}
@@ -494,7 +519,8 @@ add_action('admin_enqueue_scripts', function () {
 
 add_action('admin_enqueue_scripts', function ($hook) {
   $edit_screens = ['post.php', 'post-new.php', 'page.php', 'page-new.php'];
-  if (!in_array($hook, $edit_screens, true)) {
+  // Appearance → Design — admin_enqueue_scripts $hook is the file name (e.g. site-editor.php).
+  if (!in_array($hook, $edit_screens, true) && 'site-editor.php' !== $hook) {
     return;
   }
   wp_enqueue_style(
@@ -510,10 +536,15 @@ add_action('admin_enqueue_scripts', function ($hook) {
   $screen = get_current_screen();
   $is_acf = $screen && (strpos($screen->id, 'acf') !== false || (!empty($screen->post_type) && strpos($screen->post_type, 'acf') !== false));
   if ($is_acf) {
+    $acf_dark_deps = array( 'acf-global', 'common' );
+    // After uiXpress post editor chrome when present so metabox / .hndle overrides win.
+    if ( wp_style_is( 'uixpress-post-editor', 'registered' ) ) {
+      $acf_dark_deps[] = 'uixpress-post-editor';
+    }
     wp_enqueue_style(
       'vp-acf-admin-dark',
       get_stylesheet_directory_uri() . '/assets/css/acf-admin-dark.css',
-      array( 'acf-global', 'common' ), // Load after ACF and WP common so Tools .postbox .inside overrides win
+      $acf_dark_deps,
       wp_get_theme()->get('Version')
     );
   }
@@ -658,12 +689,45 @@ add_action('wp_enqueue_scripts', function () {
 }, 9999);
 
 /**
+ * TranslatePress translation editors (visual + string): templates do not use normal
+ * wp_head(); TRP prints whitelisted styles via wp_print_styles() in the editor footer.
+ * We enqueue here and append the handle via trp-styles-for-editor so dark CSS loads.
+ *
+ * - String Translation: ?trp-string-translation=true (trp_string_translation_editor_footer)
+ * - Visual editor: ?trp-edit-translation=… (trp_translation_manager_footer)
+ */
+$vp_trp_enqueue_editor_dark = function () {
+  wp_enqueue_style(
+    'vp-trp-string-translation-editor-dark',
+    get_stylesheet_directory_uri() . '/assets/css/trp-string-translation-editor-dark.css',
+    array( 'trp-editor-style' ),
+    wp_get_theme()->get( 'Version' )
+  );
+};
+add_action( 'trp_string_translation_editor_footer', $vp_trp_enqueue_editor_dark, 5 );
+add_action( 'trp_translation_manager_footer', $vp_trp_enqueue_editor_dark, 5 );
+
+add_filter(
+  'trp-styles-for-editor',
+  function ( $styles ) {
+    $string_translation = isset( $_GET['trp-string-translation'] )
+      && sanitize_text_field( wp_unslash( $_GET['trp-string-translation'] ) ) === 'true';
+    $visual_editor = isset( $_GET['trp-edit-translation'] );
+    if ( $string_translation || $visual_editor ) {
+      $styles[] = 'vp-trp-string-translation-editor-dark';
+    }
+    return $styles;
+  },
+  20
+);
+
+/**
  * Critical Gutenberg dark overrides – injected in footer to load last.
  * Ensures top bar and text stay dark even if uiXpress/WordPress load later.
  */
 add_action('admin_footer', function () {
   global $pagenow;
-  $edit_pages = ['post.php', 'post-new.php', 'page.php', 'page-new.php'];
+  $edit_pages = ['post.php', 'post-new.php', 'page.php', 'page-new.php', 'site-editor.php'];
   if (!in_array($pagenow ?? '', $edit_pages, true)) {
     return;
   }

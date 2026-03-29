@@ -4,7 +4,7 @@
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
  * No_need_load: yes
- * Version: 2.2.41
+ * Version: 2.2.43
  */
 
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
@@ -155,23 +155,17 @@ class WPvivid_Debug_Schedule_List extends WP_List_Table
 
     public function _column_wpvivid_start_at( $schedule )
     {
-        $offset=get_option('gmt_offset');
-
-        echo '<td>'.date("H:i:s - F-d-Y ", $schedule['start_at']+$offset*60*60).'</td>';
+        echo '<td>'.WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['start_at']).'</td>';
     }
 
     public function _column_wpvivid_start( $schedule )
     {
-        $offset=get_option('gmt_offset');
-
-        echo '<td>'.date("H:i:s - F-d-Y ", $schedule['start']+$offset*60*60).'</td>';
+        echo '<td>'.WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['start']).'</td>';
     }
 
     public function _column_wpvivid_end( $schedule )
     {
-        $offset=get_option('gmt_offset');
-
-        echo '<td>'.date("H:i:s - F-d-Y ", $schedule['end']+$offset*60*60).'</td>';
+        echo '<td>'.WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['end']).'</td>';
     }
 
     public function display_rows()
@@ -542,9 +536,7 @@ class WPvivid_No_Responds_Schedule_List extends WP_List_Table
 
     public function _column_wpvivid_start_at( $schedule )
     {
-        $offset=get_option('gmt_offset');
-
-        echo '<td>'.date("H:i:s - F-d-Y ", $schedule['start_at']+$offset*60*60).'</td>';
+        echo '<td>'.WPvivid_Time::format_local("H:i:s - F-d-Y ", $schedule['start_at']).'</td>';
     }
 
     public function display_rows()

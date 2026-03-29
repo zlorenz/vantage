@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Admin_load: yes
  * Interface Name: WPvivid_Export_Import_addon
@@ -1407,10 +1407,10 @@ class WPvivid_Export_Import_addon
                 $where .= $wpdb->prepare(" AND {$wpdb->posts}.post_author = %d", $author);
             }
             if ($post_start_date) {
-                $where .= $wpdb->prepare(" AND {$wpdb->posts}.post_date >= %s", date('Y-m-d', strtotime($post_start_date)));
+                $where .= $wpdb->prepare(" AND {$wpdb->posts}.post_date >= %s", WPvivid_Time::format_utc('Y-m-d', strtotime($post_start_date)));
             }
             if ($post_end_date) {
-                $where .= $wpdb->prepare(" AND {$wpdb->posts}.post_date < %s", date('Y-m-d', strtotime('+1 month', strtotime($post_end_date))));
+                $where .= $wpdb->prepare(" AND {$wpdb->posts}.post_date < %s", WPvivid_Time::format_utc('Y-m-d', strtotime('+1 month', strtotime($post_end_date))));
             }
             if ($select_post_id) {
                 $where .= $wpdb->prepare(" AND {$wpdb->posts}.ID = %d", $select_post_id);
@@ -2138,8 +2138,7 @@ class WPvivid_Export_Import_addon
                                             <span>
 									        	<a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
 									        </span>

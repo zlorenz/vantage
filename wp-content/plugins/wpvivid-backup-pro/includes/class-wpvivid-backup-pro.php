@@ -103,6 +103,7 @@ class WPvivid_backup_pro
 
         add_filter('wpvivid_is_plugin_enabled', array($this, 'is_plugin_enabled'), 10 , 2);
 
+        $this->migrate_mu_plugins_exclude_compat();
         $this->set_auto_update();
     }
 
@@ -192,7 +193,7 @@ class WPvivid_backup_pro
             $menu_slug=apply_filters('wpvivid_white_label_slug', 'wpvivid').'-backup';
             $function=array($this, 'init_page');
             $icon_url='dashicons-cloud';
-            $position=100;
+            $position=99.1;
 
             add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position);
         }
@@ -206,7 +207,7 @@ class WPvivid_backup_pro
 
             $function=array($this->dashboard, 'init_page');
             $icon_url='dashicons-cloud';
-            $position=100;
+            $position=99.1;
 
             add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position);
 
@@ -485,6 +486,111 @@ class WPvivid_backup_pro
     public function init_staging_page()
     {
         do_action('wpvivid_staging_create_page_display');
+    }
+
+    public function migrate_mu_plugins_exclude_compat()
+    {
+        $migrated = get_option('wpvivid_mu_plugins_exclude_compat_migrated', 0);
+        if($migrated)
+        {
+            return;
+        }
+
+        $changed = false;
+        $manual_backup_history = get_option('wpvivid_manual_backup_history', array());
+        $manual_backup_history = $this->migrate_mu_plugins_exclude_compat_data($manual_backup_history, $changed);
+        if($changed)
+        {
+            update_option('wpvivid_manual_backup_history', $manual_backup_history, 'no');
+        }
+
+        $custom_backup_history = get_option('wpvivid_custom_backup_history', array());
+        $custom_backup_changed = false;
+        $custom_backup_history = $this->migrate_mu_plugins_exclude_compat_data($custom_backup_history, $custom_backup_changed);
+        if($custom_backup_changed)
+        {
+            update_option('wpvivid_custom_backup_history', $custom_backup_history, 'no');
+        }
+
+        $incremental_backup_history = get_option('wpvivid_incremental_backup_history', array());
+        $incremental_backup_changed = false;
+        $incremental_backup_history = $this->migrate_mu_plugins_exclude_compat_data($incremental_backup_history, $incremental_backup_changed);
+        if($incremental_backup_changed)
+        {
+            update_option('wpvivid_incremental_backup_history', $incremental_backup_history, 'no');
+        }
+
+        $incremental_schedules = get_option('wpvivid_incremental_schedules', array());
+        $incremental_schedules_changed = false;
+        $incremental_schedules = $this->migrate_mu_plugins_exclude_compat_data($incremental_schedules, $incremental_schedules_changed);
+        if($incremental_schedules_changed)
+        {
+            update_option('wpvivid_incremental_schedules', $incremental_schedules, 'no');
+        }
+
+        $schedule_addon_setting = get_option('wpvivid_schedule_addon_setting', array());
+        $schedule_addon_changed = false;
+        $schedule_addon_setting = $this->migrate_mu_plugins_exclude_compat_data($schedule_addon_setting, $schedule_addon_changed);
+        if($schedule_addon_changed)
+        {
+            update_option('wpvivid_schedule_addon_setting', $schedule_addon_setting, 'no');
+        }
+
+        update_option('wpvivid_mu_plugins_exclude_compat_migrated', 1, 'no');
+    }
+
+    private function migrate_mu_plugins_exclude_compat_data($data, &$changed)
+    {
+        if(!is_array($data) || empty($data))
+        {
+            return $data;
+        }
+
+        if(isset($data['exclude_files']) && is_array($data['exclude_files']))
+        {
+            $legacy_mu_plugins_path = untrailingslashit(str_replace('\\', '/', WP_CONTENT_DIR . '/mu-plugins'));
+            $exclude_files = array();
+            $legacy_mu_plugins_excluded = false;
+
+            foreach ($data['exclude_files'] as $exclude_file)
+            {
+                if(isset($exclude_file['type']) && isset($exclude_file['path']) && $exclude_file['type'] === 'folder')
+                {
+                    $exclude_path = untrailingslashit(str_replace('\\', '/', $exclude_file['path']));
+                    if($exclude_path === $legacy_mu_plugins_path)
+                    {
+                        $legacy_mu_plugins_excluded = true;
+                        $changed = true;
+                        continue;
+                    }
+                }
+
+                $exclude_files[] = $exclude_file;
+            }
+
+            if($legacy_mu_plugins_excluded)
+            {
+                $data['exclude_files'] = array_values($exclude_files);
+
+                if(isset($data['custom_dirs']) && is_array($data['custom_dirs']))
+                {
+                    if(!isset($data['custom_dirs']['mu_plugins_check']))
+                    {
+                        $data['custom_dirs']['mu_plugins_check'] = '0';
+                    }
+                }
+            }
+        }
+
+        foreach ($data as $key => $value)
+        {
+            if(is_array($value))
+            {
+                $data[$key] = $this->migrate_mu_plugins_exclude_compat_data($value, $changed);
+            }
+        }
+
+        return $data;
     }
 
     public function set_auto_update()
@@ -768,7 +874,10 @@ class WPvivid_backup_pro
             wp_enqueue_script('jquery-ui-dialog');
 
             wp_enqueue_script(WPVIVID_PRO_PLUGIN_SLUG.'jsaddon', WPVIVID_BACKUP_PRO_PLUGIN_URL . 'includes/display/js/wpvivid-admin-addon.js', array('jquery'), WPVIVID_BACKUP_PRO_VERSION, false);
-
+            wp_localize_script(WPVIVID_PRO_PLUGIN_SLUG.'jsaddon', 'wpvivid_ajax_object_addon', array('ajax_url' => admin_url('admin-ajax.php'),'ajax_nonce'=>wp_create_nonce('wpvivid_ajax')));
+        }
+        else if (get_current_screen()->id === 'update-core')
+        {
             wp_enqueue_script(WPVIVID_PRO_PLUGIN_SLUG.'jsaddon', WPVIVID_BACKUP_PRO_PLUGIN_URL . 'includes/display/js/wpvivid-admin-addon.js', array('jquery'), WPVIVID_BACKUP_PRO_VERSION, false);
             wp_localize_script(WPVIVID_PRO_PLUGIN_SLUG.'jsaddon', 'wpvivid_ajax_object_addon', array('ajax_url' => admin_url('admin-ajax.php'),'ajax_nonce'=>wp_create_nonce('wpvivid_ajax')));
         }
@@ -787,6 +896,8 @@ class WPvivid_backup_pro
         include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/class-wpvivid-updater.php';
         include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/class-wpvivid-mainwp.php';
         include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/class-wpvivid-interface-mainwp-addon.php';
+
+        include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'includes/class-wpvivid-time.php';
 
         $this->mainwp=new WPvivid_MainWP_Function();
 

@@ -8,7 +8,7 @@
  * @wordpress-plugin
  * Plugin Name:       WPvivid Plugins Pro
  * Description:       A centralized dashboard for accessing and managing all WPvivid plugins.
- * Version:           2.2.41
+ * Version:           2.2.43
  * Author:            wpvivid.com
  * Author URI:        https://wpvivid.com
  * License:           GPL-3.0+
@@ -19,7 +19,7 @@
 
 define('WPVIVID_BACKUP_PRO_PLUGIN_DIR', plugin_dir_path( __FILE__ ));
 define('WPVIVID_BACKUP_PRO_PLUGIN_URL', plugins_url('/',__FILE__));
-define('WPVIVID_BACKUP_PRO_VERSION','2.2.41');
+define('WPVIVID_BACKUP_PRO_VERSION','2.2.43');
 
 define('WPVIVID_PRO_PLUGIN_SLUG','WPvivid');
 

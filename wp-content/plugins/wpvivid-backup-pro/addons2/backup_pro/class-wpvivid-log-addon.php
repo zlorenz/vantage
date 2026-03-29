@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Admin_load: yes
  * Interface Name: WPvivid_Log_addon
@@ -125,9 +125,8 @@ class WPvivid_Log_List extends WP_List_Table
 
     public function _column_wpvivid_date( $log )
     {
-        //$offset=get_option('gmt_offset');
-        $localtime = strtotime($log['time'])/* + $offset * 60 * 60*/;
-        echo '<td><label for="tablecell">'.date('F-d-Y H:i:s',$localtime).'</label></td>';
+        $localtime = strtotime($log['time']);
+        echo '<td><label for="tablecell">'.WPvivid_Time::format_local('F-d-Y H:i:s',$localtime).'</label></td>';
     }
 
     protected function column_wpvivid_log_type($log)

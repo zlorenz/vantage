@@ -20,7 +20,6 @@ class WPvivid_Interface_MainWP
         add_filter('wpvivid_backup_now_mainwp', array($this, 'wpvivid_backup_now_mainwp'));
         add_filter('wpvivid_view_backup_task_log_mainwp', array($this, 'wpvivid_view_backup_task_log_mainwp'));
         add_filter('wpvivid_backup_cancel_mainwp', array($this, 'wpvivid_backup_cancel_mainwp'));
-        add_filter('wpvivid_set_backup_report_addon_mainwp', array($this, 'wpvivid_set_backup_report_addon_mainwp'));
     }
 
     public function load_wpvivid_mainwp_side_bar_filter(){
@@ -289,39 +288,6 @@ class WPvivid_Interface_MainWP
         global $wpvivid_plugin;
         $ret=$wpvivid_plugin->function_realize->_backup_cancel();
         return $ret;
-    }
-
-    public function wpvivid_set_backup_report_addon_mainwp($data){
-        if(isset($data['id']))
-        {
-            $task_id = $data['id'];
-            $option = array();
-            $option[$task_id]['task_id'] = $task_id;
-            $option[$task_id]['backup_time'] = $data['status']['start_time'];
-            if($data['status']['str'] == 'completed'){
-                $option[$task_id]['status'] = 'Succeeded';
-            }
-            elseif($data['status']['str'] == 'error'){
-                $option[$task_id]['status'] = 'Failed, '.$data['status']['error'];
-            }
-            elseif($data['status']['str'] == 'cancel'){
-                $option[$task_id]['status'] = 'Canceled';
-            }
-            else{
-                $option[$task_id]['status'] = 'The last backup message not found.';
-            }
-
-            $backup_reports = get_option('wpvivid_backup_reports', array());
-            if(!empty($backup_reports)){
-                foreach ($option as $key => $value){
-                    $backup_reports[$key] = $value;
-                    update_option('wpvivid_backup_reports', $backup_reports, 'no');
-                }
-            }
-            else{
-                update_option('wpvivid_backup_reports', $option, 'no');
-            }
-        }
     }
 
     public function wpvivid_read_last_backup_log_mainwp($data){

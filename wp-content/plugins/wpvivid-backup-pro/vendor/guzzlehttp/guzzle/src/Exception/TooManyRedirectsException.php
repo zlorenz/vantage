@@ -1,5 +1,6 @@
 <?php
-namespace WPvividProGuzzleHttp\Exception;
+
+namespace WPvividGuzzleHttp\Exception;
 
 class TooManyRedirectsException extends RequestException
 {

@@ -624,6 +624,7 @@ class Wpvivid_Google_drive extends WPvivid_Remote
                 return $ref;
             }
         }
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',WPVIVID_REMOTE_GOOGLEDRIVE,WPVIVID_UPLOAD_SUCCESS,'Uploading completed.',$upload_job['job_data']);
         return array('result' =>WPVIVID_SUCCESS);
     }
 
@@ -795,8 +796,8 @@ class Wpvivid_Google_drive extends WPvivid_Remote
                 $upload_job['job_data'][basename($file)]['progress']=$media->getProgress();
 
                 //$wpvivid_plugin->wpvivid_log->WriteLog('resumeUri:'.$media->getResumeUri().'.','notice');
-                $wpvivid_plugin->wpvivid_log->WriteLog('progress:'.$media->getProgress().'.','notice');
-                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',WPVIVID_REMOTE_GOOGLEDRIVE,WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file),$upload_job['job_data']);
+                //$wpvivid_plugin->wpvivid_log->WriteLog('progress:'.$media->getProgress().'.','notice');
+                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',WPVIVID_REMOTE_GOOGLEDRIVE,WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file),$upload_job['job_data']);
             }
 
             fclose($handle);
@@ -805,7 +806,7 @@ class Wpvivid_Google_drive extends WPvivid_Remote
             {
                 $wpvivid_plugin->wpvivid_log->WriteLog('Finished uploading '.basename($file),'notice');
                 $upload_job['job_data'][basename($file)]['uploaded']=1;
-                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',WPVIVID_REMOTE_GOOGLEDRIVE,WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',WPVIVID_REMOTE_GOOGLEDRIVE,WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
                 $wpvivid_plugin->wpvivid_log->WriteLog('Upload success.','notice');
                 return array('result' =>WPVIVID_SUCCESS);
             }

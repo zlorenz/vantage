@@ -1,5 +1,6 @@
 <?php
-namespace WPvividProGuzzleHttp\Exception;
+
+namespace WPvividGuzzleHttp\Exception;
 
 /**
  * Exception when a client error is encountered (4xx codes)

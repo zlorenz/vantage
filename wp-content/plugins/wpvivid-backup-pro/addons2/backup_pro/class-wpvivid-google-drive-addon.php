@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: Wpvivid_Google_drive_addon
  */
@@ -11,6 +11,8 @@ if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
 {
     die;
 }
+
+require_once WPVIVID_BACKUP_PRO_PLUGIN_DIR. 'addons2/backup_pro/class-wpvivid-google-compat-addon.php';
 
 if(!defined('WPVIVID_REMOTE_GOOGLEDRIVE'))
     define('WPVIVID_REMOTE_GOOGLEDRIVE','googledrive');
@@ -125,25 +127,12 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                     return ;
                 }
                 try {
-                    include_once WPVIVID_PLUGIN_DIR . '/vendor/autoload.php';
-                    if(class_exists('WPvivid_Google_Client'))
-                    {
-                        $client = new WPvivid_Google_Client();
-                    }
-                    else
-                    {
-                        $client = new Google_Client();
-                    }
+                    WPvivid_Google_Compat_Ex::load_autoloader();
+                    $clientClass = WPvivid_Google_Compat_Ex::cls('Client');
+                    $client = new $clientClass();
                     $client->setAuthConfig($this->google_drive_secrets);
-                    $client->setApprovalPrompt('force');
-                    if(class_exists('WPvivid_Google_Service_Drive'))
-                    {
-                        $client->addScope(WPvivid_Google_Service_Drive::DRIVE_FILE);
-                    }
-                    else
-                    {
-                        $client->addScope(Google_Service_Drive::DRIVE_FILE);
-                    }
+                    WPvivid_Google_Compat_Ex::ensure_refresh_token_prompt($client);
+                    $client->addScope(WPvivid_Google_Compat_Ex::drive_scope_const());
                     $client->setAccessType('offline');
                     $client->setState(apply_filters('wpvivid_get_admin_url', '') . 'admin.php?page='.sprintf('%s-remote', apply_filters('wpvivid_white_label_slug', 'wpvivid')).'&action=wpvivid_pro_google_drive_finish_auth&sub_page=cloud_storage_google_drive&auth_id='.$auth_id);
                     $auth_url = $client->createAuthUrl();
@@ -265,12 +254,14 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             }
         }
     }
+
     public function wpvivid_show_notice_add_google_drive_success(){
         $this->auth_notice = array(
             'type'    => 'success',
             'message' => 'You have authenticated the Google Drive account as your remote storage.'
         );
     }
+
     public function wpvivid_show_notice_add_google_drive_error(){
         global $wpvivid_plugin;
         $wpvivid_plugin->wpvivid_handle_remote_storage_error($_GET['resp_msg'], 'Add Google Drive Remote');
@@ -903,15 +894,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
-
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
         $path=$this->options['path'];
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Check upload folder '.$path,'notice');
         $folder_id=$this->get_folder($service,$path);
@@ -963,11 +947,12 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             }
 
             $ref=$this->check_token($client, $service);
-            if($ref['result']=!WPVIVID_PRO_SUCCESS)
+            if($ref['result']!==WPVIVID_PRO_SUCCESS)
             {
                 return $ref;
             }
         }
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading completed.',$upload_job['job_data']);
         return array('result' =>WPVIVID_PRO_SUCCESS);
     }
 
@@ -986,43 +971,22 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
         $this -> current_file_name = basename($file);
 
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Initiate a resumable upload session.','notice');
-        if(class_exists('WPvivid_Google_Service_Drive_DriveFile'))
-        {
-            $fileMetadata = new WPvivid_Google_Service_Drive_DriveFile(array(
-                'name' => basename($file),
-                'parents' => array($folder_id)));
-        }
-        else
-        {
-            $fileMetadata = new Google_Service_Drive_DriveFile(array(
-                'name' => basename($file),
-                'parents' => array($folder_id)));
-        }
+        $driveFileClass = WPvivid_Google_Compat_Ex::cls('Service_Drive_DriveFile');
+        $fileMetadata = new $driveFileClass(array(
+            'name' => basename($file),
+            'parents' => array($folder_id)));
         $chunk_size = 1 * 1024 * 1024;
         $client->setDefer(true);
         $request = $service->files->create($fileMetadata);
-        if(class_exists('WPvivid_Google_Http_MediaFileUpload'))
-        {
-            $media = new WPvivid_Google_Http_MediaFileUpload(
-                $client,
-                $request,
-                'text/plain',
-                null,
-                true,
-                $chunk_size
-            );
-        }
-        else
-        {
-            $media = new Google_Http_MediaFileUpload(
-                $client,
-                $request,
-                'text/plain',
-                null,
-                true,
-                $chunk_size
-            );
-        }
+        $mediaClass = WPvivid_Google_Compat_Ex::cls('Http_MediaFileUpload');
+        $media = new $mediaClass(
+            $client,
+            $request,
+            'text/plain',
+            null,
+            true,
+            $chunk_size
+        );
         $media->setFileSize(filesize($file));
         $status = false;
         $handle = fopen($file, "rb");
@@ -1057,7 +1021,7 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             {
                 $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
                 $upload_job['job_data'][basename($file)]['uploaded']=1;
-                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
                 $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Upload success.','notice');
                 return array('result' =>WPVIVID_PRO_SUCCESS);
             }
@@ -1067,25 +1031,11 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 return array('result' =>WPVIVID_PRO_FAILED,'error'=>'Uploading '.$file.' to Google Drive server failed. '.$file.' might be deleted or network doesn\'t work properly. Please verify the file and confirm the network connection and try again later.');
             }
         }
-        catch (WPvivid_Google_Service_Exception $e)
+        catch (\Exception $e)
         {
-            $retry_times++;
-            fclose($handle);
-            $client->setDefer(false);
-            $message = 'A exception ('.get_class($e).') occurred '.$e->getMessage().' (Code: '.$e->getCode().', line '.$e->getLine().' in '.$e->getFile().') ';
-            if($retry_times < 15)
-            {
-                $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Upload Google_Service_Exception, '.$message.', retry times: '.$retry_times,'notice');
-                return $this->_upload($task_id, $file,$client,$service,$folder_id, $callback, $retry_times);
+            if(!WPvivid_Google_Compat_Ex::is_service_exception($e)){
+                throw $e;
             }
-            else
-            {
-                $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Upload Google_Service_Exception, retry times: '.$retry_times,'notice');
-                return array('result' =>WPVIVID_PRO_FAILED,'error'=>$message);
-            }
-        }
-        catch (Google_Service_Exception $e)
-        {
             $retry_times++;
             fclose($handle);
             $client->setDefer(false);
@@ -1121,35 +1071,6 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                     $tmp_refresh_token = base64_decode($tmp_refresh_token);
                 }
 
-                /*
-                $args = array(
-                    'refresh_token' => $tmp_refresh_token
-                );
-
-                $result = wp_remote_post("https://auth.wpvivid.com/google_drive_v2/", array(
-                    'timeout' => 60,
-                    'body' => $args
-                ));
-
-                if (is_wp_error($result))
-                {
-                    return array('result' => WPVIVID_PRO_SUCCESS,'data' => false);
-                }
-                else
-                {
-                    $token = wp_remote_retrieve_body($result);
-                    $token = json_decode($token, true);
-                    if(!is_null($token))
-                    {
-                        $client->setAccessToken($token);
-                    }
-                    else
-                    {
-                        return array('result' => WPVIVID_PRO_SUCCESS,'data' => false);
-                    }
-                }
-                */
-
                 $remote_options=WPvivid_Setting::get_remote_option($this->options['id']);
                 $this->options['token']=json_decode(json_encode($token),1);
                 $this->options['token']['access_token']=base64_encode($this->options['token']['access_token']);
@@ -1176,14 +1097,9 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                     {
                         return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
                     }
-                    if(class_exists('WPvivid_Google_Service_Drive'))
-                    {
-                        $service = new WPvivid_Google_Service_Drive($client);
-                    }
-                    else
-                    {
-                        $service = new Google_Service_Drive($client);
-                    }
+
+                    $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+                    $service = new $serviceClass($client);
                 }
                 return array('result' => WPVIVID_PRO_SUCCESS);
             }
@@ -1211,25 +1127,12 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             $token['refresh_token'] = base64_decode($this->options['token']['refresh_token']);
         }
 
-        include_once WPVIVID_PLUGIN_DIR.'/vendor/autoload.php';
-        if(class_exists('WPvivid_Google_Client'))
-        {
-            $client = new WPvivid_Google_Client();
-        }
-        else
-        {
-            $client = new Google_Client();
-        }
+        WPvivid_Google_Compat_Ex::load_autoloader();
+        $clientClass = WPvivid_Google_Compat_Ex::cls('Client');
+        $client = new $clientClass();
         $client->setConfig('access_type','offline');
         $client->setAuthConfig($this->google_drive_secrets);
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $client->addScope(WPvivid_Google_Service_Drive::DRIVE_FILE);//
-        }
-        else
-        {
-            $client->addScope(Google_Service_Drive::DRIVE_FILE);//
-        }
+        $client->addScope(WPvivid_Google_Compat_Ex::drive_scope_const());
         $client->setAccessToken($token);
         if ($client->isAccessTokenExpired())
         {
@@ -1243,35 +1146,6 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 if(isset($this->options['is_encrypt']) && $this->options['is_encrypt'] == 1) {
                     $tmp_refresh_token = base64_decode($tmp_refresh_token);
                 }
-
-                /*
-                $args = array(
-                    'refresh_token' => $tmp_refresh_token
-                );
-
-                $result = wp_remote_post("https://auth.wpvivid.com/google_drive_v2/", array(
-                    'timeout' => 60,
-                    'body' => $args
-                ));
-
-                if (is_wp_error($result))
-                {
-                    return array('result' => WPVIVID_PRO_SUCCESS,'data' => false);
-                }
-                else
-                {
-                    $token = wp_remote_retrieve_body($result);
-                    $token = json_decode($token, true);
-                    if(!is_null($token))
-                    {
-                        $client->setAccessToken($token);
-                    }
-                    else
-                    {
-                        return array('result' => WPVIVID_PRO_SUCCESS,'data' => false);
-                    }
-                }
-                */
 
                 $remote_options=WPvivid_Setting::get_remote_option($this->options['id']);
                 $this->options['token']=json_decode(json_encode($token),1);
@@ -1349,14 +1223,9 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             {
                 $option['parents']=array($root_id);
             }
-            if(class_exists('WPvivid_Google_Service_Drive_DriveFile'))
-            {
-                $fileMetadata = new WPvivid_Google_Service_Drive_DriveFile($option);
-            }
-            else
-            {
-                $fileMetadata = new Google_Service_Drive_DriveFile($option);
-            }
+
+            $driveFileClass = WPvivid_Google_Compat_Ex::cls('Service_Drive_DriveFile');
+            $fileMetadata = new $driveFileClass($option);
             $file = $service->files->create($fileMetadata, array(
                 'fields' => 'id'));
             $folder_id=$file->id;
@@ -1408,14 +1277,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
             }
 
-            if(class_exists('WPvivid_Google_Service_Drive'))
-            {
-                $service = new WPvivid_Google_Service_Drive($client);
-            }
-            else
-            {
-                $service = new Google_Service_Drive($client);
-            }
+            $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+            $service = new $serviceClass($client);
 
             if(isset($file['remote_path']))
             {
@@ -1521,7 +1384,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                     return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Downloading file failed. The file might be deleted or network doesn\'t work properly. Please verify the file and confirm the network connection and try again later.');
                 }
             }
-        }catch(Exception $e)
+        }
+        catch(Exception $e)
         {
             return array('result' => WPVIVID_PRO_FAILED,'error' => $e -> getMessage());
         }
@@ -1640,14 +1504,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
             }
 
-            if(class_exists('WPvivid_Google_Service_Drive'))
-            {
-                $service = new WPvivid_Google_Service_Drive($client);
-            }
-            else
-            {
-                $service = new Google_Service_Drive($client);
-            }
+            $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+            $service = new $serviceClass($client);
 
             $folder_id=$this->get_folder($service,$path);
 
@@ -1826,14 +1684,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
         $folder_id=$this->get_rollback_folder($service,$path,$folder,$slug,$version);
@@ -1843,43 +1695,23 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Unable to create the local file. Please make sure the folder is writable and try again.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive_DriveFile'))
-        {
-            $fileMetadata = new WPvivid_Google_Service_Drive_DriveFile(array(
-                'name' => basename($file),
-                'parents' => array($folder_id)));
-        }
-        else
-        {
-            $fileMetadata = new Google_Service_Drive_DriveFile(array(
-                'name' => basename($file),
-                'parents' => array($folder_id)));
-        }
+        $driveFileClass = WPvivid_Google_Compat_Ex::cls('Service_Drive_DriveFile');
+        $fileMetadata = new $driveFileClass(array(
+            'name' => basename($file),
+            'parents' => array($folder_id)));
+
         $chunk_size = 1 * 1024 * 1024;
         $client->setDefer(true);
         $request = $service->files->create($fileMetadata);
-        if(class_exists('WPvivid_Google_Http_MediaFileUpload'))
-        {
-            $media = new WPvivid_Google_Http_MediaFileUpload(
-                $client,
-                $request,
-                'text/plain',
-                null,
-                true,
-                $chunk_size
-            );
-        }
-        else
-        {
-            $media = new Google_Http_MediaFileUpload(
-                $client,
-                $request,
-                'text/plain',
-                null,
-                true,
-                $chunk_size
-            );
-        }
+        $mediaClass = WPvivid_Google_Compat_Ex::cls('Http_MediaFileUpload');
+        $media = new $mediaClass(
+            $client,
+            $request,
+            'text/plain',
+            null,
+            true,
+            $chunk_size
+        );
         $media->setFileSize(filesize($file));
         $status = false;
         $handle = fopen($file, "rb");
@@ -1906,15 +1738,11 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 return array('result' =>'failed','error'=>'Uploading '.$file.' to Google Drive server failed. '.$file.' might be deleted or network doesn\'t work properly. Please verify the file and confirm the network connection and try again later.');
             }
         }
-        catch (WPvivid_Google_Service_Exception $e)
+        catch (\Exception $e)
         {
-            fclose($handle);
-            $client->setDefer(false);
-            $message = 'A exception ('.get_class($e).') occurred '.$e->getMessage().' (Code: '.$e->getCode().', line '.$e->getLine().' in '.$e->getFile().') ';
-            return array('result' =>'failed','error'=>$message);
-        }
-        catch (Google_Service_Exception $e)
-        {
+            if(!WPvivid_Google_Compat_Ex::is_service_exception($e)){
+                throw $e;
+            }
             fclose($handle);
             $client->setDefer(false);
             $message = 'A exception ('.get_class($e).') occurred '.$e->getMessage().' (Code: '.$e->getCode().', line '.$e->getLine().' in '.$e->getFile().') ';
@@ -1964,14 +1792,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
             }
 
-            if(class_exists('WPvivid_Google_Service_Drive'))
-            {
-                $service = new WPvivid_Google_Service_Drive($client);
-            }
-            else
-            {
-                $service = new Google_Service_Drive($client);
-            }
+            $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+            $service = new $serviceClass($client);
 
             $folder_id=$this->get_rollback_folder($service,$path,$type,$slug,$version);
 
@@ -2094,14 +1916,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
         $folder_id=$this->get_folder($service,$path);
@@ -2162,14 +1978,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'].'/rollback';
         $folder_id=$this->get_folder($service,$path);
@@ -2229,14 +2039,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
         $folder_id=$this->get_folder($service,$path);
@@ -2266,14 +2070,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
         $folder_id=$this->get_rollback_folder($service,$path,$type,$slug,$version);
@@ -2350,14 +2148,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $ret['path']=array();
 
@@ -2425,14 +2217,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
 
@@ -2458,7 +2244,6 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Check upload folder '.$path,'notice');
         $folder_id=$this->get_folder($service,$path);
 
-        //
         $result = array();
         $page_token = null;
         do {
@@ -2509,53 +2294,6 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             $ret['backup']=array();
             return $ret;
         }
-        //
-
-        /*$response = $service->files->listFiles(array(
-            'q' => '"'.$folder_id.'" in parents',
-            'pageToken' => null,
-            'pageSize' => 100,
-            //'fields' => 'files(id, name,size,mimeType)'
-            ));
-        if(sizeof($response->getFiles())==0)
-        {
-            $ret['result']=WPVIVID_PRO_SUCCESS;
-            $ret['backup']=array();
-            return $ret;
-        }
-        else
-        {
-            $ret['result']=WPVIVID_PRO_SUCCESS;
-            $ret['backup']=array();
-            $files=array();
-
-            foreach ($response->getFiles() as $file)
-            {
-                if($file->mimeType=='application/vnd.google-apps.folder')
-                {
-                    $ret['path'][]=$file->name;
-                    //$ret_child=$this->_scan_child_folder_backup($path,$file->name,$service);
-                    //if($ret_child['result']==WPVIVID_PRO_SUCCESS)
-                    //{
-                    //    $files= array_merge($files,$ret_child['files']);
-                    //}
-                }
-                else
-                {
-                    $file_data['file_name']=$file->name;
-                    $file_data['size']=$file->size;
-                    $files[]=$file_data;
-                }
-            }
-
-            if(!empty($files))
-            {
-                global $wpvivid_backup_pro;
-                $ret['backup']=$wpvivid_backup_pro->func->get_backup($files);
-            }
-
-            return $ret;
-        }*/
     }
 
     public function _scan_child_folder_backup($path,$sub_path,$service)
@@ -2565,7 +2303,6 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Check upload folder '.$path,'notice');
         $folder_id=$this->get_folder($service,$path.'/'.$sub_path);
 
-        //
         $result = array();
         $page_token = null;
         do {
@@ -2617,46 +2354,6 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             $ret['backup']=array();
             return $ret;
         }
-        //
-
-        /*$response = $service->files->listFiles(array(
-            'q' => "'".$folder_id."' in parents",
-            'pageSize' => 1000,
-            'fields' => 'files(id, name,size,mimeType)'));
-        if(sizeof($response->getFiles())==0)
-        {
-            $ret['result']=WPVIVID_PRO_SUCCESS;
-            $ret['backup']=array();
-            return $ret;
-        }
-        else
-        {
-            $ret['result']=WPVIVID_PRO_SUCCESS;
-            $ret['files']=array();
-            $ret['backup']=array();
-            foreach ($response->getFiles() as $file)
-            {
-                if($file->mimeType=='application/vnd.google-apps.folder')
-                {
-                    continue;
-                }
-                else
-                {
-                    $file_data['file_name']=$file->name;
-                    $file_data['size']=$file->size;
-                    $file_data['remote_path']=$sub_path;
-                    $ret['files'][]=$file_data;
-                }
-            }
-
-            if(!empty($ret['files']))
-            {
-                global $wpvivid_backup_pro;
-                $ret['backup']=$wpvivid_backup_pro->func->get_backup($ret['files']);
-            }
-
-            return $ret;
-        }*/
     }
 
     public function scan_folder_backup_ex($folder_type)
@@ -2675,14 +2372,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         if($folder_type=='all_backup')
         {
@@ -2910,14 +2601,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
                 return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
             }
 
-            if(class_exists('WPvivid_Google_Service_Drive'))
-            {
-                $service = new WPvivid_Google_Service_Drive($client);
-            }
-            else
-            {
-                $service = new Google_Service_Drive($client);
-            }
+            $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+            $service = new $serviceClass($client);
 
             $folder_id=$this->get_folder($service,$path);
 
@@ -2999,14 +2684,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
 
@@ -3134,14 +2813,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
 
@@ -3285,14 +2958,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         $path=$this->options['path'];
 
@@ -3361,14 +3028,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return false;
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         if($folder_type === 'Common')
         {
@@ -3515,14 +3176,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return array('result' => WPVIVID_PRO_FAILED,'error'=> 'Token refresh failed.');
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         if($type=='Rollback')
         {
@@ -3645,14 +3300,8 @@ class Wpvivid_Google_drive_addon extends WPvivid_Remote_addon
             return false;
         }
 
-        if(class_exists('WPvivid_Google_Service_Drive'))
-        {
-            $service = new WPvivid_Google_Service_Drive($client);
-        }
-        else
-        {
-            $service = new Google_Service_Drive($client);
-        }
+        $serviceClass = WPvivid_Google_Compat_Ex::cls('Service_Drive');
+        $service = new $serviceClass($client);
 
         if($type=='Rollback')
         {

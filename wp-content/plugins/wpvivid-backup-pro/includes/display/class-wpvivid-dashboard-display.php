@@ -427,8 +427,7 @@ class WPvivid_Dashboard
                     <ul class="wpvivid-v2-support-list">
                         <li><span>Pro: </span><?php _e(WPVIVID_BACKUP_PRO_VERSION); ?></li>
                         <li><a><span>Local time: </span><span><?php
-                                    $offset = get_option('gmt_offset');
-                                    echo date("H:i - M d, Y", time() + $offset * 60 * 60);;
+                                    echo WPvivid_Time::format_local("H:i - M d, Y", time());
                                     ?></span></a></li>
                     </ul>
                 </div>
@@ -436,6 +435,42 @@ class WPvivid_Dashboard
                 <?php
                 if(apply_filters('wpvivid_show_dashboard_addons',true))
                 {
+                    if(is_multisite())
+                    {
+                        if(is_main_site())
+                        {
+                            $dashboard_info=get_option('wpvivid_dashboard_info',array());
+                        }
+                        else
+                        {
+                            switch_to_blog(get_main_site_id());
+                            $dashboard_info=get_option('wpvivid_dashboard_info',array());
+                            restore_current_blog();
+                        }
+                    }
+                    else
+                    {
+                        $dashboard_info=get_option('wpvivid_dashboard_info',array());
+                    }
+
+                    if(empty($dashboard_info))
+                    {
+                        $active_status='Inactived';
+                        $class_status='wpvivid-v2-status-error';
+                    }
+                    else
+                    {
+                        if(isset($dashboard_info['check_active'])&&$dashboard_info['check_active'])
+                        {
+                            $active_status='✔ Activated';
+                            $class_status='wpvivid-v2-status-success';
+                        }
+                        else
+                        {
+                            $active_status='Inactived';
+                            $class_status='wpvivid-v2-status-error';
+                        }
+                    }
                     ?>
                     <!-- Column: Support -->
                     <div class="wpvivid-v2-support-column">
@@ -449,7 +484,7 @@ class WPvivid_Dashboard
                     <!-- Column: License -->
                     <div class="wpvivid-v2-license-column">
                         <h4>License & Account</h4>
-                        <p>Status: <span class="wpvivid-v2-license-status wpvivid-v2-status-success">✔ Activated</span></p>
+                        <p>Status: <span class="wpvivid-v2-license-status <?php esc_attr_e($class_status); ?>"><?php _e($active_status); ?></span></p>
                         <a href="<?php esc_attr_e(apply_filters('wpvivid_white_label_page_redirect', 'admin.php?page=wpvivid-license', 'wpvivid-license')); ?>" class="wpvivid-v2-license-link">Manage License →</a>
                     </div>
                     <?php
@@ -501,7 +536,7 @@ class WPvivid_Dashboard
         }
         else
         {
-            $last_calc_time_display = date('M d, Y — H:i', $last_calc_time);
+            $last_calc_time_display = WPvivid_Time::format_local('M d, Y — H:i', $last_calc_time);
         }
 
         if($database_size === 0)
@@ -1220,9 +1255,7 @@ class WPvivid_Dashboard
                             if(isset($staging_site['create_time']))
                             {
                                 $create_time=$staging_site['create_time'];
-                                $offset=get_option('gmt_offset');
-                                $utc_time = $create_time + $offset * 60 * 60;
-                                $create_time = date('M d, Y', $utc_time);
+                                $create_time = WPvivid_Time::format_local('M d, Y', $create_time);
                             }
                             else
                             {
@@ -2448,8 +2481,7 @@ class WPvivid_Dashboard
                         <span class="dashicons dashicons-backup"></span>
                         <strong>
                             <?php
-                            $offset = get_option('gmt_offset');
-                            echo date("M d, Y — H:i", $backup_create_time + $offset * 60 * 60);
+                            echo WPvivid_Time::format_local("M d, Y — H:i", $backup_create_time);
                             ?>
                         </strong>
                     </div>
@@ -3023,8 +3055,7 @@ class WPvivid_Dashboard
                                 <div>
                                     <strong>
                                         <?php
-                                        $offset = get_option('gmt_offset');
-                                        echo date("M d, Y — H:i", $backup_create_time + $offset * 60 * 60);
+                                        echo WPvivid_Time::format_local("M d, Y — H:i", $backup_create_time);
                                         ?>
                                     </strong>
                                     <div class="wpvivid-v2-backup-meta"><?php echo $backup_type; ?> · <?php echo $backup_destination; ?></div>
@@ -3099,116 +3130,6 @@ class WPvivid_Dashboard
             </div>
         </div>
         <?php
-    }
-
-
-
-
-
-    public function dashboard_page_ex()
-    {
-        ?>
-        <div class="wrap wpvivid-canvas">
-            <div class="icon32"></div>
-
-            <?php $this->dashboard_welcome_panel(); ?>
-
-            <div id="poststuff" style="">
-                <div id="post-body" class="metabox-holder columns-2">
-                    <?php $this->dashboard_menus_panel();?>
-                    <?php $this->dashboard_menus_sidebar();?>
-                </div>
-                <br class="clear">
-            </div>
-
-        </div>
-        <?php
-    }
-
-    public function dashboard_welcome_panel_ex()
-    {
-        ?>
-        <div class="wpvivid-welcome-panel wpvivid-clear-float">
-            <div class="wpvivid-welcome-bar wpvivid-clear-float">
-                <div class="wpvivid-welcome-bar-left">
-                    <h2>Welcome To <?php echo apply_filters('wpvivid_white_label_display', 'WPvivid Backup & Migration Plugin'); ?></h2>
-                    <p class="about-description">Entrance for all main features</p>
-                </div>
-                <div class="wpvivid-welcome-bar-right">
-                    <p style="text-align:right;">
-                        <span>
-                            <span>Local Time:</span>
-                            <span>
-                                <?php
-                                $offset=get_option('gmt_offset');
-                                echo date("l, F-d-Y H:i",time()+$offset*60*60);
-                                ?>
-                            </span>
-                            <span class="dashicons dashicons-clock wpvivid-dashicons-blue"></span>
-                        </span>
-                    </p>
-                    <?php
-                    if(apply_filters('wpvivid_show_dashboard_addons',true))
-                    {
-                        ?>
-                        <p style="text-align:right;">
-                            <span>Version:</span><a href="https://wpvivid.com/wpvivid-backup-pro-changelog" target="_blank" title="Changelog"><span><?php _e(WPVIVID_BACKUP_PRO_VERSION); ?></span></a>
-                            <span class="dashicons dashicons-welcome-learn-more wpvivid-dashicons-green"></span>
-                        </p>
-                        <?php
-                    }
-                    ?>
-                </div>
-            </div>
-        </div>
-        <?php
-    }
-
-    public function dashboard_menus_panel()
-    {
-        ?>
-        <div id="post-body-content">
-            <div class="meta-box-sortables ui-sortable">
-                <?php do_action('wpvivid_dashboard_menus_box');?>
-                <?php
-                    if( apply_filters('wpvivid_current_user_can',true,'wpvivid-can-install-plugins'))
-                    {
-                        if(apply_filters('wpvivid_show_dashboard_addons',true))
-                        {
-                            do_action('wpvivid_dashboard_addon_box');
-                        }
-                    }
-                ?>
-            </div>
-        </div>
-
-        <?php
-    }
-
-    public function dashboard_menus_sidebar()
-    {
-        if(apply_filters('wpvivid_show_sidebar',true))
-        {
-            ?>
-            <div id="postbox-container-1" class="postbox-container">
-
-                <div class="meta-box-sortables ui-sortable">
-                    <div class="postbox  wpvivid-sidebar-main">
-                        <div class="inside">
-                            <div>
-                                <?php
-                                do_action('wpvivid_dashboard_menus_sidebar');
-                                ?>
-                            </div>
-                        </div>
-                        <!-- .inside -->
-                    </div>
-                    <!-- .postbox -->
-                </div>
-                <!-- .meta-box-sortables -->
-            </div>
-            <?php
-        }
     }
 
     public function license_sidebar()
@@ -4666,8 +4587,7 @@ class WPvivid_Dashboard
                 }
                 else
                 {
-                    $next_db_backup = $next_db_backup + $offset * 60 * 60;
-                    $next_db_backup = date("H:i:s - F-d-Y ", $next_db_backup);
+                    $next_db_backup = WPvivid_Time::format_local("H:i:s - F-d-Y ", $next_db_backup);
                 }
 
                 $next_incremental_backup= $data['incremental_backup']['backup_next_time'];
@@ -4680,8 +4600,7 @@ class WPvivid_Dashboard
                 }
                 else
                 {
-                    $next_files_backup = $next_files_backup + $offset * 60 * 60;
-                    $next_files_backup = date("H:i:s - F-d-Y ", $next_files_backup);
+                    $next_files_backup = WPvivid_Time::format_local("H:i:s - F-d-Y ", $next_files_backup);
                 }
             }
             else
@@ -4763,9 +4682,7 @@ class WPvivid_Dashboard
 
         if($last_files_backup_time>0)
         {
-            $offset=get_option('gmt_offset');
-            $last_files_backup_time = $last_files_backup_time + ($offset * 60 * 60);
-            $last_files_backup_time=date("H:i:s - F-d-Y ", $last_files_backup_time);
+            $last_files_backup_time=WPvivid_Time::format_local("H:i:s - F-d-Y ", $last_files_backup_time);
         }
         else
         {
@@ -4798,9 +4715,7 @@ class WPvivid_Dashboard
 
         if($last_db_backup_time>0)
         {
-            $offset=get_option('gmt_offset');
-            $last_db_backup_time = $last_db_backup_time + ($offset * 60 * 60);
-            $last_db_backup_time=date("H:i:s - F-d-Y ", $last_db_backup_time);
+            $last_db_backup_time=WPvivid_Time::format_local("H:i:s - F-d-Y ", $last_db_backup_time);
         }
         else
         {
@@ -4809,9 +4724,7 @@ class WPvivid_Dashboard
 
         if($last_full_backup_time>0)
         {
-            $offset=get_option('gmt_offset');
-            $last_full_backup_time = $last_full_backup_time + ($offset * 60 * 60);
-            $last_full_backup_time=date("H:i:s - F-d-Y ", $last_full_backup_time);
+            $last_full_backup_time=WPvivid_Time::format_local("H:i:s - F-d-Y ", $last_full_backup_time);
         }
         else
         {
@@ -4857,7 +4770,7 @@ class WPvivid_Dashboard
             foreach ($avtived_schedules as $schedule){
                 $timestamp=wp_next_scheduled($schedule['id'], array($schedule['id']));
                 if($timestamp !== false) {
-                    $next_backup_time = date("H:i:s - M-d-Y ", $timestamp + $offset * 60 * 60);
+                    $next_backup_time = WPvivid_Time::format_local("H:i:s - M-d-Y ", $timestamp);
                 }
                 else{
                     $next_backup_time = 'N/A';
@@ -4992,8 +4905,7 @@ class WPvivid_Dashboard
             $message=get_option('wpvivid_general_schedule_data',array());
             if(!empty($message)){
                 $duration=$message['status']['task_end_time']-$message['status']['task_start_time'];
-                $last_backup_time = strtotime($message['status']['start_time']) + $offset * 60 * 60;
-                $last_backup_time = date("H:i:s - M-d-Y ", $message['status']['start_time'] + $offset * 60 * 60);
+                $last_backup_time = WPvivid_Time::format_local("H:i:s - M-d-Y ", $message['status']['start_time']);
                 if($message['status']['str'] == 'completed'){
                     $last_backup_status='Succeeded';
                 }

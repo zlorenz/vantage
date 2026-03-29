@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: WPvivid_WebDav_addon
  */
@@ -704,7 +704,7 @@ class WPvivid_WebDav_addon extends WPvivid_Remote_addon
                 WPvivid_Custom_Interface_addon::wpvivid_reset_backup_retry_times($task_id);
             }
         }
-
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading completed.',$upload_job['job_data']);
         return array('result' =>WPVIVID_PRO_SUCCESS);
     }
 
@@ -731,7 +731,9 @@ class WPvivid_WebDav_addon extends WPvivid_Remote_addon
         ]);
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        if (PHP_VERSION_ID < 80500) {
+            curl_close($ch);
+        }
         $result['raw_response'] = $response;
 
         if ($httpCode === 200) {
@@ -765,7 +767,9 @@ XML;
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
         $response = curl_exec($ch);
         $headers = curl_getinfo($ch);
-        curl_close($ch);
+        if (PHP_VERSION_ID < 80500) {
+            curl_close($ch);
+        }
 
         $result['raw_response'] = $response;
 
@@ -848,7 +852,9 @@ XML;
                                 }
                                 else
                                 {
-                                    WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+                                    $upload_job['job_data'][basename($file)]['uploaded']=1;
+                                    $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
+                                    WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
                                 }
                             }
                         }
@@ -872,7 +878,9 @@ XML;
             }
             else
             {
-                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+                $upload_job['job_data'][basename($file)]['uploaded']=1;
+                $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
+                WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
             }
         }
 
@@ -925,7 +933,9 @@ XML;
         $http_code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==200||$http_code==201||$http_code==204||$http_code==423)
             {
                 $ret['result']=WPVIVID_SUCCESS;
@@ -954,7 +964,9 @@ XML;
         {
             $ret['result']='failed';
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
     }
@@ -1013,7 +1025,7 @@ XML;
         {
             $upload_job['job_data'][basename($file)]['uploaded']=1;
             $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
-            WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+            WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
             return array('result' =>WPVIVID_SUCCESS);
         }
         else
@@ -1051,7 +1063,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==200||$http_code==201||$http_code==204)
             {
                 $uploaded += $upload_size;
@@ -1108,7 +1122,9 @@ XML;
             {
                 $ret['result']='failed';
                 $ret['error']=curl_error($curl);
-                curl_close($curl);
+                if (PHP_VERSION_ID < 80500) {
+                    curl_close($curl);
+                }
                 return $ret;
             }
         }
@@ -1164,7 +1180,7 @@ XML;
         fclose($fb);
         $upload_job['job_data'][basename($file)]['uploaded']=1;
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading '.basename($file),'notice');
-        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_SUCCESS,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id,'upload',$this->options['id'],WPVIVID_UPLOAD_UNDO,'Uploading '.basename($file).' completed.',$upload_job['job_data']);
         return array('result' =>WPVIVID_SUCCESS);
     }
 
@@ -1237,7 +1253,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==200||$http_code==201||$http_code==204)
             {
                 $uploaded += $upload_size;
@@ -1295,7 +1313,9 @@ XML;
             {
                 $ret['result']='failed';
                 $ret['error']=curl_error($curl);
-                curl_close($curl);
+                if (PHP_VERSION_ID < 80500) {
+                    curl_close($curl);
+                }
                 return $ret;
             }
         }
@@ -1364,7 +1384,9 @@ XML;
                 $ret['test']=$http_code.' '.$response;
             }
         }
-        curl_close ($curl);
+        if (PHP_VERSION_ID < 80500) {
+            curl_close($curl);
+        }
 
         return $ret;
     }
@@ -1726,7 +1748,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
 
             if($http_code==200)
             {
@@ -1756,7 +1780,9 @@ XML;
         {
             $ret['result']='failed';
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
     }
@@ -1845,7 +1871,9 @@ XML;
             $http_code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
             if($response!==false)
             {
-                curl_close($curl);
+                if (PHP_VERSION_ID < 80500) {
+                    curl_close($curl);
+                }
                 if($http_code==200||$http_code==201)
                 {
                     return true;
@@ -1886,7 +1914,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==207)
             {
                 $propinfo = new WPvivid_WebDAV_parse_propfind_response($response);
@@ -1928,12 +1958,16 @@ XML;
         {
             $ret['result']='failed';
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
         else
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             $ret['result']='success';
             return $ret;
         }
@@ -1970,7 +2004,9 @@ XML;
         $http_code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==207)
             {
                 $propinfo = new WPvivid_WebDAV_parse_propfind_response($response);
@@ -2041,7 +2077,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==207)
             {
                 $propinfo = new WPvivid_WebDAV_parse_propfind_response($response);
@@ -2102,7 +2140,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==207)
             {
                 return true;
@@ -2141,7 +2181,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             if($http_code==200||$http_code==201||$http_code==301||$http_code==405)
             {
                 $ret['result']='success';
@@ -2158,7 +2200,9 @@ XML;
         {
             $ret['result']='failed';
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
     }
@@ -2623,7 +2667,9 @@ XML;
 
         if($response!==false)
         {
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
 
             if($http_code==200)
             {
@@ -2652,7 +2698,9 @@ XML;
         {
             $ret['result']='failed';
             $ret['error']=curl_error($curl);
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80500) {
+                curl_close($curl);
+            }
             return $ret;
         }
     }
@@ -3186,7 +3234,9 @@ class WPvivid_WebDAV_parse_propfind_response
         xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING,
             false);
         $this->success = xml_parse($xml_parser, $response, true);
-        xml_parser_free($xml_parser);
+        if (PHP_VERSION_ID < 80500) {
+            xml_parser_free($xml_parser);
+        }
         unset($this->_depth);
     }
 

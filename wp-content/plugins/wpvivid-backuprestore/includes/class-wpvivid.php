@@ -120,6 +120,7 @@ class WPvivid
 
         add_filter('wpvivid_get_oldest_backup_ids', array($this, 'get_oldest_backup_ids'), 10, 2);
         add_filter('wpvivid_check_backup_completeness', array($this, 'check_backup_completeness'), 10, 2);
+        add_filter('wpvivid_set_backup_report_addon_mainwp', array($this, 'wpvivid_set_backup_report_addon_mainwp'));
 
 		/*
         include_once WPVIVID_PLUGIN_DIR . '/includes/class-wpvivid-log.php';
@@ -1213,6 +1214,42 @@ class WPvivid
             }
         }
         return $check_res;
+    }
+
+    public function wpvivid_set_backup_report_addon_mainwp($data){
+        if(isset($data['id']))
+        {
+            $task_id = $data['id'];
+            $option = array();
+            $option[$task_id]['task_id'] = $task_id;
+            $option[$task_id]['backup_time'] = $data['status']['start_time'];
+            if($data['status']['str'] == 'running'){
+                $option[$task_id]['status'] = 'Succeeded';
+            }
+            elseif($data['status']['str'] == 'completed'){
+                $option[$task_id]['status'] = 'Succeeded';
+            }
+            elseif($data['status']['str'] == 'error'){
+                $option[$task_id]['status'] = 'Failed, '.$data['status']['error'];
+            }
+            elseif($data['status']['str'] == 'cancel'){
+                $option[$task_id]['status'] = 'Canceled';
+            }
+            else{
+                $option[$task_id]['status'] = 'The last backup message not found.';
+            }
+
+            $backup_reports = get_option('wpvivid_backup_reports', array());
+            if(!empty($backup_reports)){
+                foreach ($option as $key => $value){
+                    $backup_reports[$key] = $value;
+                    update_option('wpvivid_backup_reports', $backup_reports, 'no');
+                }
+            }
+            else{
+                update_option('wpvivid_backup_reports', $option, 'no');
+            }
+        }
     }
 
     public function get_mainwp_sync_data($information)

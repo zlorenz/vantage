@@ -4,7 +4,7 @@
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
  * Admin_load: yes
- * Version: 2.2.41
+ * Version: 2.2.43
  */
 if (!defined('WPVIVID_BACKUP_PRO_PLUGIN_DIR'))
 {
@@ -799,18 +799,18 @@ class WPvivid_Exporter_taskmanager_Ex
         if(array_key_exists ($task_id,$tasks))
         {
             $task = $tasks[$task_id];
-            $current_time=date("Y-m-d H:i:s");
-            $create_time=date("Y-m-d H:i:s",$task['status']['start_time']);
+            $current_time=WPvivid_Time::format_utc("Y-m-d H:i:s", time());
+            $create_time=WPvivid_Time::format_utc("Y-m-d H:i:s",$task['status']['start_time']);
             $time_diff=strtotime($current_time)-strtotime($create_time);
             $running_time='';
-            if(date("G",$time_diff) > 0){
-                $running_time .= date("G",$time_diff).' hour(s)';
+            if(WPvivid_Time::format_utc("G",$time_diff) > 0){
+                $running_time .= WPvivid_Time::format_utc("G",$time_diff).' hour(s)';
             }
-            if(intval(date("i",$time_diff)) > 0){
-                $running_time .= intval(date("i",$time_diff)).' min(s)';
+            if(intval(WPvivid_Time::format_utc("i",$time_diff)) > 0){
+                $running_time .= intval(WPvivid_Time::format_utc("i",$time_diff)).' min(s)';
             }
-            if(intval(date("s",$time_diff)) > 0){
-                $running_time .= intval(date("s",$time_diff)).' second(s)';
+            if(intval(WPvivid_Time::format_utc("s",$time_diff)) > 0){
+                $running_time .= intval(WPvivid_Time::format_utc("s",$time_diff)).' second(s)';
             }
 
             $ret['type']=$task['data']['doing'];
@@ -893,9 +893,9 @@ class WPvivid_Exporter_task_Ex
         $this->task['options']['post_comment'] = $options['post_comment'];
 
         if(empty($backup_prefix))
-            $this->task['options']['file_prefix'] = $this->task['id'] . '_' . date('Y-m-d-H-i', $this->task['status']['start_time']);
+            $this->task['options']['file_prefix'] = $this->task['id'] . '_' . WPvivid_Time::format_local('Y-m-d-H-i', $this->task['status']['start_time']);
         else
-            $this->task['options']['file_prefix'] = $backup_prefix . '_' . $this->task['id'] . '_' . date('Y-m-d-H-i', $this->task['status']['start_time']);
+            $this->task['options']['file_prefix'] = $backup_prefix . '_' . $this->task['id'] . '_' . WPvivid_Time::format_local('Y-m-d-H-i', $this->task['status']['start_time']);
 
         $this->task['options']['log_file_name']=$id.'_export';
         $log=new WPvivid_Log_Ex_addon();
@@ -989,7 +989,7 @@ class WPvivid_Exporter_task_Ex
         //$last=end($next_post_ids);
 
         $post_comment = !empty($this->task['options']['post_comment']) ? $this->task['options']['post_comment'].'_' : '';
-        $ret['file_name']=$post_comment.self::get_id().'_'.date('Y-m-d-H-i', $this->task['status']['start_time']);
+        $ret['file_name']=$post_comment.self::get_id().'_'.WPvivid_Time::format_local('Y-m-d-H-i', $this->task['status']['start_time']);
         $ret['export_type']=$this->task['options']['backup_options']['post_type'];
         return $ret;
     }
@@ -1943,7 +1943,7 @@ class WPvivid_Exporter_Ex
         }
     }
 
-    private function wxr_authors_list( array $post_ids = null )
+    private function wxr_authors_list( $post_ids = null )
     {
         global $wpdb;
 

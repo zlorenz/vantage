@@ -1328,4 +1328,27 @@ class WPvivid_Custom_Interface_addon
         $ret['result']='success';
         return $ret;
     }
+
+    public static function get_vendor_mode()
+    {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            // Load new library from 'vendor'
+            return 'modern';
+        } else {
+            // Load legacy library from 'legacy'
+            return 'legacy';
+        }
+    }
+
+    public static function get_crypt_client($token)
+    {
+        $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+        if($vendor_mode === 'modern') {
+            $crypt=new WPvivid_Crypt_Ex($token);
+        }
+        else{
+            $crypt=new WPvivid_crypt($token);
+        }
+        return $crypt;
+    }
 }

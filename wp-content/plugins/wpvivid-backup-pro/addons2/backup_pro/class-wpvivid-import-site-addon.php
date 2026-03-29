@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Admin_load: yes
  * Need_init: yes
  * Interface Name: WPvivid_Import_Site_Page_addon
@@ -93,10 +93,8 @@ class WPvivid_Import_Backup_List extends WP_List_Table
 
     public function _column_wpvivid_backup( $backup )
     {
-        $localtime = $backup['create_time'];
-
-        $offset=get_option('gmt_offset');
-        $utc_time = $backup['create_time'] - $offset * 60 * 60;
+        $localtime = WPvivid_Time::format_local('M-d-Y H:i', $backup['create_time']);
+        $utc_time = WPvivid_Time::format_utc('M-d-Y H:i', $backup['create_time']);
 
         if(isset($backup['backup_prefix']) && !empty($backup['backup_prefix']))
         {
@@ -113,10 +111,10 @@ class WPvivid_Import_Backup_List extends WP_List_Table
         }
         $size=size_format($size,2);
 
-        $html='<div class="wpvivid-v2-remote-item" id="'.$backup['id'].'" type-string="'.$backup['content_detail'].'" backup-time="'.date('M-d-Y H:i', $localtime).'" backup-type="'.$backup['type'].'" backup-comment="'.$backup_prefix.'" backup-size="'.$size.'" style="border-bottom:1px solid #cccccc;">
+        $html='<div class="wpvivid-v2-remote-item" id="'.$backup['id'].'" type-string="'.$backup['content_detail'].'" backup-time="'.$localtime.'" backup-type="'.$backup['type'].'" backup-comment="'.$backup_prefix.'" backup-size="'.$size.'" style="border-bottom:1px solid #cccccc;">
                     <div class="wpvivid-v2-remote-main">
                         <span class="dashicons dashicons-media-archive wpvivid-v2-dashicons-blue"></span>
-                        <span class="wpvivid-v2-file-name" title="UTC:'.date('M-d-Y H:i', $utc_time).'"><strong>'.__(date('M-d-Y H:i', $localtime)).'</strong></span>
+                        <span class="wpvivid-v2-file-name" title="UTC:'.$utc_time.'"><strong>'.__($localtime).'</strong></span>
                         <button class="wpvivid-v2-btn-link wpvivid-restore-backup">
                             <span class="dashicons dashicons-update"></span> Restore
                         </button>
@@ -950,7 +948,6 @@ class WPvivid_Import_Site_Page_addon
         $wpvivid_backup_pro->ajax_check_security('wpvivid-can-mange-backup');
         try
         {
-            include_once WPVIVID_PLUGIN_DIR.'/vendor/autoload.php';
             $expires=time()+3600;
 
             if(isset($_POST['expires']))
@@ -983,8 +980,29 @@ class WPvivid_Import_Site_Page_addon
             }
 
             $key_size = 2048;
-            $rsa = new Crypt_RSA();
-            $keys = $rsa->createKey($key_size);
+
+            if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+                $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+                if($vendor_mode === 'modern') {
+                    include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'vendor/autoload.php';
+                    $private = \WPvividphpseclib3\Crypt\RSA::createKey($key_size);
+                    $keys = array(
+                        'privatekey' => $private->toString('PKCS8'),
+                        'publickey'  => $private->getPublicKey()->toString('PKCS8'),
+                    );
+                }
+                else{
+                    include_once WPVIVID_PLUGIN_DIR . '/vendor/autoload.php';
+                    $rsa = new Crypt_RSA();
+                    $keys = $rsa->createKey($key_size);
+                }
+            }
+            else {
+                include_once WPVIVID_PLUGIN_DIR . '/vendor/autoload.php';
+                $rsa = new Crypt_RSA();
+                $keys = $rsa->createKey($key_size);
+            }
+
             $options['public_key']=base64_encode($keys['publickey']);
             $options['private_key']=base64_encode($keys['privatekey']);
             $options['expires']=$expires;
@@ -1032,8 +1050,7 @@ class WPvivid_Import_Site_Page_addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>

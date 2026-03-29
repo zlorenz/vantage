@@ -3721,10 +3721,10 @@ class Math_BigInteger
         $carry = 0;
         for ($i = strlen($x) - 1; $i >= 0; --$i) {
             $temp = ord($x[$i]) << $shift | $carry;
-            $x[$i] = chr($temp);
+            $x[$i] = chr($temp & 0xFF);
             $carry = $temp >> 8;
         }
-        $carry = ($carry != 0) ? chr($carry) : '';
+        $carry = ($carry != 0) ? chr($carry & 0xFF) : '';
         $x = $carry . $x . str_repeat(chr(0), $num_bytes);
     }
 

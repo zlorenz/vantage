@@ -4,7 +4,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Admin_load: yes
  * Need_init: yes
  * Interface Name: WPvivid_Export_Site_Page_addon
@@ -481,7 +481,7 @@ class WPvivid_Export_Site_Page_addon
                 }
                 else{
                     $time_diff = $expires - time();
-                    $key_status = '<p><span>The key will expire in: </span><span>'.date("H:i:s",$time_diff).'</span></p>
+                    $key_status = '<p><span>The key will expire in: </span><span>'.WPvivid_Time::format_local("H:i:s",$time_diff).'</span></p>
                                    <p><span>Connection Status:</span><span class="wpvivid-rectangle wpvivid-green">OK</span></p>
                                    <p><span>Now you can transfer the site <code>'.$source_dir.'</code> to the site <code>'.$target_dir.'</code></span></p>';
                 }
@@ -688,7 +688,12 @@ class WPvivid_Export_Site_Page_addon
 
             $json['test_connect']=1;
             $json=json_encode($json);
-            $crypt=new WPvivid_crypt(base64_decode($token));
+            if (method_exists('WPvivid_Custom_Interface_addon', 'get_crypt_client')) {
+                $crypt = WPvivid_Custom_Interface_addon::get_crypt_client(base64_decode($token));
+            }
+            else {
+                $crypt=new WPvivid_crypt(base64_decode($token));
+            }
             $data=$crypt->encrypt_message($json);
             if($data===false)
             {
@@ -741,7 +746,7 @@ class WPvivid_Export_Site_Page_addon
 
                                 if($site['expires']>time())
                                 {
-                                    $date=date("l, F d, Y H:i", $site['expires']);
+                                    $date=WPvivid_Time::format_local("l, F d, Y H:i", $site['expires']);
                                 }
                                 else
                                 {
@@ -950,8 +955,7 @@ class WPvivid_Export_Site_Page_addon
                                             <span>
                                                 <a href="<?php esc_attr_e(apply_filters('wpvivid_get_admin_url', '').'options-general.php'); ?>">
                                                     <?php
-                                                    $offset=get_option('gmt_offset');
-                                                    echo date("l, F-d-Y H:i",time()+$offset*60*60);
+                                                    echo WPvivid_Time::format_local("l, F-d-Y H:i",time());
                                                     ?>
                                                 </a>
                                             </span>

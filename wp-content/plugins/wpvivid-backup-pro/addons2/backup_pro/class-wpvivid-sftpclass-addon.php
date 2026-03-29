@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * No_need_load: yes
  * Interface Name: WPvivid_SFTPClass_addon
  */
@@ -374,6 +374,67 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         <?php
     }
 
+    private function wpvivid_is_sftp_conn($conn)
+    {
+        return is_object($conn)
+            && method_exists($conn, 'login')
+            && method_exists($conn, 'put')
+            && method_exists($conn, 'get')
+            && method_exists($conn, 'delete');
+    }
+
+    private function wpvivid_sftp_put_mode_string($conn)
+    {
+        // legacy phpseclib v1
+        if (defined('NET_SFTP_STRING')) {
+            return NET_SFTP_STRING;
+        }
+
+        // modern phpseclib v3
+        if (is_object($conn) && is_a($conn, '\\WPvividphpseclib3\\Net\\SFTP')) {
+            return \WPvividphpseclib3\Net\SFTP::SOURCE_STRING;
+        }
+
+        // modern phpseclib v2
+        if (is_object($conn) && is_a($conn, '\\phpseclib\\Net\\SFTP')) {
+            return \phpseclib\Net\SFTP::SOURCE_STRING;
+        }
+
+        return 0;
+    }
+
+    private function wpvivid_sftp_put_mode_local_file_resume($conn)
+    {
+        // legacy phpseclib v1
+        if (defined('NET_SFTP_LOCAL_FILE')) {
+            $mode = NET_SFTP_LOCAL_FILE;
+            if (defined('NET_SFTP_RESUME_START')) {
+                $mode |= NET_SFTP_RESUME_START;
+            }
+            return $mode;
+        }
+
+        // modern phpseclib v3
+        if (is_object($conn) && is_a($conn, '\\WPvividphpseclib3\\Net\\SFTP')) {
+            $mode = \WPvividphpseclib3\Net\SFTP::SOURCE_LOCAL_FILE;
+            if (defined('\\WPvividphpseclib3\\Net\\SFTP::RESUME')) {
+                $mode |= \WPvividphpseclib3\Net\SFTP::RESUME;
+            }
+            return $mode;
+        }
+
+        // modern phpseclib v2
+        if (is_object($conn) && is_a($conn, '\\phpseclib\\Net\\SFTP')) {
+            $mode = \phpseclib\Net\SFTP::SOURCE_LOCAL_FILE;
+            if (defined('\\phpseclib\\Net\\SFTP::RESUME')) {
+                $mode |= \phpseclib\Net\SFTP::RESUME;
+            }
+            return $mode;
+        }
+
+        return 0;
+    }
+
     public function test_connect()
     {
         $host = $this->options['host'];
@@ -389,7 +450,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = empty($this->options['port']) ? 22 : $this->options['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-        if (!is_subclass_of($conn, 'Net_SSH2')) {
+        if(!$this->wpvivid_is_sftp_conn($conn))
+        {
             return $conn;
         }
 
@@ -409,7 +471,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
                 $str = $this->do_chdir($conn,$path);
                 if ($str['result'] == WPVIVID_PRO_SUCCESS)
                 {
-                    if ($conn->put(trailingslashit($path) . 'testfile', 'test data', NET_SFTP_STRING))
+                    $mode = $this->wpvivid_sftp_put_mode_string($conn);
+                    if ($conn->put(trailingslashit($path) . 'testfile', 'test data', $mode))
                     {
                         $this->_delete($conn, trailingslashit($path) . 'testfile');
 
@@ -623,7 +686,19 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
 
     function do_connect($host, $username, $password, $port)
     {
-        include_once WPVIVID_PLUGIN_DIR . '/includes/customclass/class-wpvivid-extend-sftp.php';
+        if (method_exists('WPvivid_Custom_Interface_addon', 'get_vendor_mode')) {
+            $vendor_mode = WPvivid_Custom_Interface_addon::get_vendor_mode();
+            if($vendor_mode === 'modern') {
+                include_once WPVIVID_BACKUP_PRO_PLUGIN_DIR. 'addons2/backup_pro/class-wpvivid-extend-sftp-addon.php';
+            }
+            else{
+                include_once WPVIVID_PLUGIN_DIR . '/includes/customclass/class-wpvivid-extend-sftp.php';
+            }
+        }
+        else {
+            include_once WPVIVID_PLUGIN_DIR . '/includes/customclass/class-wpvivid-extend-sftp.php';
+        }
+
         $conn = new WPvivid_Net_SFTP($host, $port, $this->timeout);
         $conn->setTimeout($this->timeout);
         $ret = $conn->login($username, $password);
@@ -689,8 +764,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
 
         $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Connecting to server ' . $host, 'notice');
         $conn = $this->do_connect($host, $username, $password, $port);
-
-        if (is_array($conn) && $conn['result'] == WPVIVID_PRO_FAILED) {
+        if(!$this->wpvivid_is_sftp_conn($conn) && $conn['result'] == WPVIVID_PRO_FAILED)
+        {
             return $conn;
         }
         if(!isset($this->options['custom_path']))
@@ -740,13 +815,14 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
 
                 WPvivid_taskmanager::update_backup_sub_task_progress($task_id, 'upload', $this->options['id'], WPVIVID_UPLOAD_UNDO, 'Start uploading ' . basename($file) . '.', $upload_job['job_data']);
 
-                $result = $conn->put(trailingslashit($path) . basename($file), $file, NET_SFTP_LOCAL_FILE | NET_SFTP_RESUME_START, -1, -1, array($this, 'upload_callback'));
+                $mode = $this->wpvivid_sftp_put_mode_local_file_resume($conn);
+                $result = $conn->put(trailingslashit($path) . basename($file), $file, $mode, -1, -1, array($this, 'upload_callback'));
 
                 if ($result) {
                     WPvivid_Custom_Interface_addon::wpvivid_reset_backup_retry_times($task_id);
                     $wpvivid_backup_pro->wpvivid_pro_log->WriteLog('Finished uploading ' . basename($file), 'notice');
                     $upload_job['job_data'][basename($file)]['uploaded'] = 1;
-                    WPvivid_taskmanager::update_backup_sub_task_progress($task_id, 'upload', $this->options['id'], WPVIVID_UPLOAD_SUCCESS, 'Uploading ' . basename($file) . ' completed.', $upload_job['job_data']);
+                    WPvivid_taskmanager::update_backup_sub_task_progress($task_id, 'upload', $this->options['id'], WPVIVID_UPLOAD_UNDO, 'Uploading ' . basename($file) . ' completed.', $upload_job['job_data']);
                     break;
                 }
                 else
@@ -766,6 +842,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
                 sleep(WPVIVID_PRO_REMOTE_CONNECT_RETRY_INTERVAL);
             }
         }
+        WPvivid_taskmanager::update_backup_sub_task_progress($task_id, 'upload', $this->options['id'], WPVIVID_UPLOAD_SUCCESS, 'Uploading completed.', $upload_job['job_data']);
         $conn->disconnect();
         return array('result' => WPVIVID_PRO_SUCCESS);
     }
@@ -813,8 +890,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
             $wpvivid_plugin->wpvivid_download_log->WriteLog('from path:'.$path, 'notice');
             $wpvivid_plugin->wpvivid_download_log->WriteLog('Connecting SFTP server.', 'notice');
             $conn = $this->do_connect($host, $username, $password, $port);
-
-            if (!is_subclass_of($conn, 'Net_SSH2')) {
+            if(!$this->wpvivid_is_sftp_conn($conn))
+            {
                 return $conn;
             }
             $wpvivid_plugin->wpvivid_download_log->WriteLog('Create local file.', 'notice');
@@ -898,8 +975,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
             $remote_file = trailingslashit($path) . $download_info['file_name'];
 
             $conn = $this->do_connect($host, $username, $password, $port);
-
-            if (!is_subclass_of($conn, 'Net_SSH2')) {
+            if(!$this->wpvivid_is_sftp_conn($conn))
+            {
                 return $conn;
             }
 
@@ -993,7 +1070,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = empty($remote['options']['port']) ? 22 : $remote['options']['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-        if (!is_subclass_of($conn, 'Net_SSH2')) {
+        if(!$this->wpvivid_is_sftp_conn($conn))
+        {
             return $conn;
         }
         foreach ($files as $file)
@@ -1066,8 +1144,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = $this->options['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-
-        if (is_array($conn) && $conn['result'] == WPVIVID_PRO_FAILED) {
+        if(!$this->wpvivid_is_sftp_conn($conn) && $conn['result'] == WPVIVID_PRO_FAILED)
+        {
             return $conn;
         }
 
@@ -1095,7 +1173,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
 
         $this -> current_file_name = basename($file);
         $this -> current_file_size = filesize($file);
-        $result = $conn->put(trailingslashit($path) . basename($file), $file, NET_SFTP_LOCAL_FILE | NET_SFTP_RESUME_START, -1, -1);
+        $mode = $this->wpvivid_sftp_put_mode_local_file_resume($conn);
+        $result = $conn->put(trailingslashit($path) . basename($file), $file, $mode, -1, -1);
 
         if ($result)
         {
@@ -1167,8 +1246,8 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = empty($this->options['port']) ? 22 : $this->options['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-
-        if (!is_subclass_of($conn, 'Net_SSH2')) {
+        if(!$this->wpvivid_is_sftp_conn($conn))
+        {
             return $conn;
         }
 
@@ -1248,7 +1327,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = empty($remote['options']['port']) ? 22 : $remote['options']['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-        if (!is_subclass_of($conn, 'Net_SSH2'))
+        if(!$this->wpvivid_is_sftp_conn($conn))
         {
             return $conn;
         }
@@ -1291,7 +1370,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
             $port = $this->options['port'];
 
             $conn = $this->do_connect($host, $username, $password, $port);
-            if (!is_subclass_of($conn, 'Net_SSH2'))
+            if(!$this->wpvivid_is_sftp_conn($conn))
             {
                 return $conn;
             }
@@ -1377,7 +1456,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
             $port = $this->options['port'];
 
             $conn = $this->do_connect($host, $username, $password, $port);
-            if (!is_subclass_of($conn, 'Net_SSH2'))
+            if(!$this->wpvivid_is_sftp_conn($conn))
             {
                 return $conn;
             }
@@ -1418,7 +1497,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $ret['result'] = WPVIVID_PRO_SUCCESS;
         $ret['backup'] = array();
         $ret['path']=array();
-        if (!is_subclass_of($conn, 'Net_SSH2'))
+        if(!$this->wpvivid_is_sftp_conn($conn))
         {
             return $conn;
         }
@@ -1466,7 +1545,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $ret['backup']=array();
         $ret['files']=array();
 
-        if (!is_subclass_of($conn, 'Net_SSH2'))
+        if(!$this->wpvivid_is_sftp_conn($conn))
         {
             return $conn;
         }
@@ -1513,7 +1592,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = $this->options['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-        if (!is_subclass_of($conn, 'Net_SSH2'))
+        if(!$this->wpvivid_is_sftp_conn($conn))
         {
             return $conn;
         }
@@ -1809,8 +1888,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
             $remote_file = trailingslashit($path) . $backup_info_file;
 
             $conn = $this->do_connect($host, $username, $password, $port);
-
-            if (!is_subclass_of($conn, 'Net_SSH2'))
+            if(!$this->wpvivid_is_sftp_conn($conn))
             {
                 return $conn;
             }
@@ -1858,8 +1936,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = $this->options['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-
-        if (is_array($conn) && $conn['result'] == WPVIVID_PRO_FAILED)
+        if(!$this->wpvivid_is_sftp_conn($conn) && $conn['result'] == WPVIVID_PRO_FAILED)
         {
             return $conn;
         }
@@ -1926,7 +2003,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $ret['result'] = WPVIVID_PRO_SUCCESS;
 
         $ret['path']=array();
-        if (!is_subclass_of($conn, 'Net_SSH2'))
+        if(!$this->wpvivid_is_sftp_conn($conn))
         {
             return $conn;
         }
@@ -1969,8 +2046,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $port = $this->options['port'];
 
         $conn = $this->do_connect($host, $username, $password, $port);
-
-        if (is_array($conn) && $conn['result'] == WPVIVID_PRO_FAILED)
+        if(!$this->wpvivid_is_sftp_conn($conn) && $conn['result'] == WPVIVID_PRO_FAILED)
         {
             return $conn;
         }
@@ -2069,7 +2145,7 @@ class WPvivid_SFTPClass_addon extends WPvivid_Remote_addon
         $ret['result'] = WPVIVID_PRO_SUCCESS;
 
         $ret['path']=array();
-        if (!is_subclass_of($conn, 'Net_SSH2'))
+        if(!$this->wpvivid_is_sftp_conn($conn))
         {
             return $conn;
         }

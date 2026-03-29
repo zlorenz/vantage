@@ -22,6 +22,12 @@
   --vp-wpvivid-accent-hover: #60a5fa;
   --vp-wpvivid-success: #22c55e;
   --vp-wpvivid-error: #ef4444;
+  /* Warning strip – dark surface, still reads as amber/yellow utility */
+  --vp-wpvivid-warning-bg: #241c0d;
+  --vp-wpvivid-warning-border: rgba(234, 179, 8, 0.4);
+  --vp-wpvivid-warning-text: #fde68a;
+  --vp-wpvivid-warning-link: #fbbf24;
+  --vp-wpvivid-warning-link-hover: #fef3c7;
 }
 
 /* ==========================================================================
@@ -44,6 +50,35 @@
 body[class*="wpvivid"] .uix-body-container {
   background: var(--vp-wpvivid-bg) !important;
   color: var(--vp-wpvivid-text) !important;
+}
+
+/* ==========================================================================
+   Dashboard – v2 warning notices (e.g. plugin update available)
+   Replaces bright default panel with dark amber; keeps yellow utility hue.
+   ========================================================================== */
+
+.wrap.wpvivid-canva .wpvivid-v2-notice.wpvivid-v2-notice-warning,
+.wrap.wpvivid-canvas .wpvivid-v2-notice.wpvivid-v2-notice-warning,
+#wpbody-content .wpvivid-v2-notice.wpvivid-v2-notice-warning,
+#uixpress-app-wrapper .wpvivid-v2-notice.wpvivid-v2-notice-warning {
+  background: var(--vp-wpvivid-warning-bg) !important;
+  border: 1px solid var(--vp-wpvivid-warning-border) !important;
+  color: var(--vp-wpvivid-warning-text) !important;
+  box-shadow: none !important;
+}
+
+.wrap.wpvivid-canva .wpvivid-v2-notice-warning a,
+.wrap.wpvivid-canvas .wpvivid-v2-notice-warning a,
+#wpbody-content .wpvivid-v2-notice-warning a,
+#uixpress-app-wrapper .wpvivid-v2-notice-warning a {
+  color: var(--vp-wpvivid-warning-link) !important;
+}
+
+.wrap.wpvivid-canva .wpvivid-v2-notice-warning a:hover,
+.wrap.wpvivid-canvas .wpvivid-v2-notice-warning a:hover,
+#wpbody-content .wpvivid-v2-notice-warning a:hover,
+#uixpress-app-wrapper .wpvivid-v2-notice-warning a:hover {
+  color: var(--vp-wpvivid-warning-link-hover) !important;
 }
 
 /* ==========================================================================

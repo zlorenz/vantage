@@ -3,7 +3,7 @@
  * WPvivid addon: yes
  * Addon Name: wpvivid-backup-pro-all-in-one
  * Description: Pro
- * Version: 2.2.41
+ * Version: 2.2.43
  * Need_init: yes
  * Interface Name: WPvivid_Rollback_Addon
  */
@@ -1112,8 +1112,7 @@ class WPvivid_Rollback_Addon
             $mail_title = '';
         }
 
-        $offset=get_option('gmt_offset');
-        $localtime=gmdate('m-d-Y H:i:s', time()+$offset*60*60);
+        $localtime=WPvivid_Time::format_local('m-d-Y H:i:s', time());
         $subject='['.$mail_title.'Backup '.$status.']'.$localtime.sprintf(' - By %s', apply_filters('wpvivid_white_label_display', 'WPvivid Backup Plugin'));
         return $subject;
     }
@@ -1141,8 +1140,7 @@ class WPvivid_Rollback_Addon
             $mail_title = '';
         }
 
-        $offset=get_option('gmt_offset');
-        $localtime=gmdate('m-d-Y H:i:s', time()+$offset*60*60);
+        $localtime=WPvivid_Time::format_local('m-d-Y H:i:s', time());
         $subject='['.$mail_title.']'.$localtime.sprintf(' - By %s', apply_filters('wpvivid_white_label_display', 'WPvivid Backup Plugin'));
         return $subject;
     }
@@ -1158,8 +1156,7 @@ class WPvivid_Rollback_Addon
             $status='Failed';
         }
 
-        $offset=get_option('gmt_offset');
-        $end_time=date("m-d-Y H:i:s",time()+$offset*60*60);
+        $end_time=WPvivid_Time::format_local("m-d-Y H:i:s",time());
 
         global $wpdb;
         $home_url = home_url();
@@ -1563,8 +1560,7 @@ class WPvivid_Rollback_Addon
 
     public function set_plugin_theme_mail_body($backup_what, $backup_success, $backup_failed, $backup_path='')
     {
-        $offset=get_option('gmt_offset');
-        $end_time=date("m-d-Y H:i:s",time()+$offset*60*60);
+        $end_time=WPvivid_Time::format_local("m-d-Y H:i:s",time());
 
         global $wpdb;
         $home_url = home_url();
@@ -2853,7 +2849,7 @@ class WPvivid_Rollback_Addon
                         $file_name=$path . '/' . $file.'/wordpress.zip';
                         $info['id']=$file;
                         $info['version']=$file;
-                        $info['date']=date('M d Y h:i A', filemtime($file_name));
+                        $info['date']=WPvivid_Time::format_utc('M d Y h:i A', filemtime($file_name));
                         $info['size']=size_format(filesize($file_name),2);
                         $core_list[$file]=$info;
                     }
@@ -2919,74 +2915,57 @@ class WPvivid_Rollback_Addon
                 die();
             }
 
-            //select backup content
-            $backup_options['backup_select']['other'] = 0;
-            $backup_options['exclude_tables'] = array();
-            $backup_options['include_plugins'] = array();
-            $backup_options['include_themes'] = array();
-            $backup_options['exclude_uploads'] = array();
-            $backup_options['exclude_uploads_files'] = array();
-            $backup_options['exclude_content'] = array();
-            $backup_options['exclude_content_files'] = array();
-            $backup_options['exclude_custom_other'] = array();
-            $backup_options['exclude_custom_other_files'] = array();
+            $backup_options['custom_dirs']['database_check'] = 1;
 
-            $backup_options['backup_select']['core'] = 0;
-            $backup_options['backup_select']['db'] = 1;
+            $auto_backup_before_update = get_option('wpvivid_auto_backup_before_update', array());
+            if (isset($auto_backup_before_update['exclude-tables']) && !empty($auto_backup_before_update['exclude-tables']))
+            {
+                $backup_options['custom_dirs']['exclude-tables'] = $auto_backup_before_update['exclude-tables'];
+            }
+            else
+            {
+                $backup_options['custom_dirs']['exclude-tables'] = array();
+            }
 
-            $backup_options['backup_select']['themes'] = 0;
-            $backup_options['backup_select']['plugin'] = 0;
-            $backup_options['backup_select']['uploads'] = 0;
-            $backup_options['backup_select']['content'] = 0;
-            $backup_options['backup_select']['additional_db'] = 0;
-
-            $backup_options['ismerge'] = '0';
-            $backup_options['lock'] = '0';
-
+            if (isset($auto_backup_before_update['include-tables']) && !empty($auto_backup_before_update['include-tables']))
+            {
+                $backup_options['custom_dirs']['include-tables'] = $auto_backup_before_update['include-tables'];
+            }
+            else
+            {
+                $backup_options['custom_dirs']['include-tables'] = array();
+            }
 
             $rollback_remote = get_option('wpvivid_rollback_remote', 0);
             if ($rollback_remote)
             {
-                $backup_to_remote = 1;
-            } else {
-                $backup_to_remote = 0;
-            }
-
-            if ($backup_to_remote == 1)
-            {
-                $backup_type = 'Rollback';
-                $action = 'backup_remote';
-                $backup_options['backup_to'] = 'rollback_remote';
-                $backup_options['local'] = 0;
                 $backup_options['remote'] = 1;
 
                 $remote_id = get_option('wpvivid_rollback_remote_id', 0);
-                $remoteslist=WPvivid_Setting::get_all_remote_options();
-                if(isset($remoteslist[$remote_id]))
+                $remoteslist = WPvivid_Setting::get_all_remote_options();
+                if (isset($remoteslist[$remote_id]))
                 {
                     $backup_options['remote_options'][$remote_id] = $remoteslist[$remote_id];
                 }
             }
-            else
-            {
-                $backup_type = 'Rollback';
-                $action = 'backup';
-                $backup_options['backup_to'] = 'local';
-                $backup_options['local'] = 1;
-                $backup_options['remote'] = 0;
-            }
 
-            $backup = new WPvivid_Backup_Task();
-            $ret = $backup->new_backup_task($backup_options, $backup_type, $action);
+            $backup_options['type'] = 'Rollback';
+            $backup_options['backup_files'] = 'custom';
 
-            if($ret['result']='success')
+            $ret = apply_filters('wpvivid_start_new_backup_ex', array(), $backup_options);
+            if(isset($ret['result']) && $ret['result'] === 'success' && isset($ret['task_id']))
             {
                 $task_id = $ret['task_id'];
                 $this->wpvivid_check_auto_update(60, $task_id);
-                global $wpvivid_plugin;
-                //global $wpvivid_backup_pro;
-                //$wpvivid_backup_pro->func->flush($task_id);
-                $wpvivid_plugin->backup($task_id);
+
+                if (!class_exists('WPvivid_New_Backup_Page_addon')) {
+                    require_once WPVIVID_BACKUP_PRO_PLUGIN_DIR . 'addons2/backup_pro/class-wpvivid-new-backup-addon.php';
+                }
+                if (class_exists('WPvivid_New_Backup_Page_addon')) {
+                    $ref = new ReflectionClass('WPvivid_New_Backup_Page_addon');
+                    $new_backup = $ref->newInstanceWithoutConstructor();
+                    $new_backup->new_backup_schedule($task_id);
+                }
             }
         }
     }
@@ -3032,11 +3011,19 @@ class WPvivid_Rollback_Addon
         $task=WPvivid_taskmanager::get_task($task_id);
         if($task!==false)
         {
-            if($task['action']=='backup' || $task['action']=='backup_remote')
+            if(isset($task['action']) && ($task['action']=='backup' || $task['action']=='backup_remote'))
             {
                 $backup=new WPvivid_Backup_Task($task['id']);
                 $list_tasks[$task['id']]=$backup->get_backup_task_info($task['id']);
+            }
+            else
+            {
+                $backup = new WPvivid_New_Backup_Task($task['id']);
+                $list_tasks[$task['id']] = $backup->get_backup_task_info();
+            }
 
+            if(isset($list_tasks[$task['id']]))
+            {
                 $list_tasks[$task['id']]['progress_html'] = '<div class="action-progress-bar" id="wpvivid_action_progress_bar">
                                                 <div class="action-progress-bar-percent" id="wpvivid_action_progress_bar_percent" style="height:24px;width:' . $list_tasks[$task['id']]['task_info']['backup_percent'] . '"></div>
                                              </div>                                                    
