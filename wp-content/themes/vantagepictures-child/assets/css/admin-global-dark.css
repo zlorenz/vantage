@@ -105,3 +105,32 @@ body.wp-admin .wp-core-ui .button-primary:hover {
   border-color: var(--admin-accent-hover) !important;
   color: var(--admin-text) !important;
 }
+
+/* ==========================================================================
+   uiXpress – Posts table (edit.php) column wrapping
+   Limit width of very long text columns so the list stays readable
+   without forcing horizontal scrolling.
+   ========================================================================== */
+
+body.wp-admin #uix-posts-page .wp-list-table td.column-title,
+body.wp-admin #uix-posts-page .wp-list-table th.column-title,
+body.wp-admin #uix-posts-page .wp-list-table td.column-wpseo-title,
+body.wp-admin #uix-posts-page .wp-list-table th.column-wpseo-title,
+body.wp-admin #uix-posts-page .wp-list-table td.column-wpseo-metadesc,
+body.wp-admin #uix-posts-page .wp-list-table th.column-wpseo-metadesc,
+body.wp-admin #uix-posts-page .wp-list-table td.column-wpseo-focuskw,
+body.wp-admin #uix-posts-page .wp-list-table th.column-wpseo-focuskw {
+  max-width: 32rem;
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* uiXpress – Posts table search icon alignment
+   The Tailwind utilities position the SVG mask, but the taller dark input
+   makes it appear slightly low. Nudge it up without touching other icons. */
+body.wp-admin #uix-posts-page .uix-body-container span[style*="assets/icons/search"] {
+  top: 50% !important;
+  transform: translateY(-55%) !important;
+}

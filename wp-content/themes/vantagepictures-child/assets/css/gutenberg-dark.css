@@ -1123,6 +1123,11 @@ button[aria-label="Yoast SEO"] svg,
   color: var(--vp-gb-text-secondary) !important;
 }
 
+/* Key small labels like Mobile / Desktop / Tablet in the preview panel are too dim; bump to bright text */
+.edit-post-meta-boxes-area #wpseo_meta .yst-text-slate-800[aria-hidden="true"] {
+  color: var(--vp-gb-text-bright) !important;
+}
+
 .edit-post-meta-boxes-area #wpseo_meta .yst-button {
   background: var(--vp-gb-bg-elevated) !important;
   color: var(--vp-gb-text) !important;
@@ -1993,6 +1998,57 @@ button[id*="Pattern"] svg {
 .wp-block-gravityforms-form .gform-block__placeholder form select option {
   background: var(--vp-gb-bg-input);
   color: var(--vp-gb-text);
+}
+
+/* ==========================================================================
+   Core Embed Block – Vimeo/YouTube/etc. placeholder in editor
+   ========================================================================== */
+
+.wp-block-embed .components-placeholder,
+.wp-block-embed.is-type-video .components-placeholder {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.wp-block-embed .components-placeholder__label,
+.wp-block-embed .components-placeholder__instructions {
+  color: var(--vp-gb-text) !important;
+}
+
+.wp-block-embed .block-editor-block-icon.has-colors {
+  /* Keep provider brand color, but ensure it reads on dark surface */
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
+}
+
+/* ==========================================================================
+   Core Media Placeholder – Image / Gallery upload UI in editor
+   ========================================================================== */
+
+.block-editor-media-placeholder.components-placeholder,
+.block-editor-media-placeholder.is-large {
+  background: var(--vp-gb-bg-elevated) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-media-placeholder .components-placeholder__label,
+.block-editor-media-placeholder .components-placeholder__instructions {
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-media-placeholder .components-button.is-secondary,
+.block-editor-media-placeholder .components-button.block-editor-media-placeholder__button.is-secondary {
+  background: var(--vp-gb-bg-input) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
+}
+
+.block-editor-media-placeholder .components-button.is-secondary:hover,
+.block-editor-media-placeholder .components-button.block-editor-media-placeholder__button.is-secondary:hover {
+  background: var(--vp-gb-bg-hover) !important;
+  border-color: var(--vp-gb-border) !important;
+  color: var(--vp-gb-text) !important;
 }
 
 /* Gravity Forms block – form preview (labels, required text, step numbers) */
