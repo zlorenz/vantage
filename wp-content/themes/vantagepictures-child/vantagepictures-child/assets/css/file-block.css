@@ -1,0 +1,37 @@
+/**
+ * File block overrides – loads after block styles.
+ * Filename link: H3 typography. Download button: .btn-primary match.
+ * Selectors target .wp-block-file directly so they work regardless of parent (entry-content, block template, etc.).
+ */
+
+ .wp-block-file {
+  padding-top: 1.25rem;
+ }
+
+.wp-block-file > a:not(.wp-block-file__button) {
+  font-size: clamp(1.5rem, 2vw, 1.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.wp-block-file .wp-block-file__button {
+  display: inline-block;
+  background: #fff !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.125rem !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  margin-left: 1.25rem;
+  transition: background-color 0.15s ease;
+}
+
+.wp-block-file .wp-block-file__button:hover,
+.wp-block-file .wp-block-file__button:focus {
+  background-color: #a6a6a6 !important;
+  color: #000 !important;
+}

@@ -2,9 +2,11 @@
 /**
  * Yoast SEO tweaks: single source of truth for meta and OG
  *
- * 1. Sets og:type to "video.other" on portfolio singles (appropriate for
+ * 1. Removes duplicate Open Graph / Twitter / canonical output from UIXPress
+ *    when Yoast SEO is active, so only Yoast outputs these tags.
+ * 2. Sets og:type to "video.other" on portfolio singles (appropriate for
  *    a commercial video portfolio piece; Schema/OG expect this for video-centric pages).
- * 2. Inserts "Work" breadcrumb on portfolio taxonomy archives (video-format, industry, market)
+ * 3. Inserts "Work" breadcrumb on portfolio taxonomy archives (video-format, industry, market)
  *    so the trail is Home → Work → [Term] (e.g. Home → Work → Brand Film).
  *
  * @package vantagepictures-child
@@ -13,6 +15,25 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * Remove UIXPress PostEditorSEO meta tags from wp_head when Yoast is active.
+ * Prevents duplicate canonical, og:*, and twitter:* tags (Yoast outputs after its comment).
+ *
+ * Runs on init (not plugins_loaded) because the theme loads after plugins_loaded;
+ * by init, both plugin and theme are loaded and the removal takes effect before wp_head.
+ */
+function vp_remove_uixpress_seo_duplicate() {
+	if ( ! defined( 'WPSEO_VERSION' ) ) {
+		return;
+	}
+	$class = 'UiXpress\Rest\PostEditorSEO';
+	if ( ! class_exists( $class ) ) {
+		return;
+	}
+	remove_action( 'wp_head', [ $class, 'output_seo_meta_tags' ], 1 );
+}
+add_action( 'init', 'vp_remove_uixpress_seo_duplicate', 0 );
 
 /**
  * Use video.other for portfolio singles (Open Graph type for video-centric pages).

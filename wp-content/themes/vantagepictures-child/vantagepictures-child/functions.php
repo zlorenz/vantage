@@ -115,6 +115,14 @@ add_action(
 );
 
 /**
+ * Editor styles for iframed block editor – dark mode content (headings, paragraphs, etc.)
+ * Loads inside the editor iframe via add_editor_style. Overrides :where(.editor-styles-wrapper) color:revert.
+ */
+add_action('after_setup_theme', function () {
+  add_editor_style('assets/css/gutenberg-dark-editor-content.css');
+}, 20);
+
+/**
  * Portfolio card thumbnail: high-res 16:9 size (1920×1080).
  * Used in template-parts/portfolio/card.php. Pair with WebP/AVIF (e.g. Speed Optimizer) to keep file size reasonable.
  */
@@ -468,6 +476,275 @@ add_filter('render_block', function ($block_content, $block) {
   return $block_content;
 
 }, 10, 2);
+
+/**
+ * Gutenberg Block Editor Dark Mode
+ * Matches uiXpress admin aesthetic. Loads in block editor + late on edit screens
+ * so it overrides WordPress core and uiXpress.
+ */
+add_action('enqueue_block_editor_assets', function () {
+  global $pagenow;
+  // Site Editor loads wp-edit-site, not wp-edit-post; wrong dependency can mis-order CSS and contribute to a blank UI.
+  $is_site_editor = ( isset( $pagenow ) && 'site-editor.php' === $pagenow )
+    || ( function_exists( 'get_current_screen' ) && get_current_screen() && 'site-editor' === get_current_screen()->base );
+  $editor_dep = $is_site_editor ? 'wp-edit-site' : 'wp-edit-post';
+  wp_enqueue_style(
+    'vp-gutenberg-dark',
+    get_stylesheet_directory_uri() . '/assets/css/gutenberg-dark.css',
+    array( $editor_dep ),
+    wp_get_theme()->get('Version')
+  );
+  // Avoid .admin-ui-page * — it is too broad for the Site Editor root and can fight core layout/contrast. Header chrome only.
+  $critical = '
+    .editor-header,.edit-post-header,.interface-interface-skeleton__header,.editor-document-bar,.admin-ui-page,.admin-ui-page__header{background:#0f0f11!important;border-bottom-color:#27272a!important;color:#fff!important}
+    .editor-header *,.edit-post-header *,.interface-interface-skeleton__header *,.admin-ui-page__header *{color:#fff!important}
+    .editor-header svg,.edit-post-header svg,.interface-interface-skeleton__header svg,.admin-ui-page__header svg{fill:#fff!important}
+    .interface-complementary-area,.interface-complementary-area-header,.block-editor-tabbed-sidebar,.components-panel,.components-panel__body{background:#0f0f11!important;color:#fff!important}
+    .interface-complementary-area *,.interface-complementary-area-header *,.components-panel *,.components-panel__body *,.block-editor-block-inspector *{color:#fff!important}
+    .components-base-control label,.components-base-control__help,.acf-field label,.acf-label{color:#fff!important}
+    .acf-field p.description{color:#a1a1aa!important}
+  ';
+  wp_add_inline_style('vp-gutenberg-dark', $critical);
+}, 20);
+
+/* Global admin dark normalization – tokens + base surfaces */
+add_action('admin_enqueue_scripts', function () {
+  wp_enqueue_style(
+    'vp-admin-global-dark',
+    get_stylesheet_directory_uri() . '/assets/css/admin-global-dark.css',
+    [],
+    wp_get_theme()->get('Version')
+  );
+}, 20);
+
+add_action('admin_enqueue_scripts', function ($hook) {
+  $edit_screens = ['post.php', 'post-new.php', 'page.php', 'page-new.php'];
+  // Appearance → Design — admin_enqueue_scripts $hook is the file name (e.g. site-editor.php).
+  if (!in_array($hook, $edit_screens, true) && 'site-editor.php' !== $hook) {
+    return;
+  }
+  wp_enqueue_style(
+    'vp-gutenberg-dark-late',
+    get_stylesheet_directory_uri() . '/assets/css/gutenberg-dark.css',
+    [],
+    wp_get_theme()->get('Version') . '-late'
+  );
+}, 9999);
+
+/* ACF Pro admin dark mode – Field Groups, Post Types, Taxonomies, Options, Tools, Updates */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_acf = $screen && (strpos($screen->id, 'acf') !== false || (!empty($screen->post_type) && strpos($screen->post_type, 'acf') !== false));
+  if ($is_acf) {
+    $acf_dark_deps = array( 'acf-global', 'common' );
+    // After uiXpress post editor chrome when present so metabox / .hndle overrides win.
+    if ( wp_style_is( 'uixpress-post-editor', 'registered' ) ) {
+      $acf_dark_deps[] = 'uixpress-post-editor';
+    }
+    wp_enqueue_style(
+      'vp-acf-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/acf-admin-dark.css',
+      $acf_dark_deps,
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Yoast SEO admin dark mode – Dashboard, Task list, Settings, Tools, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_yoast = $screen && (strpos($screen->id, 'wpseo') !== false || strpos($screen->id, 'yoast') !== false);
+  if ($is_yoast) {
+    wp_enqueue_style(
+      'vp-yoast-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/yoast-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Gravity Forms admin dark mode – Forms, Entries, Settings, Form editor, Add-ons, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_gf = $screen && (strpos($screen->id, 'gf_') !== false || strpos($screen->id, 'forms_page') !== false);
+  if ($is_gf) {
+    wp_enqueue_style(
+      'vp-gf-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/gf-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Menu editor dark mode – Appearance → Menus (nav-menus.php) */
+add_action('admin_enqueue_scripts', function ($hook) {
+  if ($hook === 'nav-menus.php') {
+    wp_enqueue_style(
+      'vp-admin-menus-dark',
+      get_stylesheet_directory_uri() . '/assets/css/admin-menus-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Admin dark mode – Tools, Import, Site Health, Yoast SEO Support */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $load = false;
+  if (in_array($hook, ['tools.php', 'import.php', 'tools_page_import', 'site-health.php'], true)) {
+    $load = true;
+  } else {
+    $screen = get_current_screen();
+    if ($screen && (strpos($screen->id, 'wpseo') !== false || strpos($screen->id, 'yoast') !== false)) {
+      $load = true;
+    }
+  }
+  if ($load) {
+    wp_enqueue_style(
+      'vp-admin-tools-health-yoast-dark',
+      get_stylesheet_directory_uri() . '/assets/css/admin-tools-health-yoast-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* Users admin dark mode – Profile, Add New User, Edit User */
+add_action('admin_enqueue_scripts', function ($hook) {
+  if (in_array($hook, ['profile.php', 'user-new.php', 'user-edit.php'], true)) {
+    wp_enqueue_style(
+      'vp-admin-users-dark',
+      get_stylesheet_directory_uri() . '/assets/css/admin-users-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* TranslatePress admin dark mode – Settings, Language Switcher, Addons, License, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_trp = $screen && (strpos($screen->id, 'trp') !== false || strpos($screen->id, 'translate') !== false);
+  if ($is_trp) {
+    wp_enqueue_style(
+      'vp-trp-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/trp-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* WPvivid Backup admin dark mode – Dashboard, Manual Backup, Export/Import, Schedule, etc. */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $is_wpvivid = $screen && strpos($screen->id, 'wpvivid') !== false;
+  if ($is_wpvivid) {
+    wp_enqueue_style(
+      'vp-wpvivid-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/wpvivid-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* SiteGround Optimizer admin dark mode – Speed & Security SPAs */
+add_action('admin_enqueue_scripts', function ($hook) {
+  $screen = get_current_screen();
+  $page = isset($_GET['page']) ? (string) $_GET['page'] : '';
+
+  $is_sg_optimizer = ($screen && (
+      strpos($screen->id, 'sg-cachepress') !== false
+      || strpos($screen->id, 'sg-security') !== false
+      || strpos($screen->id, 'security-optimizer') !== false
+    ))
+    || (strpos($page, 'sgo_') === 0)
+    || ($page === 'sg-security')
+    || in_array($page, ['site-security', 'login-settings', 'activity-log', 'post-hack-actions'], true);
+
+  if ($is_sg_optimizer) {
+    wp_enqueue_style(
+      'vp-sg-optimizer-admin-dark',
+      get_stylesheet_directory_uri() . '/assets/css/sg-optimizer-admin-dark.css',
+      [],
+      wp_get_theme()->get('Version')
+    );
+  }
+}, 9999);
+
+/* TranslatePress translation editor sidebar dark mode – front-end (live translator) */
+add_action('wp_enqueue_scripts', function () {
+  if (!is_user_logged_in()) {
+    return;
+  }
+  wp_enqueue_style(
+    'vp-trp-admin-dark',
+    get_stylesheet_directory_uri() . '/assets/css/trp-admin-dark.css',
+    [],
+    wp_get_theme()->get('Version')
+  );
+}, 9999);
+
+/**
+ * TranslatePress translation editors (visual + string): templates do not use normal
+ * wp_head(); TRP prints whitelisted styles via wp_print_styles() in the editor footer.
+ * We enqueue here and append the handle via trp-styles-for-editor so dark CSS loads.
+ *
+ * - String Translation: ?trp-string-translation=true (trp_string_translation_editor_footer)
+ * - Visual editor: ?trp-edit-translation=… (trp_translation_manager_footer)
+ */
+$vp_trp_enqueue_editor_dark = function () {
+  wp_enqueue_style(
+    'vp-trp-string-translation-editor-dark',
+    get_stylesheet_directory_uri() . '/assets/css/trp-string-translation-editor-dark.css',
+    array( 'trp-editor-style' ),
+    wp_get_theme()->get( 'Version' )
+  );
+};
+add_action( 'trp_string_translation_editor_footer', $vp_trp_enqueue_editor_dark, 5 );
+add_action( 'trp_translation_manager_footer', $vp_trp_enqueue_editor_dark, 5 );
+
+add_filter(
+  'trp-styles-for-editor',
+  function ( $styles ) {
+    $string_translation = isset( $_GET['trp-string-translation'] )
+      && sanitize_text_field( wp_unslash( $_GET['trp-string-translation'] ) ) === 'true';
+    $visual_editor = isset( $_GET['trp-edit-translation'] );
+    if ( $string_translation || $visual_editor ) {
+      $styles[] = 'vp-trp-string-translation-editor-dark';
+    }
+    return $styles;
+  },
+  20
+);
+
+/**
+ * Critical Gutenberg dark overrides – injected in footer to load last.
+ * Ensures top bar and text stay dark even if uiXpress/WordPress load later.
+ */
+add_action('admin_footer', function () {
+  global $pagenow;
+  $edit_pages = ['post.php', 'post-new.php', 'page.php', 'page-new.php', 'site-editor.php'];
+  if (!in_array($pagenow ?? '', $edit_pages, true)) {
+    return;
+  }
+  echo '<style id="vp-gutenberg-dark-critical">';
+  /* Top bar – dark bg; single border on skeleton only (no partial borders) */
+  echo '.editor-header,.edit-post-header,.editor-document-bar,.admin-ui-page__header,.editor-header__center,.editor-header__toolbar,.editor-header__settings{background:#0f0f11!important;border:none!important;box-shadow:none!important}';
+  echo '.interface-interface-skeleton__header{border-bottom:1px solid #2e2e32!important}';
+  /* Document title stays white; rest of toolbar uses main stylesheet secondary */
+  echo '.editor-document-bar__post-title{color:#fff!important}';
+  /* Editor content (iframe) – override load-styles.php revert */
+  echo '.editor-styles-wrapper h1,.editor-styles-wrapper h2,.editor-styles-wrapper h3,.editor-styles-wrapper h4,.editor-styles-wrapper h5,.editor-styles-wrapper h6,.editor-styles-wrapper p,.editor-styles-wrapper li,.editor-styles-wrapper blockquote,.editor-styles-wrapper figcaption,.editor-styles-wrapper .block-editor-rich-text__editable,.editor-styles-wrapper .wp-block-heading,.editor-styles-wrapper .wp-block-paragraph{color:#fff!important}';
+  /* Sidebar panels – background only; text hierarchy from main CSS */
+  echo '.interface-interface-skeleton__sidebar,.interface-interface-skeleton__secondary-sidebar,.interface-complementary-area,.block-editor-tabbed-sidebar,.components-panel,.components-panel__body{background:#141416!important}';
+  /* Icons – light fill/stroke */
+  echo '.interface-interface-skeleton svg,.editor-header svg,.edit-post-header svg,.block-editor-block-toolbar svg,.block-editor-block-contextual-toolbar svg,.components-button svg,.interface-complementary-area svg,.components-panel svg,.block-editor-inserter__menu svg{fill:#fff!important;stroke:#fff!important;color:#fff!important}';
+  echo '</style>';
+}, 99999);
 
 /**
  * Ensure TranslatePress Automatic Language Detection scripts never load.

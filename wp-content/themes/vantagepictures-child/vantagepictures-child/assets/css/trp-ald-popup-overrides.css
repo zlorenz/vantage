@@ -1,0 +1,141 @@
+/**
+ * TranslatePress Automatic Language Detection popup – overrides
+ * Fixes: light background + white text (unreadable), missing close icon, layout.
+ * Child theme only; do not edit the plugin.
+ */
+
+/* Modal popup: dark card so light text is readable */
+#trp_ald_modal_container #trp_ald_modal_popup {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  color: #e2e8f0;
+}
+
+/* Intro text */
+#trp_ald_modal_container #trp_ald_popup_text {
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+/* Language selector area – force dark box + light text (overrides TP’s white from main switcher) */
+#trp_ald_modal_container .trp_ald_ls_container,
+#trp_ald_modal_container .trp_ald_ls_container .trp-ald-popup-select {
+  color: #e2e8f0;
+}
+
+/* Current language box (the visible “简体中文” / “English” field) – dark bg, light text */
+#trp_ald_modal_container #trp_ald_popup_select_container .trp-ls-shortcode-current-language,
+#trp_ald_modal_container .trp_ald_ls_container .trp-language-switcher-container > .trp-ls-shortcode-current-language {
+  background-color: #4a5568 !important;
+  border-color: #718096 !important;
+  color: #f7fafc !important;
+}
+
+#trp_ald_modal_container #trp_ald_popup_select_container .trp-ls-shortcode-current-language:hover,
+#trp_ald_modal_container .trp_ald_ls_container .trp-ls-shortcode-current-language:hover {
+  background-color: #5a6578 !important;
+  color: #fff !important;
+}
+
+/* Dropdown options when expanded – dark bg, light text */
+#trp_ald_modal_container .trp_ald_ls_container .trp-ls-shortcode-language,
+#trp_ald_modal_container .trp_ald_ls_container .trp-ls-shortcode-language > div {
+  background-color: #4a5568 !important;
+  border-color: #718096 !important;
+  color: #f7fafc !important;
+}
+
+#trp_ald_modal_container .trp_ald_ls_container .trp-ls-shortcode-language > div:hover {
+  background-color: #5a6578 !important;
+  color: #fff !important;
+}
+
+/* Chevron/dropdown arrow – visible on dark (replace gradient with a contrasting color) */
+#trp_ald_modal_container .trp_ald_ls_container .trp-language-switcher-container > div {
+  background-image: linear-gradient(60deg, transparent 50%, #a0aec0 50%),
+    linear-gradient(120deg, #a0aec0 50%, transparent 50%) !important;
+  background-position: calc(100% - 18px) calc(1em), calc(100% - 12px) calc(1em) !important;
+  background-size: 6px 12px, 6px 12px !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Change Language button – keep visible on dark background */
+#trp_ald_modal_container #trp_ald_popup_change_language {
+  background: #3182ce;
+  border-color: #3182ce;
+  color: #fff;
+}
+
+#trp_ald_modal_container #trp_ald_popup_change_language:hover {
+  background: #2c5282;
+  border-color: #2c5282;
+  color: #fff;
+}
+
+/* Close row: align and make readable */
+#trp_ald_modal_container #trp_ald_x_button_and_textarea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  color: #a0aec0 !important;
+}
+
+#trp_ald_modal_container #trp_ald_x_button_textarea {
+  color: #a0aec0 !important;
+}
+
+#trp_ald_modal_container #trp_ald_x_button_textarea:hover {
+  color: #e2e8f0 !important;
+}
+
+/* Close X icon: plugin uses dashicons (often missing on front). Use a visible × so it always shows */
+#trp_ald_modal_container #trp_ald_modal_popup #trp_ald_x_button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 28px !important;
+  height: 28px;
+  font-size: 20px;
+  line-height: 1;
+  color: #a0aec0 !important;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#trp_ald_modal_container #trp_ald_modal_popup #trp_ald_x_button:hover {
+  color: #e2e8f0 !important;
+  border-color: #718096;
+  background-color: #4a5568;
+}
+
+/* Replace dashicons ::before with a simple × character so it works without the font */
+#trp_ald_modal_container #trp_ald_modal_popup #trp_ald_x_button::before {
+  content: "×" !important;
+  font: 22px/1 Arial, sans-serif !important;
+  font-weight: 300 !important;
+  color: inherit;
+  background: none !important;
+}
+
+/* Layout: stack select + button on small screens, tidy spacing */
+#trp_ald_modal_container .trp_ald_select_and_button {
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 480px) {
+  #trp_ald_modal_container #trp_ald_modal_popup {
+    max-width: 95%;
+    padding: 1.25rem;
+  }
+
+  #trp_ald_modal_container .trp_ald_button {
+    margin-left: 0;
+    width: 100%;
+  }
+}

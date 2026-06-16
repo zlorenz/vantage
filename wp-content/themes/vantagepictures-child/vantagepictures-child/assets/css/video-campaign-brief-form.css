@@ -1,0 +1,817 @@
+/**
+ * Video Campaign Brief form – dark theme integration
+ * Scoped to the Gravity Forms wrapper class output:
+ * .gform_wrapper.video-campaign-brief-form_wrapper
+ * Does not affect other forms or admin.
+ */
+
+/* --------------------------------------------------------------------------
+   Scope: use wrapper so all rules apply only to this form
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper {
+  --vp-brief-bg: var(--vp-bg, #000);
+  --vp-brief-text: var(--vp-text, #fff);
+  --vp-brief-text-muted: var(--vp-text-muted, rgba(255, 255, 255, 0.85));
+  --vp-brief-text-soft: var(--vp-text-soft, rgba(255, 255, 255, 0.75));
+  --vp-brief-border: var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+  --vp-brief-input-bg: var(--vp-input-bg, rgba(255, 255, 255, 0.08));
+  --vp-brief-input-border: var(--vp-input-border, rgba(255, 255, 255, 0.25));
+  --vp-brief-input-focus: var(--vp-input-bg-focus, rgba(255, 255, 255, 0.12));
+  --vp-brief-link: var(--vp-link, #f9db24);
+  --gf-form-gap-x: 1rem; /* 16px */
+  color: var(--vp-brief-text);
+  font-family: var(--vp-font-sans, "Poppins", sans-serif);
+  /* Let the page builder Container control width. */
+  max-width: none;
+  width: 100%;
+  margin: 0 0 3rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Spacing: intro and required legend
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_heading {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_title {
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+  letter-spacing: var(--vp-heading-spacing, 0.01em);
+  margin-bottom: 0.35rem;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_description {
+  margin-bottom: 0;
+  color: var(--vp-brief-text-soft);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_required_legend {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  color: var(--vp-brief-text-soft);
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   Step navigation – horizontal progress (completed ✔ / current ● / upcoming ○)
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper #gf_page_steps_1,
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_page_steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1.25rem;
+  margin: 0 0 2rem;
+  padding: 0.75rem 0 1rem;
+  list-style: none;
+  border-bottom: 1px solid var(--vp-brief-border);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: none;
+  border-bottom: none;
+  color: var(--vp-brief-text-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: none;
+}
+
+/* Hide default number; we use ::before for icon */
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step .gf_step_number {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step::before {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* Completed: white checkmark */
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_completed {
+  color: var(--vp-brief-text);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_completed::before {
+  content: "✓";
+  color: var(--vp-brief-text);
+}
+
+/* Current: filled circle, strong underline */
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_active {
+  color: var(--vp-brief-text);
+  border-bottom: 2px solid var(--vp-brief-text);
+  padding-bottom: 0.25rem;
+  margin-bottom: -1px;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_active::before {
+  content: "●";
+  color: var(--vp-brief-text);
+}
+
+/* Upcoming: hollow circle, muted */
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_pending {
+  color: var(--vp-brief-text-soft);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_pending::before {
+  content: "○";
+  color: var(--vp-brief-text-soft);
+}
+
+/* Mobile: allow horizontal scroll if needed */
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper #gf_page_steps_1,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_page_steps {
+    position: relative;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0 0.75rem;
+    padding-bottom: 1.75rem; /* space for active step title below */
+    overflow-x: visible;
+    -webkit-overflow-scrolling: auto;
+    border-bottom: none;
+  }
+
+  /* Steps: centered vertical stack with numbered circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step {
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  /* Disable desktop icon glyphs; use the real number instead */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step::before,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_active::before,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_completed::before,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_pending::before {
+    content: none;
+  }
+
+  /* Base number circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step .gf_step_number {
+    position: static;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0;
+    padding: 0;
+    clip: auto;
+    overflow: visible;
+    white-space: normal;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1;
+    transform: translate(0.5px, 1px); /* subtle optical centering tweak */
+  }
+
+  /* Active step: solid circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_active .gf_step_number {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+  }
+
+  /* Completed steps: subtle filled circle */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_completed .gf_step_number {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-color: #fff;
+  }
+
+  /* Pending steps: outline only, muted text */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step.gf_step_pending .gf_step_number {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* Hide in-bar labels; show active label as a heading below the row */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_step .gf_step_label {
+    display: none;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gf_page_steps .gf_step.gf_step_active .gf_step_label {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    transform: none;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: var(--vp-heading-spacing, 0.01em);
+    line-height: 1.1;
+    text-align: left;
+    white-space: nowrap;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Fields container and multi-column alignment (align by input top)
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_body {
+  margin-top: 1.5rem;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_fields {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gf-form-gap-x);
+  row-gap: 1.5rem;
+  align-items: start;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  grid-column: span 12;
+}
+
+/* Gravity Forms builder widths (Theme Framework normally provides this). */
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-half {
+  grid-column: span 6;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-third {
+  grid-column: span 4;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-two-thirds {
+  grid-column: span 8;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-quarter {
+  grid-column: span 3;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-three-quarters {
+  grid-column: span 9;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-seven-twelfths {
+  grid-column: span 7;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-five-twelfths {
+  grid-column: span 5;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--width-full {
+  grid-column: 1 / -1;
+}
+
+/* Always full-width structural fields. */
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-section,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-page,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-hidden {
+  grid-column: 1 / -1;
+}
+
+/* Stack everything on mobile with simple document flow. */
+@media (max-width: 767.98px) {
+  /* Turn off grid layout; let fields flow vertically. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_fields {
+    display: block;
+    padding-top: 2rem; /* breathing room below the step title */
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield {
+    display: block;
+    grid-column: auto;
+    margin: 0 0 0.85rem;
+  }
+
+  /* Labels: natural height, simple margin below. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield_label {
+    display: block;
+    align-items: normal;
+    height: auto;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Complex/name fields: stack parts vertically. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row {
+    display: block;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row .gform-grid-col {
+    margin-bottom: 0.5rem; /* extra space between First / Last on mobile */
+  }
+
+  /* Containers: no enforced height. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield .ginput_container,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield .ginput_complex {
+    min-height: 0;
+  }
+
+  /* Slight extra breathing room around textarea fields. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-textarea {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Structural section fields: more top margin before a new section. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-section {
+    margin-top: 1.75rem;
+  }
+}
+
+/* Inputs: keep a comfortable minimum height without affecting alignment. */
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield .ginput_container,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield .ginput_complex {
+  flex: 0 0 auto;
+  min-height: 2.625rem;
+  line-height: 1.2;
+}
+
+/* Complex fields (e.g. Name) – restore GF grid row/cols without Theme Framework. */
+.gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--gf-form-gap-x);
+  row-gap: 0.75rem;
+  align-items: start;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row .gform-grid-col {
+  min-width: 0;
+}
+
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Consistent spacing after section titles before the next field. */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield.gfield--type-section + .gfield {
+    margin-top: 0.75rem;
+  }
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_label {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  height: 2.6rem; /* shared label block height per field (~2 lines) */
+  margin-bottom: 0.3rem;
+  color: var(--vp-brief-text);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.25;
+  overflow-wrap: normal;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile override: disable desktop flex/grid label layout
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_fields {
+    display: block;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield {
+    display: block;
+    grid-column: auto;
+    margin: 0 0 0.85rem;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gfield_label {
+    display: block;
+    align-items: normal;
+    height: auto;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex.gform-grid-row {
+    display: block;
+  }
+}
+
+/* Required asterisk directly beside label */
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_required {
+  margin-left: 0.15em;
+  color: var(--vp-brief-link);
+  font-weight: 600;
+}
+
+/* Descriptions: muted helper style */
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_description,
+.gform_wrapper.video-campaign-brief-form_wrapper .ginput_complex label,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform-field-label--type-sub {
+  margin-top: 0.25rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Inputs: text, email, tel, textarea – dark theme
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="text"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="email"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="url"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="tel"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="number"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="password"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="search"],
+.gform_wrapper.video-campaign-brief-form_wrapper select,
+.gform_wrapper.video-campaign-brief-form_wrapper textarea {
+  width: 100%;
+  max-width: 100%;
+  min-height: 2.625rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--vp-brief-input-bg);
+  border: 1px solid var(--vp-brief-input-border);
+  border-radius: 0;
+  color: var(--vp-brief-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.8)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 10px;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper textarea {
+  min-height: 120px;
+  padding-top: 0.75rem;
+  resize: vertical;
+  display: block;
+  margin: 0;
+  vertical-align: top;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .ginput_container_textarea {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .ginput_container_textarea textarea {
+  line-height: 1.4;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper input::placeholder,
+.gform_wrapper.video-campaign-brief-form_wrapper textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper input:focus,
+.gform_wrapper.video-campaign-brief-form_wrapper select:focus,
+.gform_wrapper.video-campaign-brief-form_wrapper textarea:focus {
+  outline: none;
+  box-shadow: none;
+  background: var(--vp-brief-input-focus);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Radio and checkbox – readable option labels
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_radio,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_checkbox {
+  line-height: 1.75;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_radio label,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_checkbox label,
+.gform_wrapper.video-campaign-brief-form_wrapper .gchoice label,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform-field-label--type-inline {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-weight: 400;
+  margin-left: 0.1875rem;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="radio"],
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="checkbox"] {
+  accent-color: var(--vp-brief-text);
+}
+
+/* --------------------------------------------------------------------------
+   Section headers – no borders, site heading style
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gsection {
+  margin: 2.5rem 0 0;
+  padding: 0;
+  border: none;
+  border-top: none;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gsection_title {
+  margin: 0;
+  line-height: 1.1;
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gsection_description {
+  margin-bottom: 0;
+  color: var(--vp-brief-text-soft);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .gsection_title {
+    line-height: 1.12;
+    font-size: clamp(1.5rem, 2vw, 1.75rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   File upload – dark dropzone
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_area,
+.gform_wrapper.video-campaign-brief-form_wrapper [id^="gform_drag_drop_area_"] {
+  background: var(--vp-brief-input-bg) !important;
+  border: 1px dashed var(--vp-brief-input-border) !important;
+  border-radius: 0;
+  color: var(--vp-brief-text-soft);
+  margin-bottom: 0.25rem;
+  min-height: 224px; /* visually match textarea height */
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_instructions,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_area span {
+  color: var(--vp-brief-text-soft) !important;
+  margin: 0 0 0.35rem;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_area:hover,
+.gform_wrapper.video-campaign-brief-form_wrapper [id^="gform_drag_drop_area_"]:hover {
+  background: var(--vp-brief-input-focus) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_area::before {
+  content: "\f0ee";
+  font-family: "FontAwesome";
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.65rem;
+  color: var(--vp-brief-text-soft);
+}
+
+@media (max-width: 767.98px) {
+  /* Mobile: no drag-and-drop text, just icon + button */
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_instructions,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_drop_area span {
+    display: none !important;
+  }
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_button_select_files,
+.gform_wrapper.video-campaign-brief-form_wrapper button.gform_button_select_files {
+  background: var(--vp-brief-text) !important;
+  color: var(--vp-brief-bg) !important;
+  border: none !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_button_select_files:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: var(--vp-brief-bg) !important;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_fileupload_rules,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_description.gform_fileupload_rules {
+  color: var(--vp-brief-text-soft);
+  font-size: 0.8rem;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons – match theme .btn and .btn-primary
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_page_footer,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_previous_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem !important;
+  border: 1px solid #fff !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.125rem !important;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--vp-transition),
+    color var(--vp-transition),
+    border-color var(--vp-transition);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_previous_button:hover,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_previous_button:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  outline: none;
+  box-shadow: none;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_next_button,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_submit_button,
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="submit"].gform_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.125rem !important;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--vp-transition),
+    color var(--vp-transition);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_next_button:hover,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_next_button:focus,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_submit_button:hover,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_submit_button:focus,
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="submit"].gform_button:hover,
+.gform_wrapper.video-campaign-brief-form_wrapper input[type="submit"].gform_button:focus {
+  background: #a6a6a6 !important;
+  color: #000 !important;
+  outline: none;
+  box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   Validation – keep accessible, theme colors
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_container {
+  display: none !important;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_validation_message,
+.gform_wrapper.video-campaign-brief-form_wrapper .validation_message {
+  margin-top: 0.3rem;
+  color: var(--vp-form-error, #ff5c5c);
+  font-size: 0.85rem;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_error .gfield_label {
+  color: var(--vp-form-error, #ff5c5c);
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_error input,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_error select,
+.gform_wrapper.video-campaign-brief-form_wrapper .gfield_error textarea {
+  border-color: var(--vp-form-error-border, rgba(255, 92, 92, 0.95));
+}
+
+/* --------------------------------------------------------------------------
+   Validation summary (top message) – restyle and keep compact
+   -------------------------------------------------------------------------- */
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors {
+  margin: 1rem 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 92, 92, 0.7);
+  background: rgba(255, 92, 92, 0.12);
+  color: #ff5c5c;
+  width: calc(50% - (var(--gf-form-gap-x) / 2));
+  max-width: 100%;
+  margin-left: auto;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors:focus,
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors:focus-visible,
+.gform_wrapper.video-campaign-brief-form_wrapper #gform_1_validation_container:focus,
+.gform_wrapper.video-campaign-brief-form_wrapper #gform_1_validation_container:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors .gform_submission_error {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: 0;
+  color: inherit;
+}
+
+.gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors .gform_submission_error .gform-icon {
+  margin-right: 0.5rem;
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors {
+    width: 66.6667%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_validation_errors {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: full-width buttons
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+  .gform_wrapper.video-campaign-brief-form_wrapper {
+    margin-bottom: 2.5rem;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_page_footer,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_previous_button,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_next_button,
+  .gform_wrapper.video-campaign-brief-form_wrapper .gform_submit_button,
+  .gform_wrapper.video-campaign-brief-form_wrapper input[type="submit"].gform_button {
+    width: 100%;
+    justify-content: center;
+  }
+}
