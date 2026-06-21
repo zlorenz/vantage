@@ -1,19 +1,204 @@
+# Implementation Workflow — Vantage Pictures
+
+These rules govern how Cursor should behave throughout the entire rebuild. Follow them in every session, on every task, without exception.
+
 ---
-alwaysApply: true
+
+## 1. Core Operating Principle
+
+This is a careful, deliberate rebuild of a live production website. Every decision has consequences for SEO, content, and a real client-facing business. Work methodically. Never rush. Never assume.
+
 ---
 
-# Implementation Workflow
+## 2. The Audit-Confirm-Implement Loop
 
-When helping on this project:
+All non-trivial work follows a three-phase loop. Do not skip phases.
 
-- Assume the site is already live and functioning.
-- Prefer small, surgical edits over broad refactors unless explicitly requested.
-- Preserve the current architecture and naming conventions.
-- Before suggesting a change, identify the exact file(s) that should be modified.
-- When providing code, make it copy-paste-ready.
-- Include a short comment header at the top of every code snippet explaining what it does.
-- When relevant, explain exactly where the code should be inserted.
-- Avoid suggesting edits to parent theme, plugin source, or WordPress core unless explicitly instructed.
-- Treat existing custom functionality as production code and avoid breaking changes.
-- For WordPress tasks, prefer child theme templates, hooks, filters, and custom JS/CSS.
-- For performance-sensitive features, avoid solutions that introduce unnecessary database-heavy logic.
+### Phase 1 — Audit
+Before touching any files, survey what exists. Read the relevant files, schemas, components, or content. Produce a written summary of:
+- What currently exists
+- What needs to be built or changed
+- Any risks, conflicts, or ambiguities you've identified
+- Your proposed approach
+
+Present this summary and wait.
+
+### Phase 2 — Confirm
+Do not proceed until Zacharia has explicitly approved the proposed approach. If he asks questions or requests changes to the plan, revise the plan and present it again. Only move to implementation after a clear "yes", "go ahead", "looks good", or equivalent confirmation.
+
+### Phase 3 — Implement
+Execute the approved plan. Work through the full scope of the approved task in one session — do not stop halfway through a logical unit of work. When complete, summarise what was built, what files were created or modified, and flag anything that needs follow-up.
+
+---
+
+## 3. When You Are Unsure — Always Stop and Ask
+
+If you encounter any of the following, stop immediately and ask Zacharia before proceeding:
+
+- Ambiguity about what a feature should do or how it should behave
+- A decision that would affect URL structure, routing, or SEO
+- A choice between two or more valid technical approaches
+- Anything that would delete, overwrite, or irreversibly modify existing files or content
+- A situation not covered by these rules or the project docs
+
+Do not make assumptions and proceed. Do not pick the "most likely" option silently. Ask, wait for an answer, then act.
+
+---
+
+## 4. Scope Discipline
+
+Only do what was asked. Do not:
+- Refactor code that wasn't part of the current task
+- Install new packages without raising it first
+- Rename files, routes, or components beyond the current task's scope
+- "Improve" something adjacent to the task without asking
+
+If you notice something that should be improved or fixed outside the current task, note it clearly at the end of your response as a suggestion — but do not act on it.
+
+---
+
+## 5. File Safety Rules
+
+### WordPress legacy files
+The WordPress installation in this folder is a **read-only reference**. Do not modify, delete, or move any WordPress files unless explicitly instructed. This includes:
+- `wp-admin/`
+- `wp-includes/`
+- `wp-content/`
+- `wp-config.php`
+- `.htaccess`
+- Any other WordPress core or plugin files
+
+### New project files
+All new Next.js application files live within the Next.js project directory. Do not scatter files outside of it.
+
+### Environment variables
+Never hardcode API keys, tokens, secrets, or credentials. Always use `process.env.VARIABLE_NAME` and document which variable is needed. Never commit `.env.local` to version control.
+
+### `next.config.js`
+This file controls routing, redirects, and build behaviour. Treat it as high-risk. Always present proposed changes to this file for approval before implementing.
+
+---
+
+## 6. Code Quality Standards
+
+### Comments
+Comment all code thoroughly. Every file, every function, every non-obvious block should have a clear comment explaining what it does and why. Write comments for a developer who is reading this codebase for the first time. Do not leave uncommented code.
+
+Example standard:
+```js
+// Fetches all published portfolio entries from Sanity, ordered by publish date descending.
+// Called at build time via generateStaticParams for static page generation.
+export async function getPortfolioEntries() {
+  return client.fetch(PORTFOLIO_QUERY)
+}
+```
+
+### Naming
+- Components: PascalCase (`PortfolioCard.tsx`)
+- Utilities and hooks: camelCase (`usePortfolioFilter.ts`)
+- Sanity schemas: camelCase (`portfolioEntry.ts`)
+- CSS/Tailwind: follow Tailwind conventions, no custom class name invention
+- Route folders: lowercase with hyphens, matching the live URL slugs exactly
+
+### Structure
+```
+/app                  → Next.js App Router pages and layouts
+/components           → All reusable UI components
+/sanity               → Sanity client, schemas, and GROQ queries
+/sanity/schemas       → One file per content type
+/sanity/queries       → GROQ query strings, named and exported
+/lib                  → Utility functions, helpers
+/public               → Static assets
+/styles               → Global CSS and Tailwind config
+```
+
+### Component discipline
+- One component per file
+- No component should fetch its own data — data fetching happens in page-level server components and is passed down as props
+- Keep components focused: a `PortfolioCard` renders a card, it does not also handle filtering logic
+
+---
+
+## 7. Sanity Schema Rules
+
+- One schema file per content type in `/sanity/schemas/`
+- Every text field that appears on the site must have both an English and a Chinese variant
+- Field names follow the pattern: `title` (English), `titleZh` (Chinese)
+- Every schema must include: `_id`, `slug`, `slugZh`, and SEO fields (`metaTitle`, `metaDescription`, and their `Zh` equivalents)
+- Do not add fields to a schema "just in case" — only fields that have a clear purpose on the site
+- All GROQ queries live in `/sanity/queries/` as named exports, never inline in page components
+
+---
+
+## 8. Routing & URL Rules
+
+URL integrity is critical. The existing site has SEO equity built up over years.
+
+- All English routes must match the live site exactly (see `site-architecture.md`)
+- All Chinese routes must match the live site exactly, including URL-encoded Chinese characters
+- The 301 redirect from `/portfolio/3612/` to `/portfolio/realme-c85-your-ultimate-outdoor-sidekick/` must be implemented in `next.config.js`
+- Blog post URLs live at root level (`/[slug]`), not under `/news/[slug]` — do not change this
+- Never invent new URL patterns without approval
+- When adding redirects to `next.config.js`, always present them for review first
+
+---
+
+## 9. Styling Rules
+
+- Tailwind utility classes are the primary styling method
+- Design tokens (colours, typography, spacing) are defined in `tailwind.config.js` — always use token names, never raw hex values or arbitrary numbers in class names
+- No inline `style` props unless absolutely necessary and approved
+- Mobile-first: write base styles for mobile, layer up with `md:` and `lg:` breakpoint prefixes
+- Do not invent visual design decisions — all design comes from `design-tokens.md` and the existing site's visual system
+
+---
+
+## 10. Performance Rules
+
+- All portfolio and blog pages are statically generated at build time — never use client-side fetching for content that can be static
+- Vimeo embeds are lazy — render a thumbnail/poster image until the user clicks to play, then load the iframe
+- All images go through Next.js `<Image>` component — never use a raw `<img>` tag
+- Sanity images are always built with `@sanity/image-url` — never use raw Sanity CDN URLs
+- Do not import large libraries for tasks that can be done with native browser APIs or small utilities
+
+---
+
+## 11. SEO Rules
+
+- Every page must export a `generateMetadata()` function populating title, description, and Open Graph fields
+- All pages must include `hreflang` alternates pointing between the English and Chinese versions
+- Structured data (JSON-LD) is required on portfolio entries and blog posts
+- The sitemap is auto-generated by `next-sitemap` — do not build a manual sitemap
+- Canonical URLs must be set on every page
+
+---
+
+## 12. Task Sequencing
+
+Work proceeds in this order. Do not jump ahead.
+
+1. **Audit phase** — Cursor audits the WordPress installation and produces `content-schema.md` and `design-tokens.md`
+2. **Foundation** — Next.js project initialisation, Sanity project setup, schema definitions, environment configuration
+3. **Content migration** — All WordPress content exported and imported into Sanity
+4. **Design system** — Tailwind config built from design tokens, global styles, base layout components
+5. **Component library** — All reusable UI components built and verified in isolation
+6. **Page build-out** — All routes built and connected to live Sanity data
+7. **Forms & integrations** — Campaign brief form, contact form, Lark webhook, Resend email
+8. **Analytics** — GTM container reconnected, Vimeo SDK event tracking implemented
+9. **SEO layer** — Metadata, structured data, sitemap, hreflang, redirects
+10. **Staging** — Deploy to staging, full QA across devices and browsers
+11. **Production** — DNS cutover, Search Console update, WordPress decommission
+
+Do not begin a phase until the previous phase is complete and approved.
+
+---
+
+## 13. Communication Style
+
+- Be direct and specific. Say exactly what you are doing and why.
+- When presenting an audit or plan, use clear headings and bullet points.
+- When you have completed a task, always end with:
+  - A summary of what was built
+  - A list of files created or modified
+  - Any open questions or recommended next steps
+- Never present multiple options and ask Zacharia to choose between them without first giving a clear recommendation and your reasoning. He should be able to say "yes" or "no" to your recommendation rather than having to make a technical decision from scratch.

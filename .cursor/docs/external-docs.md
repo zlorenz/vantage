@@ -1,103 +1,221 @@
-# External Documentation Reference - Vantage Pictures
+# External Documentation Reference — Vantage Pictures
 
-Use official documentation as the primary source when implementing features, debugging issues, or reviewing best practices.
+Use official documentation as the primary source when implementing features, debugging issues, or reviewing best practices. Prefer official docs over third-party tutorials in all cases.
 
-## WordPress
-Developer Hub:
-https://developer.wordpress.org/
+---
 
-Function Reference:
-https://developer.wordpress.org/reference/functions/
+## Next.js
 
-Hook Reference:
-https://developer.wordpress.org/reference/hooks/
-
-## WordPress Block Editor
-https://developer.wordpress.org/block-editor/
-
-## ACF
-https://www.advancedcustomfields.com/resources/
-https://www.advancedcustomfields.com/resources/functions/
-
-## Gravity Forms
 Main Docs:
-https://docs.gravityforms.com/
+https://nextjs.org/docs
 
-Developer Docs:
-https://docs.gravityforms.com/category/developers/
+App Router:
+https://nextjs.org/docs/app
 
-Hooks:
-https://docs.gravityforms.com/category/hooks/
+Routing:
+https://nextjs.org/docs/app/building-your-application/routing
 
-GFAPI:
-https://docs.gravityforms.com/api-functions/
+Data Fetching:
+https://nextjs.org/docs/app/building-your-application/data-fetching
 
-## Bootstrap 5.3
-Docs:
-https://getbootstrap.com/docs/5.3/getting-started/introduction/
+Static Generation & ISR:
+https://nextjs.org/docs/app/building-your-application/data-fetching/incremental-static-regeneration
 
-Grid:
-https://getbootstrap.com/docs/5.3/layout/grid/
+Image Optimization:
+https://nextjs.org/docs/app/api-reference/components/image
 
-Utilities:
-https://getbootstrap.com/docs/5.3/utilities/api/
+Internationalization (i18n):
+https://nextjs.org/docs/app/building-your-application/routing/internationalization
 
-Components:
-https://getbootstrap.com/docs/5.3/components/
+Metadata & SEO:
+https://nextjs.org/docs/app/building-your-application/optimizing/metadata
 
-## Schema.org
-https://schema.org/docs/full.html
+Redirects:
+https://nextjs.org/docs/app/api-reference/config/next-config-js/redirects
 
-## Yoast SEO
-https://developer.yoast.com/
-https://yoast.com/help/
+---
 
-## TranslatePress
-https://translatepress.com/docs/
+## Sanity
 
-## WPvivid Backup
-https://docs.wpvivid.com/
+Main Docs:
+https://www.sanity.io/docs
+
+Schema Types:
+https://www.sanity.io/docs/schema-types
+
+GROQ Query Language:
+https://www.sanity.io/docs/groq
+
+Sanity Client (JS):
+https://www.sanity.io/docs/js-client
+
+Content Lake API:
+https://www.sanity.io/docs/datastore
+
+Localization (bilingual content):
+https://www.sanity.io/docs/localization
+
+Sanity Studio:
+https://www.sanity.io/docs/sanity-studio
+
+Webhooks (for Vercel rebuild triggers):
+https://www.sanity.io/docs/webhooks
+
+Image Handling (sanity-image-url):
+https://www.sanity.io/docs/image-urls
+
+---
+
+## Tailwind CSS
+
+Main Docs:
+https://tailwindcss.com/docs
+
+Installation with Next.js:
+https://tailwindcss.com/docs/installation/framework-guides/nextjs
+
+Configuration:
+https://tailwindcss.com/docs/configuration
+
+---
+
+## Vercel
+
+Main Docs:
+https://vercel.com/docs
+
+Deploying Next.js:
+https://vercel.com/docs/frameworks/nextjs
+
+Environment Variables:
+https://vercel.com/docs/environment-variables
+
+Preview Deployments:
+https://vercel.com/docs/deployments/preview-deployments
+
+Webhooks:
+https://vercel.com/docs/observability/webhooks-overview
+
+---
+
+## Resend (Transactional Email)
+
+Main Docs:
+https://resend.com/docs/introduction
+
+Sending Email:
+https://resend.com/docs/api-reference/emails/send-email
+
+Next.js Integration:
+https://resend.com/docs/send-with-nextjs
+
+---
 
 ## Lark Suite
+
+API Overview:
 https://open.larksuite.com/document/home/index
 
-## Font Awesome v4
-https://fontawesome.com/v4.7/icons/
+Bot Webhooks (for form submission routing):
+https://open.larksuite.com/document/client-docs/bot-5/add-custom-bot
 
-## Google Tag Manager
-https://developers.google.com/tag-platform/tag-manager
+---
 
-## Google Tag Platform - Data Layer
-https://developers.google.com/tag-platform/devguides/datalayer
+## next-intl (Internationalization)
 
-## Google Analytics 4
-https://developers.google.com/analytics/devguides/collection/ga4
+Main Docs:
+https://next-intl.dev/docs/getting-started
 
-## Google Search Central
-https://developers.google.com/search/docs
+App Router Setup:
+https://next-intl.dev/docs/getting-started/app-router
 
-## Meta Pixel
-https://developers.facebook.com/docs/meta-pixel/
+---
 
-## LinkedIn Insight Tag
-https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversion-tracking
+## next-sitemap (Sitemap Generation)
 
-## Microsoft Clarity
-https://learn.microsoft.com/en-us/clarity/
+Main Docs:
+https://github.com/iamvishnusankar/next-sitemap
 
-## Vimeo Player + Google Analytics
+---
+
+## Vimeo Player SDK
+
+Player SDK:
 https://developer.vimeo.com/player/sdk
+
+SDK Reference:
 https://developer.vimeo.com/player/sdk/reference
 
-## SiteGround Speed Optimizer
-https://www.siteground.com/kb/siteground-optimizer/
+oEmbed API (for embed metadata):
+https://developer.vimeo.com/apis/oembed
 
-## SiteGround Security
-https://www.siteground.com/kb/sg-security/
+---
+
+## Google Tag Manager
+
+Main Docs:
+https://developers.google.com/tag-platform/tag-manager
+
+Data Layer:
+https://developers.google.com/tag-platform/devguides/datalayer
+
+---
+
+## Google Analytics 4
+
+Main Docs:
+https://developers.google.com/analytics/devguides/collection/ga4
+
+---
+
+## Meta Pixel
+
+Main Docs:
+https://developers.facebook.com/docs/meta-pixel/
+
+---
+
+## LinkedIn Insight Tag
+
+Main Docs:
+https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversion-tracking
+
+---
+
+## Microsoft Clarity
+
+Main Docs:
+https://learn.microsoft.com/en-us/clarity/
+
+---
+
+## Schema.org (Structured Data)
+
+Full Reference:
+https://schema.org/docs/full.html
+
+Google Search — Structured Data:
+https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+
+---
+
+## Google Search Central
+
+Main Docs:
+https://developers.google.com/search/docs
+
+Sitemaps:
+https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview
+
+hreflang (multilingual SEO):
+https://developers.google.com/search/docs/specialty/international/localized-versions
+
+---
 
 ## Notes
 
-- Prefer official documentation over third-party tutorials
-- Avoid modifying plugin source code directly
-- Use APIs, hooks, and filters whenever possible
-- Maintain compatibility with performance and caching layers
+- All tracking (GA4, Meta Pixel, LinkedIn, Clarity) is routed through Google Tag Manager. Do not implement these directly in code.
+- Vimeo video play events should be captured via the Vimeo Player SDK and pushed to the GTM data layer.
+- Never use `<iframe>` directly for Vimeo embeds — always use the Player SDK for event tracking capability and lazy loading control.
+- Sanity image URLs should always be built using the `@sanity/image-url` package, never hardcoded.
+- Environment variables for all external services (Sanity, Resend, GTM container ID, Lark webhook URL) must be stored in `.env.local` and referenced via `process.env`. Never hardcode credentials.

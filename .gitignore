@@ -69,3 +69,31 @@ Thumbs.db
 
 # Allow your child theme
 !/wp-content/themes/vantagepictures-child
+
+# --------------------------------------------------
+# Environment variables — NEVER commit these
+# --------------------------------------------------
+
+.env.local
+.env*.local
+
+# --------------------------------------------------
+# Next.js
+# --------------------------------------------------
+
+.next/
+out/
+
+# --------------------------------------------------
+# Sanity
+# --------------------------------------------------
+
+.sanity/
+
+# --------------------------------------------------
+# WordPress legacy reference files
+# (kept locally for audit/migration reference only)
+# --------------------------------------------------
+
+/wp-content/themes/vantagepictures-child/
+/wp-content/uploads/

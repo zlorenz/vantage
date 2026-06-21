@@ -1,1 +1,0 @@
-[26-Oct-2022 12:44:56 UTC] PHP Fatal error:  require(): Failed opening required 'ABSPATHWPINC/blocks/archives.php' (include_path='.:/usr/local/php74/pear') in /home/customer/www/vantage.pictures/public_html/wp-includes/blocks/index.php on line 9

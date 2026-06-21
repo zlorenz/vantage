@@ -1,0 +1,152 @@
+# Stack Guardrails — Vantage Pictures
+
+These are hard constraints. They are not suggestions. Do not violate them for any reason, including convenience, speed, or because a third-party tutorial recommends otherwise. If a situation arises where violating one of these rules seems necessary, stop and raise it with Zacharia first.
+
+---
+
+## Next.js
+
+**Never use the Pages Router.**
+This project uses the App Router exclusively. Do not create files in a `/pages` directory. Do not use `getStaticProps`, `getServerSideProps`, or `getStaticPaths` — these are Pages Router APIs. Use `generateStaticParams`, `generateMetadata`, and server components instead.
+
+**Never use `'use client'` unnecessarily.**
+Default to server components. Only add `'use client'` when the component genuinely requires browser APIs, event listeners, or React state/effects. Fetching data is never a reason to use a client component.
+
+**Never fetch Sanity data inside client components.**
+All Sanity queries run in server components at build time or request time. Data is passed to client components as props. Never import the Sanity client into a client component.
+
+**Never use raw `<img>` tags.**
+Always use Next.js `<Image>` from `next/image`. Raw `<img>` tags bypass optimisation, lazy loading, and format conversion.
+
+**Never use raw `<a>` tags for internal navigation.**
+Always use `<Link>` from `next/link` for any link that stays within the site.
+
+**Never hardcode URLs.**
+Base URLs, API endpoints, and environment-specific values must come from environment variables. Never write `https://vantage.pictures` as a string in code — use `process.env.NEXT_PUBLIC_SITE_URL`.
+
+---
+
+## Sanity
+
+**Never modify Sanity schemas without approval.**
+Schema changes affect the CMS editor interface and can break existing content. Always present proposed schema changes for review before implementing them.
+
+**Never write GROQ queries inline in page or component files.**
+All GROQ queries are defined as named exports in `/sanity/queries/` and imported where needed. Inline queries cannot be reused, audited, or maintained cleanly.
+
+**Never use raw Sanity CDN image URLs.**
+Always build image URLs using `@sanity/image-url`. Raw CDN URLs bypass image transformation, sizing, and format options.
+
+**Never expose the Sanity write token on the client side.**
+The Sanity write token must only exist in server-side environment variables (no `NEXT_PUBLIC_` prefix). The read token (if used) follows the same rule unless explicitly scoped for public use.
+
+**Never store content in code that belongs in Sanity.**
+Page copy, headings, descriptions, and media are CMS content. If it can change, it lives in Sanity. Hardcoding content that an editor should control defeats the purpose of the CMS.
+
+---
+
+## Styling
+
+**Never use arbitrary Tailwind values without justification.**
+Do not use classes like `w-[347px]` or `text-[13px]`. All values should come from the design token scale defined in `tailwind.config.js`. If a value genuinely isn't in the scale, raise it before adding an arbitrary value.
+
+**Never write vanilla CSS for layout or spacing.**
+Tailwind handles all layout and spacing. Reserve global CSS (`/styles/globals.css`) for: CSS custom property definitions, base resets, and styles that Tailwind cannot express.
+
+**Never use inline `style` props for design values.**
+Colours, spacing, and typography come from Tailwind classes. Inline styles are only acceptable for truly dynamic values that cannot be expressed as a Tailwind class (e.g. a progress bar width driven by a JS variable).
+
+**Never invent visual design decisions.**
+Do not choose colours, fonts, sizes, or spacing that aren't derived from `design-tokens.md` and the existing site's visual system. If a design decision isn't documented, ask.
+
+---
+
+## Routing & URLs
+
+**Never change a URL pattern without explicit approval.**
+Every existing URL carries SEO equity. Changing a slug pattern, nesting structure, or route naming convention requires a redirect strategy and explicit sign-off.
+
+**Never nest blog post routes under `/news/`.**
+Individual blog posts live at root level (`/[slug]`). The `/news/` path is only the index page. This is intentional and must be preserved.
+
+**Never auto-generate Chinese slugs from English slugs.**
+Chinese URL slugs are stored explicitly in Sanity as a separate field (`slugZh`). They are never derived by translating or transforming the English slug programmatically.
+
+---
+
+## Packages & Dependencies
+
+**Never install a package without raising it first.**
+State the package name, what it does, and why it's needed. Wait for approval before running `npm install`. Keep `package.json` lean — every dependency is a maintenance burden.
+
+**Never install a package to solve a problem that Next.js, Sanity, or Tailwind already solve natively.**
+Check official documentation before reaching for a third-party library.
+
+**These packages are approved and do not need individual approval:**
+- `next`, `react`, `react-dom` — framework
+- `@sanity/client`, `@sanity/image-url`, `sanity` — CMS
+- `tailwindcss`, `postcss`, `autoprefixer` — styling
+- `next-intl` — i18n routing
+- `next-sitemap` — sitemap generation
+- `resend` — transactional email
+- `@vimeo/player` — Vimeo Player SDK
+
+**Any package not on the above list requires approval before installation.**
+
+---
+
+## Analytics & Tracking
+
+**Never implement GA4, Meta Pixel, LinkedIn Insight Tag, or Microsoft Clarity directly in code.**
+All tracking runs through Google Tag Manager. The only analytics-related code in the codebase is the GTM container snippet and Vimeo Player SDK event pushes to the data layer.
+
+**Never hardcode the GTM container ID.**
+It must be stored in `process.env.NEXT_PUBLIC_GTM_ID`.
+
+---
+
+## Forms & Data
+
+**Never store form submission data in a database or filesystem.**
+Campaign brief and contact form submissions are fire-and-forward: email via Resend + Lark webhook. No persistence layer.
+
+**Never expose the Lark webhook URL or Resend API key on the client side.**
+Form submissions must be processed via a Next.js API route (`/app/api/`) so that credentials remain server-side only.
+
+---
+
+## Security
+
+**Never commit `.env.local` or any file containing credentials to version control.**
+Confirm `.env.local` is in `.gitignore` before the first commit.
+
+**Never log environment variable values**, even in development console statements.
+
+**Never trust user input without validation and sanitisation** before passing it to Resend, Lark, or any external service.
+
+---
+
+## WordPress Legacy Files
+
+WordPress core has already been removed from this project folder to keep the workspace clean and Cursor's context uncluttered. A full WPvivid backup of the original site is stored safely and separately. What remains in this folder is limited reference material only.
+
+### What remains and why
+
+**`wp-content/themes/vantagepictures-child/`** — Read-only. Contains the custom CSS, templates, and JS that Cursor will audit to produce `design-tokens.md`. Remove after the audit phase is complete and `design-tokens.md` has been signed off.
+
+**`wp-content/uploads/`** — Read-only. The WordPress media library. Retain until every media asset is confirmed migrated into Sanity. Remove only when migration is verified.
+
+**`wp-config.php`** — Read-only. Contains database credentials needed for content export. Remove after all content has been exported to JSON and imported into Sanity.
+
+### Rules for all remaining WordPress files
+
+**Never modify any remaining WordPress file.** They are read-only reference material. Treat them as locked.
+
+**Never run destructive WP-CLI commands** (e.g. `wp db reset`, `wp post delete`) without explicit written instruction from Zacharia.
+
+**Never delete any remaining WordPress file or folder** without explicit instruction from Zacharia confirming that the relevant phase is complete:
+- Child theme folder: removed after audit phase sign-off
+- `wp-config.php`: removed after content export and Sanity import are verified
+- `wp-content/uploads/`: removed after all media assets are confirmed in Sanity
+
+**Never use `wp-config.php` credentials for anything other than the approved content export task.** These credentials access a live database. Treat them as sensitive.
