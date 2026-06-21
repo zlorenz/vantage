@@ -7,11 +7,14 @@
  */
 
 import Image from 'next/image';
+import type { ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { pagePath } from '@/lib/nav-paths';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import { NavBar, type NavItem } from './NavBar';
+
+type LinkHref = ComponentProps<typeof Link>['href'];
 
 interface SiteHeaderProps {
   locale: Locale;
@@ -20,22 +23,26 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ locale, navPages }: SiteHeaderProps) {
-  const homeHref = pagePath(locale, 'home', navPages);
+  const homeHref = pagePath(locale, 'home', navPages) as LinkHref;
 
   const navItems: NavItem[] = [
     { label: 'Home', href: homeHref },
     {
       label: 'About',
       dropdown: [
-        { label: 'About', href: pagePath(locale, 'about', navPages) },
+        { label: 'About', href: pagePath(locale, 'about', navPages) as LinkHref },
         {
           label: 'Vietnam Production Service',
-          href: pagePath(locale, 'vietnam-production-service', navPages),
+          href: pagePath(
+            locale,
+            'vietnam-production-service',
+            navPages,
+          ) as LinkHref,
         },
       ],
     },
-    { label: 'Work', href: pagePath(locale, 'work', navPages) },
-    { label: 'News', href: pagePath(locale, 'news', navPages) },
+    { label: 'Work', href: pagePath(locale, 'work', navPages) as LinkHref },
+    { label: 'News', href: pagePath(locale, 'news', navPages) as LinkHref },
     { label: 'Contact', isContact: true },
   ];
 

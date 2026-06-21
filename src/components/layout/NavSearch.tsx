@@ -9,7 +9,6 @@
 
 import { FormEvent, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
-import { searchPath } from '@/lib/nav-paths';
 import type { Locale } from '@/i18n/routing';
 
 interface NavSearchProps {
@@ -25,7 +24,12 @@ export function NavSearch({ locale }: NavSearchProps) {
     e.preventDefault();
     const q = query.trim();
     if (!q) return;
-    router.push(`${searchPath(locale)}?q=${encodeURIComponent(q)}`);
+    router.push(
+      {
+        pathname: '/search',
+        query: { q },
+      } as Parameters<typeof router.push>[0],
+    );
     setExpanded(false);
     setQuery('');
   }

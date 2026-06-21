@@ -6,7 +6,10 @@
  * Client component for onClick handlers. Renders as Link when href is provided.
  */
 
+import type { ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
+
+type LinkHref = ComponentProps<typeof Link>['href'];
 
 interface VpButtonBaseProps {
   children: React.ReactNode;
@@ -15,7 +18,7 @@ interface VpButtonBaseProps {
 }
 
 interface VpButtonLinkProps extends VpButtonBaseProps {
-  href: string;
+  href: LinkHref;
   onClick?: never;
 }
 

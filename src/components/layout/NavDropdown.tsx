@@ -7,12 +7,14 @@
  * Mobile (≤768px): tap toggles accordion with max-height animation.
  */
 
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
+
+type LinkHref = ComponentProps<typeof Link>['href'];
 
 interface NavDropdownProps {
   label: string;
-  items: { label: string; href: string }[];
+  items: { label: string; href: LinkHref }[];
 }
 
 export function NavDropdown({ label, items }: NavDropdownProps) {
@@ -38,7 +40,7 @@ export function NavDropdown({ label, items }: NavDropdownProps) {
         }`}
       >
         {items.map((item) => (
-          <li key={item.href}>
+          <li key={item.label}>
             <Link
               href={item.href}
               className="dropdown-item block px-4 py-2 text-sm uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast hover:bg-vp-overlay-light"

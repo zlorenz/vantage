@@ -462,3 +462,255 @@
     padding-bottom: 2rem;
   }
 }
+
+/* ==========================================================================
+   Portfolio — filter bar, grid, cards, credits
+   ========================================================================== */
+
+.vp-work-intro p {
+  margin: 0;
+}
+
+.vp-filterbar {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 1.75rem;
+  padding-top: 1em;
+}
+
+.vp-filterbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.vp-filterbar__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 200px;
+}
+
+.vp-filterbar__label {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: var(--vp-uppercase-spacing);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.vp-select-wrap {
+  position: relative;
+}
+
+.vp-select-wrap::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2px solid rgba(255, 255, 255, 0.75);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+  transform: translateY(-55%) rotate(45deg);
+}
+
+.vp-filterbar__select {
+  width: 100%;
+  padding: 0.45rem 2.2rem 0.45rem 0.9rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid var(--color-vp-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-vp-text-muted);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: var(--vp-uppercase-spacing);
+  text-align: center;
+  text-transform: uppercase;
+  transition:
+    background-color var(--vp-transition-fast),
+    color var(--vp-transition-fast),
+    border-color var(--vp-transition-fast);
+}
+
+.vp-filterbar__select:hover {
+  color: #fff;
+  border-color: var(--color-vp-border-strong);
+}
+
+.vp-filterbar__select:focus,
+.vp-filterbar__select:active {
+  outline: none;
+  border-color: var(--color-vp-border-strong);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.vp-portfolio-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+
+@media (max-width: 992px) {
+  .vp-portfolio-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .vp-portfolio-gallery {
+    grid-template-columns: 1fr;
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+  }
+}
+
+.vp-portfolio-taxonomy {
+  padding-top: clamp(6.25rem, 8.5vw, 7rem) !important;
+}
+
+.vp-card__media {
+  position: relative;
+}
+
+.vp-card__title {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  padding: 1.25em 1em 0.75em;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.0625rem;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.vp-card__overlay {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 45%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+.vp-card img {
+  transition: transform 0.35s ease;
+}
+
+.vp-card:hover img {
+  transform: scale(1.03);
+}
+
+.vp-load-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 2rem auto;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: vpSpin 0.8s linear infinite;
+}
+
+#vp-load-more {
+  height: 120px;
+}
+
+#vp-load-more.is-done .vp-load-spinner {
+  display: none;
+}
+
+.vp-card-reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  will-change: transform, opacity;
+  animation: vpCardReveal 0.45s ease forwards;
+}
+
+@keyframes vpSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vpCardReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vp-credits {
+  font-size: 0.9rem;
+  line-height: 1.325;
+  color: var(--color-vp-credits-text);
+}
+
+.vp-credits__row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0.5rem 1.5rem;
+  align-items: start;
+  padding: 0.25rem 0;
+}
+
+.vp-credits__dept {
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-transform: uppercase;
+}
+
+.vp-credits__content {
+  text-align: justify;
+}
+
+.vp-credit-pair {
+  display: inline;
+}
+
+.vp-credit-role {
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-vp-credit-role-label);
+  letter-spacing: -0.0125rem;
+}
+
+.vp-credit-names {
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.025rem;
+}
+
+@media (max-width: 767.98px) {
+  .vp-credits__row {
+    grid-template-columns: 1fr;
+    gap: 0.125rem;
+    padding: 0.75rem 0 0;
+  }
+
+  .vp-credits__content {
+    text-align: left;
+    text-align-last: left;
+  }
+
+  .vp-filterbar__group {
+    min-width: 160px;
+  }
+}

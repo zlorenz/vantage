@@ -7,7 +7,7 @@
  * contact modal trigger all require browser interactivity.
  */
 
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { NavDropdown } from './NavDropdown';
@@ -15,10 +15,12 @@ import { NavSearch } from './NavSearch';
 import { useContactModal } from './ContactModalContext';
 import type { Locale } from '@/i18n/routing';
 
+type LinkHref = ComponentProps<typeof Link>['href'];
+
 export interface NavItem {
   label: string;
-  href?: string;
-  dropdown?: { label: string; href: string }[];
+  href?: LinkHref;
+  dropdown?: { label: string; href: LinkHref }[];
   isContact?: boolean;
 }
 

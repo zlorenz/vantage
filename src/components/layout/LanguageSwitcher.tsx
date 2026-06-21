@@ -8,6 +8,7 @@
  */
 
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
@@ -28,6 +29,7 @@ const FLAG: Record<Locale, { src: string; label: string; target: Locale }> = {
 export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
+  const params = useParams();
   const router = useRouter();
   const { src, label, target } = FLAG[locale];
 
@@ -36,7 +38,12 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
       type="button"
       className={`nav-link inline-flex items-center border-0 bg-transparent p-2 uppercase ${className}`}
       aria-label={label}
-      onClick={() => router.replace(pathname, { locale: target })}
+      onClick={() =>
+        router.replace(
+          { pathname, params } as Parameters<typeof router.replace>[0],
+          { locale: target },
+        )
+      }
     >
       <Image
         src={src}
