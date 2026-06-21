@@ -6,8 +6,6 @@ The site is fully bilingual. Every English URL has a Chinese counterpart under `
 
 Two-language support must be built into every route, component, and content schema from day one. There is no "add it later" — the bilingual structure is load-bearing.
 
-**Exception:** `/work-internal/` is English-only with no `/zh/` equivalent. It is an internal crew portfolio view, excluded from public navigation and sitemap.
-
 ---
 
 ## 1. Static Pages
@@ -24,14 +22,14 @@ These are singular pages, not driven by a post type loop.
 | `/vietnam-production-service/` | `/zh/越南生产服务/` | Vietnam service page |
 | `/vietnam-location-guide/` | `/zh/越南旅游指南/` | Vietnam location guide |
 | `/video-campaign-brief/` | `/zh/视频活动简介/` | Campaign brief form page |
-| `/work-internal/` | — (English only) | Internal crew portfolio view — see below |
+| `/work-internal/` | `/zh/work-internal/` | Internal crew portfolio view — see below |
 
 ### Internal page: Work (Internal)
 
 | Property | Value |
 |---|---|
 | Route | `/work-internal/` |
-| Chinese route | None — English only |
+| Chinese route | `/zh/work-internal/` |
 | Template | Internal crew portfolio view |
 | Filters | `client`, `director`, `dop`, `art-director` (AND logic — not mutually exclusive) |
 | SEO | `noindex`, excluded from sitemap |
@@ -172,14 +170,14 @@ This is the most architecturally significant discovery from the sitemap. The sit
 | Type | Count (EN) | Count (ZH) | Total |
 |---|---|---|---|
 | Static pages (public) | 8 | 8 | 16 |
-| Static pages (internal) | 1 | — | 1 |
+| Static pages (internal) | 1 | 1 | 2 |
 | Portfolio entries | 141 | 141 | 282 |
 | Blog posts | 23 | 23 | 46 |
 | Blog categories | 4 | 4 | 8 |
 | Video format taxonomy | 4 | 4 | 8 |
 | Industry taxonomy | 10 | 10 | 20 |
 | Market taxonomy | 5 | 5 | 10 |
-| **Total** | **196** | **195** | **391** |
+| **Total** | **196** | **196** | **392** |
 
 ---
 
@@ -217,4 +215,4 @@ Chinese slugs use URL-encoded Chinese characters. These must be preserved exactl
 - Blog post URLs are at root level, not nested under `/news/`. This is intentional and must be preserved.
 - The `/zh/` prefix for Chinese routes uses readable Chinese slugs, not translated English slugs. Sanity schemas must store the Chinese slug separately from the English slug for each piece of content.
 - Do not invent new routes. All routes in this document should exist in the new build. New pages added post-launch will follow the patterns established here.
-- `/work-internal/` is English-only, `noindex`, and not linked from public navigation. It must not appear in the sitemap or Chinese route map.
+- `/work-internal/` is `noindex`, not linked from public navigation, and excluded from the sitemap. A Chinese equivalent exists at `/zh/work-internal/` for routing consistency; the internal team does not require it.

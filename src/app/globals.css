@@ -1,0 +1,320 @@
+/* ================================================================
+ * Google Fonts — Poppins (design-tokens.md §Typography › Font Family)
+ * Weights 300–900 as used across body, nav, headings, and UI.
+ * Must precede all other @import rules.
+ * ================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap");
+
+/* ================================================================
+ * Tailwind CSS v4
+ * Replaces the v3 @tailwind base / @tailwind components / @tailwind utilities
+ * directives — a single import loads all three layers.
+ * ================================================================ */
+
+@import "tailwindcss";
+
+/* ================================================================
+ * Tailwind v4 @theme — design token utilities
+ * Source of truth: .cursor/docs/design-tokens.md
+ * Generates utility classes: bg-vp-bg, text-vp-link, font-vp-sans, etc.
+ * ================================================================ */
+
+@theme {
+  /* Colour Palette — Core (design-tokens.md §Colour Palette › Core) */
+
+  --color-vp-bg: #000000;
+  --color-vp-text: #ffffff;
+  --color-vp-text-muted: rgba(255, 255, 255, 0.85);
+  --color-vp-text-soft: rgba(255, 255, 255, 0.75);
+
+  /* Colour Palette — Accent */
+
+  --color-vp-link: #f9db24;
+  --color-vp-link-hover: #d7bf1f;
+
+  /* Colour Palette — Borders */
+
+  --color-vp-border: rgba(255, 255, 255, 0.6);
+  --color-vp-border-strong: rgba(255, 255, 255, 0.95);
+  --color-vp-border-soft: rgba(255, 255, 255, 0.12);
+
+  /* Colour Palette — Overlays */
+
+  --color-vp-overlay-dark: rgba(0, 0, 0, 0.45);
+  --color-vp-overlay-light: rgba(255, 255, 255, 0.1);
+
+  /* Colour Palette — Form & Input */
+
+  --color-vp-input-bg: rgba(255, 255, 255, 0.08);
+  --color-vp-input-bg-focus: rgba(255, 255, 255, 0.12);
+  --color-vp-input-border: rgba(255, 255, 255, 0.25);
+  --color-vp-input-border-focus: rgba(255, 255, 255, 0.5);
+  --color-vp-form-label: rgba(255, 255, 255, 0.9);
+  --color-vp-form-helper: rgba(255, 255, 255, 0.78);
+  --color-vp-form-error: #ff5c5c;
+  --color-vp-form-error-bg: rgba(255, 92, 92, 0.16);
+  --color-vp-form-error-border: rgba(255, 92, 92, 0.95);
+
+  /* Colour Palette — Button */
+
+  --color-vp-btn-primary-bg: #ffffff;
+  --color-vp-btn-primary-text: #000000;
+  --color-vp-btn-primary-hover-bg: #a6a6a6;
+  --color-vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
+  --color-vp-btn-ghost-text: #ffffff;
+  --color-vp-btn-ghost-border: rgba(255, 255, 255, 0.25);
+  --color-vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.12);
+  --color-vp-btn-ghost-hover-border: rgba(255, 255, 255, 0.5);
+
+  /* Colour Palette — Miscellaneous */
+
+  --color-vp-logo-grid-border: #5c5c5c;
+  --color-vp-credits-text: #bfbfbf;
+  --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
+  --color-vp-hero-carousel-overlay: rgba(0, 0, 0, 0.2);
+  --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
+  --color-vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
+  --color-vp-search-thumb-bg: #111111;
+
+  /* Typography — Font Family */
+
+  --font-vp-sans: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    sans-serif;
+
+  /* Typography — Letter Spacing */
+
+  --tracking-vp-navbar: 0.125rem;
+  --tracking-vp-uppercase: 0.08em;
+  --tracking-vp-heading: 0.01em;
+
+  /* Transitions & Animation */
+
+  --duration-vp-fast: 150ms;
+  --duration-vp-default: 200ms;
+  --duration-vp-card: 350ms;
+  --duration-vp-spin: 800ms;
+  --duration-vp-card-reveal: 450ms;
+  --ease-vp-default: ease;
+  --ease-vp-fast: ease;
+  --ease-vp-linear: linear;
+
+  /* Breakpoints — Bootstrap-aligned min-width */
+
+  --breakpoint-xs: 575px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 992px;
+  --breakpoint-lg: 1200px;
+
+  /* Border Radius — sharp default with named exceptions */
+
+  --radius: 0;
+  --radius-vp-search-card: 0.5rem;
+  --radius-vp-nav-pill: 4px;
+  --radius-vp-spinner: 50%;
+  --radius-vp-flag: 50%;
+  --radius-vp-comment: 0.25rem;
+
+  /* Spacing & Layout — Section vertical padding */
+
+  --spacing-vp-section-y: 4.5rem;
+  --spacing-vp-section-y-tight: 3.5rem;
+  --spacing-vp-section-y-loose: 5.5rem;
+  --spacing-vp-section-y-header-condensed: 9.5rem;
+
+  /* Form & File Block Tokens — Campaign Brief Form */
+
+  --spacing-vp-form-gap: 1rem;
+  --spacing-vp-form-row-gap: 1.5rem;
+  --spacing-vp-form-label-height: 2.6rem;
+  --spacing-vp-form-input-min-height: 2.625rem;
+  --spacing-vp-form-textarea-min-height: 120px;
+  --spacing-vp-form-dropzone-min-height: 224px;
+  --spacing-vp-form-step-circle-size: 2.25rem;
+  --spacing-vp-form-input-py: 0.5rem;
+  --spacing-vp-form-input-px: 0.9rem;
+  --spacing-vp-btn-py: 0.75rem;
+  --spacing-vp-btn-px: 2rem;
+  --text-vp-form-label-size: 1rem;
+  --text-vp-form-input-size: 0.9rem;
+  --font-weight-vp-form-label: 500;
+  --color-vp-form-placeholder: rgba(255, 255, 255, 0.5);
+  --color-vp-form-helper-muted: rgba(255, 255, 255, 0.55);
+  --color-vp-form-option-label: rgba(255, 255, 255, 0.72);
+  --color-vp-form-focus-border: rgba(255, 255, 255, 0.4);
+  --color-vp-form-step-border: rgba(255, 255, 255, 0.45);
+  --color-vp-form-step-completed-bg: rgba(255, 255, 255, 0.2);
+  --color-vp-form-step-pending-text: rgba(255, 255, 255, 0.7);
+  --color-vp-form-validation-border: rgba(255, 92, 92, 0.7);
+  --color-vp-form-validation-bg: rgba(255, 92, 92, 0.12);
+  --color-vp-btn-primary-hover-soft: rgba(255, 255, 255, 0.85);
+  --tracking-vp-btn: 0.125rem;
+  --tracking-vp-btn-select-files: 0.05em;
+
+  /* Form & File Block Tokens — File Block */
+
+  --spacing-vp-file-block-padding-top: 1.25rem;
+  --spacing-vp-file-block-button-gap: 1.25rem;
+}
+
+/* ================================================================
+ * :root CSS custom properties — design-tokens.md
+ * Semantic --vp-* variables for custom CSS, inline styles, and
+ * component-level var() references. Mirrors @theme values above.
+ * Not connected to Tailwind utility generation.
+ * ================================================================ */
+
+:root {
+  /* Colour Palette — Core */
+
+  --vp-bg: #000000;
+  --vp-text: #ffffff;
+  --vp-text-muted: rgba(255, 255, 255, 0.85);
+  --vp-text-soft: rgba(255, 255, 255, 0.75);
+
+  /* Colour Palette — Accent */
+
+  --vp-link: #f9db24;
+  --vp-link-hover: #d7bf1f;
+
+  /* Colour Palette — Borders */
+
+  --vp-border: rgba(255, 255, 255, 0.6);
+  --vp-border-strong: rgba(255, 255, 255, 0.95);
+  --vp-border-soft: rgba(255, 255, 255, 0.12);
+
+  /* Colour Palette — Overlays */
+
+  --vp-overlay-dark: rgba(0, 0, 0, 0.45);
+  --vp-overlay-light: rgba(255, 255, 255, 0.1);
+
+  /* Colour Palette — Form & Input */
+
+  --vp-input-bg: rgba(255, 255, 255, 0.08);
+  --vp-input-bg-focus: rgba(255, 255, 255, 0.12);
+  --vp-input-border: rgba(255, 255, 255, 0.25);
+  --vp-input-border-focus: rgba(255, 255, 255, 0.5);
+  --vp-form-label: rgba(255, 255, 255, 0.9);
+  --vp-form-helper: rgba(255, 255, 255, 0.78);
+  --vp-form-error: #ff5c5c;
+  --vp-form-error-bg: rgba(255, 92, 92, 0.16);
+  --vp-form-error-border: rgba(255, 92, 92, 0.95);
+
+  /* Colour Palette — Button */
+
+  --vp-btn-primary-bg: #ffffff;
+  --vp-btn-primary-text: #000000;
+  --vp-btn-primary-hover-bg: #a6a6a6;
+  --vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
+  --vp-btn-ghost-text: #ffffff;
+  --vp-btn-ghost-border: rgba(255, 255, 255, 0.25);
+  --vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.12);
+  --vp-btn-ghost-hover-border: rgba(255, 255, 255, 0.5);
+
+  /* Colour Palette — Miscellaneous */
+
+  --vp-logo-grid-border: #5c5c5c;
+  --vp-credits-text: #bfbfbf;
+  --vp-credit-role-label: rgba(255, 255, 255, 0.4);
+  --vp-hero-carousel-overlay: rgba(0, 0, 0, 0.2);
+  --vp-dropdown-bg: rgba(0, 0, 0, 0.4);
+  --vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
+  --vp-search-thumb-bg: #111111;
+
+  /* Typography — Font Family */
+
+  --vp-font-sans: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    sans-serif;
+
+  /* Typography — Letter Spacing */
+
+  --vp-navbar-link-spacing: 0.125rem;
+  --vp-uppercase-spacing: 0.08em;
+  --vp-heading-spacing: 0.01em;
+
+  /* Transitions & Animation */
+
+  --vp-transition-fast: 0.15s ease;
+  --vp-transition: 0.2s ease;
+  --vp-transition-card: 0.35s ease;
+  --vp-transition-spin: 0.8s linear;
+  --vp-transition-card-reveal: 0.45s ease forwards;
+
+  /* Breakpoints — for use in custom @media queries */
+
+  --vp-breakpoint-xs: 575px;
+  --vp-breakpoint-sm: 768px;
+  --vp-breakpoint-md: 992px;
+  --vp-breakpoint-lg: 1200px;
+
+  /* Border Radius */
+
+  --vp-radius: 0;
+  --vp-radius-search-card: 0.5rem;
+  --vp-radius-nav-pill: 4px;
+  --vp-radius-spinner: 50%;
+  --vp-radius-flag: 50%;
+  --vp-radius-comment: 0.25rem;
+
+  /* Spacing & Layout — Section vertical padding */
+
+  --vp-section-y: 4.5rem;
+  --vp-section-y-tight: 3.5rem;
+  --vp-section-y-loose: 5.5rem;
+  --vp-section-y-header-condensed: 9.5rem;
+
+  /* Form & File Block Tokens — Campaign Brief Form */
+
+  --vp-form-gap: 1rem;
+  --vp-form-row-gap: 1.5rem;
+  --vp-form-label-size: 1rem;
+  --vp-form-label-weight: 500;
+  --vp-form-label-height: 2.6rem;
+  --vp-form-input-min-height: 2.625rem;
+  --vp-form-input-padding: 0.5rem 0.9rem;
+  --vp-form-input-size: 0.9rem;
+  --vp-form-placeholder: rgba(255, 255, 255, 0.5);
+  --vp-form-helper-muted: rgba(255, 255, 255, 0.55);
+  --vp-form-option-label: rgba(255, 255, 255, 0.72);
+  --vp-form-focus-border: rgba(255, 255, 255, 0.4);
+  --vp-form-textarea-min-height: 120px;
+  --vp-form-dropzone-min-height: 224px;
+  --vp-form-step-circle-size: 2.25rem;
+  --vp-form-step-border: rgba(255, 255, 255, 0.45);
+  --vp-form-step-completed-bg: rgba(255, 255, 255, 0.2);
+  --vp-form-step-pending-text: rgba(255, 255, 255, 0.7);
+  --vp-form-validation-border: rgba(255, 92, 92, 0.7);
+  --vp-form-validation-bg: rgba(255, 92, 92, 0.12);
+  --vp-btn-letter-spacing: 0.125rem;
+  --vp-btn-select-files-spacing: 0.05em;
+  --vp-btn-padding: 0.75rem 2rem;
+  --vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.1);
+  --vp-btn-primary-hover-soft: rgba(255, 255, 255, 0.85);
+
+  /* Form & File Block Tokens — File Block */
+
+  --vp-file-block-padding-top: 1.25rem;
+  --vp-file-block-button-gap: 1.25rem;
+}
+
+/* ================================================================
+ * Base document styles
+ * Black background, Poppins at weight 300, white text — matches
+ * the legacy WordPress child theme defaults.
+ * ================================================================ */
+
+@layer base {
+  html {
+    /* Prevent horizontal scroll from full-bleed sections */
+    overflow-x: hidden;
+  }
+
+  body {
+    background: var(--vp-bg);
+    font-family: var(--vp-font-sans);
+    font-weight: 300;
+    color: var(--vp-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
