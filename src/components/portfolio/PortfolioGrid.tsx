@@ -167,14 +167,33 @@ export function PortfolioGrid({
   const gridRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
+  const presetFormat = presetFilters?.format ?? '';
+  const presetIndustry = presetFilters?.industry ?? '';
+  const presetMarket = presetFilters?.market ?? '';
+
   const publicFilters = useMemo(
-    () => readPublicFilters(searchParams, presetFilters),
-    [searchParams, presetFilters],
+    () =>
+      readPublicFilters(searchParams, {
+        format: presetFormat || undefined,
+        industry: presetIndustry || undefined,
+        market: presetMarket || undefined,
+      }),
+    [searchParams, presetFormat, presetIndustry, presetMarket],
   );
   const internalFilters = useMemo(
     () => readInternalFilters(searchParams),
     [searchParams],
   );
+
+  const filterSignature = [
+    publicFilters.format,
+    publicFilters.industry,
+    publicFilters.market,
+    internalFilters.client,
+    internalFilters.director,
+    internalFilters.dop,
+    internalFilters['art-director'],
+  ].join('|');
 
   const filteredEntries = useMemo(() => {
     if (filterMode === 'internal') {
@@ -189,37 +208,48 @@ export function PortfolioGrid({
 
   const [visibleCount, setVisibleCount] = useState(PER_PAGE);
   const [loading, setLoading] = useState(false);
+  const loadingRef = useRef(false);
 
   useEffect(() => {
     setVisibleCount(PER_PAGE);
-  }, [publicFilters, internalFilters, entries]);
+  }, [filterSignature, entries]);
 
   const visibleEntries = filteredEntries.slice(0, visibleCount);
   const hasMore = visibleCount < filteredEntries.length;
 
   const loadMore = useCallback(() => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-    setVisibleCount((prev) => Math.min(prev + PER_PAGE, filteredEntries.length));
-    setLoading(false);
-  }, [filteredEntries.length, hasMore, loading]);
+    setVisibleCount((prev) => {
+      if (prev >= filteredEntries.length) return prev;
+      return Math.min(prev + PER_PAGE, filteredEntries.length);
+    });
+  }, [filteredEntries.length]);
 
+  // Clear loading flag once the new batch has been committed.
+  useEffect(() => {
+    loadingRef.current = false;
+    setLoading(false);
+  }, [visibleCount]);
+
+  // Re-attach observer after each batch so a still-visible sentinel triggers
+  // the next load (IntersectionObserver only fires on crossing changes).
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || !hasMore) return;
 
     const observer = new IntersectionObserver(
       (observerEntries) => {
-        if (observerEntries.some((e) => e.isIntersecting)) {
-          loadMore();
-        }
+        if (!observerEntries.some((e) => e.isIntersecting)) return;
+        if (loadingRef.current) return;
+        loadingRef.current = true;
+        setLoading(true);
+        loadMore();
       },
       { rootMargin: '1200px 0px', threshold: 0 },
     );
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, loadMore]);
+  }, [hasMore, loadMore, visibleCount]);
 
   const scrollToGrid = () => {
     gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -438,10 +468,10 @@ export function PortfolioGrid({
       <div
         id="vp-load-more"
         ref={sentinelRef}
-        className={hasMore ? '' : 'is-done'}
+        className={hasMore ? (loading ? 'loading' : '') : 'is-done'}
         aria-hidden={!hasMore}
       >
-        {hasMore ? <div className="vp-load-spinner" /> : null}
+        {hasMore && loading ? <div className="vp-load-spinner" /> : null}
       </div>
     </>
   );

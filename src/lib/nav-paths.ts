@@ -1,8 +1,12 @@
 /**
- * Builds locale-aware internal paths for navigation links.
+ * Builds internal pathnames for next-intl navigation links.
  *
- * Chinese slugs come from Sanity page documents (slugZh), not derived from English.
- * Home is a special case: / (EN) and /zh (ZH) per next-intl routing.
+ * IMPORTANT: Never include the `/zh/` locale prefix here — the next-intl
+ * `Link` and `useRouter` helpers add it automatically. For routes registered
+ * in `routing.pathnames` (e.g. `/work`), pass the internal key; next-intl
+ * localizes it to `/作品` under `/zh/`.
+ *
+ * CMS pages not yet in pathnames use their slug (or slugZh) as the path segment.
  */
 
 import type { NavPage } from '@/types/sanity';
@@ -13,8 +17,16 @@ function slugZhFor(navPages: NavPage[], slug: string): string | undefined {
   return navPages.find((p) => p.slug === slug)?.slugZh;
 }
 
+/** Page slugs that map to a next-intl pathname key (see routing.ts). */
+const PATHNAME_KEYS: Record<string, '/' | '/work' | '/work-internal' | '/search'> = {
+  home: '/',
+  work: '/work',
+  'work-internal': '/work-internal',
+  search: '/search',
+};
+
 /**
- * Returns the path for a static page, with trailing slash.
+ * Returns the pathname for use with next-intl `Link` / `useRouter`.
  *
  * @param locale - Current locale (en | zh)
  * @param slug - English page slug (e.g. "about", "work")
@@ -23,21 +35,22 @@ function slugZhFor(navPages: NavPage[], slug: string): string | undefined {
 export function pagePath(
   locale: Locale,
   slug: string,
-  navPages: NavPage[]
+  navPages: NavPage[],
 ): string {
-  if (slug === 'home') {
-    return locale === 'zh' ? '/zh' : '/';
+  const pathnameKey = PATHNAME_KEYS[slug];
+  if (pathnameKey) {
+    return pathnameKey;
   }
 
-  if (locale === 'en') {
-    return `/${slug}/`;
+  if (locale === 'zh') {
+    const zhSlug = slugZhFor(navPages, slug) ?? slug;
+    return `/${zhSlug}`;
   }
 
-  const zhSlug = slugZhFor(navPages, slug) ?? slug;
-  return `/zh/${zhSlug}/`;
+  return `/${slug}`;
 }
 
-/** Search results page path for the current locale. */
-export function searchPath(locale: Locale): string {
-  return locale === 'zh' ? '/zh/search' : '/search';
+/** Search pathname for next-intl navigation (locale prefix applied automatically). */
+export function searchPath(): string {
+  return '/search';
 }

@@ -6,6 +6,7 @@ import {
   CREDITS_CONFIG,
   getDepartmentCreditPairs,
 } from '@/lib/credits-config';
+import { sanitizeCreditHtml } from '@/lib/sanitize-credit-html';
 import type { PortfolioCredits as PortfolioCreditsData } from '@/types/sanity';
 
 interface PortfolioCreditsProps {
@@ -27,7 +28,12 @@ export function PortfolioCredits({ credits }: PortfolioCreditsProps) {
           {pairs.map((pair, index) => (
             <span key={`${pair.role}-${index}`} className="vp-credit-pair">
               <span className="vp-credit-role">{pair.role}: </span>
-              <span className="vp-credit-names">{pair.names}</span>
+              <span
+                className="vp-credit-names"
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeCreditHtml(pair.names),
+                }}
+              />
               {index < pairs.length - 1 ? ' ' : null}
             </span>
           ))}

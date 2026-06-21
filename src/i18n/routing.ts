@@ -11,6 +11,9 @@ export const routing = defineRouting({
   locales: ['en', 'zh'],
   defaultLocale: 'en',
   localePrefix: 'as-needed',
+  // English is the canonical default at /. Users switch to Chinese explicitly
+  // via the language switcher — do not redirect based on Accept-Language.
+  localeDetection: false,
   pathnames: {
     '/': '/',
     '/work': {
