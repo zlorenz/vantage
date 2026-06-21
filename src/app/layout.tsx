@@ -1,10 +1,11 @@
 /**
- * Root layout — html/body shell shared by all routes (including /api).
- * Locale-specific providers live in app/[locale]/layout.tsx.
+ * Root layout — pass-through shell for routes outside [locale] (e.g. /api).
+ *
+ * Locale-specific <html>/<body>, global styles, and site chrome live in
+ * app/[locale]/layout.tsx where the lang attribute is set from the locale.
  */
 
 import type { Metadata } from 'next';
-import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Vantage Pictures',
@@ -16,9 +17,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html className="h-full antialiased" suppressHydrationWarning>
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
-  );
+  return children;
 }
