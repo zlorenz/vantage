@@ -1,0 +1,644 @@
+[
+  {
+    "wpTermId": 284,
+    "name": "Adam Dionisio",
+    "slug": "adam-dionisio",
+    "role": "director"
+  },
+  {
+    "wpTermId": 311,
+    "name": "Adhi Reksa",
+    "slug": "adhi-reksa",
+    "role": "director"
+  },
+  {
+    "wpTermId": 193,
+    "name": "Alexis Odiowei",
+    "slug": "alexis-odiowei",
+    "role": "director"
+  },
+  {
+    "wpTermId": 208,
+    "name": "Álvaro Pastor",
+    "slug": "alvaro-pastor",
+    "role": "director"
+  },
+  {
+    "wpTermId": 229,
+    "name": "Andrew Le",
+    "slug": "andrew-le",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 227,
+    "name": "Benedict Spence",
+    "slug": "benedict-spence",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 217,
+    "name": "Boris Hoelter",
+    "slug": "boris-hoelter",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 226,
+    "name": "Boris Vymenets",
+    "slug": "boris-vymenets",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 346,
+    "name": "Brett Wegener",
+    "slug": "brett-wegener",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 248,
+    "name": "Chaiporn Meng",
+    "slug": "chaiporn-meng",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 209,
+    "name": "Charlie Balch",
+    "slug": "charlie-balch",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 230,
+    "name": "Christian Denslow",
+    "slug": "christian-denslow",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 250,
+    "name": "Clyde Rainsbury",
+    "slug": "clyde-rainsbury",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 353,
+    "name": "Cối Ngô Minh Nghĩa",
+    "slug": "coi-ngo-minh-nghia",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 237,
+    "name": "Craig Griffin",
+    "slug": "craig-griffin",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 303,
+    "name": "Đặng Thịnh",
+    "slug": "dang-thinh",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 339,
+    "name": "Dastan Aralbay",
+    "slug": "dastan-aralbay",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 359,
+    "name": "Deen Abrahams",
+    "slug": "deen-abrahams",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 222,
+    "name": "Devin Toselli",
+    "slug": "devin-toselli",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 270,
+    "name": "Duy Vk",
+    "slug": "duy-vk",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 330,
+    "name": "Edoardo Emanuele",
+    "slug": "edoardo-emanuele",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 360,
+    "name": "Erick Turcios",
+    "slug": "erick-turcios",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 280,
+    "name": "Fosha Zyong",
+    "slug": "fosha-zyong",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 206,
+    "name": "Gen Ito",
+    "slug": "gen-ito",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 329,
+    "name": "Giacomo Boeri",
+    "slug": "giacomo-boeri",
+    "role": "director"
+  },
+  {
+    "wpTermId": 343,
+    "name": "Guy Bolandi",
+    "slug": "guy-bolandi",
+    "role": "director"
+  },
+  {
+    "wpTermId": 240,
+    "name": "Hadi Dimachkieh",
+    "slug": "hadi-dimachkieh",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 327,
+    "name": "Hai Truong",
+    "slug": "hai-truong",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 260,
+    "name": "Hang Diem Lam Nguyen",
+    "slug": "hang-diem-lam-nguyen",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 233,
+    "name": "Hoang Chaizee",
+    "slug": "hoang-chaizee",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 220,
+    "name": "Husain Amer",
+    "slug": "husain-amer",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 228,
+    "name": "Huy Vu",
+    "slug": "huy-vu",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 243,
+    "name": "Huy Vu",
+    "slug": "huy-vu",
+    "role": "director"
+  },
+  {
+    "wpTermId": 308,
+    "name": "Jacob Caron",
+    "slug": "jacob-caron",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 285,
+    "name": "Jani Hakli",
+    "slug": "jani-hakli",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 249,
+    "name": "Jason Prins",
+    "slug": "jason-prins",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 276,
+    "name": "Jean Phan",
+    "slug": "jean-phan",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 316,
+    "name": "Josh Levi",
+    "slug": "josh-levi",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 317,
+    "name": "Josie Minty",
+    "slug": "josie-minty",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 259,
+    "name": "Juan Barriga",
+    "slug": "juan-barriga",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 191,
+    "name": "Junhyung Kim",
+    "slug": "junhyung-kim",
+    "role": "director"
+  },
+  {
+    "wpTermId": 315,
+    "name": "Kai Krause",
+    "slug": "kai-krause",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 345,
+    "name": "Kaloyan Ignatov",
+    "slug": "kaloyan-ignatov",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 241,
+    "name": "Kari Bare",
+    "slug": "kari-bare",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 195,
+    "name": "Kelly Hoang",
+    "slug": "kelly-hoang",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 278,
+    "name": "Kelvin Chew",
+    "slug": "kelvin-chew",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 347,
+    "name": "Kessirin Kulabsawas",
+    "slug": "kessirin-kulabsawas",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 288,
+    "name": "Kim Tran",
+    "slug": "kim-tran",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 300,
+    "name": "Kong Kum Kup",
+    "slug": "kong-kum-kup",
+    "role": "director"
+  },
+  {
+    "wpTermId": 263,
+    "name": "Le Hoang Vy",
+    "slug": "le-hoang-vy",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 255,
+    "name": "Le Truong",
+    "slug": "le-truong",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 236,
+    "name": "Lee Doig",
+    "slug": "lee-doig",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 267,
+    "name": "Maggie Bitter-Suermann",
+    "slug": "maggie-bitter-suermann",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 344,
+    "name": "Mariano Monti",
+    "slug": "mariano-monti",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 218,
+    "name": "Martin Buzora",
+    "slug": "martin-buzora",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 258,
+    "name": "Martin Buzora",
+    "slug": "martin-buzora",
+    "role": "director"
+  },
+  {
+    "wpTermId": 265,
+    "name": "Mate Toth Widamon",
+    "slug": "mate-toth-widamon",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 212,
+    "name": "Michael Mai",
+    "slug": "michael-mai",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 342,
+    "name": "Microwave Soup",
+    "slug": "microwave-soup",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 204,
+    "name": "Minh Công Trang",
+    "slug": "minh-cong-trang",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 334,
+    "name": "Nate Nguyen",
+    "slug": "nate-nguyen",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 200,
+    "name": "Nathan Wong",
+    "slug": "nathan-wong",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 341,
+    "name": "Nghia Minh Phan",
+    "slug": "nghia-minh-phan",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 287,
+    "name": "Ngô Minh Nghĩa",
+    "slug": "ngo-minh-nghia",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 211,
+    "name": "Nguyễn Đức Hải",
+    "slug": "nguyen-duc-hai",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 320,
+    "name": "Nguyen Huynh Phuong An",
+    "slug": "nguyen-huynh-phuong-an",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 296,
+    "name": "Nguyễn Mạnh Tuấn",
+    "slug": "nguyen-manh-tuan",
+    "role": "director"
+  },
+  {
+    "wpTermId": 252,
+    "name": "Nguyen Thuy Thanh Truc",
+    "slug": "nguyen-thuy-thanh-truc",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 215,
+    "name": "Nick Jones",
+    "slug": "nick-jones",
+    "role": "director"
+  },
+  {
+    "wpTermId": 281,
+    "name": "Olmo Sobrino",
+    "slug": "olmo-sobrino",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 282,
+    "name": "Oriana Nigro Acevedo",
+    "slug": "oriana-nigro-acevedo",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 219,
+    "name": "Pablo Durana",
+    "slug": "pablo-durana",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 199,
+    "name": "Paul Moore",
+    "slug": "paul-moore",
+    "role": "director"
+  },
+  {
+    "wpTermId": 261,
+    "name": "Phan Jean Pierre",
+    "slug": "phan-jean-pierre",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 302,
+    "name": "Phương Vũ",
+    "slug": "phuong-vu",
+    "role": "director"
+  },
+  {
+    "wpTermId": 242,
+    "name": "Pongchaiphat Sethanand",
+    "slug": "pongchaiphat-sethanand",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 254,
+    "name": "Ray Lavers",
+    "slug": "ray-lavers",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 312,
+    "name": "Robie Taswin",
+    "slug": "robie-taswin",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 319,
+    "name": "Robin Mahieux",
+    "slug": "robin-mahieux",
+    "role": "director"
+  },
+  {
+    "wpTermId": 358,
+    "name": "Robin Taylor",
+    "slug": "robin-taylor",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 337,
+    "name": "Salihin Ramli",
+    "slug": "salihin-ramli",
+    "role": "director"
+  },
+  {
+    "wpTermId": 272,
+    "name": "Sam Koay",
+    "slug": "sam-koay",
+    "role": "director"
+  },
+  {
+    "wpTermId": 304,
+    "name": "Sam Koay",
+    "slug": "sam-koay",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 310,
+    "name": "Samuel Bennett",
+    "slug": "samuel-bennett",
+    "role": "director"
+  },
+  {
+    "wpTermId": 325,
+    "name": "Satawat Khamphen",
+    "slug": "satawat-khamphen",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 197,
+    "name": "Sean Lee",
+    "slug": "sean-lee",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 331,
+    "name": "Sumaya Wickham",
+    "slug": "sumaya-wickham",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 313,
+    "name": "Tante Rini",
+    "slug": "tante-rini",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 290,
+    "name": "Tatchai Eakkhattiyakorn",
+    "slug": "tatchai-eakkhattiyakorn",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 274,
+    "name": "Thai Anh Duong",
+    "slug": "thai-anh-duong",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 332,
+    "name": "Thippawan Aekkarin",
+    "slug": "thippawan-aekkarin",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 247,
+    "name": "Toan Vuong",
+    "slug": "toan-vuong",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 246,
+    "name": "Tóth Widamon Máté",
+    "slug": "toth-widamon-mate",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 293,
+    "name": "Tran Quang Duy",
+    "slug": "tran-quang-duy",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 253,
+    "name": "Tsering Tashi Gyalthang",
+    "slug": "tsering-tashi-gyalthang",
+    "role": "director"
+  },
+  {
+    "wpTermId": 269,
+    "name": "Tung Bui",
+    "slug": "tung-bui",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 352,
+    "name": "Tút Thai-Anh Duong",
+    "slug": "tut-thai-anh-duong",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 291,
+    "name": "Vichai Chamnarnsorn",
+    "slug": "vichai-chamnarnsorn",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 194,
+    "name": "Võ Thiệu Hưng",
+    "slug": "vo-thieu-hung",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 201,
+    "name": "Wilfred Cho",
+    "slug": "wilfred-cho",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 232,
+    "name": "Woodie",
+    "slug": "woodie",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 351,
+    "name": "Woodie Pongchaiphat Sethanand",
+    "slug": "woodie-pongchaiphat-sethanand",
+    "role": "dop"
+  },
+  {
+    "wpTermId": 283,
+    "name": "Wuanda Velasquez Sarmiento",
+    "slug": "wuanda-velasquez-sarmiento",
+    "role": "art-director"
+  },
+  {
+    "wpTermId": 307,
+    "name": "Yassa Khan",
+    "slug": "yassa-khan",
+    "role": "director"
+  },
+  {
+    "wpTermId": 298,
+    "name": "Yuichiro Sato",
+    "slug": "yuichiro-sato",
+    "role": "director"
+  },
+  {
+    "wpTermId": 203,
+    "name": "Zacharia Lorenz",
+    "slug": "zacharia-lorenz",
+    "role": "director"
+  },
+  {
+    "wpTermId": 234,
+    "name": "Zen Da",
+    "slug": "zen-da",
+    "role": "art-director"
+  }
+]

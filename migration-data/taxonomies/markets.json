@@ -1,0 +1,42 @@
+[
+  {
+    "wpTermId": 170,
+    "title": "China",
+    "titleZh": "中国",
+    "slug": "china",
+    "slugZh": "中国",
+    "sanityType": "market"
+  },
+  {
+    "wpTermId": 174,
+    "title": "Singapore",
+    "titleZh": "新加坡",
+    "slug": "singapore",
+    "slugZh": "新加坡",
+    "sanityType": "market"
+  },
+  {
+    "wpTermId": 176,
+    "title": "Taiwan",
+    "titleZh": "台湾",
+    "slug": "taiwan",
+    "slugZh": "台湾",
+    "sanityType": "market"
+  },
+  {
+    "wpTermId": 173,
+    "title": "USA",
+    "titleZh": "美国",
+    "slug": "usa",
+    "slugZh": "美国",
+    "sanityType": "market"
+  },
+  {
+    "wpTermId": 171,
+    "title": "Vietnam",
+    "titleZh": "越南",
+    "slug": "vietnam",
+    "slugZh": "越南",
+    "sanityType": "market"
+  }
+]

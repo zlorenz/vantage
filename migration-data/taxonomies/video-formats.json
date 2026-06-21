@@ -1,0 +1,30 @@
+[
+  {
+    "wpTermId": 43,
+    "title": "Brand Film",
+    "titleZh": "品牌电影",
+    "slug": "brand-film",
+    "sanityType": "videoFormat"
+  },
+  {
+    "wpTermId": 33,
+    "title": "Branded Documentary",
+    "titleZh": "品牌纪录片",
+    "slug": "branded-documentary",
+    "sanityType": "videoFormat"
+  },
+  {
+    "wpTermId": 34,
+    "title": "Commercial Spot",
+    "titleZh": "商业广告",
+    "slug": "commercial-spot",
+    "sanityType": "videoFormat"
+  },
+  {
+    "wpTermId": 36,
+    "title": "Product Video",
+    "titleZh": "产品视频",
+    "slug": "product-video",
+    "sanityType": "videoFormat"
+  }
+]

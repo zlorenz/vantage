@@ -1,0 +1,40 @@
+[
+  {
+    "wpTermId": 41,
+    "title": "Behind the Scenes",
+    "titleZh": "幕后花絮",
+    "slug": "behind-the-scenes",
+    "sanityType": "category"
+  },
+  {
+    "wpTermId": 42,
+    "title": "Campaign Creative",
+    "titleZh": "创意活动",
+    "slug": "creative",
+    "slugZh": "有创意",
+    "sanityType": "category"
+  },
+  {
+    "wpTermId": 44,
+    "title": "Crew Insights",
+    "titleZh": "团队见解",
+    "slug": "crew-insights",
+    "sanityType": "category"
+  },
+  {
+    "wpTermId": 164,
+    "title": "Press Coverage",
+    "titleZh": "新闻报道",
+    "slug": "press",
+    "slugZh": "按",
+    "sanityType": "category"
+  },
+  {
+    "wpTermId": 1,
+    "title": "Uncategorized",
+    "titleZh": "未分类",
+    "slug": "uncategorized",
+    "slugZh": "未分类",
+    "sanityType": "category"
+  }
+]

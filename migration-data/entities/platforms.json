@@ -1,0 +1,542 @@
+[
+  {
+    "wpTermId": 159,
+    "name": "Abia.com",
+    "slug": "abia-com"
+  },
+  {
+    "wpTermId": 71,
+    "name": "advieskeuze.nl",
+    "slug": "advieskeuze-nl"
+  },
+  {
+    "wpTermId": 46,
+    "name": "Agoda",
+    "slug": "agoda"
+  },
+  {
+    "wpTermId": 61,
+    "name": "Airbnb",
+    "slug": "airbnb"
+  },
+  {
+    "wpTermId": 62,
+    "name": "Airbnb Experiences",
+    "slug": "airbnb-experiences"
+  },
+  {
+    "wpTermId": 63,
+    "name": "AliExpress",
+    "slug": "aliexpress"
+  },
+  {
+    "wpTermId": 64,
+    "name": "AlternativeTo",
+    "slug": "alternativeto"
+  },
+  {
+    "wpTermId": 65,
+    "name": "Amazon",
+    "slug": "amazon"
+  },
+  {
+    "wpTermId": 48,
+    "name": "Angies List",
+    "slug": "angies-list"
+  },
+  {
+    "wpTermId": 49,
+    "name": "Apple AppStore",
+    "slug": "apple-appstore"
+  },
+  {
+    "wpTermId": 47,
+    "name": "Avvo",
+    "slug": "avvo"
+  },
+  {
+    "wpTermId": 70,
+    "name": "Bark.com",
+    "slug": "bark-com"
+  },
+  {
+    "wpTermId": 66,
+    "name": "BBB",
+    "slug": "bbb"
+  },
+  {
+    "wpTermId": 68,
+    "name": "BestBuy",
+    "slug": "bestbuy"
+  },
+  {
+    "wpTermId": 67,
+    "name": "bidvine",
+    "slug": "bidvine"
+  },
+  {
+    "wpTermId": 69,
+    "name": "Booking.com",
+    "slug": "booking-com"
+  },
+  {
+    "wpTermId": 72,
+    "name": "Capterra",
+    "slug": "capterra"
+  },
+  {
+    "wpTermId": 73,
+    "name": "CarGurus",
+    "slug": "cargurus"
+  },
+  {
+    "wpTermId": 74,
+    "name": "Cars.com",
+    "slug": "cars-com"
+  },
+  {
+    "wpTermId": 75,
+    "name": "Citysearch",
+    "slug": "citysearch"
+  },
+  {
+    "wpTermId": 76,
+    "name": "Classpass",
+    "slug": "classpass"
+  },
+  {
+    "wpTermId": 78,
+    "name": "Clutch.co",
+    "slug": "clutch-co"
+  },
+  {
+    "wpTermId": 79,
+    "name": "Clutch.com",
+    "slug": "clutch-com"
+  },
+  {
+    "wpTermId": 77,
+    "name": "Consumer Affairs",
+    "slug": "consumer-affairs"
+  },
+  {
+    "wpTermId": 80,
+    "name": "CreditKarma",
+    "slug": "creditkarma"
+  },
+  {
+    "wpTermId": 54,
+    "name": "Cusrev",
+    "slug": "cusrev"
+  },
+  {
+    "wpTermId": 81,
+    "name": "CustomerLobby",
+    "slug": "customerlobby"
+  },
+  {
+    "wpTermId": 82,
+    "name": "DealerRater",
+    "slug": "dealerrater"
+  },
+  {
+    "wpTermId": 163,
+    "name": "Dreams.co",
+    "slug": "dreams-co"
+  },
+  {
+    "wpTermId": 83,
+    "name": "Ebay",
+    "slug": "ebay"
+  },
+  {
+    "wpTermId": 84,
+    "name": "Edmunds",
+    "slug": "edmunds"
+  },
+  {
+    "wpTermId": 85,
+    "name": "Etsy",
+    "slug": "etsy"
+  },
+  {
+    "wpTermId": 50,
+    "name": "Expedia",
+    "slug": "expedia"
+  },
+  {
+    "wpTermId": 52,
+    "name": "Facebook",
+    "slug": "facebook"
+  },
+  {
+    "wpTermId": 51,
+    "name": "Feefo",
+    "slug": "feefo"
+  },
+  {
+    "wpTermId": 87,
+    "name": "Flipkart",
+    "slug": "flipkart"
+  },
+  {
+    "wpTermId": 86,
+    "name": "Foursquare",
+    "slug": "foursquare"
+  },
+  {
+    "wpTermId": 88,
+    "name": "Freelancer",
+    "slug": "freelancer"
+  },
+  {
+    "wpTermId": 89,
+    "name": "G2Crowd",
+    "slug": "g2crowd"
+  },
+  {
+    "wpTermId": 91,
+    "name": "Gartner",
+    "slug": "gartner"
+  },
+  {
+    "wpTermId": 92,
+    "name": "Gartner",
+    "slug": "gartner-2"
+  },
+  {
+    "wpTermId": 90,
+    "name": "Gearbest",
+    "slug": "gearbest"
+  },
+  {
+    "wpTermId": 93,
+    "name": "Glassdoor",
+    "slug": "glassdoor"
+  },
+  {
+    "wpTermId": 56,
+    "name": "Goodreads",
+    "slug": "goodreads"
+  },
+  {
+    "wpTermId": 53,
+    "name": "Google",
+    "slug": "google"
+  },
+  {
+    "wpTermId": 55,
+    "name": "Google Shopping",
+    "slug": "google-shopping"
+  },
+  {
+    "wpTermId": 161,
+    "name": "Guaranteed",
+    "slug": "guaranteed"
+  },
+  {
+    "wpTermId": 94,
+    "name": "Healthgrades",
+    "slug": "healthgrades"
+  },
+  {
+    "wpTermId": 99,
+    "name": "Hipages",
+    "slug": "hipages"
+  },
+  {
+    "wpTermId": 102,
+    "name": "Hipages",
+    "slug": "hipages-2"
+  },
+  {
+    "wpTermId": 95,
+    "name": "HomeAdvisor",
+    "slug": "homeadvisor"
+  },
+  {
+    "wpTermId": 96,
+    "name": "Homestars",
+    "slug": "homestars"
+  },
+  {
+    "wpTermId": 98,
+    "name": "Hotels.com",
+    "slug": "hotels-com"
+  },
+  {
+    "wpTermId": 97,
+    "name": "Houzz",
+    "slug": "houzz"
+  },
+  {
+    "wpTermId": 103,
+    "name": "HungerStation",
+    "slug": "hungerstation"
+  },
+  {
+    "wpTermId": 106,
+    "name": "IMDB",
+    "slug": "imdb"
+  },
+  {
+    "wpTermId": 105,
+    "name": "Indeed",
+    "slug": "indeed"
+  },
+  {
+    "wpTermId": 107,
+    "name": "Insider Pages",
+    "slug": "insider-pages"
+  },
+  {
+    "wpTermId": 108,
+    "name": "Jet",
+    "slug": "jet"
+  },
+  {
+    "wpTermId": 109,
+    "name": "Judge.me",
+    "slug": "judge-me"
+  },
+  {
+    "wpTermId": 110,
+    "name": "Lawyers.com",
+    "slug": "lawyers-com"
+  },
+  {
+    "wpTermId": 112,
+    "name": "Lending Tree",
+    "slug": "lending-tree"
+  },
+  {
+    "wpTermId": 114,
+    "name": "mariages.net",
+    "slug": "mariages-net"
+  },
+  {
+    "wpTermId": 113,
+    "name": "Martindale",
+    "slug": "martindale"
+  },
+  {
+    "wpTermId": 118,
+    "name": "Newegg",
+    "slug": "newegg"
+  },
+  {
+    "wpTermId": 126,
+    "name": "Oneflare",
+    "slug": "oneflare"
+  },
+  {
+    "wpTermId": 119,
+    "name": "OpenRice",
+    "slug": "openrice"
+  },
+  {
+    "wpTermId": 123,
+    "name": "Opentable",
+    "slug": "opentable"
+  },
+  {
+    "wpTermId": 125,
+    "name": "Opentable",
+    "slug": "opentable-2"
+  },
+  {
+    "wpTermId": 129,
+    "name": "Playstore",
+    "slug": "playstore"
+  },
+  {
+    "wpTermId": 130,
+    "name": "Podcasts",
+    "slug": "podcasts"
+  },
+  {
+    "wpTermId": 127,
+    "name": "ProductHunt",
+    "slug": "producthunt"
+  },
+  {
+    "wpTermId": 128,
+    "name": "ProductReview",
+    "slug": "productreview"
+  },
+  {
+    "wpTermId": 131,
+    "name": "RateMDs",
+    "slug": "ratemds"
+  },
+  {
+    "wpTermId": 132,
+    "name": "ReserveOut",
+    "slug": "reserveout"
+  },
+  {
+    "wpTermId": 133,
+    "name": "Rotten Tomatoes",
+    "slug": "rotten-tomatoes"
+  },
+  {
+    "wpTermId": 45,
+    "name": "Self",
+    "slug": "self"
+  },
+  {
+    "wpTermId": 141,
+    "name": "Serviceseeking",
+    "slug": "serviceseeking"
+  },
+  {
+    "wpTermId": 139,
+    "name": "Shopify App Store",
+    "slug": "shopify-app-store"
+  },
+  {
+    "wpTermId": 140,
+    "name": "Shopper Approved",
+    "slug": "shopper-approved"
+  },
+  {
+    "wpTermId": 135,
+    "name": "Siftery",
+    "slug": "siftery"
+  },
+  {
+    "wpTermId": 134,
+    "name": "Sitejabber",
+    "slug": "sitejabber"
+  },
+  {
+    "wpTermId": 138,
+    "name": "SoftwareAdvice",
+    "slug": "softwareadvice"
+  },
+  {
+    "wpTermId": 142,
+    "name": "solarquotes",
+    "slug": "solarquotes"
+  },
+  {
+    "wpTermId": 136,
+    "name": "Steam",
+    "slug": "steam"
+  },
+  {
+    "wpTermId": 137,
+    "name": "StyleSeat",
+    "slug": "styleseat"
+  },
+  {
+    "wpTermId": 143,
+    "name": "Talabat",
+    "slug": "talabat"
+  },
+  {
+    "wpTermId": 144,
+    "name": "The Knot",
+    "slug": "the-knot"
+  },
+  {
+    "wpTermId": 145,
+    "name": "Thumbtack",
+    "slug": "thumbtack"
+  },
+  {
+    "wpTermId": 57,
+    "name": "TripAdvisor",
+    "slug": "tripadvisor"
+  },
+  {
+    "wpTermId": 146,
+    "name": "Trulia",
+    "slug": "trulia"
+  },
+  {
+    "wpTermId": 147,
+    "name": "TrustedShops",
+    "slug": "trustedshops"
+  },
+  {
+    "wpTermId": 148,
+    "name": "Trustpilot",
+    "slug": "trustpilot"
+  },
+  {
+    "wpTermId": 149,
+    "name": "TrustRadius",
+    "slug": "trustradius"
+  },
+  {
+    "wpTermId": 150,
+    "name": "Upwork",
+    "slug": "upwork"
+  },
+  {
+    "wpTermId": 151,
+    "name": "Vitals",
+    "slug": "vitals"
+  },
+  {
+    "wpTermId": 152,
+    "name": "Walmart",
+    "slug": "walmart"
+  },
+  {
+    "wpTermId": 162,
+    "name": "Webwinkelkeur",
+    "slug": "webwinkelkeur"
+  },
+  {
+    "wpTermId": 153,
+    "name": "WeddingWire",
+    "slug": "weddingwire"
+  },
+  {
+    "wpTermId": 154,
+    "name": "Wish",
+    "slug": "wish"
+  },
+  {
+    "wpTermId": 160,
+    "name": "WordofMouth",
+    "slug": "wordofmouth"
+  },
+  {
+    "wpTermId": 155,
+    "name": "Yell",
+    "slug": "yell"
+  },
+  {
+    "wpTermId": 156,
+    "name": "YellowPages",
+    "slug": "yellowpages"
+  },
+  {
+    "wpTermId": 58,
+    "name": "Yelp",
+    "slug": "yelp"
+  },
+  {
+    "wpTermId": 158,
+    "name": "zankyou",
+    "slug": "zankyou"
+  },
+  {
+    "wpTermId": 59,
+    "name": "Zillow",
+    "slug": "zillow"
+  },
+  {
+    "wpTermId": 157,
+    "name": "ZocDoc",
+    "slug": "zocdoc"
+  },
+  {
+    "wpTermId": 60,
+    "name": "Zomato",
+    "slug": "zomato"
+  }
+]

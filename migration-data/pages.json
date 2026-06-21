@@ -1,0 +1,220 @@
+[
+  {
+    "wpId": 8,
+    "title": "News",
+    "titleZh": "新闻动态",
+    "slug": "news",
+    "slugZh": "新闻",
+    "showHeroHeader": true,
+    "heroTitle": "News <span class=\"vp-outline\">& Insights</span>",
+    "featuredImageWpId": 3272,
+    "bodyHtml": "<!-- wp:paragraph -->\n<p>Stay updated with the latest news, behind-the-scenes breakdowns, creative insights, and industry press from Vantage Pictures. Explore how our commercial film productions come to life - from concept development and cinematography to post-production, global campaigns, and cross-border collaboration.</p>\n<!-- /wp:paragraph -->",
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Explore behind-the-scenes insights, creative direction, and industry press from Vantage Pictures’ global commercial film productions.",
+      "metaDescriptionZh": "了解 Vantage Pictures 全球商业电影制作的幕后花絮、创意方向和行业新闻。.",
+      "focusKeyword": "Commercial Film Production News"
+    }
+  },
+  {
+    "wpId": 2582,
+    "title": "Video Campaign Brief",
+    "titleZh": "视频宣传简介",
+    "slug": "video-campaign-brief",
+    "slugZh": "视频活动简介",
+    "showHeroHeader": false,
+    "featuredImageWpId": 3312,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:gravityforms/form {\"formId\":\"1\",\"title\":false,\"inputPrimaryColor\":\"#204ce5\"} /-->\n<!-- /wp:wp-bootstrap-blocks/container -->",
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Submit your commercial film production brief to Vantage Pictures and connect with our team to discuss your brand film or product launch campaign.",
+      "metaDescriptionZh": "向 Vantage Pictures 提交您的商业影片制作简介，并与我们的团队联系，讨论您的品牌影片或产品发布活动。.",
+      "focusKeyword": "Commercial Film Production Project Brief"
+    }
+  },
+  {
+    "wpId": 2693,
+    "title": "Work",
+    "titleZh": "作品",
+    "slug": "work",
+    "slugZh": "工作",
+    "showHeroHeader": true,
+    "heroTitle": "<span class=\"vp-outline\">Our</span> Work",
+    "featuredImageWpId": 3135,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:paragraph {\"align\":\"center\"} -->\n<p class=\"has-text-align-center\">Explore a curated portfolio of commercial films, cinematic brand campaigns, and product launch videos produced by Vantage Pictures for global clients. We specialize in helping Asian technology brands — particularly from China — connect with Western audiences through internationally positioned campaigns, while also delivering high-end commercial storytelling across automotive, energy, lifestyle, and documentary-driven brand films worldwide.</p>\n<!-- /wp:paragraph -->\n<!-- /wp:wp-bootstrap-blocks/container -->",
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Explore the commercial film production portfolio of Vantage Pictures, featuring cinematic brand films and product launch campaigns for global and technology brands.",
+      "metaDescriptionZh": "了解 Vantage Pictures 的商业电影制作组合，为全球品牌和技术品牌拍摄电影品牌宣传片和产品发布活动。.",
+      "focusKeyword": "Commercial Film Production Portfolio"
+    }
+  },
+  {
+    "wpId": 3072,
+    "title": "Vietnam Location Guidebook",
+    "titleZh": "越南取景地指南",
+    "slug": "vietnam-location-guide",
+    "slugZh": "越南旅游指南",
+    "showHeroHeader": true,
+    "heroTitle": "<span class=\"vp-outline\">Vietnam</span> Location Guidebook",
+    "featuredImageWpId": 3074,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\",\"metadata\":{\"name\":\"Row (10-Column Centered)\"}} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeSm\":10,\"metadata\":{\"name\":\"col-sm-10\"},\"className\":\"offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\">Vietnam <span class=\"vp-outline\">Filming Location Guide</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Download our Vietnam Location Guide, a curated production resource designed for international agencies, producers, and commercial film teams planning shoots across the country. This guide highlights diverse filming locations in Vietnam — from modern cityscapes and industrial zones to tropical coastlines, mountain landscapes, and remote natural environments — helping you evaluate creative possibilities before your production begins.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Created by the team at Vantage Pictures, the guide reflects real-world production experience supporting global commercial shoots throughout Vietnam.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:file {\"id\":3075,\"href\":\"http://localhost:8888/vantage-local/wp-content/uploads/2023/03/Vietnam_Location_Guide_Vantage_Pictures.pdf\",\"displayPreview\":false} -->\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-35f31319-a88b-43a7-bf99-b845e28e130b\" href=\"http://localhost:8888/vantage-local/wp-content/uploads/2023/03/Vietnam_Location_Guide_Vantage_Pictures.pdf\" target=\"_blank\" rel=\"noreferrer noopener\">Vietnam_Location_Guide_Vantage_Pictures.pdf</a><a href=\"http://localhost:8888/vantage-local/wp-content/uploads/2023/03/Vietnam_Location_Guide_Vantage_Pictures.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-35f31319-a88b-43a7-bf99-b845e28e130b\">Download</a></div>\n<!-- /wp:file -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->",
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Download our Vietnam filming location guide featuring diverse commercial shoot locations and production insights for international crews.",
+      "metaDescriptionZh": "下载我们的越南拍摄地点指南，为国际摄制组提供各种商业拍摄地点和制作见解。.",
+      "focusKeyword": "Vietnam Filming Location Guide"
+    }
+  },
+  {
+    "wpId": 3195,
+    "title": "Work (Internal)",
+    "titleZh": "工作（内部）",
+    "slug": "work-internal",
+    "slugZh": "work-internal",
+    "showHeroHeader": true,
+    "heroTitle": "Our Work <span class=\"vp-outline\">(Internal)</span>",
+    "featuredImageWpId": 3492,
+    "bodyHtml": "",
+    "noIndex": true,
+    "seo": {}
+  },
+  {
+    "wpId": 3747,
+    "title": "Home",
+    "titleZh": "主页",
+    "slug": "home",
+    "slugZh": "zh",
+    "showHeroHeader": false,
+    "featuredImageWpId": 3627,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:heading {\"textAlign\":\"center\",\"level\":1} -->\n<h1 class=\"wp-block-heading has-text-align-center\" id=\"h-a-bit-of-our-work\"><span class=\"vp-outline\">A Bit of</span> Our Work</h1>\n<!-- /wp:heading -->\n\n<!-- wp:vp/portfolio-gallery {\"ids\":\"3519,3524,3504,3283,3239,3276,3499,3518,3173,3101,2059,3040\",\"cols\":3,\"gutter\":3} /-->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\",\"metadata\":{\"name\":\"Row (10-Column Centered)\"}} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeSm\":10,\"metadata\":{\"name\":\"col-sm-10\"},\"className\":\"offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\" id=\"h-global-commercial-film-production-for-ambitious-brands\">Global Commercial Film Production <span class=\"vp-outline\">for Ambitious Brands</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Vantage Pictures is a globally operating commercial film production company creating cinematic brand films, product launch campaigns, and high-impact technology commercials for ambitious companies worldwide. We collaborate with fast-growing innovators and established global brands to craft visually refined, strategically grounded films that elevate product storytelling and brand identity.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>A core specialty of our studio is helping Asian technology brands — particularly from China — connect with Western audiences through premium, internationally positioned campaigns. From robotics and AI to consumer electronics and next-generation hardware, we translate complex innovation into emotionally resonant visual storytelling.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Beyond technology, our portfolio spans lifestyle, automotive, energy, sport, and documentary-driven brand films — all executed with disciplined production standards, cinematic craft, and cross-border expertise.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:wp-bootstrap-blocks/button {\"url\":\"http://localhost:8888/vantage-local/about/\",\"text\":\"Learn More About Us\"} /-->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:heading {\"textAlign\":\"center\",\"level\":1} -->\n<h1 class=\"wp-block-heading has-text-align-center\" id=\"h-brands-nbsp-we-work-with\">Brands&nbsp;<span class=\"vp-outline\">We Work With</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:gallery {\"columns\":4,\"linkTo\":\"none\",\"sizeSlug\":\"full\",\"className\":\"brand-logos\"} -->\n<figure class=\"wp-block-gallery has-nested-images columns-4 is-cropped brand-logos\"><!-- wp:image {\"id\":45,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/cnn.png\" alt=\"CNN logo white transparent\" class=\"wp-image-45\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":52,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/oneplus.png\" alt=\"OnePlus logo white transparent\" class=\"wp-image-52\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":49,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hyundai.png\" alt=\"Hyundai logo white transparent\" class=\"wp-image-49\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":55,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/samsung.png\" alt=\"Samsung logo white transparent\" class=\"wp-image-55\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":48,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/huawei.png\" alt=\"Huawei logo white transparent\" class=\"wp-image-48\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":54,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/realme.png\" alt=\"realme logo white transparent\" class=\"wp-image-54\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":47,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hasselblad.png\" alt=\"Hasselblad logo white transparent\" class=\"wp-image-47\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":46,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/dji.png\" alt=\"DJI logo white transparent\" class=\"wp-image-46\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":44,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/braun.png\" alt=\"Braun logo white transparent\" class=\"wp-image-44\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":56,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/the-north-face.png\" alt=\"The North Face logo white transparent\" class=\"wp-image-56\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":51,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/jw-marriott.png\" alt=\"JW Marriott logo white transparent\" class=\"wp-image-51\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":3035,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/12/toyota.png\" alt=\"Toyota logo white transparent\" class=\"wp-image-3035\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":3034,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/12/png.png\" alt=\"Procter &amp; Gamble logo white transparent\" class=\"wp-image-3034\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":59,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/zhiyun.png\" alt=\"Zhiyun logo white transparent\" class=\"wp-image-59\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":3032,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/12/coca-cola.png\" alt=\"Coca Cola logo white transparent\" class=\"wp-image-3032\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":57,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/unilever.png\" alt=\"Unilever logo white transparent\" class=\"wp-image-57\"/></figure>\n<!-- /wp:image --></figure>\n<!-- /wp:gallery -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:block {\"ref\":3781} /-->",
+    "heroSlides": [
+      {
+        "portfolioWpId": 4449,
+        "buttonLabel": "Watch",
+        "buttonLabelZh": "立即观看"
+      },
+      {
+        "portfolioWpId": 4453,
+        "buttonLabel": "Watch",
+        "buttonLabelZh": "立即观看"
+      },
+      {
+        "portfolioWpId": 3519,
+        "buttonLabel": "Watch",
+        "buttonLabelZh": "立即观看"
+      },
+      {
+        "portfolioWpId": 3524,
+        "buttonLabel": "Watch",
+        "buttonLabelZh": "立即观看"
+      },
+      {
+        "portfolioWpId": 3276,
+        "buttonLabel": "Watch",
+        "buttonLabelZh": "立即观看"
+      },
+      {
+        "portfolioWpId": 3239,
+        "buttonLabel": "Watch",
+        "buttonLabelZh": "立即观看"
+      }
+    ],
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Vantage Pictures is a global commercial film production company creating cinematic brand films and product launches for technology and international brands.",
+      "metaDescriptionZh": "Vantage Pictures 是一家全球商业影像制作公司，为科技企业和国际品牌制作品牌影片、商业广告和产品发布影片。",
+      "focusKeyword": "Global Commercial Film Production Company"
+    }
+  },
+  {
+    "wpId": 3778,
+    "title": "About",
+    "titleZh": "关于我们",
+    "slug": "about",
+    "slugZh": "关于",
+    "showHeroHeader": true,
+    "heroTitle": "About <span class=\"vp-outline\">Us</span>",
+    "featuredImageWpId": 2367,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"className\":\"mt-5\"} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeMd\":8,\"sizeSm\":10,\"className\":\"offset-md-2 offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\">Who <span class=\"vp-outline\">We Are</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Vantage Pictures is a global commercial film production company creating cinematic brand films, product launch campaigns, and technology-driven advertising for ambitious brands worldwide. While our studio operates internationally, we have developed a strong specialization in helping Asian technology companies — particularly from China — position their products for Western audiences through premium, internationally competitive campaigns.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Our team combines strategic messaging, disciplined production execution, and refined cinematic craft across industries including AI and robotics, consumer electronics, automotive, energy, lifestyle, and documentary-driven brand storytelling. With extensive cross-border experience, we bridge markets, cultures, and creative standards to deliver work that performs globally.</p>\n<!-- /wp:paragraph -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n\n<!-- wp:wp-bootstrap-blocks/column {\"sizeMd\":6} /-->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:heading {\"textAlign\":\"center\",\"level\":1} -->\n<h1 class=\"wp-block-heading has-text-align-center\"><span class=\"vp-outline\">Our</span> Team</h1>\n<!-- /wp:heading -->\n\n<!-- wp:gallery {\"columns\":4,\"linkTo\":\"none\"} -->\n<figure class=\"wp-block-gallery has-nested-images columns-4 is-cropped\"><!-- wp:image {\"id\":2851,\"sizeSlug\":\"large\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-large\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/05/alexis-odiowei.jpg\" alt=\"Headshot of Alexis Odiowei, Managing Director at Vantage Pictures\" class=\"wp-image-2851\"/><figcaption class=\"wp-element-caption\">Alexis Odiowei</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":2856,\"sizeSlug\":\"large\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-large\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/05/paul-moore.jpg\" alt=\"Headshot of Paul Moore, Creative Director at Vantage Pictures\" class=\"wp-image-2856\"/><figcaption class=\"wp-element-caption\">Paul Moore</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":2860,\"sizeSlug\":\"large\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-large\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/05/zacharia-lorenz.jpg\" alt=\"Headshot of Zacharia Lorenz, Marketing Director at Vantage Pictures\" class=\"wp-image-2860\"/><figcaption class=\"wp-element-caption\">Zacharia Lorenz</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":2853,\"sizeSlug\":\"large\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-large\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/05/james-duong.jpg\" alt=\"Headshot of James Duong, Executive Producer at Vantage Pictures\" class=\"wp-image-2853\"/><figcaption class=\"wp-element-caption\">James Duong</figcaption></figure>\n<!-- /wp:image --></figure>\n<!-- /wp:gallery -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:block {\"ref\":3781} /-->",
+    "founders": [
+      {
+        "name": "Alexis Odiowei",
+        "jobTitle": "Commercial Film Director",
+        "imageWpId": 2851,
+        "bio": "Alexis Odiowei is a commercial film director and Managing Director of Vantage Pictures. He leads global advertising productions for technology and consumer brands, overseeing creative development and international production operations.",
+        "sameAs": [
+          "3"
+        ]
+      },
+      {
+        "name": "Paul Moore",
+        "jobTitle": "Commercial Film Director",
+        "imageWpId": 2856,
+        "bio": "Paul Moore is a commercial film director and Creative Director at Vantage Pictures. He develops cinematic campaigns for global brands, specializing in visual storytelling, creative strategy, and high-end commercial production.",
+        "sameAs": [
+          "4"
+        ]
+      },
+      {
+        "name": "Zacharia Lorenz",
+        "jobTitle": "Commercial Film Director",
+        "imageWpId": 2860,
+        "bio": "Zacharia Lorenz is a commercial film director and Marketing Director of Vantage Pictures. He produces global brand campaigns and leads marketing strategy, business development, and international client partnerships.",
+        "sameAs": [
+          "6"
+        ]
+      },
+      {
+        "name": "James Duong",
+        "jobTitle": "Executive Producer",
+        "imageWpId": 2853,
+        "bio": "James Duong is Executive Producer and co-founder of Vantage Pictures. He oversees production operations across Asia, managing large-scale commercial campaigns for global technology and consumer brands.",
+        "sameAs": [
+          "3"
+        ]
+      }
+    ],
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Vantage Pictures is a global commercial film production company specializing in cinematic brand films and cross-border campaigns for technology and international brands.",
+      "metaDescriptionZh": "Vantage Pictures 是一家全球性商业电影制作公司，专门为技术和国际品牌制作电影品牌宣传片和跨境宣传活动。.",
+      "focusKeyword": "Global Commercial Film Production Company"
+    }
+  },
+  {
+    "wpId": 3794,
+    "title": "Vietnam Production Service",
+    "titleZh": "<a aria-current=\"page\" title=\"越南制作服务\" role=\"menuitem\" href=\"http://localhost:8888/vantage-local/zh/越南生产服务/\" class=\"dropdown-item active\">越南制作服务</a>",
+    "slug": "vietnam-production-service",
+    "slugZh": "越南生产服务",
+    "showHeroHeader": true,
+    "heroTitle": "Vietnam <span class=\"vp-outline\">Production Service</span>",
+    "heroTitleZh": "越南制作服务",
+    "featuredImageWpId": 2480,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\",\"metadata\":{\"name\":\"Row (10-Column Centered)\"},\"className\":\"mt-4\"} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeSm\":10,\"metadata\":{\"name\":\"col-sm-10\"},\"className\":\"offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\">Vietnam Production Service <span class=\"vp-outline\">for International Commercial Shoots</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Vantage Pictures provides full-service Vietnam production support for international brands, agencies, and production companies shooting commercials, brand films, documentaries, and product campaigns across the country. With extensive experience servicing global clients, we deliver reliable local execution with international production standards.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:heading -->\n<h2 class=\"wp-block-heading\">Why Film in Vietnam?</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Vietnam offers diverse landscapes, competitive production costs, skilled local crews, and streamlined logistics for international commercial shoots. From modern cityscapes in Ho Chi Minh City and Hanoi to tropical coastlines, mountain ranges, and industrial environments, Vietnam provides a wide range of visually distinctive locations within close geographic proximity.</p>\n<!-- /wp:paragraph -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:gallery {\"columns\":4,\"imageCrop\":false,\"linkTo\":\"none\",\"sizeSlug\":\"full\",\"className\":\"is-style-vp-masonry\"} -->\n<figure class=\"wp-block-gallery has-nested-images columns-4 is-style-vp-masonry\"><!-- wp:image {\"id\":80,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/son-doong-cave.jpg\" alt=\"Sunlight pouring into Son Doong Cave in Quang Binh, Vietnam\" class=\"wp-image-80\"/><figcaption class=\"wp-element-caption\">Son Doong Cave Quang Binh</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":79,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/saigon-post-office.jpg\" alt=\"The historic Saigon Central Post Office in Ho Chi Minh City, Vietnam\" class=\"wp-image-79\"/><figcaption class=\"wp-element-caption\">Saigon Central Post Office Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":67,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/da-lat-farm.jpg\" alt=\"Beautiful fields and greenhouses during sunrise at Hasfarm in Da Lat, Vietnam\" class=\"wp-image-67\"/><figcaption class=\"wp-element-caption\">Hasfarm Da Lat</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":73,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hoi-an.jpg\" alt=\"Colorfully lit streets at night in Hoi An, Quang Nam, Vietnam\" class=\"wp-image-73\"/><figcaption class=\"wp-element-caption\">Hoi An Quang Nam</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":68,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/golden-bridge.jpg\" alt=\"Tourists crowding Golden Bridge in Da Nang, Vietnam\" class=\"wp-image-68\"/><figcaption class=\"wp-element-caption\">Golden Bridge Da Nang</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":66,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/bitexco-financial-tower.jpg\" alt=\"Bitexco Financial Tower at sunset in Ho Chi Minh City, Vietnam\" class=\"wp-image-66\"/><figcaption class=\"wp-element-caption\">Bitexco Financial Tower Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":72,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/ho-chi-minh-city-district-1.jpg\" alt=\"Saigon River skyline at night in Ho Chi Minh City, Vietnam\" class=\"wp-image-72\"/><figcaption class=\"wp-element-caption\">Saigon River Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":82,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/tay-ho-pagoda.jpg\" alt=\"Tay Ho Pagoda at sunset in Hanoi, Vietnam\" class=\"wp-image-82\"/><figcaption class=\"wp-element-caption\">Tay Ho Pagoda Hanoi</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":74,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/khau-pha-pass.jpg\" alt=\"Picturesque rice paddies at Khau Pha Pass in Yen Bai, Vietnam\" class=\"wp-image-74\"/><figcaption class=\"wp-element-caption\">Khau Pha Pass Yen Bai</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":78,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/phu-quoc-island.jpg\" alt=\"Beautiful tropical beaches on Phu Quoc Island in Kien Giang, Vietnam\" class=\"wp-image-78\"/><figcaption class=\"wp-element-caption\">Phu Quoc Island Kien Giang</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":81,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/tan-dinh-catholic-church.jpg\" alt=\"Pink church Tan Dinh Catholic Church in Ho Chi Minh City, Vietnam\" class=\"wp-image-81\"/><figcaption class=\"wp-element-caption\">Tan Dinh Catholic Church Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":83,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/thien-hau-temple-incense.jpg\" alt=\"Woman praying with incense at Thien Hau Temple in Ho Chi Minh City, Vietnam\" class=\"wp-image-83\"/><figcaption class=\"wp-element-caption\">Thien Hau Temple Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":69,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/ha-long-bay.jpg\" alt=\"Cruise boats tour the karsts of Ha Long Bay in Quang Ninh, Vietnam\" class=\"wp-image-69\"/><figcaption class=\"wp-element-caption\">Ha Long Bay Quang Ninh</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":71,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hanoi-skyline.jpg\" alt=\"Hanoi skyline at sunset, Vietnam\" class=\"wp-image-71\"/><figcaption class=\"wp-element-caption\">Hanoi</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":76,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/long-bien-bridge.jpg\" alt=\"Boat paddles at sunrise beneath Long Bien Bridge in Hanoi, Vietnam\" class=\"wp-image-76\"/><figcaption class=\"wp-element-caption\">Long Bien Bridge Hanoi</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":75,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/kien-giang.jpg\" alt=\"Rice fields at sunrise in the Mekong Delta, Kien Giang, Vietnam\" class=\"wp-image-75\"/><figcaption class=\"wp-element-caption\">Mekong Delta Kien Giang</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":77,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/national-museum-of-vietnamese-history.jpg\" alt=\"National Museum of Vietnamese History in Hanoi, Vietnam\" class=\"wp-image-77\"/><figcaption class=\"wp-element-caption\">National Museum of Vietnamese History Hanoi</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":70,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hang-mua-ninh-binh.jpg\" alt=\"Stairs winding up a jagged Hang Mua Peak in Ninh Binh, Vietnam\" class=\"wp-image-70\"/><figcaption class=\"wp-element-caption\">Hang Mua Peak Ninh Binh</figcaption></figure>\n<!-- /wp:image --></figure>\n<!-- /wp:gallery -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\",\"metadata\":{\"name\":\"Row (10-Column Centered)\"},\"className\":\"mt-2 mb-4\"} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeSm\":10,\"metadata\":{\"name\":\"col-sm-10\"},\"className\":\"offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\">Full-Service Production Support&nbsp;<span class=\"vp-outline\">in Vietnam</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Our Vietnam production services cover every stage of the filmmaking process, including location scouting, permitting, casting, crew sourcing, equipment rental, production management, line producing, budgeting, and post-production coordination. Whether servicing large-scale commercial productions or agile documentary crews, we ensure efficient execution, clear communication, and professional oversight throughout.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:heading -->\n<h2 class=\"wp-block-heading\">Filming Locations&nbsp;<span class=\"vp-outline\">Across Vietnam</span></h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Our Vietnam production services cover every stage of the filmmaking process, including location scouting, permitting, casting, crew sourcing, equipment rental, production management, line producing, budgeting, and post-production coordination. Whether servicing large-scale commercial productions or agile documentary crews, we ensure efficient execution, clear communication, and professional oversight throughout.<br></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:wp-bootstrap-blocks/button {\"url\":\"http://localhost:8888/vantage-local/vietnam-location-guide/\",\"text\":\"Vietnam Location Guidebook\"} /-->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:gallery {\"columns\":3,\"imageCrop\":false,\"linkTo\":\"none\",\"sizeSlug\":\"full\",\"className\":\"is-style-vp-masonry\"} -->\n<figure class=\"wp-block-gallery has-nested-images columns-3 is-style-vp-masonry\"><!-- wp:image {\"id\":61,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/long-island-film-studio.jpg\" alt=\"Long Island Film Studio plot for photography and filming in Ho Chi Minh City, Vietnam\" class=\"wp-image-61\"/><figcaption class=\"wp-element-caption\">Long Island Film Studio Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":65,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/vaib-production-house.jpg\" alt=\"VAIB studio for photography and filming in Ho Ch Minh City, Vietnam\" class=\"wp-image-65\"/><figcaption class=\"wp-element-caption\">VAIB Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":63,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/starVN.jpg\" alt=\"StarVN studio for filming in Ho Chi Minh City, Vietnam\" class=\"wp-image-63\"/><figcaption class=\"wp-element-caption\">StarVN Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":2948,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/06/89030086_555000368699825_3412428216197971968_n.jpeg\" alt=\"G-Floor Sound Stage at Capital Studio in Ho Chi Minh City, Vietnam\" class=\"wp-image-2948\"/><figcaption class=\"wp-element-caption\">Capital Studio Vietnam</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":62,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/ps-vietnam.jpg\" alt=\"PS Vietnam rental house for video production in Ho Chi Minh City, Vietnam\" class=\"wp-image-62\"/><figcaption class=\"wp-element-caption\">PS Vietnam Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image -->\n\n<!-- wp:image {\"id\":64,\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} -->\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/tak17.jpg\" alt=\"Tak17 lighting studio for filming in Ho Chi Minh City, Vietnam\" class=\"wp-image-64\"/><figcaption class=\"wp-element-caption\">Tak17 Ho Chi Minh City</figcaption></figure>\n<!-- /wp:image --></figure>\n<!-- /wp:gallery -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\",\"metadata\":{\"name\":\"Row (10-Column Centered)\"},\"className\":\"mt-4\"} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeSm\":10,\"metadata\":{\"name\":\"col-sm-10\"},\"className\":\"offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\"><span class=\"vp-outline\">Trusted by</span> Global Brands and Agencies</h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>We regularly collaborate with international creative teams from Asia, Europe, and North America, supporting cross-border productions with bilingual production management and transparent budgeting. Our experience working with technology brands, consumer electronics companies, and global marketing agencies ensures smooth integration between local Vietnamese crews and international stakeholders.</p>\n<!-- /wp:paragraph -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:heading {\"textAlign\":\"center\",\"level\":1} -->\n<h1 class=\"wp-block-heading has-text-align-center\">Shot in <span class=\"vp-outline\">Vietnam</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:vp/portfolio-gallery {\"taxonomy\":\"market\",\"terms\":\"vietnam\",\"cols\":3,\"gutter\":3} /-->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\",\"metadata\":{\"name\":\"Row (8-Column Centered)\"}} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeMd\":8,\"sizeSm\":10,\"lock\":{\"move\":false,\"remove\":false},\"metadata\":{\"name\":\"col-md-8\"},\"className\":\"offset-md-2 offset-sm-1\"} -->\n<!-- wp:heading {\"level\":1} -->\n<h1 class=\"wp-block-heading\">Plan Your Next Production&nbsp;<span class=\"vp-outline\">in Vietnam</span></h1>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>If you are planning a commercial shoot, brand film, or documentary in Vietnam, contact Vantage Pictures to discuss your project requirements. Our team will provide detailed production guidance, budgeting support, and on-the-ground expertise tailored to your timeline and objectives.</p>\n<!-- /wp:paragraph -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->",
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Vietnam production service company supporting international commercials, brand films, and documentaries with full local production support nationwide.",
+      "metaDescriptionZh": "越南制作服务公司，为国际广告、品牌电影和纪录片提供支持，并在全国范围内提供全面的本地制作支持。.",
+      "focusKeyword": "Vietnam Production Service"
+    }
+  },
+  {
+    "wpId": 3822,
+    "title": "Contact",
+    "titleZh": "联系",
+    "slug": "contact",
+    "slugZh": "联系",
+    "showHeroHeader": true,
+    "heroTitle": "Contact <span class=\"vp-outline\">Vantage Pictures</span>",
+    "featuredImageWpId": 3273,
+    "bodyHtml": "<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"custom\"} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeLg\":3,\"sizeMd\":2,\"sizeSm\":1} /-->\n\n<!-- wp:wp-bootstrap-blocks/column {\"sizeLg\":6,\"sizeMd\":8,\"sizeSm\":10} -->\n<!-- wp:freeform -->\n<h3><a title=\"Send us an email\" href=\"mailto:info@vantage.pictures\">info@vantage.pictures</a></h3>\n<p>Vantage Pictures is a global commercial film production company working with brands worldwide. For project inquiries, production partnerships, or general questions, contact our team and we’ll respond promptly.</p>\n<!-- /wp:freeform -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:wp-bootstrap-blocks/container -->\n<!-- wp:wp-bootstrap-blocks/row {\"template\":\"1-1-1\"} -->\n<!-- wp:wp-bootstrap-blocks/column {\"sizeMd\":4} -->\n<!-- wp:freeform -->\n<h2>Bay Area</h2>\n<p>1532 Elm Ave.<br />Richmond, CA 94805</p>\n<!-- /wp:freeform -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n\n<!-- wp:wp-bootstrap-blocks/column {\"sizeMd\":4} -->\n<!-- wp:freeform -->\n<h2>Hong Kong</h2>\n<div>\n<p class=\"address\">Tung Chiu Commercial Centre, Rooms 1703-1704<br />193 Lockhart Road<br />Wan Chai, Hong Kong</p>\n</div>\n<p><a title=\"Give us a call\" href=\"tel:+85257229444\">+852 5722 9444</a></p>\n<!-- /wp:freeform -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n\n<!-- wp:wp-bootstrap-blocks/column {\"sizeMd\":4} -->\n<!-- wp:freeform -->\n<h2>Vietnam</h2>\n<p class=\"address\">67/26 Hoàng Hoa Thám<br />Phường 6, Bình Thạnh<br />TP Hồ Chí Minh, Vietnam</p>\n<p><a title=\"Give us a call\" href=\"tel:+84327202070\">+84 32 7202070</a></p>\n<!-- /wp:freeform -->\n<!-- /wp:wp-bootstrap-blocks/column -->\n<!-- /wp:wp-bootstrap-blocks/row -->\n<!-- /wp:wp-bootstrap-blocks/container -->\n\n<!-- wp:block {\"ref\":3781} /-->",
+    "noIndex": false,
+    "seo": {
+      "metaDescription": "Contact Vantage Pictures for commercial film production inquiries, brand campaigns, and Vietnam production services worldwide.",
+      "metaDescriptionZh": "请联系 Vantage Pictures，咨询全球商业影片制作、品牌宣传和越南制作服务。.",
+      "focusKeyword": "Commercial Film Production Contact"
+    }
+  }
+]

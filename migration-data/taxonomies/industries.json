@@ -1,0 +1,79 @@
+[
+  {
+    "wpTermId": 175,
+    "title": "AI &amp; Robotics",
+    "titleZh": "人工智能与机器人",
+    "slug": "ai-robotics",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 179,
+    "title": "Automotive",
+    "titleZh": "汽车",
+    "slug": "automotive",
+    "slugZh": "车载",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 182,
+    "title": "Beauty &amp; Cosmetics",
+    "titleZh": "美容与化妆品",
+    "slug": "beauty-cosmetics",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 177,
+    "title": "Drones",
+    "titleZh": "无人机",
+    "slug": "drones",
+    "slugZh": "无人机",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 178,
+    "title": "Electronics",
+    "titleZh": "电子产品",
+    "slug": "electronics",
+    "slugZh": "电子学",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 184,
+    "title": "Fashion",
+    "titleZh": "时尚",
+    "slug": "fashion",
+    "slugZh": "时装",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 181,
+    "title": "Finance",
+    "titleZh": "财务",
+    "slug": "finance",
+    "slugZh": "金融",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 180,
+    "title": "FMCG",
+    "titleZh": "快速消费品",
+    "slug": "fmcg",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 183,
+    "title": "Hospitality",
+    "titleZh": "接待服务",
+    "slug": "hospitality",
+    "slugZh": "接待",
+    "sanityType": "industry"
+  },
+  {
+    "wpTermId": 172,
+    "title": "Tech",
+    "titleZh": "技术",
+    "slug": "tech",
+    "slugZh": "技术",
+    "sanityType": "industry"
+  }
+]

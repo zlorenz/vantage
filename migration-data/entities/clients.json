@@ -1,0 +1,337 @@
+[
+  {
+    "wpTermId": 271,
+    "name": "Aquafina",
+    "slug": "aquafina"
+  },
+  {
+    "wpTermId": 205,
+    "name": "ASICS",
+    "slug": "asics"
+  },
+  {
+    "wpTermId": 354,
+    "name": "ASMOKE",
+    "slug": "asmoke"
+  },
+  {
+    "wpTermId": 321,
+    "name": "ASMOKE Grills",
+    "slug": "asmoke-grills"
+  },
+  {
+    "wpTermId": 268,
+    "name": "ASUS",
+    "slug": "asus"
+  },
+  {
+    "wpTermId": 292,
+    "name": "Bambu Lab",
+    "slug": "bambu-lab"
+  },
+  {
+    "wpTermId": 318,
+    "name": "Banyan Group",
+    "slug": "banyan-group"
+  },
+  {
+    "wpTermId": 338,
+    "name": "BIDV",
+    "slug": "bidv"
+  },
+  {
+    "wpTermId": 279,
+    "name": "Bitget",
+    "slug": "bitget"
+  },
+  {
+    "wpTermId": 362,
+    "name": "BRINC",
+    "slug": "brinc"
+  },
+  {
+    "wpTermId": 314,
+    "name": "BRINC Drones",
+    "slug": "brinc-drones"
+  },
+  {
+    "wpTermId": 356,
+    "name": "Coca-Cola",
+    "slug": "coca-cola"
+  },
+  {
+    "wpTermId": 350,
+    "name": "Comfort",
+    "slug": "comfort"
+  },
+  {
+    "wpTermId": 301,
+    "name": "Comfort / Unilever",
+    "slug": "comfort-unilever"
+  },
+  {
+    "wpTermId": 214,
+    "name": "DJI",
+    "slug": "dji"
+  },
+  {
+    "wpTermId": 239,
+    "name": "EcoFlow",
+    "slug": "ecoflow"
+  },
+  {
+    "wpTermId": 257,
+    "name": "Elewana Collection",
+    "slug": "elewana-collection"
+  },
+  {
+    "wpTermId": 256,
+    "name": "Fujifilm",
+    "slug": "fujifilm"
+  },
+  {
+    "wpTermId": 266,
+    "name": "Gendome",
+    "slug": "gendome"
+  },
+  {
+    "wpTermId": 340,
+    "name": "Govee",
+    "slug": "govee"
+  },
+  {
+    "wpTermId": 221,
+    "name": "Hasselblad",
+    "slug": "hasselblad"
+  },
+  {
+    "wpTermId": 264,
+    "name": "Herbalife Nutrition",
+    "slug": "herbalife-nutrition"
+  },
+  {
+    "wpTermId": 273,
+    "name": "HiDock",
+    "slug": "hidock"
+  },
+  {
+    "wpTermId": 355,
+    "name": "Hòa Phát",
+    "slug": "hoa-phat"
+  },
+  {
+    "wpTermId": 244,
+    "name": "Huawei",
+    "slug": "huawei"
+  },
+  {
+    "wpTermId": 216,
+    "name": "Huawei/HONOR",
+    "slug": "huawei-honor"
+  },
+  {
+    "wpTermId": 363,
+    "name": "Hyundai",
+    "slug": "hyundai"
+  },
+  {
+    "wpTermId": 190,
+    "name": "Hyundai Motor Company",
+    "slug": "hyundai-motor-company"
+  },
+  {
+    "wpTermId": 225,
+    "name": "IndelB",
+    "slug": "indelb"
+  },
+  {
+    "wpTermId": 286,
+    "name": "Indwell",
+    "slug": "indwell"
+  },
+  {
+    "wpTermId": 294,
+    "name": "Insta360",
+    "slug": "insta360"
+  },
+  {
+    "wpTermId": 326,
+    "name": "Jackery",
+    "slug": "jackery"
+  },
+  {
+    "wpTermId": 309,
+    "name": "Lay's",
+    "slug": "lays"
+  },
+  {
+    "wpTermId": 262,
+    "name": "Mammotion",
+    "slug": "mammotion"
+  },
+  {
+    "wpTermId": 223,
+    "name": "Marvel",
+    "slug": "marvel"
+  },
+  {
+    "wpTermId": 335,
+    "name": "MEXC",
+    "slug": "mexc"
+  },
+  {
+    "wpTermId": 322,
+    "name": "Moprobo",
+    "slug": "moprobo"
+  },
+  {
+    "wpTermId": 275,
+    "name": "MSI",
+    "slug": "msi"
+  },
+  {
+    "wpTermId": 297,
+    "name": "Mutosi",
+    "slug": "mutosi"
+  },
+  {
+    "wpTermId": 348,
+    "name": "Old Spice",
+    "slug": "old-spice"
+  },
+  {
+    "wpTermId": 299,
+    "name": "Old Spice / P&amp;G",
+    "slug": "old-spice-pg"
+  },
+  {
+    "wpTermId": 198,
+    "name": "OnePlus",
+    "slug": "oneplus"
+  },
+  {
+    "wpTermId": 231,
+    "name": "Oppo",
+    "slug": "oppo"
+  },
+  {
+    "wpTermId": 323,
+    "name": "Petkit",
+    "slug": "petkit"
+  },
+  {
+    "wpTermId": 213,
+    "name": "Procter &amp; Gamble",
+    "slug": "procter-gamble"
+  },
+  {
+    "wpTermId": 210,
+    "name": "realme",
+    "slug": "realme"
+  },
+  {
+    "wpTermId": 235,
+    "name": "Roborock",
+    "slug": "roborock"
+  },
+  {
+    "wpTermId": 224,
+    "name": "Ryze",
+    "slug": "ryze"
+  },
+  {
+    "wpTermId": 361,
+    "name": "Samsung",
+    "slug": "samsung"
+  },
+  {
+    "wpTermId": 202,
+    "name": "Samsung Vietnam",
+    "slug": "samsung-vietnam"
+  },
+  {
+    "wpTermId": 349,
+    "name": "Sensoro",
+    "slug": "sensoro"
+  },
+  {
+    "wpTermId": 238,
+    "name": "Snapmaker",
+    "slug": "snapmaker"
+  },
+  {
+    "wpTermId": 251,
+    "name": "Taiwan Excellence",
+    "slug": "taiwan-excellence"
+  },
+  {
+    "wpTermId": 295,
+    "name": "Tập đoàn Hòa Phát",
+    "slug": "tap-doan-hoa-phat"
+  },
+  {
+    "wpTermId": 289,
+    "name": "Techcombank",
+    "slug": "techcombank"
+  },
+  {
+    "wpTermId": 305,
+    "name": "The Coca-Cola Company",
+    "slug": "the-coca-cola-company"
+  },
+  {
+    "wpTermId": 306,
+    "name": "The Ocean Cleanup",
+    "slug": "the-ocean-cleanup"
+  },
+  {
+    "wpTermId": 357,
+    "name": "Toyota",
+    "slug": "toyota"
+  },
+  {
+    "wpTermId": 245,
+    "name": "Toyota Vietnam",
+    "slug": "toyota-vietnam"
+  },
+  {
+    "wpTermId": 336,
+    "name": "TPBank",
+    "slug": "tpbank"
+  },
+  {
+    "wpTermId": 277,
+    "name": "Ulike",
+    "slug": "ulike"
+  },
+  {
+    "wpTermId": 207,
+    "name": "Unilever",
+    "slug": "unilever"
+  },
+  {
+    "wpTermId": 324,
+    "name": "Valerion",
+    "slug": "valerion"
+  },
+  {
+    "wpTermId": 328,
+    "name": "Vinamilk",
+    "slug": "vinamilk"
+  },
+  {
+    "wpTermId": 333,
+    "name": "Westin Hotels &amp; Resorts",
+    "slug": "westin-hotels-resorts"
+  },
+  {
+    "wpTermId": 196,
+    "name": "XGIMI",
+    "slug": "xgimi"
+  },
+  {
+    "wpTermId": 192,
+    "name": "Zhiyun",
+    "slug": "zhiyun"
+  }
+]
