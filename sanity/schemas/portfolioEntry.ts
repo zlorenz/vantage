@@ -52,6 +52,15 @@ export const portfolioEntry = defineType({
       options: { source: 'titleZh', maxLength: 96 },
     }),
 
+    defineField({
+      name: 'publishedAt',
+      title: 'Published At',
+      type: 'datetime',
+      description:
+        'WordPress post_date — used for Work index and taxonomy archive sort order (newest first).',
+      validation: (rule) => rule.required(),
+    }),
+
     // -------------------------------------------------------------------------
     // Display titles — HTML allowed (<br>, <span class="vp-outline">)
     // -------------------------------------------------------------------------

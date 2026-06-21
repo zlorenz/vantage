@@ -725,3 +725,40 @@
     min-width: 160px;
   }
 }
+
+/* ==========================================================================
+   Homepage hero carousel
+   ========================================================================== */
+
+.vp-hero-carousel__chevron {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+}
+
+.vp-hero-carousel__chevron--left {
+  transform: rotate(-135deg);
+}
+
+.vp-hero-carousel__chevron--right {
+  transform: rotate(45deg);
+}
+
+/* ==========================================================================
+   Brand logo grid
+   ========================================================================== */
+
+.vp-brand-logos__img {
+  transform: scale(0.7);
+  transform-origin: center;
+}
+
+/* ==========================================================================
+   CTA section
+   ========================================================================== */
+
+.vp-cta__heading strong {
+  font-weight: 700;
+}

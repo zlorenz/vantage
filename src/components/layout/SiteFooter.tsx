@@ -49,8 +49,8 @@ const SOCIAL_ORDER = [
   { key: 'socialVimeo' as const, label: 'Vimeo', icon: 'fa-vimeo' },
   { key: 'socialInstagram' as const, label: 'Instagram', icon: 'fa-instagram' },
   { key: 'socialFacebook' as const, label: 'Facebook', icon: 'fa-facebook' },
-  { key: 'socialLinkedin' as const, label: 'LinkedIn', icon: 'fa-linkedin' },
   { key: 'socialYoutube' as const, label: 'YouTube', icon: 'fa-youtube' },
+  { key: 'socialLinkedin' as const, label: 'LinkedIn', icon: 'fa-linkedin' },
   { key: 'socialXinpianchang' as const, label: 'Xinpianchang', icon: 'xinpianchang' },
   { key: 'socialXiaohongshu' as const, label: 'Xiaohongshu', icon: 'xiaohongshu' },
 ] as const;

@@ -29,6 +29,7 @@ import { postCredits } from './objects/postCredits';
 import { additionalVideo } from './objects/additionalVideo';
 import { heroSlide } from './objects/heroSlide';
 import { founder } from './objects/founder';
+import { pdfDownload } from './objects/pdfDownload';
 
 export const schemaTypes = [
   // Shared objects
@@ -44,6 +45,7 @@ export const schemaTypes = [
   additionalVideo,
   heroSlide,
   founder,
+  pdfDownload,
 
   // Documents
   siteSettings,

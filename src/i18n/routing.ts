@@ -44,6 +44,38 @@ export const routing = defineRouting({
       en: '/search',
       zh: '/search',
     },
+    '/about': {
+      en: '/about',
+      zh: '/关于',
+    },
+    '/news': {
+      en: '/news',
+      zh: '/新闻',
+    },
+    '/contact': {
+      en: '/contact',
+      zh: '/联系',
+    },
+    '/vietnam-production-service': {
+      en: '/vietnam-production-service',
+      zh: '/越南生产服务',
+    },
+    '/vietnam-location-guide': {
+      en: '/vietnam-location-guide',
+      zh: '/越南旅游指南',
+    },
+    '/video-campaign-brief': {
+      en: '/video-campaign-brief',
+      zh: '/视频活动简介',
+    },
+    '/category/[slug]': {
+      en: '/category/[slug]',
+      zh: '/类别/[slug]',
+    },
+    '/[slug]': {
+      en: '/[slug]',
+      zh: '/[slug]',
+    },
   },
 });
 

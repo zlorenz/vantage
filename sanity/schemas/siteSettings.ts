@@ -178,6 +178,20 @@ export const siteSettings = defineType({
         hotspot: true,
       },
     }),
+
+    // -------------------------------------------------------------------------
+    // Homepage brand logo wall
+    // -------------------------------------------------------------------------
+
+    defineField({
+      name: 'brandLogos',
+      title: 'Brand Logos',
+      type: 'array',
+      of: [{ type: 'image' }],
+      description:
+        'White PNG client logos for the homepage "Brands We Work With" grid. ' +
+        'Upload in display order (4-column grid).',
+    }),
   ],
 
   preview: {

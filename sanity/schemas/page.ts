@@ -109,6 +109,13 @@ export const page = defineType({
     }),
 
     defineField({
+      name: 'pdfDownload',
+      title: 'PDF Download',
+      type: 'pdfDownload',
+      description: 'Optional PDF download block (Vietnam Location Guide).',
+    }),
+
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seoFields',

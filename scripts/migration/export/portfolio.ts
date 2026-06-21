@@ -30,6 +30,7 @@ export interface ExportedPortfolio {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  publishedAt: string;
   thumbTitle: string;
   headerTitle: string;
   longTitle: string;
@@ -134,6 +135,7 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
       titleZh,
       slug,
       slugZh: slugZh && slugZh !== slug ? slugZh : undefined,
+      publishedAt: post.post_date,
       thumbTitle,
       headerTitle,
       longTitle,

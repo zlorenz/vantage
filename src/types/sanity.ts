@@ -48,6 +48,7 @@ export interface SiteSettings {
   socialXinpianchang?: string;
   socialXiaohongshu?: string;
   defaultOgImage?: SanityImage;
+  brandLogos?: SanityImage[];
 }
 
 /** Minimal page shape for navigation slug resolution. */
@@ -179,4 +180,100 @@ export interface WorkPage {
   featuredImage?: SanityImage;
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
+}
+
+/** Homepage hero slide — dereferenced portfolio entry. */
+export interface HeroSlideData {
+  slug: string;
+  slugZh?: string;
+  headerTitle: string;
+  description?: string;
+  featuredImage: SanityImage;
+  buttonLabel: string;
+  buttonLabelZh?: string;
+}
+
+/** CMS page document — shared shape for static pages. */
+export interface PageDocument {
+  _id: string;
+  title: string;
+  titleZh?: string;
+  slug: string;
+  slugZh?: string;
+  showHeroHeader?: boolean;
+  heroTitle?: string;
+  heroTitleZh?: string;
+  featuredImage?: SanityImage;
+  body?: PortableTextBlock[];
+  bodyZh?: PortableTextBlock[];
+  heroSlides?: HeroSlideData[];
+  founders?: Founder[];
+  pdfDownload?: PdfDownload;
+  seo?: SeoFields;
+  noIndex?: boolean;
+}
+
+export interface Founder {
+  name: string;
+  jobTitle: string;
+  image: SanityImage;
+  bio: string;
+  sameAs?: string[];
+}
+
+export interface PdfDownload {
+  label: string;
+  file?: {
+    asset?: {
+      _id: string;
+      url: string;
+    };
+  };
+}
+
+/** Blog post card shape for index and archives. */
+export interface BlogPostCard {
+  _id: string;
+  title: string;
+  titleZh?: string;
+  slug: string;
+  slugZh?: string;
+  publishedAt?: string;
+  featuredImage?: SanityImage;
+  excerpt?: string;
+  categories?: CategoryTerm[];
+}
+
+/** Full blog post shape. */
+export interface BlogPost extends BlogPostCard {
+  body?: PortableTextBlock[];
+  bodyZh?: PortableTextBlock[];
+  seo?: SeoFields;
+}
+
+export interface CategoryTerm {
+  _id: string;
+  title: string;
+  titleZh?: string;
+  slug: string;
+  slugZh?: string;
+}
+
+/** Search result item from SEARCH_QUERY. */
+export interface SearchResultItem {
+  _type: 'portfolioEntry' | 'blogPost';
+  title: string;
+  titleZh?: string;
+  slug: string;
+  slugZh?: string;
+  publishedAt?: string;
+  featuredImage?: SanityImage;
+  description?: string;
+  excerpt?: string;
+}
+
+/** Blog post slug pair for generateStaticParams. */
+export interface PostSlug {
+  slug: string;
+  slugZh?: string;
 }

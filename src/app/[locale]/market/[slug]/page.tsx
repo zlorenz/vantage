@@ -10,6 +10,7 @@ import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
+import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { taxonomyArchiveTitle } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import {
@@ -17,9 +18,10 @@ import {
   MARKET_BY_SLUG_QUERY,
   MARKETS_QUERY,
   PORTFOLIO_BY_MARKET_QUERY,
+  TAXONOMY_HERO_IMAGE_QUERY,
   VIDEO_FORMATS_QUERY,
 } from '@/sanity/queries/portfolio';
-import type { PortfolioGridEntry, TaxonomyTerm } from '@/types/sanity';
+import type { PortfolioGridEntry, SanityImage, TaxonomyTerm } from '@/types/sanity';
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -45,8 +47,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!term) return { title: 'Not Found' };
 
-  const title =
-    locale === 'zh' && term.titleZh ? term.titleZh : term.title;
+  const title = decodeHtmlEntities(
+    locale === 'zh' && term.titleZh ? term.titleZh : term.title,
+  );
 
   return {
     title: taxonomyArchiveTitle(title),
@@ -74,24 +77,28 @@ export default async function MarketArchivePage({ params }: Props) {
     notFound();
   }
 
-  const [entries, videoFormats, industries, markets] = await Promise.all([
+  const [entries, videoFormats, industries, markets, heroImage] = await Promise.all([
     sanityClient.fetch<PortfolioGridEntry[]>(PORTFOLIO_BY_MARKET_QUERY, {
       termId: term._id,
     }),
     sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
     sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
     sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
+    sanityClient.fetch<SanityImage | null>(TAXONOMY_HERO_IMAGE_QUERY, {
+      termId: term._id,
+    }),
   ]);
 
-  const heroTitle =
-    typedLocale === 'zh' && term.titleZh ? term.titleZh : term.title;
+  const heroTitle = decodeHtmlEntities(
+    typedLocale === 'zh' && term.titleZh ? term.titleZh : term.title,
+  );
 
   const activeSlug =
     typedLocale === 'zh' ? term.slugZh || term.slug : term.slug;
 
   return (
     <>
-      <PageHero title={heroTitle} />
+      <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
       <SectionWrapper className="vp-portfolio-taxonomy">
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <Suspense fallback={<div className="vp-load-spinner" />}>

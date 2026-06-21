@@ -63,7 +63,22 @@ export function portfolioEntryMetadata(
   };
 }
 
-export function seoDescription(seo: SeoFields | undefined, locale: Locale): string | undefined {
+export function newsPageTitle(): string {
+  return `Commercial Film Production News | ${SITE_NAME}`;
+}
+
+export function blogPostTitle(title: string): string {
+  return `${title} | ${SITE_NAME}`;
+}
+
+export function pageTitle(title: string): string {
+  return `${title} | ${SITE_NAME}`;
+}
+
+export function seoDescription(
+  seo: SeoFields | undefined,
+  locale: Locale,
+): string | undefined {
   if (!seo) return undefined;
   return locale === 'zh' && seo.metaDescriptionZh
     ? seo.metaDescriptionZh

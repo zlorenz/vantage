@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
+import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { PortfolioCard } from './PortfolioCard';
 import type { Locale } from '@/i18n/routing';
 import type {
@@ -63,7 +64,9 @@ function termSlug(term: TaxonomyTerm, locale: Locale): string {
 }
 
 function termLabel(term: TaxonomyTerm, locale: Locale): string {
-  return locale === 'zh' && term.titleZh ? term.titleZh : term.title;
+  const raw =
+    locale === 'zh' && term.titleZh ? term.titleZh : term.title;
+  return decodeHtmlEntities(raw);
 }
 
 function readPublicFilters(

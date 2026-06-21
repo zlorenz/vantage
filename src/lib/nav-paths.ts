@@ -18,11 +18,29 @@ function slugZhFor(navPages: NavPage[], slug: string): string | undefined {
 }
 
 /** Page slugs that map to a next-intl pathname key (see routing.ts). */
-const PATHNAME_KEYS: Record<string, '/' | '/work' | '/work-internal' | '/search'> = {
+const PATHNAME_KEYS: Record<
+  string,
+  | '/'
+  | '/work'
+  | '/work-internal'
+  | '/search'
+  | '/about'
+  | '/news'
+  | '/contact'
+  | '/vietnam-production-service'
+  | '/vietnam-location-guide'
+  | '/video-campaign-brief'
+> = {
   home: '/',
   work: '/work',
   'work-internal': '/work-internal',
   search: '/search',
+  about: '/about',
+  news: '/news',
+  contact: '/contact',
+  'vietnam-production-service': '/vietnam-production-service',
+  'vietnam-location-guide': '/vietnam-location-guide',
+  'video-campaign-brief': '/video-campaign-brief',
 };
 
 /**

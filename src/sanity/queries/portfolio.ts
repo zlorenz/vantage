@@ -59,7 +59,7 @@ const TAXONOMY_TERM_FIELDS = `
  * Excludes isHidden. Includes taxonomy slug arrays for URL-synced filter bar.
  */
 export const ALL_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden] | order(title asc) {
+  *[_type == "portfolioEntry" && !isHidden] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -115,7 +115,7 @@ export const PORTFOLIO_SLUGS_QUERY = `
  * All portfolio entries for work-internal — includes isHidden entries.
  */
 export const ALL_PORTFOLIO_INTERNAL_QUERY = `
-  *[_type == "portfolioEntry"] | order(title asc) {
+  *[_type == "portfolioEntry"] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_INTERNAL_FILTER_FIELDS}
   }
@@ -180,7 +180,7 @@ export const MARKET_BY_SLUG_QUERY = `
  * Portfolio entries linked to a video format term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_VIDEO_FORMAT_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(title asc) {
+  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -190,7 +190,7 @@ export const PORTFOLIO_BY_VIDEO_FORMAT_QUERY = `
  * Portfolio entries linked to an industry term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_INDUSTRY_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(title asc) {
+  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -200,9 +200,27 @@ export const PORTFOLIO_BY_INDUSTRY_QUERY = `
  * Portfolio entries linked to a market term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_MARKET_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(title asc) {
+  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
+  }
+`;
+
+/**
+ * Featured image from the most recently published portfolio entry in a taxonomy term.
+ * Used for taxonomy archive PageHero backgrounds.
+ */
+export const TAXONOMY_HERO_IMAGE_QUERY = `
+  *[_type == "portfolioEntry" && !isHidden && references($termId)]
+    | order(publishedAt desc)[0].featuredImage
+`;
+
+/**
+ * Nine most recent public portfolio entries — homepage "A Bit of Our Work" grid.
+ */
+export const RECENT_PORTFOLIO_QUERY = `
+  *[_type == "portfolioEntry" && !isHidden] | order(publishedAt desc)[0...9] {
+    ${PORTFOLIO_CARD_FIELDS}
   }
 `;
 

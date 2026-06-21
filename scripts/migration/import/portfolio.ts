@@ -41,6 +41,7 @@ export async function importPortfolio(): Promise<number> {
       description: item.description,
       vimeoUrl: item.vimeoUrl.includes('placeholder') ? undefined : item.vimeoUrl,
       isHidden: item.isHidden,
+      publishedAt: new Date(item.publishedAt).toISOString(),
     };
 
     if (item.titleZh) doc.titleZh = item.titleZh;
