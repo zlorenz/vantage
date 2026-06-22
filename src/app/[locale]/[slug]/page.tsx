@@ -9,8 +9,16 @@ import { Link } from '@/i18n/navigation';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { blogPostTitle, buildOgImage, seoDescription } from '@/lib/metadata';
+import { blogPostTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildArticle,
+  buildBreadcrumbs,
+  blogPostPageUrl,
+  homeBreadcrumb,
+  newsBreadcrumb,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { POST_BY_SLUG_QUERY, POST_SLUGS_QUERY, RESERVED_PAGE_SLUGS } from '@/sanity/queries/blog';
 import type { BlogPost, PostSlug } from '@/types/sanity';
 
@@ -35,22 +43,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return { title: 'Not Found' };
 
   const title = locale === 'zh' && post.titleZh ? post.titleZh : post.title;
+  const metaTitle = blogPostTitle(title);
+  const description = seoDescription(post.seo, locale as Locale);
 
-  return {
-    title: blogPostTitle(title),
-    description: seoDescription(post.seo, locale as Locale),
-    openGraph: {
-      title: blogPostTitle(title),
-      description: seoDescription(post.seo, locale as Locale),
-      images: buildOgImage(post.featuredImage),
-    },
-    alternates: {
-      languages: {
-        en: `/${post.slug}`,
-        zh: `/zh/${post.slugZh || post.slug}`,
-      },
-    },
-  };
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: `/${post.slug}`,
+    zhPath: `/zh/${post.slugZh || post.slug}`,
+    title: metaTitle,
+    description,
+    image: buildOgImage(post.featuredImage),
+    type: 'article',
+  });
 }
 
 function formatDate(dateString: string, locale: Locale): string {
@@ -80,7 +84,28 @@ export default async function BlogPostPage({ params }: Props) {
     typedLocale === 'zh' && post.bodyZh?.length ? post.bodyZh : post.body;
 
   return (
-    <SectionWrapper className="vp-single-post">
+    <>
+      <JsonLd
+        data={buildArticle({
+          title,
+          excerpt: post.excerpt,
+          featuredImage: post.featuredImage,
+          publishedAt: post.publishedAt,
+          _updatedAt: post._updatedAt,
+          seo: post.seo,
+        })}
+      />
+      <JsonLd
+        data={buildBreadcrumbs([
+          homeBreadcrumb(typedLocale),
+          newsBreadcrumb(typedLocale),
+          {
+            name: title,
+            url: blogPostPageUrl(typedLocale, post.slug, post.slugZh),
+          },
+        ])}
+      />
+      <SectionWrapper className="vp-single-post">
       <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
         <article>
           <header className="entry-header mb-8">
@@ -127,5 +152,6 @@ export default async function BlogPostPage({ params }: Props) {
         </article>
       </div>
     </SectionWrapper>
+    </>
   );
 }

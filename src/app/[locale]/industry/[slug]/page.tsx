@@ -11,8 +11,15 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
-import { taxonomyArchiveTitle } from '@/lib/metadata';
+import { taxonomyArchiveTitle, portfolioTaxonomyDescription, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildBreadcrumbs,
+  homeBreadcrumb,
+  industryPageUrl,
+  workBreadcrumb,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import {
   INDUSTRIES_QUERY,
   INDUSTRY_BY_SLUG_QUERY,
@@ -51,15 +58,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale === 'zh' && term.titleZh ? term.titleZh : term.title,
   );
 
-  return {
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: `/industry/${term.slug}`,
+    zhPath: `/zh/产业/${term.slugZh || term.slug}`,
     title: taxonomyArchiveTitle(title),
-    alternates: {
-      languages: {
-        en: `/industry/${term.slug}`,
-        zh: `/zh/产业/${term.slugZh || term.slug}`,
-      },
-    },
-  };
+    description: portfolioTaxonomyDescription(title),
+    type: 'website',
+  });
 }
 
 export default async function IndustryArchivePage({ params }: Props) {
@@ -98,6 +104,16 @@ export default async function IndustryArchivePage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbs([
+          homeBreadcrumb(typedLocale),
+          workBreadcrumb(typedLocale),
+          {
+            name: heroTitle,
+            url: industryPageUrl(typedLocale, term.slug, term.slugZh),
+          },
+        ])}
+      />
       <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
       <SectionWrapper className="vp-portfolio-taxonomy">
         <div className="container-fluid px-3 md:px-4">

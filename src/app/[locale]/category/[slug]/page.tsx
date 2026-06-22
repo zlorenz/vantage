@@ -11,8 +11,15 @@ import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
-import { taxonomyArchiveTitle, buildOgImage } from '@/lib/metadata';
+import { taxonomyArchiveTitle, blogCategoryDescription, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildBreadcrumbs,
+  categoryPageUrl,
+  homeBreadcrumb,
+  newsBreadcrumb,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import {
   ALL_CATEGORIES_QUERY,
   CATEGORY_BY_SLUG_QUERY,
@@ -50,15 +57,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale === 'zh' && category.titleZh ? category.titleZh : category.title,
   );
 
-  return {
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: `/category/${category.slug}`,
+    zhPath: `/zh/类别/${category.slugZh || category.slug}`,
     title: taxonomyArchiveTitle(title),
-    alternates: {
-      languages: {
-        en: `/category/${category.slug}`,
-        zh: `/zh/类别/${category.slugZh || category.slug}`,
-      },
-    },
-  };
+    description: blogCategoryDescription(title),
+    type: 'website',
+  });
 }
 
 export default async function CategoryArchivePage({ params }: Props) {
@@ -88,6 +94,16 @@ export default async function CategoryArchivePage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbs([
+          homeBreadcrumb(typedLocale),
+          newsBreadcrumb(typedLocale),
+          {
+            name: heroTitle,
+            url: categoryPageUrl(typedLocale, category.slug, category.slugZh),
+          },
+        ])}
+      />
       <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
 
       <SectionWrapper className="vp-news-page">

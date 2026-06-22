@@ -11,8 +11,10 @@ import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { newsPageTitle, seoDescription, buildOgImage } from '@/lib/metadata';
+import { newsPageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import { buildBreadcrumbs, homeBreadcrumb, newsBreadcrumb } from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { ALL_CATEGORIES_QUERY, ALL_POSTS_QUERY } from '@/sanity/queries/blog';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
 import type { BlogPostCard as BlogPostCardData, CategoryTerm, PageDocument } from '@/types/sanity';
@@ -31,17 +33,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     slug: 'news',
   });
 
-  return {
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: '/news',
+    zhPath: `/zh/${page?.slugZh || '新闻'}`,
     title: newsPageTitle(),
     description: seoDescription(page?.seo, locale as Locale),
-    openGraph: { images: buildOgImage(page?.featuredImage) },
-    alternates: {
-      languages: {
-        en: '/news',
-        zh: `/zh/${page?.slugZh || '新闻'}`,
-      },
-    },
-  };
+    image: buildOgImage(page?.featuredImage),
+    type: 'website',
+  });
 }
 
 export default async function NewsPage({ params }: Props) {
@@ -68,6 +68,9 @@ export default async function NewsPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbs([homeBreadcrumb(typedLocale), newsBreadcrumb(typedLocale)])}
+      />
       <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
 
       <SectionWrapper className="vp-news-page">

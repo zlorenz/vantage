@@ -11,8 +11,14 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { filterPdfDownloadArtifactBlocks } from '@/lib/portable-text-filters';
-import { pageTitle, seoDescription, buildOgImage } from '@/lib/metadata';
+import { pageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildBreadcrumbs,
+  homeBreadcrumb,
+  staticPageUrl,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
 import type { PageDocument } from '@/types/sanity';
 
@@ -32,18 +38,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return { title: 'Not Found' };
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const metaTitle = pageTitle(title);
 
-  return {
-    title: pageTitle(title),
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: '/vietnam-location-guide',
+    zhPath: `/zh/${page.slugZh || '越南旅游指南'}`,
+    title: metaTitle,
     description: seoDescription(page.seo, locale as Locale),
-    openGraph: { images: buildOgImage(page.featuredImage) },
-    alternates: {
-      languages: {
-        en: '/vietnam-location-guide',
-        zh: `/zh/${page.slugZh || '越南旅游指南'}`,
-      },
-    },
-  };
+    image: buildOgImage(page.featuredImage),
+    type: 'website',
+  });
 }
 
 export default async function VietnamLocationGuidePage({ params }: Props) {
@@ -72,8 +77,24 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
   const pdfLabel =
     page.pdfDownload?.label || 'Vietnam_Location_Guide_Vantage_Pictures.pdf';
 
+  const pageTitleLabel =
+    typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbs([
+          homeBreadcrumb(typedLocale),
+          {
+            name: pageTitleLabel,
+            url: staticPageUrl(
+              typedLocale,
+              '/vietnam-location-guide',
+              `/zh/${page.slugZh || '越南旅游指南'}`,
+            ),
+          },
+        ])}
+      />
       <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
 
       <SectionWrapper>

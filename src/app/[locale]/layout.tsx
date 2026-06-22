@@ -12,12 +12,14 @@
  */
 
 import '../globals.css';
+import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { LayoutShell } from '@/components/layout/LayoutShell';
 import { routing } from '@/i18n/routing';
+import { METADATA_BASE } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { NAV_PAGES_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import type { NavPage, SiteSettings } from '@/types/sanity';
@@ -26,6 +28,10 @@ import type { Locale } from '@/i18n/routing';
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
+};
+
+export const metadata: Metadata = {
+  metadataBase: METADATA_BASE,
 };
 
 export function generateStaticParams() {

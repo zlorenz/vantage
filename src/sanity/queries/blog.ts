@@ -37,7 +37,9 @@ export const POST_BY_SLUG_QUERY = `
     "slug": slug.current,
     "slugZh": slugZh.current,
     publishedAt,
+    _updatedAt,
     featuredImage,
+    "excerpt": pt::text(body),
     body,
     bodyZh,
     "categories": categories[]->{

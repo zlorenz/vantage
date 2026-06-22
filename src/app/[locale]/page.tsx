@@ -12,16 +12,20 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import { getHomeAboutParagraphs } from '@/lib/home-content';
-import { SITE_DESCRIPTION, SITE_NAME } from '@/lib/metadata';
+import { SITE_DESCRIPTION, SITE_NAME, buildOgImage, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import { buildBreadcrumbs, buildOrganization, homeBreadcrumb } from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { HOME_PAGE_QUERY } from '@/sanity/queries/pages';
 import { RECENT_PORTFOLIO_QUERY } from '@/sanity/queries/portfolio';
 import type {
   HeroSlideData,
   PortfolioCard as PortfolioCardData,
+  SanityImage,
 } from '@/types/sanity';
 
 type HomePageData = {
+  featuredImage?: SanityImage;
   heroSlides?: Array<{
     buttonLabel: string;
     buttonLabelZh?: string;
@@ -46,13 +50,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? homePage.seo.metaDescriptionZh
       : homePage?.seo?.metaDescription || SITE_DESCRIPTION;
 
-  return {
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: '/',
+    zhPath: '/zh/',
     title: `${SITE_NAME} | ${SITE_DESCRIPTION}`,
     description,
-    alternates: {
-      languages: { en: '/', zh: '/zh/' },
-    },
-  };
+    image: buildOgImage(homePage?.featuredImage),
+    type: 'website',
+  });
 }
 
 export default async function HomePage({ params }: Props) {
@@ -79,6 +85,8 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={buildOrganization()} />
+      <JsonLd data={buildBreadcrumbs([homeBreadcrumb(typedLocale)])} />
       <HeroCarousel slides={slides} locale={typedLocale} />
 
       {/* A Bit of Our Work */}

@@ -8,8 +8,9 @@ import { setRequestLocale } from 'next-intl/server';
 import { SearchPageClient } from '@/components/search/SearchPageClient';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { sanityClient } from '@/lib/sanity';
-import { SITE_NAME } from '@/lib/metadata';
+import { SITE_NAME, SEARCH_PAGE_DESCRIPTION, buildPageMetadata } from '@/lib/metadata';
+import { buildBreadcrumbs, homeBreadcrumb, searchBreadcrumb } from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -19,13 +20,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: '/search',
+    zhPath: '/zh/search',
     title: `Search | ${SITE_NAME}`,
-    alternates: {
-      languages: { en: '/search', zh: '/zh/search' },
-    },
-  };
+    description: SEARCH_PAGE_DESCRIPTION,
+    type: 'website',
+  });
 }
 
 export default async function SearchPage({ params }: Props) {
@@ -35,7 +40,11 @@ export default async function SearchPage({ params }: Props) {
   const typedLocale = locale as Locale;
 
   return (
-    <SectionWrapper className="vp-search-page">
+    <>
+      <JsonLd
+        data={buildBreadcrumbs([homeBreadcrumb(typedLocale), searchBreadcrumb(typedLocale)])}
+      />
+      <SectionWrapper className="vp-search-page">
       <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
         <h1 className="mb-8 text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight">
           {typedLocale === 'zh' ? '搜索' : 'Search'}
@@ -45,5 +54,6 @@ export default async function SearchPage({ params }: Props) {
         </Suspense>
       </div>
     </SectionWrapper>
+    </>
   );
 }

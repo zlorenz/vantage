@@ -134,6 +134,7 @@ export interface PortfolioEntry {
   featuredImage: SanityImage;
   vimeoUrl: string;
   xinpianchangUrl?: string;
+  publishedAt?: string;
   isHidden?: boolean;
   additionalVideos?: AdditionalVideo[];
   credits?: PortfolioCredits;
@@ -248,6 +249,7 @@ export interface BlogPostCard {
 export interface BlogPost extends BlogPostCard {
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
+  _updatedAt?: string;
   seo?: SeoFields;
 }
 

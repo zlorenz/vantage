@@ -13,8 +13,15 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { getVietnamCtaContent } from '@/lib/cta-content';
 import { filterVietnamProductionServiceBody } from '@/lib/portable-text-filters';
-import { pageTitle, seoDescription, buildOgImage } from '@/lib/metadata';
+import { pageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildBreadcrumbs,
+  buildProfessionalService,
+  homeBreadcrumb,
+  staticPageUrl,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
 import {
   MARKET_BY_SLUG_QUERY,
@@ -38,18 +45,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return { title: 'Not Found' };
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const metaTitle = pageTitle(title);
 
-  return {
-    title: pageTitle(title),
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: '/vietnam-production-service',
+    zhPath: `/zh/${page.slugZh || '越南生产服务'}`,
+    title: metaTitle,
     description: seoDescription(page.seo, locale as Locale),
-    openGraph: { images: buildOgImage(page.featuredImage) },
-    alternates: {
-      languages: {
-        en: '/vietnam-production-service',
-        zh: `/zh/${page.slugZh || '越南生产服务'}`,
-      },
-    },
-  };
+    image: buildOgImage(page.featuredImage),
+    type: 'website',
+  });
 }
 
 export default async function VietnamProductionServicePage({ params }: Props) {
@@ -85,8 +91,25 @@ export default async function VietnamProductionServicePage({ params }: Props) {
     typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body,
   );
 
+  const pageTitleLabel =
+    typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+
   return (
     <>
+      <JsonLd data={buildProfessionalService()} />
+      <JsonLd
+        data={buildBreadcrumbs([
+          homeBreadcrumb(typedLocale),
+          {
+            name: pageTitleLabel,
+            url: staticPageUrl(
+              typedLocale,
+              '/vietnam-production-service',
+              `/zh/${page.slugZh || '越南生产服务'}`,
+            ),
+          },
+        ])}
+      />
       <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
 
       <SectionWrapper>

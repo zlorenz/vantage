@@ -10,8 +10,11 @@ import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
-import { workPageTitle } from '@/lib/metadata';
+import { workPageTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import { buildBreadcrumbs, homeBreadcrumb, workBreadcrumb } from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
 import {
   ALL_PORTFOLIO_QUERY,
   INDUSTRIES_QUERY,
@@ -20,6 +23,7 @@ import {
   WORK_PAGE_QUERY,
 } from '@/sanity/queries/portfolio';
 import type {
+  PageDocument,
   PortfolioGridEntry,
   TaxonomyTerm,
   WorkPage,
@@ -35,15 +39,20 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
+  const typedLocale = locale as Locale;
+  const workPageDoc = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
+    slug: 'work',
+  });
+
+  return buildPageMetadata({
+    locale: typedLocale,
+    enPath: '/work',
+    zhPath: '/zh/作品',
     title: workPageTitle(),
-    alternates: {
-      languages: {
-        en: '/work',
-        zh: '/zh/作品',
-      },
-    },
-  };
+    description: seoDescription(workPageDoc?.seo, typedLocale),
+    image: buildOgImage(workPageDoc?.featuredImage),
+    type: 'website',
+  });
 }
 
 export default async function WorkPage({ params }: Props) {
@@ -73,6 +82,9 @@ export default async function WorkPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbs([homeBreadcrumb(typedLocale), workBreadcrumb(typedLocale)])}
+      />
       <PageHero title={heroTitle} backgroundImage={workPage?.featuredImage} />
       <SectionWrapper>
         <div className="container-fluid px-3 md:px-4">

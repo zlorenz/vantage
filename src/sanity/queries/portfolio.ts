@@ -85,6 +85,7 @@ export const PORTFOLIO_ENTRY_QUERY = `
     featuredImage,
     vimeoUrl,
     xinpianchangUrl,
+    publishedAt,
     isHidden,
     additionalVideos[]{
       vimeoUrl,

@@ -12,6 +12,14 @@ import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed'
 import { routing, type Locale } from '@/i18n/routing';
 import { portfolioEntryMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildBreadcrumbs,
+  buildVideoObject,
+  homeBreadcrumb,
+  portfolioPageUrl,
+  workBreadcrumb,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import {
   PORTFOLIO_ENTRY_QUERY,
@@ -41,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
   ]);
 
-  if (!entry || entry.isHidden) {
+  if (!entry) {
     return { title: 'Not Found' };
   }
 
@@ -62,7 +70,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
     { slug },
   );
 
-  if (!entry || entry.isHidden) {
+  if (!entry) {
     notFound();
   }
 
@@ -71,8 +79,32 @@ export default async function PortfolioEntryPage({ params }: Props) {
       ? entry.descriptionZh
       : entry.description;
 
+  const title =
+    typedLocale === 'zh' && entry.titleZh ? entry.titleZh : entry.title;
+
+  const breadcrumbItems = [
+    homeBreadcrumb(typedLocale),
+    workBreadcrumb(typedLocale),
+    {
+      name: title,
+      url: portfolioPageUrl(typedLocale, entry.slug, entry.slugZh),
+    },
+  ];
+
   return (
     <>
+      {entry.vimeoUrl?.trim() ? (
+        <JsonLd
+          data={buildVideoObject({
+            title,
+            description,
+            featuredImage: entry.featuredImage,
+            publishedAt: entry.publishedAt,
+            vimeoUrl: entry.vimeoUrl,
+          })}
+        />
+      ) : null}
+      <JsonLd data={buildBreadcrumbs(breadcrumbItems)} />
       <PageHero
         title={entry.headerTitle}
         backgroundImage={entry.featuredImage}

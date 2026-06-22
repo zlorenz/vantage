@@ -10,8 +10,14 @@ import { CondensedPageHeader } from '@/components/ui/CondensedPageHeader';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { CAMPAIGN_BRIEF_FORM_DESCRIPTION } from '@/lib/campaign-brief-fields';
-import { buildOgImage, pageTitle, seoDescription } from '@/lib/metadata';
+import { buildOgImage, pageTitle, seoDescription, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import {
+  buildBreadcrumbs,
+  homeBreadcrumb,
+  staticPageUrl,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
 import type { PageDocument } from '@/types/sanity';
 
@@ -31,20 +37,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return { title: 'Not Found' };
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const metaTitle = `Start Your Project | ${pageTitle(title).split('|')[1]?.trim() || 'Vantage Pictures'}`;
 
-  return {
-    title: `Start Your Project | ${pageTitle(title).split('|')[1]?.trim() || 'Vantage Pictures'}`,
+  return buildPageMetadata({
+    locale: locale as Locale,
+    enPath: '/video-campaign-brief',
+    zhPath: `/zh/${page.slugZh || '视频活动简介'}`,
+    title: metaTitle,
     description: seoDescription(page.seo, locale as Locale),
-    openGraph: {
-      images: buildOgImage(page.featuredImage),
-    },
-    alternates: {
-      languages: {
-        en: '/video-campaign-brief',
-        zh: `/zh/${page.slugZh || '视频活动简介'}`,
-      },
-    },
-  };
+    image: buildOgImage(page.featuredImage),
+    type: 'website',
+  });
 }
 
 export default async function VideoCampaignBriefPage({ params }: Props) {
@@ -59,8 +62,23 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
 
+  const typedLocale = locale as Locale;
+
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbs([
+          homeBreadcrumb(typedLocale),
+          {
+            name: title,
+            url: staticPageUrl(
+              typedLocale,
+              '/video-campaign-brief',
+              `/zh/${page.slugZh || '视频活动简介'}`,
+            ),
+          },
+        ])}
+      />
       <CondensedPageHeader>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <h1 className="text-[clamp(2rem,3vw,2.75rem)] font-bold uppercase tracking-vp-heading">
