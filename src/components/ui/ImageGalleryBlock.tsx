@@ -23,7 +23,7 @@ export function ImageGalleryBlock({ columns, images }: ImageGalleryBlockProps) {
 
   return (
     <div
-      className="vp-masonry-gallery vp-masonry-gallery--bleed my-8"
+      className="vp-masonry-gallery vp-masonry-gallery--bleed"
       style={{ '--vp-gallery-columns': columns } as React.CSSProperties}
     >
       {images.map((item, index) => {

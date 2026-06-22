@@ -91,7 +91,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <PortableTextContent blocks={bodyBlocks} />
+          <PortableTextContent blocks={bodyBlocks} relaxed />
         </div>
       </SectionWrapper>
 

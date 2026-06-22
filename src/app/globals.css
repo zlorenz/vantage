@@ -828,8 +828,17 @@
   position: relative;
   left: 50%;
   width: 100vw;
+  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
   margin-left: -50vw;
   margin-right: -50vw;
+}
+
+@media (min-width: 768px) {
+  .vp-masonry-gallery--bleed {
+    margin-top: 4.5rem;
+    margin-bottom: 4.5rem;
+  }
 }
 
 @media (max-width: 639px) {
@@ -863,6 +872,16 @@
   color: #fff;
   text-shadow: 0 0 1.5px #000;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.vp-pt-cta-button {
+  margin: 2rem 0 3rem;
+}
+
+@media (min-width: 768px) {
+  .vp-pt-cta-button {
+    margin: 2.5rem 0 3.5rem;
+  }
 }
 
 /* ==========================================================================

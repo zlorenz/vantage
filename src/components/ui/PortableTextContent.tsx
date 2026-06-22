@@ -25,15 +25,27 @@ import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '
 
 type LinkHref = ComponentProps<typeof Link>['href'];
 
-const components: PortableTextComponents = {
+function createComponents(relaxed = false): PortableTextComponents {
+  const h1Class = relaxed
+    ? 'mb-8 mt-10 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading first:mt-0'
+    : 'mb-6 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading';
+  const h2Class = relaxed
+    ? 'mb-6 mt-10 text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading'
+    : 'mb-5 mt-8 text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading';
+  const pClass = relaxed
+    ? 'mb-6 font-light leading-relaxed text-vp-text-muted last:mb-0'
+    : 'mb-4 font-light leading-relaxed text-vp-text-muted last:mb-0';
+  const ctaWrapClass = relaxed ? 'vp-pt-cta-button' : 'my-6';
+
+  return {
   block: {
     h1: ({ children }) => (
-      <h1 className="mb-6 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+      <h1 className={h1Class}>
         {children}
       </h1>
     ),
     h2: ({ children }) => (
-      <h2 className="mb-5 mt-8 text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
+      <h2 className={h2Class}>
         {children}
       </h2>
     ),
@@ -57,7 +69,7 @@ const components: PortableTextComponents = {
       }
 
       return (
-        <p className="mb-4 font-light leading-relaxed text-vp-text-muted last:mb-0">
+        <p className={pClass}>
           {children}
         </p>
       );
@@ -145,7 +157,7 @@ const components: PortableTextComponents = {
 
       if (isExternal) {
         return (
-          <p className="my-6">
+          <p className={ctaWrapClass}>
             <a
               href={path}
               className="inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg"
@@ -159,7 +171,7 @@ const components: PortableTextComponents = {
       }
 
       return (
-        <p className="my-6">
+        <p className={ctaWrapClass}>
           <Link
             href={path as LinkHref}
             className="inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg"
@@ -171,14 +183,23 @@ const components: PortableTextComponents = {
     },
   },
 };
+}
 
 interface PortableTextContentProps {
   blocks?: SanityPortableTextBlock[];
   className?: string;
+  /** Extra vertical rhythm for long-form CMS pages (e.g. Vietnam production service). */
+  relaxed?: boolean;
 }
 
-export function PortableTextContent({ blocks, className = '' }: PortableTextContentProps) {
+export function PortableTextContent({
+  blocks,
+  className = '',
+  relaxed = false,
+}: PortableTextContentProps) {
   if (!blocks?.length) return null;
+
+  const components = createComponents(relaxed);
 
   return (
     <div className={`vp-portable-text ${className}`.trim()}>
