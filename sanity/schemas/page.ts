@@ -81,7 +81,7 @@ export const page = defineType({
       name: 'body',
       title: 'Body (English)',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [{ type: 'block' }, { type: 'image' }, { type: 'imageGallery' }, { type: 'ctaButton' }],
       validation: (rule) => rule.required(),
     }),
 
@@ -89,7 +89,7 @@ export const page = defineType({
       name: 'bodyZh',
       title: 'Body (Chinese)',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [{ type: 'block' }, { type: 'image' }, { type: 'imageGallery' }, { type: 'ctaButton' }],
     }),
 
     defineField({

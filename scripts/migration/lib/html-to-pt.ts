@@ -49,6 +49,15 @@ const blockContentType = textBlockSchema
   .get('blogPost')
   .fields.find((f: { name: string }) => f.name === 'body').type;
 
+const WP_FILE_BLOCK_REGEX =
+  /<!--\s*wp:file\b[^>]*-->[\s\S]*?<!--\s*\/wp:file\s*-->/gi;
+
+const WP_GALLERY_BLOCK_REGEX =
+  /<!--\s*wp:gallery\b([^>]*)-->[\s\S]*?<!--\s*\/wp:gallery\s*-->/gi;
+
+const WP_BUTTON_BLOCK_REGEX =
+  /<!--\s*wp:wp-bootstrap-blocks\/button\b([^>]*)\/-->/gi;
+
 const WP_IMAGE_BLOCK_REGEX =
   /<!--\s*wp:image\b[^>]*\{"id":(\d+)[^>]*-->[\s\S]*?<!--\s*\/wp:image\s*-->/gi;
 
@@ -57,15 +66,20 @@ const WP_EMBED_BLOCK_REGEX =
 
 type HtmlSegment =
   | { type: 'html'; content: string }
-  | { type: 'image'; wpId: number; alt: string }
+  | { type: 'gallery'; content: string; attrs: string }
+  | { type: 'button'; attrs: string }
+  | { type: 'image'; wpId: number; alt: string; caption: string }
   | { type: 'video'; url: string };
 
-interface WpMediaMatch {
+interface WpBlockMatch {
   index: number;
   length: number;
-  kind: 'image' | 'video';
+  kind: 'gallery' | 'button' | 'image' | 'video';
+  attrs?: string;
+  content?: string;
   wpId?: number;
   alt?: string;
+  caption?: string;
   url?: string;
 }
 
@@ -82,26 +96,73 @@ function isEmbeddableVideoUrl(url: string): boolean {
   return /vimeo\.com|youtube\.com|youtu\.be/i.test(url);
 }
 
-function findWpMediaMatches(html: string): WpMediaMatch[] {
-  const matches: WpMediaMatch[] = [];
+function stripWpFileBlocks(html: string): string {
+  return html.replace(WP_FILE_BLOCK_REGEX, '');
+}
+
+function parseImageBlockContent(content: string, wpId: number): Pick<WpBlockMatch, 'alt' | 'caption'> {
+  const altMatch = content.match(/\salt="([^"]*)"/i);
+  const captionMatch = content.match(/<figcaption[^>]*>([\s\S]*?)<\/figcaption>/i);
+  return {
+    alt: altMatch ? decodeHtmlEntities(altMatch[1]) : '',
+    caption: captionMatch ? decodeHtmlEntities(captionMatch[1]) : '',
+  };
+}
+
+function isInsideRange(index: number, ranges: Array<{ start: number; end: number }>): boolean {
+  return ranges.some((range) => index >= range.start && index < range.end);
+}
+
+function findWpBlockMatches(html: string): WpBlockMatch[] {
+  const galleryRanges: Array<{ start: number; end: number }> = [];
+  const matches: WpBlockMatch[] = [];
+
+  for (const match of html.matchAll(WP_GALLERY_BLOCK_REGEX)) {
+    const index = match.index ?? 0;
+    const length = match[0].length;
+    galleryRanges.push({ start: index, end: index + length });
+    matches.push({
+      index,
+      length,
+      kind: 'gallery',
+      attrs: match[1] ?? '',
+      content: match[0],
+    });
+  }
+
+  for (const match of html.matchAll(WP_BUTTON_BLOCK_REGEX)) {
+    const index = match.index ?? 0;
+    if (isInsideRange(index, galleryRanges)) continue;
+    matches.push({
+      index,
+      length: match[0].length,
+      kind: 'button',
+      attrs: match[1] ?? '',
+    });
+  }
 
   for (const match of html.matchAll(WP_IMAGE_BLOCK_REGEX)) {
     const index = match.index ?? 0;
-    const altMatch = match[0].match(/\salt="([^"]*)"/i);
+    if (isInsideRange(index, galleryRanges)) continue;
+    const wpId = Number(match[1]);
+    const { alt, caption } = parseImageBlockContent(match[0], wpId);
     matches.push({
       index,
       length: match[0].length,
       kind: 'image',
-      wpId: Number(match[1]),
-      alt: altMatch ? decodeHtmlEntities(altMatch[1]) : '',
+      wpId,
+      alt,
+      caption,
     });
   }
 
   for (const match of html.matchAll(WP_EMBED_BLOCK_REGEX)) {
+    const index = match.index ?? 0;
+    if (isInsideRange(index, galleryRanges)) continue;
     const url = match[1];
     if (!isEmbeddableVideoUrl(url)) continue;
     matches.push({
-      index: match.index ?? 0,
+      index,
       length: match[0].length,
       kind: 'video',
       url,
@@ -111,8 +172,8 @@ function findWpMediaMatches(html: string): WpMediaMatch[] {
   return matches.sort((a, b) => a.index - b.index);
 }
 
-function splitHtmlWithWpMedia(html: string): HtmlSegment[] {
-  const matches = findWpMediaMatches(html);
+function splitHtmlWithWpBlocks(html: string): HtmlSegment[] {
+  const matches = findWpBlockMatches(html);
   if (!matches.length) {
     return [{ type: 'html', content: html }];
   }
@@ -125,8 +186,21 @@ function splitHtmlWithWpMedia(html: string): HtmlSegment[] {
       segments.push({ type: 'html', content: html.slice(lastIndex, match.index) });
     }
 
-    if (match.kind === 'image' && match.wpId) {
-      segments.push({ type: 'image', wpId: match.wpId, alt: match.alt ?? '' });
+    if (match.kind === 'gallery' && match.content) {
+      segments.push({
+        type: 'gallery',
+        content: match.content,
+        attrs: match.attrs ?? '',
+      });
+    } else if (match.kind === 'button') {
+      segments.push({ type: 'button', attrs: match.attrs ?? '' });
+    } else if (match.kind === 'image' && match.wpId) {
+      segments.push({
+        type: 'image',
+        wpId: match.wpId,
+        alt: match.alt ?? '',
+        caption: match.caption ?? '',
+      });
     } else if (match.kind === 'video' && match.url) {
       segments.push({ type: 'video', url: match.url });
     }
@@ -151,19 +225,65 @@ function videoUrlBlock(url: string): unknown {
   };
 }
 
+function galleryBlock(content: string, attrs: string, idMap: IdMap): unknown | null {
+  const columnsMatch = attrs.match(/"columns"\s*:\s*(\d+)/);
+  const columns = columnsMatch ? Number(columnsMatch[1]) : 3;
+  const images: unknown[] = [];
+
+  for (const match of content.matchAll(WP_IMAGE_BLOCK_REGEX)) {
+    const wpId = Number(match[1]);
+    const { alt, caption } = parseImageBlockContent(match[0], wpId);
+    const image = imageField(idMap, wpId);
+    if (!image) {
+      console.warn(`Missing Sanity asset for WordPress image ${wpId}`);
+      continue;
+    }
+
+    images.push({
+      _key: blockKey(),
+      image,
+      ...(alt ? { alt } : {}),
+      ...(caption ? { caption } : {}),
+    });
+  }
+
+  if (!images.length) return null;
+
+  return {
+    _key: blockKey(),
+    _type: 'imageGallery',
+    columns,
+    images,
+  };
+}
+
+function ctaButtonBlock(attrs: string): unknown | null {
+  const urlMatch = attrs.match(/"url"\s*:\s*"([^"]+)"/);
+  const textMatch = attrs.match(/"text"\s*:\s*"([^"]+)"/);
+  if (!urlMatch || !textMatch) return null;
+
+  return {
+    _key: blockKey(),
+    _type: 'ctaButton',
+    label: decodeHtmlEntities(textMatch[1]),
+    url: decodeHtmlEntities(urlMatch[1]),
+  };
+}
+
 function htmlToPortableTextBlocksOnly(html: string): unknown[] {
-  if (!html?.trim()) {
+  const cleaned = stripWpFileBlocks(html);
+  if (!cleaned?.trim()) {
     return [];
   }
 
   try {
-    const blocks = htmlToBlocks(html, blockContentType, {
+    const blocks = htmlToBlocks(cleaned, blockContentType, {
       parseHtml: (h) => new JSDOM(h).window.document,
     });
-    return blocks.length ? blocks : [textBlock(stripTags(html))];
+    return blocks.length ? blocks : [textBlock(stripTags(cleaned))];
   } catch (err) {
     console.warn('htmlToBlocks failed, falling back to stripped text:', err);
-    return [textBlock(stripTags(html))];
+    return [textBlock(stripTags(cleaned))];
   }
 }
 
@@ -176,10 +296,22 @@ export function htmlToPortableText(html: string, idMap?: IdMap): unknown[] {
     return htmlToPortableTextBlocksOnly(html);
   }
 
-  const segments = splitHtmlWithWpMedia(html);
+  const segments = splitHtmlWithWpBlocks(html);
   const blocks: unknown[] = [];
 
   for (const segment of segments) {
+    if (segment.type === 'gallery') {
+      const gallery = galleryBlock(segment.content, segment.attrs, idMap);
+      if (gallery) blocks.push(gallery);
+      continue;
+    }
+
+    if (segment.type === 'button') {
+      const button = ctaButtonBlock(segment.attrs);
+      if (button) blocks.push(button);
+      continue;
+    }
+
     if (segment.type === 'image') {
       const image = imageField(idMap, segment.wpId);
       if (!image) {

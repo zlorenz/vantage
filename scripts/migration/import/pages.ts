@@ -22,7 +22,7 @@ export async function importPages(): Promise<number> {
       title: item.title,
       slug: slugField(item.slug),
       showHeroHeader: item.showHeroHeader,
-      body: htmlToPortableText(item.bodyHtml),
+      body: htmlToPortableText(item.bodyHtml, idMap),
       noIndex: item.noIndex,
     };
 
@@ -30,7 +30,7 @@ export async function importPages(): Promise<number> {
     if (item.slugZh) doc.slugZh = slugField(item.slugZh);
     if (item.heroTitle) doc.heroTitle = item.heroTitle;
     if (item.heroTitleZh) doc.heroTitleZh = item.heroTitleZh;
-    if (item.bodyHtmlZh) doc.bodyZh = htmlToPortableText(item.bodyHtmlZh);
+    if (item.bodyHtmlZh) doc.bodyZh = htmlToPortableText(item.bodyHtmlZh, idMap);
 
     const featuredImage = imageField(idMap, item.featuredImageWpId);
     if (featuredImage) doc.featuredImage = featuredImage;

@@ -10,6 +10,7 @@ import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
+import { filterPdfDownloadArtifactBlocks } from '@/lib/portable-text-filters';
 import { pageTitle, seoDescription, buildOgImage } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
@@ -63,8 +64,9 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
       : page.heroTitle ||
         '<span class="vp-outline">Vietnam</span> Location Guidebook';
 
-  const bodyBlocks =
-    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
+  const bodyBlocks = filterPdfDownloadArtifactBlocks(
+    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body,
+  );
 
   const pdfUrl = page.pdfDownload?.file?.asset?.url;
   const pdfLabel =

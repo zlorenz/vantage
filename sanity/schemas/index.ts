@@ -30,6 +30,8 @@ import { additionalVideo } from './objects/additionalVideo';
 import { heroSlide } from './objects/heroSlide';
 import { founder } from './objects/founder';
 import { pdfDownload } from './objects/pdfDownload';
+import { imageGallery } from './objects/imageGallery';
+import { ctaButton } from './objects/ctaButton';
 
 export const schemaTypes = [
   // Shared objects
@@ -46,6 +48,8 @@ export const schemaTypes = [
   heroSlide,
   founder,
   pdfDownload,
+  imageGallery,
+  ctaButton,
 
   // Documents
   siteSettings,

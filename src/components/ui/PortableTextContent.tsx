@@ -4,19 +4,26 @@
  * Server component. Supports headings, links, images, and lists.
  */
 
+import type { ComponentProps } from 'react';
 import Image from 'next/image';
 import {
   PortableText,
   type PortableTextComponents,
 } from '@portabletext/react';
+import { ImageGalleryBlock } from '@/components/ui/ImageGalleryBlock';
 import { PortableTextVideoEmbed } from '@/components/ui/PortableTextVideoEmbed';
+import { Link } from '@/i18n/navigation';
+import { normalizeInternalPath } from '@/lib/internal-url';
 import { urlForImage } from '@/lib/sanity';
 import {
   extractVideoUrls,
   getPortableTextBlockPlainText,
   isVideoUrlOnlyText,
 } from '@/lib/video-url';
+import type { GalleryImageItem } from '@/components/ui/ImageGalleryBlock';
 import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '@/types/sanity';
+
+type LinkHref = ComponentProps<typeof Link>['href'];
 
 const components: PortableTextComponents = {
   block: {
@@ -115,6 +122,51 @@ const components: PortableTextComponents = {
             sizes="(max-width: 992px) 100vw, 900px"
           />
         </figure>
+      );
+    },
+    imageGallery: ({ value }) => {
+      const gallery = value as {
+        columns?: number;
+        images?: GalleryImageItem[];
+      };
+      return (
+        <ImageGalleryBlock
+          columns={gallery.columns ?? 3}
+          images={gallery.images ?? []}
+        />
+      );
+    },
+    ctaButton: ({ value }) => {
+      const button = value as { label?: string; url?: string };
+      if (!button.label || !button.url) return null;
+
+      const path = normalizeInternalPath(button.url);
+      const isExternal = /^https?:\/\//i.test(button.url);
+
+      if (isExternal) {
+        return (
+          <p className="my-6">
+            <a
+              href={path}
+              className="inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {button.label}
+            </a>
+          </p>
+        );
+      }
+
+      return (
+        <p className="my-6">
+          <Link
+            href={path as LinkHref}
+            className="inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg"
+          >
+            {button.label}
+          </Link>
+        </p>
       );
     },
   },

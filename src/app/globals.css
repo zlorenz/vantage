@@ -756,12 +756,113 @@
 }
 
 /* ==========================================================================
-   Brand logo grid
+   Brand logo grid — matches live .wp-block-gallery.brand-logos.is-cropped
    ========================================================================== */
 
+.vp-brand-logos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 1100px;
+  margin-inline: auto;
+  border-top: 1px solid var(--color-vp-logo-grid-border);
+  border-left: 1px solid var(--color-vp-logo-grid-border);
+}
+
+@media (min-width: 640px) {
+  .vp-brand-logos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.vp-brand-logos__cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 718 / 412;
+  padding: 1.5rem;
+  background: transparent;
+  border-right: 1px solid var(--color-vp-logo-grid-border);
+  border-bottom: 1px solid var(--color-vp-logo-grid-border);
+}
+
+.vp-brand-logos__figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68%;
+  max-width: 152px;
+  height: 68%;
+  max-height: 44px;
+  margin: 0;
+  background: transparent;
+}
+
 .vp-brand-logos__img {
-  transform: scale(0.7);
-  transform-origin: center;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: transparent;
+  filter: brightness(0) invert(1);
+}
+
+/* Zhiyun SVG includes a square background path — screen drops it on dark bg */
+.vp-brand-logos__figure--zhiyun {
+  mix-blend-mode: screen;
+  isolation: isolate;
+}
+
+/* ==========================================================================
+   Masonry image gallery (Vietnam pages)
+   ========================================================================== */
+
+.vp-masonry-gallery {
+  column-count: var(--vp-gallery-columns, 3);
+  column-gap: 0;
+}
+
+.vp-masonry-gallery--bleed {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+@media (max-width: 639px) {
+  .vp-masonry-gallery {
+    column-count: 2;
+  }
+}
+
+.vp-masonry-gallery__item {
+  position: relative;
+  display: block;
+  margin: 0;
+  break-inside: avoid;
+}
+
+.vp-masonry-gallery__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vp-masonry-gallery__caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 1em;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #fff;
+  text-shadow: 0 0 1.5px #000;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.4), transparent);
 }
 
 /* ==========================================================================

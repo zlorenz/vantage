@@ -12,6 +12,7 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { getVietnamCtaContent } from '@/lib/cta-content';
+import { filterVietnamProductionServiceBody } from '@/lib/portable-text-filters';
 import { pageTitle, seoDescription, buildOgImage } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
@@ -80,8 +81,9 @@ export default async function VietnamProductionServicePage({ params }: Props) {
       : page.heroTitle ||
         'Vietnam <span class="vp-outline">Production Service</span>';
 
-  const bodyBlocks =
-    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
+  const bodyBlocks = filterVietnamProductionServiceBody(
+    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body,
+  );
 
   return (
     <>

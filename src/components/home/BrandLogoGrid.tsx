@@ -11,20 +11,25 @@ export function BrandLogoGrid() {
   const logos = getClientLogos(HOME_BRAND_LOGO_IDS);
 
   return (
-    <div className="vp-brand-logos mx-auto grid max-w-[1100px] grid-cols-2 gap-0 sm:grid-cols-4">
+    <div className="vp-brand-logos">
       {logos.map((logo) => (
-        <div
-          key={logo.id}
-          className="vp-brand-logos__cell flex items-center justify-center border border-vp-logo-grid-border p-6"
-        >
-          <Image
-            src={logo.file}
-            alt={logo.name}
-            width={200}
-            height={100}
-            unoptimized
-            className="vp-brand-logos__img h-auto w-full max-w-full object-contain"
-          />
+        <div key={logo.id} className="vp-brand-logos__cell">
+          <figure
+            className={
+              logo.id === 'zhiyun'
+                ? 'vp-brand-logos__figure vp-brand-logos__figure--zhiyun'
+                : 'vp-brand-logos__figure'
+            }
+          >
+            <Image
+              src={logo.file}
+              alt={logo.name}
+              width={718}
+              height={412}
+              unoptimized
+              className="vp-brand-logos__img"
+            />
+          </figure>
         </div>
       ))}
     </div>
