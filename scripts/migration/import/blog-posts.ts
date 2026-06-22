@@ -24,13 +24,13 @@ export async function importBlogPosts(): Promise<number> {
       title: item.title,
       slug: slugField(item.slug),
       publishedAt: new Date(item.publishedAt).toISOString(),
-      body: htmlToPortableText(item.bodyHtml),
+      body: htmlToPortableText(item.bodyHtml, idMap),
       categories: item.categories.map((s) => docRef(categoryId(s))),
     };
 
     if (item.titleZh) doc.titleZh = item.titleZh;
     if (item.slugZh) doc.slugZh = slugField(item.slugZh);
-    if (item.bodyHtmlZh) doc.bodyZh = htmlToPortableText(item.bodyHtmlZh);
+    if (item.bodyHtmlZh) doc.bodyZh = htmlToPortableText(item.bodyHtmlZh, idMap);
 
     const featuredImage = imageField(idMap, item.featuredImageWpId);
     if (featuredImage) doc.featuredImage = featuredImage;

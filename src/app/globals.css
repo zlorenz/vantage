@@ -730,10 +730,19 @@
    Homepage hero carousel
    ========================================================================== */
 
+.vp-hero-carousel__title span {
+  color: transparent;
+  -webkit-text-stroke: 1px #fff;
+}
+
+.vp-hero-carousel__desc {
+  text-wrap: balance;
+}
+
 .vp-hero-carousel__chevron {
   display: block;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-top: 2px solid #fff;
   border-right: 2px solid #fff;
 }

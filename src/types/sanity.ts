@@ -48,7 +48,6 @@ export interface SiteSettings {
   socialXinpianchang?: string;
   socialXiaohongshu?: string;
   defaultOgImage?: SanityImage;
-  brandLogos?: SanityImage[];
 }
 
 /** Minimal page shape for navigation slug resolution. */
@@ -188,6 +187,7 @@ export interface HeroSlideData {
   slugZh?: string;
   headerTitle: string;
   description?: string;
+  descriptionZh?: string;
   featuredImage: SanityImage;
   buttonLabel: string;
   buttonLabelZh?: string;

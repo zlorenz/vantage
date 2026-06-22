@@ -14,13 +14,11 @@ import { routing, type Locale } from '@/i18n/routing';
 import { getHomeAboutParagraphs } from '@/lib/home-content';
 import { SITE_DESCRIPTION, SITE_NAME } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
-import { SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import { HOME_PAGE_QUERY } from '@/sanity/queries/pages';
 import { RECENT_PORTFOLIO_QUERY } from '@/sanity/queries/portfolio';
 import type {
   HeroSlideData,
   PortfolioCard as PortfolioCardData,
-  SiteSettings,
 } from '@/types/sanity';
 
 type HomePageData = {
@@ -63,10 +61,9 @@ export default async function HomePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [homePage, recentWork, siteSettings] = await Promise.all([
+  const [homePage, recentWork] = await Promise.all([
     sanityClient.fetch<HomePageData | null>(HOME_PAGE_QUERY),
     sanityClient.fetch<PortfolioCardData[]>(RECENT_PORTFOLIO_QUERY),
-    sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
   ]);
 
   const slides: HeroSlideData[] =
@@ -133,7 +130,7 @@ export default async function HomePage({ params }: Props) {
           <h2 className="vp-section-heading mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
             BRANDS <span className="vp-outline">WE WORK WITH</span>
           </h2>
-          <BrandLogoGrid logos={siteSettings?.brandLogos} />
+          <BrandLogoGrid />
         </div>
       </SectionWrapper>
 

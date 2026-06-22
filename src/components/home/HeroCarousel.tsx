@@ -81,24 +81,8 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
         })}
       </div>
 
-      {/* Dot indicators — top centre */}
-      <div className="vp-hero-carousel__indicators absolute left-1/2 top-28 z-20 flex -translate-x-1/2 gap-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            className={`h-1 rounded-none border-0 bg-white transition-all duration-300 ${
-              index === activeIndex ? 'w-8 opacity-100' : 'w-4 opacity-50'
-            }`}
-            onClick={() => goTo(index)}
-            aria-label={`Go to slide ${index + 1}`}
-            aria-current={index === activeIndex ? 'true' : undefined}
-          />
-        ))}
-      </div>
-
-      {/* Slide copy — centred, bottom third */}
-      <div className="vp-hero-carousel__copy relative z-10 flex h-full items-end justify-center px-4 pb-[18vh]">
+      {/* Slide copy — vertically centred */}
+      <div className="vp-hero-carousel__copy pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-4">
         {slides.map((slide, index) => {
           const slugParam =
             locale === 'zh' ? slide.slugZh || slide.slug : slide.slug;
@@ -106,21 +90,25 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
             locale === 'zh' && slide.buttonLabelZh
               ? slide.buttonLabelZh
               : slide.buttonLabel;
+          const description =
+            locale === 'zh' && slide.descriptionZh
+              ? slide.descriptionZh
+              : slide.description;
 
           return (
             <div
               key={slide.slug}
-              className="absolute max-w-3xl text-center text-white transition-opacity duration-700 ease-in-out"
+              className="absolute flex w-full max-w-3xl flex-col items-center justify-center px-4 text-center text-white transition-opacity duration-700 ease-in-out"
               style={{ opacity: index === activeIndex ? 1 : 0 }}
               aria-hidden={index !== activeIndex}
             >
               <h1
-                className="vp-hero-carousel__title mb-3 text-[clamp(2.25rem,1.25rem+3vw,3.75rem)] font-extrabold uppercase leading-tight tracking-vp-heading"
+                className="vp-hero-carousel__title mb-4 text-[clamp(2.25rem,1.25rem+3vw,3.75rem)] font-extrabold uppercase leading-tight tracking-vp-heading"
                 dangerouslySetInnerHTML={{ __html: slide.headerTitle }}
               />
-              {slide.description ? (
-                <p className="vp-hero-carousel__desc mx-auto mb-6 max-w-2xl line-clamp-2 font-light text-vp-text-muted">
-                  {slide.description}
+              {description ? (
+                <p className="vp-hero-carousel__desc mx-auto mb-8 max-w-2xl text-base font-light leading-relaxed text-white/90">
+                  {description}
                 </p>
               ) : null}
               <VpButton
@@ -129,7 +117,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
                   params: { slug: slugParam },
                 }}
                 variant="ghost"
-                className="inline-flex items-center gap-2"
+                className="pointer-events-auto inline-flex items-center gap-2"
               >
                 <span aria-hidden>▶</span>
                 {buttonLabel}
@@ -139,12 +127,28 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
         })}
       </div>
 
+      {/* Dot indicators — bottom centre */}
+      <div className="vp-hero-carousel__indicators absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            type="button"
+            className={`h-0.5 rounded-none border-0 bg-white transition-all duration-300 ${
+              index === activeIndex ? 'w-10 opacity-100' : 'w-5 opacity-40'
+            }`}
+            onClick={() => goTo(index)}
+            aria-label={`Go to slide ${index + 1}`}
+            aria-current={index === activeIndex ? 'true' : undefined}
+          />
+        ))}
+      </div>
+
       {/* Prev / next arrows */}
       {slides.length > 1 ? (
         <>
           <button
             type="button"
-            className="vp-hero-carousel__arrow vp-hero-carousel__arrow--prev absolute left-4 top-1/2 z-20 -translate-y-1/2 border-0 bg-transparent p-4 text-white opacity-80 transition-opacity hover:opacity-100"
+            className="vp-hero-carousel__arrow vp-hero-carousel__arrow--prev absolute left-4 top-1/2 z-20 -translate-y-1/2 border-0 bg-transparent p-4 text-white opacity-80 transition-opacity hover:opacity-100 md:left-8"
             onClick={goPrev}
             aria-label="Previous slide"
           >
@@ -152,7 +156,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
           </button>
           <button
             type="button"
-            className="vp-hero-carousel__arrow vp-hero-carousel__arrow--next absolute right-4 top-1/2 z-20 -translate-y-1/2 border-0 bg-transparent p-4 text-white opacity-80 transition-opacity hover:opacity-100"
+            className="vp-hero-carousel__arrow vp-hero-carousel__arrow--next absolute right-4 top-1/2 z-20 -translate-y-1/2 border-0 bg-transparent p-4 text-white opacity-80 transition-opacity hover:opacity-100 md:right-8"
             onClick={goNext}
             aria-label="Next slide"
           >

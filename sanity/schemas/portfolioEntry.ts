@@ -100,6 +100,22 @@ export const portfolioEntry = defineType({
     // -------------------------------------------------------------------------
 
     defineField({
+      name: 'excerpt',
+      title: 'Excerpt (English)',
+      type: 'text',
+      rows: 2,
+      description:
+        'Short teaser — WordPress post_excerpt. Used on homepage hero carousel and cards.',
+    }),
+
+    defineField({
+      name: 'excerptZh',
+      title: 'Excerpt (Chinese)',
+      type: 'text',
+      rows: 2,
+    }),
+
+    defineField({
       name: 'description',
       title: 'Description (English)',
       type: 'text',

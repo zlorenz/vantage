@@ -9,7 +9,13 @@ import {
   PortableText,
   type PortableTextComponents,
 } from '@portabletext/react';
+import { PortableTextVideoEmbed } from '@/components/ui/PortableTextVideoEmbed';
 import { urlForImage } from '@/lib/sanity';
+import {
+  extractVideoUrls,
+  getPortableTextBlockPlainText,
+  isVideoUrlOnlyText,
+} from '@/lib/video-url';
 import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '@/types/sanity';
 
 const components: PortableTextComponents = {
@@ -29,11 +35,26 @@ const components: PortableTextComponents = {
         {children}
       </h3>
     ),
-    normal: ({ children }) => (
-      <p className="mb-4 font-light leading-relaxed text-vp-text-muted last:mb-0">
-        {children}
-      </p>
-    ),
+    normal: ({ children, value }) => {
+      const text = getPortableTextBlockPlainText(value as unknown as SanityPortableTextBlock);
+
+      if (isVideoUrlOnlyText(text)) {
+        const urls = extractVideoUrls(text);
+        return (
+          <div className="vp-pt-videos my-6 space-y-6">
+            {urls.map((url) => (
+              <PortableTextVideoEmbed key={url} url={url} />
+            ))}
+          </div>
+        );
+      }
+
+      return (
+        <p className="mb-4 font-light leading-relaxed text-vp-text-muted last:mb-0">
+          {children}
+        </p>
+      );
+    },
     blockquote: ({ children }) => (
       <blockquote className="mb-4 border-l-2 border-vp-border pl-4 italic text-vp-text-soft">
         {children}
@@ -80,14 +101,14 @@ const components: PortableTextComponents = {
   },
   types: {
     image: ({ value }) => {
-      const image = value as SanityImage;
+      const image = value as SanityImage & { alt?: string };
       if (!image?.asset) return null;
       const imageUrl = urlForImage(image).width(1200).url();
       return (
         <figure className="vp-pt-image my-6">
           <Image
             src={imageUrl}
-            alt=""
+            alt={image.alt ?? ''}
             width={1200}
             height={675}
             className="h-auto w-full"

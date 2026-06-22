@@ -6,6 +6,7 @@ export interface WpPost {
   post_title: string;
   post_name: string;
   post_content: string;
+  post_excerpt: string;
   post_date: string;
   post_type: string;
 }
@@ -15,7 +16,7 @@ export async function fetchPosts(
   status = 'publish'
 ): Promise<WpPost[]> {
   return query<WpPost[]>(
-    `SELECT ID, post_title, post_name, post_content, post_date, post_type
+    `SELECT ID, post_title, post_name, post_content, post_excerpt, post_date, post_type
      FROM ${table('posts')}
      WHERE post_type = ? AND post_status = ?
      ORDER BY ID ASC`,

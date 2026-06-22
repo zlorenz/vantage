@@ -12,6 +12,7 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { pageTitle, seoDescription, buildOgImage } from '@/lib/metadata';
+import { filterAboutBodyBlocks } from '@/lib/about-content';
 import { sanityClient } from '@/lib/sanity';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
 import type { PageDocument } from '@/types/sanity';
@@ -65,8 +66,10 @@ export default async function AboutPage({ params }: Props) {
       ? page.heroTitleZh
       : page.heroTitle || 'About <span class="vp-outline">Us</span>';
 
-  const bodyBlocks =
-    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
+  const bodyBlocks = filterAboutBodyBlocks(
+    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body,
+    page.founders?.map((founder) => founder.name) ?? []
+  );
 
   return (
     <>

@@ -5,7 +5,7 @@ import {
   SLUG_FIX_PORTFOLIO_SLUG,
   SLUG_FIX_PORTFOLIO_WP_ID,
 } from '../config';
-import { getMeta, getMetaOrFallback, parseAcfRepeater } from '../lib/acf';
+import { getMeta, parseAcfRepeater } from '../lib/acf';
 import { getAttachment } from '../lib/attachments';
 import { buildCredits } from '../lib/credits-config';
 import { writeJson } from '../lib/fs';
@@ -34,6 +34,8 @@ export interface ExportedPortfolio {
   thumbTitle: string;
   headerTitle: string;
   longTitle: string;
+  excerpt: string;
+  excerptZh?: string;
   description: string;
   descriptionZh?: string;
   featuredImageWpId?: number;
@@ -85,7 +87,9 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
 
     const titleZh = await translate(post.post_title);
     const slugZh = await translateSlug(slug);
-    const description = getMetaOrFallback(meta, 'description', 'excerpt') || post.post_content;
+    const excerpt = (post.post_excerpt ?? '').trim();
+    const excerptZh = excerpt ? await translate(excerpt) : undefined;
+    const description = getMeta(meta, 'description') || post.post_content;
     const descriptionZh = await translate(description);
 
     const yoast = extractYoast(meta);
@@ -139,6 +143,8 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
       thumbTitle,
       headerTitle,
       longTitle,
+      excerpt,
+      excerptZh,
       description,
       descriptionZh,
       featuredImageWpId: thumbnailId,

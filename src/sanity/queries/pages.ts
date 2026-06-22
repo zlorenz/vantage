@@ -33,7 +33,8 @@ export const PAGE_BY_SLUG_QUERY = `
         "slug": slug.current,
         "slugZh": slugZh.current,
         headerTitle,
-        description,
+        "description": coalesce(excerpt, seo.metaDescription),
+        "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
         featuredImage
       }
     },
@@ -67,7 +68,8 @@ export const HOME_PAGE_QUERY = `
         "slug": slug.current,
         "slugZh": slugZh.current,
         headerTitle,
-        description,
+        "description": coalesce(excerpt, seo.metaDescription),
+        "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
         featuredImage
       }
     }

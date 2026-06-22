@@ -38,6 +38,7 @@ export async function importPortfolio(): Promise<number> {
       thumbTitle: item.thumbTitle,
       headerTitle: item.headerTitle,
       longTitle: item.longTitle,
+      excerpt: item.excerpt,
       description: item.description,
       vimeoUrl: item.vimeoUrl.includes('placeholder') ? undefined : item.vimeoUrl,
       isHidden: item.isHidden,
@@ -46,6 +47,7 @@ export async function importPortfolio(): Promise<number> {
 
     if (item.titleZh) doc.titleZh = item.titleZh;
     if (item.slugZh) doc.slugZh = slugField(item.slugZh);
+    if (item.excerptZh) doc.excerptZh = item.excerptZh;
     if (item.descriptionZh) doc.descriptionZh = item.descriptionZh;
     if (item.xinpianchangUrl) doc.xinpianchangUrl = item.xinpianchangUrl;
     if (featuredImage) doc.featuredImage = featuredImage;
