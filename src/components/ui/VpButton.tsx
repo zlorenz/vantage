@@ -15,6 +15,7 @@ interface VpButtonBaseProps {
   children: React.ReactNode;
   variant?: 'primary' | 'ghost';
   className?: string;
+  disabled?: boolean;
 }
 
 interface VpButtonLinkProps extends VpButtonBaseProps {
@@ -26,6 +27,7 @@ interface VpButtonActionProps extends VpButtonBaseProps {
   href?: never;
   onClick?: () => void;
   type?: 'button' | 'submit';
+  disabled?: boolean;
 }
 
 type VpButtonProps = VpButtonLinkProps | VpButtonActionProps;
@@ -41,9 +43,10 @@ export function VpButton({
   children,
   variant = 'primary',
   className = '',
+  disabled = false,
   ...props
 }: VpButtonProps) {
-  const classes = `inline-block px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn transition-colors duration-vp-default ${VARIANT_CLASSES[variant]} ${className}`;
+  const classes = `inline-block px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn transition-colors duration-vp-default ${VARIANT_CLASSES[variant]} ${className} ${disabled ? 'pointer-events-none opacity-55' : ''}`;
 
   if ('href' in props && props.href) {
     return (
@@ -55,7 +58,7 @@ export function VpButton({
 
   const { onClick, type = 'button' } = props as VpButtonActionProps;
   return (
-    <button type={type} className={classes} onClick={onClick}>
+    <button type={type} className={classes} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );
