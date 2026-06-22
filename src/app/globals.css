@@ -556,7 +556,13 @@
 .vp-portfolio-gallery {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .vp-portfolio-taxonomy .vp-portfolio-gallery {
+    gap: 1.5rem;
+  }
 }
 
 @media (max-width: 992px) {
@@ -568,6 +574,7 @@
 @media (max-width: 575.98px) {
   .vp-portfolio-gallery {
     grid-template-columns: 1fr;
+    gap: 0;
     margin-left: -0.75rem;
     margin-right: -0.75rem;
   }

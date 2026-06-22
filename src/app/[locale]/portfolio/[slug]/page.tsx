@@ -80,7 +80,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
-            <div className="order-2 lg:order-1 lg:col-span-4 lg:col-start-2">
+            <div className="order-2 lg:order-1 lg:col-span-5">
               <h2
                 className="mb-3 text-2xl font-bold uppercase leading-tight tracking-vp-heading"
                 dangerouslySetInnerHTML={{ __html: entry.longTitle }}
@@ -99,9 +99,9 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 featuredImage={entry.featuredImage}
               />
             </div>
-          </div>
-          <div className="mt-8 lg:col-span-10 lg:col-start-2">
-            <PortfolioCredits credits={entry.credits} />
+            <div className="order-3 mt-8 lg:col-span-10">
+              <PortfolioCredits credits={entry.credits} />
+            </div>
           </div>
         </div>
       </SectionWrapper>
@@ -116,7 +116,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
           <SectionWrapper key={index} borderTop>
             <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
-                <div className="order-2 lg:order-1 lg:col-span-4 lg:col-start-2">
+                <div className="order-2 lg:order-1 lg:col-span-5">
                   {video.longTitle ? (
                     <h2
                       className="mb-3 text-2xl font-bold uppercase leading-tight tracking-vp-heading"

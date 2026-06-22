@@ -70,7 +70,7 @@ export default async function WorkInternalPage({ params }: Props) {
     <>
       <PageHero title={heroTitle} backgroundImage={workPage?.featuredImage} />
       <SectionWrapper>
-        <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
+        <div className="container-fluid px-3 md:px-4">
           <Suspense fallback={<div className="vp-load-spinner" />}>
             <PortfolioGrid
               locale={typedLocale}

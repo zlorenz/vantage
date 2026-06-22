@@ -75,7 +75,7 @@ export default async function WorkPage({ params }: Props) {
     <>
       <PageHero title={heroTitle} backgroundImage={workPage?.featuredImage} />
       <SectionWrapper>
-        <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
+        <div className="container-fluid px-3 md:px-4">
           {introBlocks?.length ? (
             <div className="vp-work-intro mx-auto mb-8 max-w-[900px] text-center font-light text-vp-text-muted">
               <PortableTextIntro blocks={introBlocks} />
