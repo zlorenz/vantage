@@ -47,12 +47,13 @@ export function StepBasics({
   const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
 
   return (
-    <div className="vp-form-step-grid">
+    <div className="vp-form-grid">
       <FormField
         label={labels.project_title}
         htmlFor="project_title"
         required
         error={errors.project_title}
+        hint="Example: Nike Air Max 2025 Launch Campaign"
       >
         <FormTextInput
           id="project_title"
@@ -69,6 +70,7 @@ export function StepBasics({
         htmlFor="company_name"
         required
         error={errors.company_name}
+        hint="Example: Nike Vietnam"
       >
         <FormTextInput
           id="company_name"
@@ -107,6 +109,7 @@ export function StepBasics({
           label={labels.referral_source_other}
           htmlFor="referral_source_other"
           error={errors.referral_source_other}
+          fullWidth
         >
           <FormTextInput
             id="referral_source_other"
@@ -124,6 +127,7 @@ export function StepBasics({
           label={labels.referrer_name}
           htmlFor="referrer_name"
           error={errors.referrer_name}
+          fullWidth
         >
           <FormTextInput
             id="referrer_name"

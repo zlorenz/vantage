@@ -53,8 +53,8 @@ export function StepDeliverables({
   const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
 
   return (
-    <div className="vp-form-step-grid">
-      <FormField label={labels.deliverables} htmlFor="deliverables">
+    <div className="vp-form-grid">
+      <FormField label={labels.deliverables} htmlFor="deliverables" fullWidth>
         <FormCheckboxGroup
           name="deliverables"
           values={values.deliverables}
@@ -69,7 +69,11 @@ export function StepDeliverables({
         <>
           <FormSectionHeader title="Cutdowns" />
 
-          <FormField label={labels.cutdown_durations} htmlFor="cutdown_durations">
+          <FormField
+            label={labels.cutdown_durations}
+            htmlFor="cutdown_durations"
+            hint="Example: 30s, 15s, 10s, 6s bumper ads"
+          >
             <FormTextInput
               id="cutdown_durations"
               name="cutdown_durations"
@@ -79,7 +83,11 @@ export function StepDeliverables({
             />
           </FormField>
 
-          <FormField label={labels.cutdown_distribution} htmlFor="cutdown_distribution">
+          <FormField
+            label={labels.cutdown_distribution}
+            htmlFor="cutdown_distribution"
+            hint="Example: YouTube ads, Instagram reels, paid social ads, website landing page"
+          >
             <FormTextInput
               id="cutdown_distribution"
               name="cutdown_distribution"
@@ -95,7 +103,11 @@ export function StepDeliverables({
         <>
           <FormSectionHeader title="Social Versions" />
 
-          <FormField label={labels.social_channels} htmlFor="social_channels">
+          <FormField
+            label={labels.social_channels}
+            htmlFor="social_channels"
+            hint="Example: Instagram Reels, TikTok, YouTube Shorts, LinkedIn"
+          >
             <FormTextInput
               id="social_channels"
               name="social_channels"
@@ -105,7 +117,11 @@ export function StepDeliverables({
             />
           </FormField>
 
-          <FormField label={labels.social_aspect_ratios} htmlFor="social_aspect_ratios">
+          <FormField
+            label={labels.social_aspect_ratios}
+            htmlFor="social_aspect_ratios"
+            hint="Example: 16:9 (YouTube), 1:1 (Instagram), 9:16 (TikTok / Reels)"
+          >
             <FormTextInput
               id="social_aspect_ratios"
               name="social_aspect_ratios"
@@ -118,6 +134,8 @@ export function StepDeliverables({
           <FormField
             label={labels.social_platform_requirements}
             htmlFor="social_platform_requirements"
+            fullWidth
+            hint="Example: Must meet YouTube's 4K HDR specs, Instagram safe zone compliance"
           >
             <FormTextarea
               id="social_platform_requirements"
@@ -147,6 +165,7 @@ export function StepDeliverables({
           <FormField
             label={labels.photography_requirements}
             htmlFor="photography_requirements"
+            hint="Example: White background product shots + lifestyle images in an urban setting"
           >
             <FormTextarea
               id="photography_requirements"
@@ -157,7 +176,12 @@ export function StepDeliverables({
             />
           </FormField>
 
-          <FormField label={labels.stills_quantity} htmlFor="stills_quantity">
+          <FormField
+            label={labels.stills_quantity}
+            htmlFor="stills_quantity"
+            fullWidth
+            hint="Example: 10–15 hero shots"
+          >
             <FormTextInput
               id="stills_quantity"
               name="stills_quantity"
@@ -168,7 +192,6 @@ export function StepDeliverables({
           </FormField>
         </>
       )}
-
     </div>
   );
 }

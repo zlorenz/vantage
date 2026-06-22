@@ -46,8 +46,12 @@ export function StepTimeline({
   const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
 
   return (
-    <div className="vp-form-step-grid">
-      <FormField label={labels.distribution_channels} htmlFor="distribution_channels">
+    <div className="vp-form-grid vp-form-grid--3col">
+      <FormField
+        label={labels.distribution_channels}
+        htmlFor="distribution_channels"
+        hint="Example: Broadcast TV, YouTube, website, storefront displays, trade shows, keynote presentation"
+      >
         <FormTextInput
           id="distribution_channels"
           name="distribution_channels"
@@ -57,7 +61,11 @@ export function StepTimeline({
         />
       </FormField>
 
-      <FormField label={labels.target_regions} htmlFor="target_regions">
+      <FormField
+        label={labels.target_regions}
+        htmlFor="target_regions"
+        hint="Example: Globally, US and Europe, Southeast Asia"
+      >
         <FormTextInput
           id="target_regions"
           name="target_regions"
@@ -67,7 +75,11 @@ export function StepTimeline({
         />
       </FormField>
 
-      <FormField label={labels.usage_rights_term} htmlFor="usage_rights_term">
+      <FormField
+        label={labels.usage_rights_term}
+        htmlFor="usage_rights_term"
+        hint="Example: 2 years, in perpetuity"
+      >
         <FormTextInput
           id="usage_rights_term"
           name="usage_rights_term"
@@ -77,7 +89,11 @@ export function StepTimeline({
         />
       </FormField>
 
-      <FormField label={labels.delivery_deadline} htmlFor="delivery_deadline">
+      <FormField
+        label={labels.delivery_deadline}
+        htmlFor="delivery_deadline"
+        hint="Example: First week of April, fixed deadline"
+      >
         <FormTextInput
           id="delivery_deadline"
           name="delivery_deadline"
@@ -103,6 +119,7 @@ export function StepTimeline({
           label={labels.launch_timing}
           htmlFor="launch_timing"
           error={errors.launch_timing}
+          hint="Example: Product launch, charity event, Black Friday sale, Lunar New Year"
         >
           <FormTextInput
             id="launch_timing"

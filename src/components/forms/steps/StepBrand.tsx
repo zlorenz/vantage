@@ -46,8 +46,12 @@ export function StepBrand({
   const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
 
   return (
-    <div className="vp-form-step-grid">
-      <FormField label={labels.brand_description} htmlFor="brand_description">
+    <div className="vp-form-grid">
+      <FormField
+        label={labels.brand_description}
+        htmlFor="brand_description"
+        hint="Example: We offer the best pet care products that are 100% USDA organic and cruelty-free"
+      >
         <FormTextarea
           id="brand_description"
           name="brand_description"
@@ -57,7 +61,11 @@ export function StepBrand({
         />
       </FormField>
 
-      <FormField label={labels.brand_mission} htmlFor="brand_mission">
+      <FormField
+        label={labels.brand_mission}
+        htmlFor="brand_mission"
+        hint="Example: Our goal is to reduce air pollution by developing alternative methods of transportation for dense metropolitan areas"
+      >
         <FormTextarea
           id="brand_mission"
           name="brand_mission"
@@ -72,6 +80,7 @@ export function StepBrand({
         htmlFor="campaign_focus"
         required
         error={errors.campaign_focus}
+        fullWidth
       >
         <FormRadioGroup
           name="campaign_focus"
@@ -87,7 +96,12 @@ export function StepBrand({
         <>
           <FormSectionHeader title="Product Details" />
 
-          <FormField label={labels.product_name} htmlFor="product_name">
+          <FormField
+            label={labels.product_name}
+            htmlFor="product_name"
+            fullWidth
+            hint="Example: Air Max 2025"
+          >
             <FormTextInput
               id="product_name"
               name="product_name"
@@ -97,7 +111,11 @@ export function StepBrand({
             />
           </FormField>
 
-          <FormField label={labels.product_key_features} htmlFor="product_key_features">
+          <FormField
+            label={labels.product_key_features}
+            htmlFor="product_key_features"
+            hint="Example: Lightest shoe in the Nike lineup, available in 12 colorways"
+          >
             <FormTextarea
               id="product_key_features"
               name="product_key_features"
@@ -107,7 +125,11 @@ export function StepBrand({
             />
           </FormField>
 
-          <FormField label={labels.market_pain_points} htmlFor="market_pain_points">
+          <FormField
+            label={labels.market_pain_points}
+            htmlFor="market_pain_points"
+            hint="Example: Existing running shoes are too heavy for competitive athletes"
+          >
             <FormTextarea
               id="market_pain_points"
               name="market_pain_points"
@@ -120,6 +142,8 @@ export function StepBrand({
           <FormField
             label={labels.product_differentiators}
             htmlFor="product_differentiators"
+            fullWidth
+            hint="Example: The only shoe with full-length ZoomX foam and a carbon fibre plate"
           >
             <FormTextarea
               id="product_differentiators"

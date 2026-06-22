@@ -35,41 +35,44 @@ export function StepContact({
   const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
 
   return (
-    <div className="vp-form-step-grid">
-      <div className="vp-form-name-grid">
-        <FormField
-          label={labels.contact_name_first}
-          htmlFor="contact_name_first"
-          required
-          error={errors.contact_name_first}
-        >
-          <FormTextInput
-            id="contact_name_first"
-            name="contact_name_first"
-            value={values.contact_name_first}
-            onChange={(v) => onChange('contact_name_first', v)}
-            disabled={disabled}
-            hasError={hasError('contact_name_first')}
-            autoComplete="given-name"
-          />
-        </FormField>
+    <div className="vp-form-grid">
+      <div className="vp-form-col-span-2 vp-form-name-block">
+        <label className="vp-form-label">
+          Name<span className="vp-form-label-required"> *</span>
+        </label>
+        <div className="vp-form-grid">
+          <div className="vp-form-field">
+            <FormTextInput
+              id="contact_name_first"
+              name="contact_name_first"
+              value={values.contact_name_first}
+              onChange={(v) => onChange('contact_name_first', v)}
+              disabled={disabled}
+              hasError={hasError('contact_name_first')}
+              autoComplete="given-name"
+            />
+            <span className="vp-form-sublabel">First</span>
+            {errors.contact_name_first && (
+              <p className="vp-form-error-msg">{errors.contact_name_first}</p>
+            )}
+          </div>
 
-        <FormField
-          label={labels.contact_name_last}
-          htmlFor="contact_name_last"
-          required
-          error={errors.contact_name_last}
-        >
-          <FormTextInput
-            id="contact_name_last"
-            name="contact_name_last"
-            value={values.contact_name_last}
-            onChange={(v) => onChange('contact_name_last', v)}
-            disabled={disabled}
-            hasError={hasError('contact_name_last')}
-            autoComplete="family-name"
-          />
-        </FormField>
+          <div className="vp-form-field">
+            <FormTextInput
+              id="contact_name_last"
+              name="contact_name_last"
+              value={values.contact_name_last}
+              onChange={(v) => onChange('contact_name_last', v)}
+              disabled={disabled}
+              hasError={hasError('contact_name_last')}
+              autoComplete="family-name"
+            />
+            <span className="vp-form-sublabel">Last</span>
+            {errors.contact_name_last && (
+              <p className="vp-form-error-msg">{errors.contact_name_last}</p>
+            )}
+          </div>
+        </div>
       </div>
 
       <FormField label={labels.contact_job_title} htmlFor="contact_job_title">
@@ -101,7 +104,7 @@ export function StepContact({
         />
       </FormField>
 
-      <FormField label={labels.contact_phone} htmlFor="contact_phone">
+      <FormField label={labels.contact_phone} htmlFor="contact_phone" fullWidth>
         <FormTextInput
           id="contact_phone"
           name="contact_phone"

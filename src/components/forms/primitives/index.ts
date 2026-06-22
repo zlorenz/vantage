@@ -4,7 +4,7 @@
 
 import '../campaign-brief-form.css';
 
-export { FormField, type FormFieldColSpan, type FormFieldProps } from './FormField';
+export { FormField, type FormFieldProps } from './FormField';
 export { FormTextInput, type FormTextInputProps } from './FormTextInput';
 export { FormTextarea, type FormTextareaProps } from './FormTextarea';
 export { FormSelect, type FormSelectProps } from './FormSelect';

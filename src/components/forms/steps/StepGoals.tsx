@@ -43,8 +43,12 @@ export function StepGoals({
   const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
 
   return (
-    <div className="vp-form-step-grid">
-      <FormField label={labels.campaign_goals} htmlFor="campaign_goals">
+    <div className="vp-form-grid">
+      <FormField
+        label={labels.campaign_goals}
+        htmlFor="campaign_goals"
+        hint="Example: To promote a new product, raise brand awareness, build hype for an upcoming event"
+      >
         <FormTextarea
           id="campaign_goals"
           name="campaign_goals"
@@ -54,7 +58,11 @@ export function StepGoals({
         />
       </FormField>
 
-      <FormField label={labels.key_message} htmlFor="key_message">
+      <FormField
+        label={labels.key_message}
+        htmlFor="key_message"
+        hint="Example: Our new product offers the widest range of functionality on the market at an affordable price"
+      >
         <FormTextarea
           id="key_message"
           name="key_message"
@@ -64,7 +72,11 @@ export function StepGoals({
         />
       </FormField>
 
-      <FormField label={labels.target_audience} htmlFor="target_audience">
+      <FormField
+        label={labels.target_audience}
+        htmlFor="target_audience"
+        hint="Example: Women, tech enthusiasts, enterprise B2B customers"
+      >
         <FormTextInput
           id="target_audience"
           name="target_audience"
@@ -74,7 +86,11 @@ export function StepGoals({
         />
       </FormField>
 
-      <FormField label={labels.desired_runtime} htmlFor="desired_runtime">
+      <FormField
+        label={labels.desired_runtime}
+        htmlFor="desired_runtime"
+        hint="Example: 90-sec hero film, between 2–3 mins, no more than 120 secs"
+      >
         <FormTextInput
           id="desired_runtime"
           name="desired_runtime"
@@ -84,7 +100,11 @@ export function StepGoals({
         />
       </FormField>
 
-      <FormField label={labels.video_tone_style} htmlFor="video_tone_style">
+      <FormField
+        label={labels.video_tone_style}
+        htmlFor="video_tone_style"
+        hint="Example: Documentary-style footage with uplifting music, fast-paced editing with vivid colors, slower pacing with 3D animation to illustrate complex features"
+      >
         <FormTextarea
           id="video_tone_style"
           name="video_tone_style"
@@ -94,7 +114,11 @@ export function StepGoals({
         />
       </FormField>
 
-      <FormField label={labels.reference_videos} htmlFor="reference_videos">
+      <FormField
+        label={labels.reference_videos}
+        htmlFor="reference_videos"
+        hint="Example: https://youtu.be/db-TQcdxLcI https://vimeo.com/445153961"
+      >
         <FormTextarea
           id="reference_videos"
           name="reference_videos"
@@ -107,6 +131,8 @@ export function StepGoals({
       <FormField
         label={labels.campaign_keywords_or_avoidances}
         htmlFor="campaign_keywords_or_avoidances"
+        fullWidth
+        hint={`Example: Durability, cutting-edge tech, 'Customer Always Comes First'`}
       >
         <FormTextInput
           id="campaign_keywords_or_avoidances"
@@ -122,6 +148,7 @@ export function StepGoals({
         htmlFor="budget_range"
         required
         error={errors.budget_range}
+        fullWidth
       >
         <FormRadioGroup
           name="budget_range"

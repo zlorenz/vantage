@@ -46,8 +46,8 @@ export function StepFinalNotes({
   const uploadError = fileError ?? errors.files;
 
   return (
-    <div className="vp-form-step-grid">
-      <FormField label={labels.additional_notes} htmlFor="additional_notes">
+    <div className="vp-form-grid">
+      <FormField label={labels.additional_notes} htmlFor="additional_notes" fullWidth>
         <FormTextarea
           id="additional_notes"
           name="additional_notes"
