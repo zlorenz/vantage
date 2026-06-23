@@ -188,9 +188,17 @@ export function buildVideoObject(entry: VideoObjectInput) {
   };
 }
 
+function articleSchemaDescription(post: ArticleInput): string | undefined {
+  const fromSeo = plainTextDescription(post.seo?.metaDescription);
+  if (fromSeo) return fromSeo;
+
+  const fromExcerpt = plainTextDescription(post.excerpt);
+  if (!fromExcerpt) return undefined;
+  return fromExcerpt.length > 300 ? fromExcerpt.slice(0, 300).trim() : fromExcerpt;
+}
+
 export function buildArticle(post: ArticleInput) {
-  const description =
-    plainTextDescription(post.excerpt) ?? plainTextDescription(post.seo?.metaDescription);
+  const description = articleSchemaDescription(post);
   const image = post.featuredImage
     ? urlForImage(post.featuredImage).width(1200).height(630).fit('crop').url()
     : undefined;
