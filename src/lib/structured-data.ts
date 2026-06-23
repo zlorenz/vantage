@@ -20,6 +20,13 @@ import type { SanityImage, SeoFields } from '@/types/sanity';
 const ORGANIZATION_ID = 'https://vantage.pictures/#organization';
 const WEBSITE_ID = 'https://vantage.pictures/#website';
 
+const OFFICE_ADDRESS = {
+  '@type': 'PostalAddress' as const,
+  streetAddress: '67/26 Hoàng Hoa Thám, Gia Định',
+  addressLocality: 'Ho Chi Minh City',
+  addressCountry: 'VN',
+};
+
 export interface BreadcrumbItem {
   name: string;
   url: string;
@@ -140,11 +147,7 @@ export function buildOrganization() {
           'Vietnam-based commercial video production company specialising in brand films, product commercials, and social media campaigns for global brands.',
         email: 'info@vantage.pictures',
         areaServed: 'Worldwide',
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: 'Ho Chi Minh City',
-          addressCountry: 'VN',
-        },
+        address: OFFICE_ADDRESS,
         sameAs: [
           'https://www.facebook.com/vantagepictures',
           'https://www.instagram.com/vantage.pictures/',
@@ -226,10 +229,6 @@ export function buildProfessionalService() {
     url: 'https://vantage.pictures',
     serviceType: 'Commercial Video Production',
     areaServed: 'Worldwide',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Ho Chi Minh City',
-      addressCountry: 'VN',
-    },
+    address: OFFICE_ADDRESS,
   };
 }
