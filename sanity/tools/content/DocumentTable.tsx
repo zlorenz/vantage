@@ -44,6 +44,9 @@ type Row = {
   isDraftOnly?: boolean
   isScheduled?: boolean
   scheduledFor?: string
+  /** Set when the row comes from a scheduled release version. */
+  releaseId?: string
+  versionId?: string
   isTrashed?: boolean
   trashedAt?: string
   purgeAfter?: string
@@ -193,6 +196,7 @@ function buildQuery(documentType: string): string {
 }
 
 type ScheduledRelease = {
+  releaseId?: string
   scheduledFor?: string
   documents?: Array<Record<string, unknown> & {_id: string}>
 }
@@ -207,6 +211,8 @@ function normalizeRows(
       published?: Record<string, unknown>
       draft?: Record<string, unknown>
       scheduled?: Record<string, unknown>
+      releaseId?: string
+      versionId?: string
     }
   >()
 
@@ -223,10 +229,13 @@ function normalizeRows(
   for (const release of scheduledReleases) {
     if (!release.scheduledFor) continue
     for (const document of release.documents ?? []) {
-      const publishedId = getPublishedId(document._id)
+      const docId = String(document._id)
+      const publishedId = getPublishedId(docId)
       schedules.set(publishedId, release.scheduledFor)
       const pair = pairs.get(publishedId) ?? {}
       pair.scheduled = document
+      pair.releaseId = release.releaseId || pair.releaseId
+      pair.versionId = docId.startsWith('versions.') ? docId : pair.versionId
       pairs.set(publishedId, pair)
     }
   }
@@ -240,11 +249,16 @@ function normalizeRows(
     const trashFromPublished = (pair.published?.trash || null) as
       | {trashedAt?: string; purgeAfter?: string}
       | null
+    const trashFromScheduled = (pair.scheduled?.trash || null) as
+      | {trashedAt?: string; purgeAfter?: string}
+      | null
     const trash = trashFromDraft?.trashedAt
       ? trashFromDraft
       : trashFromPublished?.trashedAt
         ? trashFromPublished
-        : trashFromDraft || trashFromPublished
+        : trashFromScheduled?.trashedAt
+          ? trashFromScheduled
+          : trashFromDraft || trashFromPublished || trashFromScheduled
     return {
       _id: publishedId,
       _type: String(doc._type),
@@ -260,6 +274,8 @@ function normalizeRows(
       isDraftOnly: Boolean(pair.draft && !pair.published),
       isScheduled: Boolean(pair.scheduled) && !trash?.trashedAt,
       scheduledFor: schedules.get(publishedId),
+      releaseId: pair.releaseId,
+      versionId: pair.versionId,
       isTrashed: Boolean(trash?.trashedAt),
       trashedAt: trash?.trashedAt ? String(trash.trashedAt) : undefined,
       purgeAfter: trash?.purgeAfter ? String(trash.purgeAfter) : undefined,
@@ -270,6 +286,44 @@ function normalizeRows(
       role: doc.role ? String(doc.role) : undefined,
     }
   })
+}
+
+type TrashRecordRow = {
+  targetId: string
+  targetType?: string
+  title?: string
+  trashedAt?: string
+  purgeAfter?: string
+}
+
+/** Ensure every trashRecord appears as a row, even if only a version doc remains. */
+function mergeTrashRecords(rows: Row[], records: TrashRecordRow[]): Row[] {
+  if (records.length === 0) return rows
+  const byId = new Map(rows.map((row) => [row._id, row]))
+  for (const record of records) {
+    const existing = byId.get(record.targetId)
+    if (existing) {
+      byId.set(record.targetId, {
+        ...existing,
+        isTrashed: true,
+        isScheduled: false,
+        trashedAt: existing.trashedAt || record.trashedAt,
+        purgeAfter: existing.purgeAfter || record.purgeAfter,
+        title: existing.title || record.title || existing._id,
+      })
+      continue
+    }
+    byId.set(record.targetId, {
+      _id: record.targetId,
+      _type: record.targetType || 'portfolioEntry',
+      title: record.title || record.targetId,
+      isTrashed: true,
+      trashedAt: record.trashedAt,
+      purgeAfter: record.purgeAfter,
+      isDraftOnly: true,
+    })
+  }
+  return [...byId.values()]
 }
 
 function statusLabel(row: Row): string {
@@ -449,6 +503,10 @@ export function DocumentTable({
         kind: 'trash' | 'delete' | 'empty'
         ids: string[]
         preflight?: TrashPreflightItem[]
+        hints?: Record<
+          string,
+          {releaseId?: string; versionId?: string; title?: string}
+        >
       }
   >(null)
 
@@ -493,6 +551,7 @@ export function DocumentTable({
       client
         .fetch<ScheduledRelease[]>(
           `releases::all()[metadata.cardinality == "one" && state == "scheduled"]{
+            "releaseId": string::split(_id, ".")[2],
             "scheduledFor": coalesce(publishAt, metadata.intendedPublishAt),
             "documents": *[
               sanity::partOfRelease(string::split(^._id, ".")[2])
@@ -515,10 +574,24 @@ export function DocumentTable({
             }
           }`,
         )
-        .catch(() => []),
+        .catch(() => [] as ScheduledRelease[]),
+      supportsTrash
+        ? client
+            .fetch<TrashRecordRow[]>(
+              `*[_type == "trashRecord" && targetType == $targetType]{
+                targetId, targetType, title, trashedAt, purgeAfter
+              }`,
+              {targetType: section.documentType},
+            )
+            .catch(() => [] as TrashRecordRow[])
+        : Promise.resolve([] as TrashRecordRow[]),
     ])
-      .then(([docs, scheduledReleases]) => {
-        if (!cancelled) setRows(normalizeRows(docs, scheduledReleases))
+      .then(([docs, scheduledReleases, trashRecords]) => {
+        if (cancelled) return
+        const normalized = normalizeRows(docs, scheduledReleases)
+        setRows(
+          supportsTrash ? mergeTrashRecords(normalized, trashRecords) : normalized,
+        )
       })
       .catch((err: Error) => {
         if (!cancelled) setError(err.message)
@@ -530,7 +603,14 @@ export function DocumentTable({
     return () => {
       cancelled = true
     }
-  }, [client, reloadKey, section.documentType, section.id, section.singletonId])
+  }, [
+    client,
+    reloadKey,
+    section.documentType,
+    section.id,
+    section.singletonId,
+    supportsTrash,
+  ])
 
   const activeCount = useMemo(
     () => rows.filter((row) => !row.isTrashed).length,
@@ -618,23 +698,54 @@ export function DocumentTable({
   const actorLabel =
     currentUser?.name || currentUser?.email || currentUser?.id || 'Studio user'
 
+  const hintsForIds = useCallback(
+    (ids: string[]) => {
+      const hints: Record<
+        string,
+        {releaseId?: string; versionId?: string; title?: string}
+      > = {}
+      for (const id of ids) {
+        const row = rows.find((r) => r._id === id)
+        if (!row) continue
+        if (row.releaseId || row.versionId) {
+          hints[id] = {
+            releaseId: row.releaseId,
+            versionId: row.versionId,
+            title: row.title,
+          }
+        }
+      }
+      return hints
+    },
+    [rows],
+  )
+
   const openTrashConfirm = useCallback(async () => {
     const ids = [...selected]
     if (ids.length === 0) return
+    const hints = hintsForIds(ids)
+
     setBusy(true)
     try {
       const preflight = await preflightTrash(client, ids)
-      setConfirm({kind: 'trash', ids, preflight})
+      setConfirm({kind: 'trash', ids, preflight, hints})
     } catch (err) {
-      toast.push({
-        status: 'error',
-        title: 'Could not prepare Move to Trash',
-        description: err instanceof Error ? err.message : String(err),
-      })
+      const message = err instanceof Error ? err.message : String(err)
+      // Fallback for rare release-locked ghosts inventory still can't see:
+      // permanent delete using any release/version ids from the table row.
+      if (/document not found/i.test(message)) {
+        setConfirm({kind: 'delete', ids, hints})
+      } else {
+        toast.push({
+          status: 'error',
+          title: 'Could not prepare Move to Trash',
+          description: message,
+        })
+      }
     } finally {
       setBusy(false)
     }
-  }, [client, selected, toast])
+  }, [client, hintsForIds, selected, toast])
 
   const runConfirm = useCallback(async () => {
     if (!confirm) return
@@ -651,7 +762,11 @@ export function DocumentTable({
           description: failed[0]?.error,
         })
       } else if (confirm.kind === 'delete' || confirm.kind === 'empty') {
-        const results = await permanentlyDelete(client, confirm.ids)
+        const results = await permanentlyDelete(
+          client,
+          confirm.ids,
+          confirm.hints || hintsForIds(confirm.ids),
+        )
         const failed = results.filter((r) => !r.ok)
         toast.push({
           status: failed.length ? 'warning' : 'success',
@@ -673,7 +788,7 @@ export function DocumentTable({
     } finally {
       setBusy(false)
     }
-  }, [actorLabel, client, confirm, loadRows, toast])
+  }, [actorLabel, client, confirm, hintsForIds, loadRows, toast])
 
   const runRestore = useCallback(async () => {
     const ids = [...selected]
@@ -1078,7 +1193,7 @@ export function DocumentTable({
               <Text size={1}>
                 {confirm.kind === 'empty'
                   ? `Permanently delete all ${confirm.ids.length} item${confirm.ids.length === 1 ? '' : 's'} in Trash? This cannot be undone.`
-                  : `Permanently delete ${confirm.ids.length} selected item${confirm.ids.length === 1 ? '' : 's'}? This cannot be undone.`}
+                  : `Permanently delete ${confirm.ids.length} selected item${confirm.ids.length === 1 ? '' : 's'}? This clears any leftover scheduled release versions and cannot be undone.`}
               </Text>
             )}
             <Flex justify="flex-end" gap={2}>
