@@ -240,11 +240,16 @@ function normalizeRows(
     const trashFromPublished = (pair.published?.trash || null) as
       | {trashedAt?: string; purgeAfter?: string}
       | null
+    const trashFromScheduled = (pair.scheduled?.trash || null) as
+      | {trashedAt?: string; purgeAfter?: string}
+      | null
     const trash = trashFromDraft?.trashedAt
       ? trashFromDraft
       : trashFromPublished?.trashedAt
         ? trashFromPublished
-        : trashFromDraft || trashFromPublished
+        : trashFromScheduled?.trashedAt
+          ? trashFromScheduled
+          : trashFromDraft || trashFromPublished || trashFromScheduled
     return {
       _id: publishedId,
       _type: String(doc._type),
@@ -270,6 +275,44 @@ function normalizeRows(
       role: doc.role ? String(doc.role) : undefined,
     }
   })
+}
+
+type TrashRecordRow = {
+  targetId: string
+  targetType?: string
+  title?: string
+  trashedAt?: string
+  purgeAfter?: string
+}
+
+/** Ensure every trashRecord appears as a row, even if only a version doc remains. */
+function mergeTrashRecords(rows: Row[], records: TrashRecordRow[]): Row[] {
+  if (records.length === 0) return rows
+  const byId = new Map(rows.map((row) => [row._id, row]))
+  for (const record of records) {
+    const existing = byId.get(record.targetId)
+    if (existing) {
+      byId.set(record.targetId, {
+        ...existing,
+        isTrashed: true,
+        isScheduled: false,
+        trashedAt: existing.trashedAt || record.trashedAt,
+        purgeAfter: existing.purgeAfter || record.purgeAfter,
+        title: existing.title || record.title || existing._id,
+      })
+      continue
+    }
+    byId.set(record.targetId, {
+      _id: record.targetId,
+      _type: record.targetType || 'portfolioEntry',
+      title: record.title || record.targetId,
+      isTrashed: true,
+      trashedAt: record.trashedAt,
+      purgeAfter: record.purgeAfter,
+      isDraftOnly: true,
+    })
+  }
+  return [...byId.values()]
 }
 
 function statusLabel(row: Row): string {
@@ -515,10 +558,24 @@ export function DocumentTable({
             }
           }`,
         )
-        .catch(() => []),
+        .catch(() => [] as ScheduledRelease[]),
+      supportsTrash
+        ? client
+            .fetch<TrashRecordRow[]>(
+              `*[_type == "trashRecord" && targetType == $targetType]{
+                targetId, targetType, title, trashedAt, purgeAfter
+              }`,
+              {targetType: section.documentType},
+            )
+            .catch(() => [] as TrashRecordRow[])
+        : Promise.resolve([] as TrashRecordRow[]),
     ])
-      .then(([docs, scheduledReleases]) => {
-        if (!cancelled) setRows(normalizeRows(docs, scheduledReleases))
+      .then(([docs, scheduledReleases, trashRecords]) => {
+        if (cancelled) return
+        const normalized = normalizeRows(docs, scheduledReleases)
+        setRows(
+          supportsTrash ? mergeTrashRecords(normalized, trashRecords) : normalized,
+        )
       })
       .catch((err: Error) => {
         if (!cancelled) setError(err.message)
@@ -530,7 +587,14 @@ export function DocumentTable({
     return () => {
       cancelled = true
     }
-  }, [client, reloadKey, section.documentType, section.id, section.singletonId])
+  }, [
+    client,
+    reloadKey,
+    section.documentType,
+    section.id,
+    section.singletonId,
+    supportsTrash,
+  ])
 
   const activeCount = useMemo(
     () => rows.filter((row) => !row.isTrashed).length,

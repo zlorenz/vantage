@@ -132,6 +132,8 @@ export async function inventoryDocument(
   client: SanityClient,
   publishedId: string,
 ): Promise<DocumentInventory> {
+  // sanity::versionOf returns published + drafts.* + versions.* variants.
+  // Prefer it over glob match — match patterns miss some version ids.
   const typed = await client.fetch<
     Array<{
       _id: string
@@ -141,16 +143,9 @@ export async function inventoryDocument(
       name?: string
       trash?: {trashedAt?: string}
     }>
-  >(
-    `*[_id in [$publishedId, $draftId] || _id match $versionPattern]{
-      _id, _type, _rev, title, name, trash
-    }`,
-    {
-      publishedId,
-      draftId: `drafts.${publishedId}`,
-      versionPattern: `versions.*.${publishedId}`,
-    },
-  )
+  >(`*[sanity::versionOf($publishedId)]{_id, _type, _rev, title, name, trash}`, {
+    publishedId,
+  })
 
   let published: DocumentInventory['published']
   let draft: DocumentInventory['draft']
@@ -218,6 +213,38 @@ export async function inventoryDocument(
     versions,
     schedules,
     isTrashed,
+  }
+}
+
+async function forceUnschedule(
+  client: SanityClient,
+  releaseId: string,
+): Promise<string | undefined> {
+  let state = (await client.releases.get({releaseId}) as {state?: string} | null)?.state
+  if (state === 'scheduled' || state === 'scheduling') {
+    await client.releases.unschedule({releaseId})
+    state = await waitForReleaseState(client, releaseId, ['active', 'archived'], 20)
+  }
+  // Wait out transitional unscheduling if needed.
+  if (state === 'unscheduling') {
+    state = await waitForReleaseState(client, releaseId, ['active', 'archived'], 20)
+  }
+  return state
+}
+
+async function discardVariant(
+  client: SanityClient,
+  versionId: string,
+): Promise<void> {
+  try {
+    await client.action({
+      actionType: 'sanity.action.document.version.discard',
+      versionId,
+      purge: false,
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (!/not found|already|does not exist/i.test(message)) throw error
   }
 }
 
@@ -402,10 +429,13 @@ async function unscheduleCardinalityOneReleases(
 ): Promise<{releaseId: string; publishAt?: string} | null> {
   let prior: {releaseId: string; publishAt?: string} | null = null
   for (const schedule of inventory.schedules) {
-    if (schedule.state === 'scheduled') {
+    if (
+      schedule.state === 'scheduled' ||
+      schedule.state === 'scheduling' ||
+      schedule.state === 'unscheduling'
+    ) {
       prior = {releaseId: schedule.releaseId, publishAt: schedule.publishAt}
-      await client.releases.unschedule({releaseId: schedule.releaseId})
-      await waitForReleaseState(client, schedule.releaseId, ['active', 'archived'])
+      await forceUnschedule(client, schedule.releaseId)
     }
   }
   return prior
@@ -760,50 +790,65 @@ async function disposeReleaseVersions(
   client: SanityClient,
   inventory: DocumentInventory,
 ): Promise<void> {
-  for (const schedule of inventory.schedules) {
-    if (schedule.state === 'scheduled') {
-      await client.releases.unschedule({releaseId: schedule.releaseId})
-      await waitForReleaseState(client, schedule.releaseId, ['active'])
-    }
-  }
+  const releaseIds = [
+    ...new Set([
+      ...inventory.schedules.map((s) => s.releaseId),
+      ...inventory.versions.map((v) => v.releaseId),
+    ]),
+  ]
 
-  for (const version of inventory.versions) {
+  for (const releaseId of releaseIds) {
     try {
-      const release = await client.releases.get({releaseId: version.releaseId})
+      const state = await forceUnschedule(client, releaseId)
+      const release = await client.releases.get({releaseId})
       const cardinality = (release as {metadata?: {cardinality?: string}} | null)?.metadata
         ?.cardinality
-      const state = (release as {state?: string} | null)?.state
+
       if (cardinality === 'one') {
-        if (state === 'scheduled') {
-          await client.releases.unschedule({releaseId: version.releaseId})
-          await waitForReleaseState(client, version.releaseId, ['active'])
+        // Prefer discarding the version explicitly first. Archiving a
+        // cardinality-one release deletes versions, but if archive is skipped
+        // (wrong state / race), a scheduled version can resurrect in the table.
+        const version = inventory.versions.find((v) => v.releaseId === releaseId)
+        if (version) {
+          await discardVariant(client, version._id)
         }
-        if ((await waitForReleaseState(client, version.releaseId, ['active', 'archived'])) ===
-          'active') {
-          await client.releases.archive({releaseId: version.releaseId})
-          await waitForReleaseState(client, version.releaseId, ['archived'])
+
+        const current =
+          state === 'active' || state === 'archived'
+            ? state
+            : await waitForReleaseState(client, releaseId, ['active', 'archived'], 20)
+
+        if (current === 'active') {
+          await client.releases.archive({releaseId})
+          await waitForReleaseState(client, releaseId, ['archived'], 20)
         }
         try {
-          await client.releases.delete({releaseId: version.releaseId})
+          await client.releases.delete({releaseId})
         } catch {
-          // Archived release delete may be unavailable; versions are already gone after archive.
+          // Delete only works for archived/published releases; versions are
+          // already discarded above either way.
         }
       } else {
-        // Multi-doc release: discard only this version if active.
-        if (state === 'scheduled') {
+        // Multi-doc release: never archive the whole release — discard this version only.
+        const latest = (await client.releases.get({releaseId}) as {state?: string} | null)?.state
+        if (latest === 'scheduled' || latest === 'scheduling') {
           throw new Error(
-            `Document is part of multi-document scheduled release ${version.releaseId}`,
+            `Document is part of multi-document scheduled release ${releaseId}`,
           )
         }
-        await client.discardVersion({
-          publishedId: inventory.publishedId,
-          releaseId: version.releaseId,
-        })
+        const version = inventory.versions.find((v) => v.releaseId === releaseId)
+        if (version) {
+          await discardVariant(client, version._id)
+        } else {
+          await client.discardVersion({
+            publishedId: inventory.publishedId,
+            releaseId,
+          })
+        }
       }
     } catch (error) {
-      // If version already gone, continue.
       const message = error instanceof Error ? error.message : String(error)
-      if (!/not found|already/i.test(message)) throw error
+      if (!/not found|already|does not exist/i.test(message)) throw error
     }
   }
 }
@@ -830,10 +875,24 @@ export async function permanentlyDelete(
 
       await disposeReleaseVersions(client, inventory)
 
-      // Refresh inventory after release disposal.
+      // Refresh inventory after release disposal — discard whatever remains.
       const fresh = await inventoryDocument(client, publishedId)
+
+      // Always discard leftover release versions first (covers the case where
+      // archive did not remove them and only a draft discard used to run).
+      for (const version of fresh.versions) {
+        try {
+          await forceUnschedule(client, version.releaseId)
+        } catch {
+          // continue — discard may still succeed on an active release
+        }
+        await discardVariant(client, version._id)
+      }
+
       const includeDrafts = [
         ...(fresh.draft ? [fresh.draft._id] : []),
+        // Re-read in case dispose left ids that discardVariant already cleared;
+        // the delete action tolerates missing drafts via error handling below.
         ...fresh.versions.map((v) => v._id),
       ]
 
@@ -841,22 +900,42 @@ export async function permanentlyDelete(
       // which Studio browser sessions lack even for admins. The documents are
       // fully deleted either way; history simply expires per plan retention.
       if (fresh.published) {
+        try {
+          await client.action({
+            actionType: 'sanity.action.document.delete',
+            publishedId,
+            includeDrafts,
+            purge: false,
+          })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          if (!/not found|already|does not exist/i.test(message)) throw error
+        }
+      } else if (fresh.draft) {
+        await discardVariant(client, fresh.draft._id)
+      }
+
+      // Final sweep — catch any variant that raced back into existence.
+      const leftover = await inventoryDocument(client, publishedId)
+      for (const version of leftover.versions) {
+        try {
+          await forceUnschedule(client, version.releaseId)
+        } catch {
+          // ignore
+        }
+        await discardVariant(client, version._id)
+      }
+      if (leftover.draft) {
+        await discardVariant(client, leftover.draft._id)
+      }
+      if (leftover.published) {
+        // Draft was already discarded above when present; don't re-list it.
         await client.action({
           actionType: 'sanity.action.document.delete',
           publishedId,
-          includeDrafts,
+          includeDrafts: [],
           purge: false,
         })
-      } else if (fresh.draft) {
-        await client.action({
-          actionType: 'sanity.action.document.version.discard',
-          versionId: fresh.draft._id,
-          purge: false,
-        })
-      } else {
-        for (const version of fresh.versions) {
-          await client.discardVersion({publishedId, releaseId: version.releaseId})
-        }
       }
 
       try {

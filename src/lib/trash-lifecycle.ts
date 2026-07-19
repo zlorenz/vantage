@@ -25,7 +25,7 @@ async function waitForReleaseState(
   client: SanityClient,
   releaseId: string,
   desired: string[],
-  attempts = 12,
+  attempts = 20,
 ): Promise<string | undefined> {
   for (let i = 0; i < attempts; i++) {
     const release = await client.releases.get({releaseId})
@@ -35,6 +35,34 @@ async function waitForReleaseState(
   }
   const release = await client.releases.get({releaseId})
   return (release as {state?: string} | null)?.state
+}
+
+async function forceUnschedule(
+  client: SanityClient,
+  releaseId: string,
+): Promise<string | undefined> {
+  let state = (await client.releases.get({releaseId}) as {state?: string} | null)?.state
+  if (state === 'scheduled' || state === 'scheduling') {
+    await client.releases.unschedule({releaseId})
+    state = await waitForReleaseState(client, releaseId, ['active', 'archived'])
+  }
+  if (state === 'unscheduling') {
+    state = await waitForReleaseState(client, releaseId, ['active', 'archived'])
+  }
+  return state
+}
+
+async function discardVariant(client: SanityClient, versionId: string): Promise<void> {
+  try {
+    await client.action({
+      actionType: 'sanity.action.document.version.discard',
+      versionId,
+      purge: false,
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (!/not found|already|does not exist/i.test(message)) throw error
+  }
 }
 
 export function getTrashWriteClient(): SanityClient {
@@ -60,21 +88,20 @@ type PurgeResult = {
   error?: string
 }
 
+type VariantDoc = {
+  _id: string
+  _type: string
+  title?: string
+  name?: string
+}
+
 async function permanentlyDeleteOne(
   client: SanityClient,
   publishedId: string,
 ): Promise<PurgeResult> {
-  const docs = await client.fetch<
-    Array<{_id: string; _type: string; title?: string; name?: string}>
-  >(
-    `*[_id in [$publishedId, $draftId] || _id match $versionPattern]{
-      _id, _type, title, name
-    }`,
-    {
-      publishedId,
-      draftId: `drafts.${publishedId}`,
-      versionPattern: `versions.*.${publishedId}`,
-    },
+  const docs = await client.fetch<VariantDoc[]>(
+    `*[sanity::versionOf($publishedId)]{_id, _type, title, name}`,
+    {publishedId},
   )
 
   const title =
@@ -87,19 +114,18 @@ async function permanentlyDeleteOne(
     const releaseId = releaseIdOfVersion(version._id)
     if (!releaseId) continue
     try {
+      const state = await forceUnschedule(client, releaseId)
       const release = await client.releases.get({releaseId})
-      const state = (release as {state?: string} | null)?.state
       const cardinality = (release as {metadata?: {cardinality?: string}} | null)
         ?.metadata?.cardinality
-      if (state === 'scheduled') {
-        await client.releases.unschedule({releaseId})
-        await waitForReleaseState(client, releaseId, ['active'])
-      }
+
+      await discardVariant(client, version._id)
+
       if (cardinality === 'one') {
-        const current = await waitForReleaseState(client, releaseId, [
-          'active',
-          'archived',
-        ])
+        const current =
+          state === 'active' || state === 'archived'
+            ? state
+            : await waitForReleaseState(client, releaseId, ['active', 'archived'])
         if (current === 'active') {
           await client.releases.archive({releaseId})
           await waitForReleaseState(client, releaseId, ['archived'])
@@ -109,28 +135,34 @@ async function permanentlyDeleteOne(
         } catch {
           // ignore
         }
-      } else if (state !== 'scheduled') {
-        await client.discardVersion({publishedId, releaseId})
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      if (!/not found|already/i.test(message)) {
+      if (!/not found|already|does not exist/i.test(message)) {
         return {publishedId, title, ok: false, error: message}
       }
     }
   }
 
   const fresh = await client.fetch<Array<{_id: string}>>(
-    `*[_id in [$publishedId, $draftId] || _id match $versionPattern]{_id}`,
-    {
-      publishedId,
-      draftId: `drafts.${publishedId}`,
-      versionPattern: `versions.*.${publishedId}`,
-    },
+    `*[sanity::versionOf($publishedId)]{_id}`,
+    {publishedId},
   )
   const published = fresh.find((d) => d._id === publishedId)
   const draft = fresh.find((d) => d._id === `drafts.${publishedId}`)
   const remainingVersions = fresh.filter((d) => d._id.startsWith('versions.'))
+
+  for (const version of remainingVersions) {
+    const releaseId = releaseIdOfVersion(version._id)
+    if (releaseId) {
+      try {
+        await forceUnschedule(client, releaseId)
+      } catch {
+        // continue
+      }
+    }
+    await discardVariant(client, version._id)
+  }
 
   if (published) {
     await client.action({
@@ -145,11 +177,35 @@ async function permanentlyDeleteOne(
       purge: false,
     })
   } else if (draft) {
-    await client.action({
-      actionType: 'sanity.action.document.version.discard',
-      versionId: draft._id,
-      purge: false,
-    })
+    await discardVariant(client, draft._id)
+  }
+
+  // Final sweep for races (e.g. scheduled version surviving draft discard).
+  const leftover = await client.fetch<Array<{_id: string}>>(
+    `*[sanity::versionOf($publishedId)]{_id}`,
+    {publishedId},
+  )
+  for (const doc of leftover) {
+    if (doc._id === publishedId) {
+      await client.action({
+        actionType: 'sanity.action.document.delete',
+        publishedId,
+        includeDrafts: [],
+        purge: false,
+      })
+    } else {
+      if (doc._id.startsWith('versions.')) {
+        const releaseId = releaseIdOfVersion(doc._id)
+        if (releaseId) {
+          try {
+            await forceUnschedule(client, releaseId)
+          } catch {
+            // ignore
+          }
+        }
+      }
+      await discardVariant(client, doc._id)
+    }
   }
 
   try {
