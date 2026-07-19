@@ -3,7 +3,7 @@
  */
 
 export const SITEMAP_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current,
     publishedAt

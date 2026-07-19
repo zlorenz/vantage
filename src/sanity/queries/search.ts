@@ -5,7 +5,7 @@
 export const SEARCH_QUERY = `
   *[_type in ["portfolioEntry", "blogPost"]
     && !defined(trash.trashedAt)
-    && !(_type == "portfolioEntry" && isHidden)
+    && !(_type == "portfolioEntry" && isHidden == true)
     && lower(title) match $searchTerm + "*"]
   | order(_type asc, publishedAt desc) {
     _type,
