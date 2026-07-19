@@ -44,6 +44,9 @@ type Row = {
   isDraftOnly?: boolean
   isScheduled?: boolean
   scheduledFor?: string
+  /** Set when the row comes from a scheduled release version. */
+  releaseId?: string
+  versionId?: string
   isTrashed?: boolean
   trashedAt?: string
   purgeAfter?: string
@@ -193,6 +196,7 @@ function buildQuery(documentType: string): string {
 }
 
 type ScheduledRelease = {
+  releaseId?: string
   scheduledFor?: string
   documents?: Array<Record<string, unknown> & {_id: string}>
 }
@@ -207,6 +211,8 @@ function normalizeRows(
       published?: Record<string, unknown>
       draft?: Record<string, unknown>
       scheduled?: Record<string, unknown>
+      releaseId?: string
+      versionId?: string
     }
   >()
 
@@ -223,10 +229,13 @@ function normalizeRows(
   for (const release of scheduledReleases) {
     if (!release.scheduledFor) continue
     for (const document of release.documents ?? []) {
-      const publishedId = getPublishedId(document._id)
+      const docId = String(document._id)
+      const publishedId = getPublishedId(docId)
       schedules.set(publishedId, release.scheduledFor)
       const pair = pairs.get(publishedId) ?? {}
       pair.scheduled = document
+      pair.releaseId = release.releaseId || pair.releaseId
+      pair.versionId = docId.startsWith('versions.') ? docId : pair.versionId
       pairs.set(publishedId, pair)
     }
   }
@@ -265,6 +274,8 @@ function normalizeRows(
       isDraftOnly: Boolean(pair.draft && !pair.published),
       isScheduled: Boolean(pair.scheduled) && !trash?.trashedAt,
       scheduledFor: schedules.get(publishedId),
+      releaseId: pair.releaseId,
+      versionId: pair.versionId,
       isTrashed: Boolean(trash?.trashedAt),
       trashedAt: trash?.trashedAt ? String(trash.trashedAt) : undefined,
       purgeAfter: trash?.purgeAfter ? String(trash.purgeAfter) : undefined,
@@ -492,6 +503,10 @@ export function DocumentTable({
         kind: 'trash' | 'delete' | 'empty'
         ids: string[]
         preflight?: TrashPreflightItem[]
+        hints?: Record<
+          string,
+          {releaseId?: string; versionId?: string; title?: string}
+        >
       }
   >(null)
 
@@ -536,6 +551,7 @@ export function DocumentTable({
       client
         .fetch<ScheduledRelease[]>(
           `releases::all()[metadata.cardinality == "one" && state == "scheduled"]{
+            "releaseId": string::split(_id, ".")[2],
             "scheduledFor": coalesce(publishAt, metadata.intendedPublishAt),
             "documents": *[
               sanity::partOfRelease(string::split(^._id, ".")[2])
@@ -682,23 +698,55 @@ export function DocumentTable({
   const actorLabel =
     currentUser?.name || currentUser?.email || currentUser?.id || 'Studio user'
 
+  const hintsForIds = useCallback(
+    (ids: string[]) => {
+      const hints: Record<
+        string,
+        {releaseId?: string; versionId?: string; title?: string}
+      > = {}
+      for (const id of ids) {
+        const row = rows.find((r) => r._id === id)
+        if (!row) continue
+        if (row.releaseId || row.versionId) {
+          hints[id] = {
+            releaseId: row.releaseId,
+            versionId: row.versionId,
+            title: row.title,
+          }
+        }
+      }
+      return hints
+    },
+    [rows],
+  )
+
   const openTrashConfirm = useCallback(async () => {
     const ids = [...selected]
     if (ids.length === 0) return
+    const hints = hintsForIds(ids)
+
+    // Any selected Active scheduled row: prefer permanent delete with known
+    // release/version ids. Soft-trash inventory is unreliable for release-locked
+    // ghosts left over from a partial Empty Trash.
+    const allScheduledActive = ids.every((id) => {
+      const row = rows.find((r) => r._id === id)
+      return Boolean(row && row.isScheduled && !row.isTrashed)
+    })
+    if (allScheduledActive) {
+      setConfirm({kind: 'delete', ids, hints})
+      return
+    }
+
     setBusy(true)
     try {
       const preflight = await preflightTrash(client, ids)
-      setConfirm({kind: 'trash', ids, preflight})
+      setConfirm({kind: 'trash', ids, preflight, hints})
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
-      // Scheduled-only ghosts (release version left after a partial delete) can
-      // fail inventory via versionOf. Fall back to permanent delete so the row
-      // can still be cleared from Active.
-      const scheduledGhosts = ids.every((id) =>
-        rows.some((row) => row._id === id && row.isScheduled && !row.isTrashed),
-      )
-      if (scheduledGhosts && /document not found/i.test(message)) {
-        setConfirm({kind: 'delete', ids})
+      // Always fall back to permanent delete when inventory can't find the doc —
+      // pass any release/version ids we already have from the table row.
+      if (/document not found/i.test(message)) {
+        setConfirm({kind: 'delete', ids, hints})
       } else {
         toast.push({
           status: 'error',
@@ -709,7 +757,7 @@ export function DocumentTable({
     } finally {
       setBusy(false)
     }
-  }, [client, rows, selected, toast])
+  }, [client, hintsForIds, rows, selected, toast])
 
   const runConfirm = useCallback(async () => {
     if (!confirm) return
@@ -726,7 +774,11 @@ export function DocumentTable({
           description: failed[0]?.error,
         })
       } else if (confirm.kind === 'delete' || confirm.kind === 'empty') {
-        const results = await permanentlyDelete(client, confirm.ids)
+        const results = await permanentlyDelete(
+          client,
+          confirm.ids,
+          confirm.hints || hintsForIds(confirm.ids),
+        )
         const failed = results.filter((r) => !r.ok)
         toast.push({
           status: failed.length ? 'warning' : 'success',
@@ -748,7 +800,7 @@ export function DocumentTable({
     } finally {
       setBusy(false)
     }
-  }, [actorLabel, client, confirm, loadRows, toast])
+  }, [actorLabel, client, confirm, hintsForIds, loadRows, toast])
 
   const runRestore = useCallback(async () => {
     const ids = [...selected]

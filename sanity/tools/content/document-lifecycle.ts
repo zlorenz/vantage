@@ -155,9 +155,9 @@ async function fetchReleaseVersions(
   publishedId: string,
 ): Promise<ReleaseHit[]> {
   try {
-    // Match the Content table query shape so ghosts visible there are inventoriable.
+    // Exact same filter as DocumentTable — scanning all releases can fail/timeout.
     const hits = await client.fetch<ReleaseHit[]>(
-      `releases::all(){
+      `releases::all()[metadata.cardinality == "one" && state == "scheduled"]{
         "releaseId": string::split(_id, ".")[2],
         state,
         publishAt,
@@ -172,12 +172,45 @@ async function fetchReleaseVersions(
       .map((hit) => ({
         ...hit,
         documents: (hit.documents || []).filter(
-          (doc) => doc?._id && publishedIdOf(doc._id) === publishedId,
+          (doc) => doc?._id && publishedIdOf(String(doc._id)) === publishedId,
         ),
       }))
       .filter((hit) => hit.documents.length > 0)
   } catch {
     return []
+  }
+}
+
+export type DeleteHint = {
+  releaseId?: string
+  versionId?: string
+  title?: string
+}
+
+function inventoryFromHint(
+  publishedId: string,
+  hint?: DeleteHint,
+): DocumentInventory | null {
+  if (!hint?.releaseId && !hint?.versionId) return null
+  const releaseId =
+    hint.releaseId ||
+    (hint.versionId ? releaseIdOfVersion(hint.versionId) : null)
+  if (!releaseId) return null
+  const versionId = hint.versionId || `versions.${releaseId}.${publishedId}`
+  return {
+    publishedId,
+    documentType: 'portfolioEntry',
+    title: hint.title || publishedId,
+    variantIds: [versionId],
+    versions: [
+      {
+        _id: versionId,
+        _rev: '',
+        releaseId,
+      },
+    ],
+    schedules: [{releaseId, state: 'scheduled'}],
+    isTrashed: false,
   }
 }
 
@@ -951,12 +984,49 @@ async function disposeReleaseVersions(
 export async function permanentlyDelete(
   client: SanityClient,
   publishedIds: string[],
+  hints: Record<string, DeleteHint> = {},
 ): Promise<LifecycleResult[]> {
   const results: LifecycleResult[] = []
 
   for (const publishedId of publishedIds) {
     try {
-      const inventory = await inventoryDocument(client, publishedId)
+      let inventory = await inventoryDocument(client, publishedId)
+      const hint = hints[publishedId]
+
+      // Seed from UI-known release/version when inventory can't see locked docs.
+      if (
+        inventory.variantIds.length === 0 &&
+        inventory.schedules.length === 0 &&
+        hint
+      ) {
+        const seeded = inventoryFromHint(publishedId, hint)
+        if (seeded) inventory = seeded
+      } else if (hint?.releaseId || hint?.versionId) {
+        // Merge hint into inventory so dispose always has the release id.
+        const seeded = inventoryFromHint(publishedId, {
+          ...hint,
+          title: inventory.title || hint.title,
+        })
+        if (seeded) {
+          const releaseIds = new Set(inventory.schedules.map((s) => s.releaseId))
+          for (const schedule of seeded.schedules) {
+            if (!releaseIds.has(schedule.releaseId)) {
+              inventory.schedules.push(schedule)
+            }
+          }
+          const versionIds = new Set(inventory.versions.map((v) => v._id))
+          for (const version of seeded.versions) {
+            if (!versionIds.has(version._id)) {
+              inventory.versions.push(version)
+              inventory.variantIds.push(version._id)
+            }
+          }
+          if (hint.title && inventory.title === 'Untitled') {
+            inventory = {...inventory, title: hint.title}
+          }
+        }
+      }
+
       if (inventory.variantIds.length === 0) {
         // Still dispose orphan scheduled releases, then drop trash record.
         if (inventory.schedules.length > 0) {
