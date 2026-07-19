@@ -31,6 +31,8 @@ export type TableColumn = {
   id: ColumnId
   header: string
   width?: string
+  /** For flexible (width-less) columns: floor used to compute the table's min width. */
+  minWidth?: string
   sortable?: boolean
 }
 
@@ -65,52 +67,52 @@ export type ContentNavItem = ContentLeaf | ContentGroup
 
 const portfolioColumns: TableColumn[] = [
   {id: 'thumbnail', header: '', width: '56px'},
-  {id: 'title', header: 'Title', sortable: true},
+  {id: 'title', header: 'Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
   {id: 'publishedAt', header: 'Publish Date', width: '180px', sortable: true},
-  {id: 'metaDescription', header: 'Meta Description'},
+  {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
   {id: 'focusKeyword', header: 'Keyphrase', width: '140px'},
 ]
 
 const blogColumns: TableColumn[] = [
   {id: 'thumbnail', header: '', width: '56px'},
-  {id: 'title', header: 'Title', sortable: true},
+  {id: 'title', header: 'Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
   {id: 'publishedAt', header: 'Publish Date', width: '180px', sortable: true},
   {id: 'categories', header: 'Categories', width: '160px'},
-  {id: 'metaDescription', header: 'Meta Description'},
+  {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
 ]
 
 const pageColumns: TableColumn[] = [
   {id: 'thumbnail', header: '', width: '56px'},
-  {id: 'title', header: 'Page Title', sortable: true},
+  {id: 'title', header: 'Page Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
   {id: 'publishedAt', header: 'Publish Date', width: '180px', sortable: true},
-  {id: 'metaDescription', header: 'Meta Description'},
+  {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
   {id: 'focusKeyword', header: 'Keyphrase', width: '140px'},
 ]
 
 const taxonomyTitleColumns: TableColumn[] = [
-  {id: 'title', header: 'Title', sortable: true},
+  {id: 'title', header: 'Title', minWidth: '200px', sortable: true},
   {id: 'slug', header: 'Slug', width: '160px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
 ]
 
 const industryColumns: TableColumn[] = [
-  {id: 'title', header: 'Title', sortable: true},
+  {id: 'title', header: 'Title', minWidth: '200px', sortable: true},
   {id: 'parent', header: 'Parent', width: '140px', sortable: true},
   {id: 'slug', header: 'Slug', width: '160px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
 ]
 
 const namedTaxonomyColumns: TableColumn[] = [
-  {id: 'title', header: 'Name', sortable: true},
+  {id: 'title', header: 'Name', minWidth: '200px', sortable: true},
   {id: 'slug', header: 'Slug', width: '160px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
 ]
 
 const crewColumns: TableColumn[] = [
-  {id: 'title', header: 'Name', sortable: true},
+  {id: 'title', header: 'Name', minWidth: '200px', sortable: true},
   {id: 'role', header: 'Role', width: '140px', sortable: true},
   {id: 'slug', header: 'Slug', width: '160px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},

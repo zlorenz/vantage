@@ -823,6 +823,19 @@ export function DocumentTable({
   const canCreate = section.canCreate !== false && view === 'active'
   const colSpan = section.columns.length + (supportsTrash ? 1 : 0)
 
+  // Keep columns readable on narrow viewports: the table never shrinks below
+  // the sum of its column widths; the wrapping Card scrolls horizontally.
+  const tableMinWidth = useMemo(() => {
+    const checkboxWidth = supportsTrash ? 44 : 0
+    return (
+      checkboxWidth +
+      section.columns.reduce((sum, col) => {
+        const parsed = parseInt(col.width ?? col.minWidth ?? '', 10)
+        return sum + (Number.isNaN(parsed) ? 160 : parsed)
+      }, 0)
+    )
+  }, [section.columns, supportsTrash])
+
   const impactLines = useMemo(() => {
     if (!confirm?.preflight) return [] as Array<{title: string; impacts: InboundReferenceImpact[]}>
     return confirm.preflight
@@ -1016,10 +1029,11 @@ export function DocumentTable({
       ) : null}
 
       {!loading && !error ? (
-        <Card radius={2} shadow={1} overflow="auto">
+        <Card radius={2} shadow={1} style={{overflowX: 'auto'}}>
           <table
             style={{
               width: '100%',
+              minWidth: tableMinWidth,
               borderCollapse: 'collapse',
               tableLayout: 'fixed',
             }}
