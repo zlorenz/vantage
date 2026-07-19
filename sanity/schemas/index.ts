@@ -16,8 +16,10 @@ import { platform } from './platform';
 import { portfolioEntry } from './portfolioEntry';
 import { blogPost } from './blogPost';
 import { page } from './page';
+import { trashRecord } from './trashRecord';
 
 import { seoFields } from './objects/seoFields';
+import { trashMetadata } from './objects/trashMetadata';
 import { creditsAdditionalRow } from './objects/creditsAdditionalRow';
 import { productionCredits } from './objects/productionCredits';
 import { cameraCredits } from './objects/cameraCredits';
@@ -36,6 +38,7 @@ import { ctaButton } from './objects/ctaButton';
 export const schemaTypes = [
   // Shared objects
   seoFields,
+  trashMetadata,
   creditsAdditionalRow,
   productionCredits,
   cameraCredits,
@@ -63,4 +66,5 @@ export const schemaTypes = [
   portfolioEntry,
   blogPost,
   page,
+  trashRecord,
 ];

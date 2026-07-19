@@ -4,14 +4,19 @@
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { FounderCard } from '@/components/about/FounderCard';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { pageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
+import {
+  aboutContactPageTitle,
+  seoDescription,
+  buildOgImage,
+  buildPageMetadata,
+} from '@/lib/metadata';
 import { filterAboutBodyBlocks } from '@/lib/about-content';
 import { sanityClient } from '@/lib/sanity';
 import {
@@ -40,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return { title: 'Not Found' };
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = pageTitle(title);
+  const metaTitle = aboutContactPageTitle(title, locale as Locale);
 
   return buildPageMetadata({
     locale: locale as Locale,
@@ -77,6 +82,7 @@ export default async function AboutPage({ params }: Props) {
 
   const pageTitleLabel =
     typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const t = await getTranslations('About');
 
   return (
     <>
@@ -99,7 +105,7 @@ export default async function AboutPage({ params }: Props) {
         <SectionWrapper borderTop>
           <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
             <h2 className="mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
-              <span className="vp-outline">OUR</span> TEAM
+              <span className="vp-outline">{t('teamOutline')}</span> {t('team')}
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {page.founders.map((founder) => (

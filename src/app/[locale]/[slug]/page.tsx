@@ -10,6 +10,8 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { blogPostTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
+import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
+import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildArticle,
@@ -30,15 +32,16 @@ export async function generateStaticParams() {
   const slugs = await sanityClient.fetch<PostSlug[]>(POST_SLUGS_QUERY);
 
   return routing.locales.flatMap((locale) =>
-    slugs.map((item) => ({
-      locale,
-      slug: locale === 'zh' ? item.slugZh || item.slug : item.slug,
-    })),
+    slugs.flatMap((item) => {
+      const base = locale === 'zh' ? item.slugZh || item.slug : item.slug;
+      return expandSlugParam(base).map((slug) => ({ locale, slug }));
+    }),
   );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
+  const slug = decodePathSlug(rawSlug);
   const post = await sanityClient.fetch<BlogPost | null>(POST_BY_SLUG_QUERY, { slug });
   if (!post) return { title: 'Not Found' };
 
@@ -66,8 +69,9 @@ function formatDate(dateString: string, locale: Locale): string {
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
+  const slug = decodePathSlug(rawSlug);
 
   if ((RESERVED_PAGE_SLUGS as readonly string[]).includes(slug)) {
     notFound();
@@ -81,7 +85,9 @@ export default async function BlogPostPage({ params }: Props) {
 
   const title = typedLocale === 'zh' && post.titleZh ? post.titleZh : post.title;
   const bodyBlocks =
-    typedLocale === 'zh' && post.bodyZh?.length ? post.bodyZh : post.body;
+    typedLocale === 'zh' && post.bodyZh?.length
+      ? mergeChineseBodyWithEnglishMedia(post.bodyZh, post.body)
+      : post.body;
 
   return (
     <>

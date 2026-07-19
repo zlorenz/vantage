@@ -2,15 +2,21 @@
  * FormSelect — native select with custom chevron and uppercase options.
  */
 
+export type FormSelectOption = string | { value: string; label: string };
+
 export interface FormSelectProps {
   id: string;
   name: string;
   value: string;
   onChange: (value: string) => void;
-  options: readonly string[];
+  options: readonly FormSelectOption[];
   disabled?: boolean;
   hasError?: boolean;
   placeholder?: string;
+}
+
+function normalizeOption(option: FormSelectOption): { value: string; label: string } {
+  return typeof option === 'string' ? { value: option, label: option } : option;
 }
 
 export function FormSelect({
@@ -34,11 +40,14 @@ export function FormSelect({
         disabled={disabled}
       >
         <option value="">{placeholder}</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        {options.map((raw) => {
+          const option = normalizeOption(raw);
+          return (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

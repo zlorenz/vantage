@@ -21,7 +21,7 @@ interface LayoutShellProps {
   children: ReactNode;
 }
 
-export function LayoutShell({
+export async function LayoutShell({
   locale,
   siteSettings,
   navPages,

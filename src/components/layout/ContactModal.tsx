@@ -9,6 +9,7 @@
  */
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import type { SiteSettings } from '@/types/sanity';
 import { useContactModal } from './ContactModalContext';
 
@@ -22,6 +23,7 @@ function whatsappHref(value: string): string {
 }
 
 export function ContactModal({ siteSettings }: ContactModalProps) {
+  const t = useTranslations('Contact');
   const { isOpen, closeContact } = useContactModal();
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export function ContactModal({ siteSettings }: ContactModalProps) {
 
   if (!isOpen) return null;
 
-  const title = siteSettings.contactModalTitle?.trim() || 'Contact';
+  const title = siteSettings.contactModalTitle?.trim() || t('modalTitle');
   const email = siteSettings.contactEmail?.trim();
   const whatsapp = siteSettings.contactWhatsapp?.trim();
   const address = siteSettings.contactAddress?.trim();
@@ -60,7 +62,7 @@ export function ContactModal({ siteSettings }: ContactModalProps) {
         <button
           type="button"
           className="btn-close absolute right-4 top-4 h-8 w-8 border-0 bg-transparent text-2xl text-white opacity-80 hover:opacity-100"
-          aria-label="Close contact dialog"
+          aria-label={t('closeAria')}
           onClick={closeContact}
         >
           ×

@@ -1,0 +1,1436 @@
+{
+  "generatedAt": "2026-06-23T14:37:24.151Z",
+  "dictionary": {
+    "available": true,
+    "loadedEntries": 5018,
+    "byStatus": {
+      "0": 3099,
+      "1": 4529,
+      "2": 514,
+      "3": 3
+    },
+    "totalRows": 8145
+  },
+  "portfolio": {
+    "count": 141,
+    "exportGaps": {
+      "titleZh": 11,
+      "descriptionZh": 11,
+      "thumbTitleZh": 141,
+      "headerTitleZh": 141,
+      "longTitleZh": 141
+    },
+    "coverage": {
+      "title": {
+        "total": 141,
+        "exactHit": 130,
+        "enhancedHit": 130,
+        "miss": 11,
+        "recoverableByStrip": 0
+      },
+      "thumbTitle": {
+        "total": 141,
+        "exactHit": 47,
+        "enhancedHit": 47,
+        "miss": 94,
+        "recoverableByStrip": 0
+      },
+      "headerTitle": {
+        "total": 141,
+        "exactHit": 0,
+        "enhancedHit": 44,
+        "miss": 97,
+        "recoverableByStrip": 44
+      },
+      "longTitle": {
+        "total": 141,
+        "exactHit": 0,
+        "enhancedHit": 0,
+        "miss": 141,
+        "recoverableByStrip": 0
+      },
+      "description": {
+        "total": 132,
+        "exactHit": 129,
+        "enhancedHit": 130,
+        "miss": 2,
+        "recoverableByStrip": 1
+      },
+      "excerpt": {
+        "total": 141,
+        "exactHit": 53,
+        "enhancedHit": 53,
+        "miss": 88,
+        "recoverableByStrip": 0
+      }
+    },
+    "sampleMisses": {
+      "title": [
+        {
+          "id": "realme-x7-fast-powerful",
+          "field": "title",
+          "preview": "realme X7 – Fast & Powerful"
+        },
+        {
+          "id": "indelb-go20",
+          "field": "title",
+          "preview": "IndelB ICECO Go20 – Let's Own a Different Summer!"
+        },
+        {
+          "id": "oppo-reno-6-pro-5g",
+          "field": "title",
+          "preview": "Oppo - Reno 6 Pro 5G"
+        },
+        {
+          "id": "elewana-collection-loisaba-conservancy-safari",
+          "field": "title",
+          "preview": "Elewana Collection - Loisaba Conservancy Safari"
+        },
+        {
+          "id": "oneplus-fast-smooth",
+          "field": "title",
+          "preview": "OnePlus 10T – Fast & Smooth"
+        },
+        {
+          "id": "oppo-reno10-pro-5g",
+          "field": "title",
+          "preview": "OPPO Reno10 Pro+ 5G"
+        },
+        {
+          "id": "banyan-tree-theres-more-to-discovery",
+          "field": "title",
+          "preview": "Banyan Tree – There's More to Discovery"
+        },
+        {
+          "id": "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+          "field": "title",
+          "preview": "Valerion VisionMaster Max - Hollywood-Grade Home Cinema Experience"
+        },
+        {
+          "id": "vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi",
+          "field": "title",
+          "preview": "Vinamilk Probi - Êm Ruột Nuột Đời"
+        },
+        {
+          "id": "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn",
+          "field": "title",
+          "preview": "Mammotion LUBA Mini AWD – Compact, Powerful & Ready to Conquer Your Lawn"
+        },
+        {
+          "id": "ulike-air-10",
+          "field": "title",
+          "preview": "Ulike Air 10"
+        }
+      ],
+      "thumbTitle": [
+        {
+          "id": "zhiyun-smooth-q3",
+          "field": "thumbTitle",
+          "preview": "Zhiyun<br>Smooth Q3"
+        },
+        {
+          "id": "samsung-x-discovery",
+          "field": "thumbTitle",
+          "preview": "Samsung x<br>Discovery"
+        },
+        {
+          "id": "xgimi-horizon-pro",
+          "field": "thumbTitle",
+          "preview": "XGIMI<br>Horizon Pro"
+        },
+        {
+          "id": "samsung-vietnam-galaxy-s21",
+          "field": "thumbTitle",
+          "preview": "Samsung Galaxy S21<br>Viral Video"
+        },
+        {
+          "id": "asics-dynablast",
+          "field": "thumbTitle",
+          "preview": "ASICS<br>DYNABLAST"
+        },
+        {
+          "id": "unilever-smiles-matter",
+          "field": "thumbTitle",
+          "preview": "Unilever<br>Smiles Matter"
+        },
+        {
+          "id": "honor-magic-2",
+          "field": "thumbTitle",
+          "preview": "Huawei<br>Magic 2"
+        },
+        {
+          "id": "dji-mavic-2-rapid-recap",
+          "field": "thumbTitle",
+          "preview": "DJI Mavic 2<br>Rapid Recap"
+        },
+        {
+          "id": "samsung-galaxy-s8-endless-beauty-vietnam",
+          "field": "thumbTitle",
+          "preview": "Samsung Vietnam<br>Galaxy S8"
+        },
+        {
+          "id": "dji-osmo-pocket-portable-power",
+          "field": "thumbTitle",
+          "preview": "DJI Osmo Pocket<br>Animated Campaign"
+        },
+        {
+          "id": "tello-iron-man",
+          "field": "thumbTitle",
+          "preview": "Tello<br>Iron Man"
+        },
+        {
+          "id": "indelb-go20",
+          "field": "thumbTitle",
+          "preview": "IndelB Go20"
+        },
+        {
+          "id": "mavic-mini",
+          "field": "thumbTitle",
+          "preview": "DJI Mavic Mini<br>Campaign"
+        },
+        {
+          "id": "zhiyun-say-hello-to-crane-m2",
+          "field": "thumbTitle",
+          "preview": "Zhiyun<br>Crane M2"
+        },
+        {
+          "id": "oppo-reno-6-pro-5g",
+          "field": "thumbTitle",
+          "preview": "Oppo<br>Reno 6 Pro"
+        },
+        {
+          "id": "samsung-galaxy-s21",
+          "field": "thumbTitle",
+          "preview": "Samsung Galaxy S21<br>Bumper Campaign"
+        },
+        {
+          "id": "roborock-h7",
+          "field": "thumbTitle",
+          "preview": "Roborock H7<br>Campaign"
+        },
+        {
+          "id": "snapmaker-make-something-wonderful",
+          "field": "thumbTitle",
+          "preview": "Snapmaker<br>Brand Film"
+        },
+        {
+          "id": "ecoflow-introducing-river-mini-power-at-hand",
+          "field": "thumbTitle",
+          "preview": "EcoFlow<br>RIVER Mini"
+        },
+        {
+          "id": "zhiyun-smooth-5-film-like-a-pro",
+          "field": "thumbTitle",
+          "preview": "Zhiyun<br>Smooth 5"
+        },
+        {
+          "id": "dji-introducing-zenmuse-xt2",
+          "field": "thumbTitle",
+          "preview": "DJI Zenmuse XT2"
+        },
+        {
+          "id": "dji-meet-osmo-pocket",
+          "field": "thumbTitle",
+          "preview": "DJI Osmo Pocket"
+        },
+        {
+          "id": "dji-meet-the-robomaster-s1",
+          "field": "thumbTitle",
+          "preview": "DJI RoboMaster S1"
+        },
+        {
+          "id": "dji-my-mavic",
+          "field": "thumbTitle",
+          "preview": "DJI My Mavic<br>Campaign"
+        },
+        {
+          "id": "dji-zenmuse-x7-showreel",
+          "field": "thumbTitle",
+          "preview": "DJI Zenmuse X7<br>Showreel"
+        }
+      ],
+      "headerTitle": [
+        {
+          "id": "hyundai-progress-for-humanity",
+          "field": "headerTitle",
+          "preview": "Hyundai <span> Progress for Humanity </span>"
+        },
+        {
+          "id": "samsung-x-discovery",
+          "field": "headerTitle",
+          "preview": "Samsung x Discovery <span> Explore Life Refocused </span>"
+        },
+        {
+          "id": "samsung-vietnam-galaxy-s21",
+          "field": "headerTitle",
+          "preview": "Samsung Vietnam <span> Galaxy S21 </span>"
+        },
+        {
+          "id": "asics-dynablast",
+          "field": "headerTitle",
+          "preview": "ASICS <span> DYNABLAST </span>"
+        },
+        {
+          "id": "unilever-smiles-matter",
+          "field": "headerTitle",
+          "preview": "Unilever <span> Smiles Matter </span>"
+        },
+        {
+          "id": "honor-magic-2",
+          "field": "headerTitle",
+          "preview": "Huawei/Honor <span> Magic 2 AI </span>"
+        },
+        {
+          "id": "samsung-galaxy-s8-endless-beauty-vietnam",
+          "field": "headerTitle",
+          "preview": "Samsung Vietnam <span> Galaxy S8 </span>"
+        },
+        {
+          "id": "dji-osmo-pocket-portable-power",
+          "field": "headerTitle",
+          "preview": "DJI Osmo Pocket <span> Animated Campaign </span>"
+        },
+        {
+          "id": "tello-iron-man",
+          "field": "headerTitle",
+          "preview": "Tello <span> Iron Man </span>"
+        },
+        {
+          "id": "indelb-go20",
+          "field": "headerTitle",
+          "preview": "IndelB <span> ICECO Go20 </span>"
+        },
+        {
+          "id": "dji-spark",
+          "field": "headerTitle",
+          "preview": "DJI Spark <span> Capture Your Passion </span>"
+        },
+        {
+          "id": "mavic-travel-tips",
+          "field": "headerTitle",
+          "preview": "DJI <span> Mavic Travel Tips </span>"
+        },
+        {
+          "id": "mavic-mini",
+          "field": "headerTitle",
+          "preview": "DJI <span> Mavic Mini Campaign</span>"
+        },
+        {
+          "id": "zhiyun-say-hello-to-crane-m2",
+          "field": "headerTitle",
+          "preview": "Zhiyun <span> Crane M2 </span>"
+        },
+        {
+          "id": "oppo-reno-6-pro-5g",
+          "field": "headerTitle",
+          "preview": "Oppo Reno 6 Pro <span> Launch Teaser </span>"
+        },
+        {
+          "id": "snapmaker-make-something-wonderful",
+          "field": "headerTitle",
+          "preview": "Snapmaker <span> Make Something Wonderful </span>"
+        },
+        {
+          "id": "dji-introducing-zenmuse-x5-series",
+          "field": "headerTitle",
+          "preview": "DJI <span> Zenmuse X5 Series </span>"
+        },
+        {
+          "id": "dji-introducing-zenmuse-xt2",
+          "field": "headerTitle",
+          "preview": "DJI <span> Zenmuse XT2 </span>"
+        },
+        {
+          "id": "dji-meet-osmo-pocket",
+          "field": "headerTitle",
+          "preview": "DJI <span> Osmo Pocket </span>"
+        },
+        {
+          "id": "dji-meet-spark",
+          "field": "headerTitle",
+          "preview": "DJI <span> Meet Spark </span>"
+        },
+        {
+          "id": "dji-meet-the-robomaster-s1",
+          "field": "headerTitle",
+          "preview": "DJI <span> Meet RoboMaster S1 </span>"
+        },
+        {
+          "id": "dji-my-mavic",
+          "field": "headerTitle",
+          "preview": "<span>DJI</span> My Mavic <span>Campaign</span>"
+        },
+        {
+          "id": "dji-zenmuse-x7-showreel",
+          "field": "headerTitle",
+          "preview": "DJI <span> Zenmuse X7 Showreel </span>"
+        },
+        {
+          "id": "dji-matrice-200-series-search-rescue-in-extreme-environments",
+          "field": "headerTitle",
+          "preview": "DJI Matrice 200 <span> Search & Rescue </span>"
+        },
+        {
+          "id": "dji-my-hong-kong",
+          "field": "headerTitle",
+          "preview": "<span>DJI</span> My Hong Kong <span>Campaign</span>"
+        }
+      ],
+      "longTitle": [
+        {
+          "id": "hyundai-progress-for-humanity",
+          "field": "longTitle",
+          "preview": "Hyundai <span> IONIQ5 Design Teaser </span>"
+        },
+        {
+          "id": "zhiyun-smooth-q3",
+          "field": "longTitle",
+          "preview": "Zhiyun Smooth Q3 <span> Illuminate to Create </span>"
+        },
+        {
+          "id": "samsung-x-discovery",
+          "field": "longTitle",
+          "preview": "Samsung x Discovery <span> Explore Life Refocused with the Galaxy S21 </span>"
+        },
+        {
+          "id": "xgimi-horizon-pro",
+          "field": "longTitle",
+          "preview": "XGIMI Horizon Pro <span> Fill Your Horizon with Greatness </span>"
+        },
+        {
+          "id": "oneplus-meet-8t",
+          "field": "longTitle",
+          "preview": "OnePlus <span> Meet the OnePlus 8T </span>"
+        },
+        {
+          "id": "samsung-vietnam-galaxy-s21",
+          "field": "longTitle",
+          "preview": "Samsung Vietnam Galaxy S21 Ultra 5G <span> Cung đường đam mê </span>"
+        },
+        {
+          "id": "asics-dynablast",
+          "field": "longTitle",
+          "preview": "ASICS <span> DYNABLAST </span>"
+        },
+        {
+          "id": "unilever-smiles-matter",
+          "field": "longTitle",
+          "preview": "P/S Vietnam <span> Smiles Matter </span>"
+        },
+        {
+          "id": "realme-x7-fast-powerful",
+          "field": "longTitle",
+          "preview": "Realme X7 <span> Fast & Powerful </span>"
+        },
+        {
+          "id": "braun-x-dji",
+          "field": "longTitle",
+          "preview": "Braun x DJI <span> Dare to Be Different </span>"
+        },
+        {
+          "id": "honor-magic-2",
+          "field": "longTitle",
+          "preview": "Huawei/Honor <span> Magic 2 AI </span>"
+        },
+        {
+          "id": "dji-mavic-2-rapid-recap",
+          "field": "longTitle",
+          "preview": "DJI Mavic 2 <span> Rapid Recap </span>"
+        },
+        {
+          "id": "samsung-galaxy-s8-endless-beauty-vietnam",
+          "field": "longTitle",
+          "preview": "Samsung Galaxy S8 <span> The Endless Beauty of Vietnam </span>"
+        },
+        {
+          "id": "dji-osmo-pocket-portable-power",
+          "field": "longTitle",
+          "preview": "DJI Osmo Pocket <span> Portable Power </span>"
+        },
+        {
+          "id": "hasselblad-x1d",
+          "field": "longTitle",
+          "preview": "Hasselblad X1D II 50C <span> Travel Photographer </span>"
+        },
+        {
+          "id": "tello-iron-man",
+          "field": "longTitle",
+          "preview": "Tello <span> Iron Man Edition Assembled </span>"
+        },
+        {
+          "id": "indelb-go20",
+          "field": "longTitle",
+          "preview": "IndelB ICECO Go20 <span> Let's own a different summer! </span>"
+        },
+        {
+          "id": "dji-spark",
+          "field": "longTitle",
+          "preview": "DJI Spark <span> Capture Your Passion </span>"
+        },
+        {
+          "id": "mavic-travel-tips",
+          "field": "longTitle",
+          "preview": "DJI <span> Mavic Travel Tips </span>"
+        },
+        {
+          "id": "mavic-mini",
+          "field": "longTitle",
+          "preview": "DJI Mavic Mini <span> Make Your Drone Your Own </span>"
+        },
+        {
+          "id": "zhiyun-say-hello-to-crane-m2",
+          "field": "longTitle",
+          "preview": "Zhiyun <span> Say Hello to Crane M2 </span>"
+        },
+        {
+          "id": "oppo-reno-6-pro-5g",
+          "field": "longTitle",
+          "preview": "Oppo Reno 6 Pro 5G <span> Launch Teaser </span>"
+        },
+        {
+          "id": "samsung-galaxy-s21",
+          "field": "longTitle",
+          "preview": "Samsung Galaxy S21 Ultra 5G <span> Director's View (feat. BinZ) </span>"
+        },
+        {
+          "id": "roborock-h7",
+          "field": "longTitle",
+          "preview": "Roborock H7 <span> Surprisingly Lightweight </span>"
+        },
+        {
+          "id": "snapmaker-make-something-wonderful",
+          "field": "longTitle",
+          "preview": "Snapmaker <span> Make Something Wonderful </span>"
+        }
+      ],
+      "description": [
+        {
+          "id": "bitget-getagent-ft-julian-alvarez",
+          "field": "description",
+          "preview": "For this latest spot, we built a sharp visual parallel between elite sport and i…"
+        },
+        {
+          "id": "mammotion-yuka-mini-2",
+          "field": "description",
+          "preview": "For this campaign, we brought Mammotion’s YUKA Mini 2 to life through a playful,…"
+        }
+      ],
+      "excerpt": [
+        {
+          "id": "zhiyun-smooth-q3",
+          "field": "excerpt",
+          "preview": "Feature introduction video for the Zhiyun Smooth Q3 smartphone gimbal."
+        },
+        {
+          "id": "samsung-x-discovery",
+          "field": "excerpt",
+          "preview": "Branded content documentary for Samsung and Discovery Network, featuring the Gal…"
+        },
+        {
+          "id": "xgimi-horizon-pro",
+          "field": "excerpt",
+          "preview": "Product introduction video for the XGIMI Horizon Pro portable projector."
+        },
+        {
+          "id": "oneplus-meet-8t",
+          "field": "excerpt",
+          "preview": "Global ad campaign for the OnePlus 8T smartphone."
+        },
+        {
+          "id": "samsung-vietnam-galaxy-s21",
+          "field": "excerpt",
+          "preview": "Commercial spot for Samsung Vietnam, featuring the Galaxy S21 Ultra 5G."
+        },
+        {
+          "id": "asics-dynablast",
+          "field": "excerpt",
+          "preview": "Commercial spot for ASICS's DYNABLAST line of running shoes."
+        },
+        {
+          "id": "unilever-smiles-matter",
+          "field": "excerpt",
+          "preview": "Branded content spot for P/S Vietnam, Unilever's toothpaste brand."
+        },
+        {
+          "id": "braun-x-dji",
+          "field": "excerpt",
+          "preview": "Commercial spot for DJI drones and Braun toothbrush brand partnership."
+        },
+        {
+          "id": "samsung-galaxy-s8-endless-beauty-vietnam",
+          "field": "excerpt",
+          "preview": "TV commercial for Samsung Vietnam, featuring the Galaxy S8 smartphone."
+        },
+        {
+          "id": "dji-osmo-pocket-portable-power",
+          "field": "excerpt",
+          "preview": "A fun, animated commercial spot campaign for the DJI Osmo Pocket camera gimbal."
+        },
+        {
+          "id": "hasselblad-x1d",
+          "field": "excerpt",
+          "preview": "Product introduction video for Hasselblad X1D II 50C medium format camera."
+        },
+        {
+          "id": "tello-iron-man",
+          "field": "excerpt",
+          "preview": "Teaser promo for Tello Iron Man Edition drone, Ryze and Marvel brand partnership…"
+        },
+        {
+          "id": "indelb-go20",
+          "field": "excerpt",
+          "preview": "Product showcase video for ICECO G020 portable refrigerator by IndelB."
+        },
+        {
+          "id": "mavic-travel-tips",
+          "field": "excerpt",
+          "preview": "Funny travel-themed commercial spot for the DJI Mavic Pro lightweight drone for …"
+        },
+        {
+          "id": "mavic-mini",
+          "field": "excerpt",
+          "preview": "Commercial spot campaign for the DJI Mavic Mini lightweight drone for filmmaking…"
+        },
+        {
+          "id": "zhiyun-say-hello-to-crane-m2",
+          "field": "excerpt",
+          "preview": "Commercial spot for Zhiyun's Crane M2 gimbal system for lightweight cameras and …"
+        },
+        {
+          "id": "samsung-galaxy-s21",
+          "field": "excerpt",
+          "preview": "7-second bumper ad campaign for the Samsung Galaxy S21 Ultra 5G smartphone."
+        },
+        {
+          "id": "dji-introducing-flighthub",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI FlightHub enterprise drone management sof…"
+        },
+        {
+          "id": "dji-introducing-matrice-600",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Matrice 600 enterprise drone."
+        },
+        {
+          "id": "dji-introducing-matrice-200-series",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Matrice 200 enterprise drone series."
+        },
+        {
+          "id": "dji-introducing-master-wheels",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Master Wheels professional wheel control …"
+        },
+        {
+          "id": "dji-introducing-phantom-4-pro",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Phantom 4 Pro drone."
+        },
+        {
+          "id": "dji-introducing-zenmuse-x5-series",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Zenmuse X5 aerial camera system."
+        },
+        {
+          "id": "dji-introducing-zenmuse-z30",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Zenmuse Z30 enterprise imaging system."
+        },
+        {
+          "id": "dji-introducing-zenmuse-xt2",
+          "field": "excerpt",
+          "preview": "Product introduction video for the DJI Zenmuse XT2 thermal imaging system."
+        }
+      ]
+    },
+    "recoverableDisplayTitles": {
+      "count": 30,
+      "samples": [
+        {
+          "id": "zhiyun-smooth-q3",
+          "field": "headerTitle",
+          "preview": "Zhiyun <span> Smooth Q3 </span>",
+          "enhancedTranslated": "智云稳定器Smooth Q3",
+          "matchedKey": "Zhiyun Smooth Q3"
+        },
+        {
+          "id": "xgimi-horizon-pro",
+          "field": "headerTitle",
+          "preview": "XGIMI <span> Horizon Pro </span>",
+          "enhancedTranslated": "极米地平线Pro",
+          "matchedKey": "XGIMI Horizon Pro"
+        },
+        {
+          "id": "oneplus-meet-8t",
+          "field": "headerTitle",
+          "preview": "OnePlus 8T <span> Launch Campaign </span>",
+          "enhancedTranslated": "OnePlus 8T 发布活动",
+          "matchedKey": "OnePlus 8T Launch Campaign"
+        },
+        {
+          "id": "realme-x7-fast-powerful",
+          "field": "headerTitle",
+          "preview": "Realme X7 <span> Campaign </span>",
+          "enhancedTranslated": "Realme X7 活动",
+          "matchedKey": "Realme X7 Campaign"
+        },
+        {
+          "id": "braun-x-dji",
+          "field": "headerTitle",
+          "preview": "Braun <span> x DJI </span>",
+          "enhancedTranslated": "博朗 x 大疆",
+          "matchedKey": "Braun x DJI"
+        },
+        {
+          "id": "dji-mavic-2-rapid-recap",
+          "field": "headerTitle",
+          "preview": "DJI <span> Mavic 2 </span>",
+          "enhancedTranslated": "DJI大疆创新 Mavic 2",
+          "matchedKey": "DJI Mavic 2"
+        },
+        {
+          "id": "hasselblad-x1d",
+          "field": "headerTitle",
+          "preview": "Hasselblad <span> X1D II 50C </span>",
+          "enhancedTranslated": "哈苏 X1D II 50C",
+          "matchedKey": "Hasselblad X1D II 50C"
+        },
+        {
+          "id": "samsung-galaxy-s21",
+          "field": "headerTitle",
+          "preview": "Samsung Galaxy S21<span> Bumper Campaign </span>",
+          "enhancedTranslated": "三星Galaxy S21 Bumper广告",
+          "matchedKey": "Samsung Galaxy S21 Bumper Campaign"
+        },
+        {
+          "id": "roborock-h7",
+          "field": "headerTitle",
+          "preview": "Roborock H7<span> Campaign </span>",
+          "enhancedTranslated": "石头H7系列",
+          "matchedKey": "Roborock H7 Campaign"
+        },
+        {
+          "id": "ecoflow-introducing-river-mini-power-at-hand",
+          "field": "headerTitle",
+          "preview": "EcoFlow <span> RIVER Mini </span>",
+          "enhancedTranslated": "EcoFlow睿RIVER系列",
+          "matchedKey": "EcoFlow RIVER Mini"
+        },
+        {
+          "id": "zhiyun-smooth-5-film-like-a-pro",
+          "field": "headerTitle",
+          "preview": "Zhiyun <span> Smooth 5 </span>",
+          "enhancedTranslated": "智云 Smooth 5",
+          "matchedKey": "Zhiyun Smooth 5"
+        },
+        {
+          "id": "dji-introducing-flighthub",
+          "field": "headerTitle",
+          "preview": "DJI <span> FlightHub </span>",
+          "enhancedTranslated": "大疆创新 FlightHub",
+          "matchedKey": "DJI FlightHub"
+        },
+        {
+          "id": "dji-introducing-mavic-2-series",
+          "field": "headerTitle",
+          "preview": "DJI <span> Mavic 2 </span>",
+          "enhancedTranslated": "DJI大疆创新 Mavic 2",
+          "matchedKey": "DJI Mavic 2"
+        },
+        {
+          "id": "dji-introducing-matrice-600",
+          "field": "headerTitle",
+          "preview": "DJI <span> Matrice 600 </span>",
+          "enhancedTranslated": "大疆灵眸Matrice 600",
+          "matchedKey": "DJI Matrice 600"
+        },
+        {
+          "id": "dji-introducing-matrice-200-series",
+          "field": "headerTitle",
+          "preview": "DJI <span> Matrice 200 Series </span>",
+          "enhancedTranslated": "大疆 悟 200 系列",
+          "matchedKey": "DJI Matrice 200 Series"
+        },
+        {
+          "id": "dji-introducing-master-wheels",
+          "field": "headerTitle",
+          "preview": "DJI <span> Master Wheels </span>",
+          "enhancedTranslated": "大疆 Master Wheels",
+          "matchedKey": "DJI Master Wheels"
+        },
+        {
+          "id": "dji-introducing-phantom-4-pro",
+          "field": "headerTitle",
+          "preview": "DJI <span> Phantom 4 Pro </span>",
+          "enhancedTranslated": "大疆精灵Phantom 4 Pro",
+          "matchedKey": "DJI Phantom 4 Pro"
+        },
+        {
+          "id": "dji-introducing-zenmuse-z30",
+          "field": "headerTitle",
+          "preview": "DJI <span> Zenmuse Z30 </span>",
+          "enhancedTranslated": "大疆Zenmuse Z30",
+          "matchedKey": "DJI Zenmuse Z30"
+        },
+        {
+          "id": "toyota-camry-2022-absolute-charisma",
+          "field": "headerTitle",
+          "preview": "Toyota <span> Camry 2022 </span>",
+          "enhancedTranslated": "丰田凯美瑞 2022",
+          "matchedKey": "Toyota Camry 2022"
+        },
+        {
+          "id": "roborock-s7-maxv-ultra-everything-made-easy",
+          "field": "headerTitle",
+          "preview": "Roborock <span> S7 MaxV Ultra </span>",
+          "enhancedTranslated": "石头科技自清洁扫拖机器人G20",
+          "matchedKey": "Roborock S7 MaxV Ultra"
+        },
+        {
+          "id": "oneplus-y-series-tv",
+          "field": "headerTitle",
+          "preview": "OnePlus <span> Y-Series TV </span>",
+          "enhancedTranslated": "OnePlus Y系列电视",
+          "matchedKey": "OnePlus Y-Series TV"
+        },
+        {
+          "id": "taiwan-excellence-2022",
+          "field": "headerTitle",
+          "preview": "Taiwan Excellence <span> 2022 </span>",
+          "enhancedTranslated": "台湾精品2022",
+          "matchedKey": "Taiwan Excellence 2022"
+        },
+        {
+          "id": "fujifilm-jouney-toward-more-accessible-medicine",
+          "field": "headerTitle",
+          "preview": "Fujifilm <span> Medtech Campaign </span>",
+          "enhancedTranslated": "富士医疗科技推广",
+          "matchedKey": "Fujifilm Medtech Campaign"
+        },
+        {
+          "id": "ecoflow-river-600-customizable-backup-power",
+          "field": "headerTitle",
+          "preview": "EcoFlow <span> RIVER 600 </span>",
+          "enhancedTranslated": "EcoFlow 睿系列 600",
+          "matchedKey": "EcoFlow RIVER 600"
+        },
+        {
+          "id": "bambu-lab-x1",
+          "field": "headerTitle",
+          "preview": "Bambu Lab <span> X1 </span>",
+          "enhancedTranslated": "拓竹 X1",
+          "matchedKey": "Bambu Lab X1"
+        },
+        {
+          "id": "gendome-home-3000",
+          "field": "headerTitle",
+          "preview": "Gendome <span> Home 3000 </span>",
+          "enhancedTranslated": "Gendome家3000",
+          "matchedKey": "Gendome Home 3000"
+        },
+        {
+          "id": "roborock-s8",
+          "field": "headerTitle",
+          "preview": "Roborock <span> S8 Series </span>",
+          "enhancedTranslated": "石头 S8 系列",
+          "matchedKey": "Roborock S8 Series"
+        },
+        {
+          "id": "mammotion-yuka",
+          "field": "headerTitle",
+          "preview": "Mammotion <span> YUKA </span>",
+          "enhancedTranslated": "库犸科技 YUKA",
+          "matchedKey": "Mammotion YUKA"
+        },
+        {
+          "id": "realme-the-blessings-of-ramadan",
+          "field": "headerTitle",
+          "preview": "realme <span> Ramadan </span>",
+          "enhancedTranslated": "realme 斋月",
+          "matchedKey": "realme Ramadan"
+        },
+        {
+          "id": "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+          "field": "headerTitle",
+          "preview": "Mammotion <span> LUBA 2 AWD </span>",
+          "enhancedTranslated": "库犸科技 LUBA 2 AWD",
+          "matchedKey": "Mammotion LUBA 2 AWD"
+        }
+      ]
+    }
+  },
+  "pages": {
+    "count": 9,
+    "exportGaps": {
+      "missingHeroTitleZh": 4,
+      "missingBodyHtmlZh": 2,
+      "pagesWithHeroTitle": 7,
+      "pagesWithBody": 8
+    },
+    "heroTitle": {
+      "coverage": {
+        "total": 7,
+        "exactHit": 1,
+        "enhancedHit": 3,
+        "miss": 4,
+        "recoverableByStrip": 2
+      },
+      "sampleMisses": [
+        {
+          "id": "news",
+          "field": "heroTitle",
+          "preview": "News <span class=\"vp-outline\">& Insights</span>"
+        },
+        {
+          "id": "work-internal",
+          "field": "heroTitle",
+          "preview": "Our Work <span class=\"vp-outline\">(Internal)</span>"
+        },
+        {
+          "id": "about",
+          "field": "heroTitle",
+          "preview": "About <span class=\"vp-outline\">Us</span>"
+        },
+        {
+          "id": "contact",
+          "field": "heroTitle",
+          "preview": "Contact <span class=\"vp-outline\">Vantage Pictures</span>"
+        }
+      ]
+    },
+    "bodySegments": {
+      "coverage": {
+        "total": 38,
+        "exactHit": 19,
+        "enhancedHit": 19,
+        "miss": 19,
+        "recoverableByStrip": 0
+      },
+      "sampleMisses": [
+        {
+          "id": "news#0",
+          "field": "bodySegment",
+          "preview": "Stay updated with the latest news, behind-the-scenes breakdowns, creative insigh…"
+        },
+        {
+          "id": "vietnam-location-guide#0",
+          "field": "bodySegment",
+          "preview": "Vietnam Filming Location Guide"
+        },
+        {
+          "id": "home#0",
+          "field": "bodySegment",
+          "preview": "A Bit of Our Work"
+        },
+        {
+          "id": "home#1",
+          "field": "bodySegment",
+          "preview": "Global Commercial Film Production for Ambitious Brands"
+        },
+        {
+          "id": "home#5",
+          "field": "bodySegment",
+          "preview": "Brands We Work With"
+        },
+        {
+          "id": "about#0",
+          "field": "bodySegment",
+          "preview": "Who We Are"
+        },
+        {
+          "id": "about#3",
+          "field": "bodySegment",
+          "preview": "Our Team"
+        },
+        {
+          "id": "vietnam-production-service#0",
+          "field": "bodySegment",
+          "preview": "Vietnam Production Service for International Commercial Shoots"
+        },
+        {
+          "id": "vietnam-production-service#4",
+          "field": "bodySegment",
+          "preview": "Full-Service Production Support in Vietnam"
+        },
+        {
+          "id": "vietnam-production-service#6",
+          "field": "bodySegment",
+          "preview": "Filming Locations Across Vietnam"
+        },
+        {
+          "id": "vietnam-production-service#8",
+          "field": "bodySegment",
+          "preview": "Trusted by Global Brands and Agencies"
+        },
+        {
+          "id": "vietnam-production-service#10",
+          "field": "bodySegment",
+          "preview": "Shot in Vietnam"
+        },
+        {
+          "id": "vietnam-production-service#11",
+          "field": "bodySegment",
+          "preview": "Plan Your Next Production in Vietnam"
+        },
+        {
+          "id": "contact#0",
+          "field": "bodySegment",
+          "preview": "info@vantage.pictures"
+        },
+        {
+          "id": "contact#3",
+          "field": "bodySegment",
+          "preview": "1532 Elm Ave.Richmond, CA 94805"
+        },
+        {
+          "id": "contact#5",
+          "field": "bodySegment",
+          "preview": "Tung Chiu Commercial Centre, Rooms 1703-1704193 Lockhart RoadWan Chai, Hong Kong"
+        },
+        {
+          "id": "contact#6",
+          "field": "bodySegment",
+          "preview": "+852 5722 9444"
+        },
+        {
+          "id": "contact#8",
+          "field": "bodySegment",
+          "preview": "67/26 Hoàng Hoa ThámPhường 6, Bình ThạnhTP Hồ Chí Minh, Vietnam"
+        },
+        {
+          "id": "contact#9",
+          "field": "bodySegment",
+          "preview": "+84 32 7202070"
+        }
+      ]
+    }
+  },
+  "uiChrome": {
+    "curated": [
+      {
+        "id": "nav.home",
+        "text": "Home",
+        "location": "SiteHeader",
+        "dictionaryHit": true,
+        "translated": "主页",
+        "matchedKey": "Home",
+        "liveSiteZh": "主页",
+        "inMessagesJson": false
+      },
+      {
+        "id": "nav.about",
+        "text": "About",
+        "location": "SiteHeader",
+        "dictionaryHit": true,
+        "translated": "关于我们",
+        "matchedKey": "About",
+        "liveSiteZh": "关于我们",
+        "inMessagesJson": false
+      },
+      {
+        "id": "nav.vietnam",
+        "text": "Vietnam Production Service",
+        "location": "SiteHeader dropdown",
+        "dictionaryHit": true,
+        "translated": "<a aria-current=\"page\" title=\"越南制作服务\" role=\"menuitem\" href=\"http://localhost:8888/vantage-local/zh/越南生产服务/\" class=\"dropdown-item active\">越南制作服务</a>",
+        "matchedKey": "Vietnam Production Service",
+        "liveSiteZh": "越南制作服务",
+        "inMessagesJson": false
+      },
+      {
+        "id": "nav.work",
+        "text": "Work",
+        "location": "SiteHeader",
+        "dictionaryHit": true,
+        "translated": "作品",
+        "matchedKey": "Work",
+        "liveSiteZh": "作品",
+        "inMessagesJson": false
+      },
+      {
+        "id": "nav.news",
+        "text": "News",
+        "location": "SiteHeader",
+        "dictionaryHit": true,
+        "translated": "新闻动态",
+        "matchedKey": "News",
+        "liveSiteZh": "新闻动态",
+        "inMessagesJson": false
+      },
+      {
+        "id": "nav.contact",
+        "text": "Contact",
+        "location": "SiteHeader",
+        "dictionaryHit": true,
+        "translated": "联系",
+        "matchedKey": "Contact",
+        "liveSiteZh": "联系",
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.section.work",
+        "text": "A BIT OF",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.section.work2",
+        "text": "OUR WORK",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.cta.viewWork",
+        "text": "VIEW ALL WORK",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.heading.global",
+        "text": "GLOBAL COMMERCIAL FILM PRODUCTION",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.heading.for",
+        "text": "FOR",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.heading.brands",
+        "text": "AMBITIOUS BRANDS",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.cta.about",
+        "text": "LEARN MORE ABOUT US",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.section.brands",
+        "text": "BRANDS",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "home.section.brands2",
+        "text": "WE WORK WITH",
+        "location": "page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.videoFormat",
+        "text": "Video Format",
+        "location": "PortfolioGrid",
+        "dictionaryHit": true,
+        "translated": "视频格式",
+        "matchedKey": "Video Format",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.industry",
+        "text": "Industry",
+        "location": "PortfolioGrid",
+        "dictionaryHit": true,
+        "translated": "行业",
+        "matchedKey": "Industry",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.market",
+        "text": "Market",
+        "location": "PortfolioGrid",
+        "dictionaryHit": true,
+        "translated": "市场",
+        "matchedKey": "Market",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.all",
+        "text": "All",
+        "location": "PortfolioGrid",
+        "dictionaryHit": true,
+        "translated": "全部",
+        "matchedKey": "All",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.client",
+        "text": "Client",
+        "location": "PortfolioGrid (internal)",
+        "dictionaryHit": true,
+        "translated": "品牌",
+        "matchedKey": "Client",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.director",
+        "text": "Director",
+        "location": "PortfolioGrid (internal)",
+        "dictionaryHit": true,
+        "translated": "导演",
+        "matchedKey": "Director",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.dop",
+        "text": "DOP",
+        "location": "PortfolioGrid (internal)",
+        "dictionaryHit": true,
+        "translated": "摄影指导",
+        "matchedKey": "DOP",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.artDirector",
+        "text": "Art Director",
+        "location": "PortfolioGrid (internal)",
+        "dictionaryHit": true,
+        "translated": "美术指导",
+        "matchedKey": "Art Director",
+        "inMessagesJson": false
+      },
+      {
+        "id": "filter.empty",
+        "text": "No portfolio items found.",
+        "location": "PortfolioGrid",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "search.placeholder",
+        "text": "Search",
+        "location": "NavSearch",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "search.hint",
+        "text": "Enter a search term above.",
+        "location": "SearchPageClient",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "search.portfolio",
+        "text": "PORTFOLIO",
+        "location": "SearchPageClient",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "search.news",
+        "text": "NEWS",
+        "location": "SearchPageClient",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "about.team",
+        "text": "OUR",
+        "location": "about/page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "about.team2",
+        "text": "TEAM",
+        "location": "about/page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "cta.button",
+        "text": "TELL US ABOUT YOUR CAMPAIGN",
+        "location": "cta-content.ts",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "vietnam.shotIn",
+        "text": "SHOT IN",
+        "location": "vietnam-production-service/page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      },
+      {
+        "id": "vietnam.vietnam",
+        "text": "VIETNAM",
+        "location": "vietnam-production-service/page.tsx",
+        "dictionaryHit": false,
+        "inMessagesJson": false
+      }
+    ],
+    "curatedSummary": {
+      "total": 33,
+      "dictionaryHits": 14,
+      "needsMessagesJson": 19
+    },
+    "srcScan": {
+      "filesScanned": [
+        "SiteHeader.tsx",
+        "page.tsx",
+        "PortfolioGrid.tsx",
+        "NavSearch.tsx",
+        "SearchPageClient.tsx",
+        "about/page.tsx",
+        "cta-content.ts",
+        "home-content.ts"
+      ],
+      "totalUppercaseStrings": 24,
+      "dictionaryHits": 12,
+      "sampleHits": [
+        {
+          "text": "About",
+          "dictionaryHit": true,
+          "translated": "关于我们"
+        },
+        {
+          "text": "Contact",
+          "dictionaryHit": true,
+          "translated": "联系"
+        },
+        {
+          "text": "Got a commercial, branded video or product campaign in mind? Every great idea starts with a clear vision.",
+          "dictionaryHit": true,
+          "translated": "有广告或品牌影片项目的想法吗？好的创意始于清晰的方向。"
+        },
+        {
+          "text": "Home",
+          "dictionaryHit": true,
+          "translated": "主页"
+        },
+        {
+          "text": "News",
+          "dictionaryHit": true,
+          "translated": "新闻动态"
+        },
+        {
+          "text": "Portfolio crew filters",
+          "dictionaryHit": true,
+          "translated": "组合机组过滤器"
+        },
+        {
+          "text": "Portfolio filters",
+          "dictionaryHit": true,
+          "translated": "投资组合过滤器"
+        },
+        {
+          "text": "Primary navigation",
+          "dictionaryHit": true,
+          "translated": "主要导航"
+        },
+        {
+          "text": "Start the conversation by filling out our client briefing form, which helps us gather all the details we need to build an accurate quote and production plan tailored to your next project!",
+          "dictionaryHit": true,
+          "translated": "请填写我们的项目简报表，开启合作沟通。这将帮助我们收集必要信息，为您的下一个项目制定准确的报价与制作计划。"
+        },
+        {
+          "text": "Vantage Pictures is a globally operating commercial film production company creating cinematic brand films, product launch campaigns, and high-impact technology commercials for ambitious companies worldwide. We collaborate with fast-growing innovators and established global brands to craft visually refined, strategically grounded films that elevate product storytelling and brand identity.",
+          "dictionaryHit": true,
+          "translated": "Vantage Pictures 是一家面向全球市场的商业影像制作公司，专注于品牌影片、产品发布广告以及科技类商业广告制作。我们与快速成长的创新企业和成熟的全球品牌合作，通过视觉精致、策略清晰的影片提升品牌故事与产品价值。"
+        },
+        {
+          "text": "Vietnam Production Service",
+          "dictionaryHit": true,
+          "translated": "<a aria-current=\"page\" title=\"越南制作服务\" role=\"menuitem\" href=\"http://localhost:8888/vantage-local/zh/越南生产服务/\" class=\"dropdown-item active\">越南制作服务</a>"
+        },
+        {
+          "text": "Work",
+          "dictionaryHit": true,
+          "translated": "作品"
+        }
+      ],
+      "sampleMisses": [
+        {
+          "text": "Enter a search term above.",
+          "dictionaryHit": false
+        },
+        {
+          "text": "If you are planning a commercial shoot, brand film, or documentary in Vietnam, contact Vantage Pictures to discuss your project requirements.",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Loading search results",
+          "dictionaryHit": false
+        },
+        {
+          "text": "M20 20l-3-3",
+          "dictionaryHit": false
+        },
+        {
+          "text": "No results for",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Not Found",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Open search",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Our team will provide detailed production guidance, budgeting support, and on-the-ground expertise tailored to your timeline and objectives.",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Search",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Submit search",
+          "dictionaryHit": false
+        },
+        {
+          "text": "TELL US ABOUT YOUR CAMPAIGN",
+          "dictionaryHit": false
+        },
+        {
+          "text": "Vantage Pictures",
+          "dictionaryHit": false
+        }
+      ]
+    }
+  },
+  "slugParity": {
+    "mismatches": [
+      {
+        "pageSlug": "work",
+        "source": "routing.ts vs slug-zh.ts (live site)",
+        "slugZh": "作品",
+        "note": "routing.ts zh path \"/作品\" ≠ canonical/live \"工作\""
+      },
+      {
+        "pageSlug": "work",
+        "source": "routing.ts vs migration slugZh",
+        "slugZh": "工作",
+        "note": "routing.ts uses \"/作品\", migration slugZh is \"工作\""
+      }
+    ],
+    "canonical": {
+      "home": "zh",
+      "about": "关于",
+      "work": "工作",
+      "news": "新闻",
+      "contact": "联系",
+      "vietnam-production-service": "越南生产服务",
+      "vietnam-location-guide": "越南旅游指南",
+      "video-campaign-brief": "视频活动简介",
+      "work-internal": "work-internal"
+    },
+    "routingWorkZh": "/作品"
+  }
+}

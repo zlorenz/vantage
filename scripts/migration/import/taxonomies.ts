@@ -22,14 +22,23 @@ async function importTaxonomyFile(
 
   for (const item of items) {
     const id = idFn(item.slug);
-    await createOrReplace({
+    const doc: Record<string, unknown> = {
       _id: id,
       _type: item.sanityType,
       title: item.title,
       ...(item.titleZh ? { titleZh: item.titleZh } : {}),
       slug: slugField(item.slug),
       ...(item.slugZh ? { slugZh: slugField(item.slugZh) } : {}),
-    });
+    };
+
+    if (item.sanityType === 'industry' && item.parentSlug) {
+      doc.parent = {
+        _type: 'reference',
+        _ref: industryId(item.parentSlug),
+      };
+    }
+
+    await createOrReplace(doc);
   }
 
   return items.length;

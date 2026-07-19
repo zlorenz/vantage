@@ -1,0 +1,43 @@
+/**
+ * Client-side sort for the internal work library.
+ */
+
+import type { InternalLibraryEntry } from '@/types/sanity';
+import { getPrimaryClientName } from './filter-entries';
+import { getDisplayTitle } from './text';
+import type { LibrarySort } from './types';
+
+function compareStrings(a: string, b: string): number {
+  return a.localeCompare(b, undefined, { sensitivity: 'base' });
+}
+
+export function sortLibraryEntries(
+  entries: InternalLibraryEntry[],
+  sort: LibrarySort,
+): InternalLibraryEntry[] {
+  const copy = [...entries];
+
+  switch (sort) {
+    case 'publishedAt-asc':
+      return copy.sort((a, b) => {
+        const at = a.publishedAt ? Date.parse(a.publishedAt) : 0;
+        const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
+        return at - bt;
+      });
+    case 'title-asc':
+      return copy.sort((a, b) =>
+        compareStrings(getDisplayTitle(a), getDisplayTitle(b)),
+      );
+    case 'client-asc':
+      return copy.sort((a, b) =>
+        compareStrings(getPrimaryClientName(a), getPrimaryClientName(b)),
+      );
+    case 'publishedAt-desc':
+    default:
+      return copy.sort((a, b) => {
+        const at = a.publishedAt ? Date.parse(a.publishedAt) : 0;
+        const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
+        return bt - at;
+      });
+  }
+}

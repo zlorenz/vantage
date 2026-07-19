@@ -3,6 +3,8 @@
  * Field slugs and role labels match WordPress vp_portfolio_credits_config().
  */
 
+import type { Locale } from '@/i18n/routing';
+import { CREDIT_LABEL_ZH } from '@/lib/credits-labels-zh';
 import type { CreditsAdditionalRow } from '@/types/sanity';
 
 export interface CreditFieldConfig {
@@ -142,6 +144,12 @@ export const CREDITS_CONFIG: CreditDepartmentConfig[] = [
   },
 ];
 
+/** Localize a department or role label for the active locale. */
+export function localizeCreditLabel(label: string, locale: Locale): string {
+  if (locale !== 'zh') return label;
+  return CREDIT_LABEL_ZH[label] ?? label;
+}
+
 /** Pluralize role label when names contain multiple comma-separated entries. */
 export function pluralizeCreditRole(role: string, names: string): string {
   if (!names.includes(',')) return role;
@@ -149,6 +157,7 @@ export function pluralizeCreditRole(role: string, names: string): string {
   const irregular: Record<string, string> = {
     'Production Company': 'Production Companies',
     'Production Service': 'Production Services',
+    Agency: 'Agencies',
     Talent: 'Talent',
     Transport: 'Transport',
     'G&E': 'G&E',
@@ -158,6 +167,10 @@ export function pluralizeCreditRole(role: string, names: string): string {
     Storyboards: 'Storyboards',
     'Assistant Editors': 'Assistant Editors',
     'Sound Design & Mix': 'Sound Design & Mix',
+    Wardrobe: 'Wardrobe',
+    '3D Animation': '3D Animations',
+    'Product Technician': 'Product Technicians',
+    Chaperone: 'Chaperones',
   };
   if (irregular[role]) return irregular[role];
 
@@ -185,6 +198,7 @@ export interface CreditPair {
 export function getDepartmentCreditPairs(
   department: Record<string, string | CreditsAdditionalRow[] | undefined> | undefined,
   config: CreditDepartmentConfig,
+  locale: Locale = 'en',
 ): CreditPair[] {
   if (!department) return [];
 
@@ -193,20 +207,23 @@ export function getDepartmentCreditPairs(
   for (const field of config.fields) {
     const val = String(department[field.slug] ?? '').trim();
     if (val) {
+      const roleEn = pluralizeCreditRole(field.label, val);
       pairs.push({
-        role: pluralizeCreditRole(field.label, val),
+        role: localizeCreditLabel(roleEn, locale),
         names: val,
       });
     }
   }
 
-  const additional = department[config.repeater];
+  // Sanity schema uses `additional`; legacy WP ACF keys were prod_additional, etc.
+  const additional =
+    department.additional ?? department[config.repeater];
   if (Array.isArray(additional)) {
     for (const row of additional) {
       const role = String(row.role ?? '').trim();
       const names = String(row.names ?? '').trim();
       if (role && names) {
-        pairs.push({ role, names });
+        pairs.push({ role: localizeCreditLabel(role, locale), names });
       }
     }
   }

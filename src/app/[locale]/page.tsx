@@ -3,7 +3,7 @@
  */
 
 import type { Metadata } from 'next';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BrandLogoGrid } from '@/components/home/BrandLogoGrid';
 import { HeroCarousel } from '@/components/home/HeroCarousel';
 import { PortfolioCard } from '@/components/portfolio/PortfolioCard';
@@ -12,7 +12,7 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import { getHomeAboutParagraphs } from '@/lib/home-content';
-import { SITE_DESCRIPTION, SITE_NAME, buildOgImage, buildPageMetadata } from '@/lib/metadata';
+import { SITE_DESCRIPTION, buildOgImage, buildPageMetadata, homePageTitle } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { buildBreadcrumbs, buildOrganization, homeBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale: locale as Locale,
     enPath: '/',
     zhPath: '/zh/',
-    title: `${SITE_NAME} | ${SITE_DESCRIPTION}`,
+    title: homePageTitle(locale as Locale),
     description,
     image: buildOgImage(homePage?.featuredImage),
     type: 'website',
@@ -82,6 +82,7 @@ export default async function HomePage({ params }: Props) {
       })) ?? [];
 
   const aboutParagraphs = getHomeAboutParagraphs(typedLocale);
+  const t = await getTranslations('Home');
 
   return (
     <>
@@ -93,7 +94,7 @@ export default async function HomePage({ params }: Props) {
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <h2 className="vp-section-heading mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
-            <span className="vp-outline">A BIT OF</span> OUR WORK
+            <span className="vp-outline">{t('workSectionOutline')}</span> {t('workSection')}
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {recentWork.map((entry, index) => (
@@ -106,7 +107,7 @@ export default async function HomePage({ params }: Props) {
             ))}
           </div>
           <div className="mt-10 text-center">
-            <VpButton href="/work">VIEW ALL WORK</VpButton>
+            <VpButton href="/work">{t('viewAllWork')}</VpButton>
           </div>
         </div>
       </SectionWrapper>
@@ -114,11 +115,18 @@ export default async function HomePage({ params }: Props) {
       {/* Company description */}
       <SectionWrapper borderTop>
         <div className="container-fluid mx-auto max-w-[900px] px-3 text-left md:px-4">
-          <h2 className="mb-8 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-            GLOBAL COMMERCIAL FILM PRODUCTION <span className="vp-outline">FOR</span>
-            <br />
-            <span className="vp-outline">AMBITIOUS BRANDS</span>
-          </h2>
+          {typedLocale === 'zh' ? (
+            <h2 className="mb-8 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+              {t('aboutHeadingFull')}
+            </h2>
+          ) : (
+            <h2 className="mb-8 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+              {t('aboutHeading')}{' '}
+              <span className="vp-outline">{t('aboutHeadingOutline')}</span>
+              <br />
+              <span className="vp-outline">{t('aboutHeadingBrands')}</span>
+            </h2>
+          )}
           <div className="space-y-4 font-light text-vp-text-muted">
             {aboutParagraphs.map((paragraph, index) => (
               <p key={index} className="m-0">
@@ -127,7 +135,7 @@ export default async function HomePage({ params }: Props) {
             ))}
           </div>
           <div className="mt-8">
-            <VpButton href="/about">LEARN MORE ABOUT US</VpButton>
+            <VpButton href="/about">{t('learnMoreAboutUs')}</VpButton>
           </div>
         </div>
       </SectionWrapper>
@@ -136,7 +144,7 @@ export default async function HomePage({ params }: Props) {
       <SectionWrapper borderTop>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <h2 className="vp-section-heading mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
-            BRANDS <span className="vp-outline">WE WORK WITH</span>
+            <span className="vp-outline">{t('brandsOutline')}</span> {t('brands')}
           </h2>
           <BrandLogoGrid />
         </div>

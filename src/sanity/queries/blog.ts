@@ -10,12 +10,13 @@ const BLOG_CARD_FIELDS = `
   "slugZh": slugZh.current,
   publishedAt,
   featuredImage,
-  "excerpt": pt::text(body)
+  "excerpt": pt::text(body),
+  "excerptZh": coalesce(excerptZh, pt::text(bodyZh))
 `;
 
 /** All published blog posts for the news index. */
 export const ALL_POSTS_QUERY = `
-  *[_type == "blogPost"] | order(publishedAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
       title,
@@ -28,7 +29,7 @@ export const ALL_POSTS_QUERY = `
 
 /** Single blog post by English or Chinese slug. */
 export const POST_BY_SLUG_QUERY = `
-  *[_type == "blogPost" && (
+  *[_type == "blogPost" && !defined(trash.trashedAt) && (
     slug.current == $slug || slugZh.current == $slug
   )][0]{
     _id,
@@ -40,6 +41,7 @@ export const POST_BY_SLUG_QUERY = `
     _updatedAt,
     featuredImage,
     "excerpt": pt::text(body),
+    "excerptZh": coalesce(excerptZh, pt::text(bodyZh)),
     body,
     bodyZh,
     "categories": categories[]->{
@@ -59,7 +61,7 @@ export const POST_BY_SLUG_QUERY = `
 
 /** All blog post slugs for generateStaticParams. */
 export const POST_SLUGS_QUERY = `
-  *[_type == "blogPost"] | order(publishedAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current
   }
@@ -67,7 +69,7 @@ export const POST_SLUGS_QUERY = `
 
 /** Posts filtered by category slug (EN or ZH). */
 export const POSTS_BY_CATEGORY_QUERY = `
-  *[_type == "blogPost" && references(*[
+  *[_type == "blogPost" && !defined(trash.trashedAt) && references(*[
     _type == "category" && (
       slug.current == $slug || slugZh.current == $slug
     )
@@ -105,7 +107,7 @@ export const CATEGORY_BY_SLUG_QUERY = `
 
 /** Featured image from the most recent post in a category — archive hero. */
 export const CATEGORY_HERO_IMAGE_QUERY = `
-  *[_type == "blogPost" && references(*[
+  *[_type == "blogPost" && !defined(trash.trashedAt) && references(*[
     _type == "category" && (
       slug.current == $slug || slugZh.current == $slug
     )

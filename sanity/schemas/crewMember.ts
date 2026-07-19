@@ -12,7 +12,7 @@ import { defineField, defineType } from 'sanity';
 
 export const crewMember = defineType({
   name: 'crewMember',
-  title: 'Crew Member',
+  title: 'Crew Members',
   type: 'document',
 
   fields: [

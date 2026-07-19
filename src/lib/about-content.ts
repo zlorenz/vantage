@@ -18,7 +18,8 @@ function isOurTeamHeading(block: PortableTextBlock): boolean {
   if (block._type !== 'block') return false;
   const style = block.style as string | undefined;
   if (style !== 'h1' && style !== 'h2') return false;
-  return normalizeHeading(getBlockPlainText(block)) === 'our team';
+  const heading = normalizeHeading(getBlockPlainText(block));
+  return heading === 'our team' || heading === '我们的团队';
 }
 
 /** WP gallery migration collapsed founder captions into one concatenated paragraph. */

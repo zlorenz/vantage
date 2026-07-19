@@ -19,8 +19,13 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/portfolio/3612/',
-        destination: '/portfolio/realme-c85-your-ultimate-outdoor-sidekick',
+        source: '/zh/作品',
+        destination: '/zh/工作',
+        permanent: true,
+      },
+      {
+        source: '/zh/作品/',
+        destination: '/zh/工作/',
         permanent: true,
       },
     ];
@@ -42,6 +47,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'i.vimeocdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'vumbnail.com',
       },
     ],
   },

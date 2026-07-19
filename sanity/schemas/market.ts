@@ -11,7 +11,7 @@ import { defineField, defineType } from 'sanity';
 
 export const market = defineType({
   name: 'market',
-  title: 'Market',
+  title: 'Markets',
   type: 'document',
 
   fields: [
@@ -56,16 +56,26 @@ export const market = defineType({
         maxLength: 96,
       },
     }),
+
+    defineField({
+      name: 'parent',
+      title: 'Parent Market',
+      type: 'reference',
+      to: [{ type: 'market' }],
+      description: 'Optional parent category for nested filter dropdowns.',
+    }),
   ],
 
   preview: {
     select: {
       title: 'title',
       subtitle: 'titleZh',
+      parentTitle: 'parent.title',
     },
-    prepare({ title, subtitle }) {
+    prepare({ title, subtitle, parentTitle }) {
+      const displayTitle = parentTitle ? `↳ ${title}` : title;
       return {
-        title: title || 'Untitled market',
+        title: displayTitle || 'Untitled market',
         subtitle: subtitle ? `中文: ${subtitle}` : undefined,
       };
     },

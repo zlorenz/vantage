@@ -15,11 +15,6 @@
     "slug": "asmoke"
   },
   {
-    "wpTermId": 321,
-    "name": "ASMOKE Grills",
-    "slug": "asmoke-grills"
-  },
-  {
     "wpTermId": 268,
     "name": "ASUS",
     "slug": "asus"
@@ -50,11 +45,6 @@
     "slug": "brinc"
   },
   {
-    "wpTermId": 314,
-    "name": "BRINC Drones",
-    "slug": "brinc-drones"
-  },
-  {
     "wpTermId": 356,
     "name": "Coca-Cola",
     "slug": "coca-cola"
@@ -63,11 +53,6 @@
     "wpTermId": 350,
     "name": "Comfort",
     "slug": "comfort"
-  },
-  {
-    "wpTermId": 301,
-    "name": "Comfort / Unilever",
-    "slug": "comfort-unilever"
   },
   {
     "wpTermId": 214,
@@ -125,19 +110,9 @@
     "slug": "huawei"
   },
   {
-    "wpTermId": 216,
-    "name": "Huawei/HONOR",
-    "slug": "huawei-honor"
-  },
-  {
     "wpTermId": 363,
     "name": "Hyundai",
     "slug": "hyundai"
-  },
-  {
-    "wpTermId": 190,
-    "name": "Hyundai Motor Company",
-    "slug": "hyundai-motor-company"
   },
   {
     "wpTermId": 225,
@@ -200,11 +175,6 @@
     "slug": "old-spice"
   },
   {
-    "wpTermId": 299,
-    "name": "Old Spice / P&amp;G",
-    "slug": "old-spice-pg"
-  },
-  {
     "wpTermId": 198,
     "name": "OnePlus",
     "slug": "oneplus"
@@ -221,7 +191,7 @@
   },
   {
     "wpTermId": 213,
-    "name": "Procter &amp; Gamble",
+    "name": "P&G",
     "slug": "procter-gamble"
   },
   {
@@ -245,11 +215,6 @@
     "slug": "samsung"
   },
   {
-    "wpTermId": 202,
-    "name": "Samsung Vietnam",
-    "slug": "samsung-vietnam"
-  },
-  {
     "wpTermId": 349,
     "name": "Sensoro",
     "slug": "sensoro"
@@ -265,19 +230,9 @@
     "slug": "taiwan-excellence"
   },
   {
-    "wpTermId": 295,
-    "name": "Tập đoàn Hòa Phát",
-    "slug": "tap-doan-hoa-phat"
-  },
-  {
     "wpTermId": 289,
     "name": "Techcombank",
     "slug": "techcombank"
-  },
-  {
-    "wpTermId": 305,
-    "name": "The Coca-Cola Company",
-    "slug": "the-coca-cola-company"
   },
   {
     "wpTermId": 306,
@@ -288,11 +243,6 @@
     "wpTermId": 357,
     "name": "Toyota",
     "slug": "toyota"
-  },
-  {
-    "wpTermId": 245,
-    "name": "Toyota Vietnam",
-    "slug": "toyota-vietnam"
   },
   {
     "wpTermId": 336,

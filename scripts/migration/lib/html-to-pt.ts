@@ -262,12 +262,34 @@ function ctaButtonBlock(attrs: string): unknown | null {
   const textMatch = attrs.match(/"text"\s*:\s*"([^"]+)"/);
   if (!urlMatch || !textMatch) return null;
 
+  const rawUrl = decodeHtmlEntities(urlMatch[1]);
   return {
     _key: blockKey(),
     _type: 'ctaButton',
     label: decodeHtmlEntities(textMatch[1]),
-    url: decodeHtmlEntities(urlMatch[1]),
+    // Store root-relative paths so Studio/runtime don't keep WP subdirectory URLs.
+    url: normalizeMigratedHref(rawUrl),
   };
+}
+
+function normalizeMigratedHref(url: string): string {
+  const decoded = url.replace(/&amp;/g, '&').trim();
+  if (!decoded) return '/';
+
+  let pathname = decoded;
+  if (!decoded.startsWith('/')) {
+    try {
+      pathname = new URL(decoded).pathname;
+    } catch {
+      return decoded;
+    }
+  }
+
+  pathname = pathname.replace(/\/$/, '') || '/';
+  if (pathname === '/vantage-local' || pathname.startsWith('/vantage-local/')) {
+    pathname = pathname.slice('/vantage-local'.length) || '/';
+  }
+  return pathname.replace(/\/$/, '') || '/';
 }
 
 function htmlToPortableTextBlocksOnly(html: string): unknown[] {

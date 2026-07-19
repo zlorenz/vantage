@@ -2,41 +2,37 @@
 
 /**
  * LanguageSwitcher — toggles locale while preserving the current path.
- *
- * Shows a circular flag for the *opposite* language (click to switch).
- * Uses next-intl navigation hooks for locale-aware routing.
  */
 
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 
-const FLAG: Record<Locale, { src: string; label: string; target: Locale }> = {
-  en: {
-    src: '/flags/cn.svg',
-    label: 'Switch to Chinese',
-    target: 'zh',
-  },
-  zh: {
-    src: '/flags/gb.svg',
-    label: 'Switch to English',
-    target: 'en',
-  },
+const FLAG_SRC: Record<Locale, string> = {
+  en: '/flags/cn.svg',
+  zh: '/flags/gb.svg',
+};
+
+const TARGET_LOCALE: Record<Locale, Locale> = {
+  en: 'zh',
+  zh: 'en',
 };
 
 export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const locale = useLocale() as Locale;
+  const t = useTranslations('Nav');
   const pathname = usePathname();
   const params = useParams();
   const router = useRouter();
-  const { src, label, target } = FLAG[locale];
+  const target = TARGET_LOCALE[locale];
+  const label = locale === 'zh' ? t('switchToEnglish') : t('switchToChinese');
 
   return (
     <button
       type="button"
-      className={`nav-link inline-flex items-center border-0 bg-transparent p-2 uppercase ${className}`}
+      className={`nav-link inline-flex cursor-pointer items-center border-0 bg-transparent p-2 uppercase ${className}`}
       aria-label={label}
       onClick={() =>
         router.replace(
@@ -46,7 +42,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
       }
     >
       <Image
-        src={src}
+        src={FLAG_SRC[locale]}
         alt=""
         width={20}
         height={20}

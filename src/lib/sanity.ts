@@ -18,13 +18,14 @@ import type { SanityImageSource } from '@sanity/image-url';
 
 /**
  * Read-only Sanity client instance.
- * useCdn: true serves published content from Sanity's CDN for faster reads.
+ * CDN in production for speed; bypass in development so Studio/migration
+ * patches show up on hard-refresh without waiting for CDN TTL.
  */
 export const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: '2024-01-01',
-  useCdn: true,
+  useCdn: process.env.NODE_ENV === 'production',
 });
 
 /**

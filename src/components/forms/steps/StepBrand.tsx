@@ -2,8 +2,8 @@
  * Step 5 — Brand / Product: brand description, mission, product focus, product details.
  */
 
-import { CAMPAIGN_FOCUS_OPTIONS, CAMPAIGN_BRIEF_FIELD_LABELS } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
   FormField,
   FormRadioGroup,
@@ -18,6 +18,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepBrandProps {
+  ui: CampaignBriefUi;
   values: Pick<
     CampaignBriefFormValues,
     | 'brand_description'
@@ -36,6 +37,7 @@ export interface StepBrandProps {
 }
 
 export function StepBrand({
+  ui,
   values,
   onChange,
   visibility,
@@ -43,14 +45,15 @@ export function StepBrand({
   errors,
   disabled,
 }: StepBrandProps) {
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
+  const hints = ui.hints;
 
   return (
     <div className="vp-form-grid">
       <FormField
         label={labels.brand_description}
         htmlFor="brand_description"
-        hint="Example: We offer the best pet care products that are 100% USDA organic and cruelty-free"
+        hint={hints.brand_description}
       >
         <FormTextarea
           id="brand_description"
@@ -64,7 +67,7 @@ export function StepBrand({
       <FormField
         label={labels.brand_mission}
         htmlFor="brand_mission"
-        hint="Example: Our goal is to reduce air pollution by developing alternative methods of transportation for dense metropolitan areas"
+        hint={hints.brand_mission}
       >
         <FormTextarea
           id="brand_mission"
@@ -85,7 +88,7 @@ export function StepBrand({
         <FormRadioGroup
           name="campaign_focus"
           value={values.campaign_focus}
-          options={CAMPAIGN_FOCUS_OPTIONS}
+          options={ui.campaignFocus}
           onChange={(v) => onChange('campaign_focus', v)}
           disabled={disabled}
           hasError={hasError('campaign_focus')}
@@ -94,13 +97,13 @@ export function StepBrand({
 
       {visibility.showProductDetails && (
         <>
-          <FormSectionHeader title="Product Details" />
+          <FormSectionHeader title={ui.sections.productDetails} />
 
           <FormField
             label={labels.product_name}
             htmlFor="product_name"
             fullWidth
-            hint="Example: Air Max 2025"
+            hint={hints.product_name}
           >
             <FormTextInput
               id="product_name"
@@ -114,7 +117,7 @@ export function StepBrand({
           <FormField
             label={labels.product_key_features}
             htmlFor="product_key_features"
-            hint="Example: Lightest shoe in the Nike lineup, available in 12 colorways"
+            hint={hints.product_key_features}
           >
             <FormTextarea
               id="product_key_features"
@@ -128,7 +131,7 @@ export function StepBrand({
           <FormField
             label={labels.market_pain_points}
             htmlFor="market_pain_points"
-            hint="Example: Existing running shoes are too heavy for competitive athletes"
+            hint={hints.market_pain_points}
           >
             <FormTextarea
               id="market_pain_points"
@@ -143,7 +146,7 @@ export function StepBrand({
             label={labels.product_differentiators}
             htmlFor="product_differentiators"
             fullWidth
-            hint="Example: The only shoe with full-length ZoomX foam and a carbon fibre plate"
+            hint={hints.product_differentiators}
           >
             <FormTextarea
               id="product_differentiators"

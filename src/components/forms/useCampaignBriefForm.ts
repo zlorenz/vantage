@@ -16,6 +16,8 @@ import {
   type CampaignBriefFieldKey,
   type CampaignBriefStepConfig,
 } from '@/lib/campaign-brief-fields';
+import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import type { Locale } from '@/i18n/routing';
 
 /** Submission lifecycle — drives loading spinner, success screen, error message. */
 export type CampaignBriefSubmissionState = 'idle' | 'submitting' | 'success' | 'error';
@@ -208,6 +210,7 @@ function getExtension(filename: string): string {
 function validateFields(
   values: CampaignBriefFormValues,
   keys: CampaignBriefFieldKey[],
+  messages: { fieldRequired: string; invalidEmail: string },
 ): CampaignBriefFieldErrors {
   const errors: CampaignBriefFieldErrors = {};
 
@@ -215,12 +218,12 @@ function validateFields(
     const value = values[key];
     const empty = Array.isArray(value) ? value.length === 0 : !String(value).trim();
     if (empty) {
-      errors[key] = 'This field is required.';
+      errors[key] = messages.fieldRequired;
     }
   }
 
   if (keys.includes('contact_email') && values.contact_email && !isValidEmail(values.contact_email)) {
-    errors.contact_email = 'Please enter a valid email address.';
+    errors.contact_email = messages.invalidEmail;
   }
 
   return errors;
@@ -229,15 +232,21 @@ function validateFields(
 /**
  * Validate file list — count and extension checks mirror the API route.
  */
-function validateFiles(files: File[]): string | null {
+function validateFiles(
+  files: File[],
+  messages: {
+    maxFilesAllowed: (max: number) => string;
+    fileTypeNotAllowed: (filename: string) => string;
+  },
+): string | null {
   if (files.length > CAMPAIGN_BRIEF_MAX_FILES) {
-    return `Maximum ${CAMPAIGN_BRIEF_MAX_FILES} files allowed.`;
+    return messages.maxFilesAllowed(CAMPAIGN_BRIEF_MAX_FILES);
   }
 
   for (const file of files) {
     const ext = getExtension(file.name);
     if (!ALLOWED_EXTENSIONS.has(ext)) {
-      return `File type not allowed: ${file.name}`;
+      return messages.fileTypeNotAllowed(file.name);
     }
   }
 
@@ -304,8 +313,15 @@ function pushBriefSubmitEvent(): void {
  * Manages complete Campaign Brief form state: 7 steps, 42 fields,
  * conditional visibility, file uploads, validation, and submission.
  */
-export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
+export function useCampaignBriefForm(
+  locale: Locale = 'en',
+): UseCampaignBriefFormReturn {
   const formStartTimeRef = useRef(Date.now());
+  const ui = useMemo(() => getCampaignBriefUi(locale), [locale]);
+  const validationMessages = useMemo(
+    () => ({ fieldRequired: ui.fieldRequired, invalidEmail: ui.invalidEmail }),
+    [ui.fieldRequired, ui.invalidEmail],
+  );
 
   const [currentStep, setCurrentStep] = useState(1);
   const [values, setValues] = useState<CampaignBriefFormValues>(createInitialValues);
@@ -319,8 +335,8 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
   const visibility = useMemo(() => computeVisibility(values), [values]);
 
   const currentStepConfig = useMemo(
-    () => CAMPAIGN_BRIEF_STEPS.find((s) => s.step === currentStep) ?? CAMPAIGN_BRIEF_STEPS[0],
-    [currentStep],
+    () => ui.steps.find((s) => s.step === currentStep) ?? ui.steps[0],
+    [currentStep, ui.steps],
   );
 
   const isDisabled = submissionState === 'submitting';
@@ -357,7 +373,7 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
 
   const nextStep = useCallback((): boolean => {
     const stepFields = STEP_REQUIRED_FIELDS[currentStep] ?? [];
-    const stepErrors = validateFields(values, stepFields);
+    const stepErrors = validateFields(values, stepFields, validationMessages);
 
     if (Object.keys(stepErrors).length > 0) {
       setErrors((prev) => ({ ...prev, ...stepErrors }));
@@ -377,7 +393,7 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
     }
 
     return true;
-  }, [currentStep, values]);
+  }, [currentStep, values, validationMessages]);
 
   const prevStep = useCallback(() => {
     if (currentStep <= 1) return;
@@ -399,7 +415,7 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
     (incoming: FileList | File[]) => {
       const incomingList = Array.from(incoming);
       const combined = [...files, ...incomingList];
-      const validationError = validateFiles(combined);
+      const validationError = validateFiles(combined, ui);
 
       if (validationError) {
         setFileError(validationError);
@@ -414,28 +430,35 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
         return next;
       });
     },
-    [files],
+    [files, ui],
   );
 
-  const removeFile = useCallback((index: number) => {
-    setFiles((prev) => {
-      const next = prev.filter((_, i) => i !== index);
-      const validationError = validateFiles(next);
-      setFileError(validationError);
-      if (!validationError) {
-        setErrors((e) => {
-          const updated = { ...e };
-          delete updated.files;
-          return updated;
-        });
-      }
-      return next;
-    });
-  }, []);
+  const removeFile = useCallback(
+    (index: number) => {
+      setFiles((prev) => {
+        const next = prev.filter((_, i) => i !== index);
+        const validationError = validateFiles(next, ui);
+        setFileError(validationError);
+        if (!validationError) {
+          setErrors((e) => {
+            const updated = { ...e };
+            delete updated.files;
+            return updated;
+          });
+        }
+        return next;
+      });
+    },
+    [ui],
+  );
 
   const submit = useCallback(async () => {
-    const fieldErrors = validateFields(values, CAMPAIGN_BRIEF_REQUIRED_FIELDS);
-    const filesValidationError = validateFiles(files);
+    const fieldErrors = validateFields(
+      values,
+      CAMPAIGN_BRIEF_REQUIRED_FIELDS,
+      validationMessages,
+    );
+    const filesValidationError = validateFiles(files, ui);
 
     if (Object.keys(fieldErrors).length > 0 || filesValidationError) {
       setErrors(fieldErrors);
@@ -453,6 +476,7 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
 
     try {
       const formData = buildFormData(values, files, honeypot, formStartTimeRef.current);
+      formData.append('locale', locale);
       const response = await fetch('/api/campaign-brief', {
         method: 'POST',
         body: formData,
@@ -471,9 +495,7 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
             setFileError(result.errors.files);
           }
         }
-        setSubmitError(
-          result.error ?? 'Something went wrong. Please try again or email us at info@vantage.pictures',
-        );
+        setSubmitError(result.error ?? ui.submitError);
         setSubmissionState('error');
         return;
       }
@@ -481,12 +503,10 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
       pushBriefSubmitEvent();
       setSubmissionState('success');
     } catch {
-      setSubmitError(
-        'Something went wrong. Please try again or email us at info@vantage.pictures',
-      );
+      setSubmitError(ui.submitError);
       setSubmissionState('error');
     }
-  }, [values, files, honeypot]);
+  }, [values, files, honeypot, validationMessages, ui, locale]);
 
   /** Reset all form state — returns to step 1 for "Submit another brief". */
   const resetForm = useCallback(() => {
@@ -509,7 +529,7 @@ export function useCampaignBriefForm(): UseCampaignBriefFormReturn {
   return {
     currentStep,
     currentStepConfig,
-    steps: CAMPAIGN_BRIEF_STEPS,
+    steps: ui.steps,
     nextStep,
     prevStep,
     goToStep,

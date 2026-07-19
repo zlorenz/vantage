@@ -27,15 +27,23 @@ export interface NavItem {
 interface NavBarProps {
   locale: Locale;
   items: NavItem[];
+  toggleAria: string;
 }
 
-export function NavBar({ locale, items }: NavBarProps) {
+export function NavBar({ locale, items, toggleAria }: NavBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openContact } = useContactModal();
 
   function renderItem(item: NavItem, mobile = false) {
     if (item.dropdown) {
-      return <NavDropdown key={item.label} label={item.label} items={item.dropdown} />;
+      return (
+        <NavDropdown
+          key={item.label}
+          label={item.label}
+          href={item.href}
+          items={item.dropdown}
+        />
+      );
     }
 
     if (item.isContact) {
@@ -43,7 +51,7 @@ export function NavBar({ locale, items }: NavBarProps) {
         <li key={item.label} className={`nav-item${mobile ? ' mb-1' : ''}`}>
           <button
             type="button"
-            className={`nav-link block border-0 bg-transparent uppercase ${
+            className={`nav-link block cursor-pointer border-0 bg-transparent uppercase ${
               mobile
                 ? 'w-full rounded-vp-nav-pill px-3 py-2 text-left hover:bg-white/8'
                 : 'px-4 py-[0.35rem]'
@@ -87,7 +95,7 @@ export function NavBar({ locale, items }: NavBarProps) {
         className="navbar-toggler border-0 bg-transparent p-2 shadow-none md:hidden"
         aria-expanded={mobileOpen}
         aria-controls="vp-navbar"
-        aria-label="Toggle navigation"
+        aria-label={toggleAria}
         onClick={() => setMobileOpen((v) => !v)}
       >
         <span className="navbar-toggler-icon relative block h-5 w-7" />
@@ -101,7 +109,7 @@ export function NavBar({ locale, items }: NavBarProps) {
             <LanguageSwitcher />
           </li>
         </ul>
-        <NavSearch locale={locale} />
+        <NavSearch />
       </div>
 
       {/* Mobile panel */}

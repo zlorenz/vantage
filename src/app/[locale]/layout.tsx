@@ -19,6 +19,7 @@ import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { LayoutShell } from '@/components/layout/LayoutShell';
 import { routing } from '@/i18n/routing';
+import { poppins } from '@/lib/fonts';
 import { METADATA_BASE } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { NAV_PAGES_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
@@ -59,7 +60,11 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <html lang={locale} className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={`h-full ${poppins.variable}`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-full flex-col bg-vp-bg font-vp-sans text-vp-text">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <LayoutShell

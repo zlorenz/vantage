@@ -24,19 +24,22 @@ const PAGE_BASE_FIELDS = `
 
 /** Any page document by English slug. */
 export const PAGE_BY_SLUG_QUERY = `
-  *[_type == "page" && slug.current == $slug][0]{
+  *[_type == "page" && slug.current == $slug && !defined(trash.trashedAt)][0]{
     ${PAGE_BASE_FIELDS},
     heroSlides[]{
       buttonLabel,
       buttonLabelZh,
-      "portfolioRef": portfolioRef->{
-        "slug": slug.current,
-        "slugZh": slugZh.current,
-        headerTitle,
-        "description": coalesce(excerpt, seo.metaDescription),
-        "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
-        featuredImage
-      }
+      "portfolioRef": select(
+        !defined(portfolioRef->trash.trashedAt) => portfolioRef->{
+          "slug": slug.current,
+          "slugZh": slugZh.current,
+          headerTitle,
+          headerTitleZh,
+          "description": coalesce(excerpt, seo.metaDescription),
+          "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
+          featuredImage
+        }
+      )
     },
     founders[]{
       name,
@@ -59,19 +62,22 @@ export const PAGE_BY_SLUG_QUERY = `
 
 /** Homepage — hero carousel slides + body copy. */
 export const HOME_PAGE_QUERY = `
-  *[_type == "page" && slug.current == "home"][0]{
+  *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{
     ${PAGE_BASE_FIELDS},
     heroSlides[]{
       buttonLabel,
       buttonLabelZh,
-      "portfolioRef": portfolioRef->{
-        "slug": slug.current,
-        "slugZh": slugZh.current,
-        headerTitle,
-        "description": coalesce(excerpt, seo.metaDescription),
-        "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
-        featuredImage
-      }
+      "portfolioRef": select(
+        !defined(portfolioRef->trash.trashedAt) => portfolioRef->{
+          "slug": slug.current,
+          "slugZh": slugZh.current,
+          headerTitle,
+          headerTitleZh,
+          "description": coalesce(excerpt, seo.metaDescription),
+          "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
+          featuredImage
+        }
+      )
     }
   }
 `;

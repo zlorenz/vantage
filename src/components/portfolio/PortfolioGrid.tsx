@@ -9,8 +9,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
+import { flattenTaxonomyTree, optionIndent } from '@/lib/taxonomy-tree';
 import { PortfolioCard } from './PortfolioCard';
 import type { Locale } from '@/i18n/routing';
 import type {
@@ -105,6 +107,41 @@ function matchesPublicFilters(
   return true;
 }
 
+/** Count entries matching when a given public filter key is set to `value`. */
+function countForPublicFilterValue(
+  entries: PortfolioGridEntry[],
+  filters: PublicFilters,
+  key: keyof PublicFilters,
+  value: string,
+): number {
+  const next = { ...filters, [key]: value };
+  return entries.filter((entry) => matchesPublicFilters(entry, next)).length;
+}
+
+function optionCountLabel(count: number, label: string): string {
+  return count > 0 ? `${label} (${count})` : label;
+}
+
+function publicFilterOptions(
+  entries: PortfolioGridEntry[],
+  filters: PublicFilters,
+  key: keyof PublicFilters,
+  terms: TaxonomyTerm[],
+  locale: Locale,
+): { value: string; label: string; disabled: boolean }[] {
+  return flattenTaxonomyTree(terms).map(({ term, depth }) => {
+    const slug = termSlug(term, locale);
+    const count = countForPublicFilterValue(entries, filters, key, slug);
+    return {
+      value: slug,
+      label:
+        optionIndent(depth) +
+        optionCountLabel(count, termLabel(term, locale)),
+      disabled: count === 0 && filters[key] !== slug,
+    };
+  });
+}
+
 function matchesInternalFilters(
   entry: PortfolioInternalGridEntry,
   filters: InternalFilters,
@@ -163,11 +200,12 @@ export function PortfolioGrid({
   artDirectors = [],
   presetFilters,
 }: PortfolioGridProps) {
+  const t = useTranslations('Filters');
   const router = useRouter();
   const pathname = usePathname();
   const routeParams = useParams();
   const searchParams = useSearchParams();
-  const gridRef = useRef<HTMLDivElement>(null);
+  const filterBarRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const presetFormat = presetFilters?.format ?? '';
@@ -208,6 +246,46 @@ export function PortfolioGrid({
       matchesPublicFilters(entry, publicFilters),
     );
   }, [entries, filterMode, internalFilters, publicFilters]);
+
+  const formatOptions = useMemo(
+    () =>
+      filterMode === 'public'
+        ? publicFilterOptions(
+            entries as PortfolioGridEntry[],
+            publicFilters,
+            'format',
+            videoFormats,
+            locale,
+          )
+        : [],
+    [filterMode, entries, publicFilters, videoFormats, locale],
+  );
+  const industryOptions = useMemo(
+    () =>
+      filterMode === 'public'
+        ? publicFilterOptions(
+            entries as PortfolioGridEntry[],
+            publicFilters,
+            'industry',
+            industries,
+            locale,
+          )
+        : [],
+    [filterMode, entries, publicFilters, industries, locale],
+  );
+  const marketOptions = useMemo(
+    () =>
+      filterMode === 'public'
+        ? publicFilterOptions(
+            entries as PortfolioGridEntry[],
+            publicFilters,
+            'market',
+            markets,
+            locale,
+          )
+        : [],
+    [filterMode, entries, publicFilters, markets, locale],
+  );
 
   const [visibleCount, setVisibleCount] = useState(PER_PAGE);
   const [loading, setLoading] = useState(false);
@@ -254,9 +332,25 @@ export function PortfolioGrid({
     return () => observer.disconnect();
   }, [hasMore, loadMore, visibleCount]);
 
-  const scrollToGrid = () => {
-    gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Keep the filter bar visible after a filter change: only scroll when the
+  // bar sits outside the comfortable viewport zone (fixed navbar covers the
+  // top ~90px), and anchor to the bar itself instead of the grid.
+  const keepFiltersInView = () => {
+    const bar = filterBarRef.current;
+    if (!bar) return;
+    const headerOffset = 96;
+    const rect = bar.getBoundingClientRect();
+    if (rect.top >= headerOffset && rect.bottom <= window.innerHeight) return;
+    window.scrollTo({
+      top: window.scrollY + rect.top - headerOffset,
+      behavior: 'smooth',
+    });
   };
+
+  const hasActivePublicFilters =
+    publicFilters.format !== presetFormat ||
+    publicFilters.industry !== presetIndustry ||
+    publicFilters.market !== presetMarket;
 
   const updatePublicFilter = (key: keyof PublicFilters, value: string) => {
     const next = { ...publicFilters, [key]: value };
@@ -268,7 +362,19 @@ export function PortfolioGrid({
       } as Parameters<typeof router.replace>[0],
       { scroll: false },
     );
-    scrollToGrid();
+    keepFiltersInView();
+  };
+
+  const clearPublicFilters = () => {
+    router.replace(
+      {
+        pathname,
+        params: routeParams,
+        query: {},
+      } as Parameters<typeof router.replace>[0],
+      { scroll: false },
+    );
+    keepFiltersInView();
   };
 
   const updateInternalFilter = (key: keyof InternalFilters, value: string) => {
@@ -281,15 +387,19 @@ export function PortfolioGrid({
       } as Parameters<typeof router.replace>[0],
       { scroll: false },
     );
-    scrollToGrid();
+    keepFiltersInView();
   };
 
   const filterBar = filterMode === 'public' ? (
-    <div className="vp-filterbar" aria-label="Portfolio filters">
+    <div
+      ref={filterBarRef}
+      className="vp-filterbar"
+      aria-label={t('portfolioAria')}
+    >
       <div className="vp-filterbar__inner">
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-format">
-            Video Format
+            {t('videoFormat')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -299,10 +409,14 @@ export function PortfolioGrid({
               value={publicFilters.format}
               onChange={(e) => updatePublicFilter('format', e.target.value)}
             >
-              <option value="">All</option>
-              {videoFormats.map((term) => (
-                <option key={term._id} value={termSlug(term, locale)}>
-                  {termLabel(term, locale)}
+              <option value="">{t('all')}</option>
+              {formatOptions.map((opt) => (
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={opt.disabled}
+                >
+                  {opt.label}
                 </option>
               ))}
             </select>
@@ -310,7 +424,7 @@ export function PortfolioGrid({
         </div>
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-industry">
-            Industry
+            {t('industry')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -320,10 +434,14 @@ export function PortfolioGrid({
               value={publicFilters.industry}
               onChange={(e) => updatePublicFilter('industry', e.target.value)}
             >
-              <option value="">All</option>
-              {industries.map((term) => (
-                <option key={term._id} value={termSlug(term, locale)}>
-                  {termLabel(term, locale)}
+              <option value="">{t('all')}</option>
+              {industryOptions.map((opt) => (
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={opt.disabled}
+                >
+                  {opt.label}
                 </option>
               ))}
             </select>
@@ -331,7 +449,7 @@ export function PortfolioGrid({
         </div>
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-market">
-            Market
+            {t('market')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -341,23 +459,40 @@ export function PortfolioGrid({
               value={publicFilters.market}
               onChange={(e) => updatePublicFilter('market', e.target.value)}
             >
-              <option value="">All</option>
-              {markets.map((term) => (
-                <option key={term._id} value={termSlug(term, locale)}>
-                  {termLabel(term, locale)}
+              <option value="">{t('all')}</option>
+              {marketOptions.map((opt) => (
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={opt.disabled}
+                >
+                  {opt.label}
                 </option>
               ))}
             </select>
           </div>
         </div>
+        {hasActivePublicFilters ? (
+          <button
+            type="button"
+            className="vp-filterbar__clear"
+            onClick={clearPublicFilters}
+          >
+            {t('clear')}
+          </button>
+        ) : null}
       </div>
     </div>
   ) : (
-    <div className="vp-filterbar" aria-label="Portfolio crew filters">
+    <div
+      ref={filterBarRef}
+      className="vp-filterbar"
+      aria-label={t('crewAria')}
+    >
       <div className="vp-filterbar__inner">
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-client">
-            Client
+            {t('client')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -367,7 +502,7 @@ export function PortfolioGrid({
               value={internalFilters.client}
               onChange={(e) => updateInternalFilter('client', e.target.value)}
             >
-              <option value="">All</option>
+              <option value="">{t('all')}</option>
               {clients.map((client) => (
                 <option key={client._id} value={client.slug}>
                   {client.name}
@@ -378,7 +513,7 @@ export function PortfolioGrid({
         </div>
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-director">
-            Director
+            {t('director')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -388,7 +523,7 @@ export function PortfolioGrid({
               value={internalFilters.director}
               onChange={(e) => updateInternalFilter('director', e.target.value)}
             >
-              <option value="">All</option>
+              <option value="">{t('all')}</option>
               {directors.map((member) => (
                 <option key={member._id} value={member.slug}>
                   {member.name}
@@ -399,7 +534,7 @@ export function PortfolioGrid({
         </div>
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-dop">
-            DOP
+            {t('dop')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -409,7 +544,7 @@ export function PortfolioGrid({
               value={internalFilters.dop}
               onChange={(e) => updateInternalFilter('dop', e.target.value)}
             >
-              <option value="">All</option>
+              <option value="">{t('all')}</option>
               {dops.map((member) => (
                 <option key={member._id} value={member.slug}>
                   {member.name}
@@ -420,7 +555,7 @@ export function PortfolioGrid({
         </div>
         <div className="vp-filterbar__group">
           <label className="vp-filterbar__label" htmlFor="vp-filter-art-director">
-            Art Director
+            {t('artDirector')}
           </label>
           <div className="vp-select-wrap">
             <select
@@ -432,7 +567,7 @@ export function PortfolioGrid({
                 updateInternalFilter('art-director', e.target.value)
               }
             >
-              <option value="">All</option>
+              <option value="">{t('all')}</option>
               {artDirectors.map((member) => (
                 <option key={member._id} value={member.slug}>
                   {member.name}
@@ -449,11 +584,7 @@ export function PortfolioGrid({
     <>
       {filterBar}
       {visibleEntries.length > 0 ? (
-        <div
-          id="vp-portfolio-grid"
-          ref={gridRef}
-          className="vp-portfolio-gallery"
-        >
+        <div id="vp-portfolio-grid" className="vp-portfolio-gallery">
           {visibleEntries.map((entry, index) => (
             <PortfolioCard
               key={entry._id}
@@ -465,7 +596,7 @@ export function PortfolioGrid({
         </div>
       ) : (
         <p className="py-12 text-center text-vp-text-soft">
-          No portfolio items found.
+          {t('empty')}
         </p>
       )}
       <div

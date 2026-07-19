@@ -9,7 +9,7 @@ import { getMeta, parseAcfRepeater } from '../lib/acf';
 import { getAttachment } from '../lib/attachments';
 import { buildCredits } from '../lib/credits-config';
 import { writeJson } from '../lib/fs';
-import { translate, translateSlug } from '../lib/translatepress';
+import { translateEnhanced, translateSlug } from '../lib/translatepress';
 import { extractYoast } from '../lib/yoast';
 import {
   fetchAllPostMeta,
@@ -32,8 +32,11 @@ export interface ExportedPortfolio {
   slugZh?: string;
   publishedAt: string;
   thumbTitle: string;
+  thumbTitleZh?: string;
   headerTitle: string;
+  headerTitleZh?: string;
   longTitle: string;
+  longTitleZh?: string;
   excerpt: string;
   excerptZh?: string;
   description: string;
@@ -85,16 +88,16 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
       slug = SLUG_FIX_PORTFOLIO_SLUG;
     }
 
-    const titleZh = await translate(post.post_title);
+    const titleZh = await translateEnhanced(post.post_title);
     const slugZh = await translateSlug(slug);
     const excerpt = (post.post_excerpt ?? '').trim();
-    const excerptZh = excerpt ? await translate(excerpt) : undefined;
+    const excerptZh = excerpt ? await translateEnhanced(excerpt) : undefined;
     const description = getMeta(meta, 'description') || post.post_content;
-    const descriptionZh = await translate(description);
+    const descriptionZh = await translateEnhanced(description);
 
     const yoast = extractYoast(meta);
     const metaDescriptionZh = yoast.metaDescription
-      ? await translate(yoast.metaDescription)
+      ? await translateEnhanced(yoast.metaDescription)
       : undefined;
 
     const thumbTitle =
@@ -103,6 +106,10 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
       getMeta(meta, 'header_title') || getMeta(meta, 'thumb_title') || post.post_title;
     const longTitle =
       getMeta(meta, 'long_title') || getMeta(meta, 'header_title') || post.post_title;
+
+    const thumbTitleZh = await translateEnhanced(thumbTitle);
+    const headerTitleZh = await translateEnhanced(headerTitle);
+    const longTitleZh = await translateEnhanced(longTitle);
 
     const vimeoUrl = getMeta(meta, 'vimeo_link');
     const xinpianchangUrl = getMeta(meta, 'xinpianchang_link') || undefined;
@@ -141,8 +148,11 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
       slugZh: slugZh && slugZh !== slug ? slugZh : undefined,
       publishedAt: post.post_date,
       thumbTitle,
+      thumbTitleZh,
       headerTitle,
+      headerTitleZh,
       longTitle,
+      longTitleZh,
       excerpt,
       excerptZh,
       description,

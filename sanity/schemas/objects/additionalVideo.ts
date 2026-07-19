@@ -39,11 +39,27 @@ export const additionalVideo = defineType({
     }),
 
     defineField({
+      name: 'longTitleZh',
+      title: 'Title (Chinese)',
+      type: 'text',
+      rows: 2,
+      description: 'Chinese title — supports HTML <span> for .vp-outline styling.',
+    }),
+
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',
       rows: 3,
       description: 'Optional video description.',
+    }),
+
+    defineField({
+      name: 'descriptionZh',
+      title: 'Description (Chinese)',
+      type: 'text',
+      rows: 3,
+      description: 'Optional Chinese video description.',
     }),
   ],
 

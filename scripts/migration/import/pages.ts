@@ -21,6 +21,7 @@ export async function importPages(): Promise<number> {
       _type: 'page',
       title: item.title,
       slug: slugField(item.slug),
+      publishedAt: new Date(item.publishedAt).toISOString(),
       showHeroHeader: item.showHeroHeader,
       body: htmlToPortableText(item.bodyHtml, idMap),
       noIndex: item.noIndex,
@@ -51,7 +52,9 @@ export async function importPages(): Promise<number> {
           _type: 'founder',
           name: f.name,
           jobTitle: f.jobTitle,
+          ...(f.jobTitleZh ? { jobTitleZh: f.jobTitleZh } : {}),
           bio: f.bio,
+          ...(f.bioZh ? { bioZh: f.bioZh } : {}),
           ...(image ? { image } : {}),
           ...(f.sameAs.length ? { sameAs: f.sameAs } : {}),
         };

@@ -1,0 +1,290 @@
+{
+  "generatedAt": "2026-07-16T14:36:06.124Z",
+  "totalEntries": 141,
+  "findingCounts": {
+    "info": 18,
+    "warn": 14
+  },
+  "byCode": {
+    "identical_en_zh": 20,
+    "no_cjk": 12
+  },
+  "errorSlugCount": 0,
+  "warnOnlySlugCount": 9,
+  "errorSlugs": [],
+  "warnOnlySlugs": [
+    "bitget-getagent-ft-julian-alvarez",
+    "comfort-disco",
+    "dji-meet-osmo-pocket",
+    "mammotion-luba-3-awd",
+    "mammotion-yuka-mini-2",
+    "oppo-reno-6-pro-5g",
+    "oppo-reno10-pro-5g",
+    "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+    "zhiyun-weebill-3s-crane-3s"
+  ],
+  "unmappedCreditRoles": [],
+  "findings": {
+    "error": [],
+    "warn": [
+      {
+        "severity": "warn",
+        "slug": "bitget-getagent-ft-julian-alvarez",
+        "field": "titleZh",
+        "code": "no_cjk",
+        "message": "titleZh has no Chinese characters",
+        "preview": "Bitget - GetAgent ft.Julián Álvarez"
+      },
+      {
+        "severity": "warn",
+        "slug": "comfort-disco",
+        "field": "titleZh",
+        "code": "no_cjk",
+        "message": "titleZh has no Chinese characters",
+        "preview": "Comfort Disco Xin Vía"
+      },
+      {
+        "severity": "warn",
+        "slug": "comfort-disco",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh identical to English (likely untranslated)",
+        "preview": "Comfort Disco Xin Vía"
+      },
+      {
+        "severity": "warn",
+        "slug": "comfort-disco",
+        "field": "headerTitleZh",
+        "code": "no_cjk",
+        "message": "headerTitleZh has no Chinese characters",
+        "preview": "Comfort Disco Xin Vía"
+      },
+      {
+        "severity": "warn",
+        "slug": "dji-meet-osmo-pocket",
+        "field": "longTitleZh",
+        "code": "no_cjk",
+        "message": "longTitleZh has no Chinese characters",
+        "preview": "DJI Osmo Pocket"
+      },
+      {
+        "severity": "warn",
+        "slug": "mammotion-yuka-mini-2",
+        "field": "titleZh",
+        "code": "no_cjk",
+        "message": "titleZh has no Chinese characters",
+        "preview": "Mammotion - YUKA Mini 2"
+      },
+      {
+        "severity": "warn",
+        "slug": "mammotion-luba-3-awd",
+        "field": "titleZh",
+        "code": "no_cjk",
+        "message": "titleZh has no Chinese characters",
+        "preview": "Mammotion - LUBA 3 AWD"
+      },
+      {
+        "severity": "warn",
+        "slug": "oppo-reno10-pro-5g",
+        "field": "headerTitleZh",
+        "code": "no_cjk",
+        "message": "headerTitleZh has no Chinese characters",
+        "preview": "OPPO Reno10 Pro+"
+      },
+      {
+        "severity": "warn",
+        "slug": "oppo-reno10-pro-5g",
+        "field": "longTitleZh",
+        "code": "no_cjk",
+        "message": "longTitleZh has no Chinese characters",
+        "preview": "OPPO Reno10 Pro+"
+      },
+      {
+        "severity": "warn",
+        "slug": "oppo-reno-6-pro-5g",
+        "field": "titleZh",
+        "code": "no_cjk",
+        "message": "titleZh has no Chinese characters",
+        "preview": "OPPO Reno 6 Pro 5G"
+      },
+      {
+        "severity": "warn",
+        "slug": "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+        "field": "longTitleZh",
+        "code": "no_cjk",
+        "message": "longTitleZh has no Chinese characters",
+        "preview": "Valerion VisionMaster Max"
+      },
+      {
+        "severity": "warn",
+        "slug": "zhiyun-weebill-3s-crane-3s",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh identical to English (likely untranslated)",
+        "preview": "Zhiyun WEEBILL & CRANE-M 3S"
+      },
+      {
+        "severity": "warn",
+        "slug": "zhiyun-weebill-3s-crane-3s",
+        "field": "headerTitleZh",
+        "code": "no_cjk",
+        "message": "headerTitleZh has no Chinese characters",
+        "preview": "Zhiyun WEEBILL & CRANE-M 3S"
+      },
+      {
+        "severity": "warn",
+        "slug": "zhiyun-weebill-3s-crane-3s",
+        "field": "longTitleZh",
+        "code": "no_cjk",
+        "message": "longTitleZh has no Chinese characters",
+        "preview": "Zhiyun WEEBILL & CRANE-M 3S"
+      }
+    ],
+    "info": [
+      {
+        "severity": "info",
+        "slug": "asmoke-essential-grill-like-a-pro-anywhere",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "ASMOKE Essential"
+      },
+      {
+        "severity": "info",
+        "slug": "aquafina",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Aquafina"
+      },
+      {
+        "severity": "info",
+        "slug": "dji-introducing-zenmuse-xt2",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "DJI Zenmuse XT2"
+      },
+      {
+        "severity": "info",
+        "slug": "dji-meet-osmo-pocket",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "DJI Osmo Pocket"
+      },
+      {
+        "severity": "info",
+        "slug": "dji-meet-the-robomaster-s1",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "DJI RoboMaster S1"
+      },
+      {
+        "severity": "info",
+        "slug": "hidock-chatgpt-powered-audio-dock",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "HiDock"
+      },
+      {
+        "severity": "info",
+        "slug": "indelb-go20",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "IndelB Go20"
+      },
+      {
+        "severity": "info",
+        "slug": "moprobo-one-go-say-goodbye-to-the-vacuum",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Moprobo One-Go"
+      },
+      {
+        "severity": "info",
+        "slug": "oppo-reno10-pro-5g",
+        "field": "titleZh",
+        "code": "identical_en_zh",
+        "message": "titleZh matches EN (brand-like — often OK)",
+        "preview": "OPPO Reno10 Pro+ 5G"
+      },
+      {
+        "severity": "info",
+        "slug": "oppo-reno10-pro-5g",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "OPPO Reno10 Pro+"
+      },
+      {
+        "severity": "info",
+        "slug": "roborock-qrevo-s-essential-power-ultimate-convenience",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Roborock Qrevo-S"
+      },
+      {
+        "severity": "info",
+        "slug": "techcombank-inspire-why-not",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Techcombank Inspire"
+      },
+      {
+        "severity": "info",
+        "slug": "techcombank-inspire-why-not",
+        "field": "headerTitleZh",
+        "code": "identical_en_zh",
+        "message": "headerTitleZh matches EN (brand-like — often OK)",
+        "preview": "Techcombank Inspire"
+      },
+      {
+        "severity": "info",
+        "slug": "ulike-air-10",
+        "field": "titleZh",
+        "code": "identical_en_zh",
+        "message": "titleZh matches EN (brand-like — often OK)",
+        "preview": "Ulike Air 10"
+      },
+      {
+        "severity": "info",
+        "slug": "ulike-air-10",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Ulike Air 10"
+      },
+      {
+        "severity": "info",
+        "slug": "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Valerion VisionMaster Max"
+      },
+      {
+        "severity": "info",
+        "slug": "vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi",
+        "field": "thumbTitleZh",
+        "code": "identical_en_zh",
+        "message": "thumbTitleZh matches EN (brand-like — often OK)",
+        "preview": "Vinamilk Probi"
+      },
+      {
+        "severity": "info",
+        "slug": "vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi",
+        "field": "headerTitleZh",
+        "code": "identical_en_zh",
+        "message": "headerTitleZh matches EN (brand-like — often OK)",
+        "preview": "Vinamilk Probi"
+      }
+    ]
+  }
+}

@@ -4,7 +4,7 @@
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PortfolioCard } from '@/components/portfolio/PortfolioCard';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { PageHero } from '@/components/ui/PageHero';
@@ -93,6 +93,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   const pageTitleLabel =
     typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const t = await getTranslations('Vietnam');
 
   return (
     <>
@@ -122,7 +123,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
         <SectionWrapper borderTop>
           <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
             <h2 className="mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
-              SHOT IN <span className="vp-outline">VIETNAM</span>
+              <span className="vp-outline">{t('shotInOutline')}</span> {t('shotIn')}
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {vietnamPortfolio.map((entry, index) => (

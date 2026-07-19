@@ -12,7 +12,7 @@ import { defineField, defineType } from 'sanity';
 
 export const videoFormat = defineType({
   name: 'videoFormat',
-  title: 'Video Format',
+  title: 'Video Formats',
   type: 'document',
 
   fields: [
@@ -58,16 +58,26 @@ export const videoFormat = defineType({
         maxLength: 96,
       },
     }),
+
+    defineField({
+      name: 'parent',
+      title: 'Parent Video Format',
+      type: 'reference',
+      to: [{ type: 'videoFormat' }],
+      description: 'Optional parent category for nested filter dropdowns.',
+    }),
   ],
 
   preview: {
     select: {
       title: 'title',
       subtitle: 'titleZh',
+      parentTitle: 'parent.title',
     },
-    prepare({ title, subtitle }) {
+    prepare({ title, subtitle, parentTitle }) {
+      const displayTitle = parentTitle ? `↳ ${title}` : title;
       return {
-        title: title || 'Untitled format',
+        title: displayTitle || 'Untitled format',
         subtitle: subtitle ? `中文: ${subtitle}` : undefined,
       };
     },

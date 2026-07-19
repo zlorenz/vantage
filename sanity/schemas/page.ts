@@ -3,22 +3,35 @@
  *
  * Source: content-schema.md §4.4
  * WordPress origin: `page` (9 entries — 8 public bilingual + 1 internal EN-only)
- *
- * Supports optional hero header, homepage carousel slides, and About page founders.
  */
 
 import { defineField, defineType } from 'sanity';
 
 export const page = defineType({
   name: 'page',
-  title: 'Page',
+  title: 'Pages',
   type: 'document',
+
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'body', title: 'Body' },
+    { name: 'extras', title: 'Extras' },
+    { name: 'seo', title: 'SEO' },
+  ],
+
+  fieldsets: [
+    { name: 'titles', title: 'Titles', options: { columns: 2 } },
+    { name: 'slugs', title: 'Slugs', options: { columns: 2 } },
+    { name: 'hero', title: 'Hero', options: { columns: 2 } },
+  ],
 
   fields: [
     defineField({
       name: 'title',
       title: 'Title (English)',
       type: 'string',
+      group: 'content',
+      fieldset: 'titles',
       validation: (rule) => rule.required(),
     }),
 
@@ -26,13 +39,17 @@ export const page = defineType({
       name: 'titleZh',
       title: 'Title (Chinese)',
       type: 'string',
+      group: 'content',
+      fieldset: 'titles',
     }),
 
     defineField({
       name: 'slug',
       title: 'Slug (English)',
       type: 'slug',
-      description: 'URL slug — must match live site URLs (e.g. about, work, news).',
+      group: 'content',
+      fieldset: 'slugs',
+      description: 'Must match live URLs (e.g. about, work, news).',
       options: { source: 'title', maxLength: 96 },
       validation: (rule) => rule.required(),
     }),
@@ -41,16 +58,25 @@ export const page = defineType({
       name: 'slugZh',
       title: 'Slug (Chinese)',
       type: 'slug',
-      description: 'Chinese URL slug for /zh/[slug]/ pages.',
+      group: 'content',
+      fieldset: 'slugs',
       options: { source: 'titleZh', maxLength: 96 },
+    }),
+
+    defineField({
+      name: 'publishedAt',
+      title: 'Published At',
+      type: 'datetime',
+      group: 'content',
+      description: 'Original WordPress publish date.',
     }),
 
     defineField({
       name: 'showHeroHeader',
       title: 'Show Hero Header',
       type: 'boolean',
-      description:
-        'Display PageHero header. Off for Home and Campaign Brief pages (§4.4).',
+      group: 'content',
+      description: 'Off for Home and Campaign Brief pages.',
       initialValue: true,
     }),
 
@@ -59,7 +85,9 @@ export const page = defineType({
       title: 'Hero Title (English)',
       type: 'text',
       rows: 2,
-      description: 'Page hero heading — supports <span class="vp-outline"> for outline text.',
+      group: 'content',
+      fieldset: 'hero',
+      description: 'Supports <span class="vp-outline">.',
     }),
 
     defineField({
@@ -67,20 +95,24 @@ export const page = defineType({
       title: 'Hero Title (Chinese)',
       type: 'text',
       rows: 2,
+      group: 'content',
+      fieldset: 'hero',
     }),
 
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
+      group: 'content',
       options: { hotspot: true },
-      description: 'Hero background image when showHeroHeader is enabled.',
+      description: 'Hero background when Show Hero Header is on.',
     }),
 
     defineField({
       name: 'body',
       title: 'Body (English)',
       type: 'array',
+      group: 'body',
       of: [{ type: 'block' }, { type: 'image' }, { type: 'imageGallery' }, { type: 'ctaButton' }],
       validation: (rule) => rule.required(),
     }),
@@ -89,6 +121,7 @@ export const page = defineType({
       name: 'bodyZh',
       title: 'Body (Chinese)',
       type: 'array',
+      group: 'body',
       of: [{ type: 'block' }, { type: 'image' }, { type: 'imageGallery' }, { type: 'ctaButton' }],
     }),
 
@@ -96,39 +129,49 @@ export const page = defineType({
       name: 'heroSlides',
       title: 'Hero Carousel Slides',
       type: 'array',
+      group: 'extras',
       of: [{ type: 'heroSlide' }],
-      description: 'Homepage only — full-viewport carousel referencing portfolio entries.',
+      description: 'Homepage only.',
     }),
 
     defineField({
       name: 'founders',
       title: 'Founders',
       type: 'array',
+      group: 'extras',
       of: [{ type: 'founder' }],
-      description: 'About page only — founder profiles, also feeds JSON-LD structured data.',
+      description: 'About page only.',
     }),
 
     defineField({
       name: 'pdfDownload',
       title: 'PDF Download',
       type: 'pdfDownload',
-      description: 'Optional PDF download block (Vietnam Location Guide).',
-    }),
-
-    defineField({
-      name: 'seo',
-      title: 'SEO',
-      type: 'seoFields',
+      group: 'extras',
+      description: 'Optional (Vietnam Location Guide).',
     }),
 
     defineField({
       name: 'noIndex',
       title: 'No Index',
       type: 'boolean',
-      description:
-        'Exclude from search engine indexing and sitemap. ' +
-        'Required for work-internal page only (§4.4).',
+      group: 'seo',
+      description: 'Exclude from search indexing and sitemap (work-internal).',
       initialValue: false,
+    }),
+
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'seoFields',
+      group: 'seo',
+    }),
+
+    defineField({
+      name: 'trash',
+      type: 'trashMetadata',
+      hidden: true,
+      readOnly: true,
     }),
   ],
 

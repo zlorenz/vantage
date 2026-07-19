@@ -49,6 +49,9 @@ export async function importPortfolio(): Promise<number> {
     if (item.slugZh) doc.slugZh = slugField(item.slugZh);
     if (item.excerptZh) doc.excerptZh = item.excerptZh;
     if (item.descriptionZh) doc.descriptionZh = item.descriptionZh;
+    if (item.thumbTitleZh) doc.thumbTitleZh = item.thumbTitleZh;
+    if (item.headerTitleZh) doc.headerTitleZh = item.headerTitleZh;
+    if (item.longTitleZh) doc.longTitleZh = item.longTitleZh;
     if (item.xinpianchangUrl) doc.xinpianchangUrl = item.xinpianchangUrl;
     if (featuredImage) doc.featuredImage = featuredImage;
 

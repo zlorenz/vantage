@@ -44,6 +44,15 @@ export function imageField(
   };
 }
 
-export function docRef(sanityId: string): { _type: 'reference'; _ref: string } {
-  return { _type: 'reference', _ref: sanityId };
+function newKey(): string {
+  return Math.random().toString(36).slice(2, 14);
+}
+
+/** Reference for use inside arrays — includes `_key` so Studio can edit the list. */
+export function docRef(sanityId: string): {
+  _type: 'reference';
+  _ref: string;
+  _key: string;
+} {
+  return { _type: 'reference', _ref: sanityId, _key: newKey() };
 }

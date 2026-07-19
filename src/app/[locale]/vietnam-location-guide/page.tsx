@@ -4,14 +4,19 @@
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { FileDownloadBlock } from '@/components/ui/FileDownloadBlock';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { filterPdfDownloadArtifactBlocks } from '@/lib/portable-text-filters';
-import { pageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
+import {
+  vietnamLocationGuideTitle,
+  seoDescription,
+  buildOgImage,
+  buildPageMetadata,
+} from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -37,8 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
   if (!page) return { title: 'Not Found' };
 
-  const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = pageTitle(title);
+  const metaTitle = vietnamLocationGuideTitle(locale as Locale);
 
   return buildPageMetadata({
     locale: locale as Locale,
@@ -76,6 +80,7 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
   const pdfUrl = page.pdfDownload?.file?.asset?.url;
   const pdfLabel =
     page.pdfDownload?.label || 'Vietnam_Location_Guide_Vantage_Pictures.pdf';
+  const t = await getTranslations('Vietnam');
 
   const pageTitleLabel =
     typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
@@ -100,7 +105,13 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <PortableTextContent blocks={bodyBlocks} />
-          {pdfUrl ? <FileDownloadBlock label={pdfLabel} url={pdfUrl} /> : null}
+          {pdfUrl ? (
+            <FileDownloadBlock
+              label={pdfLabel}
+              url={pdfUrl}
+              downloadLabel={t('download')}
+            />
+          ) : null}
         </div>
       </SectionWrapper>
     </>

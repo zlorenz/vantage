@@ -47,8 +47,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale: typedLocale,
     enPath: '/work',
-    zhPath: '/zh/作品',
-    title: workPageTitle(),
+    zhPath: '/zh/工作',
+    title: workPageTitle(typedLocale),
     description: seoDescription(workPageDoc?.seo, typedLocale),
     image: buildOgImage(workPageDoc?.featuredImage),
     type: 'website',

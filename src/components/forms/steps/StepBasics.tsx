@@ -2,12 +2,8 @@
  * Step 1 — Basics: project title, company, project type, discovery source, referral fields.
  */
 
-import {
-  DISCOVERY_SOURCE_OPTIONS,
-  PROJECT_TYPE_OPTIONS,
-  CAMPAIGN_BRIEF_FIELD_LABELS,
-} from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
   FormField,
   FormSelect,
@@ -20,6 +16,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepBasicsProps {
+  ui: CampaignBriefUi;
   values: Pick<
     CampaignBriefFormValues,
     | 'project_title'
@@ -37,6 +34,7 @@ export interface StepBasicsProps {
 }
 
 export function StepBasics({
+  ui,
   values,
   onChange,
   visibility,
@@ -44,7 +42,8 @@ export function StepBasics({
   errors,
   disabled,
 }: StepBasicsProps) {
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
+  const hints = ui.hints;
 
   return (
     <div className="vp-form-grid">
@@ -53,7 +52,7 @@ export function StepBasics({
         htmlFor="project_title"
         required
         error={errors.project_title}
-        hint="Example: Nike Air Max 2025 Launch Campaign"
+        hint={hints.project_title}
       >
         <FormTextInput
           id="project_title"
@@ -70,7 +69,7 @@ export function StepBasics({
         htmlFor="company_name"
         required
         error={errors.company_name}
-        hint="Example: Nike Vietnam"
+        hint={hints.company_name}
       >
         <FormTextInput
           id="company_name"
@@ -88,7 +87,8 @@ export function StepBasics({
           name="project_type"
           value={values.project_type}
           onChange={(v) => onChange('project_type', v)}
-          options={PROJECT_TYPE_OPTIONS}
+          options={ui.projectTypes}
+          placeholder={ui.selectPlaceholder}
           disabled={disabled}
         />
       </FormField>
@@ -99,7 +99,8 @@ export function StepBasics({
           name="discovery_source"
           value={values.discovery_source}
           onChange={(v) => onChange('discovery_source', v)}
-          options={DISCOVERY_SOURCE_OPTIONS}
+          options={ui.discoverySources}
+          placeholder={ui.selectPlaceholder}
           disabled={disabled}
         />
       </FormField>

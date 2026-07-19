@@ -2,6 +2,7 @@
  * BlogSidebar — category list for news index and category archives.
  */
 
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import type { CategoryTerm } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -12,12 +13,14 @@ interface BlogSidebarProps {
   activeSlug?: string;
 }
 
-export function BlogSidebar({ categories, locale, activeSlug }: BlogSidebarProps) {
+export async function BlogSidebar({ categories, locale, activeSlug }: BlogSidebarProps) {
+  const t = await getTranslations('Blog');
+
   return (
     <aside className="vp-blog-sidebar sticky top-28">
       <div className="vp-blog-widget vp-blog-categories">
         <h3 className="vp-blog-widget__title mb-5 text-[clamp(1.75rem,2vw,3rem)] font-bold uppercase leading-tight">
-          {locale === 'zh' ? '博客分类' : 'BLOG CATEGORIES'}
+          {t('categories')}
         </h3>
         <ul className="vp-blog-categories-list m-0 flex list-none flex-col gap-2 p-0">
           {categories.map((category) => {

@@ -4,7 +4,7 @@
  * IMPORTANT: Never include the `/zh/` locale prefix here — the next-intl
  * `Link` and `useRouter` helpers add it automatically. For routes registered
  * in `routing.pathnames` (e.g. `/work`), pass the internal key; next-intl
- * localizes it to `/作品` under `/zh/`.
+ * localizes it to `/工作` under `/zh/`.
  *
  * CMS pages not yet in pathnames use their slug (or slugZh) as the path segment.
  */

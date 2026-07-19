@@ -2,14 +2,14 @@
 
 /**
  * SearchPageClient — debounced search UI reading ?q= from URL.
- *
- * Fetches results via /api/search (server-side Sanity query).
  */
 
 import { useDeferredValue, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
+import { blogCardExcerpt } from '@/lib/blog-excerpt';
 import type { Locale } from '@/i18n/routing';
 
 interface SearchResultWithImage {
@@ -27,6 +27,7 @@ interface SearchPageClientProps {
 }
 
 export function SearchPageClient({ locale }: SearchPageClientProps) {
+  const t = useTranslations('Search');
   const searchParams = useSearchParams();
   const query = searchParams.get('q')?.trim() ?? '';
   const deferredQuery = useDeferredValue(query);
@@ -66,21 +67,17 @@ export function SearchPageClient({ locale }: SearchPageClientProps) {
   const isPending = loading || query !== deferredQuery;
 
   if (!query) {
-    return (
-      <p className="font-light text-vp-text-muted">
-        {locale === 'zh' ? '请输入搜索词。' : 'Enter a search term above.'}
-      </p>
-    );
+    return <p className="font-light text-vp-text-muted">{t('hint')}</p>;
   }
 
   if (isPending) {
-    return <div className="vp-load-spinner mx-auto" aria-label="Loading search results" />;
+    return <div className="vp-load-spinner mx-auto" aria-label={t('loadingAria')} />;
   }
 
   if (!results.length) {
     return (
       <h2 className="vp-search-empty__title text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight">
-        {locale === 'zh' ? `未找到"${query}"的相关结果` : `No results for '${query}'`}
+        {t('noResults', { query })}
       </h2>
     );
   }
@@ -89,7 +86,9 @@ export function SearchPageClient({ locale }: SearchPageClientProps) {
     <div className="space-y-12">
       {portfolioResults.length > 0 ? (
         <section>
-          <h2 className="mb-6 text-xl font-bold uppercase tracking-vp-uppercase">PORTFOLIO</h2>
+          <h2 className="mb-6 text-xl font-bold uppercase tracking-vp-uppercase">
+            {t('portfolio')}
+          </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {portfolioResults.map((item) => (
               <SearchCard key={`${item._type}-${item.slug}`} item={item} locale={locale} />
@@ -100,7 +99,9 @@ export function SearchPageClient({ locale }: SearchPageClientProps) {
 
       {newsResults.length > 0 ? (
         <section>
-          <h2 className="mb-6 text-xl font-bold uppercase tracking-vp-uppercase">NEWS</h2>
+          <h2 className="mb-6 text-xl font-bold uppercase tracking-vp-uppercase">
+            {t('news')}
+          </h2>
           <div className="flex flex-col gap-12">
             {newsResults.map((item) => (
               <SearchNewsCard key={`${item._type}-${item.slug}`} item={item} locale={locale} />
@@ -137,6 +138,7 @@ function SearchCard({ item, locale }: { item: SearchResultWithImage; locale: Loc
 function SearchNewsCard({ item, locale }: { item: SearchResultWithImage; locale: Locale }) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
   const title = locale === 'zh' && item.titleZh ? item.titleZh : item.title;
+  const excerpt = blogCardExcerpt(item.excerpt);
 
   return (
     <article className="vp-post-card">
@@ -148,7 +150,7 @@ function SearchNewsCard({ item, locale }: { item: SearchResultWithImage; locale:
           <Image src={item.imageUrl} alt="" width={960} height={540} className="h-full w-full object-cover" />
         </Link>
       ) : null}
-      <div className="vp-post-card__body">
+      <div className="vp-post-card__body pt-4 md:pt-5">
         <h2 className="vp-post-card__title m-0 mb-1 text-[clamp(1.4rem,2vw,2.25rem)] font-bold uppercase leading-tight">
           <Link
             href={{ pathname: '/[slug]', params: { slug: slugParam } }}
@@ -157,8 +159,8 @@ function SearchNewsCard({ item, locale }: { item: SearchResultWithImage; locale:
             {title}
           </Link>
         </h2>
-        {item.excerpt ? (
-          <p className="m-0 line-clamp-3 font-light text-vp-text-muted">{item.excerpt}</p>
+        {excerpt ? (
+          <p className="m-0 line-clamp-3 font-light text-vp-text-muted">{excerpt}</p>
         ) : null}
       </div>
     </article>

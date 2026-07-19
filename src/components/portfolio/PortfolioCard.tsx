@@ -6,6 +6,7 @@
 
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
+import { pickLocaleField } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 import type { PortfolioCard as PortfolioCardData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -26,6 +27,8 @@ export function PortfolioCard({ entry, locale, revealIndex = 0 }: PortfolioCardP
     .height(540)
     .fit('crop')
     .url();
+
+  const thumbTitle = pickLocaleField(locale, entry.thumbTitle, entry.thumbTitleZh);
 
   return (
     <article
@@ -50,7 +53,7 @@ export function PortfolioCard({ entry, locale, revealIndex = 0 }: PortfolioCardP
           <div className="vp-card__overlay" aria-hidden />
           <h2
             className="vp-card__title"
-            dangerouslySetInnerHTML={{ __html: entry.thumbTitle }}
+            dangerouslySetInnerHTML={{ __html: thumbTitle }}
           />
         </div>
       </Link>

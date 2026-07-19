@@ -1,0 +1,884 @@
+[
+  {
+    "slug": "asmoke-essential-grill-like-a-pro-anywhere",
+    "_id": "portfolio-3256",
+    "core": {
+      "thumbTitleZh": {
+        "en": "ASMOKE Essential",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "asus-upgrade-to-incredible",
+    "_id": "portfolio-3101",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "ASUS Education <span>Upgrading Education to Incredible</span>",
+        "description": "<p>We enable educators and school partners to upgrade to incredible learning and teaching possibilities by providing durable education laptops, classroom PCs, easy-to-service modular designs, and comprehensive student-centered solutions. At ASUS, you can rely on us to upgrade your education to incredible.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "bidv-smartbanking-hoa-nhi%cc%a3p-so%cc%82ng-tho%cc%82ng-minh",
+    "_id": "portfolio-3501",
+    "core": {
+      "longTitleZh": {
+        "en": "BIDV SmartBanking <span> Hòa nhịp sống thông minh </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "banyan-tree-theres-more-to-discovery",
+    "_id": "portfolio-3239",
+    "core": {
+      "titleZh": {
+        "en": "Banyan Tree – There's More to Discovery",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "bitget-elite-traders",
+    "_id": "portfolio-3187",
+    "core": {
+      "longTitleZh": {
+        "en": "Bitget Elite Traders <span> Matthew (AlphanumetriX) </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Bitget Elite Traders <span>Annii (Trade Travel Chill)</span>",
+        "description": "<p>Annii, the founder of TradeTravelChill with over 89,000 members, utilizes Bitget for its staking feature, perfectly aligning with her trading style that prioritizes freedom.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Bitget Elite Traders <span>David Justin Academy</span>",
+        "description": "<p>David Justin Academy, having nurtured over 150,000 students since 2017, chooses Bitget for its efficiency and ease-of-use, enabling students to implement strategies they learn.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 2,
+        "longTitle": "Bitget Elite Traders <span>Long</span>",
+        "description": "<p>Thanh Long, a Vietnamese investor active in the space since 2017, chooses Bitget for its copy trading features, making crypto trading accessible to everyone.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 3,
+        "longTitle": "Bitget Elite Traders <span>Raizel (Brain Bro Crypto)</span>",
+        "description": "<p>Raizel, also known as Brain Bro Crypto, running a YouTube channel with 184,000 subscribers, recommends Bitget for its user-friendly interface and bot trading features that enhance trading efficiency.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "bitget-getagent-ft-julian-alvarez",
+    "_id": "portfolio-3618",
+    "core": {
+      "descriptionZh": {
+        "en": "For this latest spot, we built a sharp visual parallel between elite sport and intelligent trading — anchored by LALIGA football superstar Julián Álvarez. Known for his instinct, precision, and ability to strike at exactly the right moment, Álvarez became the perfect metaphor for decision-making powered by intelligence.\r\n<br><br>\r\nWe crafted a high-energy film that blends the cinematic language of top-tier football with a clean, tech-forward aesthetic. Through performance-driven pacing, dynamic framing, and a confident visual rhythm, the piece captures the tension of the decisive moment — where preparation meets timing, and the right call changes everything.",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "bitget-trade-smarter",
+    "_id": "portfolio-3277",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Bitget Trade Smarter <span>The Mandatory</span>",
+        "description": "<p>Tired of these endless meetings? Craig came up with a brilliant idea to combine work and fun!</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Bitget Trade Smarter <span>The Dinner</span>",
+        "description": "<p>Empty fridge? No problem. Even at the last minute, John can treat his family to a delicious feast!</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 2,
+        "longTitle": "Bitget Trade Smarter <span>The Traveler</span>",
+        "description": "<p>Are payment issues holding you back? Monica believes that where there's a will, there's a way!</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "braun-x-dji",
+    "_id": "portfolio-2062",
+    "core": {
+      "longTitleZh": {
+        "en": "Braun x DJI <span> Dare to Be Different </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "dji-mavic-2-ski-mountaineering-with-jimmy-chin",
+    "_id": "portfolio-2768",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "DJI Mavic 2 <span> Expedition Greenland </span> Behind the Scenes",
+        "description": "<p>The short film Expedition Greenland allowed Jimmy Chin to demonstrate the endless possibilities of shooting with DJI’s Mavic 2. From beautiful aerial landscapes to adrenaline-inducing ski footage, the Mavic 2 can capture it all. Chin is able to convey the magnificence of the awe-inspiring peaks of Greenland thanks to the vivid colors and details granted by the Mavic 2.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "dji-osmo-pocket-portable-power",
+    "_id": "portfolio-2066",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "DJI Osmo Pocket <span>Compact Convenience</span>",
+        "description": "<p>Visualize the compact convenience of Osmo Pocket – complete storytelling freedom in the palm of your hand. With Motionlapse, ActiveTrack, 3×3 Panorama, and other unique functions, your story will always be incredible.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "dji-world-the-story-of-aisholpan",
+    "_id": "portfolio-2903",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "DJI World <span> The Story of Aisholpan </span> Behind the Scenes",
+        "description": "<p>The ancient tradition of hunting with eagles has been practiced in the mountains of Western Mongolia for centuries. Historically done by men, a brave young girl is now taking on her father’s legacy. Hers is a breathtaking story of empowerment and evolving tradition, set in the stunning landscapes of the Altai Mountains. Captured with the DJI Ronin and Inspire 2 by the DJI film crew.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "dji-introducing-flighthub",
+    "_id": "portfolio-2714",
+    "core": {
+      "longTitleZh": {
+        "en": "DJI <span> Introducing FlightHub </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "dji-introducing-phantom-4-pro",
+    "_id": "portfolio-2735",
+    "core": {
+      "longTitleZh": {
+        "en": "DJI <span> Introducing Phantom 4 Pro </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "dji-introducing-zenmuse-x5-series",
+    "_id": "portfolio-2736",
+    "core": {
+      "headerTitleZh": {
+        "en": "DJI <span> Zenmuse X5 Series </span>",
+        "brandOnly": true
+      },
+      "longTitleZh": {
+        "en": "DJI <span> Introducing Zenmuse X5 Series </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "dji-introducing-zenmuse-xt2",
+    "_id": "portfolio-2738",
+    "core": {
+      "thumbTitleZh": {
+        "en": "DJI Zenmuse XT2",
+        "brandOnly": true
+      },
+      "headerTitleZh": {
+        "en": "DJI <span> Zenmuse XT2 </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "mavic-mini",
+    "_id": "portfolio-2072",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "DJI Mavic Mini <span> It's Easy </span>",
+        "description": "<p>Oh boy, another complex instructional video with a long list of things you’ll probably forget. There’s no avoiding it right? Wrong. With Mavic Mini, smart features like Flight Tutorial and a simplified app let you skip the headaches and fly with confidence.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "DJI Mavic Mini <span> Take Better Selfies </span>",
+        "description": "<p>Ah, the never-ending quest for the perfect selfie. Can it ever be achieved? Is it even possible? Who knows, but thanks to Mavic Mini’s easy-to-use interface and the DJI Fly app’s breezy editor, you can get pretty darn close.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "dji-meet-osmo-pocket",
+    "_id": "portfolio-2739",
+    "core": {
+      "thumbTitleZh": {
+        "en": "DJI Osmo Pocket",
+        "brandOnly": true
+      },
+      "headerTitleZh": {
+        "en": "DJI <span> Osmo Pocket </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "dji-meet-the-robomaster-s1",
+    "_id": "portfolio-2747",
+    "core": {
+      "thumbTitleZh": {
+        "en": "DJI RoboMaster S1",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "dji-my-hong-kong",
+    "_id": "portfolio-2759",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "<span>DJI </span> My Hong Kong <span> Mountain Biking </span>",
+        "description": "<p>Hong Kong is a city of wild contrasts, where urban chaos, untamed nature, and perfect solitude come together. For everybody in Hong Kong, the city has something different to offer, and every new place offers a different perspective, making Hong Kong a natural fit for DJI's third flagship store.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "dji-osmo-mobile-campaign",
+    "_id": "portfolio-2782",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "DJI Osmo Mobile <span> The Vlogger </span>",
+        "description": "<p>The perfect way of capturing Hong Kong’s moveable feasts is here with the DJI Osmo Mobile. Transform your phone into a smart motion camera to get buttery smooth video of anything from streetfood to three star restaurants. Set it up with ActiveTrack to capture your own home cooking sessions, and easily share with the world, directly from DJI GO.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "dji-my-mavic",
+    "_id": "portfolio-2748",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "<span>DJI </span> My Mavic <span> Priceless Moments (ft. Ellie &amp; Jared) </span>",
+        "description": "<p>Ellie and Jared share videos of their young boys Jackson and Calvin, (and their dog Penny), with more than a million fans across the world every day. They believe that every moment their family shares together is priceless and worthy of being remembered. With the Mavic Pro, they can document all these moments of their family’s love, shenanigans, and journey. </p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "<span>DJI </span> My Mavic <span> Tech Geek (ft. Kai Man Wong) </span>",
+        "description": "<p>Self professed tech geek Kai has played around with his fair share of cool gadgets. But the Mavic Pro is something different altogether.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "ecoflow-delta-series-live-without-limits",
+    "_id": "portfolio-2909",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "EcoFlow DELTA Max <span>Unleash Your Capacity</span>",
+        "description": "<p>This is the EcoFlow DELTA Max. Charge up from 0-80% in 65 mins, backup your home with 2-6kW capacity, and power pretty much anything with 2400W output. Live on Kickstarter now!</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "EcoFlow DELTA Mini <span>Move With Power</span>",
+        "description": "<p>The all-new EcoFlow DELTA mini is here. Building off the success of its bigger brother - DELTA - The DELTA mini packs 882Wh into a smaller design. Move with power.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "ecoflow-river-600-customizable-backup-power",
+    "_id": "portfolio-2908",
+    "core": {
+      "thumbTitleZh": {
+        "en": "EcoFlow<br>RIVER 600",
+        "brandOnly": true
+      },
+      "longTitleZh": {
+        "en": "EcoFlow RIVER 600<span> Customizable Backup Power </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "elewana-collection-loisaba-conservancy-safari",
+    "_id": "portfolio-2848",
+    "core": {
+      "titleZh": {
+        "en": "Elewana Collection - Loisaba Conservancy Safari",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "fujifilm-jouney-toward-more-accessible-medicine",
+    "_id": "portfolio-2842",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Fujifilm <span>Smarter Systems, Happier Patients</span>",
+        "description": "<p>Globally, over the last twenty years, life expectancy has increased from an average of 66-years-old to 73-years-old. But as we begin to live longer lives, we become more susceptible to serious illness. How can technology assist us in identifying diseases early and help us live healthier lives?</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "govee-lit-by-govee",
+    "_id": "portfolio-3510",
+    "core": {
+      "thumbTitleZh": {
+        "en": "Govee<br>Lit By Govee",
+        "brandOnly": true
+      },
+      "headerTitleZh": {
+        "en": "Govee <span> Lit By Govee </span>",
+        "brandOnly": true
+      },
+      "longTitleZh": {
+        "en": "Govee <span> Lit By Govee </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Govee <span>Connect, Inspire, and Shine with the Govee Community</span>",
+        "needTitle": true,
+        "needDesc": false
+      }
+    ]
+  },
+  {
+    "slug": "govee-permanent-outdoor-lights",
+    "_id": "portfolio-3523",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Govee <span> Permanent Outdoor Lights </span>Battle of the Block",
+        "needTitle": true,
+        "needDesc": false
+      }
+    ]
+  },
+  {
+    "slug": "hidock-chatgpt-powered-audio-dock",
+    "_id": "portfolio-3152",
+    "core": {
+      "thumbTitleZh": {
+        "en": "HiDock",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "hyundai-progress-for-humanity",
+    "_id": "portfolio-2024",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Hyundai <span>Experiencing More in a Tiny Home</span>",
+        "description": "<p>In search of adventure and a simpler lifestyle, this family hit the road in a tiny, traveling home. Leaving routine behind, the Collier family found freedom spending time together – exploring the length and breadth of New Zealand and its stunning scenery.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Hyundai <span>Driving Toward a Sustainable Future with David de Rothschild</span>",
+        "description": "<p>For the last decade, adventurer and environmentalist David de Rothschild has been trying to push the plastics conversation. His relationship with Hyundai started in 2016 as both realized they shared a common understanding of our planet's future.</p>\r\n<p>Today we live with a greater understanding of sustainability challenges – and with a host of solutions, too. IONIQ, Hyundai’s new electric line-up, utilizes sustainable materials that will allow the vehicle to perform with a much lighter footprint. By listening and learning from others, there’s an opportunity for the whole system to shift to a more sustainable way of being. If we join hands, sustainability for human progress is within our reach.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "indelb-go20",
+    "_id": "portfolio-2069",
+    "core": {
+      "titleZh": {
+        "en": "IndelB ICECO Go20 – Let's Own a Different Summer!",
+        "brandOnly": false
+      },
+      "thumbTitleZh": {
+        "en": "IndelB Go20",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "msi-120hz-perfectedge-monitor",
+    "_id": "portfolio-3280",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "MSI 120Hz PerfectEdge Monitor <span>Your Daily Sidekick</span> Accessory Slot",
+        "description": "<p>Discover the perfect blend of style and functionality with the MSI PRO Monitor. Featuring a 120Hz PerfectEdge display, this monitor delivers smooth visuals for a more immersive experience. With an accessory slot for easy organization, the minimal setup ensures maximum efficiency in your workspace. The MSI PRO MP251 E2 and PRO MP252 E2 are truly your daily sidekicks, designed to help you achieve more with less effort.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "MSI 120Hz PerfectEdge Monitor <span>Your Daily Sidekick</span> EyesErgo",
+        "description": "<p>Experience smooth comfort with the MSI PRO Monitor's 120Hz PerfectEdge display, designed to reduce eye strain with advanced eye care technology. Say goodbye to the choppy visuals of 60Hz and enjoy a more fluid viewing experience that keeps you focused and productive. The MSI PRO MP251 E2 and PRO MP252 E2, your daily sidekick, offers the perfect balance of comfort and performance for your everyday needs.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn",
+    "_id": "portfolio-3451",
+    "core": {
+      "titleZh": {
+        "en": "Mammotion LUBA Mini AWD – Compact, Powerful & Ready to Conquer Your Lawn",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "mammotion-luba-automated-robot-lawn-mower",
+    "_id": "portfolio-2977",
+    "core": {
+      "headerTitleZh": {
+        "en": "Mammotion Luba <span> Lawn Mower </span>",
+        "brandOnly": true
+      },
+      "longTitleZh": {
+        "en": "Mammotion Luba <span> Automated Robot Lawn Mower </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "mammotion-let-luba-2-do-it",
+    "_id": "portfolio-3228",
+    "core": {
+      "thumbTitleZh": {
+        "en": "Mammotion<br>Let LUBA 2 Do It",
+        "brandOnly": false
+      },
+      "headerTitleZh": {
+        "en": "Mammotion <span> Let LUBA 2 Do It </span>",
+        "brandOnly": false
+      },
+      "longTitleZh": {
+        "en": "Mammotion <span> Let LUBA 2 Do It </span>Enjoy Life with Smart Lawn Care",
+        "brandOnly": false
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Mammotion <span>Let LUBA 2 Do It</span> Conquer Any Terrain with Ease",
+        "description": "<p>Ready to conquer steep slopes and challenging terrain effortlessly? Let LUBA 2 AWD take charge with its exceptional climbing ability, navigating through diverse landscapes with ease. LUBA 2 AWD ensures a hassle-free lawn care experience, freeing you to fully immerse yourself in your racing games.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "mammotion-yuka-mini-2",
+    "_id": "portfolio-3619",
+    "core": {
+      "descriptionZh": {
+        "en": "For this campaign, we brought Mammotion’s YUKA Mini 2 to life through a playful, performance-driven lens — treating a compact robot mower with the same cinematic respect you’d give a hero product twice its size.\r\n<br><br>\r\nOur approach focused on clarity and character: clean visual storytelling, confident camera language, and moments of subtle humor that highlighted the product’s autonomy without overcomplicating the message. By blending lifestyle realism with polished product cinematography, we created a campaign that feels smart, approachable, and distinctly modern — showcasing intelligent automation in a way that’s both engaging and visually elevated.",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "moprobo-one-go-say-goodbye-to-the-vacuum",
+    "_id": "portfolio-3258",
+    "core": {
+      "thumbTitleZh": {
+        "en": "Moprobo One-Go",
+        "brandOnly": true
+      },
+      "headerTitleZh": {
+        "en": "Moprobo <span> One-Go </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "oppo-reno10-pro-5g",
+    "_id": "portfolio-3162",
+    "core": {
+      "thumbTitleZh": {
+        "en": "OPPO Reno10 Pro+",
+        "brandOnly": true
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "OPPO Reno10 Pro+ 5G <span>System Smoothness</span>",
+        "needTitle": true,
+        "needDesc": false
+      },
+      {
+        "i": 1,
+        "longTitle": "OPPO Reno10 Pro+ 5G <span>Long-Lasting Battery</span>",
+        "needTitle": true,
+        "needDesc": false
+      },
+      {
+        "i": 2,
+        "longTitle": "OPPO Reno10 Pro+ 5G <span>Low Light</span>",
+        "needTitle": true,
+        "needDesc": false
+      },
+      {
+        "i": 3,
+        "longTitle": "OPPO Reno10 Pro+ 5G <span>Messy Street</span>",
+        "needTitle": true,
+        "needDesc": false
+      },
+      {
+        "i": 4,
+        "longTitle": "OPPO Reno10 Pro+ 5G <span>Nature</span>",
+        "needTitle": true,
+        "needDesc": false
+      }
+    ]
+  },
+  {
+    "slug": "oneplus-fast-smooth",
+    "_id": "portfolio-2981",
+    "core": {
+      "titleZh": {
+        "en": "OnePlus 10T – Fast & Smooth",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "oneplus-12-chasing-luna",
+    "_id": "portfolio-3173",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "OnePlus 12 <span>Chasing Luna</span> Behind the Scenes",
+        "description": "<p>The best time to take your moonshot was 55 years ago. The next best time is now. Join acclaimed wilderness landscape photographer Joshua Cripps as he Chases Luna with the OnePlus 12.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "oneplus-meet-8t",
+    "_id": "portfolio-2056",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "OnePlus 8T <span>Gaming Supercharged</span>",
+        "description": "<p>15 minutes is all it takes to supercharge your gaming experience with Warp Charge 65 on the OnePlus8T.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "oppo-reno-6-pro-5g",
+    "_id": "portfolio-2643",
+    "core": {
+      "titleZh": {
+        "en": "Oppo - Reno 6 Pro 5G",
+        "brandOnly": false
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "roborock-h7",
+    "_id": "portfolio-2652",
+    "core": {
+      "thumbTitleZh": {
+        "en": "Roborock H7<br>Campaign",
+        "brandOnly": true
+      },
+      "longTitleZh": {
+        "en": "Roborock H7 <span> Surprisingly Lightweight </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Roborock H7 <span>Keep Accessories Close with MagBase</span>",
+        "description": "<p>MagBase accessories make it easy to snap your accessories where you need them, or just put them away neatly on the dock.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Roborock H7 <span>Capture Pet Hair Everywhere</span>",
+        "description": "<p>Love your pets, hate their fur? No problem. Roborock H7 is a fur capturing powerhouse.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 2,
+        "longTitle": "Roborock H7 <span>Seriously Strong Suction</span>",
+        "description": "<p>Intensely powerful suction easily clears dust from floors and carpets, leaving your home floors literally spotless.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 3,
+        "longTitle": "Roborock H7 <span>Less Mess with a Dustbag</span>",
+        "description": "<p>Sick of dust clouds coming up every time you empty your bin? Got allergies? Don't worry, use the H7 with a dustbag and make dust clouds history.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 4,
+        "longTitle": "Roborock H7 <span>Long-Lasting Power</span>",
+        "description": "<p>Equipped with a massive LiPo battery, you can clean using the Roborock H7 for up to 90 minutes without changing a battery.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "roborock-qrevo-s-essential-power-ultimate-convenience",
+    "_id": "portfolio-3257",
+    "core": {
+      "thumbTitleZh": {
+        "en": "Roborock Qrevo-S",
+        "brandOnly": true
+      },
+      "headerTitleZh": {
+        "en": "Roborock <span> Qrevo-S </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "roborock-s8",
+    "_id": "portfolio-3127",
+    "core": {
+      "longTitleZh": {
+        "en": "Roborock S8 and S8+ <span> Forget About Cleaning, Really </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Roborock S8 Pro Ultra <span>Forget About Cleaning, Really</span>",
+        "description": "<p>Forget about cleaning, including robot maintenance. With Roborock’s all-in-one docking system – RockDock Ultra, and the most advanced cleaning technologies – DuoRoller Riser Brush and VibraRise 2.0 Mopping System, S8 Pro Ultra is here to free your time.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "samsung-galaxy-s21",
+    "_id": "portfolio-2645",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Samsung Galaxy S21 Ultra 5G <span>Active with Fixed Earphones</span>",
+        "description": "<p>7-second commercial spot for the Samsung Galaxy S21 Ultra 5G earphones accessory, released in January 2021.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Samsung Galaxy S21 Ultra 5G <span>Nailed It</span>",
+        "description": "<p>7-second commercial spot for the Samsung Galaxy S21 Ultra 5G, released in January 2021.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "ulike-air-10",
+    "_id": "portfolio-3502",
+    "core": {
+      "thumbTitleZh": {
+        "en": "Ulike Air 10",
+        "brandOnly": true
+      },
+      "headerTitleZh": {
+        "en": "Ulike <span> Air 10 </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Ulike Air 10 <span>Love Doesn't Have To Be Painful</span>",
+        "description": "<p>The Ulike Air 10 makes hair removal effortless and painless at home—helping you stay smooth, confident, and ready to go without the hassle of salon appointments or razor burn.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Ulike Air 10 <span>Smooth Skin, Unstoppable Confidence</span>",
+        "needTitle": true,
+        "needDesc": false
+      }
+    ]
+  },
+  {
+    "slug": "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+    "_id": "portfolio-3275",
+    "core": {
+      "titleZh": {
+        "en": "Valerion VisionMaster Max - Hollywood-Grade Home Cinema Experience",
+        "brandOnly": false
+      },
+      "thumbTitleZh": {
+        "en": "Valerion<br>VisionMaster Max",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi",
+    "_id": "portfolio-3287",
+    "core": {
+      "longTitleZh": {
+        "en": "Vinamilk Probi <span> Vững Dạ Mới Sáng Suốt, Êm Ruột Nuột Đời </span>",
+        "brandOnly": false
+      }
+    },
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Vinamilk Probi <span>Hạnh Phúc 26 Tỷ, Êm Ruột Nuột Đời</span>",
+        "description": "<p>Vinamilk Probi với Tryptophan giúp tăng hormone vui vẻ​. Hạnh phúc 26 tỷ​. Êm ruột, nuột đời​.</p>",
+        "needTitle": true,
+        "needDesc": true
+      },
+      {
+        "i": 1,
+        "longTitle": "Vinamilk Probi <span>Tốt Nghiệp Mọi Hành Trình, Êm Ruột Nuột Đời</span>",
+        "description": "<p>Vinamilk Probi với L.CASEI 431 giúp giảm 40% số ngày mắc cúm. Tốt nghiệp mọi hành trình!​</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "westin-hotels-resorts-busy-resting",
+    "_id": "portfolio-3464",
+    "core": {},
+    "additional": [
+      {
+        "i": 0,
+        "longTitle": "Westin Hotels &amp; Resorts <span>Himalayas</span> Busy Resting",
+        "description": "<p>Spaces that draw you in and leave you with peace. Experience the Himalayas in their purest form.</p>",
+        "needTitle": true,
+        "needDesc": true
+      }
+    ]
+  },
+  {
+    "slug": "realme-c75-everything-proof",
+    "_id": "portfolio-3283",
+    "core": {
+      "headerTitleZh": {
+        "en": "realme C75 <span> Everything Proof </span>",
+        "brandOnly": true
+      },
+      "longTitleZh": {
+        "en": "realme C75 <span> Everything Proof </span>",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  },
+  {
+    "slug": "realme-x7-fast-powerful",
+    "_id": "portfolio-2061",
+    "core": {
+      "titleZh": {
+        "en": "realme X7 – Fast & Powerful",
+        "brandOnly": true
+      }
+    },
+    "additional": []
+  }
+]

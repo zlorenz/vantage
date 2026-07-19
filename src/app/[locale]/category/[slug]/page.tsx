@@ -12,6 +12,7 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { taxonomyArchiveTitle, blogCategoryDescription, buildPageMetadata } from '@/lib/metadata';
+import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -39,15 +40,16 @@ export async function generateStaticParams() {
   );
 
   return routing.locales.flatMap((locale) =>
-    categories.map((category) => ({
-      locale,
-      slug: locale === 'zh' ? category.slugZh || category.slug : category.slug,
-    })),
+    categories.flatMap((category) => {
+      const base = locale === 'zh' ? category.slugZh || category.slug : category.slug;
+      return expandSlugParam(base).map((slug) => ({ locale, slug }));
+    }),
   );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
+  const slug = decodePathSlug(rawSlug);
   const category = await sanityClient.fetch<CategoryTerm | null>(CATEGORY_BY_SLUG_QUERY, {
     slug,
   });
@@ -68,8 +70,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryArchivePage({ params }: Props) {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
+  const slug = decodePathSlug(rawSlug);
 
   const typedLocale = locale as Locale;
 

@@ -24,7 +24,22 @@ export function filterPdfDownloadArtifactBlocks(
 function isGalleryCaptionArtifact(block: PortableTextBlock): boolean {
   if (block._type !== 'block' || block.style !== 'normal') return false;
   const text = getPortableTextBlockPlainText(block).trim();
-  return text.length > 120 && !/[.!?]/.test(text) && /Studio|City|Vietnam|Cave|Island/i.test(text);
+  if (!text) return false;
+
+  // Collapsed caption dumps are usually English place/studio names glued together
+  // without sentence punctuation (length can be under 120 for short studio rows).
+  const looksGlued =
+    /City[A-Z]|Vietnam[A-Z]|Studio[A-Z]|Island[A-Z]|Pass[A-Z]|Bay[A-Z]/i.test(text) ||
+    (text.match(/Ho Chi Minh City/gi)?.length ?? 0) >= 2 ||
+    (text.match(/\b(Studio|Cave|Island|Bridge|Pagoda|Museum|Peak|Bay)\b/gi)?.length ?? 0) >= 3;
+
+  if (looksGlued && !/[.!?。]/.test(text)) return true;
+
+  return (
+    text.length > 100 &&
+    !/[.!?。]/.test(text) &&
+    /Studio|City|Vietnam|Cave|Island|Bridge|Pagoda|Museum/i.test(text)
+  );
 }
 
 /** Sections rendered separately on vietnam-production-service page. */
@@ -48,8 +63,14 @@ export function filterVietnamProductionServiceBody(
     if (block._type === 'block' && block.style === 'h1') {
       const text = getPortableTextBlockPlainText(block).trim();
       if (/^shot\s+in\s+vietnam$/i.test(text)) continue;
+      if (/^在越南拍摄$/.test(text.replace(/\s+/g, ''))) continue;
 
       if (/^plan your next production/i.test(text)) {
+        const next = blocks[i + 1];
+        if (next?._type === 'block' && next.style === 'normal') i += 1;
+        continue;
+      }
+      if (/计划下一次制作/.test(text)) {
         const next = blocks[i + 1];
         if (next?._type === 'block' && next.style === 'normal') i += 1;
         continue;

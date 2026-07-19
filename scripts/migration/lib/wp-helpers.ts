@@ -52,12 +52,13 @@ export interface TermRef {
   name: string;
   slug: string;
   taxonomy: string;
+  parentTermId: number;
 }
 
 export async function fetchTerms(taxonomies: string[]): Promise<TermRef[]> {
   const placeholders = taxonomies.map(() => '?').join(',');
   return query<TermRef[]>(
-    `SELECT t.term_id AS termId, t.name, t.slug, tt.taxonomy
+    `SELECT t.term_id AS termId, t.name, t.slug, tt.taxonomy, tt.parent AS parentTermId
      FROM ${table('terms')} t
      JOIN ${table('term_taxonomy')} tt ON t.term_id = tt.term_id
      WHERE tt.taxonomy IN (${placeholders})

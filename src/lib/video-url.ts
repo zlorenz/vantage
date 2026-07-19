@@ -42,15 +42,24 @@ export function isVideoUrlOnlyText(text: string): boolean {
   return !remainder;
 }
 
+/** Decode WP/JSON artifacts like literal `\u0026` in stored Vimeo query strings. */
+export function normalizeStoredVideoUrl(url: string): string {
+  return url
+    .replace(/\\u0026/gi, '&')
+    .replace(/\\\\u0026/gi, '&')
+    .trim();
+}
+
 export function parseVideoUrl(url: string): ParsedVideoUrl | null {
-  const vimeoId = extractVimeoId(url);
+  const normalized = normalizeStoredVideoUrl(url);
+  const vimeoId = extractVimeoId(normalized);
   if (vimeoId) {
-    return { url, provider: 'vimeo', id: vimeoId };
+    return { url: normalized, provider: 'vimeo', id: vimeoId };
   }
 
-  const youtubeId = extractYouTubeId(url);
+  const youtubeId = extractYouTubeId(normalized);
   if (youtubeId) {
-    return { url, provider: 'youtube', id: youtubeId };
+    return { url: normalized, provider: 'youtube', id: youtubeId };
   }
 
   return null;

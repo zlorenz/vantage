@@ -1,0 +1,562 @@
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type AnchorHTMLAttributes,
+  type ComponentProps,
+  type ForwardedRef,
+  type ReactNode,
+} from 'react'
+import {
+  ArrowLeftIcon,
+  CalendarIcon,
+  CloseIcon,
+  PublishIcon,
+  TrashIcon,
+} from '@sanity/icons'
+import {
+  Box,
+  Button,
+  Card,
+  Dialog,
+  Flex,
+  Spinner,
+  Stack,
+  Text,
+  TextInput,
+  useToast,
+} from '@sanity/ui'
+import {
+  ChangeIndicatorsTracker,
+  CopyPasteProvider,
+  createPatchChannel,
+  DivergencesProvider,
+  FormBuilder,
+  getPublishedId,
+  HoveredFieldProvider,
+  IsLastPaneProvider,
+  ParseErrorsProvider,
+  ReferenceInputOptionsProvider,
+  useClient,
+  useCopyPaste,
+  useCurrentUser,
+  useDocumentForm,
+  useDocumentOperation,
+  useDocumentPresence,
+  useEditState,
+  useGlobalCopyPasteElementHandler,
+  VirtualizerScrollInstanceProvider,
+  type ObjectSchemaType,
+  type PatchEvent,
+  type Path,
+  type SanityDocumentLike,
+} from 'sanity'
+import {
+  formatImpactSummary,
+  moveToTrash,
+  preflightTrash,
+  TRASHABLE_TYPES,
+  type TrashableType,
+} from './document-lifecycle'
+
+/**
+ * Structure normally supplies this via ReferenceInputOptionsProvider.
+ * Without it, reference array items set `forwardedAs` to a component that
+ * returns null — so drag handles/menus show but preview labels vanish.
+ */
+const EditReferenceLink = forwardRef(function EditReferenceLink(
+  props: Record<string, unknown> & {children?: ReactNode},
+  ref: ForwardedRef<HTMLAnchorElement>,
+) {
+  const {
+    children,
+    documentId: _documentId,
+    documentType: _documentType,
+    parentRefPath: _parentRefPath,
+    template: _template,
+    ...rest
+  } = props
+  return (
+    <a ref={ref} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>
+      {children}
+    </a>
+  )
+})
+
+type DocumentEditorProps = {
+  documentId: string
+  documentType: string
+  title?: string
+  onBack: () => void
+}
+
+type FormShellProps = {
+  publishedId: string
+  documentType: string
+  scrollElement: HTMLElement | null
+}
+
+function FormShell({
+  publishedId,
+  documentType,
+  scrollElement,
+}: FormShellProps) {
+  const containerElement = useRef<HTMLDivElement | null>(null)
+  const patchChannel = useMemo(() => createPatchChannel(), [])
+  const presence = useDocumentPresence(publishedId)
+  const {setDocumentMeta} = useCopyPaste()
+
+  const {
+    formState,
+    onChange,
+    onPathOpen,
+    onFocus,
+    onBlur,
+    onSetActiveFieldGroup,
+    onSetCollapsedFieldSet,
+    onSetCollapsedPath,
+    collapsedFieldSets,
+    collapsedPaths,
+    schemaType,
+    value,
+    validation,
+    focusPath,
+    ready,
+    hasUpstreamVersion,
+    connectionState,
+  } = useDocumentForm({
+    documentId: publishedId,
+    documentType,
+  })
+
+  useGlobalCopyPasteElementHandler({
+    value: value as SanityDocumentLike | undefined,
+    element: scrollElement,
+    focusPath,
+  })
+
+  useEffect(() => {
+    setDocumentMeta({
+      documentId: publishedId,
+      documentType,
+      schemaType: schemaType as ObjectSchemaType,
+      onChange: onChange as (event: PatchEvent) => void,
+    })
+  }, [publishedId, documentType, schemaType, onChange, setDocumentMeta])
+
+  if (!ready || connectionState === 'connecting' || !formState) {
+    return (
+      <Flex align="center" justify="center" gap={3} padding={6}>
+        <Spinner />
+        <Text size={1} muted>
+          Loading editor…
+        </Text>
+      </Flex>
+    )
+  }
+
+  return (
+    <ReferenceInputOptionsProvider
+      EditReferenceLinkComponent={
+        EditReferenceLink as unknown as ComponentProps<
+          typeof ReferenceInputOptionsProvider
+        >['EditReferenceLinkComponent']
+      }
+    >
+      <HoveredFieldProvider>
+        <IsLastPaneProvider isLastPane>
+          <ParseErrorsProvider>
+            <DivergencesProvider enabled={false}>
+              <VirtualizerScrollInstanceProvider
+                scrollElement={scrollElement}
+                containerElement={containerElement}
+              >
+                <Box
+                  ref={containerElement}
+                  padding={4}
+                  style={{maxWidth: 1100, margin: '0 auto'}}
+                >
+                  <ChangeIndicatorsTracker>
+                    <FormBuilder
+                      __internal_patchChannel={patchChannel}
+                      autoFocus
+                      changesOpen={false}
+                      collapsedFieldSets={collapsedFieldSets}
+                      collapsedPaths={collapsedPaths}
+                      focusPath={focusPath as Path}
+                      focused={formState.focused}
+                      groups={formState.groups}
+                      hasUpstreamVersion={hasUpstreamVersion}
+                      changed={formState.changed}
+                      id="root"
+                      members={formState.members}
+                      onChange={onChange}
+                      onFieldGroupSelect={onSetActiveFieldGroup}
+                      onPathBlur={onBlur}
+                      onPathFocus={onFocus}
+                      onPathOpen={onPathOpen}
+                      onSetFieldSetCollapsed={onSetCollapsedFieldSet}
+                      onSetPathCollapsed={onSetCollapsedPath}
+                      presence={presence}
+                      readOnly={formState.readOnly}
+                      schemaType={schemaType}
+                      validation={validation}
+                      value={value}
+                    />
+                  </ChangeIndicatorsTracker>
+                </Box>
+              </VirtualizerScrollInstanceProvider>
+            </DivergencesProvider>
+          </ParseErrorsProvider>
+        </IsLastPaneProvider>
+      </HoveredFieldProvider>
+    </ReferenceInputOptionsProvider>
+  )
+}
+
+export function DocumentEditor({
+  documentId,
+  documentType,
+  title,
+  onBack,
+}: DocumentEditorProps) {
+  const publishedId = getPublishedId(documentId)
+  const toast = useToast()
+  const currentUser = useCurrentUser()
+  const studioClient = useClient({apiVersion: '2025-02-19'})
+  const client = useMemo(
+    () => studioClient.withConfig({perspective: 'raw'}),
+    [studioClient],
+  )
+  const [busy, setBusy] = useState<
+    'publish' | 'discard' | 'delete' | 'schedule' | null
+  >(null)
+  const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null)
+  const [scheduleOpen, setScheduleOpen] = useState(false)
+  const [scheduleAt, setScheduleAt] = useState('')
+  const [trashConfirmOpen, setTrashConfirmOpen] = useState(false)
+  const [trashImpactText, setTrashImpactText] = useState('')
+
+  const editState = useEditState(publishedId, documentType)
+  const ops = useDocumentOperation(publishedId, documentType)
+  const supportsTrash = TRASHABLE_TYPES.includes(documentType as TrashableType)
+
+  // Lightweight title for the chrome header (form owns the real document value).
+  const headerTitle =
+    (editState.draft && typeof editState.draft.title === 'string' && editState.draft.title) ||
+    (editState.draft && typeof (editState.draft as {name?: string}).name === 'string' &&
+      (editState.draft as {name?: string}).name) ||
+    (editState.published && typeof editState.published.title === 'string' && editState.published.title) ||
+    (editState.published &&
+      typeof (editState.published as {name?: string}).name === 'string' &&
+      (editState.published as {name?: string}).name) ||
+    title ||
+    'Untitled'
+
+  const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)
+  const canDiscard = Boolean(ops.discardChanges?.disabled) === false
+  const canDelete = supportsTrash
+    ? Boolean(editState.draft || editState.published)
+    : Boolean(ops.delete?.disabled) === false
+
+  const handlePublish = useCallback(() => {
+    setBusy('publish')
+    ops.publish.execute()
+    toast.push({status: 'success', title: 'Published'})
+    setBusy(null)
+  }, [ops.publish, toast])
+
+  const handleDiscard = useCallback(() => {
+    setBusy('discard')
+    ops.discardChanges.execute()
+    toast.push({status: 'info', title: 'Discarded draft changes'})
+    setBusy(null)
+  }, [ops.discardChanges, toast])
+
+  const openTrashConfirm = useCallback(async () => {
+    if (!supportsTrash) return
+    setBusy('delete')
+    try {
+      const [item] = await preflightTrash(client, [publishedId])
+      setTrashImpactText(
+        item?.impacts?.length
+          ? formatImpactSummary(item.impacts)
+          : 'No inbound references found.',
+      )
+      setTrashConfirmOpen(true)
+    } catch (error) {
+      toast.push({
+        status: 'error',
+        title: 'Could not prepare Move to Trash',
+        description: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setBusy(null)
+    }
+  }, [client, publishedId, supportsTrash, toast])
+
+  const handleMoveToTrash = useCallback(async () => {
+    setBusy('delete')
+    try {
+      const actor =
+        currentUser?.name || currentUser?.email || currentUser?.id || 'Studio user'
+      const [result] = await moveToTrash(client, [publishedId], actor)
+      if (!result?.ok) {
+        throw new Error(result?.error || 'Move to Trash failed')
+      }
+      toast.push({status: 'success', title: 'Moved to Trash'})
+      setTrashConfirmOpen(false)
+      onBack()
+    } catch (error) {
+      toast.push({
+        status: 'error',
+        title: 'Could not move to Trash',
+        description: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setBusy(null)
+    }
+  }, [client, currentUser, onBack, publishedId, toast])
+
+  const handleDelete = useCallback(() => {
+    if (supportsTrash) {
+      void openTrashConfirm()
+      return
+    }
+    if (!window.confirm('Delete this document permanently?')) return
+    setBusy('delete')
+    ops.delete.execute()
+    toast.push({status: 'success', title: 'Deleted'})
+    setBusy(null)
+    onBack()
+  }, [onBack, openTrashConfirm, ops.delete, supportsTrash, toast])
+
+  const handleSchedule = useCallback(async () => {
+    const publishAt = new Date(scheduleAt)
+    if (!scheduleAt || Number.isNaN(publishAt.getTime())) {
+      toast.push({status: 'warning', title: 'Choose a valid publication date and time'})
+      return
+    }
+    if (publishAt.getTime() <= Date.now()) {
+      toast.push({status: 'warning', title: 'Publication time must be in the future'})
+      return
+    }
+    if (!editState.draft) {
+      toast.push({status: 'warning', title: 'Make an edit before scheduling'})
+      return
+    }
+
+    setBusy('schedule')
+    try {
+      const release = await client.releases.create({
+        metadata: {
+          title: `Scheduled: ${headerTitle}`,
+          releaseType: 'scheduled',
+          cardinality: 'one',
+          intendedPublishAt: publishAt.toISOString(),
+        },
+      })
+
+      await client.createVersion({
+        publishedId,
+        baseId: `drafts.${publishedId}`,
+        releaseId: release.releaseId,
+      })
+      await client.releases.schedule({
+        releaseId: release.releaseId,
+        publishAt: publishAt.toISOString(),
+      })
+
+      toast.push({
+        status: 'success',
+        title: `Scheduled for ${publishAt.toLocaleString()}`,
+      })
+      setScheduleOpen(false)
+      onBack()
+    } catch (error) {
+      toast.push({
+        status: 'error',
+        title: 'Could not schedule publication',
+        description: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setBusy(null)
+    }
+  }, [
+    client,
+    editState.draft,
+    headerTitle,
+    onBack,
+    publishedId,
+    scheduleAt,
+    toast,
+  ])
+
+  return (
+    <Flex direction="column" style={{height: '100%', minHeight: 0}}>
+      <Card borderBottom padding={3} style={{flexShrink: 0}}>
+        <Flex align="center" gap={3} justify="space-between" wrap="wrap">
+          <Flex align="center" gap={2} style={{minWidth: 0}}>
+            <Button
+              mode="bleed"
+              icon={ArrowLeftIcon}
+              text="Back"
+              onClick={onBack}
+            />
+            <Stack space={1} style={{minWidth: 0}}>
+              <Text size={0} muted>
+                {documentType}
+              </Text>
+              <Text size={2} weight="semibold" textOverflow="ellipsis">
+                {headerTitle}
+              </Text>
+            </Stack>
+          </Flex>
+
+          <Flex align="center" gap={2} wrap="wrap">
+            {editState.draft ? (
+              <Text size={1} muted>
+                Draft
+              </Text>
+            ) : null}
+            {editState.published && !editState.draft ? (
+              <Text size={1} muted>
+                Published
+              </Text>
+            ) : null}
+            {editState.published && editState.draft ? (
+              <Text size={1} muted>
+                Published + edits
+              </Text>
+            ) : null}
+
+            {canDiscard ? (
+              <Button
+                mode="ghost"
+                text="Discard changes"
+                disabled={busy !== null}
+                onClick={handleDiscard}
+              />
+            ) : null}
+            {canDelete ? (
+              <Button
+                mode="ghost"
+                tone="critical"
+                icon={TrashIcon}
+                text={supportsTrash ? 'Move to Trash' : undefined}
+                disabled={busy !== null}
+                onClick={handleDelete}
+              />
+            ) : null}
+            <Button
+              mode="ghost"
+              icon={CalendarIcon}
+              text="Schedule"
+              disabled={!editState.draft || busy !== null}
+              onClick={() => setScheduleOpen(true)}
+            />
+            <Button
+              tone="positive"
+              icon={PublishIcon}
+              text="Publish"
+              disabled={!canPublish || busy !== null}
+              onClick={handlePublish}
+            />
+            <Button mode="bleed" icon={CloseIcon} onClick={onBack} />
+          </Flex>
+        </Flex>
+      </Card>
+
+      <Box
+        ref={setScrollElement}
+        flex={1}
+        style={{overflow: 'auto', minHeight: 0}}
+      >
+        <CopyPasteProvider>
+          <FormShell
+            publishedId={publishedId}
+            documentType={documentType}
+            scrollElement={scrollElement}
+          />
+        </CopyPasteProvider>
+      </Box>
+
+      {scheduleOpen ? (
+        <Dialog
+          id="schedule-publication"
+          header="Schedule publication"
+          width={1}
+          onClose={() => {
+            if (busy !== 'schedule') setScheduleOpen(false)
+          }}
+        >
+          <Stack space={4} padding={4}>
+            <Text size={1} muted>
+              The current draft will be locked and published automatically at
+              this date and time.
+            </Text>
+            <TextInput
+              type="datetime-local"
+              value={scheduleAt}
+              onChange={(event) => setScheduleAt(event.currentTarget.value)}
+            />
+            <Flex justify="flex-end" gap={2}>
+              <Button
+                mode="bleed"
+                text="Cancel"
+                disabled={busy === 'schedule'}
+                onClick={() => setScheduleOpen(false)}
+              />
+              <Button
+                tone="primary"
+                text={busy === 'schedule' ? 'Scheduling…' : 'Schedule'}
+                disabled={!scheduleAt || busy === 'schedule'}
+                onClick={handleSchedule}
+              />
+            </Flex>
+          </Stack>
+        </Dialog>
+      ) : null}
+
+      {trashConfirmOpen ? (
+        <Dialog
+          id="move-to-trash"
+          header="Move to Trash"
+          width={1}
+          onClose={() => {
+            if (busy !== 'delete') setTrashConfirmOpen(false)
+          }}
+        >
+          <Stack space={4} padding={4}>
+            <Text size={1}>
+              Move “{headerTitle}” to Trash? It stays recoverable for 30 days,
+              then is permanently deleted.
+            </Text>
+            <Card padding={3} radius={2} tone="caution">
+              <Text size={1} style={{whiteSpace: 'pre-wrap'}}>
+                {trashImpactText}
+              </Text>
+            </Card>
+            <Flex justify="flex-end" gap={2}>
+              <Button
+                mode="bleed"
+                text="Cancel"
+                disabled={busy === 'delete'}
+                onClick={() => setTrashConfirmOpen(false)}
+              />
+              <Button
+                tone="critical"
+                text={busy === 'delete' ? 'Moving…' : 'Move to Trash'}
+                disabled={busy === 'delete'}
+                onClick={handleMoveToTrash}
+              />
+            </Flex>
+          </Stack>
+        </Dialog>
+      ) : null}
+    </Flex>
+  )
+}

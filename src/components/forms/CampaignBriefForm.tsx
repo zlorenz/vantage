@@ -1,27 +1,14 @@
 'use client';
 
 /**
- * PHASE B: Chinese form
- * ─────────────────────
- * When Chinese translations are ready, build the fully translated variant at:
- *   Route: /zh/视频活动简介/ (routing already exists in i18n/routing.ts)
- *
- * Scope for Phase B:
- * - All 42 field labels translated
- * - All 7 step titles translated (step indicator + "STEP X OF 7" heading)
- * - All select / radio / checkbox option labels translated
- * - Form description paragraph translated (CAMPAIGN_BRIEF_FORM_DESCRIPTION)
- * - Confirmation message translated (CAMPAIGN_BRIEF_SUCCESS_MESSAGE)
- * - Validation error messages translated
- * - Navigation button labels translated (Previous, Next, Submit Brief, Submit another brief)
- * - Section headers translated (Product Details, Cutdowns, Social Versions, Stills / Key Visuals)
- *
- * Reuse the same component architecture, useCampaignBriefForm hook, API route, and
- * submission pipeline as this English form. Pass locale-specific copy via props or
- * a translations map — do not duplicate form logic.
+ * CampaignBriefForm — 7-step client form shell with step indicator, navigation,
+ * honeypot, submission states, and GTM event on success.
+ * Copy is locale-aware via getCampaignBriefUi (EN option values preserved for API).
  */
 
-import { CAMPAIGN_BRIEF_SUCCESS_MESSAGE } from '@/lib/campaign-brief-fields';
+import { useLocale } from 'next-intl';
+import type { Locale } from '@/i18n/routing';
+import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { VpButton } from '@/components/ui/VpButton';
 import { FormStepIndicator } from '@/components/forms/FormStepIndicator';
 import { useCampaignBriefForm } from '@/components/forms/useCampaignBriefForm';
@@ -36,12 +23,10 @@ import {
 } from '@/components/forms/steps';
 import '@/components/forms/campaign-brief-form.css';
 
-/**
- * CampaignBriefForm — 7-step client form shell with step indicator, navigation,
- * honeypot, submission states, and GTM event on success.
- */
 export function CampaignBriefForm() {
-  const form = useCampaignBriefForm();
+  const locale = useLocale() as Locale;
+  const ui = getCampaignBriefUi(locale);
+  const form = useCampaignBriefForm(locale);
   const {
     currentStep,
     currentStepConfig,
@@ -71,10 +56,10 @@ export function CampaignBriefForm() {
     return (
       <div className="vp-form-shell">
         <div className="vp-form-success" role="status">
-          <p>{CAMPAIGN_BRIEF_SUCCESS_MESSAGE}</p>
+          <p>{ui.successMessage}</p>
           <div className="vp-form-success-actions">
             <button type="button" className="vp-form-reset-link" onClick={resetForm}>
-              Submit another brief
+              {ui.submitAnother}
             </button>
           </div>
         </div>
@@ -82,7 +67,8 @@ export function CampaignBriefForm() {
     );
   }
 
-  const stepTitle = currentStepConfig.title.toUpperCase();
+  const stepTitle =
+    locale === 'zh' ? currentStepConfig.title : currentStepConfig.title.toUpperCase();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +79,7 @@ export function CampaignBriefForm() {
 
   const renderStep = () => {
     const shared = {
+      ui,
       onChange: setFieldValue,
       hasError,
       errors,
@@ -155,10 +142,15 @@ export function CampaignBriefForm() {
 
   return (
     <div className="vp-form-shell">
-      <FormStepIndicator steps={steps} currentStep={currentStep} onGoToStep={goToStep} />
+      <FormStepIndicator
+        steps={steps}
+        currentStep={currentStep}
+        onGoToStep={goToStep}
+        locale={locale}
+      />
 
       <h2 className="vp-form-step-heading">
-        <span className="vp-form-step-count">STEP {currentStep} OF 7</span>
+        <span className="vp-form-step-count">{ui.stepCount(currentStep)}</span>
         {stepTitle}
       </h2>
 
@@ -180,8 +172,14 @@ export function CampaignBriefForm() {
 
         {submissionState === 'error' && (
           <div className="vp-form-error-banner" role="alert">
-            Something went wrong. Please try again or email us at{' '}
-            <a href="mailto:info@vantage.pictures">info@vantage.pictures</a>
+            {ui.submitError.includes('info@vantage.pictures') ? (
+              <>
+                {ui.submitError.split('info@vantage.pictures')[0]}
+                <a href="mailto:info@vantage.pictures">info@vantage.pictures</a>
+              </>
+            ) : (
+              ui.submitError
+            )}
           </div>
         )}
 
@@ -194,7 +192,7 @@ export function CampaignBriefForm() {
               disabled={isDisabled}
               onClick={prevStep}
             >
-              Previous
+              {ui.previous}
             </VpButton>
           )}
 
@@ -206,7 +204,7 @@ export function CampaignBriefForm() {
               disabled={isDisabled}
               onClick={nextStep}
             >
-              Next
+              {ui.next}
             </VpButton>
           )}
 
@@ -221,7 +219,7 @@ export function CampaignBriefForm() {
                 {submissionState === 'submitting' && (
                   <span className="vp-form-submit-spinner" aria-hidden="true" />
                 )}
-                Submit Brief
+                {ui.submitBrief}
               </span>
             </VpButton>
           )}

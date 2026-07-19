@@ -37,7 +37,7 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
  * Used by SiteHeader to build locale-aware Chinese URLs from CMS data
  * rather than hardcoded slug strings.
  */
-export const NAV_PAGES_QUERY = `*[_type == "page" && slug.current in ["home","about","work","news","vietnam-production-service"]]{
+export const NAV_PAGES_QUERY = `*[_type == "page" && !defined(trash.trashedAt) && slug.current in ["home","about","work","news","vietnam-production-service"]]{
   "slug": slug.current,
   "slugZh": slugZh.current
 }`;

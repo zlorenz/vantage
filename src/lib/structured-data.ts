@@ -69,7 +69,7 @@ export function homeBreadcrumb(locale: Locale): BreadcrumbItem {
 export function workBreadcrumb(locale: Locale): BreadcrumbItem {
   return {
     name: locale === 'zh' ? '作品' : 'Work',
-    url: locale === 'zh' ? '/zh/作品' : '/work',
+    url: locale === 'zh' ? '/zh/工作' : '/work',
   };
 }
 

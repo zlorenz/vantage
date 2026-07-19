@@ -3,7 +3,7 @@ import { PATHS } from '../config';
 import { getMeta } from '../lib/acf';
 import { getAttachment, extractWpImageIds } from '../lib/attachments';
 import { writeJson } from '../lib/fs';
-import { translate, translateSlug } from '../lib/translatepress';
+import { translate, translateBodyHtml, translateSlug } from '../lib/translatepress';
 import { extractYoast } from '../lib/yoast';
 import {
   fetchAllPostMeta,
@@ -20,6 +20,7 @@ export interface ExportedBlogPost {
   publishedAt: string;
   bodyHtml: string;
   bodyHtmlZh?: string;
+  excerptZh?: string;
   featuredImageWpId?: number;
   inlineImageWpIds: number[];
   categories: string[];
@@ -44,7 +45,7 @@ export async function exportBlogPosts(): Promise<ExportedBlogPost[]> {
 
     const titleZh = await translate(post.post_title);
     const slugZh = await translateSlug(post.post_name);
-    const bodyHtmlZh = await translate(post.post_content);
+    const bodyHtmlZh = await translateBodyHtml(post.post_content);
 
     const yoast = extractYoast(meta);
     const metaDescriptionZh = yoast.metaDescription

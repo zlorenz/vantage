@@ -31,6 +31,7 @@ export async function importBlogPosts(): Promise<number> {
     if (item.titleZh) doc.titleZh = item.titleZh;
     if (item.slugZh) doc.slugZh = slugField(item.slugZh);
     if (item.bodyHtmlZh) doc.bodyZh = htmlToPortableText(item.bodyHtmlZh, idMap);
+    if (item.excerptZh) doc.excerptZh = item.excerptZh;
 
     const featuredImage = imageField(idMap, item.featuredImageWpId);
     if (featuredImage) doc.featuredImage = featuredImage;

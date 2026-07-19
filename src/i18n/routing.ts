@@ -18,7 +18,7 @@ export const routing = defineRouting({
     '/': '/',
     '/work': {
       en: '/work',
-      zh: '/作品',
+      zh: '/工作',
     },
     '/work-internal': {
       en: '/work-internal',

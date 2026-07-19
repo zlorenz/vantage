@@ -336,12 +336,6 @@
     "role": "director"
   },
   {
-    "wpTermId": 265,
-    "name": "Mate Toth Widamon",
-    "slug": "mate-toth-widamon",
-    "role": "dop"
-  },
-  {
     "wpTermId": 212,
     "name": "Michael Mai",
     "slug": "michael-mai",
@@ -349,7 +343,7 @@
   },
   {
     "wpTermId": 342,
-    "name": "Microwave Soup",
+    "name": "Microwave Soups",
     "slug": "microwave-soup",
     "role": "art-director"
   },
@@ -375,12 +369,6 @@
     "wpTermId": 341,
     "name": "Nghia Minh Phan",
     "slug": "nghia-minh-phan",
-    "role": "dop"
-  },
-  {
-    "wpTermId": 287,
-    "name": "Ngô Minh Nghĩa",
-    "slug": "ngo-minh-nghia",
     "role": "dop"
   },
   {
@@ -448,12 +436,6 @@
     "name": "Phương Vũ",
     "slug": "phuong-vu",
     "role": "director"
-  },
-  {
-    "wpTermId": 242,
-    "name": "Pongchaiphat Sethanand",
-    "slug": "pongchaiphat-sethanand",
-    "role": "dop"
   },
   {
     "wpTermId": 254,
@@ -534,12 +516,6 @@
     "role": "dop"
   },
   {
-    "wpTermId": 274,
-    "name": "Thai Anh Duong",
-    "slug": "thai-anh-duong",
-    "role": "dop"
-  },
-  {
     "wpTermId": 332,
     "name": "Thippawan Aekkarin",
     "slug": "thippawan-aekkarin",
@@ -600,12 +576,6 @@
     "role": "art-director"
   },
   {
-    "wpTermId": 232,
-    "name": "Woodie",
-    "slug": "woodie",
-    "role": "dop"
-  },
-  {
     "wpTermId": 351,
     "name": "Woodie Pongchaiphat Sethanand",
     "slug": "woodie-pongchaiphat-sethanand",
@@ -639,6 +609,11 @@
     "wpTermId": 234,
     "name": "Zen Da",
     "slug": "zen-da",
+    "role": "art-director"
+  },
+  {
+    "name": "Viola Yin",
+    "slug": "viola-yin",
     "role": "art-director"
   }
 ]

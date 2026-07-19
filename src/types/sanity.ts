@@ -69,6 +69,7 @@ export interface PortfolioCard {
   slug: string;
   slugZh?: string;
   thumbTitle: string;
+  thumbTitleZh?: string;
   featuredImage: SanityImage;
   isHidden?: boolean;
 }
@@ -89,6 +90,56 @@ export interface PortfolioInternalGridEntry extends PortfolioCard {
 export interface CrewMemberRef {
   slug: string;
   role: 'director' | 'dop' | 'art-director';
+}
+
+/** Named crew member for internal library skim + filters. */
+export interface InternalCrewMember {
+  name: string;
+  slug: string;
+  role: 'director' | 'dop' | 'art-director';
+}
+
+/** Named client/platform refs for internal library. */
+export interface NamedSlugTerm {
+  name: string;
+  slug: string;
+}
+
+/** Platform term for work-internal filters. */
+export interface PlatformTerm {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+/**
+ * Enriched portfolio row for the internal work library.
+ * Source: INTERNAL_LIBRARY_QUERY.
+ */
+export interface InternalLibraryEntry {
+  _id: string;
+  title: string;
+  titleZh?: string;
+  headerTitle?: string;
+  headerTitleZh?: string;
+  longTitle?: string;
+  longTitleZh?: string;
+  slug: string;
+  slugZh?: string;
+  thumbTitle: string;
+  thumbTitleZh?: string;
+  featuredImage: SanityImage;
+  isHidden?: boolean;
+  publishedAt?: string;
+  vimeoUrl: string;
+  xinpianchangUrl?: string;
+  clients?: NamedSlugTerm[];
+  crewMembers?: InternalCrewMember[];
+  platforms?: NamedSlugTerm[];
+  videoFormats?: TaxonomyTerm[];
+  industries?: TaxonomyTerm[];
+  markets?: TaxonomyTerm[];
+  credits?: PortfolioCredits;
 }
 
 export interface CreditsAdditionalRow {
@@ -116,7 +167,9 @@ export interface AdditionalVideo {
   vimeoUrl: string;
   xinpianchangUrl?: string;
   longTitle: string;
+  longTitleZh?: string;
   description?: string;
+  descriptionZh?: string;
 }
 
 /** Full single-entry shape — PORTFOLIO_ENTRY_QUERY. */
@@ -127,8 +180,11 @@ export interface PortfolioEntry {
   slug: string;
   slugZh?: string;
   thumbTitle: string;
+  thumbTitleZh?: string;
   headerTitle: string;
+  headerTitleZh?: string;
   longTitle: string;
+  longTitleZh?: string;
   description: string;
   descriptionZh?: string;
   featuredImage: SanityImage;
@@ -154,6 +210,8 @@ export interface TaxonomyTerm {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  /** Parent term _id for nested filter dropdowns (subcategories). */
+  parentId?: string;
 }
 
 /** Client term for work-internal filters. */
@@ -187,6 +245,7 @@ export interface HeroSlideData {
   slug: string;
   slugZh?: string;
   headerTitle: string;
+  headerTitleZh?: string;
   description?: string;
   descriptionZh?: string;
   featuredImage: SanityImage;
@@ -242,6 +301,7 @@ export interface BlogPostCard {
   publishedAt?: string;
   featuredImage?: SanityImage;
   excerpt?: string;
+  excerptZh?: string;
   categories?: CategoryTerm[];
 }
 
@@ -272,6 +332,7 @@ export interface SearchResultItem {
   featuredImage?: SanityImage;
   description?: string;
   excerpt?: string;
+  excerptZh?: string;
 }
 
 /** Blog post slug pair for generateStaticParams. */

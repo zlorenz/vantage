@@ -3,7 +3,7 @@
  */
 
 export const SITEMAP_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt)] | order(publishedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current,
     publishedAt
@@ -11,7 +11,7 @@ export const SITEMAP_PORTFOLIO_QUERY = `
 `;
 
 export const SITEMAP_BLOG_POSTS_QUERY = `
-  *[_type == "blogPost"] | order(publishedAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current,
     publishedAt

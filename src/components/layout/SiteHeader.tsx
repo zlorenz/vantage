@@ -8,6 +8,7 @@
 
 import Image from 'next/image';
 import type { ComponentProps } from 'react';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { pagePath } from '@/lib/nav-paths';
@@ -22,17 +23,21 @@ interface SiteHeaderProps {
   navPages: NavPage[];
 }
 
-export function SiteHeader({ locale, navPages }: SiteHeaderProps) {
+export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
+  const t = await getTranslations('Nav');
   const homeHref = pagePath(locale, 'home', navPages) as LinkHref;
 
   const navItems: NavItem[] = [
-    { label: 'Home', href: homeHref },
+    { label: t('home'), href: homeHref },
     {
-      label: 'About',
+      label: t('about'),
       dropdown: [
-        { label: 'About', href: pagePath(locale, 'about', navPages) as LinkHref },
         {
-          label: 'Vietnam Production Service',
+          label: t('about'),
+          href: pagePath(locale, 'about', navPages) as LinkHref,
+        },
+        {
+          label: t('vietnamProductionService'),
           href: pagePath(
             locale,
             'vietnam-production-service',
@@ -41,9 +46,9 @@ export function SiteHeader({ locale, navPages }: SiteHeaderProps) {
         },
       ],
     },
-    { label: 'Work', href: pagePath(locale, 'work', navPages) as LinkHref },
-    { label: 'News', href: pagePath(locale, 'news', navPages) as LinkHref },
-    { label: 'Contact', isContact: true },
+    { label: t('work'), href: pagePath(locale, 'work', navPages) as LinkHref },
+    { label: t('news'), href: pagePath(locale, 'news', navPages) as LinkHref },
+    { label: t('contact'), isContact: true },
   ];
 
   return (
@@ -51,7 +56,7 @@ export function SiteHeader({ locale, navPages }: SiteHeaderProps) {
       <nav
         id="header"
         className="navbar fixed top-0 z-50 w-full px-2.5 py-[1.1rem]"
-        aria-label="Primary navigation"
+        aria-label={t('primaryAria')}
       >
         <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-2.5">
           <Link className="navbar-brand shrink-0" href={homeHref} rel="home">
@@ -65,7 +70,7 @@ export function SiteHeader({ locale, navPages }: SiteHeaderProps) {
             />
           </Link>
 
-          <NavBar locale={locale} items={navItems} />
+          <NavBar locale={locale} items={navItems} toggleAria={t('toggleAria')} />
         </div>
       </nav>
     </header>

@@ -2,8 +2,8 @@
  * Step 2 — Contact: name, job title, email, phone.
  */
 
-import { CAMPAIGN_BRIEF_FIELD_LABELS } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { FormField, FormTextInput } from '@/components/forms/primitives';
 import type {
   CampaignBriefFieldErrors,
@@ -11,6 +11,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepContactProps {
+  ui: CampaignBriefUi;
   values: Pick<
     CampaignBriefFormValues,
     | 'contact_name_first'
@@ -26,19 +27,21 @@ export interface StepContactProps {
 }
 
 export function StepContact({
+  ui,
   values,
   onChange,
   hasError,
   errors,
   disabled,
 }: StepContactProps) {
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
 
   return (
     <div className="vp-form-grid">
       <div className="vp-form-col-span-2 vp-form-name-block">
         <label className="vp-form-label">
-          Name<span className="vp-form-label-required"> *</span>
+          {ui.nameLabel}
+          <span className="vp-form-label-required"> *</span>
         </label>
         <div className="vp-form-grid">
           <div className="vp-form-field">
@@ -51,7 +54,7 @@ export function StepContact({
               hasError={hasError('contact_name_first')}
               autoComplete="given-name"
             />
-            <span className="vp-form-sublabel">First</span>
+            <span className="vp-form-sublabel">{ui.firstSublabel}</span>
             {errors.contact_name_first && (
               <p className="vp-form-error-msg">{errors.contact_name_first}</p>
             )}
@@ -67,7 +70,7 @@ export function StepContact({
               hasError={hasError('contact_name_last')}
               autoComplete="family-name"
             />
-            <span className="vp-form-sublabel">Last</span>
+            <span className="vp-form-sublabel">{ui.lastSublabel}</span>
             {errors.contact_name_last && (
               <p className="vp-form-error-msg">{errors.contact_name_last}</p>
             )}

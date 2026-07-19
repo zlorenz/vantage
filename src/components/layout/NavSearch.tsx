@@ -2,20 +2,14 @@
 
 /**
  * NavSearch — expandable inline search in the desktop navbar.
- *
- * Hidden on mobile (≤768px) per live site. On submit, navigates to the
- * locale-aware search results page with the query string.
  */
 
 import { FormEvent, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
-import type { Locale } from '@/i18n/routing';
 
-interface NavSearchProps {
-  locale: Locale;
-}
-
-export function NavSearch({ locale }: NavSearchProps) {
+export function NavSearch() {
+  const t = useTranslations('Search');
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
   const [query, setQuery] = useState('');
@@ -36,18 +30,18 @@ export function NavSearch({ locale }: NavSearchProps) {
 
   return (
     <form
-      className="vp-search-form ml-4 hidden md:block"
+      className="vp-search-form ml-2 hidden md:block"
       role="search"
       onSubmit={handleSubmit}
     >
-      <div className="vp-search-wrapper relative">
+      <div className="vp-search-wrapper relative flex items-center">
         {expanded ? (
           <input
             type="search"
             name="q"
             className="vp-search-input w-48 min-h-[2.625rem] border border-vp-input-border bg-vp-input-bg px-[0.9rem] py-2 pr-10 text-sm text-white transition-[background,border-color] duration-vp-default focus:border-vp-input-border-focus focus:bg-vp-input-bg-focus focus:outline-none"
-            placeholder="Search"
-            aria-label="Search"
+            placeholder={t('placeholder')}
+            aria-label={t('placeholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -58,8 +52,12 @@ export function NavSearch({ locale }: NavSearchProps) {
         ) : null}
         <button
           type={expanded ? 'submit' : 'button'}
-          className="vp-search-button absolute right-[0.7rem] top-1/2 -translate-y-1/2 border-0 bg-transparent p-0 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white"
-          aria-label={expanded ? 'Submit search' : 'Open search'}
+          className={
+            expanded
+              ? 'vp-search-button absolute right-[0.7rem] top-1/2 -translate-y-1/2 cursor-pointer border-0 bg-transparent p-0 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white'
+              : 'vp-search-button inline-flex cursor-pointer items-center border-0 bg-transparent p-2 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white'
+          }
+          aria-label={expanded ? t('submitAria') : t('openAria')}
           onClick={() => {
             if (!expanded) setExpanded(true);
           }}

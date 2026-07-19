@@ -1,53 +1,9 @@
 # --------------------------------------------------
-# WordPress Core (ignore)
+# Dependencies
 # --------------------------------------------------
 
-/wp-admin/
-/wp-includes/
-/xmlrpc.php
-/wp-*.php
-/index.php
-/license.txt
-/readme.html
-
-# --------------------------------------------------
-# WordPress Configuration
-# --------------------------------------------------
-
-wp-config.php
-.htaccess
-
-# --------------------------------------------------
-# Uploads (media files)
-# --------------------------------------------------
-
-/wp-content/uploads/
-
-# --------------------------------------------------
-# Cache
-# --------------------------------------------------
-
-/wp-content/cache/
-
-# --------------------------------------------------
-# Logs
-# --------------------------------------------------
-
-*.log
-
-# --------------------------------------------------
-# macOS / system junk
-# --------------------------------------------------
-
-.DS_Store
-Thumbs.db
-
-# --------------------------------------------------
-# Node dependencies
-# --------------------------------------------------
-
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -56,74 +12,84 @@ Thumbs.db
 !.yarn/versions
 
 # --------------------------------------------------
-# WordPress plugins
-# Ignore ALL plugins except ones you explicitly whitelist
+# Environment / secrets — NEVER commit these
 # --------------------------------------------------
 
-/wp-content/plugins/*
-
-# WPvivid backup plugin
-/wp-content/wpvividbackups/
-
-# Allow custom plugins to be tracked
-!/wp-content/plugins/vp-content-types
-!/wp-content/plugins/vp-lark-client-brief
-
-# --------------------------------------------------
-# WordPress themes
-# Ignore all themes except your custom child theme
-# --------------------------------------------------
-
-/wp-content/themes/*
-
-# Allow your child theme
-!/wp-content/themes/vantagepictures-child
-
-# --------------------------------------------------
-# Environment variables — NEVER commit these
-# --------------------------------------------------
-
-.env*
-.env.local
-.env*.local
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
 
 # --------------------------------------------------
 # Next.js
 # --------------------------------------------------
 
-/.next/
-/out/
-/build
-
-# testing
-/coverage
-
-# vercel
-.vercel
-
-# typescript
+.next/
+out/
+build/
+coverage/
+.vercel/
 *.tsbuildinfo
 next-env.d.ts
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# misc
-*.pem
-
 # --------------------------------------------------
-# Sanity
+# Sanity (studio also has its own .gitignore)
 # --------------------------------------------------
 
 .sanity/
 
 # --------------------------------------------------
-# WordPress legacy reference files
-# (kept locally for audit/migration reference only)
+# Logs / debug
 # --------------------------------------------------
 
-/wp-content/themes/vantagepictures-child/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --------------------------------------------------
+# OS / editor junk
+# --------------------------------------------------
+
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# --------------------------------------------------
+# Migration scratch (regenerable / downloaded)
+# --------------------------------------------------
+
+migration-data/blog-zh-html/
+
+# --------------------------------------------------
+# WordPress legacy (local reference only — not part of Next app)
+# --------------------------------------------------
+
+# Core
+/wp-admin/
+/wp-includes/
+/xmlrpc.php
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+wp-config.php
+.htaccess
+
+# Media, cache, backups
 /wp-content/uploads/
+/wp-content/cache/
+/wp-content/wpvividbackups/
+/wp-content/upgrade/
+/wp-content/upgrade-temp-backup/
+
+# Plugins / themes — keep local WP tree out of new commits
+# (already-tracked child-theme files stay tracked until removed)
+/wp-content/plugins/
+/wp-content/themes/

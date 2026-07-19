@@ -1,5 +1,15 @@
 /**
- * Next.js metadata title helpers — patterns from content-schema.md §7.
+ * Next.js metadata title helpers — Yoast title templates from content-schema.md §7.
+ *
+ * WP patterns (EN):
+ *   Home:                         %%sitename%% %%sep%% %%sitedesc%%
+ *   Work:                         %%sitename%% %%sep%% Commercial Film Portfolio
+ *   News:                         Commercial Film Production %%title%% %%sep%% %%sitename%%
+ *   Campaign brief:               Start Your Project %%sep%% %%sitename%%
+ *   Vietnam location guide:       Vietnam Filming Location Guide %%sep%% Production Resource
+ *   About / Contact:              %%title%% %%sitename%% %%sep%% %%sitedesc%%
+ *   Vietnam production service:   %%title%% %%sep%% %%sitename%%
+ *   Portfolio / blog / default:   %%title%% %%sep%% %%sitename%%
  */
 
 import type { Metadata } from 'next';
@@ -10,11 +20,22 @@ import { urlForImage } from '@/lib/sanity';
 export const SITE_NAME = 'Vantage Pictures';
 export const SITE_DESCRIPTION =
   'Commercial film production company specialising in cinematic brand films and product launch campaigns.';
+/** Live Yoast-style ZH site tagline (home document title). */
+export const SITE_DESCRIPTION_ZH = '商业影像制作公司';
 export const METADATA_BASE = new URL('https://vantage.pictures');
 export const SEARCH_PAGE_DESCRIPTION = 'Search the Vantage Pictures portfolio and news.';
+export const SEARCH_PAGE_DESCRIPTION_ZH = '搜索 Vantage Pictures 作品集与新闻。';
 
-export function workPageTitle(): string {
-  return `${SITE_NAME} | Commercial Film Portfolio`;
+export function workPageTitle(locale: Locale = 'en'): string {
+  return locale === 'zh'
+    ? `${SITE_NAME} | 商业影片作品集`
+    : `${SITE_NAME} | Commercial Film Portfolio`;
+}
+
+export function homePageTitle(locale: Locale = 'en'): string {
+  return locale === 'zh'
+    ? `${SITE_NAME} | ${SITE_DESCRIPTION_ZH}`
+    : `${SITE_NAME} | ${SITE_DESCRIPTION}`;
 }
 
 export function portfolioEntryTitle(title: string): string {
@@ -115,16 +136,42 @@ export function portfolioEntryMetadata(
   });
 }
 
-export function newsPageTitle(): string {
-  return `Commercial Film Production News | ${SITE_NAME}`;
+export function newsPageTitle(locale: Locale = 'en'): string {
+  return locale === 'zh'
+    ? `商业电影制作新闻 | ${SITE_NAME}`
+    : `Commercial Film Production News | ${SITE_NAME}`;
 }
 
 export function blogPostTitle(title: string): string {
   return `${title} | ${SITE_NAME}`;
 }
 
+/** Default `%%title%% %%sep%% %%sitename%%` */
 export function pageTitle(title: string): string {
   return `${title} | ${SITE_NAME}`;
+}
+
+/**
+ * About / Contact Yoast template:
+ * `%%title%% %%sitename%% %%sep%% %%sitedesc%%`
+ */
+export function aboutContactPageTitle(title: string, locale: Locale = 'en'): string {
+  const description = locale === 'zh' ? SITE_DESCRIPTION_ZH : SITE_DESCRIPTION;
+  return `${title} ${SITE_NAME} | ${description}`;
+}
+
+/** Yoast: `Vietnam Filming Location Guide %%sep%% Production Resource` */
+export function vietnamLocationGuideTitle(locale: Locale = 'en'): string {
+  return locale === 'zh'
+    ? '越南拍摄地点指南 | 制作资源'
+    : 'Vietnam Filming Location Guide | Production Resource';
+}
+
+/** Yoast: `Start Your Project %%sep%% %%sitename%%` */
+export function campaignBriefPageTitle(locale: Locale = 'en'): string {
+  return locale === 'zh'
+    ? `启动您的项目 | ${SITE_NAME}`
+    : `Start Your Project | ${SITE_NAME}`;
 }
 
 export function seoDescription(

@@ -14,6 +14,8 @@ import {
   CAMPAIGN_BRIEF_STEPS,
   type CampaignBriefFieldKey,
 } from '@/lib/campaign-brief-fields';
+import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import type { Locale } from '@/i18n/routing';
 
 /** Notification recipient for campaign brief submissions. */
 const BRIEF_RECIPIENT = 'zacharia@vantage.pictures';
@@ -22,6 +24,10 @@ const BRIEF_RECIPIENT = 'zacharia@vantage.pictures';
 const MIN_SUBMIT_MS = 3000;
 
 const ALLOWED_EXTENSIONS = new Set<string>(CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS);
+
+function resolveLocale(formData: FormData): Locale {
+  return getString(formData, 'locale') === 'zh' ? 'zh' : 'en';
+}
 
 /** Parsed file held in memory for the request lifetime only. */
 interface ParsedUpload {
@@ -73,12 +79,14 @@ function getExtension(filename: string): string {
  */
 async function parseUploads(
   formData: FormData,
+  locale: Locale,
 ): Promise<{ files: ParsedUpload[]; error?: string }> {
+  const ui = getCampaignBriefUi(locale);
   const entries = formData.getAll('briefing_materials_upload');
   const fileEntries = entries.filter((e): e is File => e instanceof File && e.size > 0);
 
   if (fileEntries.length > CAMPAIGN_BRIEF_MAX_FILES) {
-    return { files: [], error: `Maximum ${CAMPAIGN_BRIEF_MAX_FILES} files allowed.` };
+    return { files: [], error: ui.maxFilesAllowed(CAMPAIGN_BRIEF_MAX_FILES) };
   }
 
   const files: ParsedUpload[] = [];
@@ -88,7 +96,7 @@ async function parseUploads(
     if (!ALLOWED_EXTENSIONS.has(ext)) {
       return {
         files: [],
-        error: `File type not allowed: ${file.name}. Accepted: ${CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS.join(', ')}`,
+        error: ui.fileTypeNotAllowed(file.name),
       };
     }
 
@@ -156,19 +164,23 @@ function parseFields(formData: FormData): Record<CampaignBriefFieldKey, string |
 /**
  * Validate required fields and email format.
  */
-function validateFields(fields: Record<CampaignBriefFieldKey, string | string[]>): FieldErrors {
+function validateFields(
+  fields: Record<CampaignBriefFieldKey, string | string[]>,
+  locale: Locale,
+): FieldErrors {
+  const ui = getCampaignBriefUi(locale);
   const errors: FieldErrors = {};
 
   for (const key of CAMPAIGN_BRIEF_REQUIRED_FIELDS) {
     const value = fields[key];
     const empty = Array.isArray(value) ? value.length === 0 : !String(value).trim();
     if (empty) {
-      errors[key] = 'This field is required.';
+      errors[key] = ui.fieldRequired;
     }
   }
 
   if (fields.contact_email && !isValidEmail(String(fields.contact_email))) {
-    errors.contact_email = 'Please enter a valid email address.';
+    errors.contact_email = ui.invalidEmail;
   }
 
   return errors;
@@ -335,8 +347,11 @@ async function sendLarkNotification(
 }
 
 export async function POST(request: Request) {
+  let locale: Locale = 'en';
+
   try {
     const formData = await request.formData();
+    locale = resolveLocale(formData);
 
     // Honeypot — silently accept but discard if populated.
     if (getString(formData, 'website')) {
@@ -350,12 +365,12 @@ export async function POST(request: Request) {
     }
 
     const fields = parseFields(formData);
-    const fieldErrors = validateFields(fields);
+    const fieldErrors = validateFields(fields, locale);
     if (Object.keys(fieldErrors).length > 0) {
       return NextResponse.json({ success: false, errors: fieldErrors }, { status: 400 });
     }
 
-    const { files, error: fileError } = await parseUploads(formData);
+    const { files, error: fileError } = await parseUploads(formData, locale);
     if (fileError) {
       return NextResponse.json(
         { success: false, errors: { files: fileError } },
@@ -369,7 +384,7 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error('[campaign-brief] submission failed:', err);
     return NextResponse.json(
-      { success: false, error: 'Submission failed. Please try again.' },
+      { success: false, error: getCampaignBriefUi(locale).submitError },
       { status: 500 },
     );
   }

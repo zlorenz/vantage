@@ -4,7 +4,9 @@
     "title": "AI &amp; Robotics",
     "titleZh": "人工智能与机器人",
     "slug": "ai-robotics",
-    "sanityType": "industry"
+    "sanityType": "industry",
+    "parentWpTermId": 172,
+    "parentSlug": "tech"
   },
   {
     "wpTermId": 179,
@@ -27,7 +29,9 @@
     "titleZh": "无人机",
     "slug": "drones",
     "slugZh": "无人机",
-    "sanityType": "industry"
+    "sanityType": "industry",
+    "parentWpTermId": 172,
+    "parentSlug": "tech"
   },
   {
     "wpTermId": 178,
@@ -35,7 +39,9 @@
     "titleZh": "电子产品",
     "slug": "electronics",
     "slugZh": "电子学",
-    "sanityType": "industry"
+    "sanityType": "industry",
+    "parentWpTermId": 172,
+    "parentSlug": "tech"
   },
   {
     "wpTermId": 184,

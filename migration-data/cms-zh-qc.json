@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-07-16T14:36:04.904Z",
+  "findingCounts": {
+    "error": 0,
+    "warn": 1,
+    "info": 4
+  },
+  "findings": {
+    "error": [],
+    "warn": [
+      {
+        "severity": "warn",
+        "type": "blogPost",
+        "id": "vantage-pictures-james-duong-on-bringing-chinese-productions-to-vietnam",
+        "field": "slugZh",
+        "code": "bad_slug_zh",
+        "message": "Suspect slugZh quality",
+        "preview": "avantaj-越南-阮仲-谈-越南-制作"
+      }
+    ],
+    "info": [
+      {
+        "severity": "info",
+        "type": "page",
+        "id": "contact",
+        "field": "heroTitleZh",
+        "code": "missing_zh",
+        "message": "Missing heroTitleZh",
+        "preview": "Contact Vantage Pictures"
+      },
+      {
+        "severity": "info",
+        "type": "page",
+        "id": "video-campaign-brief",
+        "field": "bodyZh",
+        "code": "missing_zh",
+        "message": "Missing bodyZh"
+      },
+      {
+        "severity": "info",
+        "type": "page",
+        "id": "work-internal",
+        "field": "heroTitleZh",
+        "code": "missing_zh",
+        "message": "Missing heroTitleZh",
+        "preview": "Our Work (Internal)"
+      },
+      {
+        "severity": "info",
+        "type": "page",
+        "id": "work-internal",
+        "field": "bodyZh",
+        "code": "missing_zh",
+        "message": "Missing bodyZh"
+      }
+    ]
+  }
+}

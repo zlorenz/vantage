@@ -11,7 +11,7 @@ import { defineField, defineType } from 'sanity';
 
 export const industry = defineType({
   name: 'industry',
-  title: 'Industry',
+  title: 'Industries',
   type: 'document',
 
   fields: [
@@ -56,16 +56,27 @@ export const industry = defineType({
         maxLength: 96,
       },
     }),
+
+    defineField({
+      name: 'parent',
+      title: 'Parent Industry',
+      type: 'reference',
+      to: [{ type: 'industry' }],
+      description:
+        'Optional parent category (e.g. Tech groups AI & Robotics, Drones, Electronics).',
+    }),
   ],
 
   preview: {
     select: {
       title: 'title',
       subtitle: 'titleZh',
+      parentTitle: 'parent.title',
     },
-    prepare({ title, subtitle }) {
+    prepare({ title, subtitle, parentTitle }) {
+      const displayTitle = parentTitle ? `↳ ${title}` : title;
       return {
-        title: title || 'Untitled industry',
+        title: displayTitle || 'Untitled industry',
         subtitle: subtitle ? `中文: ${subtitle}` : undefined,
       };
     },

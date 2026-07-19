@@ -2,8 +2,8 @@
  * Step 6 — Deliverables: checkbox list and conditional cutdowns, social, stills sections.
  */
 
-import { DELIVERABLES_OPTIONS, CAMPAIGN_BRIEF_FIELD_LABELS } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
   FormCheckboxGroup,
   FormField,
@@ -18,6 +18,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepDeliverablesProps {
+  ui: CampaignBriefUi;
   values: Pick<
     CampaignBriefFormValues,
     | 'deliverables'
@@ -42,6 +43,7 @@ export interface StepDeliverablesProps {
 }
 
 export function StepDeliverables({
+  ui,
   values,
   onChange,
   onToggleDeliverable,
@@ -50,7 +52,8 @@ export function StepDeliverables({
   errors,
   disabled,
 }: StepDeliverablesProps) {
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
+  const hints = ui.hints;
 
   return (
     <div className="vp-form-grid">
@@ -58,7 +61,7 @@ export function StepDeliverables({
         <FormCheckboxGroup
           name="deliverables"
           values={values.deliverables}
-          options={DELIVERABLES_OPTIONS}
+          options={ui.deliverables}
           onToggle={onToggleDeliverable}
           disabled={disabled}
           hasError={hasError('deliverables')}
@@ -67,12 +70,12 @@ export function StepDeliverables({
 
       {visibility.showCutdownsSection && (
         <>
-          <FormSectionHeader title="Cutdowns" />
+          <FormSectionHeader title={ui.sections.cutdowns} />
 
           <FormField
             label={labels.cutdown_durations}
             htmlFor="cutdown_durations"
-            hint="Example: 30s, 15s, 10s, 6s bumper ads"
+            hint={hints.cutdown_durations}
           >
             <FormTextInput
               id="cutdown_durations"
@@ -86,7 +89,7 @@ export function StepDeliverables({
           <FormField
             label={labels.cutdown_distribution}
             htmlFor="cutdown_distribution"
-            hint="Example: YouTube ads, Instagram reels, paid social ads, website landing page"
+            hint={hints.cutdown_distribution}
           >
             <FormTextInput
               id="cutdown_distribution"
@@ -101,12 +104,12 @@ export function StepDeliverables({
 
       {visibility.showSocialSection && (
         <>
-          <FormSectionHeader title="Social Versions" />
+          <FormSectionHeader title={ui.sections.social} />
 
           <FormField
             label={labels.social_channels}
             htmlFor="social_channels"
-            hint="Example: Instagram Reels, TikTok, YouTube Shorts, LinkedIn"
+            hint={hints.social_channels}
           >
             <FormTextInput
               id="social_channels"
@@ -120,7 +123,7 @@ export function StepDeliverables({
           <FormField
             label={labels.social_aspect_ratios}
             htmlFor="social_aspect_ratios"
-            hint="Example: 16:9 (YouTube), 1:1 (Instagram), 9:16 (TikTok / Reels)"
+            hint={hints.social_aspect_ratios}
           >
             <FormTextInput
               id="social_aspect_ratios"
@@ -135,7 +138,7 @@ export function StepDeliverables({
             label={labels.social_platform_requirements}
             htmlFor="social_platform_requirements"
             fullWidth
-            hint="Example: Must meet YouTube's 4K HDR specs, Instagram safe zone compliance"
+            hint={hints.social_platform_requirements}
           >
             <FormTextarea
               id="social_platform_requirements"
@@ -150,9 +153,13 @@ export function StepDeliverables({
 
       {visibility.showStillsSection && (
         <>
-          <FormSectionHeader title="Stills / Key Visuals" />
+          <FormSectionHeader title={ui.sections.stills} />
 
-          <FormField label={labels.stills_type} htmlFor="stills_type">
+          <FormField
+            label={labels.stills_type}
+            htmlFor="stills_type"
+            hint={hints.stills_type}
+          >
             <FormTextarea
               id="stills_type"
               name="stills_type"
@@ -165,7 +172,7 @@ export function StepDeliverables({
           <FormField
             label={labels.photography_requirements}
             htmlFor="photography_requirements"
-            hint="Example: White background product shots + lifestyle images in an urban setting"
+            hint={hints.photography_requirements}
           >
             <FormTextarea
               id="photography_requirements"
@@ -180,7 +187,7 @@ export function StepDeliverables({
             label={labels.stills_quantity}
             htmlFor="stills_quantity"
             fullWidth
-            hint="Example: 10–15 hero shots"
+            hint={hints.stills_quantity}
           >
             <FormTextInput
               id="stills_quantity"

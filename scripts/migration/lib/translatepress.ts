@@ -1,4 +1,9 @@
 import { query, table } from '../db';
+import {
+  buildTranslatedBodyHtml,
+  distinctTranslation,
+  lookupInDictionary,
+} from './translation-text';
 
 let dictionary: Map<string, string> | null = null;
 
@@ -22,7 +27,37 @@ export async function translate(original: string | undefined | null): Promise<st
   if (!original?.trim()) return undefined;
   const dict = await loadDictionary();
   const hit = dict.get(original);
-  return hit?.trim() || undefined;
+  if (!hit?.trim()) return undefined;
+  return distinctTranslation(original, hit);
+}
+
+/**
+ * Enhanced TRP lookup — tries exact key, plain text, and HTML segment variants.
+ * Use for ACF display fields and hero titles where raw HTML breaks exact match.
+ */
+export async function translateEnhanced(
+  original: string | undefined | null,
+): Promise<string | undefined> {
+  if (!original?.trim()) return undefined;
+  const dict = await loadDictionary();
+  const result = lookupInDictionary(dict, original);
+  return distinctTranslation(original, result.translated);
+}
+
+/**
+ * Translate page/post body HTML by translating each block-level segment.
+ * Returns simplified HTML suitable for htmlToPortableText on import.
+ */
+export async function translateBodyHtml(
+  html: string | undefined | null,
+): Promise<string | undefined> {
+  if (!html?.trim()) return undefined;
+  const dict = await loadDictionary();
+  const translated = buildTranslatedBodyHtml(html, dict);
+  if (!translated) return undefined;
+  const plainOrig = html.replace(/<!--[\s\S]*?-->/g, '').trim();
+  if (translated === plainOrig) return undefined;
+  return translated;
 }
 
 export async function translateBatch(

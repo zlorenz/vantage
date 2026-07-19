@@ -2,11 +2,8 @@
  * Step 4 — Timeline & Release: distribution, regions, rights, deadline, flexibility.
  */
 
-import {
-  DELIVERY_FLEXIBILITY_OPTIONS,
-  CAMPAIGN_BRIEF_FIELD_LABELS,
-} from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
   FormField,
   FormRadioGroup,
@@ -19,6 +16,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepTimelineProps {
+  ui: CampaignBriefUi;
   values: Pick<
     CampaignBriefFormValues,
     | 'distribution_channels'
@@ -36,6 +34,7 @@ export interface StepTimelineProps {
 }
 
 export function StepTimeline({
+  ui,
   values,
   onChange,
   visibility,
@@ -43,14 +42,15 @@ export function StepTimeline({
   errors,
   disabled,
 }: StepTimelineProps) {
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
+  const hints = ui.hints;
 
   return (
     <div className="vp-form-grid vp-form-grid--3col">
       <FormField
         label={labels.distribution_channels}
         htmlFor="distribution_channels"
-        hint="Example: Broadcast TV, YouTube, website, storefront displays, trade shows, keynote presentation"
+        hint={hints.distribution_channels}
       >
         <FormTextInput
           id="distribution_channels"
@@ -64,7 +64,7 @@ export function StepTimeline({
       <FormField
         label={labels.target_regions}
         htmlFor="target_regions"
-        hint="Example: Globally, US and Europe, Southeast Asia"
+        hint={hints.target_regions}
       >
         <FormTextInput
           id="target_regions"
@@ -78,7 +78,7 @@ export function StepTimeline({
       <FormField
         label={labels.usage_rights_term}
         htmlFor="usage_rights_term"
-        hint="Example: 2 years, in perpetuity"
+        hint={hints.usage_rights_term}
       >
         <FormTextInput
           id="usage_rights_term"
@@ -92,7 +92,7 @@ export function StepTimeline({
       <FormField
         label={labels.delivery_deadline}
         htmlFor="delivery_deadline"
-        hint="Example: First week of April, fixed deadline"
+        hint={hints.delivery_deadline}
       >
         <FormTextInput
           id="delivery_deadline"
@@ -107,7 +107,7 @@ export function StepTimeline({
         <FormRadioGroup
           name="delivery_flexibility"
           value={values.delivery_flexibility}
-          options={DELIVERY_FLEXIBILITY_OPTIONS}
+          options={ui.deliveryFlexibility}
           onChange={(v) => onChange('delivery_flexibility', v)}
           disabled={disabled}
           hasError={hasError('delivery_flexibility')}
@@ -119,7 +119,7 @@ export function StepTimeline({
           label={labels.launch_timing}
           htmlFor="launch_timing"
           error={errors.launch_timing}
-          hint="Example: Product launch, charity event, Black Friday sale, Lunar New Year"
+          hint={hints.launch_timing}
         >
           <FormTextInput
             id="launch_timing"

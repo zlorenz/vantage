@@ -11,6 +11,8 @@ export interface ExportedTaxonomy {
   slug: string;
   slugZh?: string;
   sanityType: string;
+  parentWpTermId?: number;
+  parentSlug?: string;
 }
 
 const TAXONOMY_MAP: Record<string, string> = {
@@ -27,11 +29,14 @@ export async function exportTaxonomies(): Promise<{
   markets: ExportedTaxonomy[];
 }> {
   const terms = await fetchTerms(Object.keys(TAXONOMY_MAP));
+  const slugByTermId = new Map(terms.map((term) => [term.termId, term.slug]));
 
   const exported: ExportedTaxonomy[] = [];
   for (const term of terms) {
     const titleZh = await translate(term.name);
     const slugZh = await translate(term.slug);
+    const parentSlug =
+      term.parentTermId > 0 ? slugByTermId.get(term.parentTermId) : undefined;
     exported.push({
       wpTermId: term.termId,
       title: term.name,
@@ -39,6 +44,9 @@ export async function exportTaxonomies(): Promise<{
       slug: term.slug,
       slugZh: slugZh && slugZh !== term.slug ? slugZh : undefined,
       sanityType: TAXONOMY_MAP[term.taxonomy],
+      ...(term.parentTermId > 0
+        ? { parentWpTermId: term.parentTermId, parentSlug }
+        : {}),
     });
   }
 

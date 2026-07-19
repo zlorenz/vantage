@@ -8,8 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "migrate:export": "tsx scripts/migration/export/export-all.ts",
+    "migrate:export:content": "tsx scripts/migration/export/export-content.ts",
     "migrate:import": "tsx scripts/migration/import/import-all.ts",
-    "migrate:media": "tsx scripts/migration/media/upload.ts"
+    "migrate:media": "tsx scripts/migration/media/upload.ts",
+    "migrate:audit:translations": "tsx scripts/migration/audit/translations.ts",
+    "migrate:audit:portfolio-zh": "tsx scripts/migration/audit/portfolio-zh-qc.ts",
+    "migrate:audit:cms-zh": "tsx scripts/migration/audit/cms-zh-qc.ts",
+    "migrate:patch:portfolio-zh": "tsx scripts/migration/patch/portfolio-zh-from-trp.ts",
+    "migrate:patch:taxonomy-zh": "tsx scripts/migration/patch/taxonomy-zh.ts",
+    "migrate:patch:translations": "tsx scripts/migration/patch/translations-from-trp.ts"
   },
   "dependencies": {
     "@portabletext/block-tools": "^5.1.7",

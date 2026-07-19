@@ -9,7 +9,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { VpButton } from '@/components/ui/VpButton';
+import { pickLocaleField } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 import type { HeroSlideData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -22,6 +24,7 @@ interface HeroCarouselProps {
 const INTERVAL_MS = 6000;
 
 export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
+  const t = useTranslations('Home');
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -50,7 +53,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
       className="vp-hero-carousel relative h-screen w-full overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      aria-label="Featured work carousel"
+      aria-label={t('heroCarouselAria')}
     >
       {/* Slide backgrounds — crossfade via opacity */}
       <div className="absolute inset-0">
@@ -94,17 +97,22 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
             locale === 'zh' && slide.descriptionZh
               ? slide.descriptionZh
               : slide.description;
+          const headerTitle = pickLocaleField(
+            locale,
+            slide.headerTitle,
+            slide.headerTitleZh,
+          );
 
           return (
             <div
               key={slide.slug}
-              className="absolute flex w-full max-w-3xl flex-col items-center justify-center px-4 text-center text-white transition-opacity duration-700 ease-in-out"
+              className="container absolute flex w-full flex-col items-center justify-center px-4 text-center text-white transition-opacity duration-700 ease-in-out min-[1400px]:max-w-[1320px]"
               style={{ opacity: index === activeIndex ? 1 : 0 }}
               aria-hidden={index !== activeIndex}
             >
               <h1
                 className="vp-hero-carousel__title mb-4 text-[clamp(2.25rem,1.25rem+3vw,3.75rem)] font-extrabold uppercase leading-tight tracking-vp-heading"
-                dangerouslySetInnerHTML={{ __html: slide.headerTitle }}
+                dangerouslySetInnerHTML={{ __html: headerTitle }}
               />
               {description ? (
                 <p className="vp-hero-carousel__desc mx-auto mb-8 max-w-2xl text-base font-light leading-relaxed text-white/90">
@@ -137,7 +145,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
               index === activeIndex ? 'w-10 opacity-100' : 'w-5 opacity-40'
             }`}
             onClick={() => goTo(index)}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={t('goToSlide', { index: index + 1 })}
             aria-current={index === activeIndex ? 'true' : undefined}
           />
         ))}
@@ -150,7 +158,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
             type="button"
             className="vp-hero-carousel__arrow vp-hero-carousel__arrow--prev absolute left-4 top-1/2 z-20 -translate-y-1/2 border-0 bg-transparent p-4 text-white opacity-80 transition-opacity hover:opacity-100 md:left-8"
             onClick={goPrev}
-            aria-label="Previous slide"
+            aria-label={t('previousSlide')}
           >
             <span className="vp-hero-carousel__chevron vp-hero-carousel__chevron--left" />
           </button>
@@ -158,7 +166,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
             type="button"
             className="vp-hero-carousel__arrow vp-hero-carousel__arrow--next absolute right-4 top-1/2 z-20 -translate-y-1/2 border-0 bg-transparent p-4 text-white opacity-80 transition-opacity hover:opacity-100 md:right-8"
             onClick={goNext}
-            aria-label="Next slide"
+            aria-label={t('nextSlide')}
           >
             <span className="vp-hero-carousel__chevron vp-hero-carousel__chevron--right" />
           </button>

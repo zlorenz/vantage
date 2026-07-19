@@ -5,11 +5,9 @@
  */
 
 import { useRef } from 'react';
-import {
-  CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS,
-  CAMPAIGN_BRIEF_FIELD_LABELS,
-} from '@/lib/campaign-brief-fields';
+import { CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { FormField, FormTextarea } from '@/components/forms/primitives';
 import type {
   CampaignBriefFieldErrors,
@@ -17,6 +15,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepFinalNotesProps {
+  ui: CampaignBriefUi;
   values: Pick<CampaignBriefFormValues, 'additional_notes'>;
   onChange: (key: CampaignBriefFieldKey, value: string) => void;
   files: File[];
@@ -31,6 +30,7 @@ export interface StepFinalNotesProps {
 const ACCEPTED_FILE_TYPES = CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS.map((ext) => `.${ext}`).join(',');
 
 export function StepFinalNotes({
+  ui,
   values,
   onChange,
   files,
@@ -42,7 +42,7 @@ export function StepFinalNotes({
   disabled,
 }: StepFinalNotesProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
   const uploadError = fileError ?? errors.files;
 
   return (
@@ -58,8 +58,12 @@ export function StepFinalNotes({
       </FormField>
 
       <div className="vp-form-field vp-form-file-field">
-        <label className="vp-form-label" id="briefing_materials_upload_label" htmlFor="briefing_materials_upload">
-          Briefing materials upload
+        <label
+          className="vp-form-label"
+          id="briefing_materials_upload_label"
+          htmlFor="briefing_materials_upload"
+        >
+          {ui.briefingMaterials}
         </label>
 
         <input
@@ -86,12 +90,10 @@ export function StepFinalNotes({
           disabled={disabled}
           onClick={() => fileInputRef.current?.click()}
         >
-          Attach files
+          {ui.attachFiles}
         </button>
 
-        <p className="vp-form-helper">
-          Accepted: {CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS.join(', ')}. Max 10 files.
-        </p>
+        <p className="vp-form-helper">{ui.acceptedFilesHelp}</p>
 
         {(uploadError || hasError('files')) && (
           <p className="vp-form-error-msg">{uploadError}</p>
@@ -108,7 +110,7 @@ export function StepFinalNotes({
                   disabled={disabled}
                   onClick={() => onRemoveFile(index)}
                 >
-                  Remove
+                  {ui.removeFile}
                 </button>
               </li>
             ))}

@@ -1,5 +1,74 @@
 {
-  "Test": {
-    "message": "Vantage Pictures — 中文语言环境已启用"
+  "Nav": {
+    "home": "主页",
+    "about": "关于我们",
+    "vietnamProductionService": "越南制作服务",
+    "work": "作品",
+    "news": "新闻动态",
+    "contact": "联系",
+    "primaryAria": "主导航",
+    "toggleAria": "切换导航菜单",
+    "switchToChinese": "切换到中文",
+    "switchToEnglish": "切换到英文"
+  },
+  "Search": {
+    "title": "搜索",
+    "placeholder": "搜索",
+    "submitAria": "提交搜索",
+    "openAria": "打开搜索",
+    "hint": "请输入搜索词。",
+    "noResults": "未找到「{query}」的相关结果",
+    "portfolio": "作品集",
+    "news": "新闻",
+    "loadingAria": "正在加载搜索结果"
+  },
+  "Home": {
+    "workSectionOutline": "精选",
+    "workSection": "作品",
+    "viewAllWork": "查看全部作品",
+    "aboutHeading": "面向全球品牌的商业影像制作",
+    "aboutHeadingFull": "面向全球品牌的商业影像制作",
+    "aboutHeadingOutline": "为",
+    "aboutHeadingBrands": "雄心勃勃的品牌",
+    "learnMoreAboutUs": "了解更多关于我们的信息",
+    "brandsOutline": "合作",
+    "brands": "品牌",
+    "heroCarouselAria": "精选作品轮播",
+    "goToSlide": "转到第 {index} 张幻灯片",
+    "previousSlide": "上一张幻灯片",
+    "nextSlide": "下一张幻灯片"
+  },
+  "About": {
+    "teamOutline": "我们的",
+    "team": "团队"
+  },
+  "Vietnam": {
+    "shotInOutline": "在越南",
+    "shotIn": "拍摄",
+    "download": "下载"
+  },
+  "Filters": {
+    "videoFormat": "视频格式",
+    "industry": "行业",
+    "market": "市场",
+    "client": "客户",
+    "director": "导演",
+    "dop": "摄影指导",
+    "artDirector": "美术指导",
+    "all": "全部",
+    "clear": "清除筛选",
+    "empty": "未找到符合条件的作品。",
+    "portfolioAria": "作品集筛选",
+    "crewAria": "制作团队筛选"
+  },
+  "Blog": {
+    "categories": "博客分类"
+  },
+  "Contact": {
+    "modalTitle": "联系",
+    "closeAria": "关闭联系对话框"
+  },
+  "Portfolio": {
+    "noVideo": "未找到此作品的视频嵌入。"
   }
 }

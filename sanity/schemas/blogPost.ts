@@ -6,22 +6,33 @@
  *
  * URL pattern: /[slug]/ (EN) — root level, NOT under /news/
  * Chinese: /zh/[slugZh]/
- *
- * Blog comments are dropped in the rebuild (§4.3).
  */
 
 import { defineField, defineType } from 'sanity';
 
 export const blogPost = defineType({
   name: 'blogPost',
-  title: 'Blog Post',
+  title: 'Blog Posts',
   type: 'document',
+
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'body', title: 'Body' },
+    { name: 'seo', title: 'SEO' },
+  ],
+
+  fieldsets: [
+    { name: 'titles', title: 'Titles', options: { columns: 2 } },
+    { name: 'slugs', title: 'Slugs', options: { columns: 2 } },
+  ],
 
   fields: [
     defineField({
       name: 'title',
       title: 'Title (English)',
       type: 'string',
+      group: 'content',
+      fieldset: 'titles',
       validation: (rule) => rule.required(),
     }),
 
@@ -29,14 +40,17 @@ export const blogPost = defineType({
       name: 'titleZh',
       title: 'Title (Chinese)',
       type: 'string',
+      group: 'content',
+      fieldset: 'titles',
     }),
 
     defineField({
       name: 'slug',
       title: 'Slug (English)',
       type: 'slug',
-      description:
-        'Root-level URL: /[slug]/ — NOT /news/[slug]/. Critical for SEO preservation.',
+      group: 'content',
+      fieldset: 'slugs',
+      description: 'Root-level URL: /[slug]/ — not /news/[slug]/.',
       options: { source: 'title', maxLength: 96 },
       validation: (rule) => rule.required(),
     }),
@@ -45,7 +59,9 @@ export const blogPost = defineType({
       name: 'slugZh',
       title: 'Slug (Chinese)',
       type: 'slug',
-      description: 'Chinese URL slug for /zh/[slug]/ pages.',
+      group: 'content',
+      fieldset: 'slugs',
+      description: 'URL: /zh/[slug]/',
       options: { source: 'titleZh', maxLength: 96 },
     }),
 
@@ -53,6 +69,7 @@ export const blogPost = defineType({
       name: 'publishedAt',
       title: 'Published At',
       type: 'datetime',
+      group: 'content',
       validation: (rule) => rule.required(),
     }),
 
@@ -60,6 +77,7 @@ export const blogPost = defineType({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
+      group: 'content',
       options: { hotspot: true },
     }),
 
@@ -67,13 +85,24 @@ export const blogPost = defineType({
       name: 'categories',
       title: 'Categories',
       type: 'array',
+      group: 'content',
       of: [{ type: 'reference', to: [{ type: 'category' }] }],
+    }),
+
+    defineField({
+      name: 'excerptZh',
+      title: 'Excerpt (Chinese)',
+      type: 'text',
+      group: 'content',
+      description: 'Optional Chinese card excerpt. Falls back to bodyZh when empty.',
+      rows: 3,
     }),
 
     defineField({
       name: 'body',
       title: 'Body (English)',
       type: 'array',
+      group: 'body',
       of: [{ type: 'block' }, { type: 'image' }],
       validation: (rule) => rule.required(),
     }),
@@ -82,6 +111,7 @@ export const blogPost = defineType({
       name: 'bodyZh',
       title: 'Body (Chinese)',
       type: 'array',
+      group: 'body',
       of: [{ type: 'block' }, { type: 'image' }],
     }),
 
@@ -89,6 +119,14 @@ export const blogPost = defineType({
       name: 'seo',
       title: 'SEO',
       type: 'seoFields',
+      group: 'seo',
+    }),
+
+    defineField({
+      name: 'trash',
+      type: 'trashMetadata',
+      hidden: true,
+      readOnly: true,
     }),
   ],
 

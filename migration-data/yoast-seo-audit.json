@@ -1,0 +1,478 @@
+{
+  "generatedAt": "2026-07-17T14:06:43.370Z",
+  "design": {
+    "migratedFields": [
+      "_yoast_wpseo_metadesc",
+      "_yoast_wpseo_focuskw"
+    ],
+    "intentionallyNotMigrated": "SEO titles, OG/Twitter, canonical, robots, schema types — generated in Next.js per content-schema.md §7"
+  },
+  "yoastPostmetaKeys": {
+    "_yoast_wpseo_content_score": {
+      "byType": {
+        "page": {
+          "filled": 9,
+          "total": 9
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 23,
+          "total": 23
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_estimated-reading-time-minutes": {
+      "byType": {
+        "page": {
+          "filled": 9,
+          "total": 9
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 23,
+          "total": 23
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_focuskeywords": {
+      "byType": {
+        "page": {
+          "filled": 0,
+          "total": 2
+        },
+        "portfolio": {
+          "filled": 0,
+          "total": 142
+        },
+        "post": {
+          "filled": 0,
+          "total": 23
+        }
+      },
+      "useful": true,
+      "migrated": false
+    },
+    "_yoast_wpseo_focuskw": {
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 22,
+          "total": 22
+        }
+      },
+      "useful": true,
+      "migrated": true
+    },
+    "_yoast_wpseo_keywordsynonyms": {
+      "byType": {
+        "page": {
+          "filled": 0,
+          "total": 2
+        },
+        "portfolio": {
+          "filled": 0,
+          "total": 142
+        },
+        "post": {
+          "filled": 0,
+          "total": 23
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_linkdex": {
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 22,
+          "total": 22
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_meta-robots-noindex": {
+      "byType": {
+        "page": {
+          "filled": 1,
+          "total": 1
+        }
+      },
+      "useful": true,
+      "migrated": false
+    },
+    "_yoast_wpseo_metadesc": {
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 22,
+          "total": 22
+        }
+      },
+      "useful": true,
+      "migrated": true
+    },
+    "_yoast_wpseo_primary_category": {
+      "byType": {
+        "post": {
+          "filled": 23,
+          "total": 23
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_primary_industry": {
+      "byType": {
+        "portfolio": {
+          "filled": 138,
+          "total": 141
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_primary_market": {
+      "byType": {
+        "portfolio": {
+          "filled": 140,
+          "total": 142
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_primary_portfolio-category": {
+      "byType": {
+        "portfolio": {
+          "filled": 21,
+          "total": 64
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_primary_portfolio-tags": {
+      "byType": {
+        "portfolio": {
+          "filled": 0,
+          "total": 64
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_primary_video-format": {
+      "byType": {
+        "portfolio": {
+          "filled": 138,
+          "total": 142
+        }
+      },
+      "useful": false,
+      "migrated": false
+    },
+    "_yoast_wpseo_title": {
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        }
+      },
+      "useful": true,
+      "migrated": false
+    }
+  },
+  "usefulKeysWithData": [
+    {
+      "key": "_yoast_wpseo_focuskw",
+      "migrated": true,
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 22,
+          "total": 22
+        }
+      },
+      "filledTotal": 172
+    },
+    {
+      "key": "_yoast_wpseo_meta-robots-noindex",
+      "migrated": false,
+      "byType": {
+        "page": {
+          "filled": 1,
+          "total": 1
+        }
+      },
+      "filledTotal": 1
+    },
+    {
+      "key": "_yoast_wpseo_metadesc",
+      "migrated": true,
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        },
+        "portfolio": {
+          "filled": 142,
+          "total": 142
+        },
+        "post": {
+          "filled": 22,
+          "total": 22
+        }
+      },
+      "filledTotal": 172
+    },
+    {
+      "key": "_yoast_wpseo_title",
+      "migrated": false,
+      "byType": {
+        "page": {
+          "filled": 8,
+          "total": 8
+        }
+      },
+      "filledTotal": 8
+    }
+  ],
+  "indexables": {
+    "tableExists": true,
+    "stats": {
+      "total": 174,
+      "posts": "174",
+      "with_description": "172",
+      "with_title": "8",
+      "with_focuskw": "172",
+      "with_og_image": "174",
+      "with_twitter_image": "174",
+      "with_canonical": "0",
+      "noindex": "1",
+      "with_schema_page": "0",
+      "with_schema_article": "0"
+    },
+    "interestingRows": [
+      {
+        "object_id": 3072,
+        "object_sub_type": "page",
+        "title": "Vietnam Filming Location Guide %%sep%% Production Resource",
+        "description": "Download our Vietnam filming location guide featuring diverse commercial shoot locations and production insights for international crews.",
+        "primary_focus_keyword": "Vietnam Filming Location Guide",
+        "open_graph_title": null,
+        "open_graph_description": null,
+        "open_graph_image": "http://localhost:8888/vantage-local/wp-content/uploads/2023/03/AdobeStock_119514364-scaled.jpeg",
+        "twitter_title": null,
+        "twitter_description": null,
+        "twitter_image": "http://localhost:8888/vantage-local/wp-content/uploads/2023/03/AdobeStock_119514364-scaled.jpeg",
+        "canonical": null,
+        "is_robots_noindex": null,
+        "schema_page_type": null,
+        "schema_article_type": null
+      },
+      {
+        "object_id": 3195,
+        "object_sub_type": "page",
+        "title": null,
+        "description": null,
+        "primary_focus_keyword": null,
+        "open_graph_title": null,
+        "open_graph_description": null,
+        "open_graph_image": "http://localhost:8888/vantage-local/wp-content/uploads/2025/07/TPBank-ChatPay-Chuyen-tien-y-nhu-chat.jpg",
+        "twitter_title": null,
+        "twitter_description": null,
+        "twitter_image": "http://localhost:8888/vantage-local/wp-content/uploads/2025/07/TPBank-ChatPay-Chuyen-tien-y-nhu-chat.jpg",
+        "canonical": null,
+        "is_robots_noindex": 1,
+        "schema_page_type": null,
+        "schema_article_type": null
+      }
+    ]
+  },
+  "byType": {
+    "Pages": {
+      "wpPublished": 9,
+      "matchedInSanity": 9,
+      "missingInSanity": 0,
+      "wpWithMetadesc": 8,
+      "wpWithFocuskw": 8,
+      "metadescExactMatch": 8,
+      "metadescMismatch": 0,
+      "focusExactMatch": 8,
+      "focusMismatch": 0
+    },
+    "Blog Posts": {
+      "wpPublished": 23,
+      "matchedInSanity": 23,
+      "missingInSanity": 0,
+      "wpWithMetadesc": 22,
+      "wpWithFocuskw": 22,
+      "metadescExactMatch": 22,
+      "metadescMismatch": 0,
+      "focusExactMatch": 22,
+      "focusMismatch": 0
+    },
+    "Portfolio": {
+      "wpPublished": 142,
+      "matchedInSanity": 142,
+      "missingInSanity": 0,
+      "wpWithMetadesc": 142,
+      "wpWithFocuskw": 142,
+      "metadescExactMatch": 142,
+      "metadescMismatch": 0,
+      "focusExactMatch": 142,
+      "focusMismatch": 0
+    }
+  },
+  "mismatches": [],
+  "missingInSanity": [],
+  "missingMetadesc": [
+    {
+      "wpId": 3195,
+      "type": "page",
+      "slug": "work-internal",
+      "sanityId": "page-work-internal",
+      "note": "No Yoast metadesc in WP and none in Sanity"
+    }
+  ],
+  "missingFocuskw": [
+    {
+      "wpId": 3195,
+      "type": "page",
+      "slug": "work-internal",
+      "sanityId": "page-work-internal"
+    },
+    {
+      "wpId": 4500,
+      "type": "post",
+      "slug": "vantage-pictures-james-duong-on-bringing-chinese-productions-to-vietnam",
+      "sanityId": "blogPost-4500"
+    }
+  ],
+  "usefulUnmigratedExamples": [
+    {
+      "wpId": 8,
+      "type": "page",
+      "slug": "news",
+      "title": "Commercial Film Production %%title%% %%page%% %%sep%% %%sitename%%",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 2582,
+      "type": "page",
+      "slug": "video-campaign-brief",
+      "title": "Start Your Project %%sep%% %%sitename%%",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 2693,
+      "type": "page",
+      "slug": "work",
+      "title": "%%sitename%% %%sep%% Commercial Film Portfolio",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 3072,
+      "type": "page",
+      "slug": "vietnam-location-guide",
+      "title": "Vietnam Filming Location Guide %%sep%% Production Resource",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 3195,
+      "type": "page",
+      "slug": "work-internal",
+      "titleIsTemplate": false,
+      "noindex": "1"
+    },
+    {
+      "wpId": 3747,
+      "type": "page",
+      "slug": "home",
+      "title": "%%sitename%% %%sep%% %%sitedesc%%",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 3778,
+      "type": "page",
+      "slug": "about",
+      "title": "%%title%% %%sitename%% %%sep%% %%sitedesc%%",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 3794,
+      "type": "page",
+      "slug": "vietnam-production-service",
+      "title": "%%title%% %%sep%% %%sitename%%",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    },
+    {
+      "wpId": 3822,
+      "type": "page",
+      "slug": "contact",
+      "title": "%%title%% %%sitename%% %%sep%% %%sitedesc%%",
+      "titleIsTemplate": true,
+      "note": "Yoast title template — intentionally generated in Next.js"
+    }
+  ],
+  "sanityGaps": {
+    "withoutMetaDescription": [
+      {
+        "_id": "page-work-internal",
+        "_type": "page",
+        "slug": "work-internal",
+        "title": "Work (Internal)",
+        "noIndex": true,
+        "isHidden": null
+      }
+    ],
+    "withEnButMissingZh": []
+  }
+}

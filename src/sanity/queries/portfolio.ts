@@ -12,15 +12,17 @@ const PORTFOLIO_CARD_FIELDS = `
   "slug": slug.current,
   "slugZh": slugZh.current,
   thumbTitle,
+  thumbTitleZh,
   featuredImage,
   isHidden
 `;
 
-/** Taxonomy slug arrays for public filter bar (format / industry / market). */
+/** Taxonomy slug arrays for public filter bar (format / industry / market).
+ * Includes EN + ZH slugs so URL filters work on both locales. */
 const PORTFOLIO_FILTER_FIELDS = `
-  "videoFormatSlugs": videoFormats[]->slug.current,
-  "industrySlugs": industries[]->slug.current,
-  "marketSlugs": markets[]->slug.current
+  "videoFormatSlugs": array::compact((videoFormats[]->slug.current) + (videoFormats[]->slugZh.current)),
+  "industrySlugs": array::compact((industries[]->slug.current) + (industries[]->slugZh.current)),
+  "marketSlugs": array::compact((markets[]->slug.current) + (markets[]->slugZh.current))
 `;
 
 /** Crew/client slug data for work-internal AND-logic filters. */
@@ -51,7 +53,8 @@ const TAXONOMY_TERM_FIELDS = `
   title,
   titleZh,
   "slug": slug.current,
-  "slugZh": slugZh.current
+  "slugZh": slugZh.current,
+  "parentId": parent._ref
 `;
 
 /**
@@ -59,7 +62,7 @@ const TAXONOMY_TERM_FIELDS = `
  * Excludes isHidden. Includes taxonomy slug arrays for URL-synced filter bar.
  */
 export const ALL_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -69,7 +72,7 @@ export const ALL_PORTFOLIO_QUERY = `
  * Single portfolio entry by slug (English slug or explicit slugZh on Chinese routes).
  */
 export const PORTFOLIO_ENTRY_QUERY = `
-  *[_type == "portfolioEntry" && (
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (
     slug.current == $slug || slugZh.current == $slug
   )][0]{
     _id,
@@ -78,8 +81,11 @@ export const PORTFOLIO_ENTRY_QUERY = `
     "slug": slug.current,
     "slugZh": slugZh.current,
     thumbTitle,
+    thumbTitleZh,
     headerTitle,
+    headerTitleZh,
     longTitle,
+    longTitleZh,
     description,
     descriptionZh,
     featuredImage,
@@ -91,7 +97,9 @@ export const PORTFOLIO_ENTRY_QUERY = `
       vimeoUrl,
       xinpianchangUrl,
       longTitle,
-      description
+      longTitleZh,
+      description,
+      descriptionZh
     },
     ${PORTFOLIO_CREDITS_FIELDS},
     seo{
@@ -106,7 +114,7 @@ export const PORTFOLIO_ENTRY_QUERY = `
  * All portfolio slugs for generateStaticParams (141 entries × 2 locales).
  */
 export const PORTFOLIO_SLUGS_QUERY = `
-  *[_type == "portfolioEntry"] | order(title asc) {
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(title asc) {
     "slug": slug.current,
     "slugZh": slugZh.current
   }
@@ -114,11 +122,78 @@ export const PORTFOLIO_SLUGS_QUERY = `
 
 /**
  * All portfolio entries for work-internal — includes isHidden entries.
+ * Kept for PortfolioGrid internal filterMode compatibility.
  */
 export const ALL_PORTFOLIO_INTERNAL_QUERY = `
-  *[_type == "portfolioEntry"] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_INTERNAL_FILTER_FIELDS}
+  }
+`;
+
+/**
+ * Enriched library rows for the internal work tool — skim meta + detail pane.
+ * Includes hidden entries; resolves names (not just slugs) for filters/display.
+ */
+export const INTERNAL_LIBRARY_QUERY = `
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+    _id,
+    title,
+    titleZh,
+    headerTitle,
+    headerTitleZh,
+    longTitle,
+    longTitleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current,
+    thumbTitle,
+    thumbTitleZh,
+    featuredImage,
+    isHidden,
+    publishedAt,
+    vimeoUrl,
+    xinpianchangUrl,
+    clients[]->{
+      name,
+      "slug": slug.current
+    },
+    crewMembers[]->{
+      name,
+      "slug": slug.current,
+      role
+    },
+    platforms[]->{
+      name,
+      "slug": slug.current
+    },
+    videoFormats[]->{
+      title,
+      titleZh,
+      "slug": slug.current,
+      "slugZh": slugZh.current
+    },
+    industries[]->{
+      title,
+      titleZh,
+      "slug": slug.current,
+      "slugZh": slugZh.current
+    },
+    markets[]->{
+      title,
+      titleZh,
+      "slug": slug.current,
+      "slugZh": slugZh.current
+    },
+    ${PORTFOLIO_CREDITS_FIELDS}
+  }
+`;
+
+/** Platform terms for work-internal filter dropdown. */
+export const ALL_PLATFORMS_QUERY = `
+  *[_type == "platform"] | order(name asc) {
+    _id,
+    name,
+    "slug": slug.current
   }
 `;
 
@@ -181,7 +256,7 @@ export const MARKET_BY_SLUG_QUERY = `
  * Portfolio entries linked to a video format term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_VIDEO_FORMAT_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -191,7 +266,7 @@ export const PORTFOLIO_BY_VIDEO_FORMAT_QUERY = `
  * Portfolio entries linked to an industry term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_INDUSTRY_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -201,7 +276,7 @@ export const PORTFOLIO_BY_INDUSTRY_QUERY = `
  * Portfolio entries linked to a market term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_MARKET_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -212,7 +287,7 @@ export const PORTFOLIO_BY_MARKET_QUERY = `
  * Used for taxonomy archive PageHero backgrounds.
  */
 export const TAXONOMY_HERO_IMAGE_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden && references($termId)]
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt) && references($termId)]
     | order(publishedAt desc)[0].featuredImage
 `;
 
@@ -220,7 +295,7 @@ export const TAXONOMY_HERO_IMAGE_QUERY = `
  * Nine most recent public portfolio entries — homepage "A Bit of Our Work" grid.
  */
 export const RECENT_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && !isHidden] | order(publishedAt desc)[0...9] {
+  *[_type == "portfolioEntry" && !isHidden && !defined(trash.trashedAt)] | order(publishedAt desc)[0...9] {
     ${PORTFOLIO_CARD_FIELDS}
   }
 `;
@@ -249,7 +324,7 @@ export const CREW_MEMBERS_BY_ROLE_QUERY = `
 
 /** Work page CMS content (hero, intro body). */
 export const WORK_PAGE_QUERY = `
-  *[_type == "page" && slug.current == "work"][0]{
+  *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{
     title,
     titleZh,
     heroTitle,

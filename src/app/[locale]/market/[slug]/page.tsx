@@ -12,6 +12,7 @@ import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { taxonomyArchiveTitle, portfolioTaxonomyDescription, buildPageMetadata } from '@/lib/metadata';
+import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -38,15 +39,16 @@ export async function generateStaticParams() {
   const terms = await sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY);
 
   return routing.locales.flatMap((locale) =>
-    terms.map((term) => ({
-      locale,
-      slug: locale === 'zh' ? term.slugZh || term.slug : term.slug,
-    })),
+    terms.flatMap((term) => {
+      const base = locale === 'zh' ? term.slugZh || term.slug : term.slug;
+      return expandSlugParam(base).map((slug) => ({ locale, slug }));
+    }),
   );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
+  const slug = decodePathSlug(rawSlug);
   const term = await sanityClient.fetch<TaxonomyTerm | null>(
     MARKET_BY_SLUG_QUERY,
     { slug },
@@ -69,8 +71,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MarketArchivePage({ params }: Props) {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
+  const slug = decodePathSlug(rawSlug);
 
   const typedLocale = locale as Locale;
 

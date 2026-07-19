@@ -4,7 +4,7 @@ import { getMeta, parseAcfRepeater } from '../lib/acf';
 import { getAttachment } from '../lib/attachments';
 import { writeJson } from '../lib/fs';
 import { pageSlugZh } from '../lib/slug-zh';
-import { translate } from '../lib/translatepress';
+import { translateEnhanced, translateBodyHtml } from '../lib/translatepress';
 import { extractYoast } from '../lib/yoast';
 import { fetchAllPostMeta, fetchPosts } from '../lib/wp-helpers';
 
@@ -17,8 +17,10 @@ export interface ExportedHeroSlide {
 export interface ExportedFounder {
   name: string;
   jobTitle: string;
+  jobTitleZh?: string;
   imageWpId?: number;
   bio: string;
+  bioZh?: string;
   sameAs: string[];
 }
 
@@ -28,6 +30,7 @@ export interface ExportedPage {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  publishedAt: string;
   showHeroHeader: boolean;
   heroTitle?: string;
   heroTitleZh?: string;
@@ -54,18 +57,18 @@ export async function exportPages(): Promise<ExportedPage[]> {
   for (const post of posts) {
     const meta = allMeta.get(post.ID) ?? {};
 
-    const titleZh = await translate(post.post_title);
+    const titleZh = await translateEnhanced(post.post_title);
     const slugZh = pageSlugZh(post.post_name);
-    const bodyHtmlZh = await translate(post.post_content);
+    const bodyHtmlZh = await translateBodyHtml(post.post_content);
 
     const yoast = extractYoast(meta);
     const metaDescriptionZh = yoast.metaDescription
-      ? await translate(yoast.metaDescription)
+      ? await translateEnhanced(yoast.metaDescription)
       : undefined;
 
     const showHeroHeader = getMeta(meta, 'vp_show_hero_header') !== '0';
     const heroTitle = getMeta(meta, 'vp_hero_title') || undefined;
-    const heroTitleZh = heroTitle ? await translate(heroTitle) : undefined;
+    const heroTitleZh = heroTitle ? await translateEnhanced(heroTitle) : undefined;
 
     const thumbnailId = Number(meta['_thumbnail_id'] ?? 0) || undefined;
 
@@ -77,7 +80,7 @@ export async function exportPages(): Promise<ExportedPage[]> {
         const portfolioWpId = Number(row.portfolio_item ?? 0);
         if (!portfolioWpId) continue;
         const buttonLabel = (row.button_label ?? 'Watch').trim() || 'Watch';
-        const buttonLabelZh = await translate(buttonLabel);
+        const buttonLabelZh = await translateEnhanced(buttonLabel);
         slides.push({
           portfolioWpId,
           buttonLabel,
@@ -99,11 +102,15 @@ export async function exportPages(): Promise<ExportedPage[]> {
         const sameAs = sameAsRaw
           ? sameAsRaw.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean)
           : [];
+        const jobTitle = (row.job_title ?? '').trim() || 'Co-Founder';
+        const bio = (row.bio ?? '').trim() || name;
         parsed.push({
           name,
-          jobTitle: (row.job_title ?? '').trim() || 'Co-Founder',
+          jobTitle,
+          jobTitleZh: await translateEnhanced(jobTitle),
           imageWpId,
-          bio: (row.bio ?? '').trim() || name,
+          bio,
+          bioZh: await translateEnhanced(bio),
           sameAs,
         });
         if (imageWpId) await getAttachment(imageWpId);
@@ -117,6 +124,7 @@ export async function exportPages(): Promise<ExportedPage[]> {
       titleZh,
       slug: post.post_name,
       slugZh,
+      publishedAt: post.post_date,
       showHeroHeader: post.post_name === 'home' || post.post_name === 'video-campaign-brief'
         ? false
         : showHeroHeader,
@@ -124,7 +132,7 @@ export async function exportPages(): Promise<ExportedPage[]> {
       heroTitleZh,
       featuredImageWpId: thumbnailId,
       bodyHtml: post.post_content,
-      bodyHtmlZh: bodyHtmlZh && bodyHtmlZh !== post.post_content ? bodyHtmlZh : undefined,
+      bodyHtmlZh,
       heroSlides,
       founders,
       noIndex: post.post_name === 'work-internal',

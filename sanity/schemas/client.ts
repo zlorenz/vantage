@@ -12,7 +12,7 @@ import { defineField, defineType } from 'sanity';
 
 export const client = defineType({
   name: 'client',
-  title: 'Client',
+  title: 'Clients',
   type: 'document',
 
   fields: [

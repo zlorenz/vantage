@@ -3,11 +3,13 @@
  */
 
 import type { CampaignBriefStepConfig } from '@/lib/campaign-brief-fields';
+import type { Locale } from '@/i18n/routing';
 
 export interface FormStepIndicatorProps {
   steps: CampaignBriefStepConfig[];
   currentStep: number;
   onGoToStep: (step: number) => void;
+  locale?: Locale;
 }
 
 type StepState = 'completed' | 'active' | 'pending';
@@ -18,12 +20,17 @@ function getStepState(stepNumber: number, currentStep: number): StepState {
   return 'pending';
 }
 
-export function FormStepIndicator({ steps, currentStep, onGoToStep }: FormStepIndicatorProps) {
+export function FormStepIndicator({
+  steps,
+  currentStep,
+  onGoToStep,
+  locale = 'en',
+}: FormStepIndicatorProps) {
   return (
     <ol className="vp-form-step-progress" aria-label="Form progress">
       {steps.map((step) => {
         const state = getStepState(step.step, currentStep);
-        const title = step.title.toUpperCase();
+        const title = locale === 'zh' ? step.title : step.title.toUpperCase();
 
         return (
           <li

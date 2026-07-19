@@ -4,6 +4,7 @@
 
 export const SEARCH_QUERY = `
   *[_type in ["portfolioEntry", "blogPost"]
+    && !defined(trash.trashedAt)
     && !(_type == "portfolioEntry" && isHidden)
     && lower(title) match $searchTerm + "*"]
   | order(_type asc, publishedAt desc) {
@@ -15,6 +16,11 @@ export const SEARCH_QUERY = `
     publishedAt,
     featuredImage,
     description,
-    "excerpt": select(_type == "blogPost" => pt::text(body), description)
+    descriptionZh,
+    "excerpt": select(_type == "blogPost" => pt::text(body), description),
+    "excerptZh": select(
+      _type == "blogPost" => coalesce(excerptZh, pt::text(bodyZh)),
+      coalesce(descriptionZh, description)
+    )
   }
 `;

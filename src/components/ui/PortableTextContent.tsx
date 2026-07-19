@@ -13,7 +13,7 @@ import {
 import { ImageGalleryBlock } from '@/components/ui/ImageGalleryBlock';
 import { PortableTextVideoEmbed } from '@/components/ui/PortableTextVideoEmbed';
 import { Link } from '@/i18n/navigation';
-import { normalizeInternalPath } from '@/lib/internal-url';
+import { isAppExternalUrl, normalizeInternalPath } from '@/lib/internal-url';
 import { urlForImage } from '@/lib/sanity';
 import {
   extractVideoUrls,
@@ -98,8 +98,8 @@ function createComponents(relaxed = false): PortableTextComponents {
     link: ({ children, value }) => {
       const href = value?.href as string | undefined;
       if (!href) return <>{children}</>;
-      const isExternal = href.startsWith('http') || href.startsWith('mailto:');
-      if (isExternal) {
+
+      if (isAppExternalUrl(href)) {
         return (
           <a
             href={href}
@@ -111,10 +111,15 @@ function createComponents(relaxed = false): PortableTextComponents {
           </a>
         );
       }
+
+      const path = normalizeInternalPath(href);
       return (
-        <a href={href} className="text-vp-link underline-offset-2 hover:underline">
+        <Link
+          href={path as LinkHref}
+          className="text-vp-link underline-offset-2 hover:underline"
+        >
           {children}
-        </a>
+        </Link>
       );
     },
   },
@@ -153,14 +158,15 @@ function createComponents(relaxed = false): PortableTextComponents {
       if (!button.label || !button.url) return null;
 
       const path = normalizeInternalPath(button.url);
-      const isExternal = /^https?:\/\//i.test(button.url);
+      const ctaClassName =
+        'inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
 
-      if (isExternal) {
+      if (isAppExternalUrl(button.url)) {
         return (
           <p className={ctaWrapClass}>
             <a
-              href={path}
-              className="inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg"
+              href={button.url}
+              className={ctaClassName}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -172,10 +178,7 @@ function createComponents(relaxed = false): PortableTextComponents {
 
       return (
         <p className={ctaWrapClass}>
-          <Link
-            href={path as LinkHref}
-            className="inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg"
-          >
+          <Link href={path as LinkHref} className={ctaClassName}>
             {button.label}
           </Link>
         </p>

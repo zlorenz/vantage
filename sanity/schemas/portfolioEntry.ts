@@ -9,21 +9,38 @@
 
 import { defineField, defineType } from 'sanity';
 
+import { TaxonomyCheckboxInput } from '../components/TaxonomyCheckboxInput';
+
 export const portfolioEntry = defineType({
   name: 'portfolioEntry',
-  title: 'Portfolio Entry',
+  title: 'Portfolio',
   type: 'document',
 
-  fields: [
-    // -------------------------------------------------------------------------
-    // Titles — English and Chinese
-    // -------------------------------------------------------------------------
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'media', title: 'Media' },
+    { name: 'taxonomies', title: 'Taxonomies' },
+    { name: 'credits', title: 'Credits' },
+    { name: 'seo', title: 'SEO' },
+  ],
 
+  fieldsets: [
+    { name: 'titles', title: 'Titles', options: { columns: 2 } },
+    { name: 'slugs', title: 'Slugs', options: { columns: 2 } },
+    { name: 'displayTitles', title: 'Display Titles', options: { columns: 2 } },
+    { name: 'copy', title: 'Description', options: { columns: 2 } },
+    { name: 'videoUrls', title: 'Video URLs', options: { columns: 2 } },
+    { name: 'taxonomy', title: 'Formats / Industries / Markets', options: { columns: 3 } },
+    { name: 'people', title: 'Clients / Crew / Platforms', options: { columns: 3 } },
+  ],
+
+  fields: [
     defineField({
       name: 'title',
       title: 'Title (English)',
       type: 'string',
-      description: 'Canonical post title (WordPress post_title).',
+      group: 'content',
+      fieldset: 'titles',
       validation: (rule) => rule.required(),
     }),
 
@@ -31,14 +48,17 @@ export const portfolioEntry = defineType({
       name: 'titleZh',
       title: 'Title (Chinese)',
       type: 'string',
-      description: 'Chinese title from TranslatePress.',
+      group: 'content',
+      fieldset: 'titles',
     }),
 
     defineField({
       name: 'slug',
       title: 'Slug (English)',
       type: 'slug',
-      description: 'URL slug for /portfolio/[slug]/. Must match live URLs for SEO.',
+      group: 'content',
+      fieldset: 'slugs',
+      description: 'URL: /portfolio/[slug]/',
       options: { source: 'title', maxLength: 96 },
       validation: (rule) => rule.required(),
     }),
@@ -47,8 +67,9 @@ export const portfolioEntry = defineType({
       name: 'slugZh',
       title: 'Slug (Chinese)',
       type: 'slug',
-      description:
-        'Chinese URL slug for /zh/投资组合/[slug]/. Stored explicitly — not derived from English.',
+      group: 'content',
+      fieldset: 'slugs',
+      description: 'URL: /zh/投资组合/[slug]/',
       options: { source: 'titleZh', maxLength: 96 },
     }),
 
@@ -56,23 +77,38 @@ export const portfolioEntry = defineType({
       name: 'publishedAt',
       title: 'Published At',
       type: 'datetime',
-      description:
-        'WordPress post_date — used for Work index and taxonomy archive sort order (newest first).',
+      group: 'content',
+      description: 'Used for Work index and archive sort (newest first).',
       validation: (rule) => rule.required(),
     }),
 
-    // -------------------------------------------------------------------------
-    // Display titles — HTML allowed (<br>, <span class="vp-outline">)
-    // -------------------------------------------------------------------------
+    defineField({
+      name: 'isHidden',
+      title: 'Hidden from Public Portfolio',
+      type: 'boolean',
+      group: 'content',
+      description: 'Excluded from public /work/ and market archives when true.',
+      initialValue: false,
+    }),
 
     defineField({
       name: 'thumbTitle',
       title: 'Thumbnail Title',
       type: 'text',
       rows: 2,
-      description:
-        'Card overlay title — supports HTML <br>. All 141 WordPress entries populated.',
+      group: 'content',
+      fieldset: 'displayTitles',
+      description: 'Card overlay — supports HTML <br>.',
       validation: (rule) => rule.required(),
+    }),
+
+    defineField({
+      name: 'thumbTitleZh',
+      title: 'Thumbnail Title (Chinese)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      fieldset: 'displayTitles',
     }),
 
     defineField({
@@ -80,9 +116,19 @@ export const portfolioEntry = defineType({
       title: 'Header Title',
       type: 'text',
       rows: 2,
-      description:
-        'Hero display title — supports HTML <span> for .vp-outline styling.',
+      group: 'content',
+      fieldset: 'displayTitles',
+      description: 'Hero title — supports <span class="vp-outline">.',
       validation: (rule) => rule.required(),
+    }),
+
+    defineField({
+      name: 'headerTitleZh',
+      title: 'Header Title (Chinese)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      fieldset: 'displayTitles',
     }),
 
     defineField({
@@ -90,22 +136,29 @@ export const portfolioEntry = defineType({
       title: 'Long Title',
       type: 'text',
       rows: 2,
-      description:
-        'Main column title — supports HTML <span> for .vp-outline styling.',
+      group: 'content',
+      fieldset: 'displayTitles',
+      description: 'Main column title — supports <span class="vp-outline">.',
       validation: (rule) => rule.required(),
     }),
 
-    // -------------------------------------------------------------------------
-    // Description
-    // -------------------------------------------------------------------------
+    defineField({
+      name: 'longTitleZh',
+      title: 'Long Title (Chinese)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      fieldset: 'displayTitles',
+    }),
 
     defineField({
       name: 'excerpt',
       title: 'Excerpt (English)',
       type: 'text',
       rows: 2,
-      description:
-        'Short teaser — WordPress post_excerpt. Used on homepage hero carousel and cards.',
+      group: 'content',
+      fieldset: 'copy',
+      description: 'Short teaser for hero carousel and cards.',
     }),
 
     defineField({
@@ -113,13 +166,17 @@ export const portfolioEntry = defineType({
       title: 'Excerpt (Chinese)',
       type: 'text',
       rows: 2,
+      group: 'content',
+      fieldset: 'copy',
     }),
 
     defineField({
       name: 'description',
       title: 'Description (English)',
       type: 'text',
-      rows: 5,
+      rows: 4,
+      group: 'content',
+      fieldset: 'copy',
       validation: (rule) => rule.required(),
     }),
 
@@ -127,17 +184,16 @@ export const portfolioEntry = defineType({
       name: 'descriptionZh',
       title: 'Description (Chinese)',
       type: 'text',
-      rows: 5,
+      rows: 4,
+      group: 'content',
+      fieldset: 'copy',
     }),
-
-    // -------------------------------------------------------------------------
-    // Media
-    // -------------------------------------------------------------------------
 
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
+      group: 'media',
       options: { hotspot: true },
       validation: (rule) => rule.required(),
     }),
@@ -146,7 +202,8 @@ export const portfolioEntry = defineType({
       name: 'vimeoUrl',
       title: 'Vimeo URL',
       type: 'url',
-      description: 'Primary Vimeo embed URL. Vimeo ID extracted at render time.',
+      group: 'media',
+      fieldset: 'videoUrls',
       validation: (rule) =>
         rule.required().uri({ scheme: ['http', 'https'] }),
     }),
@@ -155,7 +212,9 @@ export const portfolioEntry = defineType({
       name: 'xinpianchangUrl',
       title: 'Xinpianchang URL',
       type: 'url',
-      description: 'Optional — shown on /zh/ portfolio pages when set (72 entries in WP).',
+      group: 'media',
+      fieldset: 'videoUrls',
+      description: 'Shown on /zh/ portfolio pages when set.',
       validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
     }),
 
@@ -163,82 +222,74 @@ export const portfolioEntry = defineType({
       name: 'additionalVideos',
       title: 'Additional Videos',
       type: 'array',
+      group: 'media',
       of: [{ type: 'additionalVideo' }],
-      description: 'Supplementary videos below main player (28 WordPress entries have rows).',
+      description: 'Supplementary videos below the main player.',
     }),
-
-    // -------------------------------------------------------------------------
-    // Taxonomy references
-    // -------------------------------------------------------------------------
 
     defineField({
       name: 'videoFormats',
       title: 'Video Formats',
       type: 'array',
+      group: 'taxonomies',
+      fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'videoFormat' }] }],
+      components: { input: TaxonomyCheckboxInput },
     }),
 
     defineField({
       name: 'industries',
       title: 'Industries',
       type: 'array',
+      group: 'taxonomies',
+      fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'industry' }] }],
+      components: { input: TaxonomyCheckboxInput },
     }),
 
     defineField({
       name: 'markets',
       title: 'Markets',
       type: 'array',
+      group: 'taxonomies',
+      fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'market' }] }],
+      components: { input: TaxonomyCheckboxInput },
     }),
 
     defineField({
       name: 'clients',
       title: 'Clients',
       type: 'array',
+      group: 'taxonomies',
+      fieldset: 'people',
       of: [{ type: 'reference', to: [{ type: 'client' }] }],
-      description: 'Synced from prod_brand credits during migration.',
     }),
 
     defineField({
       name: 'crewMembers',
       title: 'Crew Members',
       type: 'array',
+      group: 'taxonomies',
+      fieldset: 'people',
       of: [{ type: 'reference', to: [{ type: 'crewMember' }] }],
-      description: 'Synced from director/dop/art-director credits during migration.',
     }),
 
     defineField({
       name: 'platforms',
       title: 'Platforms',
       type: 'array',
+      group: 'taxonomies',
+      fieldset: 'people',
       of: [{ type: 'reference', to: [{ type: 'platform' }] }],
     }),
-
-    // -------------------------------------------------------------------------
-    // Visibility — consolidated from portfolio_visibility taxonomy (§4.11)
-    // -------------------------------------------------------------------------
-
-    defineField({
-      name: 'isHidden',
-      title: 'Hidden from Public Portfolio',
-      type: 'boolean',
-      description:
-        'When true, excluded from public /work/ and market archives. ' +
-        'Migration: set true for WP ID 3187 (Bitget – Elite Traders) only.',
-      initialValue: false,
-    }),
-
-    // -------------------------------------------------------------------------
-    // Credits — department-grouped (WordPress ACF Portfolio Credits)
-    // -------------------------------------------------------------------------
 
     defineField({
       name: 'credits',
       title: 'Credits',
       type: 'object',
-      description: 'Department-grouped credits from WordPress ACF Portfolio Credits.',
-      options: { collapsible: true, collapsed: true },
+      group: 'credits',
+      options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: 'production',
@@ -278,14 +329,18 @@ export const portfolioEntry = defineType({
       ],
     }),
 
-    // -------------------------------------------------------------------------
-    // SEO
-    // -------------------------------------------------------------------------
-
     defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seoFields',
+      group: 'seo',
+    }),
+
+    defineField({
+      name: 'trash',
+      type: 'trashMetadata',
+      hidden: true,
+      readOnly: true,
     }),
   ],
 

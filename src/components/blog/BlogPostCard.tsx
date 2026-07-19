@@ -4,6 +4,7 @@
 
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
+import { blogCardExcerpt } from '@/lib/blog-excerpt';
 import { urlForImage } from '@/lib/sanity';
 import type { BlogPostCard as BlogPostCardData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -25,6 +26,9 @@ function formatDate(dateString: string, locale: Locale): string {
 export function BlogPostCard({ post, locale }: BlogPostCardProps) {
   const slugParam = locale === 'zh' ? post.slugZh || post.slug : post.slug;
   const title = locale === 'zh' && post.titleZh ? post.titleZh : post.title;
+  const excerpt = blogCardExcerpt(
+    locale === 'zh' && post.excerptZh ? post.excerptZh : post.excerpt,
+  );
 
   const imageUrl = post.featuredImage
     ? urlForImage(post.featuredImage).width(960).height(540).fit('crop').url()
@@ -48,7 +52,7 @@ export function BlogPostCard({ post, locale }: BlogPostCardProps) {
         </Link>
       ) : null}
 
-      <div className="vp-post-card__body">
+      <div className="vp-post-card__body pt-4 md:pt-5">
         <h2 className="vp-post-card__title m-0 mb-1 text-[clamp(1.4rem,2vw,2.25rem)] font-bold uppercase leading-tight">
           <Link
             href={{ pathname: '/[slug]', params: { slug: slugParam } }}
@@ -64,9 +68,9 @@ export function BlogPostCard({ post, locale }: BlogPostCardProps) {
           </div>
         ) : null}
 
-        {post.excerpt ? (
+        {excerpt ? (
           <div className="vp-post-card__excerpt font-light text-vp-text-muted">
-            <p className="m-0 line-clamp-3">{post.excerpt}</p>
+            <p className="m-0 line-clamp-3">{excerpt}</p>
           </div>
         ) : null}
       </div>

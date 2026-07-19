@@ -27,6 +27,12 @@ export const founder = defineType({
     }),
 
     defineField({
+      name: 'jobTitleZh',
+      title: 'Job Title (Chinese)',
+      type: 'string',
+    }),
+
+    defineField({
       name: 'image',
       title: 'Photo',
       type: 'image',
@@ -40,6 +46,13 @@ export const founder = defineType({
       type: 'text',
       rows: 4,
       validation: (rule) => rule.required(),
+    }),
+
+    defineField({
+      name: 'bioZh',
+      title: 'Bio (Chinese)',
+      type: 'text',
+      rows: 4,
     }),
 
     defineField({

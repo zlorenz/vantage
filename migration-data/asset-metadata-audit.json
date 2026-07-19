@@ -1,0 +1,543 @@
+{
+  "generatedAt": "2026-07-17T14:19:09.900Z",
+  "dryRun": true,
+  "summary": {
+    "wpAttachments": 309,
+    "wpWithAlt": 261,
+    "wpWithTitle": 308,
+    "wpWithCaption": 39,
+    "wpWithDesc": 1,
+    "sanityAssets": 235,
+    "sanityMissingAlt": 40,
+    "sanityMissingTitle": 1,
+    "sanityMissingDesc": 196,
+    "planCount": 0,
+    "fieldCounts": {
+      "altText": 0,
+      "title": 0,
+      "description": 0
+    },
+    "unmatchedWpUseful": 74
+  },
+  "plans": [],
+  "unmatchedWpUseful": [
+    {
+      "wpId": 34,
+      "relativePath": "2021/06/favicon-vantage.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 35,
+      "relativePath": "2021/06/vantage-pictures-og-image.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 44,
+      "relativePath": "2021/06/braun.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 45,
+      "relativePath": "2021/06/cnn.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 46,
+      "relativePath": "2021/06/dji.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 47,
+      "relativePath": "2021/06/hasselblad.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 48,
+      "relativePath": "2021/06/huawei.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 49,
+      "relativePath": "2021/06/hyundai.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 51,
+      "relativePath": "2021/06/jw-marriott.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 52,
+      "relativePath": "2021/06/oneplus.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 54,
+      "relativePath": "2021/06/realme.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 55,
+      "relativePath": "2021/06/samsung.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 56,
+      "relativePath": "2021/06/the-north-face.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 57,
+      "relativePath": "2021/06/unilever.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 59,
+      "relativePath": "2021/06/zhiyun.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 60,
+      "relativePath": "2021/06/creatv.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 114,
+      "relativePath": "2021/06/hyundai-experiencing-more-tiny-home-vantage-pictures.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 125,
+      "relativePath": "2021/06/Brand_Vantage_v1_DARK.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 126,
+      "relativePath": "2021/06/Brand_Vantage_v1_LIGHT.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 127,
+      "relativePath": "2021/06/Brand_Vantage_v2_DARK.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 128,
+      "relativePath": "2021/06/Brand_Vantage_v2_LIGHT-1.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 129,
+      "relativePath": "2021/06/Logo_Vantage_DARK.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 130,
+      "relativePath": "2021/06/Logo_Vantage_LIGHT.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2240,
+      "relativePath": "2021/06/dji-osmo-mobile-the-traveler.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2259,
+      "relativePath": "2021/06/vinfast-between-worlds-01.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2260,
+      "relativePath": "2021/06/vinfast-between-worlds-02.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2261,
+      "relativePath": "2021/06/vinfast-between-worlds-03.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2262,
+      "relativePath": "2021/06/vinfast-between-worlds-04.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2263,
+      "relativePath": "2021/06/vinfast-between-worlds-05.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2519,
+      "relativePath": "2021/07/film-reel-vantage-pictures.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2578,
+      "relativePath": "2021/07/vantage-pictures-og-image.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2646,
+      "relativePath": "2021/09/samsung-galaxy-s21-active-with-fixed-earphones.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2648,
+      "relativePath": "2021/09/samsung-galaxy-s21-nailed-it.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2654,
+      "relativePath": "2021/11/roborock-h7-capture-pet-hair-everywhere.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2656,
+      "relativePath": "2021/11/roborock-h7-less-mess-with-dustbag.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2657,
+      "relativePath": "2021/11/roborock-h7-long-lasting-power.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2658,
+      "relativePath": "2021/11/roborock-h7-seriously-strong-suction.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2659,
+      "relativePath": "2021/11/roborock-h7-surprisingly-lightweight.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2749,
+      "relativePath": "2021/11/dji-my-mavic-nomad-filmmaker.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2750,
+      "relativePath": "2021/11/dji-my-mavic-priceless-moments.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2762,
+      "relativePath": "2021/11/dji-my-hong-kong-mountain-biking.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2772,
+      "relativePath": "2021/11/dji-mavic-mini-its-easy.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2773,
+      "relativePath": "2021/11/dji-mavic-mini-take-better-selfies.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2774,
+      "relativePath": "2021/11/dji-ski-mountaineering-jimmy-chin-behind-scenes.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2780,
+      "relativePath": "2021/11/dji-osmo-mobile-vlogger.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2792,
+      "relativePath": "2021/11/dji-osmo-pocket-compact-convenience.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2836,
+      "relativePath": "2022/05/fujifilm-smarter-systems-happier-patients.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 2928,
+      "relativePath": "2022/06/zhiyun-smooth-5-banner.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3018,
+      "relativePath": "2022/11/martin-buzora.jpg",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3032,
+      "relativePath": "2022/12/coca-cola.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3034,
+      "relativePath": "2022/12/png.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3035,
+      "relativePath": "2022/12/toyota.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3057,
+      "relativePath": "2023/01/Post_1.1_Thumbnail_16x9.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3100,
+      "relativePath": "2023/04/Post_1.1_Thumbnail_16x9.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3126,
+      "relativePath": "2023/05/roborock-s8-pro-ultra.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3249,
+      "relativePath": "2024/07/vantage-pictures-og-image.jpg",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3264,
+      "relativePath": "2024/12/bitget-trade-smarter-the-concert.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3265,
+      "relativePath": "2024/12/bitget-trade-smarter-the-dinner.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3267,
+      "relativePath": "2024/12/bitget-trade-smarter-the-traveler.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3270,
+      "relativePath": "2024/12/msi-120hz-perfectedge-monitor-accessory-slot.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3271,
+      "relativePath": "2024/12/msi-120hz-perfectedge-monitor-eyesergo.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3289,
+      "relativePath": "2024/12/Vinamilk-Probi-Tot-Nghiep-Moi-Hanh-Trinh-Em-Ruot-Nuot-Doi-Graduation.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3290,
+      "relativePath": "2024/12/Vinamilk-Probi-Vung-Da-Moi-Sang-Suot-Em-Ruot-Nuot-Doi-Chess.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3293,
+      "relativePath": "2025/01/Brand_Vantage_v2_DARK.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3462,
+      "relativePath": "2025/05/Westin-Hotels-Resorts-Himalayas-Busy-Resting.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3475,
+      "relativePath": "2025/05/msi-set-build-BTS-1.mp4",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3476,
+      "relativePath": "2025/05/msi-set-build-BTS-2.mp4",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3491,
+      "relativePath": "2025/07/TPBank-5-phut-co-the-xai-ngay.jpg",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3626,
+      "relativePath": "2026/02/vantage-pictures-saswp-logo.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 3810,
+      "relativePath": "2021/06/cropped-Logo_Vantage_LIGHT.png",
+      "hasAlt": true,
+      "hasTitle": true,
+      "hasDesc": true
+    },
+    {
+      "wpId": 3894,
+      "relativePath": "2026/03/Brand_Vantage_v2_LIGHT.png",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 4525,
+      "relativePath": "2026/07/Govee-Outdoor-Lights-Unstoppable-Fun.jpg",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 4526,
+      "relativePath": "2026/07/Parksible-The-Drive-Never-Ends.jpg",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    },
+    {
+      "wpId": 4527,
+      "relativePath": "2026/07/VioLoop-AI-Agent-for-your-PC.jpg",
+      "hasAlt": false,
+      "hasTitle": true,
+      "hasDesc": false
+    }
+  ]
+}

@@ -1,5 +1,74 @@
 {
-  "Test": {
-    "message": "Vantage Pictures — English locale active"
+  "Nav": {
+    "home": "Home",
+    "about": "About",
+    "vietnamProductionService": "Vietnam Production Service",
+    "work": "Work",
+    "news": "News",
+    "contact": "Contact",
+    "primaryAria": "Primary navigation",
+    "toggleAria": "Toggle navigation",
+    "switchToChinese": "Switch to Chinese",
+    "switchToEnglish": "Switch to English"
+  },
+  "Search": {
+    "title": "Search",
+    "placeholder": "Search",
+    "submitAria": "Submit search",
+    "openAria": "Open search",
+    "hint": "Enter a search term above.",
+    "noResults": "No results for '{query}'",
+    "portfolio": "PORTFOLIO",
+    "news": "NEWS",
+    "loadingAria": "Loading search results"
+  },
+  "Home": {
+    "workSectionOutline": "A BIT OF",
+    "workSection": "OUR WORK",
+    "viewAllWork": "VIEW ALL WORK",
+    "aboutHeading": "GLOBAL COMMERCIAL FILM PRODUCTION",
+    "aboutHeadingFull": "GLOBAL COMMERCIAL FILM PRODUCTION FOR AMBITIOUS BRANDS",
+    "aboutHeadingOutline": "FOR",
+    "aboutHeadingBrands": "AMBITIOUS BRANDS",
+    "learnMoreAboutUs": "LEARN MORE ABOUT US",
+    "brandsOutline": "BRANDS",
+    "brands": "WE WORK WITH",
+    "heroCarouselAria": "Featured work carousel",
+    "goToSlide": "Go to slide {index}",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide"
+  },
+  "About": {
+    "teamOutline": "OUR",
+    "team": "TEAM"
+  },
+  "Vietnam": {
+    "shotInOutline": "SHOT IN",
+    "shotIn": "VIETNAM",
+    "download": "DOWNLOAD"
+  },
+  "Filters": {
+    "videoFormat": "Video Format",
+    "industry": "Industry",
+    "market": "Market",
+    "client": "Client",
+    "director": "Director",
+    "dop": "DOP",
+    "artDirector": "Art Director",
+    "all": "All",
+    "clear": "Clear filters",
+    "empty": "No portfolio items found.",
+    "portfolioAria": "Portfolio filters",
+    "crewAria": "Portfolio crew filters"
+  },
+  "Blog": {
+    "categories": "BLOG CATEGORIES"
+  },
+  "Contact": {
+    "modalTitle": "Contact",
+    "closeAria": "Close contact dialog"
+  },
+  "Portfolio": {
+    "noVideo": "No video embed found for this portfolio item."
   }
 }

@@ -2,8 +2,8 @@
  * Step 3 — Campaign Goals: objectives, audience, tone, references, budget.
  */
 
-import { BUDGET_RANGE_OPTIONS, CAMPAIGN_BRIEF_FIELD_LABELS } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
+import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
   FormField,
   FormRadioGroup,
@@ -16,6 +16,7 @@ import type {
 } from '@/components/forms/useCampaignBriefForm';
 
 export interface StepGoalsProps {
+  ui: CampaignBriefUi;
   values: Pick<
     CampaignBriefFormValues,
     | 'campaign_goals'
@@ -34,20 +35,22 @@ export interface StepGoalsProps {
 }
 
 export function StepGoals({
+  ui,
   values,
   onChange,
   hasError,
   errors,
   disabled,
 }: StepGoalsProps) {
-  const labels = CAMPAIGN_BRIEF_FIELD_LABELS;
+  const labels = ui.fieldLabels;
+  const hints = ui.hints;
 
   return (
     <div className="vp-form-grid">
       <FormField
         label={labels.campaign_goals}
         htmlFor="campaign_goals"
-        hint="Example: To promote a new product, raise brand awareness, build hype for an upcoming event"
+        hint={hints.campaign_goals}
       >
         <FormTextarea
           id="campaign_goals"
@@ -58,11 +61,7 @@ export function StepGoals({
         />
       </FormField>
 
-      <FormField
-        label={labels.key_message}
-        htmlFor="key_message"
-        hint="Example: Our new product offers the widest range of functionality on the market at an affordable price"
-      >
+      <FormField label={labels.key_message} htmlFor="key_message" hint={hints.key_message}>
         <FormTextarea
           id="key_message"
           name="key_message"
@@ -75,7 +74,7 @@ export function StepGoals({
       <FormField
         label={labels.target_audience}
         htmlFor="target_audience"
-        hint="Example: Women, tech enthusiasts, enterprise B2B customers"
+        hint={hints.target_audience}
       >
         <FormTextInput
           id="target_audience"
@@ -89,7 +88,7 @@ export function StepGoals({
       <FormField
         label={labels.desired_runtime}
         htmlFor="desired_runtime"
-        hint="Example: 90-sec hero film, between 2–3 mins, no more than 120 secs"
+        hint={hints.desired_runtime}
       >
         <FormTextInput
           id="desired_runtime"
@@ -103,7 +102,7 @@ export function StepGoals({
       <FormField
         label={labels.video_tone_style}
         htmlFor="video_tone_style"
-        hint="Example: Documentary-style footage with uplifting music, fast-paced editing with vivid colors, slower pacing with 3D animation to illustrate complex features"
+        hint={hints.video_tone_style}
       >
         <FormTextarea
           id="video_tone_style"
@@ -117,7 +116,7 @@ export function StepGoals({
       <FormField
         label={labels.reference_videos}
         htmlFor="reference_videos"
-        hint="Example: https://youtu.be/db-TQcdxLcI https://vimeo.com/445153961"
+        hint={hints.reference_videos}
       >
         <FormTextarea
           id="reference_videos"
@@ -132,7 +131,7 @@ export function StepGoals({
         label={labels.campaign_keywords_or_avoidances}
         htmlFor="campaign_keywords_or_avoidances"
         fullWidth
-        hint={`Example: Durability, cutting-edge tech, 'Customer Always Comes First'`}
+        hint={hints.campaign_keywords_or_avoidances}
       >
         <FormTextInput
           id="campaign_keywords_or_avoidances"
@@ -153,7 +152,7 @@ export function StepGoals({
         <FormRadioGroup
           name="budget_range"
           value={values.budget_range}
-          options={BUDGET_RANGE_OPTIONS}
+          options={ui.budgetRanges}
           onChange={(v) => onChange('budget_range', v)}
           disabled={disabled}
           hasError={hasError('budget_range')}

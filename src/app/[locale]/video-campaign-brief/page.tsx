@@ -9,8 +9,13 @@ import { CampaignBriefForm } from '@/components/forms/CampaignBriefForm';
 import { CondensedPageHeader } from '@/components/ui/CondensedPageHeader';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { CAMPAIGN_BRIEF_FORM_DESCRIPTION } from '@/lib/campaign-brief-fields';
-import { buildOgImage, pageTitle, seoDescription, buildPageMetadata } from '@/lib/metadata';
+import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import {
+  buildOgImage,
+  campaignBriefPageTitle,
+  seoDescription,
+  buildPageMetadata,
+} from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -36,14 +41,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
   if (!page) return { title: 'Not Found' };
 
-  const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = `Start Your Project | ${pageTitle(title).split('|')[1]?.trim() || 'Vantage Pictures'}`;
-
   return buildPageMetadata({
     locale: locale as Locale,
     enPath: '/video-campaign-brief',
     zhPath: `/zh/${page.slugZh || '视频活动简介'}`,
-    title: metaTitle,
+    title: campaignBriefPageTitle(locale as Locale),
     description: seoDescription(page.seo, locale as Locale),
     image: buildOgImage(page.featuredImage),
     type: 'website',
@@ -60,9 +62,10 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
 
   if (!page) notFound();
 
-  const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-
   const typedLocale = locale as Locale;
+  const title =
+    typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const ui = getCampaignBriefUi(typedLocale);
 
   return (
     <>
@@ -89,7 +92,7 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
 
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <p className="mb-8 font-light text-vp-text-muted">{CAMPAIGN_BRIEF_FORM_DESCRIPTION}</p>
+          <p className="mb-8 font-light text-vp-text-muted">{ui.formDescription}</p>
           <CampaignBriefForm />
         </div>
       </SectionWrapper>

@@ -42,7 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 1.0,
     }),
-    bilingualSitemapEntry('/work', '/zh/作品', {
+    bilingualSitemapEntry('/work', '/zh/工作', {
       changeFrequency: 'monthly',
       priority: 0.8,
     }),
