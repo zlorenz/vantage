@@ -128,24 +128,81 @@ async function waitForReleaseState(
   return (release as {state?: string} | null)?.state
 }
 
+type InventoryDoc = {
+  _id: string
+  _type: string
+  _rev: string
+  title?: string
+  name?: string
+  trash?: {trashedAt?: string}
+}
+
+type ReleaseHit = {
+  releaseId: string
+  state?: string
+  publishAt?: string
+  intendedPublishAt?: string
+  cardinality?: string
+  documents: InventoryDoc[]
+}
+
+/**
+ * Scheduled/locked version docs are sometimes invisible to sanity::versionOf
+ * while still returned by sanity::partOfRelease (what the table uses). Merge both.
+ */
+async function fetchReleaseVersions(
+  client: SanityClient,
+  publishedId: string,
+): Promise<ReleaseHit[]> {
+  try {
+    // Match the Content table query shape so ghosts visible there are inventoriable.
+    const hits = await client.fetch<ReleaseHit[]>(
+      `releases::all(){
+        "releaseId": string::split(_id, ".")[2],
+        state,
+        publishAt,
+        "intendedPublishAt": metadata.intendedPublishAt,
+        "cardinality": metadata.cardinality,
+        "documents": *[
+          sanity::partOfRelease(string::split(^._id, ".")[2])
+        ]{_id, _type, _rev, title, name, trash}
+      }`,
+    )
+    return (hits || [])
+      .map((hit) => ({
+        ...hit,
+        documents: (hit.documents || []).filter(
+          (doc) => doc?._id && publishedIdOf(doc._id) === publishedId,
+        ),
+      }))
+      .filter((hit) => hit.documents.length > 0)
+  } catch {
+    return []
+  }
+}
+
 export async function inventoryDocument(
   client: SanityClient,
   publishedId: string,
 ): Promise<DocumentInventory> {
-  // sanity::versionOf returns published + drafts.* + versions.* variants.
-  // Prefer it over glob match — match patterns miss some version ids.
-  const typed = await client.fetch<
-    Array<{
-      _id: string
-      _type: string
-      _rev: string
-      title?: string
-      name?: string
-      trash?: {trashedAt?: string}
-    }>
-  >(`*[sanity::versionOf($publishedId)]{_id, _type, _rev, title, name, trash}`, {
-    publishedId,
-  })
+  // sanity::versionOf returns published + drafts.* + versions.* variants when
+  // visible. Also scan releases — scheduled/locked versions can be missing from
+  // versionOf while still appearing in the Content table.
+  const [typed, releaseHits] = await Promise.all([
+    client.fetch<InventoryDoc[]>(
+      `*[sanity::versionOf($publishedId)]{_id, _type, _rev, title, name, trash}`,
+      {publishedId},
+    ),
+    fetchReleaseVersions(client, publishedId),
+  ])
+
+  const byId = new Map<string, InventoryDoc>()
+  for (const doc of typed) byId.set(doc._id, doc)
+  for (const hit of releaseHits) {
+    for (const doc of hit.documents || []) {
+      if (doc?._id) byId.set(doc._id, doc)
+    }
+  }
 
   let published: DocumentInventory['published']
   let draft: DocumentInventory['draft']
@@ -153,7 +210,7 @@ export async function inventoryDocument(
   let documentType: TrashableType = 'portfolioEntry'
   let title = 'Untitled'
 
-  for (const doc of typed) {
+  for (const doc of byId.values()) {
     title = titleOf(doc)
     if (TRASHABLE_TYPES.includes(doc._type as TrashableType)) {
       documentType = doc._type as TrashableType
@@ -175,21 +232,37 @@ export async function inventoryDocument(
     }
   }
 
+  // If releases referenced this id but returned no document bodies (true ghost),
+  // still record the release ids so dispose/unschedule can clear them.
   const schedules: DocumentInventory['schedules'] = []
-  const releaseIds = [...new Set(versions.map((v) => v.releaseId))]
+  const releaseIds = new Set<string>([
+    ...versions.map((v) => v.releaseId),
+    ...releaseHits.map((h) => h.releaseId).filter(Boolean),
+  ])
+
   for (const releaseId of releaseIds) {
+    const fromHit = releaseHits.find((h) => h.releaseId === releaseId)
     try {
       const release = await client.releases.get({releaseId})
       const meta = (release as {metadata?: {cardinality?: string; intendedPublishAt?: string}} | null)
         ?.metadata
-      const state = (release as {state?: string} | null)?.state
+      const state = (release as {state?: string} | null)?.state || fromHit?.state
       const publishAt =
-        (release as {publishAt?: string} | null)?.publishAt || meta?.intendedPublishAt
-      if (meta?.cardinality === 'one' || state === 'scheduled') {
+        (release as {publishAt?: string} | null)?.publishAt ||
+        meta?.intendedPublishAt ||
+        fromHit?.publishAt ||
+        fromHit?.intendedPublishAt
+      if (meta?.cardinality === 'one' || fromHit?.cardinality === 'one' || state === 'scheduled') {
         schedules.push({releaseId, publishAt, state})
       }
     } catch {
-      // Release metadata may be inaccessible; continue without it.
+      if (fromHit && (fromHit.cardinality === 'one' || fromHit.state === 'scheduled')) {
+        schedules.push({
+          releaseId,
+          publishAt: fromHit.publishAt || fromHit.intendedPublishAt,
+          state: fromHit.state,
+        })
+      }
     }
   }
 
@@ -448,7 +521,7 @@ export async function preflightTrash(
   const items: TrashPreflightItem[] = []
   for (const publishedId of publishedIds) {
     const inventory = await inventoryDocument(client, publishedId)
-    if (inventory.variantIds.length === 0) {
+    if (inventory.variantIds.length === 0 && inventory.schedules.length === 0) {
       throw new Error(`Document not found: ${publishedId}`)
     }
     if (!TRASHABLE_TYPES.includes(inventory.documentType)) {
@@ -477,6 +550,18 @@ export async function moveToTrash(
     try {
       const inventory = await inventoryDocument(client, publishedId)
       if (inventory.variantIds.length === 0) {
+        // Orphan scheduled release whose version body is not queryable via
+        // versionOf — still clear it so table ghosts can be removed.
+        if (inventory.schedules.length > 0) {
+          await disposeReleaseVersions(client, inventory)
+          try {
+            await client.delete(trashRecordId(publishedId))
+          } catch {
+            // ignore
+          }
+          results.push({publishedId, title: inventory.title, ok: true})
+          continue
+        }
         results.push({
           publishedId,
           title: publishedId,
@@ -811,6 +896,16 @@ async function disposeReleaseVersions(
         const version = inventory.versions.find((v) => v.releaseId === releaseId)
         if (version) {
           await discardVariant(client, version._id)
+        } else {
+          try {
+            await client.discardVersion({
+              publishedId: inventory.publishedId,
+              releaseId,
+            })
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error)
+            if (!/not found|already|does not exist/i.test(message)) throw error
+          }
         }
 
         const current =
@@ -863,13 +958,16 @@ export async function permanentlyDelete(
     try {
       const inventory = await inventoryDocument(client, publishedId)
       if (inventory.variantIds.length === 0) {
-        // Still delete orphan trash record if present.
+        // Still dispose orphan scheduled releases, then drop trash record.
+        if (inventory.schedules.length > 0) {
+          await disposeReleaseVersions(client, inventory)
+        }
         try {
           await client.delete(trashRecordId(publishedId))
         } catch {
           // ignore
         }
-        results.push({publishedId, title: publishedId, ok: true})
+        results.push({publishedId, title: inventory.title || publishedId, ok: true})
         continue
       }
 

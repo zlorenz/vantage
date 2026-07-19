@@ -690,15 +690,26 @@ export function DocumentTable({
       const preflight = await preflightTrash(client, ids)
       setConfirm({kind: 'trash', ids, preflight})
     } catch (err) {
-      toast.push({
-        status: 'error',
-        title: 'Could not prepare Move to Trash',
-        description: err instanceof Error ? err.message : String(err),
-      })
+      const message = err instanceof Error ? err.message : String(err)
+      // Scheduled-only ghosts (release version left after a partial delete) can
+      // fail inventory via versionOf. Fall back to permanent delete so the row
+      // can still be cleared from Active.
+      const scheduledGhosts = ids.every((id) =>
+        rows.some((row) => row._id === id && row.isScheduled && !row.isTrashed),
+      )
+      if (scheduledGhosts && /document not found/i.test(message)) {
+        setConfirm({kind: 'delete', ids})
+      } else {
+        toast.push({
+          status: 'error',
+          title: 'Could not prepare Move to Trash',
+          description: message,
+        })
+      }
     } finally {
       setBusy(false)
     }
-  }, [client, selected, toast])
+  }, [client, rows, selected, toast])
 
   const runConfirm = useCallback(async () => {
     if (!confirm) return
@@ -1142,7 +1153,7 @@ export function DocumentTable({
               <Text size={1}>
                 {confirm.kind === 'empty'
                   ? `Permanently delete all ${confirm.ids.length} item${confirm.ids.length === 1 ? '' : 's'} in Trash? This cannot be undone.`
-                  : `Permanently delete ${confirm.ids.length} selected item${confirm.ids.length === 1 ? '' : 's'}? This cannot be undone.`}
+                  : `Permanently delete ${confirm.ids.length} selected item${confirm.ids.length === 1 ? '' : 's'}? This clears any leftover scheduled release versions and cannot be undone.`}
               </Text>
             )}
             <Flex justify="flex-end" gap={2}>
