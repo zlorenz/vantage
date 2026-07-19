@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+import { buildZhSlugRedirects } from './src/redirects/zh-slug-redirects';
+
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
@@ -28,6 +30,8 @@ const nextConfig: NextConfig = {
         destination: '/zh/工作/',
         permanent: true,
       },
+      // Legacy live TranslatePress ZH slugs → improved Sanity slugZh
+      ...buildZhSlugRedirects(),
     ];
   },
   images: {
