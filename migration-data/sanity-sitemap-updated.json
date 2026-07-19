@@ -1,0 +1,1801 @@
+{
+  "generatedAt": "2026-07-19 14:05 UTC",
+  "source": "Sanity 7oesp86l / production (post slugZh backfill)",
+  "counts": {
+    "blogPosts": 23,
+    "categories": 5,
+    "industries": 10,
+    "markets": 5,
+    "pages": 9,
+    "portfolio": 142,
+    "videoFormats": 4
+  },
+  "portfolioWithSlugZh": 141,
+  "portfolioMissingSlugZh": [
+    "bitget-elite-traders"
+  ],
+  "entries": [
+    {
+      "type": "page",
+      "title": "About",
+      "slug": "about",
+      "slugZh": "关于",
+      "en": "/about",
+      "zh": "/zh/关于",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Contact",
+      "slug": "contact",
+      "slugZh": "联系",
+      "en": "/contact",
+      "zh": "/zh/联系",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Home",
+      "slug": "home",
+      "slugZh": "zh",
+      "en": "/",
+      "zh": "/zh/",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "News",
+      "slug": "news",
+      "slugZh": "新闻",
+      "en": "/news",
+      "zh": "/zh/新闻",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Video Campaign Brief",
+      "slug": "video-campaign-brief",
+      "slugZh": "视频活动简介",
+      "en": "/video-campaign-brief",
+      "zh": "/zh/视频活动简介",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Vietnam Location Guidebook",
+      "slug": "vietnam-location-guide",
+      "slugZh": "越南旅游指南",
+      "en": "/vietnam-location-guide",
+      "zh": "/zh/越南旅游指南",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Vietnam Production Service",
+      "slug": "vietnam-production-service",
+      "slugZh": "越南生产服务",
+      "en": "/vietnam-production-service",
+      "zh": "/zh/越南生产服务",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Work",
+      "slug": "work",
+      "slugZh": "工作",
+      "en": "/work",
+      "zh": "/zh/工作",
+      "flags": ""
+    },
+    {
+      "type": "page",
+      "title": "Work (Internal)",
+      "slug": "work-internal",
+      "slugZh": "work-internal",
+      "en": "/work-internal",
+      "zh": "/zh/work-internal",
+      "flags": "noIndex"
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Aquafina – Sải Bước Cộng Đồng Sóng Xanh",
+      "slug": "aquafina",
+      "slugZh": "爱泉",
+      "en": "/portfolio/aquafina",
+      "zh": "/zh/投资组合/爱泉",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "ASICS – DYNABLAST",
+      "slug": "asics-dynablast",
+      "slugZh": "亚瑟士-dynablast",
+      "en": "/portfolio/asics-dynablast",
+      "zh": "/zh/投资组合/亚瑟士-dynablast",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "ASMOKE Essential – Grill Like a Pro Anywhere",
+      "slug": "asmoke-essential-grill-like-a-pro-anywhere",
+      "slugZh": "asmoke-essential-随时随地像专业人士一样烧烤",
+      "en": "/portfolio/asmoke-essential-grill-like-a-pro-anywhere",
+      "zh": "/zh/投资组合/asmoke-essential-随时随地像专业人士一样烧烤",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "ASUS Education – A Day in the Life",
+      "slug": "asus-education-a-day-in-the-life",
+      "slugZh": "华硕教育-一天的生活",
+      "en": "/portfolio/asus-education-a-day-in-the-life",
+      "zh": "/zh/投资组合/华硕教育-一天的生活",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "ASUS – Upgrade to Incredible",
+      "slug": "asus-upgrade-to-incredible",
+      "slugZh": "华硕升级到难以置信",
+      "en": "/portfolio/asus-upgrade-to-incredible",
+      "zh": "/zh/投资组合/华硕升级到难以置信",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Bambu Lab H2D – Your Personal Manufacturing Hub",
+      "slug": "bambu-lab-h2d-your-personal-manufacturing-hub",
+      "slugZh": "拓竹-h2d-您的个人制造中心",
+      "en": "/portfolio/bambu-lab-h2d-your-personal-manufacturing-hub",
+      "zh": "/zh/投资组合/拓竹-h2d-您的个人制造中心",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Bambu Lab – Vortek Hotend Change System",
+      "slug": "bambu-lab-vortek",
+      "slugZh": "bambu-lab-vortek-热端更换系统",
+      "en": "/portfolio/bambu-lab-vortek",
+      "zh": "/zh/投资组合/bambu-lab-vortek-热端更换系统",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Bambu Lab X1 – The New Pioneer in 3D Printing",
+      "slug": "bambu-lab-x1",
+      "slugZh": "拓竹-x1-3d打印新先锋",
+      "en": "/portfolio/bambu-lab-x1",
+      "zh": "/zh/投资组合/拓竹-x1-3d打印新先锋",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Banyan Tree – There's More to Discovery",
+      "slug": "banyan-tree-theres-more-to-discovery",
+      "slugZh": "悦榕庄-发现更多",
+      "en": "/portfolio/banyan-tree-theres-more-to-discovery",
+      "zh": "/zh/投资组合/悦榕庄-发现更多",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "BIDV SmartBanking – Hòa nhịp sống thông minh",
+      "slug": "bidv-smartbanking-hoa-nhi%cc%a3p-so%cc%82ng-tho%cc%82ng-minh",
+      "slugZh": "bidv-智能银行",
+      "en": "/portfolio/bidv-smartbanking-hoa-nhi%cc%a3p-so%cc%82ng-tho%cc%82ng-minh",
+      "zh": "/zh/投资组合/bidv-智能银行",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Bitget – Elite Traders",
+      "slug": "bitget-elite-traders",
+      "slugZh": "",
+      "en": "/portfolio/bitget-elite-traders",
+      "zh": "/zh/投资组合/bitget-elite-traders",
+      "flags": "isHidden,slugZhMissing"
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Bitget – GetAgent ft. Julián Álvarez",
+      "slug": "bitget-getagent-ft-julian-alvarez",
+      "slugZh": "bitget-getagent-ft-julian-alvarez",
+      "en": "/portfolio/bitget-getagent-ft-julian-alvarez",
+      "zh": "/zh/投资组合/bitget-getagent-ft-julian-alvarez",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Bitget – Trade Smarter",
+      "slug": "bitget-trade-smarter",
+      "slugZh": "bitget-智慧交易",
+      "en": "/portfolio/bitget-trade-smarter",
+      "zh": "/zh/投资组合/bitget-智慧交易",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Braun x DJI – Dare to Be Different",
+      "slug": "braun-x-dji",
+      "slugZh": "博朗-x-大疆-敢于不同",
+      "en": "/portfolio/braun-x-dji",
+      "zh": "/zh/投资组合/博朗-x-大疆-敢于不同",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "BRINC – A New Era of Response",
+      "slug": "brinc-a-new-era-of-response",
+      "slugZh": "brinc-响应的新时代",
+      "en": "/portfolio/brinc-a-new-era-of-response",
+      "zh": "/zh/投资组合/brinc-响应的新时代",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "BRINC Guardian – Next Generation of Response",
+      "slug": "brinc-guardian-next-generation-of-response",
+      "slugZh": "brinc-守护者-下一代响应系统",
+      "en": "/portfolio/brinc-guardian-next-generation-of-response",
+      "zh": "/zh/投资组合/brinc-守护者-下一代响应系统",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "The Coca-Cola Company x The Ocean Cleanup",
+      "slug": "coca-cola-ocean-cleanup",
+      "slugZh": "可口可乐-x-海洋清理",
+      "en": "/portfolio/coca-cola-ocean-cleanup",
+      "zh": "/zh/投资组合/可口可乐-x-海洋清理",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Comfort x Tóc Tiên – Áo Xuân Tươi Màu, Disco Xin Vía",
+      "slug": "comfort-disco",
+      "slugZh": "comfort-disco-xin-via",
+      "en": "/portfolio/comfort-disco",
+      "zh": "/zh/投资组合/comfort-disco-xin-via",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing FlightHub",
+      "slug": "dji-introducing-flighthub",
+      "slugZh": "大疆-flighthub-介绍",
+      "en": "/portfolio/dji-introducing-flighthub",
+      "zh": "/zh/投资组合/大疆-flighthub-介绍",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Master Wheels",
+      "slug": "dji-introducing-master-wheels",
+      "slugZh": "大疆-master-wheels-隆重登场",
+      "en": "/portfolio/dji-introducing-master-wheels",
+      "zh": "/zh/投资组合/大疆-master-wheels-隆重登场",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Matrice 200 Series",
+      "slug": "dji-introducing-matrice-200-series",
+      "slugZh": "大疆matrice-200",
+      "en": "/portfolio/dji-introducing-matrice-200-series",
+      "zh": "/zh/投资组合/大疆matrice-200",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Matrice 600",
+      "slug": "dji-introducing-matrice-600",
+      "slugZh": "大疆-推出悟pro-600",
+      "en": "/portfolio/dji-introducing-matrice-600",
+      "zh": "/zh/投资组合/大疆-推出悟pro-600",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Mavic 2 Series",
+      "slug": "dji-introducing-mavic-2-series",
+      "slugZh": "大疆-mavic-2-系列介绍",
+      "en": "/portfolio/dji-introducing-mavic-2-series",
+      "zh": "/zh/投资组合/大疆-mavic-2-系列介绍",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Phantom 4 Pro",
+      "slug": "dji-introducing-phantom-4-pro",
+      "slugZh": "大疆-phantom-4-pro-隆重发布",
+      "en": "/portfolio/dji-introducing-phantom-4-pro",
+      "zh": "/zh/投资组合/大疆-phantom-4-pro-隆重发布",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Zenmuse X5 Series",
+      "slug": "dji-introducing-zenmuse-x5-series",
+      "slugZh": "大疆-zenmuse-x5-系列介绍",
+      "en": "/portfolio/dji-introducing-zenmuse-x5-series",
+      "zh": "/zh/投资组合/大疆-zenmuse-x5-系列介绍",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Zenmuse XT2",
+      "slug": "dji-introducing-zenmuse-xt2",
+      "slugZh": "大疆-推出-zenmuse-xt2",
+      "en": "/portfolio/dji-introducing-zenmuse-xt2",
+      "zh": "/zh/投资组合/大疆-推出-zenmuse-xt2",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Introducing Zenmuse Z30",
+      "slug": "dji-introducing-zenmuse-z30",
+      "slugZh": "大疆-推出-zenmuse-z30",
+      "en": "/portfolio/dji-introducing-zenmuse-z30",
+      "zh": "/zh/投资组合/大疆-推出-zenmuse-z30",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Matrice 200 Series – Search & Rescue in Extreme Environments",
+      "slug": "dji-matrice-200-series-search-rescue-in-extreme-environments",
+      "slugZh": "大疆-悟-200-系列-严酷环境下的搜救",
+      "en": "/portfolio/dji-matrice-200-series-search-rescue-in-extreme-environments",
+      "zh": "/zh/投资组合/大疆-悟-200-系列-严酷环境下的搜救",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Mavic 2 – A Cosmic Voyage",
+      "slug": "dji-mavic-2-a-cosmic-voyage",
+      "slugZh": "dji-mavic-2-一次宇宙航行",
+      "en": "/portfolio/dji-mavic-2-a-cosmic-voyage",
+      "zh": "/zh/投资组合/dji-mavic-2-一次宇宙航行",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Mavic 2 – Rapid Recap",
+      "slug": "dji-mavic-2-rapid-recap",
+      "slugZh": "大疆御-2-快速回顾",
+      "en": "/portfolio/dji-mavic-2-rapid-recap",
+      "zh": "/zh/投资组合/大疆御-2-快速回顾",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Mavic 2 – Ski-Mountaineering with Jimmy Chin",
+      "slug": "dji-mavic-2-ski-mountaineering-with-jimmy-chin",
+      "slugZh": "大疆御-2-吉米-金的滑雪登山之旅",
+      "en": "/portfolio/dji-mavic-2-ski-mountaineering-with-jimmy-chin",
+      "zh": "/zh/投资组合/大疆御-2-吉米-金的滑雪登山之旅",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Mavic Air – The Last Wild Place on Earth",
+      "slug": "dji-mavic-air-the-last-wild-place-on-earth",
+      "slugZh": "大疆-mavic-air-地球上最后的净土",
+      "en": "/portfolio/dji-mavic-air-the-last-wild-place-on-earth",
+      "zh": "/zh/投资组合/大疆-mavic-air-地球上最后的净土",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Mavic Pro – Wall-to-Wall Art",
+      "slug": "dji-mavic-pro-wall-to-wall-art",
+      "slugZh": "大疆-mavic-pro-墙到墙的艺术",
+      "en": "/portfolio/dji-mavic-pro-wall-to-wall-art",
+      "zh": "/zh/投资组合/大疆-mavic-pro-墙到墙的艺术",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Meet Osmo Pocket",
+      "slug": "dji-meet-osmo-pocket",
+      "slugZh": "大疆-认识-osmo-pocket",
+      "en": "/portfolio/dji-meet-osmo-pocket",
+      "zh": "/zh/投资组合/大疆-认识-osmo-pocket",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Meet Spark",
+      "slug": "dji-meet-spark",
+      "slugZh": "大疆-认识-spark",
+      "en": "/portfolio/dji-meet-spark",
+      "zh": "/zh/投资组合/大疆-认识-spark",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Meet the RoboMaster S1",
+      "slug": "dji-meet-the-robomaster-s1",
+      "slugZh": "dji-认识-robomaster-s1",
+      "en": "/portfolio/dji-meet-the-robomaster-s1",
+      "zh": "/zh/投资组合/dji-认识-robomaster-s1",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – My Hong Kong",
+      "slug": "dji-my-hong-kong",
+      "slugZh": "大疆-我的香港",
+      "en": "/portfolio/dji-my-hong-kong",
+      "zh": "/zh/投资组合/大疆-我的香港",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – My Mavic",
+      "slug": "dji-my-mavic",
+      "slugZh": "dji-我的御",
+      "en": "/portfolio/dji-my-mavic",
+      "zh": "/zh/投资组合/dji-我的御",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Osmo Mobile – Beyond Smart",
+      "slug": "dji-osmo-mobile-beyond-smart",
+      "slugZh": "大疆灵眸-osmo-mobile-超越智能",
+      "en": "/portfolio/dji-osmo-mobile-beyond-smart",
+      "zh": "/zh/投资组合/大疆灵眸-osmo-mobile-超越智能",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Osmo Mobile Campaign",
+      "slug": "dji-osmo-mobile-campaign",
+      "slugZh": "大疆灵眸视频推广",
+      "en": "/portfolio/dji-osmo-mobile-campaign",
+      "zh": "/zh/投资组合/大疆灵眸视频推广",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Osmo Pocket – Portable Power",
+      "slug": "dji-osmo-pocket-portable-power",
+      "slugZh": "大疆灵眸-osmo-pocket-便携动力",
+      "en": "/portfolio/dji-osmo-pocket-portable-power",
+      "zh": "/zh/投资组合/大疆灵眸-osmo-pocket-便携动力",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Phantom 4 Pro – Hawaiian Lava",
+      "slug": "dji-phantom-4-pro-hawaiian-lava",
+      "slugZh": "大疆精灵4-pro-夏威夷熔岩",
+      "en": "/portfolio/dji-phantom-4-pro-hawaiian-lava",
+      "zh": "/zh/投资组合/大疆精灵4-pro-夏威夷熔岩",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Profiles – Know Your Passion",
+      "slug": "dji-profiles-know-your-passion",
+      "slugZh": "大疆人物-认识自己的热爱",
+      "en": "/portfolio/dji-profiles-know-your-passion",
+      "zh": "/zh/投资组合/大疆人物-认识自己的热爱",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Profiles – Time is Fluid",
+      "slug": "dji-profiles-time-is-fluid",
+      "slugZh": "大疆档案-时间是流动的",
+      "en": "/portfolio/dji-profiles-time-is-fluid",
+      "zh": "/zh/投资组合/大疆档案-时间是流动的",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Profiles – Wedding Photography Reimagined",
+      "slug": "dji-profiles-wedding-photography-reimagined",
+      "slugZh": "dji-影像预设-婚礼摄影的革新",
+      "en": "/portfolio/dji-profiles-wedding-photography-reimagined",
+      "zh": "/zh/投资组合/dji-影像预设-婚礼摄影的革新",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Spark – Capture Your Passion",
+      "slug": "dji-spark",
+      "slugZh": "大疆-spark-捕捉你的激情",
+      "en": "/portfolio/dji-spark",
+      "zh": "/zh/投资组合/大疆-spark-捕捉你的激情",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Australian Coastline Watch",
+      "slug": "dji-stories-australian-coastline-watch",
+      "slugZh": "大疆故事-澳大利亚海岸卫士",
+      "en": "/portfolio/dji-stories-australian-coastline-watch",
+      "zh": "/zh/投资组合/大疆故事-澳大利亚海岸卫士",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Building Our Future",
+      "slug": "dji-stories-building-our-future",
+      "slugZh": "大疆故事-构筑我们的未来",
+      "en": "/portfolio/dji-stories-building-our-future",
+      "zh": "/zh/投资组合/大疆故事-构筑我们的未来",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Feeding the World",
+      "slug": "dji-stories-feeding-the-world",
+      "slugZh": "大疆故事-喂养世界",
+      "en": "/portfolio/dji-stories-feeding-the-world",
+      "zh": "/zh/投资组合/大疆故事-喂养世界",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Humpback Whales of Rarotonga",
+      "slug": "dji-stories-humpback-whales-of-rarotonga",
+      "slugZh": "大疆故事-拉罗汤加的座头鲸",
+      "en": "/portfolio/dji-stories-humpback-whales-of-rarotonga",
+      "zh": "/zh/投资组合/大疆故事-拉罗汤加的座头鲸",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Linkin Park",
+      "slug": "dji-stories-linkin-park",
+      "slugZh": "dji的故事-林肯公园",
+      "en": "/portfolio/dji-stories-linkin-park",
+      "zh": "/zh/投资组合/dji的故事-林肯公园",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Mapping the Maldives",
+      "slug": "dji-stories-mapping-the-maldives",
+      "slugZh": "大疆故事-马尔代夫地图绘制",
+      "en": "/portfolio/dji-stories-mapping-the-maldives",
+      "zh": "/zh/投资组合/大疆故事-马尔代夫地图绘制",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – Polo",
+      "slug": "dji-stories-polo",
+      "slugZh": "大疆故事-polo",
+      "en": "/portfolio/dji-stories-polo",
+      "zh": "/zh/投资组合/大疆故事-polo",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI Stories – The Lost City of Chernobyl",
+      "slug": "dji-stories-the-lost-city-of-chernobyl",
+      "slugZh": "大疆故事",
+      "en": "/portfolio/dji-stories-the-lost-city-of-chernobyl",
+      "zh": "/zh/投资组合/大疆故事",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI World – The Story of Aisholpan",
+      "slug": "dji-world-the-story-of-aisholpan",
+      "slugZh": "大疆世界-艾莎-奥丽的传奇",
+      "en": "/portfolio/dji-world-the-story-of-aisholpan",
+      "zh": "/zh/投资组合/大疆世界-艾莎-奥丽的传奇",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Zenmuse X7 Showreel",
+      "slug": "dji-zenmuse-x7-showreel",
+      "slugZh": "大疆-灵眸x7-样片",
+      "en": "/portfolio/dji-zenmuse-x7-showreel",
+      "zh": "/zh/投资组合/大疆-灵眸x7-样片",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "EcoFlow – DELTA Battery Generator",
+      "slug": "ecoflow-delta-battery-generator",
+      "slugZh": "ecoflow-delta-电池发电机",
+      "en": "/portfolio/ecoflow-delta-battery-generator",
+      "zh": "/zh/投资组合/ecoflow-delta-电池发电机",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "EcoFlow DELTA Series – Live Without Limits",
+      "slug": "ecoflow-delta-series-live-without-limits",
+      "slugZh": "ecoflow-delta-系列-不受限制的生活",
+      "en": "/portfolio/ecoflow-delta-series-live-without-limits",
+      "zh": "/zh/投资组合/ecoflow-delta-系列-不受限制的生活",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "EcoFlow RIVER Mini – Power at Hand",
+      "slug": "ecoflow-introducing-river-mini-power-at-hand",
+      "slugZh": "ecoflow-river-mini-触手可及的能量",
+      "en": "/portfolio/ecoflow-introducing-river-mini-power-at-hand",
+      "zh": "/zh/投资组合/ecoflow-river-mini-触手可及的能量",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "EcoFlow RIVER 600 – Customizable Backup Power",
+      "slug": "ecoflow-river-600-customizable-backup-power",
+      "slugZh": "ecoflow-river-600-可定制的备用电源",
+      "en": "/portfolio/ecoflow-river-600-customizable-backup-power",
+      "zh": "/zh/投资组合/ecoflow-river-600-可定制的备用电源",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "EcoFlow – RIVER Mobile Power Station",
+      "slug": "ecoflow-river-mobile-power-station",
+      "slugZh": "ecoflow-river-移动电源站",
+      "en": "/portfolio/ecoflow-river-mobile-power-station",
+      "zh": "/zh/投资组合/ecoflow-river-移动电源站",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "EcoFlow Wave – Keep It Cool",
+      "slug": "ecoflow-wave-keep-it-cool",
+      "slugZh": "ecoflow-wave-保持凉爽",
+      "en": "/portfolio/ecoflow-wave-keep-it-cool",
+      "zh": "/zh/投资组合/ecoflow-wave-保持凉爽",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Elewana Collection - Loisaba Conservancy Safari",
+      "slug": "elewana-collection-loisaba-conservancy-safari",
+      "slugZh": "elewana-collection-loisaba-保护区-safari",
+      "en": "/portfolio/elewana-collection-loisaba-conservancy-safari",
+      "zh": "/zh/投资组合/elewana-collection-loisaba-保护区-safari",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Fujifilm – A Journey Toward More Accessible Medicine",
+      "slug": "fujifilm-jouney-toward-more-accessible-medicine",
+      "slugZh": "富士胶片-通往更普及医疗的旅程",
+      "en": "/portfolio/fujifilm-jouney-toward-more-accessible-medicine",
+      "zh": "/zh/投资组合/富士胶片-通往更普及医疗的旅程",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Gendome Home 3000 – Your Smart Portable Power Station",
+      "slug": "gendome-home-3000",
+      "slugZh": "gendome-home-3000-您的智能便携式电站",
+      "en": "/portfolio/gendome-home-3000",
+      "zh": "/zh/投资组合/gendome-home-3000-您的智能便携式电站",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Govee – For Every Mood of Home",
+      "slug": "govee-for-every-mood-of-home",
+      "slugZh": "歌诗顿-随心打造居家氛围",
+      "en": "/portfolio/govee-for-every-mood-of-home",
+      "zh": "/zh/投资组合/歌诗顿-随心打造居家氛围",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Govee – Halloween 2025",
+      "slug": "govee-halloween",
+      "slugZh": "戈维-2025-年万圣节",
+      "en": "/portfolio/govee-halloween",
+      "zh": "/zh/投资组合/戈维-2025-年万圣节",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Govee – Lit By Govee",
+      "slug": "govee-lit-by-govee",
+      "slugZh": "govee-闪耀由govee点亮",
+      "en": "/portfolio/govee-lit-by-govee",
+      "zh": "/zh/投资组合/govee-闪耀由govee点亮",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Govee – Permanent Outdoor Lights",
+      "slug": "govee-permanent-outdoor-lights",
+      "slugZh": "govee-永恒户外灯",
+      "en": "/portfolio/govee-permanent-outdoor-lights",
+      "zh": "/zh/投资组合/govee-永恒户外灯",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Hasselblad – Introducing 907X Special Edition",
+      "slug": "hasselblad-introducing-907x-special-edition",
+      "slugZh": "哈苏-推出-907x-特别版",
+      "en": "/portfolio/hasselblad-introducing-907x-special-edition",
+      "zh": "/zh/投资组合/哈苏-推出-907x-特别版",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Hasselblad X1D II 50C – Travel Photographer",
+      "slug": "hasselblad-x1d",
+      "slugZh": "哈苏-x1d-ii-50c-旅行摄影师",
+      "en": "/portfolio/hasselblad-x1d",
+      "zh": "/zh/投资组合/哈苏-x1d-ii-50c-旅行摄影师",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Herbalife – Chọn Dinh Dưỡng Lành Mạnh, Chọn Herbalife Nutrition",
+      "slug": "herbalife-nutrition",
+      "slugZh": "康宝莱营养品",
+      "en": "/portfolio/herbalife-nutrition",
+      "zh": "/zh/投资组合/康宝莱营养品",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "HiDock – ChatGPT-Powered Audio Dock",
+      "slug": "hidock-chatgpt-powered-audio-dock",
+      "slugZh": "hidock-chatgpt驱动的音频扩展坞",
+      "en": "/portfolio/hidock-chatgpt-powered-audio-dock",
+      "zh": "/zh/投资组合/hidock-chatgpt驱动的音频扩展坞",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Hoà Phát – Trữ Đông Là Phải Chuản – Chuản Phải Là Tủ Đông Hoà Phát",
+      "slug": "hoa-phat",
+      "slugZh": "和发冰箱",
+      "en": "/portfolio/hoa-phat",
+      "zh": "/zh/投资组合/和发冰箱",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "HONOR – Magic 2 AI",
+      "slug": "honor-magic-2",
+      "slugZh": "荣耀-magic-2-ai",
+      "en": "/portfolio/honor-magic-2",
+      "zh": "/zh/投资组合/荣耀-magic-2-ai",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Hyundai – Progress of Humanity",
+      "slug": "hyundai-progress-for-humanity",
+      "slugZh": "现代人类的进步",
+      "en": "/portfolio/hyundai-progress-for-humanity",
+      "zh": "/zh/投资组合/现代人类的进步",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "IndelB ICECO Go20 – Let's Own a Different Summer!",
+      "slug": "indelb-go20",
+      "slugZh": "indelb-iceco-go20-拥有不一样的夏天",
+      "en": "/portfolio/indelb-go20",
+      "zh": "/zh/投资组合/indelb-iceco-go20-拥有不一样的夏天",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Indwell – 2-in-1 Fridge & Air Conditioner",
+      "slug": "indwell-refrigerator-air-conditioner",
+      "slugZh": "indwell-双效冰箱与空调",
+      "en": "/portfolio/indwell-refrigerator-air-conditioner",
+      "zh": "/zh/投资组合/indwell-双效冰箱与空调",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Insta360 Link – The AI-Powered 4K Webcam",
+      "slug": "insta360-link-the-ai-powered-4k-webcam",
+      "slugZh": "insta360-link-人工智能驱动的-4k-网络摄像头",
+      "en": "/portfolio/insta360-link-the-ai-powered-4k-webcam",
+      "zh": "/zh/投资组合/insta360-link-人工智能驱动的-4k-网络摄像头",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Jackery Explorer 5000 Plus – Whole-Home Backup Power",
+      "slug": "jackery-explorer-5000-plus-whole-home-backup-power",
+      "slugZh": "jackery-explorer-5000-plus-全屋备用电源",
+      "en": "/portfolio/jackery-explorer-5000-plus-whole-home-backup-power",
+      "zh": "/zh/投资组合/jackery-explorer-5000-plus-全屋备用电源",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Lay's Max Mới – Max Uốn Lượn, Giòn Cực Đã",
+      "slug": "lays-max",
+      "slugZh": "乐事-max",
+      "en": "/portfolio/lays-max",
+      "zh": "/zh/投资组合/乐事-max",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion – Let LUBA 2 Do It",
+      "slug": "mammotion-let-luba-2-do-it",
+      "slugZh": "库犸科技-让-luba-2-来完成",
+      "en": "/portfolio/mammotion-let-luba-2-do-it",
+      "zh": "/zh/投资组合/库犸科技-让-luba-2-来完成",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion LUBA 2 AWD – Perimeter-Wire-Free Robot Lawn Mower",
+      "slug": "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+      "slugZh": "库犸科技-luba-2-awd-无周界电线机器人割草机",
+      "en": "/portfolio/mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+      "zh": "/zh/投资组合/库犸科技-luba-2-awd-无周界电线机器人割草机",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion – LUBA 3 AWD",
+      "slug": "mammotion-luba-3-awd",
+      "slugZh": "mammotion-luba-3-awd",
+      "en": "/portfolio/mammotion-luba-3-awd",
+      "zh": "/zh/投资组合/mammotion-luba-3-awd",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion Luba – Automated Robot Lawn Mower",
+      "slug": "mammotion-luba-automated-robot-lawn-mower",
+      "slugZh": "库犸科技-luba-自动化机器人割草机",
+      "en": "/portfolio/mammotion-luba-automated-robot-lawn-mower",
+      "zh": "/zh/投资组合/库犸科技-luba-自动化机器人割草机",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion LUBA Mini AWD – Compact, Powerful & Ready to Conquer Your Lawn",
+      "slug": "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn",
+      "slugZh": "mammotion-luba-mini-awd-小巧强劲-征服你的草坪",
+      "en": "/portfolio/mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn",
+      "zh": "/zh/投资组合/mammotion-luba-mini-awd-小巧强劲-征服你的草坪",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion YUKA",
+      "slug": "mammotion-yuka",
+      "slugZh": "库犸科技-yuka",
+      "en": "/portfolio/mammotion-yuka",
+      "zh": "/zh/投资组合/库犸科技-yuka",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion – YUKA Mini 2",
+      "slug": "mammotion-yuka-mini-2",
+      "slugZh": "mammotion-yuka-mini-2",
+      "en": "/portfolio/mammotion-yuka-mini-2",
+      "zh": "/zh/投资组合/mammotion-yuka-mini-2",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mammotion YUKA Mini – Effortless Lawn Care, Redefined",
+      "slug": "mammotion-yuka-mini-effortless-lawn-care-redefined",
+      "slugZh": "库犸科技-yuka-mini-轻松重新定义您的草坪养护",
+      "en": "/portfolio/mammotion-yuka-mini-effortless-lawn-care-redefined",
+      "zh": "/zh/投资组合/库犸科技-yuka-mini-轻松重新定义您的草坪养护",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Mavic Mini",
+      "slug": "mavic-mini",
+      "slugZh": "大疆-mavic-mini",
+      "en": "/portfolio/mavic-mini",
+      "zh": "/zh/投资组合/大疆-mavic-mini",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "DJI – Mavic Travel Tips",
+      "slug": "mavic-travel-tips",
+      "slugZh": "大疆-mavic-旅行贴士",
+      "en": "/portfolio/mavic-travel-tips",
+      "zh": "/zh/投资组合/大疆-mavic-旅行贴士",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "MEXC – 7th Anniversary",
+      "slug": "mexc-7th-anniversary",
+      "slugZh": "mexc-7周年庆",
+      "en": "/portfolio/mexc-7th-anniversary",
+      "zh": "/zh/投资组合/mexc-7周年庆",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Moprobo One-Go – Say Goodbye to the Vacuum",
+      "slug": "moprobo-one-go-say-goodbye-to-the-vacuum",
+      "slugZh": "moprobo-one-go-告别吸尘器",
+      "en": "/portfolio/moprobo-one-go-say-goodbye-to-the-vacuum",
+      "zh": "/zh/投资组合/moprobo-one-go-告别吸尘器",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "MSI – 120Hz PerfectEdge Monitor",
+      "slug": "msi-120hz-perfectedge-monitor",
+      "slugZh": "msi-120hz-perfectedge-显示器",
+      "en": "/portfolio/msi-120hz-perfectedge-monitor",
+      "zh": "/zh/投资组合/msi-120hz-perfectedge-显示器",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "MSI Business – Elevate Everyday Work",
+      "slug": "msi-business-elevate-everyday-work",
+      "slugZh": "msi-商務-提升日常工作",
+      "en": "/portfolio/msi-business-elevate-everyday-work",
+      "zh": "/zh/投资组合/msi-商務-提升日常工作",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Mutosi – Nước Khoẻ Chuẩn Nhật",
+      "slug": "mutosi",
+      "slugZh": "突变",
+      "en": "/portfolio/mutosi",
+      "zh": "/zh/投资组合/突变",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Old Spice – Thơm Gỗ Đàn Hương Nam Tính",
+      "slug": "old-spice-shampoo",
+      "slugZh": "old-spice-檀香",
+      "en": "/portfolio/old-spice-shampoo",
+      "zh": "/zh/投资组合/old-spice-檀香",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OnePlus 12 – Chasing Luna",
+      "slug": "oneplus-12-chasing-luna",
+      "slugZh": "一加-12-追逐月球",
+      "en": "/portfolio/oneplus-12-chasing-luna",
+      "zh": "/zh/投资组合/一加-12-追逐月球",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OnePlus 10T – Fast & Smooth",
+      "slug": "oneplus-fast-smooth",
+      "slugZh": "一加-10t-快速流畅",
+      "en": "/portfolio/oneplus-fast-smooth",
+      "zh": "/zh/投资组合/一加-10t-快速流畅",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OnePlus – Make the Moment with Mohan Dravid",
+      "slug": "oneplus-make-the-moment-with-mohan-dravid",
+      "slugZh": "oneplus-与莫汉-德拉维德一起创造精彩瞬间",
+      "en": "/portfolio/oneplus-make-the-moment-with-mohan-dravid",
+      "zh": "/zh/投资组合/oneplus-与莫汉-德拉维德一起创造精彩瞬间",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OnePlus – Meet the OnePlus 8T",
+      "slug": "oneplus-meet-8t",
+      "slugZh": "一加-认识一加-8t",
+      "en": "/portfolio/oneplus-meet-8t",
+      "zh": "/zh/投资组合/一加-认识一加-8t",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OnePlus Pad 3 – Masterful By Every Measure",
+      "slug": "oneplus-pad-3-masterful-by-every-measure",
+      "slugZh": "一加平板-3-全面掌控",
+      "en": "/portfolio/oneplus-pad-3-masterful-by-every-measure",
+      "zh": "/zh/投资组合/一加平板-3-全面掌控",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OnePlus Y-Series TV – Smarter TV, Smarter Choice",
+      "slug": "oneplus-y-series-tv",
+      "slugZh": "oneplus-y-系列电视-更智能的电视-更明智的选择",
+      "en": "/portfolio/oneplus-y-series-tv",
+      "zh": "/zh/投资组合/oneplus-y-系列电视-更智能的电视-更明智的选择",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OPPO Find X5 Pro – Master Workshop with Ben Thomas",
+      "slug": "oppo-find-x5-pro-master-workshop-with-ben-thomas",
+      "slugZh": "oppo-find-x5-pro-本-托马斯大师工坊",
+      "en": "/portfolio/oppo-find-x5-pro-master-workshop-with-ben-thomas",
+      "zh": "/zh/投资组合/oppo-find-x5-pro-本-托马斯大师工坊",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Oppo - Reno 6 Pro 5G",
+      "slug": "oppo-reno-6-pro-5g",
+      "slugZh": "oppo-reno-6-pro-5g",
+      "en": "/portfolio/oppo-reno-6-pro-5g",
+      "zh": "/zh/投资组合/oppo-reno-6-pro-5g",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Oppo Reno 7 Pro – Unlimited Mom, in Portrait",
+      "slug": "oppo-reno-7-pro-unlimited-mom-in-portrait",
+      "slugZh": "oppo-reno-7-pro-无限妈妈-人像模式",
+      "en": "/portfolio/oppo-reno-7-pro-unlimited-mom-in-portrait",
+      "zh": "/zh/投资组合/oppo-reno-7-pro-无限妈妈-人像模式",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "OPPO Reno10 Pro+ 5G",
+      "slug": "oppo-reno10-pro-5g",
+      "slugZh": "oppo-reno10-pro-5g",
+      "en": "/portfolio/oppo-reno10-pro-5g",
+      "zh": "/zh/投资组合/oppo-reno10-pro-5g",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Petkit – Say Hello to Purobot Ultra",
+      "slug": "petkit-say-hello-to-purobot-ultra",
+      "slugZh": "小佩-向普罗博特ultra问好",
+      "en": "/portfolio/petkit-say-hello-to-purobot-ultra",
+      "zh": "/zh/投资组合/小佩-向普罗博特ultra问好",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "realme 13+ 5G – Unleash Your Gaming Potential",
+      "slug": "realme-13-5g-unleash-your-gaming-potential",
+      "slugZh": "realme-13-5g-释放你的游戏潜能",
+      "en": "/portfolio/realme-13-5g-unleash-your-gaming-potential",
+      "zh": "/zh/投资组合/realme-13-5g-释放你的游戏潜能",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "realme 15 Series 5G – Live Real in Every Shot",
+      "slug": "realme-15-series-5g-live-real-in-every-shot",
+      "slugZh": "realme-15-系列-5g-每一拍都真实生动",
+      "en": "/portfolio/realme-15-series-5g-live-real-in-every-shot",
+      "zh": "/zh/投资组合/realme-15-系列-5g-每一拍都真实生动",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "realme C75 – Everything Proof",
+      "slug": "realme-c75-everything-proof",
+      "slugZh": "真我-c75-全方位防护",
+      "en": "/portfolio/realme-c75-everything-proof",
+      "zh": "/zh/投资组合/真我-c75-全方位防护",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "realme C85 – Your Ultimate Outdoor Sidekick",
+      "slug": "realme-c85-your-ultimate-outdoor-sidekick",
+      "slugZh": "真我-c85-您的终极户外玩伴",
+      "en": "/portfolio/realme-c85-your-ultimate-outdoor-sidekick",
+      "zh": "/zh/投资组合/真我-c85-您的终极户外玩伴",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "realme – The Blessings of Ramadan",
+      "slug": "realme-the-blessings-of-ramadan",
+      "slugZh": "realme-开斋节的祝福",
+      "en": "/portfolio/realme-the-blessings-of-ramadan",
+      "zh": "/zh/投资组合/realme-开斋节的祝福",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "realme X7 – Fast & Powerful",
+      "slug": "realme-x7-fast-powerful",
+      "slugZh": "真我-x7-快速强大",
+      "en": "/portfolio/realme-x7-fast-powerful",
+      "zh": "/zh/投资组合/真我-x7-快速强大",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Roborock H7",
+      "slug": "roborock-h7",
+      "slugZh": "石头h7系列",
+      "en": "/portfolio/roborock-h7",
+      "zh": "/zh/投资组合/石头h7系列",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Roborock Qrevo-S – Essential Power, Ultimate Convenience",
+      "slug": "roborock-qrevo-s-essential-power-ultimate-convenience",
+      "slugZh": "roborock-qrevo-s-必备动力-极致便捷",
+      "en": "/portfolio/roborock-qrevo-s-essential-power-ultimate-convenience",
+      "zh": "/zh/投资组合/roborock-qrevo-s-必备动力-极致便捷",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Roborock S7 MaxV Ultra – Everything Made Easy",
+      "slug": "roborock-s7-maxv-ultra-everything-made-easy",
+      "slugZh": "石头-s7-maxv-ultra-一切尽在掌握",
+      "en": "/portfolio/roborock-s7-maxv-ultra-everything-made-easy",
+      "zh": "/zh/投资组合/石头-s7-maxv-ultra-一切尽在掌握",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Roborock S8 Series",
+      "slug": "roborock-s8",
+      "slugZh": "石头-s8-系列",
+      "en": "/portfolio/roborock-s8",
+      "zh": "/zh/投资组合/石头-s8-系列",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Samsung Galaxy S21",
+      "slug": "samsung-galaxy-s21",
+      "slugZh": "三星-galaxy-s21",
+      "en": "/portfolio/samsung-galaxy-s21",
+      "zh": "/zh/投资组合/三星-galaxy-s21",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Samsung Galaxy S8 – The Endless Beauty of Vietnam",
+      "slug": "samsung-galaxy-s8-endless-beauty-vietnam",
+      "slugZh": "三星-galaxy-s8",
+      "en": "/portfolio/samsung-galaxy-s8-endless-beauty-vietnam",
+      "zh": "/zh/投资组合/三星-galaxy-s8",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Samsung Vietnam – Galaxy S21 Ultra 5G – Cung đường đam mê",
+      "slug": "samsung-vietnam-galaxy-s21",
+      "slugZh": "三星-galaxy-s21-热门短片",
+      "en": "/portfolio/samsung-vietnam-galaxy-s21",
+      "zh": "/zh/投资组合/三星-galaxy-s21-热门短片",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Samsung x Discovery – Explore Life Refocused with the Galaxy S21",
+      "slug": "samsung-x-discovery",
+      "slugZh": "三星-x-discovery",
+      "en": "/portfolio/samsung-x-discovery",
+      "zh": "/zh/投资组合/三星-x-discovery",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Sensoro – The Story of Pema",
+      "slug": "sensoro-the-story-of-pema",
+      "slugZh": "sensoro-佩玛的故事",
+      "en": "/portfolio/sensoro-the-story-of-pema",
+      "zh": "/zh/投资组合/sensoro-佩玛的故事",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Snapmaker – Make Something Wonderful",
+      "slug": "snapmaker-make-something-wonderful",
+      "slugZh": "snapmaker-创造奇迹",
+      "en": "/portfolio/snapmaker-make-something-wonderful",
+      "zh": "/zh/投资组合/snapmaker-创造奇迹",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Taiwan Excellence 2022",
+      "slug": "taiwan-excellence-2022",
+      "slugZh": "台湾精品-2022",
+      "en": "/portfolio/taiwan-excellence-2022",
+      "zh": "/zh/投资组合/台湾精品-2022",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Techcombank Inspire x Thùy Tiên – Hành Trình Rực Rỡ Cùng Thế Hệ Why Not",
+      "slug": "techcombank-inspire-why-not",
+      "slugZh": "techcombank-inspire",
+      "en": "/portfolio/techcombank-inspire-why-not",
+      "zh": "/zh/投资组合/techcombank-inspire",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Techombank Mobile",
+      "slug": "techombank-mobile",
+      "slugZh": "techcombank-手机银行",
+      "en": "/portfolio/techombank-mobile",
+      "zh": "/zh/投资组合/techcombank-手机银行",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Tello – Iron Man Edition Assembled",
+      "slug": "tello-iron-man",
+      "slugZh": "tello-钢铁侠限量版-组装完成",
+      "en": "/portfolio/tello-iron-man",
+      "zh": "/zh/投资组合/tello-钢铁侠限量版-组装完成",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Toyota Camry 2022 – Absolute Charisma",
+      "slug": "toyota-camry-2022-absolute-charisma",
+      "slugZh": "丰田凯美瑞-2022",
+      "en": "/portfolio/toyota-camry-2022-absolute-charisma",
+      "zh": "/zh/投资组合/丰田凯美瑞-2022",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "TPBank App",
+      "slug": "tpbank-chatpay",
+      "slugZh": "tpbank-应用程序",
+      "en": "/portfolio/tpbank-chatpay",
+      "zh": "/zh/投资组合/tpbank-应用程序",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Ulike Air 10",
+      "slug": "ulike-air-10",
+      "slugZh": "ulike-air-10",
+      "en": "/portfolio/ulike-air-10",
+      "zh": "/zh/投资组合/ulike-air-10",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "P/S Vietnam – Smiles Matter",
+      "slug": "unilever-smiles-matter",
+      "slugZh": "联合利华-微笑很重要",
+      "en": "/portfolio/unilever-smiles-matter",
+      "zh": "/zh/投资组合/联合利华-微笑很重要",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Valerion VisionMaster Max - Hollywood-Grade Home Cinema Experience",
+      "slug": "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+      "slugZh": "valerion-visionmaster-max-好莱坞级家庭影院体验",
+      "en": "/portfolio/valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+      "zh": "/zh/投资组合/valerion-visionmaster-max-好莱坞级家庭影院体验",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Vinamilk Probi - Êm Ruột Nuột Đời",
+      "slug": "vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi",
+      "slugZh": "vinamilk-probi",
+      "en": "/portfolio/vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi",
+      "zh": "/zh/投资组合/vinamilk-probi",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Westin Hotels & Resorts – Busy Resting",
+      "slug": "westin-hotels-resorts-busy-resting",
+      "slugZh": "威斯汀酒店及度假村-繁忙休憩",
+      "en": "/portfolio/westin-hotels-resorts-busy-resting",
+      "zh": "/zh/投资组合/威斯汀酒店及度假村-繁忙休憩",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "XGIMI Horizon Pro – Fill Your Horizon with Greatness",
+      "slug": "xgimi-horizon-pro",
+      "slugZh": "xgimi-horizon-pro-让您的视野充满伟岸",
+      "en": "/portfolio/xgimi-horizon-pro",
+      "zh": "/zh/投资组合/xgimi-horizon-pro-让您的视野充满伟岸",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Zhiyun – Introducing Crane 2S",
+      "slug": "zhiyun-introducing-crane-2s",
+      "slugZh": "智云-推出云鹤-2s",
+      "en": "/portfolio/zhiyun-introducing-crane-2s",
+      "zh": "/zh/投资组合/智云-推出云鹤-2s",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Zhiyun – Introducing Crane 3S",
+      "slug": "zhiyun-introducing-crane-3s",
+      "slugZh": "智云-crane-3s-震撼发布",
+      "en": "/portfolio/zhiyun-introducing-crane-3s",
+      "zh": "/zh/投资组合/智云-crane-3s-震撼发布",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Zhiyun – Say Hello to Crane M2",
+      "slug": "zhiyun-say-hello-to-crane-m2",
+      "slugZh": "智云-欢迎来到crane-m2",
+      "en": "/portfolio/zhiyun-say-hello-to-crane-m2",
+      "zh": "/zh/投资组合/智云-欢迎来到crane-m2",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Zhiyun Smooth 5 – Film Like a Pro",
+      "slug": "zhiyun-smooth-5-film-like-a-pro",
+      "slugZh": "智云smooth-5-专业电影拍摄",
+      "en": "/portfolio/zhiyun-smooth-5-film-like-a-pro",
+      "zh": "/zh/投资组合/智云smooth-5-专业电影拍摄",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Zhiyun Smooth Q3 – Illuminate to Create",
+      "slug": "zhiyun-smooth-q3",
+      "slugZh": "智云smooth-q3-照亮创作",
+      "en": "/portfolio/zhiyun-smooth-q3",
+      "zh": "/zh/投资组合/智云smooth-q3-照亮创作",
+      "flags": ""
+    },
+    {
+      "type": "portfolioEntry",
+      "title": "Zhiyun WEEBILL 3S & CRANE-M 3S – Portable Visual Storytelling 2.0",
+      "slug": "zhiyun-weebill-3s-crane-3s",
+      "slugZh": "智云-weebill-3s-amp-crane-m-3s-便携式视觉叙事-2.0",
+      "en": "/portfolio/zhiyun-weebill-3s-crane-3s",
+      "zh": "/zh/投资组合/智云-weebill-3s-amp-crane-m-3s-便携式视觉叙事-2.0",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "A talking dog, AI, and everyday chaos: behind Govee’s new campaign via Vantage Pictures",
+      "slug": "a-talking-dog-ai-and-everyday-chaos-behind-govees-new-campaign-via-vantage-pictures",
+      "slugZh": "vantage-pictures-发布的-govee-新宣传活动：会说话的狗狗-ai-和日常混",
+      "en": "/a-talking-dog-ai-and-everyday-chaos-behind-govees-new-campaign-via-vantage-pictures",
+      "zh": "/zh/vantage-pictures-发布的-govee-新宣传活动：会说话的狗狗-ai-和日常混",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "ASUS Business Lets You 'Upgrade to Incredible' in Campaign from Byron McKenzie",
+      "slug": "asus-business-lets-you-upgrade-to-incredible-in-campaign-from-byron-mckenzie",
+      "slugZh": "asus-business-在-byron-mckenzie-指导的广告中邀您-升级至非凡",
+      "en": "/asus-business-lets-you-upgrade-to-incredible-in-campaign-from-byron-mckenzie",
+      "zh": "/zh/asus-business-在-byron-mckenzie-指导的广告中邀您-升级至非凡",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Bitget and Vantage Pictures launch campaign starring World Cup Champion Julián Álvarez",
+      "slug": "bitget-and-vantage-pictures-launch-campaign-starring-world-cup-champion-julian-alvarez",
+      "slugZh": "bitget-与-vantage-pictures-联合推出由世界杯冠军朱利安-阿尔瓦雷斯",
+      "en": "/bitget-and-vantage-pictures-launch-campaign-starring-world-cup-champion-julian-alvarez",
+      "zh": "/zh/bitget-与-vantage-pictures-联合推出由世界杯冠军朱利安-阿尔瓦雷斯",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Bitget and Vantage Pictures Team Up to Inject Humour into Crypto Trading",
+      "slug": "bitget-and-vantage-pictures-team-up-to-inject-humour-into-crypto-trading",
+      "slugZh": "bitget-携手-vantage-pictures-为加密交易注入幽默元素",
+      "en": "/bitget-and-vantage-pictures-team-up-to-inject-humour-into-crypto-trading",
+      "zh": "/zh/bitget-携手-vantage-pictures-为加密交易注入幽默元素",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Bitget’s Humorous Human Moments Shake Up Crypto Trading",
+      "slug": "bitgets-humorous-human-moments-shake-up-crypto-trading",
+      "slugZh": "bitget-以幽默人性化瞬间颠覆加密交易",
+      "en": "/bitgets-humorous-human-moments-shake-up-crypto-trading",
+      "zh": "/zh/bitget-以幽默人性化瞬间颠覆加密交易",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Confidence in every frame: Ulike taps Vantage Pictures for humorous beauty campaign",
+      "slug": "confidence-in-every-frame-ulike-taps-vantage-pictures-for-humorous-beauty-campaign",
+      "slugZh": "每一帧都充满自信：ulike-借助-vantage-pictures-开展幽默美容宣传活动",
+      "en": "/confidence-in-every-frame-ulike-taps-vantage-pictures-for-humorous-beauty-campaign",
+      "zh": "/zh/每一帧都充满自信：ulike-借助-vantage-pictures-开展幽默美容宣传活动",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Director’s Brief: 12 Questions with Alexis Odiowei at Vantage Pictures",
+      "slug": "directors-brief-12-questions-with-alexis-odiowei-at-vantage-pictures",
+      "slugZh": "导演简介：12-个问题问-vantage-pictures-的-alexis-odiowei",
+      "en": "/directors-brief-12-questions-with-alexis-odiowei-at-vantage-pictures",
+      "zh": "/zh/导演简介：12-个问题问-vantage-pictures-的-alexis-odiowei",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Director’s Brief: 12 Questions with Zacharia Lorenz at Vantage Pictures",
+      "slug": "directors-brief-12-questions-with-zacharia-lorenz-at-vantage-pictures",
+      "slugZh": "董事会简报：vantagepictures的zacharia-lorenz的12个问题",
+      "en": "/directors-brief-12-questions-with-zacharia-lorenz-at-vantage-pictures",
+      "zh": "/zh/董事会简报：vantagepictures的zacharia-lorenz的12个问题",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Govee’s haunted light show: Vantage Pictures turns Vietnam suburb into a horror film set",
+      "slug": "govees-haunted-light-show-vantage-pictures-turns-vietnam-suburb-into-a-horror-film-set",
+      "slugZh": "govees-闹鬼灯光秀的有利图片将越南郊区变成恐怖电影",
+      "en": "/govees-haunted-light-show-vantage-pictures-turns-vietnam-suburb-into-a-horror-film-set",
+      "zh": "/zh/govees-闹鬼灯光秀的有利图片将越南郊区变成恐怖电影",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "How We Produced One of the Most Successful Crowdfunding Campaigns in History",
+      "slug": "how-we-produced-one-of-the-most-successful-crowdfunding-campaigns-in-history",
+      "slugZh": "我们如何打造史上最成功的众筹项目之一",
+      "en": "/how-we-produced-one-of-the-most-successful-crowdfunding-campaigns-in-history",
+      "zh": "/zh/我们如何打造史上最成功的众筹项目之一",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "MSI taps Vantage Pictures for its first global brand film in the B2B space",
+      "slug": "msi-taps-vantage-pictures-for-its-first-global-brand-film-in-the-b2b-space",
+      "slugZh": "微星科技与-vantage-pictures-合作-在-b2b-领域拍摄首部全球品牌宣传片",
+      "en": "/msi-taps-vantage-pictures-for-its-first-global-brand-film-in-the-b2b-space",
+      "zh": "/zh/微星科技与-vantage-pictures-合作-在-b2b-领域拍摄首部全球品牌宣传片",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "OnePlus 12 Campaign Celebrates a Bygone Era of Authentic Imagery",
+      "slug": "oneplus-12-campaign-celebrates-a-bygone-era-of-authentic-imagery",
+      "slugZh": "oneplus-12-广告致敬真实影像的黄金时代",
+      "en": "/oneplus-12-campaign-celebrates-a-bygone-era-of-authentic-imagery",
+      "zh": "/zh/oneplus-12-广告致敬真实影像的黄金时代",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "realme 13+ 5G Blurs the Line Between Reality and Gaming in Immersive Ad",
+      "slug": "realme-13-5g-blurs-the-line-between-reality-and-gaming-in-immersive-ad",
+      "slugZh": "realme-13-5g-沉浸式广告模糊现实与游戏的界限",
+      "en": "/realme-13-5g-blurs-the-line-between-reality-and-gaming-in-immersive-ad",
+      "zh": "/zh/realme-13-5g-沉浸式广告模糊现实与游戏的界限",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "realme Unveils Humorous and Chaotic Spot for New 'Mishap Proof' C75",
+      "slug": "realme-unveils-humorous-and-chaotic-spot-for-new-mishap-proof-c75",
+      "slugZh": "realme-推出幽默混乱的全新-c75-防意外-广告",
+      "en": "/realme-unveils-humorous-and-chaotic-spot-for-new-mishap-proof-c75",
+      "zh": "/zh/realme-推出幽默混乱的全新-c75-防意外-广告",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Roborock Gives a Quirky Makeover to the Cordless Vacuum Cleaner",
+      "slug": "roborock-gives-quirky-makeover-to-cordless-vacuum-cleaner",
+      "slugZh": "roborock-为无线吸尘器打造别具一格的新形象",
+      "en": "/roborock-gives-quirky-makeover-to-cordless-vacuum-cleaner",
+      "zh": "/zh/roborock-为无线吸尘器打造别具一格的新形象",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "This Cross-Cultural OPPO Spot Delivers Much-Needed Nostalgia for Mother’s Day",
+      "slug": "this-cross-cultural-oppo-spot-delivers-much-needed-nostalgia-for-mothers-day",
+      "slugZh": "这支跨文化-oppo-广告为母亲节带来温馨怀旧感",
+      "en": "/this-cross-cultural-oppo-spot-delivers-much-needed-nostalgia-for-mothers-day",
+      "zh": "/zh/这支跨文化-oppo-广告为母亲节带来温馨怀旧感",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures and realme turn nightlife into an AI-powered dream in “Live For Real” campaign",
+      "slug": "vantage-pictures-and-realme-turn-nightlife-into-an-ai-powered-dream-in-live-for-real-campaign",
+      "slugZh": "vantage-pictures-和-realme-在live-for-real活动中将夜生活变成了人工智能",
+      "en": "/vantage-pictures-and-realme-turn-nightlife-into-an-ai-powered-dream-in-live-for-real-campaign",
+      "zh": "/zh/vantage-pictures-和-realme-在live-for-real活动中将夜生活变成了人工智能",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures delivers high-energy waterproof chaos in global campaign for the new realme C85 smartphone",
+      "slug": "vantage-pictures-delivers-high-energy-waterproof-chaos-in-global-campaign-for-the-new-realme-c85-smartphone",
+      "slugZh": "vantange-pictures-为新款-realme-c85-智能手机的全球广告活动带来了充",
+      "en": "/vantage-pictures-delivers-high-energy-waterproof-chaos-in-global-campaign-for-the-new-realme-c85-smartphone",
+      "zh": "/zh/vantange-pictures-为新款-realme-c85-智能手机的全球广告活动带来了充",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures drops cinematic global campaign for OnePlus Pad 3 launch",
+      "slug": "vantage-pictures-drops-cinematic-global-campaign-for-oneplus-pad-3-launch",
+      "slugZh": "vantage-pictures-为-oneplus-pad-3-发布会投放电影级全球宣传广告",
+      "en": "/vantage-pictures-drops-cinematic-global-campaign-for-oneplus-pad-3-launch",
+      "zh": "/zh/vantage-pictures-为-oneplus-pad-3-发布会投放电影级全球宣传广告",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures elevates Mammotion LUBA 3 with cinematic product-first campaign",
+      "slug": "vantage-pictures-elevates-mammotion-luba-3-with-cinematic-product-first-campaign",
+      "slugZh": "vantage-pictures-携手-ma-motion-luba-3-推出首个电影式产品宣传活动",
+      "en": "/vantage-pictures-elevates-mammotion-luba-3-with-cinematic-product-first-campaign",
+      "zh": "/zh/vantage-pictures-携手-ma-motion-luba-3-推出首个电影式产品宣传活动",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures' James Duong on bringing Chinese productions to Vietnam",
+      "slug": "vantage-pictures-james-duong-on-bringing-chinese-productions-to-vietnam",
+      "slugZh": "vantage-pictures-james-duong-谈将中国项目带到越南",
+      "en": "/vantage-pictures-james-duong-on-bringing-chinese-productions-to-vietnam",
+      "zh": "/zh/vantage-pictures-james-duong-谈将中国项目带到越南",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures Taps into Inner Romance for OnePlus Y-Series TV Spot",
+      "slug": "vantage-pictures-taps-into-inner-romance-for-oneplus-y-series-tv-spot",
+      "slugZh": "vantage-pictures-在-oneplus-y-系列电视广告中捕捉内心浪漫",
+      "en": "/vantage-pictures-taps-into-inner-romance-for-oneplus-y-series-tv-spot",
+      "zh": "/zh/vantage-pictures-在-oneplus-y-系列电视广告中捕捉内心浪漫",
+      "flags": ""
+    },
+    {
+      "type": "blogPost",
+      "title": "Vantage Pictures translates next-gen drone tech into gritty storytelling for BRINC",
+      "slug": "vantage-pictures-translates-next-gen-drone-tech-into-gritty-storytelling-for-brinc",
+      "slugZh": "vantage-pictures-将下一代无人机技术转化为-brinc-的硬核故事叙述",
+      "en": "/vantage-pictures-translates-next-gen-drone-tech-into-gritty-storytelling-for-brinc",
+      "zh": "/zh/vantage-pictures-将下一代无人机技术转化为-brinc-的硬核故事叙述",
+      "flags": ""
+    },
+    {
+      "type": "videoFormat",
+      "title": "Brand Film",
+      "slug": "brand-film",
+      "slugZh": "品牌影片",
+      "en": "/video-format/brand-film",
+      "zh": "/zh/视频格式/品牌影片",
+      "flags": ""
+    },
+    {
+      "type": "videoFormat",
+      "title": "Branded Documentary",
+      "slug": "branded-documentary",
+      "slugZh": "品牌纪录片",
+      "en": "/video-format/branded-documentary",
+      "zh": "/zh/视频格式/品牌纪录片",
+      "flags": ""
+    },
+    {
+      "type": "videoFormat",
+      "title": "Commercial Spot",
+      "slug": "commercial-spot",
+      "slugZh": "商业广告",
+      "en": "/video-format/commercial-spot",
+      "zh": "/zh/视频格式/商业广告",
+      "flags": ""
+    },
+    {
+      "type": "videoFormat",
+      "title": "Product Video",
+      "slug": "product-video",
+      "slugZh": "产品视频",
+      "en": "/video-format/product-video",
+      "zh": "/zh/视频格式/产品视频",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "AI & Robotics",
+      "slug": "ai-robotics",
+      "slugZh": "人工智能与机器人",
+      "en": "/industry/ai-robotics",
+      "zh": "/zh/产业/人工智能与机器人",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Automotive",
+      "slug": "automotive",
+      "slugZh": "汽车",
+      "en": "/industry/automotive",
+      "zh": "/zh/产业/汽车",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Beauty & Cosmetics",
+      "slug": "beauty-cosmetics",
+      "slugZh": "美容与化妆品",
+      "en": "/industry/beauty-cosmetics",
+      "zh": "/zh/产业/美容与化妆品",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Drones",
+      "slug": "drones",
+      "slugZh": "无人机",
+      "en": "/industry/drones",
+      "zh": "/zh/产业/无人机",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Electronics",
+      "slug": "electronics",
+      "slugZh": "电子产品",
+      "en": "/industry/electronics",
+      "zh": "/zh/产业/电子产品",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "FMCG",
+      "slug": "fmcg",
+      "slugZh": "快速消费品",
+      "en": "/industry/fmcg",
+      "zh": "/zh/产业/快速消费品",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Fashion",
+      "slug": "fashion",
+      "slugZh": "时尚",
+      "en": "/industry/fashion",
+      "zh": "/zh/产业/时尚",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Finance",
+      "slug": "finance",
+      "slugZh": "金融",
+      "en": "/industry/finance",
+      "zh": "/zh/产业/金融",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Hospitality",
+      "slug": "hospitality",
+      "slugZh": "酒店与接待",
+      "en": "/industry/hospitality",
+      "zh": "/zh/产业/酒店与接待",
+      "flags": ""
+    },
+    {
+      "type": "industry",
+      "title": "Tech",
+      "slug": "tech",
+      "slugZh": "科技",
+      "en": "/industry/tech",
+      "zh": "/zh/产业/科技",
+      "flags": ""
+    },
+    {
+      "type": "market",
+      "title": "China",
+      "slug": "china",
+      "slugZh": "中国",
+      "en": "/market/china",
+      "zh": "/zh/市场/中国",
+      "flags": ""
+    },
+    {
+      "type": "market",
+      "title": "Singapore",
+      "slug": "singapore",
+      "slugZh": "新加坡",
+      "en": "/market/singapore",
+      "zh": "/zh/市场/新加坡",
+      "flags": ""
+    },
+    {
+      "type": "market",
+      "title": "Taiwan",
+      "slug": "taiwan",
+      "slugZh": "台湾",
+      "en": "/market/taiwan",
+      "zh": "/zh/市场/台湾",
+      "flags": ""
+    },
+    {
+      "type": "market",
+      "title": "USA",
+      "slug": "usa",
+      "slugZh": "美国",
+      "en": "/market/usa",
+      "zh": "/zh/市场/美国",
+      "flags": ""
+    },
+    {
+      "type": "market",
+      "title": "Vietnam",
+      "slug": "vietnam",
+      "slugZh": "越南",
+      "en": "/market/vietnam",
+      "zh": "/zh/市场/越南",
+      "flags": ""
+    },
+    {
+      "type": "category",
+      "title": "Behind the Scenes",
+      "slug": "behind-the-scenes",
+      "slugZh": "幕后花絮",
+      "en": "/category/behind-the-scenes",
+      "zh": "/zh/类别/幕后花絮",
+      "flags": ""
+    },
+    {
+      "type": "category",
+      "title": "Campaign Creative",
+      "slug": "creative",
+      "slugZh": "创意活动",
+      "en": "/category/creative",
+      "zh": "/zh/类别/创意活动",
+      "flags": ""
+    },
+    {
+      "type": "category",
+      "title": "Crew Insights",
+      "slug": "crew-insights",
+      "slugZh": "团队见解",
+      "en": "/category/crew-insights",
+      "zh": "/zh/类别/团队见解",
+      "flags": ""
+    },
+    {
+      "type": "category",
+      "title": "Press Coverage",
+      "slug": "press",
+      "slugZh": "新闻报道",
+      "en": "/category/press",
+      "zh": "/zh/类别/新闻报道",
+      "flags": ""
+    },
+    {
+      "type": "category",
+      "title": "Uncategorized",
+      "slug": "uncategorized",
+      "slugZh": "未分类",
+      "en": "/category/uncategorized",
+      "zh": "/zh/类别/未分类",
+      "flags": ""
+    }
+  ]
+}
