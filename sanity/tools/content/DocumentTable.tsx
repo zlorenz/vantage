@@ -725,26 +725,14 @@ export function DocumentTable({
     if (ids.length === 0) return
     const hints = hintsForIds(ids)
 
-    // Any selected Active scheduled row: prefer permanent delete with known
-    // release/version ids. Soft-trash inventory is unreliable for release-locked
-    // ghosts left over from a partial Empty Trash.
-    const allScheduledActive = ids.every((id) => {
-      const row = rows.find((r) => r._id === id)
-      return Boolean(row && row.isScheduled && !row.isTrashed)
-    })
-    if (allScheduledActive) {
-      setConfirm({kind: 'delete', ids, hints})
-      return
-    }
-
     setBusy(true)
     try {
       const preflight = await preflightTrash(client, ids)
       setConfirm({kind: 'trash', ids, preflight, hints})
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
-      // Always fall back to permanent delete when inventory can't find the doc —
-      // pass any release/version ids we already have from the table row.
+      // Fallback for rare release-locked ghosts inventory still can't see:
+      // permanent delete using any release/version ids from the table row.
       if (/document not found/i.test(message)) {
         setConfirm({kind: 'delete', ids, hints})
       } else {
@@ -757,7 +745,7 @@ export function DocumentTable({
     } finally {
       setBusy(false)
     }
-  }, [client, hintsForIds, rows, selected, toast])
+  }, [client, hintsForIds, selected, toast])
 
   const runConfirm = useCallback(async () => {
     if (!confirm) return
