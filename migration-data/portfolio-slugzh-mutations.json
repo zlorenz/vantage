@@ -1388,17 +1388,6 @@
     },
     {
       "patch": {
-        "id": "portfolio-2060",
-        "set": {
-          "slugZh": {
-            "_type": "slug",
-            "current": "联合利华:微笑很重要"
-          }
-        }
-      }
-    },
-    {
-      "patch": {
         "id": "portfolio-3275",
         "set": {
           "slugZh": {
@@ -1514,6 +1503,17 @@
           "slugZh": {
             "_type": "slug",
             "current": "工作"
+          }
+        }
+      }
+    },
+    {
+      "patch": {
+        "id": "portfolio-2060",
+        "set": {
+          "slugZh": {
+            "_type": "slug",
+            "current": "联合利华-微笑很重要"
           }
         }
       }

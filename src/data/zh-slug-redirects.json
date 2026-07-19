@@ -1271,7 +1271,7 @@
     },
     {
       "source": "/zh/投资组合/unilever-smiles-matter",
-      "destination": "/zh/投资组合/联合利华:微笑很重要",
+      "destination": "/zh/投资组合/联合利华-微笑很重要",
       "permanent": true,
       "contentType": "portfolioEntry",
       "enSlug": "unilever-smiles-matter"
@@ -1844,18 +1844,18 @@
       "enSlug": "oppo-find-x5-pro-master-workshop-with-ben-thomas"
     },
     {
-      "source": "/zh/投资组合/极米-h1",
-      "destination": "/zh/投资组合/xgimi-horizon-pro-让您的视野充满伟岸",
-      "permanent": true,
-      "contentType": "portfolioEntry",
-      "enSlug": "xgimi-horizon-pro"
-    },
-    {
       "source": "/zh/投资组合/杰盛-5000-plus-全屋备用电源",
       "destination": "/zh/投资组合/jackery-explorer-5000-plus-全屋备用电源",
       "permanent": true,
       "contentType": "portfolioEntry",
       "enSlug": "jackery-explorer-5000-plus-whole-home-backup-power"
+    },
+    {
+      "source": "/zh/投资组合/极米-h1",
+      "destination": "/zh/投资组合/xgimi-horizon-pro-让您的视野充满伟岸",
+      "permanent": true,
+      "contentType": "portfolioEntry",
+      "enSlug": "xgimi-horizon-pro"
     },
     {
       "source": "/zh/投资组合/榕树，有更多值得探索的。",
@@ -1936,7 +1936,7 @@
     },
     {
       "source": "/zh/投资组合/联合利华，笑容很重要",
-      "destination": "/zh/投资组合/联合利华:微笑很重要",
+      "destination": "/zh/投资组合/联合利华-微笑很重要",
       "permanent": true,
       "contentType": "portfolioEntry",
       "enSlug": "unilever-smiles-matter"

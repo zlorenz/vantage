@@ -156,8 +156,11 @@ function stripAccents(s: string): string {
 function slugifyTitleZh(title: string): string {
   let s = stripAccents(title.trim().toLowerCase());
   s = s.replace(/\u00a0/g, ' ').replace(/[–—−]/g, '-');
+  // Colons break Next.js redirects()/path-to-regexp (`:param`). Always hyphenate.
+  s = s.replace(/[:：]/g, '-');
   s = s.replace(/["“”„‟«»']/g, '');
-  s = s.replace(/[^\w\u4e00-\u9fff：:.-]+/g, '-');
+  // Keep CJK + word chars + dot/hyphen only — no path-to-regexp specials (*+?()[]{}).
+  s = s.replace(/[^\w\u4e00-\u9fff.-]+/g, '-');
   s = s.replace(/-+/g, '-').replace(/^-+|-+$/g, '');
   return s;
 }

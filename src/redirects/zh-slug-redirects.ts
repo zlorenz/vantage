@@ -17,6 +17,17 @@ function withSlashVariants(path: string): string[] {
   return [trimmed, `${trimmed}/`];
 }
 
+/** path-to-regexp treats these as pattern syntax inside redirects(). */
+const UNSAFE_REDIRECT_PATH = /[:*?+()[\]{}]/;
+
+function assertSafeRedirectPath(path: string, kind: 'source' | 'destination'): void {
+  if (UNSAFE_REDIRECT_PATH.test(path)) {
+    throw new Error(
+      `Unsafe ${kind} for next.config redirects (path-to-regexp special char): ${path}`,
+    );
+  }
+}
+
 /** Permanent redirects: legacy live / interim ZH paths → improved Sanity slugs. */
 export function buildZhSlugRedirects(): ZhSlugRedirect[] {
   const out: ZhSlugRedirect[] = [];
@@ -24,10 +35,12 @@ export function buildZhSlugRedirects(): ZhSlugRedirect[] {
 
   for (const row of redirectsFile.redirects) {
     const destination = withSlashVariants(row.destination)[0]!;
+    assertSafeRedirectPath(destination, 'destination');
 
     for (const source of withSlashVariants(row.source)) {
       if (source === destination || source === `${destination}/`) continue;
       if (seen.has(source)) continue;
+      assertSafeRedirectPath(source, 'source');
       seen.add(source);
       out.push({
         source,
