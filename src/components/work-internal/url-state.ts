@@ -59,18 +59,13 @@ export function readView(params: URLSearchParams): LibraryViewMode {
   return DEFAULT_VIEW;
 }
 
-export function readSelectedId(params: URLSearchParams): string | null {
-  return params.get('id');
-}
-
 export function buildLibraryQuery(state: {
   filters: LibraryFilters;
   sort: LibrarySort;
   view: LibraryViewMode;
-  selectedId: string | null;
 }): Record<string, string> {
   const query: Record<string, string> = {};
-  const { filters, sort, view, selectedId } = state;
+  const { filters, sort, view } = state;
 
   if (filters.q) query.q = filters.q;
   if (filters.client) query.client = filters.client;
@@ -85,7 +80,6 @@ export function buildLibraryQuery(state: {
   }
   if (sort !== DEFAULT_SORT) query.sort = sort;
   if (view !== DEFAULT_VIEW) query.view = view;
-  if (selectedId) query.id = selectedId;
 
   return query;
 }

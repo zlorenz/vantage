@@ -14,6 +14,7 @@ import {
   ArrowLeftIcon,
   CalendarIcon,
   CloseIcon,
+  EarthGlobeIcon,
   PublishIcon,
   TrashIcon,
 } from '@sanity/icons'
@@ -61,6 +62,7 @@ import {
   TRASHABLE_TYPES,
   type TrashableType,
 } from './document-lifecycle'
+import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './front-end-url'
 
 /**
  * Structure normally supplies this via ReferenceInputOptionsProvider.
@@ -262,6 +264,18 @@ export function DocumentEditor({
     ? Boolean(editState.draft || editState.published)
     : Boolean(ops.delete?.disabled) === false
 
+  const frontEndUrl = useMemo(
+    () =>
+      getFrontEndUrl(
+        documentType,
+        mergeDocumentSnapshot(
+          editState.published as FrontEndDocument | undefined,
+          editState.draft as FrontEndDocument | undefined,
+        ),
+      ),
+    [documentType, editState.draft, editState.published],
+  )
+
   const handlePublish = useCallback(() => {
     setBusy('publish')
     ops.publish.execute()
@@ -406,14 +420,11 @@ export function DocumentEditor({
               text="Back"
               onClick={onBack}
             />
-            <Stack space={1} style={{minWidth: 0}}>
-              <Text size={0} muted>
-                {documentType}
-              </Text>
+            <Box style={{minWidth: 0}}>
               <Text size={2} weight="semibold" textOverflow="ellipsis">
                 {headerTitle}
               </Text>
-            </Stack>
+            </Box>
           </Flex>
 
           <Flex align="center" gap={2} wrap="wrap">
@@ -433,6 +444,17 @@ export function DocumentEditor({
               </Text>
             ) : null}
 
+            {frontEndUrl ? (
+              <Button
+                as="a"
+                href={frontEndUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                mode="ghost"
+                icon={EarthGlobeIcon}
+                text="View on site"
+              />
+            ) : null}
             {canDiscard ? (
               <Button
                 mode="ghost"

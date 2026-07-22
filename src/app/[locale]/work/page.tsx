@@ -89,7 +89,7 @@ export default async function WorkPage({ params }: Props) {
       <SectionWrapper>
         <div className="container-fluid px-3 md:px-4">
           {introBlocks?.length ? (
-            <div className="vp-work-intro mx-auto mb-8 max-w-[900px] text-center font-light text-vp-text-muted">
+            <div className="vp-work-intro container mx-auto mb-8 text-center font-light text-vp-text-muted min-[1400px]:max-w-[1320px]">
               <PortableTextIntro blocks={introBlocks} />
             </div>
           ) : null}

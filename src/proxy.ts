@@ -1,5 +1,5 @@
 /**
- * next-intl middleware — locale routing (no automatic locale detection).
+ * next-intl proxy — locale routing (no automatic locale detection).
  *
  * English routes have no prefix; Chinese routes are prefixed with /zh/.
  * localeDetection is disabled in routing.ts — / always serves English unless

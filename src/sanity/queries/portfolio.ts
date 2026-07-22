@@ -34,8 +34,21 @@ const PORTFOLIO_INTERNAL_FILTER_FIELDS = `
   }
 `;
 
-/** Full credits object — stored inline on portfolioEntry (all 7 departments). */
+/** Full credits — structured array preferred; legacy department object retained for dual-read. */
 const PORTFOLIO_CREDITS_FIELDS = `
+  crewCredits[]{
+    _key,
+    department,
+    roleKey,
+    role,
+    isCustomRole,
+    people[]{
+      _key,
+      name,
+      url,
+      linkTitle
+    }
+  },
   credits{
     production,
     camera,

@@ -1,0 +1,830 @@
+{
+  "mergeScope": "cross-position",
+  "note": "Spelling variants matched globally (diacritic / word_order / hyphen / shared_url). Nickname matching excluded for safety. Merging renames all occurrences of alias spellings to the canonical, regardless of crew position.",
+  "uniqueNames": 1437,
+  "groups": 23,
+  "byConfidence": {
+    "high": 13,
+    "review": 10
+  },
+  "items": [
+    {
+      "confidence": "high",
+      "reasons": [
+        "word_order"
+      ],
+      "suggestedCanonical": "Việt Anh Nguyễn",
+      "totalOccurrences": 23,
+      "allPositions": [
+        "post / Post Supervisor",
+        "production / Line Producer",
+        "production / PA",
+        "production / Producer",
+        "production / Production Manager"
+      ],
+      "positionCount": 5,
+      "variants": [
+        {
+          "name": "Việt Anh Nguyễn",
+          "count": 21,
+          "positions": [
+            "post / Post Supervisor",
+            "production / Line Producer",
+            "production / Producer",
+            "production / Production Manager"
+          ],
+          "entries": 21,
+          "urls": []
+        },
+        {
+          "name": "Nguyen Viet Anh",
+          "count": 2,
+          "positions": [
+            "production / PA"
+          ],
+          "entries": 2,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Huy Lê",
+      "totalOccurrences": 21,
+      "allPositions": [
+        "post / Assistant Editors",
+        "post / Editor",
+        "post / Graphic Design",
+        "post / Online Editor",
+        "post / VFX"
+      ],
+      "positionCount": 5,
+      "variants": [
+        {
+          "name": "Huy Le",
+          "count": 12,
+          "positions": [
+            "post / Assistant Editors",
+            "post / Graphic Design",
+            "post / Online Editor",
+            "post / VFX"
+          ],
+          "entries": 11,
+          "urls": []
+        },
+        {
+          "name": "Huy Lê",
+          "count": 9,
+          "positions": [
+            "post / Editor"
+          ],
+          "entries": 9,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Rika Trang Nhâm",
+      "totalOccurrences": 6,
+      "allPositions": [
+        "art / Wardrobe",
+        "production / Production Coordinator",
+        "production / Production Manager"
+      ],
+      "positionCount": 3,
+      "variants": [
+        {
+          "name": "Rika Trang Nhâm",
+          "count": 4,
+          "positions": [
+            "production / Production Manager"
+          ],
+          "entries": 4,
+          "urls": []
+        },
+        {
+          "name": "Rika Trang Nham",
+          "count": 2,
+          "positions": [
+            "art / Wardrobe",
+            "production / Production Coordinator"
+          ],
+          "entries": 2,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Meccanica EFX",
+      "totalOccurrences": 6,
+      "allPositions": [
+        "post / 3D Animation",
+        "post / Post House",
+        "post / VFX"
+      ],
+      "positionCount": 3,
+      "variants": [
+        {
+          "name": "Meccanica EFX",
+          "count": 4,
+          "positions": [
+            "post / Post House"
+          ],
+          "entries": 4,
+          "urls": []
+        },
+        {
+          "name": "Meccanica Efx",
+          "count": 2,
+          "positions": [
+            "post / 3D Animation",
+            "post / VFX"
+          ],
+          "entries": 2,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "word_order"
+      ],
+      "suggestedCanonical": "Nguyễn Khanh",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "casting / Talent",
+        "post / VFX",
+        "production / PA"
+      ],
+      "positionCount": 3,
+      "variants": [
+        {
+          "name": "Khanh Nguyen",
+          "count": 2,
+          "positions": [
+            "post / VFX",
+            "production / PA"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Khanh",
+          "count": 1,
+          "positions": [
+            "casting / Talent"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "word_order"
+      ],
+      "suggestedCanonical": "Huynh Nga",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "production / 2nd AD",
+        "production / PA",
+        "production / Production Manager"
+      ],
+      "positionCount": 3,
+      "variants": [
+        {
+          "name": "Huynh Nga",
+          "count": 2,
+          "positions": [
+            "production / PA",
+            "production / Production Manager"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Nga Huynh",
+          "count": 1,
+          "positions": [
+            "production / 2nd AD"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Huy Nguyễn",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "ge / Gaffer",
+        "production / Product Technician"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Huy Nguyen",
+          "count": 2,
+          "positions": [
+            "ge / Gaffer"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Huy Nguyễn",
+          "count": 1,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Duy VK",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "camera / DOP",
+        "camera / Focus Puller"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Duy VK",
+          "count": 2,
+          "positions": [
+            "camera / Focus Puller"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Duy Vk",
+          "count": 1,
+          "positions": [
+            "camera / DOP"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "word_order"
+      ],
+      "suggestedCanonical": "Aekkarin Thippawan",
+      "totalOccurrences": 2,
+      "allPositions": [
+        "art / Art Director",
+        "art / Production Designer"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Aekkarin Thippawan",
+          "count": 1,
+          "positions": [
+            "art / Production Designer"
+          ],
+          "entries": 1,
+          "urls": []
+        },
+        {
+          "name": "Thippawan Aekkarin",
+          "count": 1,
+          "positions": [
+            "art / Art Director"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "GonPop",
+      "totalOccurrences": 2,
+      "allPositions": [
+        "post / Composer",
+        "post / Sound Design & Mix"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "GonPop",
+          "count": 1,
+          "positions": [
+            "post / Sound Design & Mix"
+          ],
+          "entries": 1,
+          "urls": []
+        },
+        {
+          "name": "Gonpop",
+          "count": 1,
+          "positions": [
+            "post / Composer"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Anh Phạm",
+      "totalOccurrences": 2,
+      "allPositions": [
+        "camera / Camera Op",
+        "camera / Steadicam Op"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Anh Phạm",
+          "count": 1,
+          "positions": [
+            "camera / Camera Op"
+          ],
+          "entries": 1,
+          "urls": []
+        },
+        {
+          "name": "Anh Pham",
+          "count": 1,
+          "positions": [
+            "camera / Steadicam Op"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Khang Nguyễn",
+      "totalOccurrences": 2,
+      "allPositions": [
+        "production / PA",
+        "production / Product Technician"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Khang Nguyen",
+          "count": 1,
+          "positions": [
+            "production / PA"
+          ],
+          "entries": 1,
+          "urls": []
+        },
+        {
+          "name": "Khang Nguyễn",
+          "count": 1,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "high",
+      "reasons": [
+        "shared_url"
+      ],
+      "suggestedCanonical": "T&A Ogilvy",
+      "totalOccurrences": 2,
+      "allPositions": [
+        "production / Agency"
+      ],
+      "positionCount": 1,
+      "variants": [
+        {
+          "name": "T&A Ogilvy",
+          "count": 1,
+          "positions": [
+            "production / Agency"
+          ],
+          "entries": 1,
+          "urls": [
+            "https://www.ogilvy.com/"
+          ]
+        },
+        {
+          "name": "Ogilvy",
+          "count": 1,
+          "positions": [
+            "production / Agency"
+          ],
+          "entries": 1,
+          "urls": [
+            "https://www.ogilvy.com/"
+          ]
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Tự Nguyễn",
+      "totalOccurrences": 31,
+      "allPositions": [
+        "art / Storyboards",
+        "post / Motion Graphic Artist",
+        "post / Post Supervisor",
+        "production / EP",
+        "production / PA",
+        "production / Producer",
+        "stills / KV Art Director",
+        "stills / Photography Producer"
+      ],
+      "positionCount": 8,
+      "variants": [
+        {
+          "name": "Tự Nguyễn",
+          "count": 18,
+          "positions": [
+            "art / Storyboards"
+          ],
+          "entries": 18,
+          "urls": []
+        },
+        {
+          "name": "Tu Nguyen",
+          "count": 10,
+          "positions": [
+            "post / Motion Graphic Artist",
+            "post / Post Supervisor",
+            "production / PA",
+            "stills / KV Art Director",
+            "stills / Photography Producer"
+          ],
+          "entries": 8,
+          "urls": []
+        },
+        {
+          "name": "Tú Nguyễn",
+          "count": 3,
+          "positions": [
+            "production / EP",
+            "production / Producer"
+          ],
+          "entries": 3,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Hà Nguyễn",
+      "totalOccurrences": 27,
+      "allPositions": [
+        "post / Post Supervisor",
+        "production / Line Producer",
+        "production / PA",
+        "production / Producer",
+        "production / Production Coordinator"
+      ],
+      "positionCount": 5,
+      "variants": [
+        {
+          "name": "Hà Nguyễn",
+          "count": 18,
+          "positions": [
+            "post / Post Supervisor",
+            "production / PA"
+          ],
+          "entries": 18,
+          "urls": []
+        },
+        {
+          "name": "Ha Nguyen",
+          "count": 9,
+          "positions": [
+            "production / Line Producer",
+            "production / Producer",
+            "production / Production Coordinator"
+          ],
+          "entries": 9,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Yến Vi",
+      "totalOccurrences": 10,
+      "allPositions": [
+        "art / Art Assistant",
+        "production / Chaperone",
+        "production / Line Producer",
+        "production / PA",
+        "production / Producer"
+      ],
+      "positionCount": 5,
+      "variants": [
+        {
+          "name": "Yến Vi",
+          "count": 7,
+          "positions": [
+            "production / Chaperone",
+            "production / PA"
+          ],
+          "entries": 7,
+          "urls": []
+        },
+        {
+          "name": "Yen Vi",
+          "count": 3,
+          "positions": [
+            "art / Art Assistant",
+            "production / Line Producer",
+            "production / Producer"
+          ],
+          "entries": 3,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Quyên Nguyễn",
+      "totalOccurrences": 9,
+      "allPositions": [
+        "post / Post Producer",
+        "post / Post Supervisor",
+        "production / PA"
+      ],
+      "positionCount": 3,
+      "variants": [
+        {
+          "name": "Quyên Nguyễn",
+          "count": 7,
+          "positions": [
+            "post / Post Producer",
+            "production / PA"
+          ],
+          "entries": 5,
+          "urls": []
+        },
+        {
+          "name": "Quyen Nguyen",
+          "count": 2,
+          "positions": [
+            "post / Post Supervisor"
+          ],
+          "entries": 2,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Hằng Nguyễn",
+      "totalOccurrences": 5,
+      "allPositions": [
+        "art / Hair & Makeup",
+        "post / Post Supervisor",
+        "post / VFX"
+      ],
+      "positionCount": 3,
+      "variants": [
+        {
+          "name": "Hằng Nguyễn",
+          "count": 4,
+          "positions": [
+            "art / Hair & Makeup",
+            "post / VFX"
+          ],
+          "entries": 4,
+          "urls": []
+        },
+        {
+          "name": "Hang Nguyen",
+          "count": 1,
+          "positions": [
+            "post / Post Supervisor"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Thạch Thảo",
+      "totalOccurrences": 18,
+      "allPositions": [
+        "post / Post Supervisor",
+        "post / VFX"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Thạch Thảo",
+          "count": 17,
+          "positions": [
+            "post / Post Supervisor"
+          ],
+          "entries": 17,
+          "urls": []
+        },
+        {
+          "name": "Thach Thao",
+          "count": 1,
+          "positions": [
+            "post / VFX"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Lê Mai Anh",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "art / Hair & Makeup",
+        "art / Wardrobe"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Le Mai Anh",
+          "count": 2,
+          "positions": [
+            "art / Wardrobe"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Lê Mai Anh",
+          "count": 1,
+          "positions": [
+            "art / Hair & Makeup"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Tuyên Ngọc",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "production / PA",
+        "production / Production Manager"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Tuyên Ngọc",
+          "count": 2,
+          "positions": [
+            "production / Production Manager"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Tuyen Ngoc",
+          "count": 1,
+          "positions": [
+            "production / PA"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Lê Thanh Tùng",
+      "totalOccurrences": 3,
+      "allPositions": [
+        "camera / Steadicam Op",
+        "stills / Photographer"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Lê Thanh Tùng",
+          "count": 2,
+          "positions": [
+            "camera / Steadicam Op"
+          ],
+          "entries": 2,
+          "urls": []
+        },
+        {
+          "name": "Le Thanh Tung",
+          "count": 1,
+          "positions": [
+            "stills / Photographer"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    },
+    {
+      "confidence": "review",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Nguyễn Thế Huy",
+      "totalOccurrences": 2,
+      "allPositions": [
+        "camera / 1st AC",
+        "camera / 2nd AC"
+      ],
+      "positionCount": 2,
+      "variants": [
+        {
+          "name": "Nguyễn Thế Huy",
+          "count": 1,
+          "positions": [
+            "camera / 1st AC"
+          ],
+          "entries": 1,
+          "urls": []
+        },
+        {
+          "name": "Nguyen The Huy",
+          "count": 1,
+          "positions": [
+            "camera / 2nd AC"
+          ],
+          "entries": 1,
+          "urls": []
+        }
+      ]
+    }
+  ]
+}

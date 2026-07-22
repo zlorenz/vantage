@@ -5,6 +5,8 @@ import {media} from 'sanity-plugin-media'
 import {schemaTypes} from './schemas'
 import {structure} from './structure'
 import {contentTool} from './tools/content'
+import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './tools/content/front-end-url'
+import './studio.css'
 
 export default defineConfig({
   name: 'default',
@@ -25,5 +27,15 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    productionUrl: async (prev, {document}) => {
+      const url = getFrontEndUrl(
+        document._type,
+        mergeDocumentSnapshot(document as FrontEndDocument),
+      )
+      return url ?? prev
+    },
   },
 })

@@ -6,20 +6,20 @@
 
 import Image from 'next/image';
 import { urlForImage } from '@/lib/sanity';
+import type { Locale } from '@/i18n/routing';
 import type { InternalLibraryEntry } from '@/types/sanity';
+import { openPortfolioEntry } from './entry-url';
 import { getArtName, getCrewName, getEditorName } from './filter-entries';
 import { formatPublishDate, getDisplayTitle } from './text';
 
 interface WorkInternalCardViewProps {
   entries: InternalLibraryEntry[];
-  selectedId: string | null;
-  onSelect: (id: string) => void;
+  locale: Locale;
 }
 
 export function WorkInternalCardView({
   entries,
-  selectedId,
-  onSelect,
+  locale,
 }: WorkInternalCardViewProps) {
   return (
     <div className="vp-internal-cards" role="list">
@@ -29,7 +29,6 @@ export function WorkInternalCardView({
           .height(360)
           .fit('crop')
           .url();
-        const selected = entry._id === selectedId;
         const title = getDisplayTitle(entry);
 
         return (
@@ -37,12 +36,8 @@ export function WorkInternalCardView({
             key={entry._id}
             type="button"
             role="listitem"
-            className={
-              selected
-                ? 'vp-internal-card is-selected'
-                : 'vp-internal-card'
-            }
-            onClick={() => onSelect(entry._id)}
+            className="vp-internal-card"
+            onClick={() => openPortfolioEntry(entry, locale)}
           >
             <div className="vp-internal-card__media">
               <Image

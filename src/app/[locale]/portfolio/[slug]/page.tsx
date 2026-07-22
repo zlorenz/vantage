@@ -147,7 +147,11 @@ export default async function PortfolioEntryPage({ params }: Props) {
               />
             </div>
             <div className="order-3 mt-8 lg:col-span-10">
-              <PortfolioCredits credits={entry.credits} locale={typedLocale} />
+              <PortfolioCredits
+                crewCredits={entry.crewCredits}
+                credits={entry.credits}
+                locale={typedLocale}
+              />
             </div>
           </div>
         </div>

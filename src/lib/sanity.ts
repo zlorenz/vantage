@@ -13,7 +13,7 @@
  */
 
 import { createClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url';
 
 /**
@@ -33,7 +33,7 @@ export const sanityClient = createClient({
  * Chain .width(), .height(), .format(), etc. before calling .url().
  * Never use raw Sanity CDN URLs in components.
  */
-export const sanityImageBuilder = imageUrlBuilder(sanityClient);
+export const sanityImageBuilder = createImageUrlBuilder(sanityClient);
 
 /**
  * Builds a Sanity image URL from an image source reference.

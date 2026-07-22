@@ -139,6 +139,7 @@ export interface InternalLibraryEntry {
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];
+  crewCredits?: CrewCredit[];
   credits?: PortfolioCredits;
 }
 
@@ -161,6 +162,24 @@ export interface PortfolioCredits {
   casting?: CreditsDepartment;
   stills?: CreditsDepartment;
   post?: CreditsDepartment;
+}
+
+/** Structured person/company credit (preferred over legacy HTML name strings). */
+export interface CrewPerson {
+  _key?: string;
+  name: string;
+  url?: string;
+  linkTitle?: string;
+}
+
+/** Structured crew credit row shared by Studio and the frontend. */
+export interface CrewCredit {
+  _key?: string;
+  department: keyof PortfolioCredits;
+  roleKey?: string;
+  role: string;
+  isCustomRole?: boolean;
+  people: CrewPerson[];
 }
 
 export interface AdditionalVideo {
@@ -193,6 +212,7 @@ export interface PortfolioEntry {
   publishedAt?: string;
   isHidden?: boolean;
   additionalVideos?: AdditionalVideo[];
+  crewCredits?: CrewCredit[];
   credits?: PortfolioCredits;
   seo?: SeoFields;
 }

@@ -18,6 +18,41 @@ const nextConfig: NextConfig = {
         destination: '/portfolio/realme-c85-your-ultimate-outdoor-sidekick',
         permanent: true,
       },
+      // Portfolio slug QC — 2026-07-19
+      {
+        source:
+          '/portfolio/bidv-smartbanking-hoa-nhi%cc%a3p-so%cc%82ng-tho%cc%82ng-minh',
+        destination: '/portfolio/bidv-smartbanking-hoa-nhip-song-thong-minh',
+        permanent: true,
+      },
+      {
+        source:
+          '/portfolio/vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi',
+        destination: '/portfolio/vinamilk-probi-em-ruot-nuot-doi',
+        permanent: true,
+      },
+      {
+        source: '/portfolio/fujifilm-jouney-toward-more-accessible-medicine',
+        destination:
+          '/portfolio/fujifilm-journey-toward-more-accessible-medicine',
+        permanent: true,
+      },
+      {
+        source: '/portfolio/techombank-mobile',
+        destination: '/portfolio/techcombank-mobile',
+        permanent: true,
+      },
+      {
+        source: '/zh/投资组合/大疆故事',
+        destination: '/zh/投资组合/大疆故事-切尔诺贝利失落之城',
+        permanent: true,
+      },
+      {
+        source: '/zh/投资组合/智云-weebill-3s-amp-crane-m-3s-便携式视觉叙事-2.0',
+        destination:
+          '/zh/投资组合/智云-weebill-3s-与-crane-m-3s-便携式视觉叙事-2.0',
+        permanent: true,
+      },
       {
         source: '/zh/作品',
         destination: '/zh/工作',

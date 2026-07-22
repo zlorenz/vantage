@@ -1,0 +1,891 @@
+{
+  "uniqueNames": 1419,
+  "groups": 23,
+  "byConfidence": {
+    "leftover_hard": 3,
+    "review_homograph": 2,
+    "high_risk": 18
+  },
+  "items": [
+    {
+      "confidence": "leftover_hard",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix"
+      ],
+      "suggestedCanonical": "Tự Nguyễn",
+      "totalOccurrences": 32,
+      "positionCount": 9,
+      "allPositions": [
+        "art / Storyboards",
+        "post / Graphic Design",
+        "post / Motion Graphic Artist",
+        "post / Post Supervisor",
+        "production / EP",
+        "production / PA",
+        "production / Producer",
+        "stills / KV Art Director",
+        "stills / Photography Producer"
+      ],
+      "variants": [
+        {
+          "name": "Tự Nguyễn",
+          "count": 28,
+          "entries": 23,
+          "positions": [
+            "art / Storyboards",
+            "post / Motion Graphic Artist",
+            "post / Post Supervisor",
+            "production / PA",
+            "stills / KV Art Director",
+            "stills / Photography Producer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tú Nguyễn",
+          "count": 3,
+          "entries": 3,
+          "positions": [
+            "production / EP",
+            "production / Producer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Noah Tu Nguyen",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Graphic Design"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": false
+    },
+    {
+      "confidence": "leftover_hard",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_suffix",
+        "word_order"
+      ],
+      "suggestedCanonical": "Nguyễn Khanh",
+      "totalOccurrences": 14,
+      "positionCount": 5,
+      "allPositions": [
+        "casting / Talent",
+        "post / Editor",
+        "post / VFX",
+        "production / PA",
+        "production / Product Technician"
+      ],
+      "variants": [
+        {
+          "name": "Pham Khanh Nguyen",
+          "count": 9,
+          "entries": 9,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Khanh",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "post / Editor",
+            "post / VFX"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Khanh Nguyen",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "post / VFX",
+            "production / PA"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Khanh",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Talent"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": false
+    },
+    {
+      "confidence": "leftover_hard",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Huy Nguyễn",
+      "totalOccurrences": 3,
+      "positionCount": 2,
+      "allPositions": [
+        "ge / Gaffer",
+        "production / Product Technician"
+      ],
+      "variants": [
+        {
+          "name": "Huy Nguyen",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "ge / Gaffer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Huy Nguyễn",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": false
+    },
+    {
+      "confidence": "review_homograph",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Hằng Nguyễn",
+      "totalOccurrences": 5,
+      "positionCount": 3,
+      "allPositions": [
+        "art / Hair & Makeup",
+        "post / Post Supervisor",
+        "post / VFX"
+      ],
+      "variants": [
+        {
+          "name": "Hằng Nguyễn",
+          "count": 4,
+          "entries": 4,
+          "positions": [
+            "art / Hair & Makeup",
+            "post / VFX"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hang Nguyen",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Post Supervisor"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": false
+    },
+    {
+      "confidence": "review_homograph",
+      "reasons": [
+        "diacritic"
+      ],
+      "suggestedCanonical": "Lê Thanh Tùng",
+      "totalOccurrences": 3,
+      "positionCount": 2,
+      "allPositions": [
+        "camera / Steadicam Op",
+        "stills / Photographer"
+      ],
+      "variants": [
+        {
+          "name": "Lê Thanh Tùng",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "camera / Steadicam Op"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Le Thanh Tung",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "stills / Photographer"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": false
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix",
+        "paren_or_slash"
+      ],
+      "suggestedCanonical": "Benjamin Villataspaisarn (Basugaa Studio)",
+      "totalOccurrences": 39,
+      "positionCount": 3,
+      "allPositions": [
+        "post / 3D Animation",
+        "post / Online",
+        "post / VFX"
+      ],
+      "variants": [
+        {
+          "name": "Benjamin Villataspaisarn",
+          "count": 30,
+          "entries": 29,
+          "positions": [
+            "post / VFX"
+          ],
+          "urls": [
+            "https://www.basugaavfx.com/"
+          ]
+        },
+        {
+          "name": "Benjamin Villataspaisarn (Basugaa Studio)",
+          "count": 9,
+          "entries": 9,
+          "positions": [
+            "post / 3D Animation",
+            "post / Online"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Việt Anh Nguyễn",
+      "totalOccurrences": 24,
+      "positionCount": 6,
+      "allPositions": [
+        "ge / Rental House",
+        "post / Post Supervisor",
+        "production / Line Producer",
+        "production / PA",
+        "production / Producer",
+        "production / Production Manager"
+      ],
+      "variants": [
+        {
+          "name": "Việt Anh Nguyễn",
+          "count": 23,
+          "entries": 23,
+          "positions": [
+            "post / Post Supervisor",
+            "production / Line Producer",
+            "production / PA",
+            "production / Producer",
+            "production / Production Manager"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Viet Anh",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "ge / Rental House"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Quỳnh Như Nguyễn Pham",
+      "totalOccurrences": 7,
+      "positionCount": 1,
+      "allPositions": [
+        "production / PA"
+      ],
+      "variants": [
+        {
+          "name": "Quỳnh Như Nguyễn Pham",
+          "count": 6,
+          "entries": 6,
+          "positions": [
+            "production / PA"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nhu Nguyen",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / PA"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_subseq",
+        "nickname_suffix"
+      ],
+      "suggestedCanonical": "Lê Minh Thuận",
+      "totalOccurrences": 7,
+      "positionCount": 2,
+      "allPositions": [
+        "production / PA",
+        "production / Product Technician"
+      ],
+      "variants": [
+        {
+          "name": "Lê Minh Thuận",
+          "count": 5,
+          "entries": 5,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Minh Thuan",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / PA"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thuận",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Mạnh Khang",
+      "totalOccurrences": 7,
+      "positionCount": 2,
+      "allPositions": [
+        "production / PA",
+        "production / Product Technician"
+      ],
+      "variants": [
+        {
+          "name": "Mạnh Khang",
+          "count": 4,
+          "entries": 4,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Khang Nguyễn",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "production / PA",
+            "production / Product Technician"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Khang",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / Product Technician"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Nguyễn Đức Công",
+      "totalOccurrences": 6,
+      "positionCount": 1,
+      "allPositions": [
+        "post / Sound Engineer"
+      ],
+      "variants": [
+        {
+          "name": "Nguyen Duc Cong",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "post / Sound Engineer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Đức Công",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "post / Sound Engineer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cong",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Sound Engineer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cong Nguyen",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Sound Engineer"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Vinh Nghi Hippo",
+      "totalOccurrences": 5,
+      "positionCount": 3,
+      "allPositions": [
+        "production / Line Producer",
+        "production / PA",
+        "production / Production Coordinator"
+      ],
+      "variants": [
+        {
+          "name": "Hippo",
+          "count": 4,
+          "entries": 4,
+          "positions": [
+            "production / Line Producer",
+            "production / PA",
+            "production / Production Coordinator"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Vinh Nghi Hippo",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / Line Producer"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Allie Zamacona",
+      "totalOccurrences": 4,
+      "positionCount": 1,
+      "allPositions": [
+        "casting / Talent"
+      ],
+      "variants": [
+        {
+          "name": "Allie",
+          "count": 3,
+          "entries": 3,
+          "positions": [
+            "casting / Talent"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Allie Zamacona",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Talent"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Pauline Ta",
+      "totalOccurrences": 4,
+      "positionCount": 1,
+      "allPositions": [
+        "casting / Talent"
+      ],
+      "variants": [
+        {
+          "name": "Pauline Ta",
+          "count": 3,
+          "entries": 3,
+          "positions": [
+            "casting / Talent"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Pauline",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Talent"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "ColorSpace Vietnam",
+      "totalOccurrences": 3,
+      "positionCount": 1,
+      "allPositions": [
+        "post / Post House"
+      ],
+      "variants": [
+        {
+          "name": "COLORSPACE",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "post / Post House"
+          ],
+          "urls": [
+            "http://colorspacevietnam.com/"
+          ]
+        },
+        {
+          "name": "ColorSpace Vietnam",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Post House"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Dylan Ha",
+      "totalOccurrences": 3,
+      "positionCount": 2,
+      "allPositions": [
+        "production / PA",
+        "production / Runner"
+      ],
+      "variants": [
+        {
+          "name": "Dylan Ha",
+          "count": 2,
+          "entries": 2,
+          "positions": [
+            "production / PA",
+            "production / Runner"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Dylan",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / Runner"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Babyface Casting",
+      "totalOccurrences": 2,
+      "positionCount": 1,
+      "allPositions": [
+        "casting / Casting Director"
+      ],
+      "variants": [
+        {
+          "name": "Babyface",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Casting Director"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Babyface Casting",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Casting Director"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Nguyen Hi Koi Team",
+      "totalOccurrences": 2,
+      "positionCount": 1,
+      "allPositions": [
+        "camera / Live-Stream Technician"
+      ],
+      "variants": [
+        {
+          "name": "Nguyen Hi Koi Team",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "camera / Live-Stream Technician"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hi Koi",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "camera / Live-Stream Technician"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "paren_or_slash"
+      ],
+      "suggestedCanonical": "Trần Vũ Bảo / Storm Casting",
+      "totalOccurrences": 2,
+      "positionCount": 2,
+      "allPositions": [
+        "casting / Casting Director",
+        "casting / Casting Manager"
+      ],
+      "variants": [
+        {
+          "name": "Storm Casting",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Casting Manager"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Trần Vũ Bảo / Storm Casting",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "casting / Casting Director"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Lê Hoàng Thanh Vân",
+      "totalOccurrences": 2,
+      "positionCount": 1,
+      "allPositions": [
+        "production / PA"
+      ],
+      "variants": [
+        {
+          "name": "Lê Hoàng Thanh Vân",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / PA"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hoang",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "production / PA"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Wolfram Gruss",
+      "totalOccurrences": 2,
+      "positionCount": 1,
+      "allPositions": [
+        "post / Composer"
+      ],
+      "variants": [
+        {
+          "name": "Wolfram Gruss",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Composer"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Wolfram",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / Composer"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_subseq"
+      ],
+      "suggestedCanonical": "Fat Beez",
+      "totalOccurrences": 2,
+      "positionCount": 1,
+      "allPositions": [
+        "post / VFX"
+      ],
+      "variants": [
+        {
+          "name": "Fat Beez",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / VFX"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Beez",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "post / VFX"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    },
+    {
+      "confidence": "high_risk",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "suggestedCanonical": "Grace Team Sound & Lighting",
+      "totalOccurrences": 2,
+      "positionCount": 1,
+      "allPositions": [
+        "ge / Rental House"
+      ],
+      "variants": [
+        {
+          "name": "Grace Team Sound & Lighting",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "ge / Rental House"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Grace",
+          "count": 1,
+          "entries": 1,
+          "positions": [
+            "ge / Rental House"
+          ],
+          "urls": []
+        }
+      ],
+      "onlyNickname": true
+    }
+  ]
+}

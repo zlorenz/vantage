@@ -9,6 +9,7 @@
 
 import { defineField, defineType } from 'sanity';
 
+import { CrewCreditsInput } from '../components/crew-credits/CrewCreditsInput';
 import { TaxonomyCheckboxInput } from '../components/TaxonomyCheckboxInput';
 
 export const portfolioEntry = defineType({
@@ -285,11 +286,23 @@ export const portfolioEntry = defineType({
     }),
 
     defineField({
-      name: 'credits',
-      title: 'Credits',
-      type: 'object',
+      name: 'crewCredits',
+      title: 'Crew Credits',
+      type: 'array',
       group: 'credits',
-      options: { collapsible: true, collapsed: false },
+      of: [{ type: 'crewCredit' }],
+      description:
+        'Download the CSV template, add crew credits via Claude, then upload and preview the import for confirming. All names must be comma-separated. Click a tag to edit the name or attach a link.',
+      components: { input: CrewCreditsInput },
+    }),
+
+    defineField({
+      name: 'credits',
+      title: 'Legacy Credits',
+      type: 'object',
+      hidden: true,
+      readOnly: true,
+      description: 'Archived WordPress/ACF credits — kept in Sanity for reference; not shown in Studio.',
       fields: [
         defineField({
           name: 'production',

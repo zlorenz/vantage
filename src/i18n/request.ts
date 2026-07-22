@@ -1,7 +1,7 @@
 /**
  * next-intl request configuration — server-side locale resolution.
  *
- * Reads the matched [locale] segment from the middleware and loads
+ * Reads the matched [locale] segment from the proxy and loads
  * the corresponding message catalog for Server Components.
  */
 

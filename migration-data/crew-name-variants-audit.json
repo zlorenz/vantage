@@ -1,0 +1,4279 @@
+{
+  "portfolioEntriesScanned": 143,
+  "uniqueNames": 1544,
+  "personOccurrences": 3156,
+  "variantGroups": 101,
+  "mergeRule": "Names merge only within the same crew position (department + role).",
+  "byConfidence": {
+    "high": 37,
+    "medium": 23,
+    "review": 41
+  },
+  "groups": [
+    {
+      "position": {
+        "department": "post",
+        "role": "VFX",
+        "roleKey": "vfx"
+      },
+      "positionLabel": "post / VFX",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix",
+        "nickname_suffix",
+        "shared_url"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Benjamin Villataspaisarn",
+      "totalOccurrences": 30,
+      "variants": [
+        {
+          "name": "Benjamin Villataspaisarn",
+          "count": 13,
+          "portfolioCount": 13,
+          "portfolios": [
+            "xgimi-horizon-pro",
+            "honor-magic-2",
+            "toyota-camry-2022-absolute-charisma",
+            "ecoflow-river-600-customizable-backup-power",
+            "ecoflow-delta-series-live-without-limits",
+            "ecoflow-river-mobile-power-station",
+            "ecoflow-delta-battery-generator",
+            "mammotion-luba-automated-robot-lawn-mower",
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas",
+            "asus-upgrade-to-incredible",
+            "zhiyun-weebill-3s-crane-3s",
+            "bambu-lab-vortek",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Benjamin Villataspaisarn (Basugaa Studio)",
+          "count": 9,
+          "portfolioCount": 9,
+          "portfolios": [
+            "oppo-reno10-pro-5g",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "bitget-trade-smarter",
+            "mammotion-yuka-mini-effortless-lawn-care-redefined",
+            "ulike-air-10",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "mammotion-yuka-mini-2",
+            "brinc-guardian-next-generation-of-response"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Basugaa Studio",
+          "count": 6,
+          "portfolioCount": 6,
+          "portfolios": [
+            "ecoflow-introducing-river-mini-power-at-hand",
+            "zhiyun-smooth-5-film-like-a-pro",
+            "oneplus-y-series-tv",
+            "insta360-link-the-ai-powered-4k-webcam",
+            "govee-permanent-outdoor-lights",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": [
+            "https://www.basugaavfx.com/"
+          ]
+        },
+        {
+          "name": "Basugaa Studios",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asics-dynablast"
+          ],
+          "urls": [
+            "https://www.basugaavfx.com/"
+          ]
+        },
+        {
+          "name": "Benjamin Villataspaisarn / Basugaa Studio",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "gendome-home-3000"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Sound Design & Mix",
+        "roleKey": "sound_design_mix"
+      },
+      "positionLabel": "post / Sound Design & Mix",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Marc Sander Montant",
+      "totalOccurrences": 25,
+      "variants": [
+        {
+          "name": "Marc Sander Montant",
+          "count": 22,
+          "portfolioCount": 22,
+          "portfolios": [
+            "oneplus-12-chasing-luna",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "realme-13-5g-unleash-your-gaming-potential",
+            "bitget-trade-smarter",
+            "msi-120hz-perfectedge-monitor",
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "oneplus-make-the-moment-with-mohan-dravid",
+            "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn",
+            "mammotion-yuka-mini-effortless-lawn-care-redefined",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "msi-business-elevate-everyday-work",
+            "asus-education-a-day-in-the-life",
+            "govee-permanent-outdoor-lights",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "bitget-getagent-ft-julian-alvarez",
+            "mammotion-yuka-mini-2",
+            "mammotion-luba-3-awd",
+            "brinc-guardian-next-generation-of-response",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Marc Sander-Montant",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "dji-mavic-2-rapid-recap",
+            "ecoflow-introducing-river-mini-power-at-hand",
+            "ecoflow-delta-series-live-without-limits"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Hair & Makeup",
+        "roleKey": "hair_makeup"
+      },
+      "positionLabel": "art / Hair & Makeup",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Mai Tấn Sang",
+      "totalOccurrences": 24,
+      "variants": [
+        {
+          "name": "Mai Tan Sang",
+          "count": 21,
+          "portfolioCount": 21,
+          "portfolios": [
+            "mutosi",
+            "roborock-s8",
+            "aquafina",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "bitget-elite-traders",
+            "banyan-tree-theres-more-to-discovery",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "msi-120hz-perfectedge-monitor",
+            "vinamilk-probi-em-ruot-nuot-doi",
+            "msi-business-elevate-everyday-work",
+            "asus-education-a-day-in-the-life",
+            "tpbank-chatpay",
+            "ulike-air-10",
+            "govee-lit-by-govee",
+            "bambu-lab-vortek",
+            "govee-permanent-outdoor-lights",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "brinc-guardian-next-generation-of-response",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Mai Tấn Sang",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "hidock-chatgpt-powered-audio-dock",
+            "realme-13-5g-unleash-your-gaming-potential",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Post Supervisor",
+        "roleKey": "post_supervisor"
+      },
+      "positionLabel": "post / Post Supervisor",
+      "reasons": [
+        "diacritic",
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Thạch Thảo",
+      "totalOccurrences": 17,
+      "variants": [
+        {
+          "name": "Thạch Thảo",
+          "count": 8,
+          "portfolioCount": 8,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam",
+            "comfort-disco",
+            "gendome-home-3000",
+            "asus-upgrade-to-incredible",
+            "mammotion-let-luba-2-do-it",
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "petkit-say-hello-to-purobot-ultra",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thach Thao",
+          "count": 8,
+          "portfolioCount": 8,
+          "portfolios": [
+            "asus-education-a-day-in-the-life",
+            "bambu-lab-vortek",
+            "govee-permanent-outdoor-lights",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "bitget-getagent-ft-julian-alvarez",
+            "mammotion-yuka-mini-2",
+            "mammotion-luba-3-awd",
+            "brinc-guardian-next-generation-of-response"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thao Thach",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Storyboards",
+        "roleKey": "storyboards"
+      },
+      "positionLabel": "art / Storyboards",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix",
+        "nickname_suffix",
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Nguyễn Trường Giang",
+      "totalOccurrences": 16,
+      "variants": [
+        {
+          "name": "Truong Giang",
+          "count": 9,
+          "portfolioCount": 9,
+          "portfolios": [
+            "asus-upgrade-to-incredible",
+            "hidock-chatgpt-powered-audio-dock",
+            "oppo-reno10-pro-5g",
+            "techcombank-inspire-why-not",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "brinc-a-new-era-of-response",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "msi-business-elevate-everyday-work"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyen Truong Giang",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "roborock-h7",
+            "ecoflow-introducing-river-mini-power-at-hand",
+            "oneplus-y-series-tv",
+            "mammotion-luba-automated-robot-lawn-mower",
+            "lays-max"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Trường Giang",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "zhiyun-smooth-5-film-like-a-pro"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Trường Giang Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "ecoflow-delta-series-live-without-limits"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "STYLUS Agency",
+      "totalOccurrences": 13,
+      "variants": [
+        {
+          "name": "STYLUS Agency",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "tpbank-chatpay",
+            "ulike-air-10",
+            "govee-lit-by-govee",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "brinc-guardian-next-generation-of-response",
+            "govee-for-every-mood-of-home",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Stylus",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "realme-c75-everything-proof",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "govee-halloween",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Stylus Agency",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "msi-business-elevate-everyday-work",
+            "asus-education-a-day-in-the-life"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Huỳnh Mai Cát Linh",
+      "totalOccurrences": 13,
+      "variants": [
+        {
+          "name": "Cat Linh",
+          "count": 6,
+          "portfolioCount": 6,
+          "portfolios": [
+            "vinamilk-probi-em-ruot-nuot-doi",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "westin-hotels-resorts-busy-resting",
+            "govee-halloween",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Huỳnh Mai Cát Linh",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "indwell-refrigerator-air-conditioner",
+            "hoa-phat",
+            "mutosi",
+            "coca-cola-ocean-cleanup"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Huynh Mai Cat Linh",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cát Linh",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Editor",
+        "roleKey": "editor"
+      },
+      "positionLabel": "post / Editor",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Cyrel de los Reyes",
+      "totalOccurrences": 12,
+      "variants": [
+        {
+          "name": "Cyrel de los Reyes",
+          "count": 10,
+          "portfolioCount": 10,
+          "portfolios": [
+            "honor-magic-2",
+            "indelb-go20",
+            "oneplus-fast-smooth",
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas",
+            "asus-upgrade-to-incredible",
+            "roborock-s8",
+            "mammotion-let-luba-2-do-it",
+            "banyan-tree-theres-more-to-discovery",
+            "bitget-trade-smarter",
+            "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cyrel De Los Reyes",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oneplus-y-series-tv"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cyrel De los Reyes",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oneplus-make-the-moment-with-mohan-dravid"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Props Master",
+        "roleKey": "props_master"
+      },
+      "positionLabel": "art / Props Master",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix",
+        "nickname_suffix",
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Lê Thành Hưng",
+      "totalOccurrences": 11,
+      "variants": [
+        {
+          "name": "Le Thanh Hung",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "lays-max",
+            "bitget-elite-traders",
+            "banyan-tree-theres-more-to-discovery",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "jackery-explorer-5000-plus-whole-home-backup-power"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thanh Hung",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "vinamilk-probi-em-ruot-nuot-doi",
+            "ulike-air-10"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lê Thành Hưng",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "herbalife-nutrition"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thành Hưng Lê",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno10-pro-5g"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Location Manager",
+        "roleKey": "location_manager"
+      },
+      "positionLabel": "art / Location Manager",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "May Trần",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "May Tran",
+          "count": 8,
+          "portfolioCount": 8,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "indwell-refrigerator-air-conditioner",
+            "asus-upgrade-to-incredible",
+            "lays-max",
+            "oppo-reno10-pro-5g",
+            "techcombank-inspire-why-not",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower"
+          ],
+          "urls": []
+        },
+        {
+          "name": "May Trần",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "gendome-home-3000",
+            "roborock-s8"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix",
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Ngọc Mỹ Trần",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "Ngọc Mỹ Trần",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "gendome-home-3000",
+            "roborock-s8",
+            "zhiyun-weebill-3s-crane-3s"
+          ],
+          "urls": []
+        },
+        {
+          "name": "My Ngoc Tran",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "taiwan-excellence-2022",
+            "aquafina"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Mỹ Trần",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "herbalife-nutrition"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tran Ngoc My",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "old-spice-shampoo"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Ngoc My Tran",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asus-upgrade-to-incredible"
+          ],
+          "urls": []
+        },
+        {
+          "name": "My Tran",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "lays-max"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Mỹ Ngọc Trần",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "techcombank-inspire-why-not"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "ge",
+        "role": "Rental House",
+        "roleKey": "rental_house"
+      },
+      "positionLabel": "ge / Rental House",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "CineSpace",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "CineSpace",
+          "count": 6,
+          "portfolioCount": 6,
+          "portfolios": [
+            "hoa-phat",
+            "hidock-chatgpt-powered-audio-dock",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "govee-lit-by-govee",
+            "brinc-guardian-next-generation-of-response"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cinespace",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "comfort-disco",
+            "banyan-tree-theres-more-to-discovery",
+            "roborock-qrevo-s-essential-power-ultimate-convenience",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Editor",
+        "roleKey": "editor"
+      },
+      "positionLabel": "post / Editor",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Huy Lê",
+      "totalOccurrences": 9,
+      "variants": [
+        {
+          "name": "Huy Le",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "tpbank-chatpay",
+            "ulike-air-10",
+            "govee-lit-by-govee",
+            "govee-permanent-outdoor-lights",
+            "realme-15-series-5g-live-real-in-every-shot",
+            "brinc-guardian-next-generation-of-response",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Huy Lê",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-yuka-mini-effortless-lawn-care-redefined",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Colorist",
+        "roleKey": "colorist"
+      },
+      "positionLabel": "post / Colorist",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Cyrel de los Reyes",
+      "totalOccurrences": 8,
+      "variants": [
+        {
+          "name": "Cyrel de los Reyes",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "dji-mavic-2-rapid-recap",
+            "snapmaker-make-something-wonderful",
+            "ecoflow-introducing-river-mini-power-at-hand",
+            "zhiyun-smooth-5-film-like-a-pro",
+            "roborock-s7-maxv-ultra-everything-made-easy",
+            "ecoflow-delta-series-live-without-limits",
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cyrel De Los Reyes",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oneplus-y-series-tv"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Focus Puller",
+        "roleKey": "focus_puller"
+      },
+      "positionLabel": "camera / Focus Puller",
+      "reasons": [
+        "nickname_prefix",
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Hai Duy Nghiem (Ya-ua)",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Hai Duy Nghiem (Ya-ua)",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "realme-c75-everything-proof",
+            "bambu-lab-h2d-your-personal-manufacturing-hub"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hai Duy Nghiem",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "govee-halloween",
+            "realme-c85-your-ultimate-outdoor-sidekick"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nghiem Duy Hai",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "tpbank-chatpay"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nghiem Duy Hai (Yaua)",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "ulike-air-10"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Steadicam Op",
+        "roleKey": "steadicam_op"
+      },
+      "positionLabel": "camera / Steadicam Op",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Bi Hân",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Bi Han",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "tpbank-chatpay",
+            "ulike-air-10",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Bi Hân",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "VFX",
+        "roleKey": "vfx"
+      },
+      "positionLabel": "post / VFX",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix",
+        "shared_url"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "SPICE fx",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "SpiceFX",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "asics-dynablast",
+            "oneplus-12-chasing-luna"
+          ],
+          "urls": [
+            "https://www.spicevfx.com/"
+          ]
+        },
+        {
+          "name": "SPICE fx",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "roborock-h7",
+            "comfort-disco"
+          ],
+          "urls": [
+            "https://www.spicevfx.com/"
+          ]
+        },
+        {
+          "name": "SPICEfx",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-x7-fast-powerful"
+          ],
+          "urls": [
+            "https://www.spicevfx.com/"
+          ]
+        },
+        {
+          "name": "Duy Ngo (SPICE fx)",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "msi-business-elevate-everyday-work"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "1st AD",
+        "roleKey": "1st_ad"
+      },
+      "positionLabel": "production / 1st AD",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Nguyễn Tan Vu",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Nguyen Tan Vu",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "samsung-galaxy-s21",
+            "toyota-camry-2022-absolute-charisma",
+            "roborock-s7-maxv-ultra-everything-made-easy",
+            "oppo-reno-7-pro-unlimited-mom-in-portrait"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Tan Vu",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-x7-fast-powerful"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tan Vu",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "vinamilk-probi-em-ruot-nuot-doi"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "VFX",
+        "roleKey": "vfx"
+      },
+      "positionLabel": "post / VFX",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Quoc Duy Ngo",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Quoc Duy Ngo",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "toyota-camry-2022-absolute-charisma",
+            "sensoro-the-story-of-pema",
+            "ecoflow-river-mobile-power-station"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Ngo Quoc Duy",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas",
+            "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "BTS",
+        "roleKey": "bts"
+      },
+      "positionLabel": "production / BTS",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Trương Hoàng Tú",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Hoàng Tú",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "oppo-reno10-pro-5g",
+            "bitget-elite-traders",
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Trương Hoàng Tú",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hoang Tu",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "moprobo-one-go-say-goodbye-to-the-vacuum"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Product Technician",
+        "roleKey": "product_technician"
+      },
+      "positionLabel": "production / Product Technician",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Lê Minh Thuận",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Minh Thuan",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "govee-lit-by-govee",
+            "govee-halloween",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Minh Thuận",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lê Minh Thuận",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Colorist",
+        "roleKey": "colorist"
+      },
+      "positionLabel": "post / Colorist",
+      "reasons": [
+        "diacritic",
+        "nickname_suffix"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Trương Quốc Phương",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Trương Quốc Phương",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "oppo-reno-6-pro-5g",
+            "comfort-disco"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Truong Quoc Phuong",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "roborock-h7"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Erik Truong Quoc Phuong",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "mutosi"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Post House"
+      },
+      "positionLabel": "post / Post House",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Meccanica EFX",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Meccanica EFX",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "herbalife-nutrition",
+            "lays-max"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Meccanica Efx",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "old-spice-shampoo",
+            "techcombank-inspire-why-not"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Brand",
+        "roleKey": "brand"
+      },
+      "positionLabel": "production / Brand",
+      "reasons": [
+        "diacritic",
+        "shared_url"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Oppo",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Oppo",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "oppo-reno-6-pro-5g",
+            "oppo-reno-7-pro-unlimited-mom-in-portrait"
+          ],
+          "urls": [
+            "https://www.oppo.com/en",
+            "https://www.oppo.com/"
+          ]
+        },
+        {
+          "name": "OPPO",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas",
+            "oppo-reno10-pro-5g"
+          ],
+          "urls": [
+            "https://www.oppo.com/",
+            "https://www.oppo.com/en/"
+          ]
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Yen Huynh",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Yen Huynh",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "banyan-tree-theres-more-to-discovery",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Huynh Yen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "roborock-s7-maxv-ultra-everything-made-easy"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Vi Mai",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Vi Mai",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "roborock-qrevo-s-essential-power-ultimate-convenience",
+            "petkit-say-hello-to-purobot-ultra"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Mai Vi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno-7-pro-unlimited-mom-in-portrait"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Focus Puller",
+        "roleKey": "focus_puller"
+      },
+      "positionLabel": "camera / Focus Puller",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Cao Quốc Thắng",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Cao Quốc Thắng",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "herbalife-nutrition",
+            "bambu-lab-x1"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Cao Quoc Thang",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "msi-business-elevate-everyday-work"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Producer",
+        "roleKey": "producer"
+      },
+      "positionLabel": "production / Producer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Kimmy Nguyễn",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Kimmy Nguyễn",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "xgimi-horizon-pro",
+            "realme-x7-fast-powerful"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Kimmy Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno-6-pro-5g"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Producer",
+        "roleKey": "producer"
+      },
+      "positionLabel": "production / Producer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Vi Huỳnh",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Vi Huynh",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Vi Huỳnh",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "petkit-say-hello-to-purobot-ultra"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "stills",
+        "role": "Photographer",
+        "roleKey": "photographer"
+      },
+      "positionLabel": "stills / Photographer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Lam Ơi",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Lam Ơi",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "petkit-say-hello-to-purobot-ultra"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lam Oi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asmoke-essential-grill-like-a-pro-anywhere"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Hair & Makeup",
+        "roleKey": "hair_makeup"
+      },
+      "positionLabel": "art / Hair & Makeup",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Nhi Nguyễn",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Nhi Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Nhi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Steadicam Op",
+        "roleKey": "steadicam_op"
+      },
+      "positionLabel": "camera / Steadicam Op",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Lê Thanh Tùng",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Lê Thanh Tùng",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "herbalife-nutrition"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tung Thanh Le",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "casting",
+        "role": "Talent",
+        "roleKey": "talent"
+      },
+      "positionLabel": "casting / Talent",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Belenkov German",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Belenkov German",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        },
+        {
+          "name": "German Belenkov",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "casting",
+        "role": "Talent",
+        "roleKey": "talent"
+      },
+      "positionLabel": "casting / Talent",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "El Vodin",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "El Vodin",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Vodin El",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asus-education-a-day-in-the-life"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Colorist",
+        "roleKey": "colorist"
+      },
+      "positionLabel": "post / Colorist",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Bigfoot",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Bigfoot",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-c75-everything-proof"
+          ],
+          "urls": []
+        },
+        {
+          "name": "BIGFOOT",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "mammotion-yuka-mini-effortless-lawn-care-redefined"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Agency",
+        "roleKey": "agency"
+      },
+      "positionLabel": "production / Agency",
+      "reasons": [
+        "shared_url"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "T&A Ogilvy",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "T&A Ogilvy",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "taiwan-excellence-2022"
+          ],
+          "urls": [
+            "https://www.ogilvy.com/"
+          ]
+        },
+        {
+          "name": "Ogilvy",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "comfort-disco"
+          ],
+          "urls": [
+            "https://www.ogilvy.com/"
+          ]
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "word_order"
+      ],
+      "confidence": "high",
+      "suggestedCanonical": "Nguyen Viet Anh",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Nguyen Viet Anh",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "toyota-camry-2022-absolute-charisma"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Viet Anh Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "herbalife-nutrition"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Producer",
+        "roleKey": "producer"
+      },
+      "positionLabel": "production / Producer",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Nguyễn Huỳnh Thủy Ngân",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "Nguyễn Huỳnh Thủy Ngân",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "roborock-h7",
+            "zhiyun-smooth-5-film-like-a-pro",
+            "ecoflow-wave-keep-it-cool",
+            "oneplus-fast-smooth",
+            "gendome-home-3000"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Ngan Nguyen",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "toyota-camry-2022-absolute-charisma",
+            "asus-upgrade-to-incredible",
+            "zhiyun-weebill-3s-crane-3s"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thuy Ngan Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oneplus-y-series-tv"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thuỷ Ngân",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "comfort-disco"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Product Technician",
+        "roleKey": "product_technician"
+      },
+      "positionLabel": "production / Product Technician",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Pham Khanh Nguyen",
+      "totalOccurrences": 9,
+      "variants": [
+        {
+          "name": "Pham Khanh Nguyen",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "hidock-chatgpt-powered-audio-dock",
+            "mammotion-yuka",
+            "roborock-qrevo-s-essential-power-ultimate-convenience",
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "realme-c75-everything-proof",
+            "bambu-lab-h2d-your-personal-manufacturing-hub"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Khanh Nguyen",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "msi-business-elevate-everyday-work",
+            "asus-education-a-day-in-the-life"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "3D Animation",
+        "roleKey": "3d_animation"
+      },
+      "positionLabel": "post / 3D Animation",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Benjamin Villataspaisarn (Basugaa Studio)",
+      "totalOccurrences": 8,
+      "variants": [
+        {
+          "name": "Benjamin Villataspaisarn",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "hidock-chatgpt-powered-audio-dock",
+            "oneplus-12-chasing-luna",
+            "jackery-explorer-5000-plus-whole-home-backup-power"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Benjamin Villataspaisarn (Basugaa Studio)",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Basugaa Studio",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "bambu-lab-vortek",
+            "realme-15-series-5g-live-real-in-every-shot"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Sound Design & Mix",
+        "roleKey": "sound_design_mix"
+      },
+      "positionLabel": "post / Sound Design & Mix",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "LexVu Studio",
+      "totalOccurrences": 8,
+      "variants": [
+        {
+          "name": "LexVu Studio",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "aquafina",
+            "hidock-chatgpt-powered-audio-dock",
+            "mammotion-yuka",
+            "realme-the-blessings-of-ramadan",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "bitget-elite-traders",
+            "mammotion-let-luba-2-do-it"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lexvu",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno-7-pro-unlimited-mom-in-portrait"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Colorist",
+        "roleKey": "colorist"
+      },
+      "positionLabel": "post / Colorist",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Matthew Chan",
+      "totalOccurrences": 7,
+      "variants": [
+        {
+          "name": "Matthew Chan",
+          "count": 6,
+          "portfolioCount": 6,
+          "portfolios": [
+            "westin-hotels-resorts-busy-resting",
+            "tpbank-chatpay",
+            "ulike-air-10",
+            "govee-halloween",
+            "bitget-getagent-ft-julian-alvarez",
+            "mammotion-yuka-mini-2"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Matthew",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Post Supervisor",
+        "roleKey": "post_supervisor"
+      },
+      "positionLabel": "post / Post Supervisor",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Nguyễn Huỳnh Thủy Ngân",
+      "totalOccurrences": 7,
+      "variants": [
+        {
+          "name": "Nguyễn Huỳnh Thủy Ngân",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "xgimi-horizon-pro",
+            "roborock-h7",
+            "zhiyun-smooth-5-film-like-a-pro",
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas",
+            "gendome-home-3000"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thủy Ngân",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno-6-pro-5g"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thuy Ngan Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oneplus-y-series-tv"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Storyboards",
+        "roleKey": "storyboards"
+      },
+      "positionLabel": "art / Storyboards",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Lynn Nguyen",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Lynn Nguyen",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "oneplus-pad-3-masterful-by-every-measure",
+            "govee-permanent-outdoor-lights",
+            "mammotion-yuka-mini-2",
+            "mammotion-luba-3-awd",
+            "brinc-guardian-next-generation-of-response"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lynn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "msi-business-elevate-everyday-work"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "casting",
+        "role": "Talent",
+        "roleKey": "talent"
+      },
+      "positionLabel": "casting / Talent",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Lisa Rudolph",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Lisa Rudolph",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "indwell-refrigerator-air-conditioner",
+            "bambu-lab-x1",
+            "realme-c75-everything-proof",
+            "govee-lit-by-govee"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lisa",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "bitget-trade-smarter",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Hang Ngo",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Hang Ngo",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "msi-business-elevate-everyday-work",
+            "asus-education-a-day-in-the-life",
+            "tpbank-chatpay",
+            "oneplus-pad-3-masterful-by-every-measure",
+            "govee-lit-by-govee"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hang",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-15-series-5g-live-real-in-every-shot"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Sound Design & Mix",
+        "roleKey": "sound_design_mix"
+      },
+      "positionLabel": "post / Sound Design & Mix",
+      "reasons": [
+        "nickname_prefix",
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Tran Dang Khoa / Pixelsgarden Post",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Tran Dang Khoa",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "roborock-h7",
+            "snapmaker-make-something-wonderful",
+            "oppo-find-x5-pro-master-workshop-with-ben-thomas"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Pixelsgarden Post",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "indwell-refrigerator-air-conditioner"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tran Dang Khoa / Pixelsgarden Post",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "gendome-home-3000"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Line Producer",
+        "roleKey": "line_producer"
+      },
+      "positionLabel": "production / Line Producer",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Hang",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Hang",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "govee-permanent-outdoor-lights",
+            "mammotion-luba-3-awd",
+            "brinc-guardian-next-generation-of-response",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hang Ngo",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "bambu-lab-vortek"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Props Master",
+        "roleKey": "props_master"
+      },
+      "positionLabel": "art / Props Master",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Do Hai Team",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Do Hai Team",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "mammotion-yuka"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Do Hai",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "old-spice-shampoo",
+            "asus-upgrade-to-incredible"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "DIT",
+        "roleKey": "dit"
+      },
+      "positionLabel": "camera / DIT",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Nguyen Hi Koi",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Nguyen Hi Koi",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "xgimi-horizon-pro",
+            "toyota-camry-2022-absolute-charisma",
+            "taiwan-excellence-2022"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hi Koi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "roborock-s7-maxv-ultra-everything-made-easy"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "VFX",
+        "roleKey": "vfx"
+      },
+      "positionLabel": "post / VFX",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Love Tech & Magic Studio",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Love Tech & Magic Studio",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "bitget-elite-traders",
+            "asmoke-essential-grill-like-a-pro-anywhere"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Love Tech & Magic",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "roborock-qrevo-s-essential-power-ultimate-convenience",
+            "bambu-lab-h2d-your-personal-manufacturing-hub"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Doan Quang Trung",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Quang Trung",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "ulike-air-10",
+            "govee-permanent-outdoor-lights",
+            "realme-c85-your-ultimate-outdoor-sidekick"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Doan Quang Trung",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "ge",
+        "role": "Gaffer",
+        "roleKey": "gaffer"
+      },
+      "positionLabel": "ge / Gaffer",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Chú Hải PS",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Chú Hải",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Chú Hải PS",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "bitget-elite-traders"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Storyboards",
+        "roleKey": "storyboards"
+      },
+      "positionLabel": "art / Storyboards",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Phạm Ngọc Lan",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Phạm Ngọc Lan",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "comfort-disco"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Ngoc Lan",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asus-upgrade-to-incredible"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Phạm Gia Nghi",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Gia Nghi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "indwell-refrigerator-air-conditioner"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Phạm Gia Nghi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "casting",
+        "role": "Casting Manager",
+        "roleKey": "casting_manager"
+      },
+      "positionLabel": "casting / Casting Manager",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Babyface Casting Agency",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Babyface Casting",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "herbalife-nutrition"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Babyface Casting Agency",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "old-spice-shampoo"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "casting",
+        "role": "Stunt Coordinator",
+        "roleKey": "stunt_coordinator"
+      },
+      "positionLabel": "casting / Stunt Coordinator",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Quoc Thinh Stunt Team",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Quoc Thinh Stunt Team",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "taiwan-excellence-2022"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Quoc Thinh",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "old-spice-shampoo"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Sound Design & Mix",
+        "roleKey": "sound_design_mix"
+      },
+      "positionLabel": "post / Sound Design & Mix",
+      "reasons": [
+        "nickname_prefix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Pitch Audio+Magic",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Pitch Audio",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Pitch Audio+Magic",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Nguyễn Trọng Phúc",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Trọng Phúc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "comfort-disco"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Trọng Phúc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "gendome-home-3000"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "stills",
+        "role": "Photographer",
+        "roleKey": "photographer"
+      },
+      "positionLabel": "stills / Photographer",
+      "reasons": [
+        "nickname_suffix"
+      ],
+      "confidence": "medium",
+      "suggestedCanonical": "Tùng Lâm",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Le Tung Lam",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "bambu-lab-h2d-your-personal-manufacturing-hub"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tùng Lâm",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "DIT",
+        "roleKey": "dit"
+      },
+      "positionLabel": "camera / DIT",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Quách Hải Thọ",
+      "totalOccurrences": 30,
+      "variants": [
+        {
+          "name": "Quách Hải Thọ",
+          "count": 15,
+          "portfolioCount": 15,
+          "portfolios": [
+            "gendome-home-3000",
+            "coca-cola-ocean-cleanup",
+            "hidock-chatgpt-powered-audio-dock",
+            "oppo-reno10-pro-5g",
+            "techcombank-inspire-why-not",
+            "bitget-elite-traders",
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "realme-13-5g-unleash-your-gaming-potential",
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "vinamilk-probi-em-ruot-nuot-doi",
+            "asus-education-a-day-in-the-life",
+            "govee-halloween",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Quach Hai Tho",
+          "count": 15,
+          "portfolioCount": 15,
+          "portfolios": [
+            "asus-upgrade-to-incredible",
+            "zhiyun-weebill-3s-crane-3s",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "msi-business-elevate-everyday-work",
+            "tpbank-chatpay",
+            "ulike-air-10",
+            "govee-lit-by-govee",
+            "bambu-lab-vortek",
+            "govee-permanent-outdoor-lights",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "brinc-guardian-next-generation-of-response",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Catering"
+      },
+      "positionLabel": "production / Catering",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Trường Võ",
+      "totalOccurrences": 19,
+      "variants": [
+        {
+          "name": "Truong Vo",
+          "count": 16,
+          "portfolioCount": 16,
+          "portfolios": [
+            "mutosi",
+            "asus-upgrade-to-incredible",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "bitget-elite-traders",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "realme-13-5g-unleash-your-gaming-potential",
+            "msi-120hz-perfectedge-monitor",
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "realme-c75-everything-proof",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "msi-business-elevate-everyday-work",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Trường Võ",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "comfort-disco",
+            "gendome-home-3000",
+            "roborock-qrevo-s-essential-power-ultimate-convenience"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Storyboards",
+        "roleKey": "storyboards"
+      },
+      "positionLabel": "art / Storyboards",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Tự Nguyễn",
+      "totalOccurrences": 18,
+      "variants": [
+        {
+          "name": "Tự Nguyễn",
+          "count": 10,
+          "portfolioCount": 10,
+          "portfolios": [
+            "ecoflow-introducing-river-mini-power-at-hand",
+            "indwell-refrigerator-air-conditioner",
+            "techcombank-mobile",
+            "gendome-home-3000",
+            "petkit-say-hello-to-purobot-ultra",
+            "realme-13-5g-unleash-your-gaming-potential",
+            "bitget-trade-smarter",
+            "msi-120hz-perfectedge-monitor",
+            "bambu-lab-vortek",
+            "realme-15-series-5g-live-real-in-every-shot"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tu Nguyen",
+          "count": 8,
+          "portfolioCount": 8,
+          "portfolios": [
+            "toyota-camry-2022-absolute-charisma",
+            "oneplus-y-series-tv",
+            "taiwan-excellence-2022",
+            "mammotion-yuka",
+            "realme-c75-everything-proof",
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "bitget-getagent-ft-julian-alvarez",
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Hair & Makeup",
+        "roleKey": "hair_makeup"
+      },
+      "positionLabel": "art / Hair & Makeup",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Nguyễn Nhật Linh",
+      "totalOccurrences": 13,
+      "variants": [
+        {
+          "name": "Nguyễn Nhật Linh",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "xgimi-horizon-pro",
+            "herbalife-nutrition",
+            "hoa-phat",
+            "comfort-disco",
+            "gendome-home-3000",
+            "zhiyun-weebill-3s-crane-3s",
+            "techcombank-inspire-why-not"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyen Nhat Linh",
+          "count": 6,
+          "portfolioCount": 6,
+          "portfolios": [
+            "toyota-camry-2022-absolute-charisma",
+            "mammotion-luba-automated-robot-lawn-mower",
+            "indwell-refrigerator-air-conditioner",
+            "bambu-lab-x1",
+            "insta360-link-the-ai-powered-4k-webcam",
+            "old-spice-shampoo"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Colorist",
+        "roleKey": "colorist"
+      },
+      "positionLabel": "post / Colorist",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Chloé Tavel",
+      "totalOccurrences": 13,
+      "variants": [
+        {
+          "name": "Chloé Tavel",
+          "count": 11,
+          "portfolioCount": 11,
+          "portfolios": [
+            "aquafina",
+            "techcombank-inspire-why-not",
+            "realme-the-blessings-of-ramadan",
+            "bitget-elite-traders",
+            "brinc-a-new-era-of-response",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "roborock-qrevo-s-essential-power-ultimate-convenience",
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "petkit-say-hello-to-purobot-ultra",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience",
+            "govee-lit-by-govee"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Chloe Tavel",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-yuka",
+            "asus-education-a-day-in-the-life"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Props Master",
+        "roleKey": "props_master"
+      },
+      "positionLabel": "art / Props Master",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Lê Lộc",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "Le Loc",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "mutosi",
+            "govee-lit-by-govee",
+            "bambu-lab-vortek",
+            "govee-halloween",
+            "govee-permanent-outdoor-lights",
+            "brinc-guardian-next-generation-of-response",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Le Loc Team",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "bambu-lab-h2d-your-personal-manufacturing-hub",
+            "realme-c85-your-ultimate-outdoor-sidekick"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lê Lộc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "DOP",
+        "roleKey": "dop"
+      },
+      "positionLabel": "camera / DOP",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Tùng Bùi",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "Tung Bui",
+          "count": 9,
+          "portfolioCount": 9,
+          "portfolios": [
+            "mutosi",
+            "old-spice-shampoo",
+            "asus-upgrade-to-incredible",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "mexc-7th-anniversary",
+            "govee-lit-by-govee",
+            "govee-permanent-outdoor-lights",
+            "brinc-guardian-next-generation-of-response"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tùng Bùi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Post Supervisor",
+        "roleKey": "post_supervisor"
+      },
+      "positionLabel": "post / Post Supervisor",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Hà Nguyễn",
+      "totalOccurrences": 10,
+      "variants": [
+        {
+          "name": "Ha Nguyen",
+          "count": 9,
+          "portfolioCount": 9,
+          "portfolios": [
+            "realme-the-blessings-of-ramadan",
+            "brinc-a-new-era-of-response",
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "bitget-trade-smarter",
+            "msi-120hz-perfectedge-monitor",
+            "jackery-explorer-5000-plus-whole-home-backup-power",
+            "mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-lawn",
+            "tpbank-chatpay",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hà Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "roborock-qrevo-s-essential-power-ultimate-convenience"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Props Master",
+        "roleKey": "props_master"
+      },
+      "positionLabel": "art / Props Master",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Lê Minh Sang",
+      "totalOccurrences": 8,
+      "variants": [
+        {
+          "name": "Le Minh Sang",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "samsung-galaxy-s21",
+            "indwell-refrigerator-air-conditioner",
+            "insta360-link-the-ai-powered-4k-webcam",
+            "tpbank-chatpay"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lê Minh Sang",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "bambu-lab-x1",
+            "hoa-phat",
+            "hidock-chatgpt-powered-audio-dock",
+            "oppo-reno10-pro-5g"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Hà Nguyễn",
+      "totalOccurrences": 8,
+      "variants": [
+        {
+          "name": "Ha Nguyen",
+          "count": 7,
+          "portfolioCount": 7,
+          "portfolios": [
+            "zhiyun-weebill-3s-crane-3s",
+            "aquafina",
+            "hidock-chatgpt-powered-audio-dock",
+            "techcombank-inspire-why-not",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "bitget-elite-traders"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hà Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oneplus-12-chasing-luna"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Producer",
+        "roleKey": "producer"
+      },
+      "positionLabel": "production / Producer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Việt Anh Nguyễn",
+      "totalOccurrences": 8,
+      "variants": [
+        {
+          "name": "Việt Anh Nguyễn",
+          "count": 5,
+          "portfolioCount": 5,
+          "portfolios": [
+            "zhiyun-smooth-q3",
+            "samsung-x-discovery",
+            "realme-x7-fast-powerful",
+            "snapmaker-make-something-wonderful",
+            "techcombank-mobile"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Viet Anh Nguyen",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "hoa-phat"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Việt Anh Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "indwell-refrigerator-air-conditioner"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Line Producer",
+        "roleKey": "line_producer"
+      },
+      "positionLabel": "production / Line Producer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Việt Anh Nguyễn",
+      "totalOccurrences": 7,
+      "variants": [
+        {
+          "name": "Việt Anh Nguyễn",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "xgimi-horizon-pro",
+            "samsung-vietnam-galaxy-s21",
+            "bambu-lab-x1",
+            "roborock-qrevo-s-essential-power-ultimate-convenience"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Viet Anh Nguyen",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "roborock-s7-maxv-ultra-everything-made-easy",
+            "taiwan-excellence-2022"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Việt Anh Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "techcombank-inspire-why-not"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Quỳnh Như Nguyễn Pham",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Quynh Nhu",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "mutosi",
+            "old-spice-shampoo",
+            "zhiyun-weebill-3s-crane-3s",
+            "lays-max"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Quỳnh Như Nguyễn Pham",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "gendome-home-3000"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Quynh Nhu Nguyen Pham",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "aquafina"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Quyên Nguyễn",
+      "totalOccurrences": 6,
+      "variants": [
+        {
+          "name": "Quyen Nguyen",
+          "count": 5,
+          "portfolioCount": 4,
+          "portfolios": [
+            "govee-permanent-outdoor-lights",
+            "bitget-getagent-ft-julian-alvarez",
+            "mammotion-yuka-mini-2",
+            "mammotion-luba-3-awd"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Quyên Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Triết Võ",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Triet Vo",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "mutosi",
+            "msi-120hz-perfectedge-monitor",
+            "jackery-explorer-5000-plus-whole-home-backup-power"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Triết Võ",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "moprobo-one-go-say-goodbye-to-the-vacuum",
+            "realme-13-5g-unleash-your-gaming-potential"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Wardrobe",
+        "roleKey": "wardrobe"
+      },
+      "positionLabel": "art / Wardrobe",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Thái Hải",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Thai Hai",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "hidock-chatgpt-powered-audio-dock",
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "bitget-elite-traders"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Thái Hải",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno10-pro-5g"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "DIT",
+        "roleKey": "dit"
+      },
+      "positionLabel": "camera / DIT",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Phạm Quốc Hiệu",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Pham Quoc Hieu",
+          "count": 4,
+          "portfolioCount": 4,
+          "portfolios": [
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower",
+            "realme-c75-everything-proof",
+            "bambu-lab-vortek"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Phạm Quốc Hiệu",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "bitget-elite-traders"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "PA",
+        "roleKey": "pa"
+      },
+      "positionLabel": "production / PA",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Yến Vi",
+      "totalOccurrences": 5,
+      "variants": [
+        {
+          "name": "Yen Vi",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "zhiyun-weebill-3s-crane-3s",
+            "lays-max",
+            "mammotion-yuka"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Yến Vi",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "hidock-chatgpt-powered-audio-dock",
+            "techcombank-inspire-why-not"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Art Assistant",
+        "roleKey": "art_assistant"
+      },
+      "positionLabel": "art / Art Assistant",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Huỳnh Mai Cát Linh",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Huỳnh Mai Cát Linh",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "gendome-home-3000",
+            "moprobo-one-go-say-goodbye-to-the-vacuum"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Huynh Mai Cat Linh",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-yuka",
+            "mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Art Director",
+        "roleKey": "art_director"
+      },
+      "positionLabel": "art / Art Director",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Nguyễn Thụy Thanh Trúc",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Nguyễn Thụy Thanh Trúc",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "lays-max",
+            "petkit-say-hello-to-purobot-ultra"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyen Thuy Thanh Truc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "taiwan-excellence-2022"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Thuỵ Thanh Trúc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "herbalife-nutrition"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Hair & Makeup",
+        "roleKey": "hair_makeup"
+      },
+      "positionLabel": "art / Hair & Makeup",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Phạm Hà",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Pham Ha",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "indwell-refrigerator-air-conditioner",
+            "bambu-lab-x1"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Phạm Hà",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "xgimi-horizon-pro"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Camera Op",
+        "roleKey": "camera_op"
+      },
+      "positionLabel": "camera / Camera Op",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Nguyễn Lê Pha",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Nguyen Le Pha",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "asmoke-essential-grill-like-a-pro-anywhere",
+            "realme-c85-your-ultimate-outdoor-sidekick",
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Lê Pha",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Post Supervisor",
+        "roleKey": "post_supervisor"
+      },
+      "positionLabel": "post / Post Supervisor",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Việt Anh Nguyễn",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Việt Anh Nguyễn",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "ecoflow-introducing-river-mini-power-at-hand",
+            "ecoflow-delta-series-live-without-limits"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Việt Anh Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Viet Anh Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "banyan-tree-theres-more-to-discovery"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Product Technician",
+        "roleKey": "product_technician"
+      },
+      "positionLabel": "production / Product Technician",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Mạnh Khang",
+      "totalOccurrences": 4,
+      "variants": [
+        {
+          "name": "Manh Khang",
+          "count": 3,
+          "portfolioCount": 3,
+          "portfolios": [
+            "govee-lit-by-govee",
+            "govee-halloween",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Mạnh Khang",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Focus Puller",
+        "roleKey": "focus_puller"
+      },
+      "positionLabel": "camera / Focus Puller",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Tạ Toàn Thắng",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Ta Toan Thang",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "govee-lit-by-govee",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tạ Toàn Thắng",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "ge",
+        "role": "Gaffer",
+        "roleKey": "gaffer"
+      },
+      "positionLabel": "ge / Gaffer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Nguyễn Quốc Phong",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Nguyễn Quốc Phong",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "coca-cola-ocean-cleanup",
+            "oppo-reno10-pro-5g"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyen Quoc Phong",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "VFX",
+        "roleKey": "vfx"
+      },
+      "positionLabel": "post / VFX",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Hằng Nguyễn",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Hang Nguyen",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower",
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hằng Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "comfort-disco"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "BTS",
+        "roleKey": "bts"
+      },
+      "positionLabel": "production / BTS",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Trần Hoàng Quân",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Trần Hoàng Quân",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "oppo-reno10-pro-5g",
+            "bitget-elite-traders"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tran Hoang Quan",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "moprobo-one-go-say-goodbye-to-the-vacuum"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Line Producer",
+        "roleKey": "line_producer"
+      },
+      "positionLabel": "production / Line Producer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Nguyễn Quỳnh Như",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Nguyen Quynh Nhu",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "banyan-tree-theres-more-to-discovery",
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Nguyễn Quỳnh Như",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "ulike-air-10"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Product Technician",
+        "roleKey": "product_technician"
+      },
+      "positionLabel": "production / Product Technician",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Văn Sĩ",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Van Si",
+          "count": 2,
+          "portfolioCount": 2,
+          "portfolios": [
+            "govee-lit-by-govee",
+            "govee-permanent-outdoor-lights"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Văn Sĩ",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-for-every-mood-of-home"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "stills",
+        "role": "Photographer",
+        "roleKey": "photographer"
+      },
+      "positionLabel": "stills / Photographer",
+      "reasons": [
+        "diacritic",
+        "nickname_prefix"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Hoài Lộc (ccreal studio)",
+      "totalOccurrences": 3,
+      "variants": [
+        {
+          "name": "Hoài Lộc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "gendome-home-3000"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hoai Loc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asus-upgrade-to-incredible"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Hoài Lộc (ccreal studio)",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "moprobo-one-go-say-goodbye-to-the-vacuum"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "art",
+        "role": "Art Director",
+        "roleKey": "art_director"
+      },
+      "positionLabel": "art / Art Director",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Lê Trường",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Le Truong",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "oppo-reno-7-pro-unlimited-mom-in-portrait"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Lê Trường",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "roborock-qrevo-s-essential-power-ultimate-convenience"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Camera Op",
+        "roleKey": "camera_op"
+      },
+      "positionLabel": "camera / Camera Op",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Trần Nam",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Trần Nam",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "bitget-elite-traders"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tran Nam",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "valerion-visionmaster-max-hollywood-grade-home-cinema-experience"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Focus Puller",
+        "roleKey": "focus_puller"
+      },
+      "positionLabel": "camera / Focus Puller",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Gắng Nguyễn",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Gắng Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "gendome-home-3000"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Gang Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asus-upgrade-to-incredible"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "camera",
+        "role": "Steadicam Op",
+        "roleKey": "steadicam_op"
+      },
+      "positionLabel": "camera / Steadicam Op",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Lê Bảo Hân",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Lê Bảo Hân",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "techcombank-inspire-why-not"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Le Bao Han",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-c85-your-ultimate-outdoor-sidekick"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "post",
+        "role": "Motion Graphic Artist"
+      },
+      "positionLabel": "post / Motion Graphic Artist",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Sơn Blue",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Sơn Blue",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "realme-the-blessings-of-ramadan"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Son Blue",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-lit-by-govee"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Catering"
+      },
+      "positionLabel": "production / Catering",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Võ Minh Trường",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Võ Minh Trường",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "hoa-phat"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Vo Minh Truong",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "banyan-tree-theres-more-to-discovery"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Chaperone",
+        "roleKey": "chaperone"
+      },
+      "positionLabel": "production / Chaperone",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Yến Vi",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Yen Vi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "govee-halloween"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Yến Vi",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "parksible-the-drive-never-ends"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Production Manager",
+        "roleKey": "production_manager"
+      },
+      "positionLabel": "production / Production Manager",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Việt Anh Nguyễn",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Việt Anh Nguyễn",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "samsung-galaxy-s21"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Viet Anh Nguyen",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "asmoke-essential-grill-like-a-pro-anywhere"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "production",
+        "role": "Production Manager",
+        "roleKey": "production_manager"
+      },
+      "positionLabel": "production / Production Manager",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Tuyên Ngọc",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Tuyen Ngoc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "mammotion-luba-automated-robot-lawn-mower"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Tuyên Ngọc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "indwell-refrigerator-air-conditioner"
+          ],
+          "urls": []
+        }
+      ]
+    },
+    {
+      "position": {
+        "department": "stills",
+        "role": "Photographer",
+        "roleKey": "photographer"
+      },
+      "positionLabel": "stills / Photographer",
+      "reasons": [
+        "diacritic"
+      ],
+      "confidence": "review",
+      "note": "Same when diacritics removed — first names may differ (e.g. Tú vs Tự). Confirm before merging.",
+      "suggestedCanonical": "Võ Văn Thành Lộc",
+      "totalOccurrences": 2,
+      "variants": [
+        {
+          "name": "Võ Văn Thành Lộc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "insta360-link-the-ai-powered-4k-webcam"
+          ],
+          "urls": []
+        },
+        {
+          "name": "Vo Van Thanh Loc",
+          "count": 1,
+          "portfolioCount": 1,
+          "portfolios": [
+            "zhiyun-weebill-3s-crane-3s"
+          ],
+          "urls": []
+        }
+      ]
+    }
+  ]
+}

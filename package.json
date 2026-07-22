@@ -16,7 +16,12 @@
     "migrate:audit:cms-zh": "tsx scripts/migration/audit/cms-zh-qc.ts",
     "migrate:patch:portfolio-zh": "tsx scripts/migration/patch/portfolio-zh-from-trp.ts",
     "migrate:patch:taxonomy-zh": "tsx scripts/migration/patch/taxonomy-zh.ts",
-    "migrate:patch:translations": "tsx scripts/migration/patch/translations-from-trp.ts"
+    "migrate:patch:translations": "tsx scripts/migration/patch/translations-from-trp.ts",
+    "migrate:patch:crew-credits": "tsx scripts/migration/patch/migrate-crew-credits.ts",
+    "migrate:patch:restore-credit-links": "tsx scripts/migration/patch/restore-crew-credit-links-from-wp.ts",
+    "migrate:patch:crew-name-merges": "tsx scripts/migration/patch/apply-crew-name-merges.ts",
+    "migrate:audit:wp-credit-links": "tsx scripts/migration/audit/wp-credit-links.ts",
+    "migrate:audit:crew-name-variants": "tsx scripts/migration/audit/crew-name-variants.ts"
   },
   "dependencies": {
     "@portabletext/block-tools": "^5.1.7",

@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@crew-credits": ["./shared/crew-credits"],
+      "@crew-credits/*": ["./shared/crew-credits/*"]
     }
   },
   "include": [

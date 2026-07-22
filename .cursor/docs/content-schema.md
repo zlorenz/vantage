@@ -236,7 +236,8 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
   crewMembers: array<ref>          // ref → crewMember; synced from director/dop/art-director credits
   platforms: array<ref>           // ref → platform
   isHidden: boolean                // see §4.8 — migration: true for WP ID 3187 only
-  credits: {
+  crewCredits?: array<crewCredit>  // preferred structured credits (CSV import + manual)
+  credits: {                       // legacy dual-read fallback until backfill
     production: creditsDepartment
     camera: creditsDepartment
     ge: creditsDepartment
@@ -249,7 +250,27 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 }
 ```
 
-**Credits department shape** (repeated per department):
+**Preferred structured credit shape** (`crewCredits`):
+
+```typescript
+{
+  department: 'production' | 'camera' | 'ge' | 'art' | 'casting' | 'stills' | 'post'
+  roleKey?: string                 // stable catalog key for predefined roles
+  role: string                     // display label
+  isCustomRole?: boolean
+  people: array<{
+    name: string
+    url?: url                      // http/https only
+  }>
+}
+```
+
+Editors import CSV credits via the custom Crew Credits input in Studio. Existing
+documents keep legacy `credits` until `scripts/migration/patch/migrate-crew-credits.ts`
+is reviewed and run with `--apply`. The frontend dual-reads: non-empty
+`crewCredits` wins; otherwise legacy department fields render as before.
+
+**Legacy credits department shape** (repeated per department):
 
 ```typescript
 {
@@ -279,12 +300,15 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 
 **Crew taxonomy sync (from credits → Sanity refs):**
 
-| Credit field | Sanity document type |
+| Credit field / roleKey | Sanity document type |
 |---|---|
-| `prod_brand` | `client` |
-| `prod_director` | `crewMember` (`role: director`) |
-| `cam_dop` | `crewMember` (`role: dop`) |
-| `art_art_director` | `crewMember` (`role: art-director`) |
+| `prod_brand` / `brand` | `client` |
+| `prod_director` / `director` | `crewMember` (`role: director`) |
+| `cam_dop` / `dop` | `crewMember` (`role: dop`) |
+| `art_art_director` / `art_director` | `crewMember` (`role: art-director`) |
+
+The canonical role catalog lives in `shared/crew-credits/` and is shared by Studio,
+CSV import, frontend rendering, and migration.
 
 ### 4.3 `blogPost`
 

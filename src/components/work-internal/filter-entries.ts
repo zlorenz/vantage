@@ -2,6 +2,7 @@
  * Client-side filter pipeline for the internal work library.
  */
 
+import { getStructuredRoleNames } from '@/lib/credits-config';
 import type { CrewMemberTerm, InternalLibraryEntry } from '@/types/sanity';
 import { plainText } from './text';
 import type { LibraryFilters } from './types';
@@ -31,10 +32,25 @@ function creditNameParts(raw: string): string[] {
     .filter(Boolean);
 }
 
-function creditIncludesName(raw: string | undefined, name: string): boolean {
-  if (typeof raw !== 'string' || !raw.trim() || !name.trim()) return false;
-  const needle = name.trim().toLowerCase();
-  return creditNameParts(raw).some((part) => part.toLowerCase() === needle);
+function getProductionDesignerNames(entry: InternalLibraryEntry): string[] {
+  const structured = getStructuredRoleNames(
+    entry.crewCredits,
+    'production_designer',
+  );
+  if (structured.length) return structured;
+
+  const raw = entry.credits?.art?.art_production_designer;
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  return creditNameParts(raw);
+}
+
+function getEditorNames(entry: InternalLibraryEntry): string[] {
+  const structured = getStructuredRoleNames(entry.crewCredits, 'editor');
+  if (structured.length) return structured;
+
+  const raw = entry.credits?.post?.post_editor;
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  return creditNameParts(raw);
 }
 
 /**
@@ -51,8 +67,10 @@ function matchesArtDirectorFilter(
   const name = nameBySlug?.get(slug);
   if (!name) return false;
 
-  const pd = entry.credits?.art?.art_production_designer;
-  return creditIncludesName(typeof pd === 'string' ? pd : undefined, name);
+  const needle = name.trim().toLowerCase();
+  return getProductionDesignerNames(entry).some(
+    (part) => part.toLowerCase() === needle,
+  );
 }
 
 function toFilterSlug(name: string): string {
@@ -79,10 +97,7 @@ export function buildArtDirectorFilterOptions(
   }
 
   for (const entry of entries) {
-    const raw = entry.credits?.art?.art_production_designer;
-    if (typeof raw !== 'string' || !raw.trim()) continue;
-
-    for (const name of creditNameParts(raw)) {
+    for (const name of getProductionDesignerNames(entry)) {
       const key = name.toLowerCase();
       if (byNorm.has(key)) continue;
       const slug = toFilterSlug(name);
@@ -127,11 +142,10 @@ export function getPrimaryClientName(entry: InternalLibraryEntry): string {
   return entry.clients?.[0]?.name ?? '—';
 }
 
-/** Editor(s) from post credits (`post_editor`), not the crewMember taxonomy. */
+/** Editor(s) from post credits, not the crewMember taxonomy. */
 export function getEditorName(entry: InternalLibraryEntry): string {
-  const raw = entry.credits?.post?.post_editor;
-  if (typeof raw !== 'string' || !raw.trim()) return '—';
-  return plainText(raw) || '—';
+  const names = getEditorNames(entry);
+  return names.length ? names.join(', ') : '—';
 }
 
 /**
@@ -139,10 +153,8 @@ export function getEditorName(entry: InternalLibraryEntry): string {
  * title), otherwise Art Director from the crewMember taxonomy.
  */
 export function getArtName(entry: InternalLibraryEntry): string {
-  const pd = entry.credits?.art?.art_production_designer;
-  if (typeof pd === 'string' && pd.trim()) {
-    return plainText(pd) || '—';
-  }
+  const pdNames = getProductionDesignerNames(entry);
+  if (pdNames.length) return pdNames.join(', ');
   return getCrewName(entry, 'art-director');
 }
 

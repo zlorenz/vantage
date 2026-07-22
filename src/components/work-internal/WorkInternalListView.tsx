@@ -6,20 +6,20 @@
 
 import Image from 'next/image';
 import { urlForImage } from '@/lib/sanity';
+import type { Locale } from '@/i18n/routing';
 import type { InternalLibraryEntry } from '@/types/sanity';
+import { openPortfolioEntry } from './entry-url';
 import { getArtName, getCrewName, getEditorName } from './filter-entries';
 import { formatPublishDate, getDisplayTitle } from './text';
 
 interface WorkInternalListViewProps {
   entries: InternalLibraryEntry[];
-  selectedId: string | null;
-  onSelect: (id: string) => void;
+  locale: Locale;
 }
 
 export function WorkInternalListView({
   entries,
-  selectedId,
-  onSelect,
+  locale,
 }: WorkInternalListViewProps) {
   return (
     <div className="vp-internal-list" role="table" aria-label="Portfolio library">
@@ -39,7 +39,6 @@ export function WorkInternalListView({
           .height(90)
           .fit('crop')
           .url();
-        const selected = entry._id === selectedId;
         const title = getDisplayTitle(entry);
 
         return (
@@ -47,12 +46,8 @@ export function WorkInternalListView({
             key={entry._id}
             type="button"
             role="row"
-            className={
-              selected
-                ? 'vp-internal-list__row is-selected'
-                : 'vp-internal-list__row'
-            }
-            onClick={() => onSelect(entry._id)}
+            className="vp-internal-list__row"
+            onClick={() => openPortfolioEntry(entry, locale)}
           >
             <span className="vp-internal-list__thumb-col" role="cell">
               <span className="vp-internal-list__thumb">

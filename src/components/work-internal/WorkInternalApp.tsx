@@ -1,12 +1,12 @@
 /**
  * WorkInternalApp — client shell for the internal work library.
  *
- * URL-synced search/filters/sort/view + selection for the detail pane.
+ * URL-synced search/filters/sort/view.
  */
 
 'use client';
 
-import { useCallback, useEffect, useMemo, useTransition } from 'react';
+import { useCallback, useMemo, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
@@ -33,12 +33,10 @@ import {
   buildLibraryQuery,
   hasActiveFilters,
   readFilters,
-  readSelectedId,
   readSort,
   readView,
 } from './url-state';
 import { WorkInternalCardView } from './WorkInternalCardView';
-import { WorkInternalDetailPane } from './WorkInternalDetailPane';
 import { WorkInternalListView } from './WorkInternalListView';
 import { WorkInternalToolbar } from './WorkInternalToolbar';
 
@@ -75,17 +73,12 @@ export function WorkInternalApp({
   );
   const sort = useMemo(() => readSort(searchParams), [searchParams]);
   const view = useMemo(() => readView(searchParams), [searchParams]);
-  const selectedId = useMemo(
-    () => readSelectedId(searchParams),
-    [searchParams],
-  );
 
   const replaceQuery = useCallback(
     (next: {
       filters: LibraryFilters;
       sort: LibrarySort;
       view: LibraryViewMode;
-      selectedId: string | null;
     }) => {
       const query = buildLibraryQuery(next);
       startTransition(() => {
@@ -126,28 +119,16 @@ export function WorkInternalApp({
     ).length;
   }, [entries, filters.visibility]);
 
-  const selectedEntry = useMemo(() => {
-    if (!selectedId) return null;
-    return entries.find((e) => e._id === selectedId) ?? null;
-  }, [entries, selectedId]);
-
-  // Drop stale ?id= if the entry is no longer in the dataset
-  useEffect(() => {
-    if (selectedId && !selectedEntry) {
-      replaceQuery({ filters, sort, view, selectedId: null });
-    }
-  }, [selectedId, selectedEntry, filters, sort, view, replaceQuery]);
-
   function setFilters(next: LibraryFilters) {
-    replaceQuery({ filters: next, sort, view, selectedId });
+    replaceQuery({ filters: next, sort, view });
   }
 
   function setSort(next: LibrarySort) {
-    replaceQuery({ filters, sort: next, view, selectedId });
+    replaceQuery({ filters, sort: next, view });
   }
 
   function setView(next: LibraryViewMode) {
-    replaceQuery({ filters, sort, view: next, selectedId });
+    replaceQuery({ filters, sort, view: next });
   }
 
   function clearFilters() {
@@ -155,33 +136,11 @@ export function WorkInternalApp({
       filters: DEFAULT_FILTERS,
       sort: DEFAULT_SORT,
       view,
-      selectedId,
     });
   }
-
-  function selectEntry(id: string) {
-    replaceQuery({
-      filters,
-      sort,
-      view,
-      selectedId: id === selectedId ? null : id,
-    });
-  }
-
-  function closePane() {
-    replaceQuery({ filters, sort, view, selectedId: null });
-  }
-
-  const paneOpen = Boolean(selectedEntry);
 
   return (
-    <div
-      className={
-        paneOpen
-          ? 'vp-internal-app vp-internal-app--pane-open'
-          : 'vp-internal-app'
-      }
-    >
+    <div className="vp-internal-app">
       <header className="vp-internal-app__header">
         <h1 className="vp-internal-app__title">Work Library</h1>
       </header>
@@ -226,35 +185,11 @@ export function WorkInternalApp({
               ) : null}
             </p>
           ) : view === 'list' ? (
-            <WorkInternalListView
-              entries={filteredSorted}
-              selectedId={selectedId}
-              onSelect={selectEntry}
-            />
+            <WorkInternalListView entries={filteredSorted} locale={locale} />
           ) : (
-            <WorkInternalCardView
-              entries={filteredSorted}
-              selectedId={selectedId}
-              onSelect={selectEntry}
-            />
+            <WorkInternalCardView entries={filteredSorted} locale={locale} />
           )}
         </div>
-
-        {selectedEntry ? (
-          <>
-            <button
-              type="button"
-              className="vp-internal-pane-backdrop"
-              aria-label="Close details"
-              onClick={closePane}
-            />
-            <WorkInternalDetailPane
-              entry={selectedEntry}
-              locale={locale}
-              onClose={closePane}
-            />
-          </>
-        ) : null}
       </div>
     </div>
   );

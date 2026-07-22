@@ -67,6 +67,7 @@ export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
               height={90}
               priority
               className="block h-[46px] w-auto sm:h-[51px] md:h-[90px]"
+              style={{ width: 'auto' }}
             />
           </Link>
 

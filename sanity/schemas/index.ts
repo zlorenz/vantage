@@ -28,6 +28,8 @@ import { artCredits } from './objects/artCredits';
 import { castingCredits } from './objects/castingCredits';
 import { stillsCredits } from './objects/stillsCredits';
 import { postCredits } from './objects/postCredits';
+import { crewPerson } from './objects/crewPerson';
+import { crewCredit } from './objects/crewCredit';
 import { additionalVideo } from './objects/additionalVideo';
 import { heroSlide } from './objects/heroSlide';
 import { founder } from './objects/founder';
@@ -47,6 +49,8 @@ export const schemaTypes = [
   castingCredits,
   stillsCredits,
   postCredits,
+  crewPerson,
+  crewCredit,
   additionalVideo,
   heroSlide,
   founder,

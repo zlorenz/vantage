@@ -1,148 +1,54 @@
 /**
- * Portfolio credits department configuration.
- * Field slugs and role labels match WordPress vp_portfolio_credits_config().
+ * Portfolio credits department configuration and rendering helpers.
+ *
+ * Structured `crewCredits` is preferred. Legacy `credits` department objects
+ * remain supported for dual-read until migration backfill completes.
  */
 
+import {
+  CREW_DEPARTMENTS,
+  CREW_ROLE_BY_KEY,
+  getRoleDisplayLabel,
+  type CrewCreditValue,
+  type CrewDepartmentKey,
+} from '@crew-credits';
 import type { Locale } from '@/i18n/routing';
 import { CREDIT_LABEL_ZH } from '@/lib/credits-labels-zh';
-import type { CreditsAdditionalRow } from '@/types/sanity';
+import type {
+  CreditsAdditionalRow,
+  CrewCredit,
+  CrewPerson,
+  PortfolioCredits,
+} from '@/types/sanity';
 
 export interface CreditFieldConfig {
   slug: string;
   label: string;
+  roleKey: string;
 }
 
 export interface CreditDepartmentConfig {
-  key: keyof typeof DEPARTMENT_LABELS;
+  key: CrewDepartmentKey;
   label: string;
   fields: CreditFieldConfig[];
   repeater: string;
 }
 
-export const DEPARTMENT_LABELS = {
-  production: 'Production',
-  camera: 'Camera',
-  ge: 'G&E',
-  art: 'Art',
-  casting: 'Casting',
-  stills: 'Stills',
-  post: 'Post',
-} as const;
+export const DEPARTMENT_LABELS = Object.fromEntries(
+  CREW_DEPARTMENTS.map((dept) => [dept.key, dept.label]),
+) as Record<CrewDepartmentKey, string>;
 
-export const CREDITS_CONFIG: CreditDepartmentConfig[] = [
-  {
-    key: 'production',
-    label: DEPARTMENT_LABELS.production,
-    repeater: 'prod_additional',
-    fields: [
-      { slug: 'prod_brand', label: 'Brand' },
-      { slug: 'prod_agency', label: 'Agency' },
-      { slug: 'prod_production_company', label: 'Production Company' },
-      { slug: 'prod_production_service', label: 'Production Service' },
-      { slug: 'prod_executive_producer', label: 'EP' },
-      { slug: 'prod_director', label: 'Director' },
-      { slug: 'prod_producer', label: 'Producer' },
-      { slug: 'prod_line_producer', label: 'Line Producer' },
-      { slug: 'prod_production_manager', label: 'Production Manager' },
-      { slug: 'prod_production_coordinator', label: 'Production Coordinator' },
-      { slug: 'prod_1st_ad', label: '1st AD' },
-      { slug: 'prod_2nd_ad', label: '2nd AD' },
-      { slug: 'prod_production_assistant', label: 'PA' },
-      { slug: 'prod_product_technician', label: 'Product Technician' },
-      { slug: 'prod_account_manager', label: 'Account Manager' },
-      { slug: 'prod_transport', label: 'Transport' },
-      { slug: 'prod_chaperone', label: 'Chaperone' },
-      { slug: 'prod_bts', label: 'BTS' },
-    ],
-  },
-  {
-    key: 'camera',
-    label: DEPARTMENT_LABELS.camera,
-    repeater: 'cam_additional',
-    fields: [
-      { slug: 'cam_dop', label: 'DOP' },
-      { slug: 'cam_camera_op', label: 'Camera Op' },
-      { slug: 'cam_steadicam_op', label: 'Steadicam Op' },
-      { slug: 'cam_1st_ac', label: '1st AC' },
-      { slug: 'cam_2nd_ac', label: '2nd AC' },
-      { slug: 'cam_focus_puller', label: 'Focus Puller' },
-      { slug: 'cam_dit', label: 'DIT' },
-      { slug: 'cam_qtake', label: 'QTake' },
-      { slug: 'cam_drone_op', label: 'Drone Op' },
-      { slug: 'cam_motion_control', label: 'Motion Control' },
-    ],
-  },
-  {
-    key: 'ge',
-    label: DEPARTMENT_LABELS.ge,
-    repeater: 'ge_additional',
-    fields: [
-      { slug: 'ge_rental_house', label: 'Rental House' },
-      { slug: 'ge_gaffer', label: 'Gaffer' },
-      { slug: 'ge_key_grip', label: 'Key Grip' },
-      { slug: 'ge_grip', label: 'Grip' },
-      { slug: 'ge_electrician', label: 'Electrician' },
-    ],
-  },
-  {
-    key: 'art',
-    label: DEPARTMENT_LABELS.art,
-    repeater: 'art_additional',
-    fields: [
-      { slug: 'art_production_designer', label: 'Production Designer' },
-      { slug: 'art_art_director', label: 'Art Director' },
-      { slug: 'art_art_assistant', label: 'Art Assistant' },
-      { slug: 'art_props_master', label: 'Props Master' },
-      { slug: 'art_wardrobe', label: 'Wardrobe' },
-      { slug: 'art_hair_makeup', label: 'Hair & Makeup' },
-      { slug: 'art_location_manager', label: 'Location Manager' },
-      { slug: 'art_storyboard_artist', label: 'Storyboards' },
-    ],
-  },
-  {
-    key: 'casting',
-    label: DEPARTMENT_LABELS.casting,
-    repeater: 'cast_additional',
-    fields: [
-      { slug: 'cast_casting_director', label: 'Casting Director' },
-      { slug: 'cast_casting_manager', label: 'Casting Manager' },
-      { slug: 'cast_talent', label: 'Talent' },
-      { slug: 'cast_stunt_coordinator', label: 'Stunt Coordinator' },
-      { slug: 'cast_choreographer', label: 'Choreographer' },
-      { slug: 'cast_animal_wrangler', label: 'Animal Wrangler' },
-    ],
-  },
-  {
-    key: 'stills',
-    label: DEPARTMENT_LABELS.stills,
-    repeater: 'stills_additional',
-    fields: [
-      { slug: 'stills_photographer', label: 'Photographer' },
-      { slug: 'stills_photography_producer', label: 'Photography Producer' },
-      { slug: 'stills_kv_art_director', label: 'KV Art Director' },
-      { slug: 'stills_photography_assistant', label: 'Photography Assistant' },
-      { slug: 'stills_photo_talent', label: 'Photo Talent' },
-    ],
-  },
-  {
-    key: 'post',
-    label: DEPARTMENT_LABELS.post,
-    repeater: 'post_additional',
-    fields: [
-      { slug: 'post_post_supervisor', label: 'Post Supervisor' },
-      { slug: 'post_on_set_editor', label: 'On-Set Editor' },
-      { slug: 'post_editor', label: 'Editor' },
-      { slug: 'post_assistant_editor', label: 'Assistant Editors' },
-      { slug: 'post_colorist', label: 'Colorist' },
-      { slug: 'post_sound_design_mix', label: 'Sound Design & Mix' },
-      { slug: 'post_composer', label: 'Composer' },
-      { slug: 'post_voice_over', label: 'Voice Over' },
-      { slug: 'post_vfx', label: 'VFX' },
-      { slug: 'post_online', label: 'Online' },
-      { slug: 'post_3d_animation', label: '3D Animation' },
-    ],
-  },
-];
+/** Legacy-compatible config derived from the shared catalog. */
+export const CREDITS_CONFIG: CreditDepartmentConfig[] = CREW_DEPARTMENTS.map((dept) => ({
+  key: dept.key,
+  label: dept.label,
+  repeater: dept.legacyRepeater,
+  fields: dept.roles.map((role) => ({
+    slug: role.legacyField,
+    label: role.label,
+    roleKey: role.key,
+  })),
+}));
 
 /** Localize a department or role label for the active locale. */
 export function localizeCreditLabel(label: string, locale: Locale): string {
@@ -153,6 +59,11 @@ export function localizeCreditLabel(label: string, locale: Locale): string {
 /** Pluralize role label when names contain multiple comma-separated entries. */
 export function pluralizeCreditRole(role: string, names: string): string {
   if (!names.includes(',')) return role;
+
+  const fromCatalog = CREW_DEPARTMENTS.flatMap((dept) => dept.roles).find(
+    (entry) => entry.label === role || entry.pluralLabel === role,
+  );
+  if (fromCatalog) return fromCatalog.pluralLabel;
 
   const irregular: Record<string, string> = {
     'Production Company': 'Production Companies',
@@ -193,6 +104,7 @@ export function pluralizeCreditRole(role: string, names: string): string {
 export interface CreditPair {
   role: string;
   names: string;
+  people?: CrewPerson[];
 }
 
 export function getDepartmentCreditPairs(
@@ -216,8 +128,7 @@ export function getDepartmentCreditPairs(
   }
 
   // Sanity schema uses `additional`; legacy WP ACF keys were prod_additional, etc.
-  const additional =
-    department.additional ?? department[config.repeater];
+  const additional = department.additional ?? department[config.repeater];
   if (Array.isArray(additional)) {
     for (const row of additional) {
       const role = String(row.role ?? '').trim();
@@ -229,4 +140,110 @@ export function getDepartmentCreditPairs(
   }
 
   return pairs;
+}
+
+function sortStructuredCredits(credits: CrewCredit[]): CrewCredit[] {
+  const deptOrder = CREW_DEPARTMENTS.map((dept) => dept.key);
+
+  return [...credits].sort((a, b) => {
+    const deptDiff = deptOrder.indexOf(a.department) - deptOrder.indexOf(b.department);
+    if (deptDiff !== 0) return deptDiff;
+
+    const aCustom = a.isCustomRole || !a.roleKey;
+    const bCustom = b.isCustomRole || !b.roleKey;
+    if (aCustom !== bCustom) return aCustom ? 1 : -1;
+
+    const aSort = a.roleKey ? (CREW_ROLE_BY_KEY.get(a.roleKey)?.sortIndex ?? 9999) : 9999;
+    const bSort = b.roleKey ? (CREW_ROLE_BY_KEY.get(b.roleKey)?.sortIndex ?? 9999) : 9999;
+    if (aSort !== bSort) return aSort - bSort;
+
+    return a.role.localeCompare(b.role, undefined, { sensitivity: 'base' });
+  });
+}
+
+export interface StructuredDepartmentCredits {
+  key: CrewDepartmentKey;
+  label: string;
+  pairs: CreditPair[];
+}
+
+/** Build ordered department rows from structured crewCredits. */
+export function getStructuredDepartmentRows(
+  crewCredits: CrewCredit[] | CrewCreditValue[] | undefined,
+  locale: Locale = 'en',
+): StructuredDepartmentCredits[] {
+  if (!crewCredits?.length) return [];
+
+  const sorted = sortStructuredCredits(crewCredits as CrewCredit[]);
+  const byDept = new Map<CrewDepartmentKey, CreditPair[]>();
+
+  for (const credit of sorted) {
+    const people = (credit.people ?? []).filter((person) => person.name?.trim());
+    if (!people.length) continue;
+
+    const roleEn = getRoleDisplayLabel(credit.roleKey, credit.role, people.length);
+    const pair: CreditPair = {
+      role: localizeCreditLabel(roleEn, locale),
+      names: people.map((person) => person.name).join(', '),
+      people,
+    };
+
+    const list = byDept.get(credit.department) ?? [];
+    list.push(pair);
+    byDept.set(credit.department, list);
+  }
+
+  return CREW_DEPARTMENTS.flatMap((dept) => {
+    const pairs = byDept.get(dept.key);
+    if (!pairs?.length) return [];
+    return [
+      {
+        key: dept.key,
+        label: localizeCreditLabel(dept.label, locale),
+        pairs,
+      },
+    ];
+  });
+}
+
+/** Prefer non-empty structured credits; fall back to legacy department objects. */
+export function resolveCreditsForDisplay(opts: {
+  crewCredits?: CrewCredit[];
+  credits?: PortfolioCredits;
+  locale?: Locale;
+}): StructuredDepartmentCredits[] {
+  const locale = opts.locale ?? 'en';
+  const structured = getStructuredDepartmentRows(opts.crewCredits, locale);
+  if (structured.length) return structured;
+
+  if (!opts.credits) return [];
+
+  return CREDITS_CONFIG.flatMap((config) => {
+    const pairs = getDepartmentCreditPairs(opts.credits?.[config.key], config, locale);
+    if (!pairs.length) return [];
+    return [
+      {
+        key: config.key,
+        label: localizeCreditLabel(config.label, locale),
+        pairs,
+      },
+    ];
+  });
+}
+
+/** Collect people names for a structured role key across departments. */
+export function getStructuredRoleNames(
+  crewCredits: CrewCredit[] | undefined,
+  roleKey: string,
+): string[] {
+  if (!crewCredits?.length) return [];
+  const names: string[] = [];
+  for (const credit of crewCredits) {
+    if (credit.roleKey !== roleKey) continue;
+    for (const person of credit.people ?? []) {
+      const name = person.name?.trim();
+      if (name) names.push(name);
+    }
+  }
+  return names;
 }

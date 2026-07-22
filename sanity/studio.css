@@ -1,0 +1,8 @@
+/**
+ * Remove Sanity's nested fieldset left accent (blue focus border).
+ * Applies to document fieldsets, object groups (SEO, Credits), etc.
+ */
+fieldset[data-level] > [data-ui='Box'] {
+  border-left: none !important;
+  box-shadow: none !important;
+}
