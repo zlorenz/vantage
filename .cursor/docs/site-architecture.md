@@ -31,7 +31,7 @@ These are singular pages, not driven by a post type loop.
 | Route | `/work-internal/` |
 | Chinese route | `/zh/work-internal/` |
 | Template | Internal crew portfolio view |
-| Filters | `client`, `director`, `dop`, `art-director` (AND logic — not mutually exclusive) |
+| Filters | Brand / Director / DOP / Art Director (AND logic — not mutually exclusive); backed by `creditIdentity` refs on `crewCredits`, with unlinked-name fallbacks |
 | SEO | `noindex`, excluded from sitemap |
 | Access | No authentication required; not linked from public navigation |
 

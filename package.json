@@ -32,6 +32,7 @@
     "migrate:patch:phrase-book-from-trp": "tsx scripts/migration/patch/phrase-book-from-trp.ts",
     "test:display-titles": "tsx shared/display-titles/display-titles.test.ts",
     "test:phrase-book": "tsx shared/phrase-book/phrase-book.test.ts",
+    "test:client-logos": "tsx shared/client-logos/client-logos.test.ts",
     "test:identity-usage": "tsx shared/crew-credits/identity-usage.test.ts",
     "migrate:audit:wp-credit-links": "tsx scripts/migration/audit/wp-credit-links.ts",
     "migrate:audit:crew-name-variants": "tsx scripts/migration/audit/crew-name-variants.ts",

@@ -15,8 +15,9 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('videoFormat'),
       S.documentTypeListItem('industry'),
       S.documentTypeListItem('market'),
-      S.documentTypeListItem('client'),
-      S.documentTypeListItem('crewMember'),
+      // Legacy client / crewMember types stay in the schema (orphaned WP mirrors)
+      // but are omitted here — day-to-day entities live under Content → Crew Members
+      // (creditIdentity). Creation is also blocked in sanity.config.ts.
       S.divider(),
       S.documentTypeListItem('blogPost').title('Blog Posts'),
       S.documentTypeListItem('category'),

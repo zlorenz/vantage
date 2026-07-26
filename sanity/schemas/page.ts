@@ -175,7 +175,7 @@ export const page = defineType({
       group: 'content',
       of: [{type: 'brandLogoItem'}],
       description:
-        '“Brands We Work With” grid on the home page. Drag to reorder. Falls back to the default logo set if empty.',
+        '“Brands We Work With” grid on the home page. Drag to reorder or swap among curated registry logos. Falls back to the default logo set if empty. Adding a new brand mark is a design/code change (SVG + shared/client-logos entry + redeploy), not a Studio upload.',
       hidden: hideUnlessPageSlug('home'),
       components: {input: ClearableArrayInput},
       options: {

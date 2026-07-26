@@ -1,18 +1,22 @@
 /**
- * crewMember — Internal crew member document with role.
+ * crewMember — Legacy WordPress role-scoped crew taxonomy document (orphaned).
  *
  * Source: content-schema.md §4.8
- * WordPress origin: `director`, `dop`, `art-director` taxonomies (107 total)
+ * WordPress origin: `director`, `dop`, `art-director` taxonomies
  *
- * Referenced from portfolioEntry.crewMembers and credit fields
- * (prod_director, cam_dop, art_art_director). Used for /work-internal/ filtering.
+ * Superseded by `creditIdentity` (one vendor across roles) linked from Crew Credits.
+ * `portfolioEntry.crewMembers` was cleared in the 2026-07-22 retire pass; docs remain
+ * in the dataset for historical reference only.
+ *
+ * Hidden from the Studio desk and blocked from Create (see structure.ts /
+ * sanity.config.ts). Prefer creditIdentity for all new crew work.
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
 
 export const crewMember = defineType({
   name: 'crewMember',
-  title: 'Crew Members',
+  title: 'Crew Members (legacy)',
   type: 'document',
 
   fields: [
@@ -28,7 +32,7 @@ export const crewMember = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'URL-safe identifier used for internal filtering references.',
+      description: 'URL-safe identifier used for historical filtering references.',
       options: {
         source: 'name',
         maxLength: 96,
@@ -44,9 +48,9 @@ export const crewMember = defineType({
         'Crew discipline — maps to WordPress director, dop, or art-director taxonomy.',
       options: {
         list: [
-          { title: 'Director', value: 'director' },
-          { title: 'Director of Photography', value: 'dop' },
-          { title: 'Art Director', value: 'art-director' },
+          {title: 'Director', value: 'director'},
+          {title: 'Director of Photography', value: 'dop'},
+          {title: 'Art Director', value: 'art-director'},
         ],
         layout: 'radio',
       },
@@ -59,17 +63,17 @@ export const crewMember = defineType({
       title: 'name',
       role: 'role',
     },
-    prepare({ title, role }) {
+    prepare({title, role}) {
       const roleLabels: Record<string, string> = {
         director: 'Director',
         dop: 'DOP',
         'art-director': 'Art Director',
-      };
+      }
 
       return {
         title: title || 'Untitled crew member',
         subtitle: role ? roleLabels[role] || role : undefined,
-      };
+      }
     },
   },
-});
+})

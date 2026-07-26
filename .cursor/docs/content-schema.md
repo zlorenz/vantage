@@ -175,13 +175,13 @@ Bilingual routing: English at `/`, Chinese at `/zh/`. See `site-architecture.md`
 
 ### 3.5 Internal reference data (Sanity document types)
 
-Mapped from WordPress crew/client/platform taxonomies. **Credit Identities** are the preferred entity for Work Library filters. Legacy `client` / `crewMember` docs remain for historical data.
+Mapped from WordPress crew/client/platform taxonomies. **Credit Identities** are the preferred entity for Work Library filters. Legacy `client` / `crewMember` docs remain in the dataset as orphaned WP mirrors (desk-hidden; Create blocked) after the 2026-07-22 retire pass cleared `portfolioEntry.clients` / `crewMembers`.
 
-| WordPress taxonomy | Terms | Sanity type | Role |
+| WordPress taxonomy | Terms (live Sanity) | Sanity type | Role |
 |---|---|---|---|
-| (new) | — | `creditIdentity` | Stable vendor entity (opaque `ci_…` id); Brand / Director / DOP / Art Director / Editor |
-| `client` | 67 | `client` (legacy) | Historical Brand taxonomy |
-| `director` / `dop` / `art-director` | 107 | `crewMember` (legacy) | Historical role-scoped crew taxonomy |
+| (new) | 180 | `creditIdentity` | Stable vendor entity (opaque `ci_…` id); Brand / Director / DOP / Art Director / Editor |
+| `client` | 59 (legacy) | `client` | Orphaned Brand taxonomy; **0** live portfolio refs |
+| `director` / `dop` / `art-director` | 105 (legacy) | `crewMember` | Orphaned role-scoped crew taxonomy; **0** live portfolio refs |
 | `platform` | 108 | `platform` | Distribution/platform tags |
 
 **Dropped from migration:** `portfolio_visibility` taxonomy — consolidated into `portfolioEntry.isHidden` (see §4.8).
@@ -200,9 +200,9 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 | `blogPost` | `post` | 23 |
 | `page` | `page` | 9 (8 public bilingual + 1 internal EN-only) |
 | `siteSettings` | ACF Options (Contact Info) | 1 singleton |
-| `client` | `client` taxonomy | 67 (legacy) |
-| `crewMember` | `director`, `dop`, `art-director` taxonomies | 107 (legacy) |
-| `creditIdentity` | backfilled from clients/crew/credits | opaque vendor entities |
+| `client` | `client` taxonomy | 59 (legacy; orphaned, desk-hidden) |
+| `crewMember` | `director`, `dop`, `art-director` taxonomies | 105 (legacy; orphaned, desk-hidden) |
+| `creditIdentity` | backfilled from clients/crew/credits | 180 |
 | `platform` | `platform` taxonomy | 108 |
 | Public taxonomy refs | `category`, `video-format`, `industry`, `market` | 23 terms |
 
@@ -382,8 +382,8 @@ CSV import, frontend rendering, and migration.
   bodyZh?: portableText
   heroSlides?: array<ref → portfolioEntry>  // homepage carousel (order = display; CTA always “Watch”)
   featuredWork?: array<ref → portfolioEntry>  // Home “A Bit of Our Work”; VPS “Shot in Vietnam”
-  brandLogos?: array<{             // homepage “Brands We Work With” (logoId from shared registry)
-    logoId: string
+  brandLogos?: array<{             // homepage “Brands We Work With” — logoId from shared/client-logos registry (+ /public/logos SVGs)
+    logoId: string                 // curated enum; new marks = design/code PR, not CMS upload
   }>
   founders?: array<{               // About page only
     name: string
@@ -475,10 +475,11 @@ CSV import, frontend rendering, and migration.
   slug: slug
   // Legacy Brand taxonomy. Prefer creditIdentity linked from Brand credits.
   // Not exposed on public taxonomy archive pages
+  // Studio: desk-hidden; Create blocked (structure.ts / sanity.config.ts)
 }
 ```
 
-**Count:** 67 terms
+**Count:** 59 documents (live, 2026-07-26). **Live refs:** 0 `portfolioEntry` docs with non-empty `clients` (published or draft) after the 2026-07-22 retire pass. Docs kept for historical reference only.
 
 ### 4.7b `creditIdentity`
 
@@ -493,6 +494,8 @@ CSV import, frontend rendering, and migration.
 }
 ```
 
+**Count:** 180 documents (live, 2026-07-26).
+
 ### 4.8 `crewMember` (legacy)
 
 ```typescript
@@ -503,10 +506,11 @@ CSV import, frontend rendering, and migration.
   role: 'director' | 'dop' | 'art-director'
   // Legacy role-scoped taxonomy. Prefer creditIdentity (one vendor across roles).
   // Not exposed on public taxonomy archive pages
+  // Studio: desk-hidden; Create blocked (structure.ts / sanity.config.ts)
 }
 ```
 
-**Counts:** 22 directors, 54 DOPs, 31 art directors (107 total documents)
+**Count:** 105 documents (live, 2026-07-26). **Live refs:** 0 `portfolioEntry` docs with non-empty `crewMembers` (published or draft) after the 2026-07-22 retire pass. Docs kept for historical reference only.
 
 ### 4.9 `platform`
 
@@ -881,11 +885,11 @@ All audit decisions confirmed 2026-06-21.
 
 | # | Topic | Decision |
 |---|---|---|
-| 1 | **`/work-internal/`** | **Include in rebuild.** English-only route (`/work-internal/`, no `/zh/` equivalent). Internal crew portfolio view with AND-logic filters (client, director, dop, art-director). `noindex`, excluded from sitemap. No auth required; not linked from public navigation. Documented in `site-architecture.md`. |
+| 1 | **`/work-internal/`** | **Include in rebuild.** English-only route (`/work-internal/`, no `/zh/` equivalent). Internal crew portfolio view with AND-logic filters (Brand / Director / DOP / Art Director via `creditIdentity` + unlinked name fallbacks on `crewCredits`). `noindex`, excluded from sitemap. No auth required; not linked from public navigation. Documented in `site-architecture.md`. |
 | 2 | **Blog comments** | **Drop entirely.** No comment display, forms, or moderation in Next.js. Noted in §4.3 (`blogPost`). |
 | 3 | **Visibility consolidation** | **Confirmed.** Single `isHidden: boolean` on `portfolioEntry`. Drop disabled ACF `hide_from_public` and `portfolio_visibility` taxonomy. Migration: set `isHidden: true` for WP ID 3187 (Bitget – Elite Traders) only. Documented in §4.11. |
 | 4 | **Chinese Campaign Brief form** | **v1 requirement, sequential build.** Fully translated 42-field, 7-step form at `/zh/视频活动简介/`. Build after English form is complete and verified — not simultaneously. Documented in §5.0. |
-| 5 | **Crew taxonomies** | **Keep all.** Map to Sanity document types: `client` (67), `crewMember` with role (107), `platform` (108). Referenced from credits and used for `/work-internal/` filtering. Not on public taxonomy archive pages. Documented in §4.7–4.9. |
+| 5 | **Crew taxonomies** | **Original (2026-06-21):** keep `client` / `crewMember` / `platform` mapped from WP. **Post-migration (2026-07-22):** Work Library filters via `creditIdentity` on `crewCredits` (not `clients` / `crewMembers` arrays). Legacy `client` (59) and `crewMember` (105) docs remain orphaned; Studio desk-hidden + Create blocked. `platform` (108) unchanged. Documented in §4.7–4.9. |
 
 ### Remaining items (not blocking build start)
 

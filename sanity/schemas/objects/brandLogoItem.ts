@@ -1,10 +1,14 @@
 /**
  * brandLogoItem — Homepage brand grid cell (id from shared logo registry).
+ *
+ * Editors pick among curated registry ids only. Adding a new mark requires a
+ * code change (SVG in /public/logos/ + entry in shared/client-logos) and a
+ * Studio redeploy — not a Studio-only upload.
  */
 
 import {defineField, defineType} from 'sanity'
 
-import {CLIENT_LOGO_BY_ID, CLIENT_LOGOS, type ClientLogoId} from '../../../shared/client-logos'
+import {CLIENT_LOGO_BY_ID, CLIENT_LOGOS, isClientLogoId, type ClientLogoId} from '../../../shared/client-logos'
 
 const LOGO_OPTIONS = CLIENT_LOGOS.map((logo) => {
   if (logo.id.endsWith('-horizontal')) {
@@ -26,8 +30,17 @@ export const brandLogoItem = defineType({
       name: 'logoId',
       title: 'Logo',
       type: 'string',
+      description:
+        'Pick from the curated SVG registry. To add a new brand mark, add the SVG under /public/logos/ and an entry in shared/client-logos, then redeploy Studio.',
       options: {list: LOGO_OPTIONS},
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.required().custom((value) => {
+          if (value == null || value === '') return true
+          if (typeof value !== 'string' || !isClientLogoId(value)) {
+            return `Unknown logo id “${value}”. Use a registry id from shared/client-logos.`
+          }
+          return true
+        }),
     }),
   ],
 

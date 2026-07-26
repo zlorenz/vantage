@@ -1,10 +1,20 @@
 /**
- * Client logo registry — authoritative source for all brand SVG assets.
+ * Client logo registry — authoritative source for homepage / brand-wall SVG assets.
  *
- * SVGs live in /public/logos/. Use this registry anywhere logos are needed:
- * home page brand grid, portfolio credits, client archive pages, etc.
+ * Two layers (intentionally split):
+ * - **Asset registry** (this file + `/public/logos/*.svg`): curated marks. Adding a
+ *   new logo is a design/code change — drop the SVG, add a `CLIENT_LOGOS` entry,
+ *   redeploy Studio + Next. Not a CMS upload path.
+ * - **Homepage curation** (`page.brandLogos[].logoId` in Sanity): editors reorder /
+ *   swap among registry ids only.
  *
- * To add a logo: drop the SVG in /public/logos/, add an entry to CLIENT_LOGOS.
+ * Do not hang logos off legacy `client` docs or `creditIdentity` — the logo set is
+ * not 1:1 with either taxonomy (variants, non-client marks, incomplete coverage).
+ *
+ * Disk parity: every registry `file` must exist under `public/`, and every
+ * `public/logos/*.svg` must have a registry entry. Enforced by
+ * `shared/client-logos/client-logos.test.ts`.
+ *
  * For multi-variant brands (Huawei, Toyota), link siblings via `variants`.
  */
 
