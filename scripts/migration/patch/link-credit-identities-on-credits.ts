@@ -1,4 +1,14 @@
 /**
+ * ⚠️ DO NOT RUN UNFILTERED. scripts/migration/data/credit-identity-map.json
+ * holds 230 identities against 180 live — ~50 IDs exist only in the map. This
+ * script merges map-then-live and resolves by normalized name, so map-only
+ * hits return created: false, are never created, but refs are still written.
+ * Because crewPerson.identity is weak: true the commit succeeds silently,
+ * producing dangling references that render as linked in Studio. Fix before
+ * any use: resolve against live identities only, or filter the map to
+ * liveIdSet. A Brand-scoped run is safe (all Brand names resolve to live IDs);
+ * a full-role run is not. See content-schema.md decisions appendix.
+ *
  * Link filter-role crewPerson slots to creditIdentity refs.
  *
  * Prefers scripts/migration/data/credit-identity-map.json from the backfill
