@@ -10,7 +10,7 @@ import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
-import { workPageTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
+import { workPageTitle, resolveMetadataImage, buildPageMetadata, seoDescription, seoMetaTitle } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, workBreadcrumb } from '@/lib/structured-data';
@@ -45,10 +45,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale: typedLocale,
     enPath: '/work',
     zhPath: '/zh/工作',
-    title: workPageTitle(typedLocale),
+    title: seoMetaTitle(workPageDoc?.seo ?? undefined, typedLocale) ?? workPageTitle(typedLocale),
     description: seoDescription(workPageDoc?.seo ?? undefined, typedLocale),
-    image: buildOgImage(workPageDoc?.featuredImage ?? undefined),
+    image: resolveMetadataImage(
+      workPageDoc?.seo ?? undefined,
+      workPageDoc?.featuredImage ?? undefined,
+    ),
     type: 'website',
+    robots: workPageDoc?.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

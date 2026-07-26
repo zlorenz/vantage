@@ -12,7 +12,7 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
-import { SITE_DESCRIPTION, buildOgImage, buildPageMetadata, homePageTitle } from '@/lib/metadata';
+import { SITE_DESCRIPTION, homePageTitle, buildPageMetadata, resolveMetadataImage, seoMetaTitle } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, buildOrganization, homeBreadcrumb } from '@/lib/structured-data';
@@ -24,6 +24,7 @@ import type {
   PortfolioCard as PortfolioCardData,
   PortableTextBlock,
   SanityImage,
+  SeoFields,
 } from '@/types/sanity';
 
 type HomePageData = {
@@ -33,7 +34,8 @@ type HomePageData = {
   heroSlides?: HeroSlideData[];
   featuredWork?: PortfolioCardData[];
   brandLogos?: Array<{ logoId?: string }>;
-  seo?: { metaDescription?: string; metaDescriptionZh?: string };
+  seo?: SeoFields;
+  noIndex?: boolean | null;
 };
 
 type Props = {
@@ -46,20 +48,22 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const homePage = await sanityClient.fetch<HomePageData | null>(HOME_PAGE_QUERY);
   const description =
-    locale === 'zh' && homePage?.seo?.metaDescriptionZh
+    typedLocale === 'zh' && homePage?.seo?.metaDescriptionZh
       ? homePage.seo.metaDescriptionZh
       : homePage?.seo?.metaDescription || SITE_DESCRIPTION;
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/',
     zhPath: '/zh/',
-    title: homePageTitle(locale as Locale),
+    title: seoMetaTitle(homePage?.seo, typedLocale) ?? homePageTitle(typedLocale),
     description,
-    image: buildOgImage(homePage?.featuredImage),
+    image: resolveMetadataImage(homePage?.seo, homePage?.featuredImage),
     type: 'website',
+    robots: homePage?.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

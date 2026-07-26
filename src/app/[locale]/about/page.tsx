@@ -14,8 +14,9 @@ import { routing, type Locale } from '@/i18n/routing';
 import {
   aboutContactPageTitle,
   seoDescription,
-  buildOgImage,
+  resolveMetadataImage,
   buildPageMetadata,
+  seoMetaTitle,
 } from '@/lib/metadata';
 import { filterAboutBodyBlocks } from '@/lib/about-content';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
@@ -41,20 +42,24 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const page = await sanityClient.fetch(ABOUT_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
-  const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = aboutContactPageTitle(title ?? '', locale as Locale);
+  const title = typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const metaTitle =
+    seoMetaTitle(page.seo ?? undefined, typedLocale) ??
+    aboutContactPageTitle(title ?? '', typedLocale);
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/about',
     zhPath: `/zh/${page.slugZh || '关于'}`,
     title: metaTitle,
-    description: seoDescription(page.seo ?? undefined, locale as Locale),
-    image: buildOgImage(page.featuredImage ?? undefined),
+    description: seoDescription(page.seo ?? undefined, typedLocale),
+    image: resolveMetadataImage(page.seo ?? undefined, page.featuredImage ?? undefined),
     type: 'website',
+    robots: page.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

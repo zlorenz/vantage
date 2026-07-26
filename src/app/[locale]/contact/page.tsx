@@ -7,9 +7,10 @@ import { setRequestLocale } from 'next-intl/server';
 import { routing, type Locale } from '@/i18n/routing';
 import {
   aboutContactPageTitle,
-  buildOgImage,
+  resolveMetadataImage,
   buildPageMetadata,
   seoDescription,
+  seoMetaTitle,
 } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { CONTACT_PAGE_QUERY } from '@/sanity/queries/pages';
@@ -25,26 +26,30 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const page = await sanityClient.fetch(CONTACT_PAGE_QUERY);
   if (!page) {
     return {
       title: aboutContactPageTitle(
-        locale === 'zh' ? '联系' : 'Contact',
-        locale as Locale,
+        typedLocale === 'zh' ? '联系' : 'Contact',
+        typedLocale,
       ),
     };
   }
 
-  const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const title = typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/contact',
     zhPath: `/zh/${page.slugZh || '联系'}`,
-    title: aboutContactPageTitle(title ?? '', locale as Locale),
-    description: seoDescription(page.seo ?? undefined, locale as Locale),
-    image: buildOgImage(page.featuredImage ?? undefined),
+    title:
+      seoMetaTitle(page.seo ?? undefined, typedLocale) ??
+      aboutContactPageTitle(title ?? '', typedLocale),
+    description: seoDescription(page.seo ?? undefined, typedLocale),
+    image: resolveMetadataImage(page.seo ?? undefined, page.featuredImage ?? undefined),
     type: 'website',
+    robots: page.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

@@ -80,6 +80,9 @@ export interface NavPage {
 export interface SeoFields {
   metaDescription?: string;
   metaDescriptionZh?: string;
+  metaTitle?: string;
+  metaTitleZh?: string;
+  ogImage?: SanityImage;
 }
 
 /** Minimal card shape — PortfolioCard component. */
@@ -373,6 +376,7 @@ export interface BlogPost extends BlogPostCard {
   bodyZh?: PortableTextBlock[];
   _updatedAt?: string;
   seo?: SeoFields;
+  noIndex?: boolean;
 }
 
 export interface CategoryTerm {

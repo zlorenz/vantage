@@ -12,7 +12,7 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { filterVietnamProductionServiceBody } from '@/lib/portable-text-filters';
-import { pageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
+import { pageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
@@ -39,20 +39,23 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const page = await sanityClient.fetch(VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
-  const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = pageTitle(title ?? '');
+  const title = typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const metaTitle =
+    seoMetaTitle(page.seo ?? undefined, typedLocale) ?? pageTitle(title ?? '');
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/vietnam-production-service',
     zhPath: `/zh/${page.slugZh || '越南生产服务'}`,
     title: metaTitle,
-    description: seoDescription(page.seo ?? undefined, locale as Locale),
-    image: buildOgImage(page.featuredImage ?? undefined),
+    description: seoDescription(page.seo ?? undefined, typedLocale),
+    image: resolveMetadataImage(page.seo ?? undefined, page.featuredImage ?? undefined),
     type: 'website',
+    robots: page.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

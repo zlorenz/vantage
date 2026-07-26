@@ -9,7 +9,13 @@ import { Link, permanentRedirect } from '@/i18n/navigation';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { blogPostTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
+import {
+  blogPostTitle,
+  resolveMetadataImage,
+  buildPageMetadata,
+  seoDescription,
+  seoMetaTitle,
+} from '@/lib/metadata';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
@@ -43,22 +49,28 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug: rawSlug } = await params;
+  const typedLocale = locale as Locale;
   const slug = decodePathSlug(rawSlug);
   const post = await sanityClient.fetch<BlogPost | null>(POST_BY_SLUG_QUERY, { slug });
   if (!post) return { title: 'Not Found' };
 
-  const title = locale === 'zh' && post.titleZh ? post.titleZh : post.title;
-  const metaTitle = blogPostTitle(title);
-  const description = seoDescription(post.seo, locale as Locale);
+  const title = typedLocale === 'zh' && post.titleZh ? post.titleZh : post.title;
+  const titleOverride = seoMetaTitle(post.seo, typedLocale);
+  const metaTitle = titleOverride ?? blogPostTitle(title);
+  const description = seoDescription(post.seo, typedLocale, {
+    excerpt: post.excerpt,
+    excerptZh: post.excerptZh,
+  });
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: `/${post.slug}`,
     zhPath: `/zh/${post.slugZh || post.slug}`,
     title: metaTitle,
     description,
-    image: buildOgImage(post.featuredImage),
+    image: resolveMetadataImage(post.seo, post.featuredImage),
     type: 'article',
+    robots: post.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

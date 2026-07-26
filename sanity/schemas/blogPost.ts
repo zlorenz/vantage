@@ -86,6 +86,14 @@ export const blogPost = defineType({
     }),
 
     defineField({
+      name: 'noIndex',
+      title: 'No Index',
+      type: 'boolean',
+      description: 'Exclude from search indexing and sitemap (typically work-internal).',
+      initialValue: false,
+    }),
+
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seoFields',

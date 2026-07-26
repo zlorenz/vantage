@@ -140,7 +140,10 @@ export const PORTFOLIO_ENTRY_QUERY = `
     ${PORTFOLIO_CREDITS_FIELDS},
     seo{
       metaDescription,
-      metaDescriptionZh
+      metaDescriptionZh,
+      metaTitle,
+      metaTitleZh,
+      ogImage
     }
   }
 `;

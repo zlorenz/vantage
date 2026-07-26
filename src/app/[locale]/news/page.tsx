@@ -11,7 +11,7 @@ import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { newsPageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
+import { newsPageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import { buildBreadcrumbs, homeBreadcrumb, newsBreadcrumb } from '@/lib/structured-data';
@@ -30,16 +30,18 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const page = await sanityClient.fetch(NEWS_PAGE_QUERY);
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/news',
     zhPath: `/zh/${page?.slugZh || '新闻'}`,
-    title: newsPageTitle(locale as Locale),
-    description: seoDescription(page?.seo ?? undefined, locale as Locale),
-    image: buildOgImage(page?.featuredImage ?? undefined),
+    title: seoMetaTitle(page?.seo ?? undefined, typedLocale) ?? newsPageTitle(typedLocale),
+    description: seoDescription(page?.seo ?? undefined, typedLocale),
+    image: resolveMetadataImage(page?.seo ?? undefined, page?.featuredImage ?? undefined),
     type: 'website',
+    robots: page?.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

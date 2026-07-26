@@ -11,10 +11,11 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
-  buildOgImage,
+  resolveMetadataImage,
   campaignBriefPageTitle,
   seoDescription,
   buildPageMetadata,
+  seoMetaTitle,
 } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import {
@@ -35,17 +36,21 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const page = await sanityClient.fetch(VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/video-campaign-brief',
     zhPath: `/zh/${page.slugZh || '视频活动简介'}`,
-    title: campaignBriefPageTitle(locale as Locale),
-    description: seoDescription(page.seo ?? undefined, locale as Locale),
-    image: buildOgImage(page.featuredImage ?? undefined),
+    title:
+      seoMetaTitle(page.seo ?? undefined, typedLocale) ??
+      campaignBriefPageTitle(typedLocale),
+    description: seoDescription(page.seo ?? undefined, typedLocale),
+    image: resolveMetadataImage(page.seo ?? undefined, page.featuredImage ?? undefined),
     type: 'website',
+    robots: page.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

@@ -14,8 +14,9 @@ import { filterPdfDownloadArtifactBlocks } from '@/lib/portable-text-filters';
 import {
   vietnamLocationGuideTitle,
   seoDescription,
-  buildOgImage,
+  resolveMetadataImage,
   buildPageMetadata,
+  seoMetaTitle,
 } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
 import {
@@ -36,19 +37,21 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const typedLocale = locale as Locale;
   const page = await sanityClient.fetch(VIETNAM_LOCATION_GUIDE_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
-  const metaTitle = vietnamLocationGuideTitle(locale as Locale);
-
   return buildPageMetadata({
-    locale: locale as Locale,
+    locale: typedLocale,
     enPath: '/vietnam-location-guide',
     zhPath: `/zh/${page.slugZh || '越南旅游指南'}`,
-    title: metaTitle,
-    description: seoDescription(page.seo ?? undefined, locale as Locale),
-    image: buildOgImage(page.featuredImage ?? undefined),
+    title:
+      seoMetaTitle(page.seo ?? undefined, typedLocale) ??
+      vietnamLocationGuideTitle(typedLocale),
+    description: seoDescription(page.seo ?? undefined, typedLocale),
+    image: resolveMetadataImage(page.seo ?? undefined, page.featuredImage ?? undefined),
     type: 'website',
+    robots: page.noIndex ? { index: false, follow: false } : undefined,
   });
 }
 

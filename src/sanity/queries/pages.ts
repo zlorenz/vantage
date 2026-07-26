@@ -19,7 +19,10 @@ const PAGE_BASE_FIELDS = `
   bodyZh,
   seo{
     metaDescription,
-    metaDescriptionZh
+    metaDescriptionZh,
+    metaTitle,
+    metaTitleZh,
+    ogImage
   },
   noIndex
 `
@@ -61,7 +64,7 @@ const FEATURED_WORK_FIELDS = `
   isHidden
 `
 
-/** Shared metadata fields for per-route page queries (includes unwired noIndex). */
+/** Shared metadata fields for per-route page queries. */
 const PAGE_META_FIELDS = `
   title,
   titleZh,
@@ -69,7 +72,10 @@ const PAGE_META_FIELDS = `
   featuredImage,
   seo{
     metaDescription,
-    metaDescriptionZh
+    metaDescriptionZh,
+    metaTitle,
+    metaTitleZh,
+    ogImage
   },
   noIndex
 `

@@ -11,7 +11,7 @@ export const SITEMAP_PORTFOLIO_QUERY = `
 `;
 
 export const SITEMAP_BLOG_POSTS_QUERY = `
-  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(_updatedAt desc) {
+  *[_type == "blogPost" && noIndex != true && !defined(trash.trashedAt)] | order(_updatedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current,
     "_updatedAt": _updatedAt

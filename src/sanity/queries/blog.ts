@@ -51,9 +51,13 @@ export const POST_BY_SLUG_QUERY = `
       "slug": slug.current,
       "slugZh": slugZh.current
     },
+    noIndex,
     seo{
       metaDescription,
-      metaDescriptionZh
+      metaDescriptionZh,
+      metaTitle,
+      metaTitleZh,
+      ogImage
     }
   }
 `;

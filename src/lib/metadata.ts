@@ -77,6 +77,41 @@ export function buildOgImage(
   return urlForImage(source).width(1200).height(630).fit('crop').url();
 }
 
+/** Locale pick matching seoDescription: ZH when present, else EN. */
+export function pickSeoLocaleString(
+  locale: Locale,
+  en?: string | null,
+  zh?: string | null,
+): string | undefined {
+  if (locale === 'zh' && zh) return zh;
+  return en ?? undefined;
+}
+
+/** Optional seo.metaTitle[Zh] override for the document <title>. */
+export function seoMetaTitle(
+  seo:
+    | {
+        metaTitle?: string | null;
+        metaTitleZh?: string | null;
+      }
+    | undefined,
+  locale: Locale,
+): string | undefined {
+  return pickSeoLocaleString(locale, seo?.metaTitle, seo?.metaTitleZh);
+}
+
+/**
+ * Prefer seo.ogImage, then featured image, then site default OG image.
+ */
+export function resolveMetadataImage(
+  seo: {ogImage?: SanityImageSource | null} | undefined,
+  featuredImage?: SanityImageSource | null,
+  defaultOgImage?: SanityImageSource | null,
+): string | undefined {
+  if (seo?.ogImage) return buildOgImage(seo.ogImage);
+  return buildOgImage(featuredImage, defaultOgImage);
+}
+
 export function buildPageMetadata(options: {
   locale: Locale;
   enPath: string;
@@ -134,15 +169,25 @@ export function portfolioEntryMetadata(
   defaultOgImage?: SanityImage,
   phrases?: Record<string, string> | null,
 ): Metadata {
-  const title = pickLocaleFieldWithPhrases(
+  const displayTitle = pickLocaleFieldWithPhrases(
     locale,
     entry.title,
     entry.titleZh,
     phrases,
   );
-  const description = seoDescription(entry.seo, locale);
-  const metaTitle = portfolioEntryTitle(title);
-  const image = buildOgImage(entry.featuredImage, defaultOgImage);
+  const titleOverride = seoMetaTitle(entry.seo, locale);
+  const description = seoDescription(entry.seo, locale, {
+    excerpt: entry.excerpt,
+    excerptZh: entry.excerptZh,
+    description: entry.description,
+    descriptionZh: entry.descriptionZh,
+  });
+  const metaTitle = portfolioEntryTitle(titleOverride ?? displayTitle);
+  const image = resolveMetadataImage(
+    entry.seo,
+    entry.featuredImage,
+    defaultOgImage,
+  );
 
   return buildPageMetadata({
     locale,
@@ -202,9 +247,28 @@ export function seoDescription(
       }
     | undefined,
   locale: Locale,
+  backups?: {
+    excerpt?: string | null;
+    excerptZh?: string | null;
+    description?: string | null;
+    descriptionZh?: string | null;
+  },
 ): string | undefined {
-  if (!seo) return undefined;
-  return locale === 'zh' && seo.metaDescriptionZh
-    ? seo.metaDescriptionZh
-    : seo.metaDescription ?? undefined;
+  const fromSeo = pickSeoLocaleString(
+    locale,
+    seo?.metaDescription,
+    seo?.metaDescriptionZh,
+  );
+  if (fromSeo) return fromSeo;
+
+  if (!backups) return undefined;
+
+  const fromExcerpt = pickSeoLocaleString(
+    locale,
+    backups.excerpt,
+    backups.excerptZh,
+  );
+  if (fromExcerpt) return fromExcerpt;
+
+  return pickSeoLocaleString(locale, backups.description, backups.descriptionZh);
 }
