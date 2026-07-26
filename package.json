@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typegen": "cd sanity && npx sanity schemas extract --force && npx sanity typegen generate",
     "migrate:export": "tsx scripts/migration/export/export-all.ts",
     "migrate:export:content": "tsx scripts/migration/export/export-content.ts",
     "migrate:import": "tsx scripts/migration/import/import-all.ts",
