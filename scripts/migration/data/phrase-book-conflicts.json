@@ -1,0 +1,274 @@
+{
+  "generatedAt": "2026-07-24T10:34:46.871Z",
+  "conflicts": [
+    {
+      "en": "HiDock H1 – ChatGPT-Powered Audio Dock",
+      "variants": [
+        {
+          "zh": "HiDock H1",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:drafts.portfolio-3152:title"
+          ]
+        },
+        {
+          "zh": "HiDock",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-3152:title"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Zhiyun",
+      "variants": [
+        {
+          "zh": "智云",
+          "count": 5,
+          "sources": [
+            "portfolioEntry:portfolio-2053:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2141:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2678:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2871:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2872:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "Zhiyun",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-3138:displayTitleParts.brandName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Samsung Vietnam",
+      "variants": [
+        {
+          "zh": "三星 Galaxy S21",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2057:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "越南三星",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2065:displayTitleParts.brandName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Galaxy S21",
+      "variants": [
+        {
+          "zh": "热门短片",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2057:displayTitleParts.productName"
+          ]
+        },
+        {
+          "zh": "Galaxy S21",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2645:displayTitleParts.productName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Campaign",
+      "variants": [
+        {
+          "zh": "X7",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2061:displayTitleParts.productName"
+          ]
+        },
+        {
+          "zh": "视频推广",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2782:displayTitleParts.productName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "DJI",
+      "variants": [
+        {
+          "zh": "大疆",
+          "count": 8,
+          "sources": [
+            "portfolioEntry:portfolio-2071:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2725:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2736:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2738:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2746:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "DJI",
+          "count": 4,
+          "sources": [
+            "portfolioEntry:portfolio-2714:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2735:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2739:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-2747:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "DJI大疆创新 Mavic 2",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2064:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "DJI Mavic Mini",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2072:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "DJI大疆创新",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2722:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "大疆灵眸Matrice",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2723:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "大疆Matrice",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2724:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "大疆Zenmuse",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2737:displayTitleParts.brandName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Mavic 2",
+      "variants": [
+        {
+          "zh": "快速回顾",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2064:displayTitleParts.productName"
+          ]
+        },
+        {
+          "zh": "Mavic 2",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2722:displayTitleParts.productName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Brand Film",
+      "variants": [
+        {
+          "zh": "品牌电影",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2666:displayTitleParts.productName"
+          ]
+        },
+        {
+          "zh": "品牌影片",
+          "count": 1,
+          "sources": [
+            "videoFormat:videoFormat-brand-film:title"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Roborock",
+      "variants": [
+        {
+          "zh": "Roborock",
+          "count": 2,
+          "sources": [
+            "portfolioEntry:portfolio-3127:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3257:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "石头科技自清洁扫拖机器人G20",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-2806:displayTitleParts.brandName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "Mammotion",
+      "variants": [
+        {
+          "zh": "库犸科技",
+          "count": 6,
+          "sources": [
+            "portfolioEntry:portfolio-3178:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3184:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3451:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3452:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3619:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "Mammotion",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-3228:displayTitleParts.brandName"
+          ]
+        }
+      ]
+    },
+    {
+      "en": "realme",
+      "variants": [
+        {
+          "zh": "真我",
+          "count": 3,
+          "sources": [
+            "portfolioEntry:portfolio-3276:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3524:displayTitleParts.brandName",
+            "portfolioEntry:portfolio-3612:displayTitleParts.brandName"
+          ]
+        },
+        {
+          "zh": "realme",
+          "count": 1,
+          "sources": [
+            "portfolioEntry:portfolio-3182:displayTitleParts.brandName"
+          ]
+        }
+      ]
+    }
+  ]
+}

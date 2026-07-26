@@ -1,10 +1,13 @@
 /**
  * additionalVideo — Supplementary video row on portfolio single pages.
  *
- * Source: content-schema.md §4.2 (additionalVideos array)
+ * Video title is plain text (same pattern as portfolioEntry.heroFilmTitle).
+ * Front-end composes Brand + Product + Campaign + outlined video title.
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineType} from 'sanity'
+
+import {defineLocalePair} from '../../lib/define-locale-pair'
 
 export const additionalVideo = defineType({
   name: 'additionalVideo',
@@ -12,67 +15,49 @@ export const additionalVideo = defineType({
   type: 'object',
 
   fields: [
-    defineField({
+    ...defineLocalePair({
       name: 'vimeoUrl',
-      title: 'Vimeo URL',
+      zhName: 'xinpianchangUrl',
+      title: 'Video URL',
       type: 'url',
-      description: 'Vimeo video URL (English and default locale).',
-      validation: (rule) =>
-        rule.required().uri({ scheme: ['http', 'https'] }),
+      description:
+        'Vimeo or YouTube (EN; YouTube only when Vimeo cannot host) · optional Xinpianchang on /zh/ pages.',
+      validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
+      zhValidation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      optional: false,
     }),
 
-    defineField({
-      name: 'xinpianchangUrl',
-      title: 'Xinpianchang URL',
-      type: 'url',
-      description: 'Optional Xinpianchang URL shown on Chinese (/zh/) portfolio pages.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
-    }),
-
-    defineField({
-      name: 'longTitle',
-      title: 'Title',
-      type: 'text',
-      rows: 2,
-      description: 'Video title — supports HTML <span> for .vp-outline styling.',
+    ...defineLocalePair({
+      name: 'videoTitle',
+      title: 'Video Title',
+      type: 'string',
+      description:
+        'Episode title for this video (same pattern as Hero Film Title). Displayed beside the player as Brand + Product + Campaign + this title (outlined).',
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
-    defineField({
-      name: 'longTitleZh',
-      title: 'Title (Chinese)',
-      type: 'text',
-      rows: 2,
-      description: 'Chinese title — supports HTML <span> for .vp-outline styling.',
-    }),
-
-    defineField({
+    ...defineLocalePair({
       name: 'description',
       title: 'Description',
       type: 'text',
       rows: 3,
-      description: 'Optional video description.',
-    }),
-
-    defineField({
-      name: 'descriptionZh',
-      title: 'Description (Chinese)',
-      type: 'text',
-      rows: 3,
-      description: 'Optional Chinese video description.',
+      description:
+        'Optional plain-text description. Use a blank line between paragraphs for separation on the site.',
+      optional: true,
     }),
   ],
 
   preview: {
     select: {
-      title: 'longTitle',
+      title: 'videoTitle',
       subtitle: 'vimeoUrl',
     },
-    prepare({ title, subtitle }) {
+    prepare({title, subtitle}) {
       return {
         title: title || 'Additional video',
         subtitle,
-      };
+      }
     },
   },
-});
+})

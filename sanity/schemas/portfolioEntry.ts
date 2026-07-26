@@ -7,10 +7,14 @@
  * URL pattern: /portfolio/[slug]/ (EN), /zh/投资组合/[slugZh]/ (ZH)
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
 
-import { CrewCreditsInput } from '../components/crew-credits/CrewCreditsInput';
-import { TaxonomyCheckboxInput } from '../components/TaxonomyCheckboxInput';
+import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
+import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
+import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
+import {NullField} from '../components/locale-pair/NullField'
+import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
+import {defineLocalePair} from '../lib/define-locale-pair'
 
 export const portfolioEntry = defineType({
   name: 'portfolioEntry',
@@ -18,30 +22,29 @@ export const portfolioEntry = defineType({
   type: 'document',
 
   groups: [
-    { name: 'content', title: 'Content', default: true },
-    { name: 'media', title: 'Media' },
-    { name: 'taxonomies', title: 'Taxonomies' },
-    { name: 'credits', title: 'Credits' },
-    { name: 'seo', title: 'SEO' },
+    {name: 'content', title: 'Content', default: true},
+    {name: 'media', title: 'Media'},
+    {name: 'credits', title: 'Credits'},
+    {name: 'seo', title: 'SEO'},
   ],
 
   fieldsets: [
-    { name: 'titles', title: 'Titles', options: { columns: 2 } },
-    { name: 'slugs', title: 'Slugs', options: { columns: 2 } },
-    { name: 'displayTitles', title: 'Display Titles', options: { columns: 2 } },
-    { name: 'copy', title: 'Description', options: { columns: 2 } },
-    { name: 'videoUrls', title: 'Video URLs', options: { columns: 2 } },
-    { name: 'taxonomy', title: 'Formats / Industries / Markets', options: { columns: 3 } },
-    { name: 'people', title: 'Clients / Crew / Platforms', options: { columns: 3 } },
+    // Untitled layout row (legend hidden via studio.css — Sanity auto-titles from name).
+    {name: 'slugAndDate', options: {columns: 2}},
+    {name: 'copy', title: 'Description', options: {columns: 2}},
+    {name: 'taxonomy', title: 'Formats / Industries / Markets', options: {columns: 3}},
   ],
 
   fields: [
     defineField({
       name: 'title',
-      title: 'Title (English)',
+      title: 'Title',
       type: 'string',
       group: 'content',
-      fieldset: 'titles',
+      // Not readOnly: programmatic sync from Portfolio Details must be allowed.
+      // The custom field renders heading text only (no editable input).
+      options: {localePair: {zhName: 'titleZh'}} as never,
+      components: {field: LocalePairHeadingField},
       validation: (rule) => rule.required(),
     }),
 
@@ -50,37 +53,182 @@ export const portfolioEntry = defineType({
       title: 'Title (Chinese)',
       type: 'string',
       group: 'content',
-      fieldset: 'titles',
+      components: {field: NullField},
     }),
 
     defineField({
+      name: 'displayTitleParts',
+      title: 'Campaign Details',
+      type: 'object',
+      group: 'content',
+      components: {input: DisplayTitlesInput},
+      fields: [
+        defineField({
+          name: 'brandName',
+          title: 'Brand Name',
+          type: 'string',
+          validation: (rule) => rule.required(),
+        }),
+        defineField({
+          name: 'productName',
+          title: 'Product Name',
+          type: 'string',
+        }),
+        defineField({
+          name: 'campaignTitle',
+          title: 'Campaign Title',
+          type: 'string',
+        }),
+        defineField({
+          name: 'brandNameZh',
+          title: 'Brand Name (Chinese)',
+          type: 'string',
+        }),
+        defineField({
+          name: 'productNameZh',
+          title: 'Product Name (Chinese)',
+          type: 'string',
+        }),
+        defineField({
+          name: 'campaignTitleZh',
+          title: 'Campaign Title (Chinese)',
+          type: 'string',
+        }),
+      ],
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (!value || typeof value !== 'object') {
+            return 'Brand Name is required'
+          }
+          const brand = (value as {brandName?: string}).brandName?.trim()
+          return brand ? true : 'Brand Name is required'
+        }),
+    }),
+
+    ...defineLocalePair({
       name: 'slug',
-      title: 'Slug (English)',
+      title: 'Slug',
       type: 'slug',
       group: 'content',
-      fieldset: 'slugs',
-      description: 'URL: /portfolio/[slug]/',
-      options: { source: 'title', maxLength: 96 },
+      fieldset: 'slugAndDate',
+      description: 'EN: /portfolio/[slug]/ · ZH: /zh/投资组合/[slug]/',
+      options: {source: 'title', maxLength: 96},
+      zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'slugZh',
-      title: 'Slug (Chinese)',
-      type: 'slug',
-      group: 'content',
-      fieldset: 'slugs',
-      description: 'URL: /zh/投资组合/[slug]/',
-      options: { source: 'titleZh', maxLength: 96 },
+      optional: false,
     }),
 
     defineField({
       name: 'publishedAt',
-      title: 'Published At',
-      type: 'datetime',
+      title: 'Original Release Date',
+      type: 'date',
       group: 'content',
-      description: 'Used for Work index and archive sort (newest first).',
+      fieldset: 'slugAndDate',
+      description: "Client's original release day.",
+      options: {dateFormat: 'YYYY-MM-DD'},
       validation: (rule) => rule.required(),
+    }),
+
+    // Display title HTML overrides — edited via Live preview pencil popovers (DisplayTitlesInput).
+    defineField({
+      name: 'thumbTitleOverride',
+      title: 'Thumbnail Override',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      hidden: true,
+    }),
+    defineField({
+      name: 'thumbTitleOverrideZh',
+      title: 'Thumbnail Override (Chinese)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      hidden: true,
+    }),
+    defineField({
+      name: 'headerTitleOverride',
+      title: 'Header Override',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      hidden: true,
+    }),
+    defineField({
+      name: 'headerTitleOverrideZh',
+      title: 'Header Override (Chinese)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      hidden: true,
+    }),
+    defineField({
+      name: 'longTitleOverride',
+      title: 'Full Title Override',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      hidden: true,
+    }),
+    defineField({
+      name: 'longTitleOverrideZh',
+      title: 'Full Title Override (Chinese)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      hidden: true,
+    }),
+
+    ...defineLocalePair({
+      name: 'excerpt',
+      title: 'Logline',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+      fieldset: 'copy',
+      description: 'Quick summary for home carousel and portfolio headers.',
+      optional: true,
+    }),
+
+    ...defineLocalePair({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 4,
+      group: 'content',
+      fieldset: 'copy',
+      description: 'Displayed beside first video embed on the portfolio page.',
+      optional: true,
+    }),
+
+    defineField({
+      name: 'videoFormats',
+      title: 'Video Formats',
+      type: 'array',
+      group: 'content',
+      fieldset: 'taxonomy',
+      of: [{ type: 'reference', to: [{ type: 'videoFormat' }] }],
+      components: { input: TaxonomyCheckboxInput },
+    }),
+
+    defineField({
+      name: 'industries',
+      title: 'Industries',
+      type: 'array',
+      group: 'content',
+      fieldset: 'taxonomy',
+      of: [{ type: 'reference', to: [{ type: 'industry' }] }],
+      components: { input: TaxonomyCheckboxInput },
+    }),
+
+    defineField({
+      name: 'markets',
+      title: 'Markets',
+      type: 'array',
+      group: 'content',
+      fieldset: 'taxonomy',
+      of: [{ type: 'reference', to: [{ type: 'market' }] }],
+      components: { input: TaxonomyCheckboxInput },
     }),
 
     defineField({
@@ -93,130 +241,34 @@ export const portfolioEntry = defineType({
     }),
 
     defineField({
-      name: 'thumbTitle',
-      title: 'Thumbnail Title',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'displayTitles',
-      description: 'Card overlay — supports HTML <br>.',
-      validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'thumbTitleZh',
-      title: 'Thumbnail Title (Chinese)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'displayTitles',
-    }),
-
-    defineField({
-      name: 'headerTitle',
-      title: 'Header Title',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'displayTitles',
-      description: 'Hero title — supports <span class="vp-outline">.',
-      validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'headerTitleZh',
-      title: 'Header Title (Chinese)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'displayTitles',
-    }),
-
-    defineField({
-      name: 'longTitle',
-      title: 'Long Title',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'displayTitles',
-      description: 'Main column title — supports <span class="vp-outline">.',
-      validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'longTitleZh',
-      title: 'Long Title (Chinese)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'displayTitles',
-    }),
-
-    defineField({
-      name: 'excerpt',
-      title: 'Excerpt (English)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'copy',
-      description: 'Short teaser for hero carousel and cards.',
-    }),
-
-    defineField({
-      name: 'excerptZh',
-      title: 'Excerpt (Chinese)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'copy',
-    }),
-
-    defineField({
-      name: 'description',
-      title: 'Description (English)',
-      type: 'text',
-      rows: 4,
-      group: 'content',
-      fieldset: 'copy',
-      validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'descriptionZh',
-      title: 'Description (Chinese)',
-      type: 'text',
-      rows: 4,
-      group: 'content',
-      fieldset: 'copy',
-    }),
-
-    defineField({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
       group: 'media',
-      options: { hotspot: true },
+      options: {hotspot: true},
       validation: (rule) => rule.required(),
     }),
 
-    defineField({
+    ...defineLocalePair({
       name: 'vimeoUrl',
-      title: 'Vimeo URL',
+      zhName: 'xinpianchangUrl',
+      title: 'Video URL',
       type: 'url',
       group: 'media',
-      fieldset: 'videoUrls',
-      validation: (rule) =>
-        rule.required().uri({ scheme: ['http', 'https'] }),
+      description:
+        'Vimeo or YouTube for English (YouTube only when Vimeo cannot host). Xinpianchang for Chinese.',
+      validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
+      zhValidation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      optional: false,
     }),
 
-    defineField({
-      name: 'xinpianchangUrl',
-      title: 'Xinpianchang URL',
-      type: 'url',
+    ...defineLocalePair({
+      name: 'heroFilmTitle',
+      title: 'Hero Film Title',
+      type: 'string',
       group: 'media',
-      fieldset: 'videoUrls',
-      description: 'Shown on /zh/ portfolio pages when set.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      description:
+        'Only use if different from Campaign Title, typically for multi-video campaigns.',
     }),
 
     defineField({
@@ -229,50 +281,26 @@ export const portfolioEntry = defineType({
     }),
 
     defineField({
-      name: 'videoFormats',
-      title: 'Video Formats',
-      type: 'array',
-      group: 'taxonomies',
-      fieldset: 'taxonomy',
-      of: [{ type: 'reference', to: [{ type: 'videoFormat' }] }],
-      components: { input: TaxonomyCheckboxInput },
-    }),
-
-    defineField({
-      name: 'industries',
-      title: 'Industries',
-      type: 'array',
-      group: 'taxonomies',
-      fieldset: 'taxonomy',
-      of: [{ type: 'reference', to: [{ type: 'industry' }] }],
-      components: { input: TaxonomyCheckboxInput },
-    }),
-
-    defineField({
-      name: 'markets',
-      title: 'Markets',
-      type: 'array',
-      group: 'taxonomies',
-      fieldset: 'taxonomy',
-      of: [{ type: 'reference', to: [{ type: 'market' }] }],
-      components: { input: TaxonomyCheckboxInput },
-    }),
-
-    defineField({
       name: 'clients',
-      title: 'Clients',
+      title: 'Clients (legacy)',
       type: 'array',
-      group: 'taxonomies',
-      fieldset: 'people',
+      group: 'content',
+      hidden: true,
+      readOnly: true,
+      description:
+        'Legacy Brand taxonomy refs. Prefer creditIdentity links on Crew Credits → Brand. Kept for historical data.',
       of: [{ type: 'reference', to: [{ type: 'client' }] }],
     }),
 
     defineField({
       name: 'crewMembers',
-      title: 'Crew Members',
+      title: 'Crew Members (legacy)',
       type: 'array',
-      group: 'taxonomies',
-      fieldset: 'people',
+      group: 'content',
+      hidden: true,
+      readOnly: true,
+      description:
+        'Legacy Director / DOP / Art Director taxonomy refs. Prefer creditIdentity links on Crew Credits. Kept for historical data.',
       of: [{ type: 'reference', to: [{ type: 'crewMember' }] }],
     }),
 
@@ -280,8 +308,10 @@ export const portfolioEntry = defineType({
       name: 'platforms',
       title: 'Platforms',
       type: 'array',
-      group: 'taxonomies',
-      fieldset: 'people',
+      group: 'content',
+      hidden: true,
+      readOnly: true,
+      description: 'Legacy field — not used. Kept on documents for historical data only.',
       of: [{ type: 'reference', to: [{ type: 'platform' }] }],
     }),
 
@@ -292,54 +322,8 @@ export const portfolioEntry = defineType({
       group: 'credits',
       of: [{ type: 'crewCredit' }],
       description:
-        'Download the CSV template, add crew credits via Claude, then upload and preview the import for confirming. All names must be comma-separated. Click a tag to edit the name or attach a link.',
+        'Download the CSV template, add crew credits via Claude, then upload and preview the import for confirming. All names must be comma-separated. Click a tag to edit the name or attach a link. Brand / Director / DOP / Art Director / Editor names link to stable Credit Identities for Work Library filters.',
       components: { input: CrewCreditsInput },
-    }),
-
-    defineField({
-      name: 'credits',
-      title: 'Legacy Credits',
-      type: 'object',
-      hidden: true,
-      readOnly: true,
-      description: 'Archived WordPress/ACF credits — kept in Sanity for reference; not shown in Studio.',
-      fields: [
-        defineField({
-          name: 'production',
-          title: 'Production',
-          type: 'productionCredits',
-        }),
-        defineField({
-          name: 'camera',
-          title: 'Camera',
-          type: 'cameraCredits',
-        }),
-        defineField({
-          name: 'ge',
-          title: 'G&E',
-          type: 'geCredits',
-        }),
-        defineField({
-          name: 'art',
-          title: 'Art',
-          type: 'artCredits',
-        }),
-        defineField({
-          name: 'casting',
-          title: 'Casting',
-          type: 'castingCredits',
-        }),
-        defineField({
-          name: 'stills',
-          title: 'Stills',
-          type: 'stillsCredits',
-        }),
-        defineField({
-          name: 'post',
-          title: 'Post',
-          type: 'postCredits',
-        }),
-      ],
     }),
 
     defineField({

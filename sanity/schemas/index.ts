@@ -12,6 +12,8 @@ import { industry } from './industry';
 import { market } from './market';
 import { client } from './client';
 import { crewMember } from './crewMember';
+import { creditIdentity } from './creditIdentity';
+import { translatedPhrase } from './translatedPhrase';
 import { platform } from './platform';
 import { portfolioEntry } from './portfolioEntry';
 import { blogPost } from './blogPost';
@@ -20,43 +22,33 @@ import { trashRecord } from './trashRecord';
 
 import { seoFields } from './objects/seoFields';
 import { trashMetadata } from './objects/trashMetadata';
-import { creditsAdditionalRow } from './objects/creditsAdditionalRow';
-import { productionCredits } from './objects/productionCredits';
-import { cameraCredits } from './objects/cameraCredits';
-import { geCredits } from './objects/geCredits';
-import { artCredits } from './objects/artCredits';
-import { castingCredits } from './objects/castingCredits';
-import { stillsCredits } from './objects/stillsCredits';
-import { postCredits } from './objects/postCredits';
 import { crewPerson } from './objects/crewPerson';
 import { crewCredit } from './objects/crewCredit';
 import { additionalVideo } from './objects/additionalVideo';
-import { heroSlide } from './objects/heroSlide';
 import { founder } from './objects/founder';
+import { brandLogoItem } from './objects/brandLogoItem';
+import { campaignCta } from './objects/campaignCta';
 import { pdfDownload } from './objects/pdfDownload';
 import { imageGallery } from './objects/imageGallery';
 import { ctaButton } from './objects/ctaButton';
+import { videoEmbed } from './objects/videoEmbed';
+import { portableTextBody } from './objects/portableTextBody';
 
 export const schemaTypes = [
   // Shared objects
   seoFields,
   trashMetadata,
-  creditsAdditionalRow,
-  productionCredits,
-  cameraCredits,
-  geCredits,
-  artCredits,
-  castingCredits,
-  stillsCredits,
-  postCredits,
   crewPerson,
   crewCredit,
   additionalVideo,
-  heroSlide,
   founder,
+  brandLogoItem,
+  campaignCta,
   pdfDownload,
   imageGallery,
   ctaButton,
+  videoEmbed,
+  portableTextBody,
 
   // Documents
   siteSettings,
@@ -66,6 +58,8 @@ export const schemaTypes = [
   market,
   client,
   crewMember,
+  creditIdentity,
+  translatedPhrase,
   platform,
   portfolioEntry,
   blogPost,

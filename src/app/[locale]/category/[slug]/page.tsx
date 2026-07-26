@@ -10,9 +10,12 @@ import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
+import { permanentRedirect } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { taxonomyArchiveTitle, blogCategoryDescription, buildPageMetadata } from '@/lib/metadata';
-import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
+import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -64,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     enPath: `/category/${category.slug}`,
     zhPath: `/zh/类别/${category.slugZh || category.slug}`,
     title: taxonomyArchiveTitle(title),
-    description: blogCategoryDescription(title),
+    description: blogCategoryDescription(title, locale as Locale),
     type: 'website',
   });
 }
@@ -82,14 +85,36 @@ export default async function CategoryArchivePage({ params }: Props) {
 
   if (!category) notFound();
 
-  const [posts, categories, heroImage] = await Promise.all([
+  const canonicalSlug = canonicalSlugForLocale(
+    typedLocale,
+    slug,
+    category.slug,
+    category.slugZh,
+  );
+  if (canonicalSlug) {
+    permanentRedirect({
+      href: {
+        pathname: '/category/[slug]',
+        params: { slug: canonicalSlug },
+      },
+      locale: typedLocale,
+    });
+  }
+
+  const [posts, categories, heroImage, phrases] = await Promise.all([
     sanityClient.fetch<BlogPostCardData[]>(POSTS_BY_CATEGORY_QUERY, { slug }),
     sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
     sanityClient.fetch<SanityImage | null>(CATEGORY_HERO_IMAGE_QUERY, { slug }),
+    getPhraseRecord(),
   ]);
 
   const heroTitle = decodeHtmlEntities(
-    typedLocale === 'zh' && category.titleZh ? category.titleZh : category.title,
+    pickLocaleFieldWithPhrases(
+      typedLocale,
+      category.title,
+      category.titleZh,
+      phrases,
+    ),
   );
 
   const activeSlug =
@@ -115,7 +140,12 @@ export default async function CategoryArchivePage({ params }: Props) {
             <div className="lg:col-span-8">
               <div className="vp-news-posts flex flex-col gap-16">
                 {posts.map((post) => (
-                  <BlogPostCard key={post._id} post={post} locale={typedLocale} />
+                  <BlogPostCard
+                    key={post._id}
+                    post={post}
+                    locale={typedLocale}
+                    phrases={phrases}
+                  />
                 ))}
               </div>
             </div>
@@ -125,6 +155,7 @@ export default async function CategoryArchivePage({ params }: Props) {
                 categories={categories}
                 locale={typedLocale}
                 activeSlug={activeSlug}
+                phrases={phrases}
               />
             </div>
           </div>

@@ -5,7 +5,9 @@
     "titleZh": "中国",
     "slug": "china",
     "slugZh": "中国",
-    "sanityType": "market"
+    "sanityType": "market",
+    "description": "Vantage Pictures delivers high-end commercial and branded content production for Chinese brands expanding domestically and internationally. With extensive experience working with leading consumer tech and electronics companies, we combine global production standards with a deep understanding of regional market expectations. Our China productions focus on precision execution, cinematic storytelling, and scalable campaigns designed for digital and broadcast platforms.",
+    "descriptionZh": "Vantage Pictures 为拓展国内和国际市场的中国品牌提供高端商业和品牌内容制作服务。凭借与领先消费科技和电子产品公司合作的丰富经验，我们将全球制作标准与对区域市场期望的深刻理解相结合。我们在中国的制作注重精准执行、电影化故事讲述，以及为数字和广播平台设计的可扩展活动。"
   },
   {
     "wpTermId": 174,
@@ -13,7 +15,9 @@
     "titleZh": "新加坡",
     "slug": "singapore",
     "slugZh": "新加坡",
-    "sanityType": "market"
+    "sanityType": "market",
+    "description": "Vantage Pictures produces commercial campaigns and branded films for companies operating in Singapore’s innovation-driven market. We combine strategic clarity with cinematic craft to deliver polished campaigns tailored to regional and international audiences. Our Singapore productions emphasize efficiency, refined visual language, and disciplined execution across technology, finance, and lifestyle sectors.",
+    "descriptionZh": "Vantage Pictures 为在新加坡创新驱动型市场运营的公司制作商业广告系列和品牌影片。我们将战略清晰度与电影制作工艺相结合，为区域和国际受众量身打造精美的广告系列。我们在新加坡的制作在科技、金融和生活方式领域注重效率、精致的视觉语言和严谨的执行。"
   },
   {
     "wpTermId": 176,
@@ -21,7 +25,9 @@
     "titleZh": "台湾",
     "slug": "taiwan",
     "slugZh": "台湾",
-    "sanityType": "market"
+    "sanityType": "market",
+    "description": "Vantage Pictures provides commercial and branded video production services for Taiwanese technology and manufacturing brands seeking global reach. We transform product innovation into clear, cinematic narratives that resonate across international markets. Our Taiwan productions combine strategic messaging, product-focused storytelling, and high-end commercial craft.",
+    "descriptionZh": "Vantage Pictures 为寻求全球影响力的台湾技术和制造品牌提供商业和品牌视频制作服务。我们将产品创新转化为清晰的电影叙事，在国际市场上引起共鸣。我们在台湾制作的作品结合了战略信息传递、以产品为中心的故事讲述和高端商业工艺。"
   },
   {
     "wpTermId": 173,
@@ -29,7 +35,9 @@
     "titleZh": "美国",
     "slug": "usa",
     "slugZh": "美国",
-    "sanityType": "market"
+    "sanityType": "market",
+    "description": "Vantage Pictures produces commercial campaigns and branded films for US-based companies and international brands targeting the American market. Our productions balance cinematic storytelling with disciplined commercial strategy, delivering impactful product launches, technology films, and brand-driven campaigns designed for digital and broadcast distribution.",
+    "descriptionZh": "Vantage Pictures 为美国公司和面向美国市场的国际品牌制作商业广告活动和品牌宣传片。我们的制作在电影叙事和严谨的商业策略之间取得平衡，交付具有影响力的产品发布、技术宣传片以及为数字和广播渠道设计的品牌驱动型广告活动。"
   },
   {
     "wpTermId": 171,
@@ -37,6 +45,8 @@
     "titleZh": "越南",
     "slug": "vietnam",
     "slugZh": "越南",
-    "sanityType": "market"
+    "sanityType": "market",
+    "description": "Based in Ho Chi Minh City, Vantage Pictures produces high-end commercial campaigns and branded films for leading Vietnamese companies across finance, FMCG, and consumer brands. We combine international production standards with local insight, delivering cinematic storytelling and disciplined execution tailored to Vietnam’s rapidly evolving market.",
+    "descriptionZh": "Vantage Pictures 总部位于胡志明市，为越南领先的金融、快速消费品和消费品牌公司制作高端商业广告和品牌宣传片。我们将国际制作标准与本土洞察相结合，提供电影般的叙事和严谨的执行，以适应越南快速发展的市场。"
   }
 ]

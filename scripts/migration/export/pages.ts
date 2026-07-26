@@ -10,8 +10,6 @@ import { fetchAllPostMeta, fetchPosts } from '../lib/wp-helpers';
 
 export interface ExportedHeroSlide {
   portfolioWpId: number;
-  buttonLabel: string;
-  buttonLabelZh?: string;
 }
 
 export interface ExportedFounder {
@@ -19,9 +17,6 @@ export interface ExportedFounder {
   jobTitle: string;
   jobTitleZh?: string;
   imageWpId?: number;
-  bio: string;
-  bioZh?: string;
-  sameAs: string[];
 }
 
 export interface ExportedPage {
@@ -38,12 +33,13 @@ export interface ExportedPage {
   bodyHtml: string;
   bodyHtmlZh?: string;
   heroSlides?: ExportedHeroSlide[];
+  /** Homepage “A Bit of Our Work” gallery (WP vp/portfolio-gallery ids). */
+  featuredWorkWpIds?: number[];
   founders?: ExportedFounder[];
   noIndex: boolean;
   seo: {
     metaDescription?: string;
     metaDescriptionZh?: string;
-    focusKeyword?: string;
   };
 }
 
@@ -73,21 +69,34 @@ export async function exportPages(): Promise<ExportedPage[]> {
     const thumbnailId = Number(meta['_thumbnail_id'] ?? 0) || undefined;
 
     let heroSlides: ExportedHeroSlide[] | undefined;
+    let featuredWorkWpIds: number[] | undefined;
     if (post.post_name === 'home') {
       const slideRows = parseAcfRepeater(meta, 'slides');
       const slides: ExportedHeroSlide[] = [];
       for (const row of slideRows) {
         const portfolioWpId = Number(row.portfolio_item ?? 0);
         if (!portfolioWpId) continue;
-        const buttonLabel = (row.button_label ?? 'Watch').trim() || 'Watch';
-        const buttonLabelZh = await translateEnhanced(buttonLabel);
         slides.push({
           portfolioWpId,
-          buttonLabel,
-          buttonLabelZh: buttonLabelZh !== buttonLabel ? buttonLabelZh : undefined,
         });
       }
       if (slides.length) heroSlides = slides;
+
+      const galleryMatch = post.post_content.match(
+        /<!--\s*wp:vp\/portfolio-gallery\s+(\{[\s\S]*?\})\s*\/-->/,
+      );
+      if (galleryMatch) {
+        try {
+          const attrs = JSON.parse(galleryMatch[1]) as { ids?: string };
+          const ids = (attrs.ids ?? '')
+            .split(',')
+            .map((s) => Number(s.trim()))
+            .filter((n) => Number.isFinite(n) && n > 0);
+          if (ids.length) featuredWorkWpIds = ids;
+        } catch {
+          // ignore malformed gallery attrs
+        }
+      }
     }
 
     let founders: ExportedFounder[] | undefined;
@@ -98,20 +107,12 @@ export async function exportPages(): Promise<ExportedPage[]> {
         const name = (row.name ?? '').trim();
         if (!name) continue;
         const imageWpId = Number(row.image ?? 0) || undefined;
-        const sameAsRaw = (row.same_as ?? '').trim();
-        const sameAs = sameAsRaw
-          ? sameAsRaw.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean)
-          : [];
         const jobTitle = (row.job_title ?? '').trim() || 'Co-Founder';
-        const bio = (row.bio ?? '').trim() || name;
         parsed.push({
           name,
           jobTitle,
           jobTitleZh: await translateEnhanced(jobTitle),
           imageWpId,
-          bio,
-          bioZh: await translateEnhanced(bio),
-          sameAs,
         });
         if (imageWpId) await getAttachment(imageWpId);
       }
@@ -134,12 +135,12 @@ export async function exportPages(): Promise<ExportedPage[]> {
       bodyHtml: post.post_content,
       bodyHtmlZh,
       heroSlides,
+      featuredWorkWpIds,
       founders,
       noIndex: post.post_name === 'work-internal',
       seo: {
         metaDescription: yoast.metaDescription,
         metaDescriptionZh,
-        focusKeyword: yoast.focusKeyword,
       },
     });
 

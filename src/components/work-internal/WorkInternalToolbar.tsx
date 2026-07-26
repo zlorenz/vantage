@@ -4,16 +4,16 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { flattenTaxonomyTree, optionIndent } from '@/lib/taxonomy-tree';
 import type {
-  ClientTerm,
-  CrewMemberTerm,
+  CreditIdentityTerm,
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
 import {
-  countForFilterValue,
+  countFacetOptions,
   type LibraryFilterContext,
 } from './filter-entries';
 import { hasActiveFilters } from './url-state';
@@ -25,15 +25,20 @@ import type {
 
 interface WorkInternalToolbarProps {
   entries: InternalLibraryEntry[];
+  /** Immediate filters (drives controlled inputs). */
   filters: LibraryFilters;
+  /** Deferred filters used for expensive facet counts. */
+  deferredFilters: LibraryFilters;
   sort: LibrarySort;
   view: LibraryViewMode;
   resultCount: number;
   totalCount: number;
-  clients: ClientTerm[];
-  directors: CrewMemberTerm[];
-  dops: CrewMemberTerm[];
-  artDirectors: CrewMemberTerm[];
+  filtersPending?: boolean;
+  clients: CreditIdentityTerm[];
+  directors: CreditIdentityTerm[];
+  dops: CreditIdentityTerm[];
+  artDirectors: CreditIdentityTerm[];
+  editors: CreditIdentityTerm[];
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
@@ -48,17 +53,52 @@ function optionCountLabel(count: number, label: string): string {
   return count > 0 ? `${label} (${count})` : label;
 }
 
+function identityOptionsWithCounts(
+  terms: CreditIdentityTerm[],
+  counts: Map<string, number>,
+  selectedId: string,
+): { value: string; label: string; disabled: boolean }[] {
+  return terms.map((term) => {
+    const count = counts.get(term._id) ?? 0;
+    return {
+      value: term._id,
+      label: optionCountLabel(count, decodeHtmlEntities(term.name)),
+      disabled: count === 0 && selectedId !== term._id,
+    };
+  });
+}
+
+function taxonomyOptionsWithCounts(
+  terms: TaxonomyTerm[],
+  counts: Map<string, number>,
+  selectedSlug: string,
+): { value: string; label: string; disabled: boolean }[] {
+  return flattenTaxonomyTree(terms).map(({ term, depth }) => {
+    const count = counts.get(term.slug) ?? 0;
+    return {
+      value: term.slug,
+      label:
+        optionIndent(depth) +
+        optionCountLabel(count, decodeHtmlEntities(term.title)),
+      disabled: count === 0 && selectedSlug !== term.slug,
+    };
+  });
+}
+
 export function WorkInternalToolbar({
   entries,
   filters,
+  deferredFilters,
   sort,
   view,
   resultCount,
   totalCount,
+  filtersPending = false,
   clients,
   directors,
   dops,
   artDirectors,
+  editors,
   videoFormats,
   industries,
   markets,
@@ -77,35 +117,133 @@ export function WorkInternalToolbar({
     onFiltersChange({ ...filters, [key]: value });
   }
 
-  function slugOption(
-    key: keyof LibraryFilters,
-    slug: string,
-    label: string,
-  ): { value: string; label: string; disabled: boolean } {
-    const count = countForFilterValue(
+  // Facet counts ignore free-text search so typing never re-scores every
+  // dropdown option. Dropdown/visibility changes still update counts.
+  const facetFilters = useMemo(
+    (): LibraryFilters => ({ ...deferredFilters, q: '' }),
+    [
+      deferredFilters.client,
+      deferredFilters.director,
+      deferredFilters.dop,
+      deferredFilters['art-director'],
+      deferredFilters.editor,
+      deferredFilters.format,
+      deferredFilters.industry,
+      deferredFilters.market,
+      deferredFilters.visibility,
+    ],
+  );
+
+  const clientSelectOptions = useMemo(() => {
+    const counts = countFacetOptions(
       entries,
-      filters,
-      key,
-      slug,
+      facetFilters,
+      'client',
+      clients.map((c) => c._id),
       filterCtx,
     );
-    return {
-      value: slug,
-      label: optionCountLabel(count, decodeHtmlEntities(label)),
-      disabled: count === 0 && filters[key] !== slug,
-    };
-  }
+    return identityOptionsWithCounts(clients, counts, facetFilters.client);
+  }, [entries, facetFilters, clients, filterCtx]);
 
-  /** Taxonomy options ordered parent-first with indented subcategories. */
-  function taxonomyOptions(
-    key: keyof LibraryFilters,
-    terms: TaxonomyTerm[],
-  ): { value: string; label: string; disabled: boolean }[] {
-    return flattenTaxonomyTree(terms).map(({ term, depth }) => {
-      const opt = slugOption(key, term.slug, term.title);
-      return { ...opt, label: optionIndent(depth) + opt.label };
-    });
-  }
+  const directorSelectOptions = useMemo(() => {
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'director',
+      directors.map((c) => c._id),
+      filterCtx,
+    );
+    return identityOptionsWithCounts(
+      directors,
+      counts,
+      facetFilters.director,
+    );
+  }, [entries, facetFilters, directors, filterCtx]);
+
+  const dopSelectOptions = useMemo(() => {
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'dop',
+      dops.map((c) => c._id),
+      filterCtx,
+    );
+    return identityOptionsWithCounts(dops, counts, facetFilters.dop);
+  }, [entries, facetFilters, dops, filterCtx]);
+
+  const artDirectorSelectOptions = useMemo(() => {
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'art-director',
+      artDirectors.map((c) => c._id),
+      filterCtx,
+    );
+    return identityOptionsWithCounts(
+      artDirectors,
+      counts,
+      facetFilters['art-director'],
+    );
+  }, [entries, facetFilters, artDirectors, filterCtx]);
+
+  const editorSelectOptions = useMemo(() => {
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'editor',
+      editors.map((c) => c._id),
+      filterCtx,
+    );
+    return identityOptionsWithCounts(editors, counts, facetFilters.editor);
+  }, [entries, facetFilters, editors, filterCtx]);
+
+  const formatSelectOptions = useMemo(() => {
+    const flat = flattenTaxonomyTree(videoFormats);
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'format',
+      flat.map(({ term }) => term.slug),
+      filterCtx,
+    );
+    return taxonomyOptionsWithCounts(
+      videoFormats,
+      counts,
+      facetFilters.format,
+    );
+  }, [entries, facetFilters, videoFormats, filterCtx]);
+
+  const industrySelectOptions = useMemo(() => {
+    const flat = flattenTaxonomyTree(industries);
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'industry',
+      flat.map(({ term }) => term.slug),
+      filterCtx,
+    );
+    return taxonomyOptionsWithCounts(
+      industries,
+      counts,
+      facetFilters.industry,
+    );
+  }, [entries, facetFilters, industries, filterCtx]);
+
+  const marketSelectOptions = useMemo(() => {
+    const flat = flattenTaxonomyTree(markets);
+    const counts = countFacetOptions(
+      entries,
+      facetFilters,
+      'market',
+      flat.map(({ term }) => term.slug),
+      filterCtx,
+    );
+    return taxonomyOptionsWithCounts(
+      markets,
+      counts,
+      facetFilters.market,
+    );
+  }, [entries, facetFilters, markets, filterCtx]);
 
   return (
     <div className="vp-internal-toolbar">
@@ -122,7 +260,11 @@ export function WorkInternalToolbar({
         </label>
 
         <div className="vp-internal-toolbar__meta">
-          <span className="vp-internal-count" aria-live="polite">
+          <span
+            className="vp-internal-count"
+            aria-live="polite"
+            aria-busy={filtersPending || undefined}
+          >
             {resultCount === totalCount
               ? `${resultCount} projects`
               : `${resultCount} of ${totalCount}`}
@@ -203,49 +345,49 @@ export function WorkInternalToolbar({
           label="Client"
           value={filters.client}
           onChange={(v) => patchFilter('client', v)}
-          options={clients.map((c) =>
-            slugOption('client', c.slug, c.name),
-          )}
+          options={clientSelectOptions}
         />
         <FilterSelect
           label="Director"
           value={filters.director}
           onChange={(v) => patchFilter('director', v)}
-          options={directors.map((c) =>
-            slugOption('director', c.slug, c.name),
-          )}
+          options={directorSelectOptions}
         />
         <FilterSelect
           label="DOP"
           value={filters.dop}
           onChange={(v) => patchFilter('dop', v)}
-          options={dops.map((c) => slugOption('dop', c.slug, c.name))}
+          options={dopSelectOptions}
         />
         <FilterSelect
           label="Art Director"
           value={filters['art-director']}
           onChange={(v) => patchFilter('art-director', v)}
-          options={artDirectors.map((c) =>
-            slugOption('art-director', c.slug, c.name),
-          )}
+          options={artDirectorSelectOptions}
+        />
+        <FilterSelect
+          label="Editor"
+          value={filters.editor}
+          onChange={(v) => patchFilter('editor', v)}
+          options={editorSelectOptions}
         />
         <FilterSelect
           label="Format"
           value={filters.format}
           onChange={(v) => patchFilter('format', v)}
-          options={taxonomyOptions('format', videoFormats)}
+          options={formatSelectOptions}
         />
         <FilterSelect
           label="Industry"
           value={filters.industry}
           onChange={(v) => patchFilter('industry', v)}
-          options={taxonomyOptions('industry', industries)}
+          options={industrySelectOptions}
         />
         <FilterSelect
           label="Market"
           value={filters.market}
           onChange={(v) => patchFilter('market', v)}
-          options={taxonomyOptions('market', markets)}
+          options={marketSelectOptions}
         />
         <label className="vp-internal-filter">
           <span className="vp-internal-filter__label">Sort</span>

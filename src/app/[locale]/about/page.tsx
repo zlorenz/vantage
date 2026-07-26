@@ -18,6 +18,9 @@ import {
   buildPageMetadata,
 } from '@/lib/metadata';
 import { filterAboutBodyBlocks } from '@/lib/about-content';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
+import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import {
   aboutBreadcrumb,
@@ -64,9 +67,12 @@ export default async function AboutPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'about',
-  });
+  const [page, phrases] = await Promise.all([
+    sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
+      slug: 'about',
+    }),
+    getPhraseRecord(),
+  ]);
 
   if (!page) notFound();
 
@@ -76,12 +82,18 @@ export default async function AboutPage({ params }: Props) {
       : page.heroTitle || 'About <span class="vp-outline">Us</span>';
 
   const bodyBlocks = filterAboutBodyBlocks(
-    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body,
+    typedLocale === 'zh' && page.bodyZh?.length
+      ? mergeChineseBodyWithEnglishMedia(page.bodyZh, page.body)
+      : page.body,
     page.founders?.map((founder) => founder.name) ?? []
   );
 
-  const pageTitleLabel =
-    typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
+  const pageTitleLabel = pickLocaleFieldWithPhrases(
+    typedLocale,
+    page.title,
+    page.titleZh,
+    phrases,
+  );
   const t = await getTranslations('About');
 
   return (
@@ -109,7 +121,12 @@ export default async function AboutPage({ params }: Props) {
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {page.founders.map((founder) => (
-                <FounderCard key={founder.name} founder={founder} />
+                <FounderCard
+                  key={founder.name}
+                  founder={founder}
+                  locale={typedLocale}
+                  phrases={phrases}
+                />
               ))}
             </div>
           </div>

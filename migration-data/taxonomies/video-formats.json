@@ -4,27 +4,35 @@
     "title": "Brand Film",
     "titleZh": "品牌电影",
     "slug": "brand-film",
-    "sanityType": "videoFormat"
+    "sanityType": "videoFormat",
+    "description": "Cinematic brand films by Vantage Pictures are built around story, strategy, and high-end commercial craft. We create brand films that move beyond product features to express identity, vision, and long-term ambition through emotionally resonant storytelling and refined visual direction. Combining strategic messaging, cinematic cinematography, authentic performances, and disciplined production execution, Vantage Pictures delivers powerful brand films for global companies seeking meaningful connection and lasting impact across digital, broadcast, and corporate platforms.",
+    "descriptionZh": "Vantage Pictures 的电影品牌宣传片围绕故事、战略和高端商业工艺展开。我们制作的品牌影片超越了产品功能，通过情感共鸣的故事讲述和精致的视觉指导来表达身份、愿景和长期雄心。Vantage Pictures 将战略信息、电影摄影、真实表演和严谨的制作执行结合在一起，为那些在数字、广播和企业平台上寻求有意义的联系和持久影响的全球公司提供强大的品牌影片。"
   },
   {
     "wpTermId": 33,
     "title": "Branded Documentary",
     "titleZh": "品牌纪录片",
     "slug": "branded-documentary",
-    "sanityType": "videoFormat"
+    "sanityType": "videoFormat",
+    "description": "Branded documentary production at Vantage Pictures blends authentic human storytelling with high-end commercial craft. We create character-driven films that explore innovation, enterprise technology, and consumer electronics through real people and real environments. Designed for brands seeking credibility and emotional depth, our documentary work combines immersive cinematography, natural performances, and disciplined production to deliver powerful long-form and mid-form films for digital, broadcast, and corporate platforms.",
+    "descriptionZh": "Vantage Pictures 的品牌纪录片制作融合了真实的人物故事和高端的商业工艺。我们通过真实的人物和真实的环境，制作以人物为驱动力的影片，探索创新、企业技术和消费电子产品。我们的纪录片作品专为追求可信度和情感深度的品牌而设计，将身临其境的电影摄影、自然的表演和严谨的制作相结合，为数字、广播和企业平台提供强有力的长篇和中篇影片。"
   },
   {
     "wpTermId": 34,
     "title": "Commercial Spot",
     "titleZh": "商业广告",
     "slug": "commercial-spot",
-    "sanityType": "videoFormat"
+    "sanityType": "videoFormat",
+    "description": "Commercial spot production at Vantage Pictures focuses on high-impact, short-form campaigns designed for entertainment, engagement, and brand recall. From 30 to 90-second television and digital commercials, we create visually compelling spots that prioritize storytelling, tone, and audience connection over product-heavy messaging. With a commercial film production approach grounded in strong concepts, precise pacing, and cinematic execution, our team delivers memorable campaigns that perform across broadcast, online, and social platforms.",
+    "descriptionZh": "Vantage Pictures 的商业广告制作专注于高影响力、短篇幅的广告活动，旨在吸引娱乐、互动和品牌记忆。从 30 到 90 秒的电视和数字广告，我们创造具有视觉吸引力的广告，重视故事叙述、情感基调和观众连接，而非产品信息堆砌。我们的团队以实实在在的创意、精准的节奏和电影般的执行力作为商业影片制作的基础，交付在广播、线上和社交平台上表现出色的难忘广告活动。"
   },
   {
     "wpTermId": 36,
     "title": "Product Video",
     "titleZh": "产品视频",
     "slug": "product-video",
-    "sanityType": "videoFormat"
+    "sanityType": "videoFormat",
+    "description": "Product video production for tech brands is a specialty of Vantage Pictures, focused on translating advanced features into clear, cinematic storytelling. From smartphones and consumer electronics to robotics and smart hardware, we craft product-focused films that balance technical precision with visual impact. Our approach combines strategic messaging, refined cinematography, and commercial-level production execution to create launch videos and product campaigns that elevate positioning while clearly communicating performance and innovation.",
+    "descriptionZh": "Vantage Pictures专注于为科技品牌制作产品视频，将先进的功能转化为清晰、电影化的叙事。从智能手机、消费电子产品到机器人和智能硬件，我们精心打造以产品为中心、兼具技术精准度和视觉冲击力的影片。我们的方法结合了战略信息传递、精湛的摄影和商业级别的制作执行，以创作上市视频和产品宣传活动，提升品牌定位，同时清晰地传达性能和创新。"
   }
 ]

@@ -3,11 +3,11 @@
  * Option `value`s stay English (API / email / visibility logic); only labels translate.
  */
 
-import type { Locale } from '@/i18n/routing';
 import {
   BUDGET_RANGE_OPTIONS,
   CAMPAIGN_BRIEF_FIELD_LABELS,
   CAMPAIGN_BRIEF_FORM_DESCRIPTION,
+  CAMPAIGN_BRIEF_MAX_FILES,
   CAMPAIGN_BRIEF_STEPS,
   CAMPAIGN_BRIEF_SUCCESS_MESSAGE,
   CAMPAIGN_FOCUS_OPTIONS,
@@ -17,7 +17,9 @@ import {
   PROJECT_TYPE_OPTIONS,
   type CampaignBriefFieldKey,
   type CampaignBriefStepConfig,
-} from '@/lib/campaign-brief-fields';
+} from './campaign-brief-fields'
+
+type Locale = 'en' | 'zh'
 
 export type CampaignBriefLabeledOption = {
   value: string;
@@ -330,4 +332,109 @@ const UI_ZH: CampaignBriefUi = {
 
 export function getCampaignBriefUi(locale: Locale): CampaignBriefUi {
   return locale === 'zh' ? UI_ZH : UI_EN;
+}
+
+export type CampaignBriefPhrasePair = {
+  en: string
+  zh: string
+  codePath: string
+}
+
+/**
+ * Flatten Campaign Brief EN→ZH copy for the Translations phrase inventory (Interface).
+ * Template strings use representative examples (step 1/7, max files, sample filename).
+ */
+export function listCampaignBriefPhrasePairs(): CampaignBriefPhrasePair[] {
+  const out: CampaignBriefPhrasePair[] = []
+  const seen = new Set<string>()
+  const base = 'src/lib/campaign-brief-i18n.ts'
+
+  const push = (enRaw: string, zhRaw: string, path: string) => {
+    const en = enRaw.replace(/\s+/g, ' ').trim()
+    const zh = zhRaw.replace(/\s+/g, ' ').trim()
+    if (!en || seen.has(en)) return
+    seen.add(en)
+    out.push({en, zh, codePath: `${base} → ${path}`})
+  }
+
+  push(UI_EN.formDescription, UI_ZH.formDescription, 'formDescription')
+  push(UI_EN.successMessage, UI_ZH.successMessage, 'successMessage')
+  push(UI_EN.submitAnother, UI_ZH.submitAnother, 'submitAnother')
+  push(UI_EN.stepCount(1, 7), UI_ZH.stepCount(1, 7), 'stepCount')
+  push(UI_EN.previous, UI_ZH.previous, 'previous')
+  push(UI_EN.next, UI_ZH.next, 'next')
+  push(UI_EN.submitBrief, UI_ZH.submitBrief, 'submitBrief')
+  push(UI_EN.submitError, UI_ZH.submitError, 'submitError')
+  push(UI_EN.fieldRequired, UI_ZH.fieldRequired, 'fieldRequired')
+  push(UI_EN.invalidEmail, UI_ZH.invalidEmail, 'invalidEmail')
+  push(UI_EN.selectPlaceholder, UI_ZH.selectPlaceholder, 'selectPlaceholder')
+  push(UI_EN.nameLabel, UI_ZH.nameLabel, 'nameLabel')
+  push(UI_EN.firstSublabel, UI_ZH.firstSublabel, 'firstSublabel')
+  push(UI_EN.lastSublabel, UI_ZH.lastSublabel, 'lastSublabel')
+  push(UI_EN.briefingMaterials, UI_ZH.briefingMaterials, 'briefingMaterials')
+  push(UI_EN.attachFiles, UI_ZH.attachFiles, 'attachFiles')
+  push(UI_EN.removeFile, UI_ZH.removeFile, 'removeFile')
+  push(UI_EN.acceptedFilesHelp, UI_ZH.acceptedFilesHelp, 'acceptedFilesHelp')
+  push(
+    UI_EN.maxFilesAllowed(CAMPAIGN_BRIEF_MAX_FILES),
+    UI_ZH.maxFilesAllowed(CAMPAIGN_BRIEF_MAX_FILES),
+    'maxFilesAllowed',
+  )
+  push(
+    UI_EN.fileTypeNotAllowed('example.pdf'),
+    UI_ZH.fileTypeNotAllowed('example.pdf'),
+    'fileTypeNotAllowed',
+  )
+
+  for (const key of Object.keys(UI_EN.fieldLabels) as CampaignBriefFieldKey[]) {
+    push(UI_EN.fieldLabels[key], UI_ZH.fieldLabels[key], `fieldLabels.${key}`)
+  }
+
+  for (const key of Object.keys(HINTS_EN) as CampaignBriefFieldKey[]) {
+    const en = HINTS_EN[key]
+    const zh = HINTS_ZH[key] ?? ''
+    if (en) push(en, zh, `hints.${key}`)
+  }
+
+  for (let i = 0; i < UI_EN.steps.length; i++) {
+    const enStep = UI_EN.steps[i]!
+    const zhStep = UI_ZH.steps[i]!
+    push(enStep.title, zhStep.title, `steps[${i}].title`)
+  }
+
+  for (const key of Object.keys(UI_EN.sections) as Array<
+    keyof CampaignBriefUi['sections']
+  >) {
+    push(UI_EN.sections[key], UI_ZH.sections[key], `sections.${key}`)
+  }
+
+  const optionGroups: Array<{
+    path: string
+    en: CampaignBriefLabeledOption[]
+    zh: CampaignBriefLabeledOption[]
+  }> = [
+    {path: 'projectTypes', en: UI_EN.projectTypes, zh: UI_ZH.projectTypes},
+    {
+      path: 'discoverySources',
+      en: UI_EN.discoverySources,
+      zh: UI_ZH.discoverySources,
+    },
+    {path: 'budgetRanges', en: UI_EN.budgetRanges, zh: UI_ZH.budgetRanges},
+    {
+      path: 'deliveryFlexibility',
+      en: UI_EN.deliveryFlexibility,
+      zh: UI_ZH.deliveryFlexibility,
+    },
+    {path: 'campaignFocus', en: UI_EN.campaignFocus, zh: UI_ZH.campaignFocus},
+    {path: 'deliverables', en: UI_EN.deliverables, zh: UI_ZH.deliverables},
+  ]
+
+  for (const group of optionGroups) {
+    group.en.forEach((opt, index) => {
+      const zhOpt = group.zh[index]
+      push(opt.label, zhOpt?.label ?? '', `${group.path}[${index}]`)
+    })
+  }
+
+  return out
 }

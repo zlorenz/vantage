@@ -1,17 +1,21 @@
 /**
- * Standard CTA section copy — shared across Home, About, and Vietnam pages.
+ * Standard CTA section copy — fallback when Site Settings `campaignCta` is empty.
  *
- * Source: WordPress reusable block (WP ID 3781) on vantage.pictures.
- * Not reliably stored in Sanity Portable Text after migration.
+ * Live copy is edited in Sanity Site Settings → Campaign CTA.
+ * Source historically: WordPress reusable block (WP ID 3781).
  */
 
 import type { Locale } from '@/i18n/routing';
+import type { CampaignCta, SiteSettings } from '@/types/sanity';
 
 export interface CtaContent {
   headingHtml: string;
-  paragraphs: [string, string];
+  paragraphs: string[];
   buttonLabel: string;
+  buttonHref: string;
 }
+
+const DEFAULT_BUTTON_HREF = '/video-campaign-brief';
 
 const STANDARD_CTA_EN: CtaContent = {
   headingHtml:
@@ -21,6 +25,7 @@ const STANDARD_CTA_EN: CtaContent = {
     'Start the conversation by filling out our client briefing form, which helps us gather all the details we need to build an accurate quote and production plan tailored to your next project!',
   ],
   buttonLabel: 'TELL US ABOUT YOUR CAMPAIGN',
+  buttonHref: DEFAULT_BUTTON_HREF,
 };
 
 const STANDARD_CTA_ZH: CtaContent = {
@@ -30,34 +35,55 @@ const STANDARD_CTA_ZH: CtaContent = {
     '请填写我们的项目简报表，开启合作沟通。这将帮助我们收集必要信息，为您的下一个项目制定准确的报价与制作计划。',
   ],
   buttonLabel: '提交您的项目需求',
+  buttonHref: DEFAULT_BUTTON_HREF,
 };
 
-export const VIETNAM_CTA_EN: CtaContent = {
-  headingHtml:
-    'PLAN YOUR NEXT PRODUCTION <span class="vp-outline">IN VIETNAM</span>',
-  paragraphs: [
-    'If you are planning a commercial shoot, brand film, or documentary in Vietnam, contact Vantage Pictures to discuss your project requirements.',
-    'Our team will provide detailed production guidance, budgeting support, and on-the-ground expertise tailored to your timeline and objectives.',
-  ],
-  buttonLabel: 'TELL US ABOUT YOUR CAMPAIGN',
-};
-
-export const VIETNAM_CTA_ZH: CtaContent = {
-  headingHtml:
-    '计划下一次制作 <span class="vp-outline">在越南</span>',
-  paragraphs: [
-    '如果您正在越南计划商业拍摄、品牌影片或纪录片，请联系 Vantage Pictures 讨论您的项目需求。',
-    '我们的团队将提供详细的制作指导、预算支持和针对您时间表的现场专业知识。',
-  ],
-  buttonLabel: '提交您的项目需求',
-};
-
-/** Returns standard CTA copy for the given locale. */
+/** Code fallback when Site Settings CTA is missing. */
 export function getStandardCtaContent(locale: Locale): CtaContent {
   return locale === 'zh' ? STANDARD_CTA_ZH : STANDARD_CTA_EN;
 }
 
-/** Returns Vietnam-specific CTA copy for the given locale. */
-export function getVietnamCtaContent(locale: Locale): CtaContent {
-  return locale === 'zh' ? VIETNAM_CTA_ZH : VIETNAM_CTA_EN;
+/** Resolve CTA from Site Settings with locale + code fallback. */
+export function resolveCampaignCta(
+  campaignCta: CampaignCta | null | undefined,
+  locale: Locale,
+): CtaContent {
+  const fallback = getStandardCtaContent(locale);
+  if (!campaignCta) return fallback;
+
+  const headingHtml =
+    locale === 'zh' && campaignCta.headingZh?.trim()
+      ? campaignCta.headingZh
+      : campaignCta.heading?.trim() || fallback.headingHtml;
+
+  const paragraphsRaw =
+    locale === 'zh' && campaignCta.paragraphsZh?.length
+      ? campaignCta.paragraphsZh
+      : campaignCta.paragraphs;
+  const paragraphs = (paragraphsRaw ?? [])
+    .map((p) => (typeof p === 'string' ? p.trim() : ''))
+    .filter(Boolean);
+  const resolvedParagraphs = paragraphs.length ? paragraphs : fallback.paragraphs;
+
+  const buttonLabel =
+    locale === 'zh' && campaignCta.buttonLabelZh?.trim()
+      ? campaignCta.buttonLabelZh
+      : campaignCta.buttonLabel?.trim() || fallback.buttonLabel;
+
+  const buttonHref = campaignCta.buttonHref?.trim() || fallback.buttonHref;
+
+  return {
+    headingHtml,
+    paragraphs: resolvedParagraphs,
+    buttonLabel,
+    buttonHref,
+  };
+}
+
+/** Convenience: resolve from full Site Settings document. */
+export function getCampaignCtaFromSettings(
+  settings: Pick<SiteSettings, 'campaignCta'> | null | undefined,
+  locale: Locale,
+): CtaContent {
+  return resolveCampaignCta(settings?.campaignCta, locale);
 }

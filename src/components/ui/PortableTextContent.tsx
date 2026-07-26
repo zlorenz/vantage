@@ -54,6 +54,11 @@ function createComponents(relaxed = false): PortableTextComponents {
         {children}
       </h3>
     ),
+    h4: ({ children }) => (
+      <h4 className="mb-3 mt-5 text-[clamp(1.15rem,1.4vw,1.25rem)] font-semibold leading-snug">
+        {children}
+      </h4>
+    ),
     normal: ({ children, value }) => {
       const text = getPortableTextBlockPlainText(value as unknown as SanityPortableTextBlock);
 
@@ -124,10 +129,20 @@ function createComponents(relaxed = false): PortableTextComponents {
     },
   },
   types: {
+    videoEmbed: ({ value }) => {
+      const url = (value as { url?: string })?.url;
+      if (!url) return null;
+      return (
+        <div className="vp-pt-videos my-6">
+          <PortableTextVideoEmbed url={url} />
+        </div>
+      );
+    },
     image: ({ value }) => {
-      const image = value as SanityImage & { alt?: string };
+      const image = value as SanityImage & { alt?: string; caption?: string };
       if (!image?.asset) return null;
       const imageUrl = urlForImage(image).width(1200).url();
+      const caption = image.caption?.trim();
       return (
         <figure className="vp-pt-image my-6">
           <Image
@@ -138,6 +153,11 @@ function createComponents(relaxed = false): PortableTextComponents {
             className="h-auto w-full"
             sizes="(max-width: 992px) 100vw, 900px"
           />
+          {caption ? (
+            <figcaption className="mt-2 text-sm font-light text-vp-text-soft">
+              {caption}
+            </figcaption>
+          ) : null}
         </figure>
       );
     },

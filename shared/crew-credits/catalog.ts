@@ -60,6 +60,13 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         aliases: [],
       },
       {
+        key: 'creative_director',
+        label: 'Creative Director',
+        pluralLabel: 'Creative Directors',
+        legacyField: 'prod_creative_director',
+        aliases: ['cd'],
+      },
+      {
         key: 'producer',
         label: 'Producer',
         pluralLabel: 'Producers',
@@ -106,7 +113,7 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         label: 'PA',
         pluralLabel: 'PAs',
         legacyField: 'prod_production_assistant',
-        aliases: ['production assistant', 'production assistants', 'pas'],
+        aliases: ['production assistant', 'production assistants', 'pas', 'runner', 'runners'],
       },
       {
         key: 'product_technician',
@@ -142,6 +149,26 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         pluralLabel: 'BTS',
         legacyField: 'prod_bts',
         aliases: ['behind the scenes', 'behind-the-scenes'],
+      },
+      {
+        key: 'catering',
+        label: 'Catering',
+        pluralLabel: 'Catering',
+        legacyField: 'prod_catering',
+        aliases: ['craft service', 'craft services', 'crafty'],
+      },
+      {
+        key: 'sound_recordist',
+        label: 'Sound Recordist',
+        pluralLabel: 'Sound Recordists',
+        legacyField: 'prod_sound_recordist',
+        aliases: [
+          'soundman',
+          'sound man',
+          'sound recorder',
+          'production sound',
+          'production sound mixer',
+        ],
       },
     ],
   },
@@ -193,6 +220,13 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         aliases: [],
       },
       {
+        key: 'camera_assistants',
+        label: 'Camera Assistants',
+        pluralLabel: 'Camera Assistants',
+        legacyField: 'cam_camera_assistants',
+        aliases: ['camera assistant', 'cam assistants', 'cam assistant'],
+      },
+      {
         key: 'dit',
         label: 'DIT',
         pluralLabel: 'DITs',
@@ -232,7 +266,12 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         label: 'Rental House',
         pluralLabel: 'Rental Houses',
         legacyField: 'ge_rental_house',
-        aliases: ['equipment rental', 'camera rental'],
+        aliases: [
+          'equipment rental',
+          'camera rental',
+          'grip and lighting',
+          'grip & lighting',
+        ],
       },
       {
         key: 'gaffer',
@@ -260,7 +299,14 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         label: 'Electrician',
         pluralLabel: 'Electricians',
         legacyField: 'ge_electrician',
-        aliases: ['electric', 'lighting technician'],
+        aliases: [
+          'electric',
+          'lighting technician',
+          'lighting tech',
+          'spark',
+          'sparks',
+          'juicer',
+        ],
       },
     ],
   },
@@ -303,6 +349,13 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         pluralLabel: 'Wardrobe',
         legacyField: 'art_wardrobe',
         aliases: ['costume', 'costumes', 'stylist'],
+      },
+      {
+        key: 'wardrobe_assistant',
+        label: 'Wardrobe Assistant',
+        pluralLabel: 'Wardrobe Assistants',
+        legacyField: 'art_wardrobe_assistant',
+        aliases: ['wardrobe asst', 'costume assistant'],
       },
       {
         key: 'hair_makeup',
@@ -428,7 +481,14 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         label: 'Post Supervisor',
         pluralLabel: 'Post Supervisors',
         legacyField: 'post_post_supervisor',
-        aliases: ['post production supervisor'],
+        aliases: ['post production supervisor', 'post producer', 'post-producer'],
+      },
+      {
+        key: 'post_house',
+        label: 'Post House',
+        pluralLabel: 'Post Houses',
+        legacyField: 'post_post_house',
+        aliases: ['post facility', 'post-production house'],
       },
       {
         key: 'on_set_editor',
@@ -463,6 +523,7 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         label: 'Sound Design & Mix',
         pluralLabel: 'Sound Design & Mix',
         legacyField: 'post_sound_design_mix',
+        // "sound engineer" is dept-scoped in resolveStandardRole (post → here, production → sound_recordist)
         aliases: ['sound design', 'sound mix', 'sound designer', 'sound mixer', 'audio'],
       },
       {
@@ -492,6 +553,19 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
         pluralLabel: 'Online',
         legacyField: 'post_online',
         aliases: ['online editor', 'online edit'],
+      },
+      {
+        key: 'motion_graphics',
+        label: 'Motion Graphics',
+        pluralLabel: 'Motion Graphics',
+        legacyField: 'post_motion_graphics',
+        aliases: [
+          'motion graphic artist',
+          'motion graphics artist',
+          'motion graphic',
+          'graphic design',
+          'gfx',
+        ],
       },
       {
         key: '3d_animation',
@@ -551,3 +625,23 @@ export function getRoleDisplayLabel(
   if (!resolved) return fallbackLabel
   return peopleCount > 1 ? resolved.role.pluralLabel : resolved.role.label
 }
+
+/**
+ * Recurring custom roles included in the downloadable CSV template.
+ * Kept out of the standard catalog on purpose — free-form `isCustomRole` rows.
+ * Labels must match Studio / CSV canonical spellings (see resolveCustomRoleCanonical).
+ */
+export const CREW_CUSTOM_TEMPLATE_ROLES: {department: CrewDepartmentKey; label: string}[] = [
+  {department: 'production', label: 'Agency Producer'},
+  {department: 'production', label: 'Assistant Producer'},
+  {department: 'production', label: 'Head of Production'},
+  {department: 'production', label: 'Assistant Production Manager'},
+  {department: 'production', label: "Director's Assistant"},
+  {department: 'production', label: 'Boom Op'},
+  {department: 'production', label: 'Medic'},
+  {department: 'camera', label: 'Live-Stream Technician'},
+  {department: 'ge', label: 'Best Boy Electric'},
+  {department: 'ge', label: 'Best Boy Grip'},
+  {department: 'post', label: 'Post PA'},
+]
+

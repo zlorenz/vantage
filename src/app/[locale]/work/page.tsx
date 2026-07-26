@@ -12,6 +12,7 @@ import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
 import { workPageTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, workBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
@@ -61,13 +62,14 @@ export default async function WorkPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [workPage, entries, videoFormats, industries, markets] =
+  const [workPage, entries, videoFormats, industries, markets, phrases] =
     await Promise.all([
       sanityClient.fetch<WorkPage | null>(WORK_PAGE_QUERY),
       sanityClient.fetch<PortfolioGridEntry[]>(ALL_PORTFOLIO_QUERY),
       sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
       sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
       sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
+      getPhraseRecord(),
     ]);
 
   const heroTitle =
@@ -101,6 +103,7 @@ export default async function WorkPage({ params }: Props) {
               videoFormats={videoFormats}
               industries={industries}
               markets={markets}
+              phrases={phrases}
             />
           </Suspense>
         </div>

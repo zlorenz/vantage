@@ -11,10 +11,38 @@ const PORTFOLIO_CARD_FIELDS = `
   _id,
   "slug": slug.current,
   "slugZh": slugZh.current,
-  thumbTitle,
-  thumbTitleZh,
+  displayTitleParts{
+    brandName,
+    productName,
+    campaignTitle,
+    brandNameZh,
+    productNameZh,
+    campaignTitleZh
+  },
+  thumbTitleOverride,
+  thumbTitleOverrideZh,
   featuredImage,
   isHidden
+`;
+
+/** Structured display title fields for single entry / library. */
+const PORTFOLIO_DISPLAY_TITLE_FIELDS = `
+  displayTitleParts{
+    brandName,
+    productName,
+    campaignTitle,
+    brandNameZh,
+    productNameZh,
+    campaignTitleZh
+  },
+  heroFilmTitle,
+  heroFilmTitleZh,
+  thumbTitleOverride,
+  thumbTitleOverrideZh,
+  headerTitleOverride,
+  headerTitleOverrideZh,
+  longTitleOverride,
+  longTitleOverrideZh
 `;
 
 /** Taxonomy slug arrays for public filter bar (format / industry / market).
@@ -34,7 +62,7 @@ const PORTFOLIO_INTERNAL_FILTER_FIELDS = `
   }
 `;
 
-/** Full credits — structured array preferred; legacy department object retained for dual-read. */
+/** Structured crew credits for portfolio detail and work-internal filters. */
 const PORTFOLIO_CREDITS_FIELDS = `
   crewCredits[]{
     _key,
@@ -45,18 +73,12 @@ const PORTFOLIO_CREDITS_FIELDS = `
     people[]{
       _key,
       name,
-      url,
-      linkTitle
+      "url": coalesce(identity->url, url),
+      linkTitle,
+      "identityId": identity._ref,
+      "identityName": identity->name,
+      "identityNameZh": identity->nameZh
     }
-  },
-  credits{
-    production,
-    camera,
-    ge,
-    art,
-    casting,
-    stills,
-    post
   }
 `;
 
@@ -67,6 +89,8 @@ const TAXONOMY_TERM_FIELDS = `
   titleZh,
   "slug": slug.current,
   "slugZh": slugZh.current,
+  description,
+  descriptionZh,
   "parentId": parent._ref
 `;
 
@@ -75,7 +99,7 @@ const TAXONOMY_TERM_FIELDS = `
  * Excludes isHidden. Includes taxonomy slug arrays for URL-synced filter bar.
  */
 export const ALL_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -93,12 +117,9 @@ export const PORTFOLIO_ENTRY_QUERY = `
     titleZh,
     "slug": slug.current,
     "slugZh": slugZh.current,
-    thumbTitle,
-    thumbTitleZh,
-    headerTitle,
-    headerTitleZh,
-    longTitle,
-    longTitleZh,
+    ${PORTFOLIO_DISPLAY_TITLE_FIELDS},
+    excerpt,
+    excerptZh,
     description,
     descriptionZh,
     featuredImage,
@@ -109,16 +130,15 @@ export const PORTFOLIO_ENTRY_QUERY = `
     additionalVideos[]{
       vimeoUrl,
       xinpianchangUrl,
-      longTitle,
-      longTitleZh,
+      videoTitle,
+      videoTitleZh,
       description,
       descriptionZh
     },
     ${PORTFOLIO_CREDITS_FIELDS},
     seo{
       metaDescription,
-      metaDescriptionZh,
-      focusKeyword
+      metaDescriptionZh
     }
   }
 `;
@@ -138,7 +158,7 @@ export const PORTFOLIO_SLUGS_QUERY = `
  * Kept for PortfolioGrid internal filterMode compatibility.
  */
 export const ALL_PORTFOLIO_INTERNAL_QUERY = `
-  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_INTERNAL_FILTER_FIELDS}
   }
@@ -149,18 +169,13 @@ export const ALL_PORTFOLIO_INTERNAL_QUERY = `
  * Includes hidden entries; resolves names (not just slugs) for filters/display.
  */
 export const INTERNAL_LIBRARY_QUERY = `
-  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
     _id,
     title,
     titleZh,
-    headerTitle,
-    headerTitleZh,
-    longTitle,
-    longTitleZh,
+    ${PORTFOLIO_DISPLAY_TITLE_FIELDS},
     "slug": slug.current,
     "slugZh": slugZh.current,
-    thumbTitle,
-    thumbTitleZh,
     featuredImage,
     isHidden,
     publishedAt,
@@ -269,7 +284,7 @@ export const MARKET_BY_SLUG_QUERY = `
  * Portfolio entries linked to a video format term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_VIDEO_FORMAT_QUERY = `
-  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc, title asc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -279,7 +294,7 @@ export const PORTFOLIO_BY_VIDEO_FORMAT_QUERY = `
  * Portfolio entries linked to an industry term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_INDUSTRY_QUERY = `
-  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc, title asc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -289,7 +304,7 @@ export const PORTFOLIO_BY_INDUSTRY_QUERY = `
  * Portfolio entries linked to a market term — filter by resolved term _id.
  */
 export const PORTFOLIO_BY_MARKET_QUERY = `
-  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc) {
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)] | order(publishedAt desc, title asc) {
     ${PORTFOLIO_CARD_FIELDS},
     ${PORTFOLIO_FILTER_FIELDS}
   }
@@ -301,19 +316,23 @@ export const PORTFOLIO_BY_MARKET_QUERY = `
  */
 export const TAXONOMY_HERO_IMAGE_QUERY = `
   *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)]
-    | order(publishedAt desc)[0].featuredImage
+    | order(publishedAt desc, title asc)[0].featuredImage
 `;
 
 /**
  * Nine most recent public portfolio entries — homepage "A Bit of Our Work" grid.
  */
 export const RECENT_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc)[0...9] {
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc, title asc)[0...9] {
     ${PORTFOLIO_CARD_FIELDS}
   }
 `;
 
 /** All clients for work-internal Client filter dropdown. */
+/**
+ * Client terms for work-internal filter dropdown (legacy — prefer identities from credits).
+ * @deprecated Use credit identities resolved from crewCredits.
+ */
 export const ALL_CLIENTS_QUERY = `
   *[_type == "client"] | order(name asc) {
     _id,
@@ -323,7 +342,8 @@ export const ALL_CLIENTS_QUERY = `
 `;
 
 /**
- * Crew members for Director / DOP / Art Director filter dropdowns.
+ * Crew members for Director / DOP / Art Director filter dropdowns (legacy).
+ * @deprecated Use credit identities resolved from crewCredits.
  * $role: "director" | "dop" | "art-director"
  */
 export const CREW_MEMBERS_BY_ROLE_QUERY = `
@@ -332,6 +352,14 @@ export const CREW_MEMBERS_BY_ROLE_QUERY = `
     name,
     "slug": slug.current,
     role
+  }
+`;
+
+/** All credit identities (opaque vendor entities). */
+export const ALL_CREDIT_IDENTITIES_QUERY = `
+  *[_type == "creditIdentity"] | order(name asc) {
+    _id,
+    name
   }
 `;
 

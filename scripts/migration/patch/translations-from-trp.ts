@@ -37,7 +37,6 @@ async function patchPortfolio(items: ExportedPortfolio[]): Promise<number> {
       fields.seo = {
         ...(item.seo.metaDescription ? { metaDescription: item.seo.metaDescription } : {}),
         metaDescriptionZh: item.seo.metaDescriptionZh,
-        ...(item.seo.focusKeyword ? { focusKeyword: item.seo.focusKeyword } : {}),
       };
     }
 
@@ -67,7 +66,6 @@ async function patchPages(items: ExportedPage[]): Promise<number> {
       fields.seo = {
         ...(item.seo.metaDescription ? { metaDescription: item.seo.metaDescription } : {}),
         metaDescriptionZh: item.seo.metaDescriptionZh,
-        ...(item.seo.focusKeyword ? { focusKeyword: item.seo.focusKeyword } : {}),
       };
     }
 
@@ -79,10 +77,7 @@ async function patchPages(items: ExportedPage[]): Promise<number> {
           name: f.name,
           jobTitle: f.jobTitle,
           ...(f.jobTitleZh ? { jobTitleZh: f.jobTitleZh } : {}),
-          bio: f.bio,
-          ...(f.bioZh ? { bioZh: f.bioZh } : {}),
           ...(image ? { image } : {}),
-          ...(f.sameAs.length ? { sameAs: f.sameAs } : {}),
         };
       });
     }

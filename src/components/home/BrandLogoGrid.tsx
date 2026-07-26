@@ -1,14 +1,27 @@
 /**
  * BrandLogoGrid — 4-column client logo wall with bordered cells.
  *
- * Server component. Logos from src/lib/client-logos.ts (static SVG registry).
+ * Server component. Logo order from CMS `page.brandLogos` (fallback: HOME_BRAND_LOGO_IDS).
  */
 
 import Image from 'next/image';
-import { getClientLogos, HOME_BRAND_LOGO_IDS } from '@/lib/client-logos';
+import {
+  getClientLogos,
+  HOME_BRAND_LOGO_IDS,
+  isClientLogoId,
+  type ClientLogoId,
+} from '@client-logos';
 
-export function BrandLogoGrid() {
-  const logos = getClientLogos(HOME_BRAND_LOGO_IDS);
+type BrandLogoGridProps = {
+  /** Ordered logo ids from Sanity (`brandLogos[].logoId`). */
+  logoIds?: string[] | null;
+};
+
+export function BrandLogoGrid({logoIds}: BrandLogoGridProps) {
+  const resolvedIds: ClientLogoId[] = (logoIds ?? [])
+    .filter(isClientLogoId);
+  const ids = resolvedIds.length > 0 ? resolvedIds : [...HOME_BRAND_LOGO_IDS];
+  const logos = getClientLogos(ids);
 
   return (
     <div className="vp-brand-logos">

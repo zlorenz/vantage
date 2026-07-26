@@ -58,7 +58,6 @@ export interface ExportedPortfolio {
   seo: {
     metaDescription?: string;
     metaDescriptionZh?: string;
-    focusKeyword?: string;
   };
 }
 
@@ -174,7 +173,6 @@ export async function exportPortfolio(): Promise<ExportedPortfolio[]> {
       seo: {
         metaDescription: yoast.metaDescription,
         metaDescriptionZh,
-        focusKeyword: yoast.focusKeyword,
       },
     });
 

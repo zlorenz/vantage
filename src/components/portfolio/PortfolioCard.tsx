@@ -6,7 +6,8 @@
 
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { pickLocaleField } from '@/lib/locale-field';
+import { phraseRecordToMap } from '@phrase-book';
+import { resolveEntryDisplayTitles } from '@/lib/display-titles';
 import { urlForImage } from '@/lib/sanity';
 import type { PortfolioCard as PortfolioCardData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -16,9 +17,16 @@ interface PortfolioCardProps {
   locale: Locale;
   /** Stagger index for vp-card-reveal animation delay (× 40ms). */
   revealIndex?: number;
+  /** Exact EN→ZH phrase book (serializable). */
+  phrases?: Record<string, string>;
 }
 
-export function PortfolioCard({ entry, locale, revealIndex = 0 }: PortfolioCardProps) {
+export function PortfolioCard({
+  entry,
+  locale,
+  revealIndex = 0,
+  phrases,
+}: PortfolioCardProps) {
   const slugParam =
     locale === 'zh' ? entry.slugZh || entry.slug : entry.slug;
 
@@ -28,7 +36,11 @@ export function PortfolioCard({ entry, locale, revealIndex = 0 }: PortfolioCardP
     .fit('crop')
     .url();
 
-  const thumbTitle = pickLocaleField(locale, entry.thumbTitle, entry.thumbTitleZh);
+  const { thumbTitle } = resolveEntryDisplayTitles(
+    entry,
+    locale,
+    phraseRecordToMap(phrases),
+  );
 
   return (
     <article

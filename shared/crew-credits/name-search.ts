@@ -22,6 +22,7 @@ export interface NameSuggestion {
   count: number
   url?: string
   linkTitle?: string
+  identityId?: string
   matchKind: NameSuggestionMatchKind
   inRole: boolean
   reasons?: MatchReason[]
@@ -74,6 +75,7 @@ function entryToSuggestion(
     inRole,
     ...(entry.url ? {url: entry.url} : {}),
     ...(entry.linkTitle ? {linkTitle: entry.linkTitle} : {}),
+    ...(entry.identityId ? {identityId: entry.identityId} : {}),
     ...(reasons?.length ? {reasons} : {}),
   }
 }

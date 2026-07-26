@@ -169,20 +169,19 @@ Bilingual routing: English at `/`, Chinese at `/zh/`. See `site-architecture.md`
 | Contact nav opens modal, not `/contact/` | Preserve modal trigger behaviour |
 | Blog post URLs at root (no `/news/` prefix) | Critical for SEO — preserve exactly |
 | Xinpianchang embed on `/zh/` when set | Locale-aware video source on portfolio |
-| `<span>` in titles → `.vp-outline` styling | HTML in title fields; render safely |
+| Display titles → Brand / Product / Campaign → compiled `.vp-outline` (thumb is single-line plain) | Structured parts; optional HTML overrides |
 | Comments on blog posts | **Dropped** — no comment display, forms, or moderation in rebuild |
 | `portfolio` CPT not registered in child theme | Registered elsewhere (plugin/parent) |
 
 ### 3.5 Internal reference data (Sanity document types)
 
-Mapped from WordPress crew/client/platform taxonomies. Used for credits references and `/work-internal/` filtering. **Not exposed on public taxonomy archive pages.**
+Mapped from WordPress crew/client/platform taxonomies. **Credit Identities** are the preferred entity for Work Library filters. Legacy `client` / `crewMember` docs remain for historical data.
 
 | WordPress taxonomy | Terms | Sanity type | Role |
 |---|---|---|---|
-| `client` | 67 | `client` | Pitch research, client history, internal filters |
-| `director` | 22 | `crewMember` (`role: director`) | Crew lookups, internal filters |
-| `dop` | 54 | `crewMember` (`role: dop`) | Crew lookups, internal filters |
-| `art-director` | 31 | `crewMember` (`role: art-director`) | Crew lookups, internal filters |
+| (new) | — | `creditIdentity` | Stable vendor entity (opaque `ci_…` id); Brand / Director / DOP / Art Director / Editor |
+| `client` | 67 | `client` (legacy) | Historical Brand taxonomy |
+| `director` / `dop` / `art-director` | 107 | `crewMember` (legacy) | Historical role-scoped crew taxonomy |
 | `platform` | 108 | `platform` | Distribution/platform tags |
 
 **Dropped from migration:** `portfolio_visibility` taxonomy — consolidated into `portfolioEntry.isHidden` (see §4.8).
@@ -201,8 +200,9 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 | `blogPost` | `post` | 23 |
 | `page` | `page` | 9 (8 public bilingual + 1 internal EN-only) |
 | `siteSettings` | ACF Options (Contact Info) | 1 singleton |
-| `client` | `client` taxonomy | 67 |
-| `crewMember` | `director`, `dop`, `art-director` taxonomies | 107 |
+| `client` | `client` taxonomy | 67 (legacy) |
+| `crewMember` | `director`, `dop`, `art-director` taxonomies | 107 (legacy) |
+| `creditIdentity` | backfilled from clients/crew/credits | opaque vendor entities |
 | `platform` | `platform` taxonomy | 108 |
 | Public taxonomy refs | `category`, `video-format`, `industry`, `market` | 23 terms |
 
@@ -211,32 +211,48 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 ```typescript
 {
   _type: 'portfolioEntry'
-  title: string                    // post_title
-  titleZh?: string                 // TranslatePress
+  title: string                    // synced: Brand Product – Campaign
+  titleZh?: string
   slug: slug
   slugZh?: slug
-  thumbTitle: string               // text — HTML (<br>); all 141 populated
-  headerTitle: string              // text — HTML (<span>); hero display
-  longTitle: string                // text — HTML (<span>); main column
+  displayTitleParts: {
+    brandName: string              // required; display-only (not crew Brand)
+    productName?: string
+    campaignTitle?: string
+    brandNameZh?: string
+    productNameZh?: string
+    campaignTitleZh?: string
+  }
+  // Media tab: first-video episode when it differs from Campaign (multi-video series)
+  heroFilmTitle?: string           // outlines Full title only; Header stays Brand + Campaign/Product
+  heroFilmTitleZh?: string
+  // Optional HTML overrides when Brand/Product/Campaign cannot express layout
+  thumbTitleOverride?: text
+  headerTitleOverride?: text
+  longTitleOverride?: text
+  // + Zh override variants (escape hatches; DisplayTitlesInput)
   description: text
   descriptionZh?: text
   featuredImage: image
+  publishedAt: date                // Studio: Original Release Date (client video release)
   vimeoUrl: url                    // oembed → extract Vimeo ID
   xinpianchangUrl?: url            // 72 entries populated; shown on /zh/
   additionalVideos?: array<{
     vimeoUrl: url
     xinpianchangUrl?: url
-    longTitle: string
+    videoTitle?: string            // episode / film title (outlined in Full title)
+    videoTitleZh?: string
     description?: text
+    descriptionZh?: text
   }>                                // 28 entries have rows
   videoFormats: array<ref>         // taxonomy: video-format
   industries: array<ref>           // taxonomy: industry
   markets: array<ref>              // taxonomy: market
-  clients: array<ref>              // ref → client; synced from prod_brand credits
-  crewMembers: array<ref>          // ref → crewMember; synced from director/dop/art-director credits
+  clients: array<ref>              // legacy → client; prefer creditIdentity on Brand credits
+  crewMembers: array<ref>          // legacy → crewMember; prefer creditIdentity on Director/DOP/AD
   platforms: array<ref>           // ref → platform
   isHidden: boolean                // see §4.8 — migration: true for WP ID 3187 only
-  crewCredits?: array<crewCredit>  // preferred structured credits (CSV import + manual)
+  crewCredits?: array<crewCredit>  // preferred structured credits; filter roles link identity refs
   credits: {                       // legacy dual-read fallback until backfill
     production: creditsDepartment
     camera: creditsDepartment
@@ -319,14 +335,31 @@ CSV import, frontend rendering, and migration.
   titleZh?: string
   slug: slug                       // root-level URL: /[slug]/ not /news/[slug]/
   slugZh?: slug
-  publishedAt: datetime
   featuredImage?: image
   categories: array<ref>           // category taxonomy
-  body: portableText
-  bodyZh?: portableText
+  excerpt?: text                   // EN card / teaser copy
+  excerptZh?: text                 // ZH card excerpt (locale pair with `excerpt`)
+  body: portableTextBody           // curated Portable Text (see below)
+  bodyZh?: portableTextBody
   seo: seoFields
 }
 ```
+
+**`portableTextBody` (blog composer)** — scoped to patterns used across live posts; not a Gutenberg-style block library:
+
+| Insert | Sanity type / style | Notes |
+|---|---|---|
+| Paragraph | `block` · `normal` | Default prose |
+| Heading 2–4 | `block` · `h2`–`h4` | H3 is the dominant post lead style |
+| Quote | `block` · `blockquote` | Style menu → Quote |
+| Bullet / numbered list | `block` lists | Rare in posts; kept for flexibility |
+| Strong / emphasis / link | marks | No code/underline/strike in the menu |
+| Image | `image` (+ optional `alt`, `caption`, hotspot) | Inline stills; Studio edit dialog mirrors Media (Title / Alt text / Description→caption) |
+| Video | `videoEmbed` · `{ url, title? }` | Vimeo or YouTube; Studio can paste URL or pick from portfolio; `title` from pick/oEmbed for preview |
+
+**Out of scope for blog bodies:** `imageGallery`, `ctaButton`, columns, spacers, file downloads (those remain page-oriented where used).
+
+**Studio UX:** Body fields use a widened Portable Text writing column (Sanity’s default block max-width is 640px). **Expand editor** opens a full-viewport compose overlay (editor chrome fills the window; prose stays ~900px centered to match the site). Sanity’s built-in PTE fullscreen is disabled here — its `ExpandedLayer` breaks in the Content tool; the supported alternative is a custom input + CSS height ([Sanity PTE height guide](https://www.sanity.io/docs/developer-guides/change-the-height-of-a-portable-text-editor-pte-using-a-custom-input-component)). Image blocks use hover edit/delete instead of the default Alt/Untitled chrome; metadata is written to the Media asset and mirrored onto the block (`alt`, `caption`).
 
 **Dropped feature — blog comments:** WordPress enables comments on blog posts. The Next.js rebuild does not include comment display, comment forms, or moderation infrastructure.
 
@@ -337,30 +370,37 @@ CSV import, frontend rendering, and migration.
   _type: 'page'
   title: string
   titleZh?: string
+  featuredImage?: image
+  excerpt?: text                   // EN card / teaser copy (locale pair with `excerptZh`)
+  excerptZh?: text
   slug: slug
   slugZh?: slug
   showHeroHeader: boolean          // vp_show_hero_header — off for Home, Campaign Brief
   heroTitle?: string               // vp_hero_title — supports <span class="vp-outline">
   heroTitleZh?: string
-  featuredImage?: image
   body: portableText
   bodyZh?: portableText
-  heroSlides?: array<{             // homepage only (front page)
-    portfolioRef: ref → portfolioEntry
-    buttonLabel: string            // default: "Watch"
-    buttonLabelZh?: string
+  heroSlides?: array<ref → portfolioEntry>  // homepage carousel (order = display; CTA always “Watch”)
+  featuredWork?: array<ref → portfolioEntry>  // Home “A Bit of Our Work”; VPS “Shot in Vietnam”
+  brandLogos?: array<{             // homepage “Brands We Work With” (logoId from shared registry)
+    logoId: string
   }>
-  founders?: array<{               // About page only — also feeds JSON-LD
+  founders?: array<{               // About page only
     name: string
     jobTitle: string
+    jobTitleZh?: string
     image: image
-    bio: text
-    sameAs: array<url>
   }>
+  pdfDownload?: {                  // Vietnam Location Guide only
+    file: file
+    label: string
+  }
   seo: seoFields
   noIndex?: boolean                 // work-internal only
 }
 ```
+
+**Studio UX:** Two tabs — **Page Details** and **Content**. Page Details matches blog posts: Title → **Card** (Featured Image | Excerpt) → Slug, then hero chrome / noindex / SEO. Slug-gated Content fields: Home (`heroSlides`, `featuredWork`, `brandLogos`), Vietnam Production Service (`featuredWork`), About (`founders`), Vietnam Location Guide (`pdfDownload`). Hero title hides when Show Hero Header is off. Carousel / Featured Work / Brand Logos include Clear all with confirm.
 
 **Published pages:**
 
@@ -372,7 +412,7 @@ CSV import, frontend rendering, and migration.
 | `work-internal` | On | Internal crew view; English-only route; noindex; not in public nav |
 | `news` | On | Blog index |
 | `contact` | On | Contact page (nav opens modal) |
-| `vietnam-production-service` | On | |
+| `vietnam-production-service` | On | Featured Work → “Shot in Vietnam” grid |
 | `vietnam-location-guide` | On | File download block |
 | `video-campaign-brief` | Off | Campaign Brief form |
 
@@ -390,6 +430,15 @@ CSV import, frontend rendering, and migration.
   contactModalContent?: portableText  // empty in production
   contactCtaText?: string          // empty in production
   contactCtaUrl?: url              // empty in production
+  campaignCta?: {                  // shared Home / About / Vietnam CTA
+    heading: string                // supports vp-outline HTML
+    headingZh?: string
+    paragraphs: array<text>
+    paragraphsZh?: array<text>
+    buttonLabel: string
+    buttonLabelZh?: string
+    buttonHref?: string            // default /video-campaign-brief
+  }
   socialVimeo?: url
   socialInstagram?: url
   socialFacebook?: url
@@ -404,32 +453,47 @@ CSV import, frontend rendering, and migration.
 ### 4.6 Public taxonomy documents
 
 ```typescript
-// category, videoFormat, industry, market — same shape
+// category — titles/slugs only
+// videoFormat, industry, market — include archive intro copy
 {
   _type: 'category' | 'videoFormat' | 'industry' | 'market'
   title: string
   titleZh?: string
   slug: slug
   slugZh?: slug
+  description?: string             // EN archive intro (portfolio taxonomies)
+  descriptionZh?: string           // ZH archive intro (portfolio taxonomies)
 }
 ```
 
-### 4.7 `client`
+### 4.7 `client` (legacy)
 
 ```typescript
 {
   _type: 'client'
   name: string                     // term name from client taxonomy
   slug: slug
-  // Referenced from portfolioEntry.clients and credits.prod_brand
-  // Used for internal filtering on /work-internal/
+  // Legacy Brand taxonomy. Prefer creditIdentity linked from Brand credits.
   // Not exposed on public taxonomy archive pages
 }
 ```
 
 **Count:** 67 terms
 
-### 4.8 `crewMember`
+### 4.7b `creditIdentity`
+
+```typescript
+{
+  _type: 'creditIdentity'
+  _id: 'ci_…'                      // opaque; never derived from name/role
+  name: string                     // display only; renames do not change identity
+  url?: url                        // optional default profile/site link
+  // Referenced from crewPerson.identity on Brand / Director / DOP / Art Director / Editor
+  // Work Library filters by _id; role lives on the credit row (roleKey)
+}
+```
+
+### 4.8 `crewMember` (legacy)
 
 ```typescript
 {
@@ -437,8 +501,7 @@ CSV import, frontend rendering, and migration.
   name: string                     // term name
   slug: slug
   role: 'director' | 'dop' | 'art-director'
-  // Referenced from portfolioEntry.crewMembers and credits fields
-  // Used for internal filtering on /work-internal/
+  // Legacy role-scoped taxonomy. Prefer creditIdentity (one vendor across roles).
   // Not exposed on public taxonomy archive pages
 }
 ```

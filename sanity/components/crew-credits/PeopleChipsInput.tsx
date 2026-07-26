@@ -34,6 +34,7 @@ import {createPortal} from 'react-dom'
 
 import {
   formatMatchReasons,
+  isFilterCreditRoleKey,
   searchNameSuggestions,
   type CrewPersonValue,
   type NameCatalogEntry,
@@ -47,6 +48,7 @@ import {
   enrichPersonWithLinkMemory,
   type KnownPersonLink,
 } from './link-memory'
+import {identityRef} from './sync-credit-identities'
 
 const SUGGEST_DEBOUNCE_MS = 200
 
@@ -69,15 +71,29 @@ function suggestionMeta(suggestion: NameSuggestion): string {
 
 function PersonPill(props: {
   person: CrewPersonValue
+  /** Default URL from creditIdentity when person.url is empty. */
+  identityUrl?: string
   readOnly?: boolean
-  onUpdate: (patch: {name: string; url?: string; linkTitle?: string}) => void
-  onRenameApplied?: (rename: {fromName: string; toName: string}) => void
+  onUpdate: (patch: {
+    name: string
+    url?: string
+    linkTitle?: string
+    identity?: CrewPersonValue['identity']
+    /** True when the URL field changed (including cleared). */
+    urlChanged?: boolean
+  }) => void
+  onRenameApplied?: (rename: {
+    fromName: string
+    toName: string
+    identityId?: string
+  }) => void
   onRemove: () => void
 }) {
-  const {person, readOnly, onUpdate, onRenameApplied, onRemove} = props
+  const {person, identityUrl, readOnly, onUpdate, onRenameApplied, onRemove} = props
+  const effectiveUrl = person.url?.trim() || identityUrl?.trim() || ''
   const [open, setOpen] = useState(false)
   const [draftName, setDraftName] = useState(person.name)
-  const [draftUrl, setDraftUrl] = useState(person.url ?? '')
+  const [draftUrl, setDraftUrl] = useState(effectiveUrl)
   const [draftLinkTitle, setDraftLinkTitle] = useState(person.linkTitle ?? '')
   const [urlError, setUrlError] = useState<string | null>(null)
   const popoverRef = useRef<HTMLDivElement | null>(null)
@@ -86,11 +102,11 @@ function PersonPill(props: {
   const openEditor = useCallback(() => {
     if (readOnly) return
     setDraftName(person.name)
-    setDraftUrl(person.url ?? '')
+    setDraftUrl(person.url?.trim() || identityUrl?.trim() || '')
     setDraftLinkTitle(person.linkTitle ?? '')
     setUrlError(null)
     setOpen(true)
-  }, [person.linkTitle, person.name, person.url, readOnly])
+  }, [identityUrl, person.linkTitle, person.name, person.url, readOnly])
 
   const buildPatch = useCallback(() => {
     const name = draftName.trim()
@@ -101,13 +117,22 @@ function PersonPill(props: {
       setUrlError('Enter a full URL starting with http:// or https://')
       return null
     }
-    const patch: {name: string; url?: string; linkTitle?: string} = {name}
+    const prevUrl = person.url?.trim() || identityUrl?.trim() || ''
+    const patch: {
+      name: string
+      url?: string
+      linkTitle?: string
+      identity?: CrewPersonValue['identity']
+      urlChanged?: boolean
+    } = {name}
     if (url) patch.url = url
     if (url && linkTitle && linkTitle.toLowerCase() !== name.toLowerCase()) {
       patch.linkTitle = linkTitle
     }
+    if (person.identity?._ref) patch.identity = person.identity
+    if (url !== prevUrl) patch.urlChanged = true
     return patch
-  }, [draftLinkTitle, draftName, draftUrl])
+  }, [draftLinkTitle, draftName, draftUrl, identityUrl, person.identity, person.url])
 
   const save = useCallback(() => {
     const patch = buildPatch()
@@ -134,10 +159,14 @@ function PersonPill(props: {
     const fromName = person.name.trim()
     onUpdate(patch)
     if (patch.name !== fromName) {
-      onRenameApplied?.({fromName, toName: patch.name})
+      onRenameApplied?.({
+        fromName,
+        toName: patch.name,
+        ...(person.identity?._ref ? {identityId: person.identity._ref} : {}),
+      })
     }
     setOpen(false)
-  }, [buildPatch, draftName, onRenameApplied, onRemove, onUpdate, person.name])
+  }, [buildPatch, draftName, onRenameApplied, onRemove, onUpdate, person.identity, person.name])
 
   useClickOutsideEvent(
     () => setOpen(false),
@@ -230,7 +259,7 @@ function PersonPill(props: {
     >
       <Card
         ref={pillRef}
-        tone={person.url ? 'primary' : 'transparent'}
+        tone={effectiveUrl ? 'primary' : 'transparent'}
         border
         radius={6}
         paddingLeft={2}
@@ -251,9 +280,15 @@ function PersonPill(props: {
               gap: 4,
               color: 'inherit',
             }}
-            title={person.url ? `Linked: ${person.url}` : 'Click to edit / add link'}
+            title={
+              person.identity?._ref
+                ? `Identity ${person.identity._ref}${effectiveUrl ? ` · Linked: ${effectiveUrl}` : ''}`
+                : effectiveUrl
+                  ? `Linked: ${effectiveUrl}`
+                  : 'Click to edit / add link'
+            }
           >
-            {person.url ? <LinkIcon /> : null}
+            {effectiveUrl ? <LinkIcon /> : null}
             <Text size={1}>{person.name}</Text>
           </Box>
           <Button
@@ -381,20 +416,34 @@ export function PeopleChipsInput(props: {
   people: CrewPersonValue[]
   readOnly?: boolean
   placeholder?: string
+  /** When set for a filter role, new people get identity refs from suggestions / ensure. */
+  roleKey?: string
   linkMemory?: Map<string, KnownPersonLink>
   nameCatalog?: NameCatalogEntry[]
   roleCatalog?: NameCatalogEntry[]
   catalogReady?: boolean
   onCommit: (people: CrewPersonValue[]) => void
-  /** Fired when a person link is set or changed (not when cleared). */
-  onLinkApplied?: (link: {name: string; url: string; linkTitle?: string}) => void
+  /** Fired when a person link is set, changed, or cleared. */
+  onLinkApplied?: (link: {
+    name: string
+    url: string
+    linkTitle?: string
+    identityId?: string
+  }) => void
   /** Fired when a rename should propagate to other portfolio entries. */
-  onRenameApplied?: (rename: {fromName: string; toName: string}) => void
+  onRenameApplied?: (rename: {
+    fromName: string
+    toName: string
+    identityId?: string
+  }) => void
+  /** creditIdentity._id → default url (for chips that inherit from identity). */
+  identityUrlById?: ReadonlyMap<string, string>
 }) {
   const {
     people,
     readOnly,
     placeholder,
+    roleKey,
     linkMemory,
     nameCatalog,
     roleCatalog,
@@ -402,6 +451,7 @@ export function PeopleChipsInput(props: {
     onCommit,
     onLinkApplied,
     onRenameApplied,
+    identityUrlById,
   } = props
   const [draft, setDraft] = useState('')
   const [suggestions, setSuggestions] = useState<NameSuggestion[]>([])
@@ -409,6 +459,8 @@ export function PeopleChipsInput(props: {
   const [menuOpen, setMenuOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const selectingRef = useRef(false)
+
+  const linkIdentities = isFilterCreditRoleKey(roleKey)
 
   const existingNames = useMemo(
     () => people.map((person) => person.name.trim()),
@@ -423,15 +475,21 @@ export function PeopleChipsInput(props: {
   )
 
   const buildPerson = useCallback(
-    (name: string, url?: string, linkTitle?: string): CrewPersonValue => {
+    (
+      name: string,
+      opts?: {url?: string; linkTitle?: string; identityId?: string},
+    ): CrewPersonValue => {
       let person: CrewPersonValue = {_type: 'crewPerson', _key: newArrayKey(), name}
-      if (url) {
-        person = {...person, url}
-        if (linkTitle) person.linkTitle = linkTitle
+      if (opts?.url) {
+        person = {...person, url: opts.url}
+        if (opts.linkTitle) person.linkTitle = opts.linkTitle
+      }
+      if (linkIdentities && opts?.identityId) {
+        person = {...person, identity: identityRef(opts.identityId)}
       }
       return linkMemory?.size ? enrichPersonWithLinkMemory(person, linkMemory) : person
     },
-    [linkMemory],
+    [linkIdentities, linkMemory],
   )
 
   const addPerson = useCallback(
@@ -469,11 +527,11 @@ export function PeopleChipsInput(props: {
   const selectSuggestion = useCallback(
     (suggestion: NameSuggestion) => {
       selectingRef.current = true
-      const person = buildPerson(
-        suggestion.name,
-        suggestion.url,
-        suggestion.linkTitle,
-      )
+      const person = buildPerson(suggestion.name, {
+        url: suggestion.url,
+        linkTitle: suggestion.linkTitle,
+        identityId: suggestion.identityId,
+      })
       addPerson(person)
       setDraft('')
       setSuggestions([])
@@ -601,7 +659,16 @@ export function PeopleChipsInput(props: {
   }, [addNames, closeMenu, draft])
 
   const updatePerson = useCallback(
-    (target: CrewPersonValue, patch: {name: string; url?: string; linkTitle?: string}) => {
+    (
+      target: CrewPersonValue,
+      patch: {
+        name: string
+        url?: string
+        linkTitle?: string
+        identity?: CrewPersonValue['identity']
+        urlChanged?: boolean
+      },
+    ) => {
       onCommit(
         people.map((person) => {
           if (person !== target) return person
@@ -610,18 +677,30 @@ export function PeopleChipsInput(props: {
             _key: person._key || newArrayKey(),
             name: patch.name,
           }
+          const identity = patch.identity ?? person.identity
+          if (identity?._ref) next.identity = identity
+          // Identity-linked people: keep url off the credit when possible so
+          // identity->url is the source of truth. Still stash locally when set
+          // so this chip shows the link icon immediately.
           if (patch.url) {
             next.url = patch.url
             if (patch.linkTitle) next.linkTitle = patch.linkTitle
+          } else if (!identity?._ref && person.linkTitle) {
+            // cleared url on unlinked person — drop linkTitle too
+          } else if (!identity?._ref && patch.linkTitle) {
+            next.linkTitle = patch.linkTitle
           }
           return next
         }),
       )
-      if (patch.url && patch.url !== target.url?.trim()) {
+      if (patch.urlChanged) {
         onLinkApplied?.({
           name: patch.name,
-          url: patch.url,
+          url: patch.url ?? '',
           ...(patch.linkTitle ? {linkTitle: patch.linkTitle} : {}),
+          ...(target.identity?._ref || patch.identity?._ref
+            ? {identityId: (patch.identity ?? target.identity)?._ref}
+            : {}),
         })
       }
     },
@@ -653,6 +732,11 @@ export function PeopleChipsInput(props: {
           <PersonPill
             key={person._key ?? `${person.name}-${index}`}
             person={person}
+            identityUrl={
+              person.identity?._ref
+                ? identityUrlById?.get(person.identity._ref)
+                : undefined
+            }
             readOnly={readOnly}
             onUpdate={(patch) => updatePerson(person, patch)}
             onRenameApplied={onRenameApplied}

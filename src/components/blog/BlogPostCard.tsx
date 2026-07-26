@@ -5,6 +5,7 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { blogCardExcerpt } from '@/lib/blog-excerpt';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 import type { BlogPostCard as BlogPostCardData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -12,22 +13,14 @@ import type { Locale } from '@/i18n/routing';
 interface BlogPostCardProps {
   post: BlogPostCardData;
   locale: Locale;
+  phrases?: Record<string, string>;
 }
 
-function formatDate(dateString: string, locale: Locale): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
-export function BlogPostCard({ post, locale }: BlogPostCardProps) {
+export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
   const slugParam = locale === 'zh' ? post.slugZh || post.slug : post.slug;
-  const title = locale === 'zh' && post.titleZh ? post.titleZh : post.title;
+  const title = pickLocaleFieldWithPhrases(locale, post.title, post.titleZh, phrases);
   const excerpt = blogCardExcerpt(
-    locale === 'zh' && post.excerptZh ? post.excerptZh : post.excerpt,
+    pickLocaleFieldWithPhrases(locale, post.excerpt, post.excerptZh, phrases),
   );
 
   const imageUrl = post.featuredImage
@@ -61,12 +54,6 @@ export function BlogPostCard({ post, locale }: BlogPostCardProps) {
             {title}
           </Link>
         </h2>
-
-        {post.publishedAt ? (
-          <div className="vp-post-card__meta mb-2 text-sm uppercase tracking-wide text-white/65">
-            {formatDate(post.publishedAt, locale)}
-          </div>
-        ) : null}
 
         {excerpt ? (
           <div className="vp-post-card__excerpt font-light text-vp-text-muted">

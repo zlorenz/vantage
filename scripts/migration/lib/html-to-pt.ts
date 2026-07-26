@@ -215,13 +215,15 @@ function splitHtmlWithWpBlocks(html: string): HtmlSegment[] {
   return segments;
 }
 
+function span(text: string): {_key: string; _type: 'span'; text: string; marks: string[]} {
+  return {_key: blockKey(), _type: 'span', text, marks: []};
+}
+
 function videoUrlBlock(url: string): unknown {
   return {
     _key: blockKey(),
-    _type: 'block',
-    style: 'normal',
-    markDefs: [],
-    children: [{ _type: 'span', text: url, marks: [] }],
+    _type: 'videoEmbed',
+    url,
   };
 }
 
@@ -363,19 +365,21 @@ export function htmlToPortableText(html: string, idMap?: IdMap): unknown[] {
 
 function emptyBlock(): unknown {
   return {
+    _key: blockKey(),
     _type: 'block',
     style: 'normal',
     markDefs: [],
-    children: [{ _type: 'span', text: '', marks: [] }],
+    children: [span('')],
   };
 }
 
 function textBlock(text: string): unknown {
   return {
+    _key: blockKey(),
     _type: 'block',
     style: 'normal',
     markDefs: [],
-    children: [{ _type: 'span', text: text.slice(0, 10000), marks: [] }],
+    children: [span(text.slice(0, 10000))],
   };
 }
 

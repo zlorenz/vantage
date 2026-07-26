@@ -18,7 +18,14 @@ import {
   useToast,
 } from '@sanity/ui'
 import {AddIcon, ChevronDownIcon, SearchIcon, TrashIcon} from '@sanity/icons'
+import {compileDisplayTitles, trimPart} from '@display-titles'
+import {
+  IDENTITY_USAGE_PORTFOLIOS_QUERY,
+  resolveUsageForIdentities,
+  type IdentityUsagePortfolio,
+} from '@crew-credits'
 import type {ContentLeaf, ColumnId} from './sections'
+import {STUDIO_PAGE_LIST_GROQ_FILTER} from '../../lib/page-visibility'
 import {
   formatImpactSummary,
   moveToTrash,
@@ -29,6 +36,25 @@ import {
   type TrashPreflightItem,
 } from './document-lifecycle'
 
+type DisplayTitlePartsDoc = {
+  brandName?: string
+  productName?: string
+  campaignTitle?: string
+}
+
+function titleFromDoc(doc: Record<string, unknown>): string {
+  const parts = doc.displayTitleParts as DisplayTitlePartsDoc | undefined
+  if (parts && trimPart(parts.brandName)) {
+    const compiled = compileDisplayTitles({
+      brandName: parts.brandName,
+      productName: parts.productName,
+      campaignTitle: parts.campaignTitle,
+    }).documentTitle
+    if (trimPart(compiled)) return compiled
+  }
+  return String(doc.title ?? '')
+}
+
 type Row = {
   _id: string
   _type: string
@@ -38,7 +64,6 @@ type Row = {
   publishedAt?: string
   updatedAt?: string
   metaDescription?: string
-  focusKeyword?: string
   isHidden?: boolean
   hasDraft?: boolean
   isDraftOnly?: boolean
@@ -55,9 +80,56 @@ type Row = {
   parent?: string
   usage?: number
   role?: string
+  /** Filter-role keys this creditIdentity appears in (brand, director, …). */
+  roleKeys?: string[]
+  /** Portfolio-entry counts per filter roleKey for creditIdentity rows. */
+  usageByRole?: Partial<Record<Exclude<CrewRoleTab, 'all'>, number>>
 }
 
-type TableView = 'active' | 'trash'
+type StatusFilter =
+  | 'all'
+  | 'published'
+  | 'draft'
+  | 'edited'
+  | 'scheduled'
+  | 'hidden'
+  | 'trash'
+
+type DocumentStatus = Exclude<StatusFilter, 'all' | 'trash'>
+
+type CrewRoleTab =
+  | 'all'
+  | 'brand'
+  | 'director'
+  | 'dop'
+  | 'art_director'
+  | 'editor'
+
+const CREW_ROLE_TABS: Array<{id: CrewRoleTab; label: string}> = [
+  {id: 'all', label: 'All'},
+  {id: 'brand', label: 'Clients'},
+  {id: 'director', label: 'Directors'},
+  {id: 'dop', label: 'DOPs'},
+  {id: 'art_director', label: 'Art Directors'},
+  {id: 'editor', label: 'Editors'},
+]
+
+const STATUS_FILTER_TABS: Array<{id: Exclude<StatusFilter, 'trash'>; label: string}> = [
+  {id: 'all', label: 'All'},
+  {id: 'published', label: 'Published'},
+  {id: 'draft', label: 'Draft'},
+  {id: 'edited', label: 'Edited'},
+  {id: 'scheduled', label: 'Scheduled'},
+  {id: 'hidden', label: 'Hidden'},
+]
+
+const STATUS_LABELS: Record<DocumentStatus, string> = {
+  published: 'Published',
+  draft: 'Draft',
+  edited: 'Edited',
+  scheduled: 'Scheduled',
+  hidden: 'Hidden',
+}
 
 const ROLE_LABELS: Record<string, string> = {
   director: 'Director',
@@ -96,29 +168,32 @@ function formatDateTime(value?: string): string {
 function buildQuery(documentType: string): string {
   switch (documentType) {
     case 'portfolioEntry':
-      return `*[_type == "portfolioEntry" && !(_id in path("versions.**"))] | order(publishedAt desc) {
+      return `*[_type == "portfolioEntry" && !(_id in path("versions.**"))] | order(publishedAt desc, title asc) {
         _id,
         _type,
         title,
         titleZh,
+        displayTitleParts{
+          brandName,
+          productName,
+          campaignTitle
+        },
         "slug": slug.current,
         publishedAt,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,
-        "focusKeyword": seo.focusKeyword,
         isHidden,
         trash,
         "hasDraft": count(*[_id == "drafts." + ^._id]) > 0,
         "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop"
       }`
     case 'blogPost':
-      return `*[_type == "blogPost" && !(_id in path("versions.**"))] | order(publishedAt desc) {
+      return `*[_type == "blogPost" && !(_id in path("versions.**"))] | order(_updatedAt desc) {
         _id,
         _type,
         title,
         titleZh,
         "slug": slug.current,
-        publishedAt,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,
         trash,
@@ -127,16 +202,14 @@ function buildQuery(documentType: string): string {
         "categories": array::join(categories[]->title, ", ")
       }`
     case 'page':
-      return `*[_type == "page" && !(_id in path("versions.**"))] | order(title asc) {
+      return `*[_type == "page" && ${STUDIO_PAGE_LIST_GROQ_FILTER} && !(_id in path("versions.**"))] | order(title asc) {
         _id,
         _type,
         title,
         titleZh,
         "slug": slug.current,
-        publishedAt,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,
-        "focusKeyword": seo.focusKeyword,
         trash,
         "hasDraft": count(*[_id == "drafts." + ^._id]) > 0,
         "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop"
@@ -162,7 +235,6 @@ function buildQuery(documentType: string): string {
         "slug": slug.current,
         "usage": count(*[references(^._id)])
       }`
-    case 'client':
     case 'platform':
       return `*[_type == $type && !(_id in path("versions.**"))] | order(name asc) {
         _id,
@@ -171,14 +243,20 @@ function buildQuery(documentType: string): string {
         "slug": slug.current,
         "usage": count(*[references(^._id)])
       }`
-    case 'crewMember':
-      return `*[_type == "crewMember" && !(_id in path("versions.**"))] | order(name asc) {
+    case 'creditIdentity':
+      // Usage is computed client-side via resolveUsageForIdentities so it
+      // matches /work-internal facet counts (identity or display name).
+      return `*[_type == "creditIdentity" && !(_id in path("versions.**"))] | order(name asc) {
         _id,
         _type,
-        "title": name,
-        "slug": slug.current,
-        role,
-        "usage": count(*[references(^._id)])
+        "title": name
+      }`
+    case 'translatedPhrase':
+      return `*[_type == "translatedPhrase" && !(_id in path("versions.**"))] | order(en asc) {
+        _id,
+        _type,
+        "title": en,
+        "slug": zh
       }`
     case 'siteSettings':
       return `*[_type == "siteSettings"]{
@@ -262,13 +340,12 @@ function normalizeRows(
     return {
       _id: publishedId,
       _type: String(doc._type),
-      title: String(doc.title ?? ''),
+      title: titleFromDoc(doc),
       titleZh: doc.titleZh ? String(doc.titleZh) : undefined,
       slug: doc.slug ? String(doc.slug) : undefined,
       publishedAt: doc.publishedAt ? String(doc.publishedAt) : undefined,
       updatedAt: doc._updatedAt ? String(doc._updatedAt) : undefined,
       metaDescription: doc.metaDescription ? String(doc.metaDescription) : undefined,
-      focusKeyword: doc.focusKeyword ? String(doc.focusKeyword) : undefined,
       isHidden: Boolean(doc.isHidden),
       hasDraft: Boolean(pair.draft),
       isDraftOnly: Boolean(pair.draft && !pair.published),
@@ -326,12 +403,16 @@ function mergeTrashRecords(rows: Row[], records: TrashRecordRow[]): Row[] {
   return [...byId.values()]
 }
 
+function documentStatus(row: Row): DocumentStatus {
+  if (row.isScheduled) return 'scheduled'
+  if (row.isDraftOnly) return 'draft'
+  if (row.isHidden) return 'hidden'
+  if (row.hasDraft) return 'edited'
+  return 'published'
+}
+
 function statusLabel(row: Row): string {
-  if (row.isScheduled) return 'Scheduled'
-  if (row.isDraftOnly) return 'Draft'
-  if (row.isHidden) return 'Hidden'
-  if (row.hasDraft) return 'Edited'
-  return 'Published'
+  return STATUS_LABELS[documentStatus(row)]
 }
 
 function statusTone(
@@ -357,7 +438,16 @@ function statusStyle(row: Row): CSSProperties | undefined {
   return undefined
 }
 
-function sortValue(row: Row, field: string): string | number {
+function usageForTab(row: Row, tab: CrewRoleTab): number {
+  if (tab === 'all') return row.usage ?? 0
+  return row.usageByRole?.[tab] ?? 0
+}
+
+function sortValue(
+  row: Row,
+  field: string,
+  crewRoleTab: CrewRoleTab = 'all',
+): string | number {
   switch (field) {
     case 'title':
       return (row.title || '').toLowerCase()
@@ -374,7 +464,7 @@ function sortValue(row: Row, field: string): string | number {
     case 'slug':
       return (row.slug || '').toLowerCase()
     case 'usage':
-      return row.usage ?? 0
+      return usageForTab(row, crewRoleTab)
     case 'parent':
       return (row.parent || '').toLowerCase()
     case 'role':
@@ -384,7 +474,15 @@ function sortValue(row: Row, field: string): string | number {
   }
 }
 
-function CellContent({columnId, row}: {columnId: ColumnId; row: Row}) {
+function CellContent({
+  columnId,
+  row,
+  crewRoleTab = 'all',
+}: {
+  columnId: ColumnId
+  row: Row
+  crewRoleTab?: CrewRoleTab
+}) {
   switch (columnId) {
     case 'thumbnail':
       return row.thumbnailUrl ? (
@@ -422,7 +520,9 @@ function CellContent({columnId, row}: {columnId: ColumnId; row: Row}) {
         <Text size={1}>
           {row.isScheduled
             ? formatDateTime(row.scheduledFor)
-            : formatDateTime(row.publishedAt)}
+            : row._type === 'portfolioEntry'
+              ? formatDate(row.publishedAt)
+              : formatDateTime(row.publishedAt)}
         </Text>
       )
     case 'updatedAt':
@@ -450,8 +550,6 @@ function CellContent({columnId, row}: {columnId: ColumnId; row: Row}) {
           </span>
         </Text>
       )
-    case 'focusKeyword':
-      return <Text size={1}>{row.focusKeyword || '—'}</Text>
     case 'slug':
       return <Text size={1}>{row.slug || '—'}</Text>
     case 'categories':
@@ -459,7 +557,7 @@ function CellContent({columnId, row}: {columnId: ColumnId; row: Row}) {
     case 'parent':
       return <Text size={1}>{row.parent || '—'}</Text>
     case 'usage':
-      return <Text size={1}>{row.usage ?? 0}</Text>
+      return <Text size={1}>{usageForTab(row, crewRoleTab)}</Text>
     case 'role':
       return <Text size={1}>{ROLE_LABELS[row.role || ''] || row.role || '—'}</Text>
     default:
@@ -487,13 +585,21 @@ export function DocumentTable({
   const toast = useToast()
   const currentUser = useCurrentUser()
   const supportsTrash = Boolean(section.supportsTrash)
+  const supportsStatusFilter = section.columns.some((col) => col.id === 'status')
+  const statusFilterTabs = useMemo(() => {
+    if (!supportsStatusFilter) return []
+    // Hidden is portfolio-only (`isHidden`); pages/posts have no equivalent.
+    if (section.documentType === 'portfolioEntry') return STATUS_FILTER_TABS
+    return STATUS_FILTER_TABS.filter((tab) => tab.id !== 'hidden')
+  }, [section.documentType, supportsStatusFilter])
 
   const [rows, setRows] = useState<Row[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState(section.defaultSort)
-  const [view, setView] = useState<TableView>('active')
+  const [crewRoleTab, setCrewRoleTab] = useState<CrewRoleTab>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [reloadKey, setReloadKey] = useState(0)
   const [busy, setBusy] = useState(false)
@@ -510,16 +616,36 @@ export function DocumentTable({
       }
   >(null)
 
+  const inTrash = statusFilter === 'trash'
+
   useEffect(() => {
     setSort(section.defaultSort)
     setSearch('')
-    setView('active')
+    setCrewRoleTab('all')
+    setStatusFilter('all')
     setSelected(new Set())
   }, [section.id, section.defaultSort])
 
   useEffect(() => {
     setSelected(new Set())
-  }, [view])
+  }, [crewRoleTab, statusFilter])
+
+  // Drop Hidden when leaving portfolio; keep a valid tab.
+  useEffect(() => {
+    if (
+      statusFilter === 'hidden' &&
+      !statusFilterTabs.some((tab) => tab.id === 'hidden')
+    ) {
+      setStatusFilter('all')
+    }
+  }, [statusFilter, statusFilterTabs])
+
+  // Trash tab only exists when the section supports it.
+  useEffect(() => {
+    if (statusFilter === 'trash' && !supportsTrash) {
+      setStatusFilter('all')
+    }
+  }, [statusFilter, supportsTrash])
 
   const loadRows = useCallback(() => {
     setReloadKey((value) => value + 1)
@@ -541,10 +667,16 @@ export function DocumentTable({
       section.documentType === 'videoFormat' ||
       section.documentType === 'market' ||
       section.documentType === 'category' ||
-      section.documentType === 'client' ||
       section.documentType === 'platform'
         ? {type: section.documentType}
         : {}
+
+    const identityUsagePromise =
+      section.documentType === 'creditIdentity'
+        ? client
+            .fetch<IdentityUsagePortfolio[]>(IDENTITY_USAGE_PORTFOLIOS_QUERY)
+            .catch(() => [] as IdentityUsagePortfolio[])
+        : Promise.resolve([] as IdentityUsagePortfolio[])
 
     Promise.all([
       client.fetch<Record<string, unknown>[]>(query, params),
@@ -560,11 +692,15 @@ export function DocumentTable({
               _type,
               "title": coalesce(title, name),
               titleZh,
+              displayTitleParts{
+                brandName,
+                productName,
+                campaignTitle
+              },
               "slug": slug.current,
               publishedAt,
               "_updatedAt": _updatedAt,
               "metaDescription": seo.metaDescription,
-              "focusKeyword": seo.focusKeyword,
               isHidden,
               trash,
               "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop",
@@ -585,10 +721,31 @@ export function DocumentTable({
             )
             .catch(() => [] as TrashRecordRow[])
         : Promise.resolve([] as TrashRecordRow[]),
+      identityUsagePromise,
     ])
-      .then(([docs, scheduledReleases, trashRecords]) => {
+      .then(([docs, scheduledReleases, trashRecords, usagePortfolios]) => {
         if (cancelled) return
-        const normalized = normalizeRows(docs, scheduledReleases)
+        let normalized = normalizeRows(docs, scheduledReleases)
+
+        if (section.documentType === 'creditIdentity') {
+          const usageById = resolveUsageForIdentities(
+            normalized.map((row) => ({
+              _id: baseId(row._id),
+              name: row.title,
+            })),
+            usagePortfolios,
+          )
+          normalized = normalized.map((row) => {
+            const usage = usageById.get(baseId(row._id))
+            return {
+              ...row,
+              usage: usage?.usage ?? 0,
+              roleKeys: usage?.roleKeys ?? [],
+              usageByRole: usage?.usageByRole ?? {},
+            }
+          })
+        }
+
         setRows(
           supportsTrash ? mergeTrashRecords(normalized, trashRecords) : normalized,
         )
@@ -621,20 +778,67 @@ export function DocumentTable({
     [rows],
   )
 
+  const isCrewMembersSection = section.documentType === 'creditIdentity'
+
+  const statusCounts = useMemo(() => {
+    const counts: Record<Exclude<StatusFilter, 'trash'>, number> = {
+      all: 0,
+      published: 0,
+      draft: 0,
+      edited: 0,
+      scheduled: 0,
+      hidden: 0,
+    }
+    if (!supportsStatusFilter) return counts
+    for (const row of rows) {
+      if (row.isTrashed) continue
+      counts.all += 1
+      counts[documentStatus(row)] += 1
+    }
+    return counts
+  }, [rows, supportsStatusFilter])
+
+  const crewRoleCounts = useMemo(() => {
+    const counts: Record<CrewRoleTab, number> = {
+      all: 0,
+      brand: 0,
+      director: 0,
+      dop: 0,
+      art_director: 0,
+      editor: 0,
+    }
+    if (!isCrewMembersSection) return counts
+    for (const row of rows) {
+      counts.all += 1
+      for (const key of row.roleKeys ?? []) {
+        if (key in counts) counts[key as CrewRoleTab] += 1
+      }
+    }
+    return counts
+  }, [isCrewMembersSection, rows])
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     let next = rows.filter((row) =>
-      supportsTrash ? (view === 'trash' ? row.isTrashed : !row.isTrashed) : true,
+      supportsTrash ? (inTrash ? row.isTrashed : !row.isTrashed) : true,
     )
+    if (
+      supportsStatusFilter &&
+      !inTrash &&
+      statusFilter !== 'all'
+    ) {
+      next = next.filter((row) => documentStatus(row) === statusFilter)
+    }
+    if (isCrewMembersSection && crewRoleTab !== 'all') {
+      next = next.filter((row) => row.roleKeys?.includes(crewRoleTab))
+    }
     if (q) {
       next = next.filter((row) =>
         section.searchFields.some((field) => {
           const value =
             field === 'metaDescription'
               ? row.metaDescription
-              : field === 'focusKeyword'
-                ? row.focusKeyword
-                : field === 'categories'
+              : field === 'categories'
                   ? row.categories
                   : field === 'parent'
                     ? row.parent
@@ -652,13 +856,29 @@ export function DocumentTable({
 
     const dir = sort.direction === 'asc' ? 1 : -1
     return [...next].sort((a, b) => {
-      const av = sortValue(a, sort.field)
-      const bv = sortValue(b, sort.field)
+      const av = sortValue(a, sort.field, crewRoleTab)
+      const bv = sortValue(b, sort.field, crewRoleTab)
+      if (typeof av === 'string' && typeof bv === 'string') {
+        // Diacritic-insensitive (Álvaro → A…, Nguyễn → N…)
+        const cmp = av.localeCompare(bv, undefined, {sensitivity: 'base'})
+        return cmp * dir
+      }
       if (av < bv) return -1 * dir
       if (av > bv) return 1 * dir
       return 0
     })
-  }, [rows, search, section.searchFields, sort, supportsTrash, view])
+  }, [
+    crewRoleTab,
+    inTrash,
+    isCrewMembersSection,
+    rows,
+    search,
+    section.searchFields,
+    sort,
+    statusFilter,
+    supportsStatusFilter,
+    supportsTrash,
+  ])
 
   const allVisibleSelected =
     filtered.length > 0 && filtered.every((row) => selected.has(row._id))
@@ -820,7 +1040,7 @@ export function DocumentTable({
     }
   }, [client, loadRows, selected, toast])
 
-  const canCreate = section.canCreate !== false && view === 'active'
+  const canCreate = section.canCreate !== false && !inTrash
   const colSpan = section.columns.length + (supportsTrash ? 1 : 0)
 
   // Keep columns readable on narrow viewports: the table never shrinks below
@@ -890,26 +1110,62 @@ export function DocumentTable({
       <Flex align="center" justify="space-between" gap={3} wrap="wrap">
         <Stack space={2}>
           <Text size={3} weight="semibold">
-            {view === 'trash' ? `${section.title} · Trash` : section.title}
+            {inTrash ? `${section.title} · Trash` : section.title}
           </Text>
           <Text size={1} muted>
             {loading
               ? 'Loading…'
               : `${filtered.length} item${filtered.length === 1 ? '' : 's'}`}
           </Text>
-          {supportsTrash ? (
+          {supportsStatusFilter ? (
+            <Flex gap={3} align="center" wrap="wrap">
+              {statusFilterTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setStatusFilter(tab.id)}
+                  style={{
+                    all: 'unset',
+                    cursor: 'pointer',
+                    color:
+                      statusFilter === tab.id
+                        ? 'var(--card-fg-color)'
+                        : 'var(--card-muted-fg-color)',
+                    fontWeight: statusFilter === tab.id ? 600 : 400,
+                    fontSize: 13,
+                  }}
+                >
+                  {tab.label} ({statusCounts[tab.id]})
+                </button>
+              ))}
+              {supportsTrash ? (
+                <button
+                  type="button"
+                  onClick={() => setStatusFilter('trash')}
+                  style={{
+                    all: 'unset',
+                    cursor: 'pointer',
+                    color: inTrash ? '#ef4444' : '#f87171',
+                    fontWeight: inTrash ? 600 : 400,
+                    fontSize: 13,
+                  }}
+                >
+                  Trash ({trashCount})
+                </button>
+              ) : null}
+            </Flex>
+          ) : supportsTrash ? (
             <Flex gap={3} align="center">
               <button
                 type="button"
-                onClick={() => setView('active')}
+                onClick={() => setStatusFilter('all')}
                 style={{
                   all: 'unset',
                   cursor: 'pointer',
-                  color:
-                    view === 'active'
-                      ? 'var(--card-fg-color)'
-                      : 'var(--card-muted-fg-color)',
-                  fontWeight: view === 'active' ? 600 : 400,
+                  color: !inTrash
+                    ? 'var(--card-fg-color)'
+                    : 'var(--card-muted-fg-color)',
+                  fontWeight: !inTrash ? 600 : 400,
                   fontSize: 13,
                 }}
               >
@@ -917,15 +1173,12 @@ export function DocumentTable({
               </button>
               <button
                 type="button"
-                onClick={() => setView('trash')}
+                onClick={() => setStatusFilter('trash')}
                 style={{
                   all: 'unset',
                   cursor: 'pointer',
-                  color:
-                    view === 'trash'
-                      ? 'var(--card-fg-color)'
-                      : 'var(--card-muted-fg-color)',
-                  fontWeight: view === 'trash' ? 600 : 400,
+                  color: inTrash ? '#ef4444' : '#f87171',
+                  fontWeight: inTrash ? 600 : 400,
                   fontSize: 13,
                 }}
               >
@@ -933,10 +1186,33 @@ export function DocumentTable({
               </button>
             </Flex>
           ) : null}
+          {isCrewMembersSection ? (
+            <Flex gap={3} align="center" wrap="wrap">
+              {CREW_ROLE_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setCrewRoleTab(tab.id)}
+                  style={{
+                    all: 'unset',
+                    cursor: 'pointer',
+                    color:
+                      crewRoleTab === tab.id
+                        ? 'var(--card-fg-color)'
+                        : 'var(--card-muted-fg-color)',
+                    fontWeight: crewRoleTab === tab.id ? 600 : 400,
+                    fontSize: 13,
+                  }}
+                >
+                  {tab.label} ({crewRoleCounts[tab.id]})
+                </button>
+              ))}
+            </Flex>
+          ) : null}
         </Stack>
         <Flex gap={2} align="center" wrap="wrap">
           {supportsTrash && selected.size > 0 ? (
-            view === 'active' ? (
+            !inTrash ? (
               <MenuButton
                 id={`${section.id}-bulk-actions`}
                 button={
@@ -979,7 +1255,7 @@ export function DocumentTable({
               </Flex>
             )
           ) : null}
-          {supportsTrash && view === 'trash' ? (
+          {supportsTrash && inTrash ? (
             <Button
               text="Empty Trash"
               tone="critical"
@@ -1088,7 +1364,11 @@ export function DocumentTable({
                 <tr>
                   <td colSpan={colSpan} style={{padding: 24}}>
                     <Text size={1} muted>
-                      {view === 'trash' ? 'Trash is empty.' : 'No documents found.'}
+                      {inTrash
+                        ? 'Trash is empty.'
+                        : statusFilter !== 'all'
+                          ? `No ${STATUS_LABELS[statusFilter].toLowerCase()} items.`
+                          : 'No documents found.'}
                     </Text>
                   </td>
                 </tr>
@@ -1134,15 +1414,23 @@ export function DocumentTable({
                             overflow: 'hidden',
                           }}
                         >
-                          {col.id === 'title' && view === 'trash' ? (
+                          {col.id === 'title' && inTrash ? (
                             <Stack space={1}>
-                              <CellContent columnId={col.id} row={row} />
+                              <CellContent
+                                columnId={col.id}
+                                row={row}
+                                crewRoleTab={crewRoleTab}
+                              />
                               <Text size={0} muted>
                                 Purges {formatDate(row.purgeAfter)}
                               </Text>
                             </Stack>
                           ) : (
-                            <CellContent columnId={col.id} row={row} />
+                            <CellContent
+                              columnId={col.id}
+                              row={row}
+                              crewRoleTab={crewRoleTab}
+                            />
                           )}
                         </td>
                       ))}

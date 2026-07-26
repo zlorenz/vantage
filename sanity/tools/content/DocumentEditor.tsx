@@ -55,6 +55,7 @@ import {
   type Path,
   type SanityDocumentLike,
 } from 'sanity'
+import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
   formatImpactSummary,
   moveToTrash,
@@ -63,6 +64,34 @@ import {
   type TrashableType,
 } from './document-lifecycle'
 import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './front-end-url'
+
+type DisplayTitlePartsDoc = {
+  brandName?: string
+  productName?: string
+  campaignTitle?: string
+}
+
+/** Prefer Brand/Product/Campaign compile; fall back to stored title/name. */
+function resolveChromeTitle(
+  doc: SanityDocumentLike | null | undefined,
+  fallback?: string,
+): string {
+  if (!doc) return fallback || 'Untitled'
+  const parts = (doc as {displayTitleParts?: DisplayTitlePartsDoc}).displayTitleParts
+  if (parts && trimPart(parts.brandName)) {
+    const compiled = compileDisplayTitles({
+      brandName: parts.brandName,
+      productName: parts.productName,
+      campaignTitle: parts.campaignTitle,
+    }).documentTitle
+    if (trimPart(compiled)) return compiled
+  }
+  if (typeof doc.title === 'string' && doc.title.trim()) return doc.title
+  const name = (doc as {name?: string}).name
+  if (typeof name === 'string' && name.trim()) return name
+  return fallback || 'Untitled'
+}
+
 
 /**
  * Structure normally supplies this via ReferenceInputOptionsProvider.
@@ -179,7 +208,7 @@ function FormShell({
                 <Box
                   ref={containerElement}
                   padding={4}
-                  style={{maxWidth: 1100, margin: '0 auto'}}
+                  style={{maxWidth: 1280, margin: '0 auto', width: '100%'}}
                 >
                   <ChangeIndicatorsTracker>
                     <FormBuilder
@@ -246,17 +275,12 @@ export function DocumentEditor({
   const ops = useDocumentOperation(publishedId, documentType)
   const supportsTrash = TRASHABLE_TYPES.includes(documentType as TrashableType)
 
-  // Lightweight title for the chrome header (form owns the real document value).
-  const headerTitle =
-    (editState.draft && typeof editState.draft.title === 'string' && editState.draft.title) ||
-    (editState.draft && typeof (editState.draft as {name?: string}).name === 'string' &&
-      (editState.draft as {name?: string}).name) ||
-    (editState.published && typeof editState.published.title === 'string' && editState.published.title) ||
-    (editState.published &&
-      typeof (editState.published as {name?: string}).name === 'string' &&
-      (editState.published as {name?: string}).name) ||
-    title ||
-    'Untitled'
+  // Prefer live compile from displayTitleParts so chrome matches Portfolio Details.
+  const headerTitle = resolveChromeTitle(
+    (editState.draft as SanityDocumentLike | null) ??
+      (editState.published as SanityDocumentLike | null),
+    title,
+  )
 
   const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)
   const canDiscard = Boolean(ops.discardChanges?.disabled) === false

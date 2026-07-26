@@ -1,5 +1,5 @@
 /**
- * GROQ queries for sitemap generation — slug and publishedAt only.
+ * GROQ queries for sitemap generation — slug + lastmod date.
  */
 
 export const SITEMAP_PORTFOLIO_QUERY = `
@@ -11,10 +11,10 @@ export const SITEMAP_PORTFOLIO_QUERY = `
 `;
 
 export const SITEMAP_BLOG_POSTS_QUERY = `
-  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(_updatedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current,
-    publishedAt
+    "_updatedAt": _updatedAt
   }
 `;
 

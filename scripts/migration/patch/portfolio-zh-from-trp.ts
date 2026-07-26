@@ -2,6 +2,8 @@
  * Fill missing portfolio ZH display fields + additionalVideos from TranslatePress.
  * Brand-only titles without a TRP hit keep EN (clears missing_zh → info).
  *
+ * Targets structured parts (displayTitleParts.*Zh, heroFilmTitleZh, videoTitleZh).
+ *
  *   npx tsx scripts/migration/patch/portfolio-zh-from-trp.ts
  *
  * Requires local WP/TRP DB (MAMP). Re-run: npm run migrate:audit:portfolio-zh
@@ -14,10 +16,19 @@ import { htmlToPlainText } from '../lib/translation-text';
 interface AdditionalVideo {
   vimeoUrl?: string;
   xinpianchangUrl?: string;
-  longTitle?: string;
-  longTitleZh?: string;
+  videoTitle?: string;
+  videoTitleZh?: string;
   description?: string;
   descriptionZh?: string;
+}
+
+interface DisplayTitleParts {
+  brandName?: string;
+  productName?: string;
+  campaignTitle?: string;
+  brandNameZh?: string;
+  productNameZh?: string;
+  campaignTitleZh?: string;
 }
 
 interface PortfolioDoc {
@@ -25,38 +36,34 @@ interface PortfolioDoc {
   slug: string;
   title?: string;
   titleZh?: string;
-  thumbTitle?: string;
-  thumbTitleZh?: string;
-  headerTitle?: string;
-  headerTitleZh?: string;
-  longTitle?: string;
-  longTitleZh?: string;
+  displayTitleParts?: DisplayTitleParts;
+  heroFilmTitle?: string;
+  heroFilmTitleZh?: string;
   description?: string;
   descriptionZh?: string;
   additionalVideos?: AdditionalVideo[];
 }
 
-/** Slug+field curated overrides (beat bad/missing TRP). */
+/** Slug+field curated overrides (beat bad/missing TRP). Plain text for part fields. */
 const CURATED: Record<string, Record<string, string>> = {
   'braun-x-dji': {
-    longTitleZh: 'Braun x DJI <span> 敢于与众不同 </span>',
+    'displayTitleParts.campaignTitleZh': '敢于与众不同',
   },
   'banyan-tree-theres-more-to-discovery': {
     titleZh: '悦榕庄 – 发现更多',
   },
   'bitget-elite-traders': {
-    longTitleZh: 'Bitget 精英交易员 <span> Matthew (AlphanumetriX) </span>',
+    'displayTitleParts.campaignTitleZh': '精英交易员',
+    heroFilmTitleZh: 'Matthew (AlphanumetriX)',
   },
   'bidv-smartbanking-hoa-nhi%cc%a3p-so%cc%82ng-tho%cc%82ng-minh': {
-    longTitleZh: 'BIDV SmartBanking <span> 与智慧生活同频 </span>',
+    'displayTitleParts.campaignTitleZh': '与智慧生活同频',
   },
   'vinamilk-probi-e%cc%82m-ruo%cc%a3%cc%82t-nuo%cc%a3%cc%82t-do%cc%9bi': {
-    longTitleZh: 'Vinamilk Probi <span> 肠胃舒适，一生顺畅 </span>',
+    'displayTitleParts.campaignTitleZh': '肠胃舒适，一生顺畅',
   },
   'govee-lit-by-govee': {
-    thumbTitleZh: 'Govee<br>闪耀由 Govee 点亮',
-    headerTitleZh: 'Govee <span> 闪耀由 Govee 点亮 </span>',
-    longTitleZh: 'Govee <span> 闪耀由 Govee 点亮 </span>',
+    'displayTitleParts.campaignTitleZh': '闪耀由 Govee 点亮',
   },
   'indelb-go20': {
     titleZh: 'IndelB ICECO Go20 – 拥有不一样的夏天！',
@@ -71,44 +78,41 @@ const CURATED: Record<string, Record<string, string>> = {
     titleZh: 'Mammotion LUBA Mini AWD – 小巧强劲，征服你的草坪',
   },
   'mammotion-let-luba-2-do-it': {
-    thumbTitleZh: 'Mammotion<br>让 LUBA 2 来做',
-    headerTitleZh: 'Mammotion <span> 让 LUBA 2 来做 </span>',
-    longTitleZh: 'Mammotion <span> 让 LUBA 2 来做 </span>智能草坪护理，尽享生活',
+    'displayTitleParts.campaignTitleZh': '让 LUBA 2 来做',
   },
   'mammotion-luba-automated-robot-lawn-mower': {
-    longTitleZh: 'Mammotion Luba <span> 自动割草机器人 </span>',
+    'displayTitleParts.campaignTitleZh': '自动割草机器人',
   },
   'roborock-s8': {
-    longTitleZh: 'Roborock S8 and S8+ <span> 忘掉清洁吧，真的 </span>',
+    'displayTitleParts.campaignTitleZh': '忘掉清洁吧，真的',
   },
   'ecoflow-river-600-customizable-backup-power': {
-    longTitleZh: 'EcoFlow RIVER 600<span> 可定制的备用电源 </span>',
+    'displayTitleParts.campaignTitleZh': '可定制的备用电源',
   },
   'dji-introducing-phantom-4-pro': {
-    longTitleZh: 'DJI <span> 介绍 Phantom 4 Pro </span>',
+    'displayTitleParts.campaignTitleZh': '介绍 Phantom 4 Pro',
   },
   'dji-introducing-zenmuse-x5-series': {
-    longTitleZh: 'DJI <span> 介绍 Zenmuse X5 系列 </span>',
+    'displayTitleParts.campaignTitleZh': '介绍 Zenmuse X5 系列',
   },
   'dji-introducing-flighthub': {
-    longTitleZh: 'DJI <span> 介绍 FlightHub </span>',
+    'displayTitleParts.campaignTitleZh': '介绍 FlightHub',
   },
   'oppo-reno-6-pro-5g': {
     titleZh: 'OPPO Reno 6 Pro 5G',
   },
   'realme-c75-everything-proof': {
-    headerTitleZh: 'realme C75 <span> 万无一失 </span>',
-    longTitleZh: 'realme C75 <span> 万无一失 </span>',
+    'displayTitleParts.campaignTitleZh': '万无一失',
   },
   'oneplus-fast-smooth': {
     titleZh: '一加 10T – 快速流畅',
   },
   'realme-x7-fast-powerful': {
     titleZh: '真我 X7 – 快速强大',
-    longTitleZh: '真我 X7 <span> 快速强大 </span>',
+    'displayTitleParts.campaignTitleZh': '快速强大',
   },
   'roborock-h7': {
-    longTitleZh: 'Roborock H7 <span> 出乎意料地轻巧 </span>',
+    'displayTitleParts.campaignTitleZh': '出乎意料地轻巧',
   },
   'techcombank-inspire-why-not': {
     // Strip VN diacritics from proper name inside otherwise-good ZH
@@ -120,7 +124,13 @@ const CURATED: Record<string, Record<string, string>> = {
 const BAD_GLOSS_RE = /城规银行/;
 
 function plain(html: string | undefined | null): string {
-  return htmlToPlainText(String(html ?? '')) || String(html ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return (
+    htmlToPlainText(String(html ?? '')) ||
+    String(html ?? '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 }
 
 function hasCjk(text: string): boolean {
@@ -132,7 +142,13 @@ function looksBrandOnly(text: string): boolean {
   if (!p || hasCjk(p)) return false;
   const words = p.match(/[A-Za-z0-9+]+/g) ?? [];
   // Pure product codes / short brand stacks only
-  return words.length <= 3 && !/[.!?…]/.test(p) && !/\b(Introducing|Dare|Forget|Enjoy|Custom|Automated|Ready|Compact|Powerful|Summer|Discovery|Experience|Proof|Lightweight|Campaign)\b/i.test(p);
+  return (
+    words.length <= 3 &&
+    !/[.!?…]/.test(p) &&
+    !/\b(Introducing|Dare|Forget|Enjoy|Custom|Automated|Ready|Compact|Powerful|Summer|Discovery|Experience|Proof|Lightweight|Campaign)\b/i.test(
+      p,
+    )
+  );
 }
 
 function stripDescHtml(html: string): string {
@@ -148,43 +164,12 @@ function stripDescHtml(html: string): string {
     .trim();
 }
 
-/**
- * Translate HTML title while preserving <span>/<br> wrappers when possible.
- */
-async function translateTitleHtml(en: string): Promise<string | undefined> {
-  const full = await translateEnhanced(en);
-  if (full && !BAD_GLOSS_RE.test(full)) return full;
-
-  // Translate each text node between tags
-  if (!/<[^>]+>/.test(en)) return full && !BAD_GLOSS_RE.test(full) ? full : undefined;
-
-  let changed = false;
-  const parts: string[] = [];
-  const re = /(<[^>]+>)|([^<]+)/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(en)) !== null) {
-    if (m[1]) {
-      parts.push(m[1]);
-      continue;
-    }
-    const chunk = m[2] ?? '';
-    if (!chunk.trim()) {
-      parts.push(chunk);
-      continue;
-    }
-    const zh = await translateEnhanced(chunk.trim());
-    if (zh && zh !== chunk.trim() && !BAD_GLOSS_RE.test(zh)) {
-      parts.push(chunk.replace(chunk.trim(), zh));
-      changed = true;
-    } else {
-      parts.push(chunk);
-    }
-  }
-  if (!changed) return undefined;
-  const out = parts.join('');
-  // If still no CJK and not brand-like, reject
-  if (!hasCjk(plain(out)) && !looksBrandOnly(en)) return undefined;
-  return out;
+/** Translate a plain title part (no HTML wrappers). */
+async function translatePlainPart(en: string): Promise<string | undefined> {
+  const zh = await translateEnhanced(en);
+  if (!zh || BAD_GLOSS_RE.test(zh)) return undefined;
+  if (plain(zh) && plain(zh) !== plain(en)) return plain(zh) || zh;
+  return undefined;
 }
 
 async function fillField(
@@ -196,8 +181,8 @@ async function fillField(
   if (!plain(en)) return undefined;
   if (plain(existingZh)) return undefined; // already filled
 
-  const fromTrp = await translateTitleHtml(en!);
-  if (fromTrp && plain(fromTrp) && plain(fromTrp) !== plain(en)) return fromTrp;
+  const fromTrp = await translatePlainPart(en!);
+  if (fromTrp) return fromTrp;
 
   // Brand-only: copy EN so ZH page doesn't fall back oddly / audit missing_zh clears
   if (looksBrandOnly(en!)) return en;
@@ -233,9 +218,15 @@ async function main() {
       _id,
       "slug": slug.current,
       title, titleZh,
-      thumbTitle, thumbTitleZh,
-      headerTitle, headerTitleZh,
-      longTitle, longTitleZh,
+      displayTitleParts{
+        brandName,
+        productName,
+        campaignTitle,
+        brandNameZh,
+        productNameZh,
+        campaignTitleZh
+      },
+      heroFilmTitle, heroFilmTitleZh,
       description, descriptionZh,
       additionalVideos
     }
@@ -247,24 +238,52 @@ async function main() {
   for (const doc of docs) {
     const curated = CURATED[doc.slug] ?? {};
     const set: Record<string, unknown> = {};
+    const parts = doc.displayTitleParts ?? {};
 
-    const pairs: [keyof PortfolioDoc, keyof PortfolioDoc][] = [
-      ['title', 'titleZh'],
-      ['thumbTitle', 'thumbTitleZh'],
-      ['headerTitle', 'headerTitleZh'],
-      ['longTitle', 'longTitleZh'],
+    const titleFilled = await fillField(doc.title, doc.titleZh, curated.titleZh);
+    if (titleFilled !== undefined) {
+      set.titleZh = titleFilled;
+      fieldWrites += 1;
+    }
+
+    const partPairs: Array<{
+      enKey: keyof DisplayTitleParts;
+      zhKey: keyof DisplayTitleParts;
+      path: string;
+    }> = [
+      {
+        enKey: 'brandName',
+        zhKey: 'brandNameZh',
+        path: 'displayTitleParts.brandNameZh',
+      },
+      {
+        enKey: 'productName',
+        zhKey: 'productNameZh',
+        path: 'displayTitleParts.productNameZh',
+      },
+      {
+        enKey: 'campaignTitle',
+        zhKey: 'campaignTitleZh',
+        path: 'displayTitleParts.campaignTitleZh',
+      },
     ];
 
-    for (const [enKey, zhKey] of pairs) {
-      const filled = await fillField(
-        doc[enKey] as string | undefined,
-        doc[zhKey] as string | undefined,
-        curated[zhKey as string],
-      );
+    for (const { enKey, zhKey, path } of partPairs) {
+      const filled = await fillField(parts[enKey], parts[zhKey], curated[path]);
       if (filled !== undefined) {
-        set[zhKey as string] = filled;
+        set[path] = filled;
         fieldWrites += 1;
       }
+    }
+
+    const heroFilled = await fillField(
+      doc.heroFilmTitle,
+      doc.heroFilmTitleZh,
+      curated.heroFilmTitleZh,
+    );
+    if (heroFilled !== undefined) {
+      set.heroFilmTitleZh = heroFilled;
+      fieldWrites += 1;
     }
 
     // descriptionZh — always prefer curated / TRP; also overwrite if curated techcombank
@@ -284,14 +303,14 @@ async function main() {
       const next = [];
       for (const video of doc.additionalVideos) {
         const row = { ...video };
-        if (plain(video.longTitle) && !plain(video.longTitleZh)) {
-          const t = await translateTitleHtml(video.longTitle!);
+        if (plain(video.videoTitle) && !plain(video.videoTitleZh)) {
+          const t = await translatePlainPart(video.videoTitle!);
           if (t) {
-            row.longTitleZh = t;
+            row.videoTitleZh = t;
             avChanged = true;
             fieldWrites += 1;
-          } else if (looksBrandOnly(video.longTitle!)) {
-            row.longTitleZh = video.longTitle;
+          } else if (looksBrandOnly(video.videoTitle!)) {
+            row.videoTitleZh = plain(video.videoTitle!);
             avChanged = true;
             fieldWrites += 1;
           }
@@ -302,11 +321,6 @@ async function main() {
             row.descriptionZh = d;
             avChanged = true;
             fieldWrites += 1;
-          } else {
-            // Strip HTML so ZH page doesn't show raw <p> when falling back isn't used —
-            // still set a ZH value only if TRP gave something; otherwise leave for audit.
-            // Soft fallback: stripped EN clears raw_html_fallback but stays warn identical.
-            // Prefer leaving missing for long prose without TRP.
           }
         }
         next.push(row);

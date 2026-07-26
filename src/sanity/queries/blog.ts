@@ -8,15 +8,15 @@ const BLOG_CARD_FIELDS = `
   titleZh,
   "slug": slug.current,
   "slugZh": slugZh.current,
-  publishedAt,
+  _createdAt,
   featuredImage,
-  "excerpt": pt::text(body),
-  "excerptZh": coalesce(excerptZh, pt::text(bodyZh))
+  excerpt,
+  excerptZh
 `;
 
 /** All published blog posts for the news index. */
 export const ALL_POSTS_QUERY = `
-  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(_createdAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
       title,
@@ -37,11 +37,11 @@ export const POST_BY_SLUG_QUERY = `
     titleZh,
     "slug": slug.current,
     "slugZh": slugZh.current,
-    publishedAt,
+    _createdAt,
     _updatedAt,
     featuredImage,
-    "excerpt": pt::text(body),
-    "excerptZh": coalesce(excerptZh, pt::text(bodyZh)),
+    excerpt,
+    excerptZh,
     body,
     bodyZh,
     "categories": categories[]->{
@@ -53,15 +53,14 @@ export const POST_BY_SLUG_QUERY = `
     },
     seo{
       metaDescription,
-      metaDescriptionZh,
-      focusKeyword
+      metaDescriptionZh
     }
   }
 `;
 
 /** All blog post slugs for generateStaticParams. */
 export const POST_SLUGS_QUERY = `
-  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(_createdAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current
   }
@@ -73,7 +72,7 @@ export const POSTS_BY_CATEGORY_QUERY = `
     _type == "category" && (
       slug.current == $slug || slugZh.current == $slug
     )
-  ][0]._id)] | order(publishedAt desc) {
+  ][0]._id)] | order(_createdAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
       title,
@@ -111,7 +110,7 @@ export const CATEGORY_HERO_IMAGE_QUERY = `
     _type == "category" && (
       slug.current == $slug || slugZh.current == $slug
     )
-  ][0]._id)] | order(publishedAt desc)[0].featuredImage
+  ][0]._id)] | order(_createdAt desc)[0].featuredImage
 `;
 
 /** All categories for sidebar navigation. */

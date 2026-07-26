@@ -21,6 +21,7 @@ interface SitemapContentEntry {
   slug: string;
   slugZh?: string;
   publishedAt?: string;
+  _updatedAt?: string;
 }
 
 interface SitemapTaxonomyEntry {
@@ -85,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       bilingualSitemapEntry(paths.en, paths.zh, {
         changeFrequency: 'monthly',
         priority: 0.7,
-        lastModified: post.publishedAt,
+        lastModified: post._updatedAt,
       }),
     );
   }

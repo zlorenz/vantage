@@ -1,6 +1,6 @@
 /**
  * Merge Chinese Portable Text body text with English media blocks
- * (images, galleries, video-url-only paragraphs).
+ * (images, galleries, videoEmbed blocks, and legacy video-url-only paragraphs).
  *
  * TranslatePress / HTML→PT for bodyZh often drops `<!-- wp:image -->` comments,
  * so ZH bodies lose inline media while EN bodies keep it.
@@ -23,7 +23,13 @@ function newKey(): string {
 
 export function isPortableTextMediaBlock(block: PtBlock | null | undefined): boolean {
   if (!block?._type) return false;
-  if (block._type === 'image' || block._type === 'imageGallery') return true;
+  if (
+    block._type === 'image' ||
+    block._type === 'imageGallery' ||
+    block._type === 'videoEmbed'
+  ) {
+    return true;
+  }
   if (block._type === 'block') {
     const text = getPortableTextBlockPlainText(
       block as Parameters<typeof getPortableTextBlockPlainText>[0],

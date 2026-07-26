@@ -23,7 +23,7 @@ interface NavDropdownProps {
 function isMobileNav(): boolean {
   return (
     typeof window !== 'undefined' &&
-    window.matchMedia('(max-width: 767px)').matches
+    window.matchMedia('(max-width: 991px)').matches
   );
 }
 

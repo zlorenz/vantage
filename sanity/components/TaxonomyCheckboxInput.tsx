@@ -176,7 +176,7 @@ export function TaxonomyCheckboxInput(props: ArrayOfObjectsInputProps) {
   }
 
   return (
-    <Stack space={2}>
+    <Stack space={2} style={{width: '100%', minWidth: 0}}>
       {orderedOptions.map((option) => {
         const checked = selectedIds.has(option._id)
         const inputId = `taxonomy-${schemaType.name}-${option._id}`
@@ -184,11 +184,14 @@ export function TaxonomyCheckboxInput(props: ArrayOfObjectsInputProps) {
         return (
           <Flex
             key={option._id}
-            align="flex-start"
+            align="center"
             gap={2}
-            style={{paddingLeft: option.depth > 0 ? '1.25rem' : undefined}}
+            style={{
+              width: '100%',
+              paddingLeft: option.depth > 0 ? '1.25rem' : undefined,
+            }}
           >
-            <Box paddingTop={1}>
+            <Box style={{flexShrink: 0}}>
               <Checkbox
                 id={inputId}
                 checked={checked}
@@ -196,13 +199,16 @@ export function TaxonomyCheckboxInput(props: ArrayOfObjectsInputProps) {
                 onChange={(event) => toggle(option._id, event.currentTarget.checked)}
               />
             </Box>
-            <Box flex={1}>
+            <Box flex={1} style={{minWidth: 0}}>
               <Text
                 as="label"
                 htmlFor={inputId}
                 size={1}
                 muted={option.depth > 0}
-                style={{cursor: readOnly ? 'default' : 'pointer'}}
+                style={{
+                  cursor: readOnly ? 'default' : 'pointer',
+                  display: 'block',
+                }}
               >
                 {option.title}
               </Text>

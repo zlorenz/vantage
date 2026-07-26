@@ -36,6 +36,7 @@ export function readFilters(params: URLSearchParams): LibraryFilters {
     director: params.get('director') || '',
     dop: params.get('dop') || '',
     'art-director': params.get('art-director') || '',
+    editor: params.get('editor') || '',
     format: params.get('format') || '',
     industry: params.get('industry') || '',
     market: params.get('market') || '',
@@ -72,6 +73,7 @@ export function buildLibraryQuery(state: {
   if (filters.director) query.director = filters.director;
   if (filters.dop) query.dop = filters.dop;
   if (filters['art-director']) query['art-director'] = filters['art-director'];
+  if (filters.editor) query.editor = filters.editor;
   if (filters.format) query.format = filters.format;
   if (filters.industry) query.industry = filters.industry;
   if (filters.market) query.market = filters.market;
@@ -91,6 +93,7 @@ export function hasActiveFilters(filters: LibraryFilters): boolean {
     Boolean(filters.director) ||
     Boolean(filters.dop) ||
     Boolean(filters['art-director']) ||
+    Boolean(filters.editor) ||
     Boolean(filters.format) ||
     Boolean(filters.industry) ||
     Boolean(filters.market)

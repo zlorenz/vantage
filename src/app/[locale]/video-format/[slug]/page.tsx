@@ -10,10 +10,13 @@ import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
+import { permanentRedirect } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { taxonomyArchiveTitle, portfolioTaxonomyDescription, buildPageMetadata } from '@/lib/metadata';
-import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
+import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
   homeBreadcrumb,
@@ -65,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     enPath: `/video-format/${term.slug}`,
     zhPath: `/zh/视频格式/${term.slugZh || term.slug}`,
     title: taxonomyArchiveTitle(title),
-    description: portfolioTaxonomyDescription(title),
+    description: portfolioTaxonomyDescription(title, locale as Locale),
     type: 'website',
   });
 }
@@ -86,7 +89,23 @@ export default async function VideoFormatArchivePage({ params }: Props) {
     notFound();
   }
 
-  const [entries, videoFormats, industries, markets, heroImage] = await Promise.all([
+  const canonicalSlug = canonicalSlugForLocale(
+    typedLocale,
+    slug,
+    term.slug,
+    term.slugZh,
+  );
+  if (canonicalSlug) {
+    permanentRedirect({
+      href: {
+        pathname: '/video-format/[slug]',
+        params: { slug: canonicalSlug },
+      },
+      locale: typedLocale,
+    });
+  }
+
+  const [entries, videoFormats, industries, markets, heroImage, phrases] = await Promise.all([
     sanityClient.fetch<PortfolioGridEntry[]>(PORTFOLIO_BY_VIDEO_FORMAT_QUERY, {
       termId: term._id,
     }),
@@ -96,10 +115,18 @@ export default async function VideoFormatArchivePage({ params }: Props) {
     sanityClient.fetch<SanityImage | null>(TAXONOMY_HERO_IMAGE_QUERY, {
       termId: term._id,
     }),
+    getPhraseRecord(),
   ]);
 
   const heroTitle = decodeHtmlEntities(
-    typedLocale === 'zh' && term.titleZh ? term.titleZh : term.title,
+    pickLocaleFieldWithPhrases(typedLocale, term.title, term.titleZh, phrases),
+  );
+
+  const intro = pickLocaleFieldWithPhrases(
+    typedLocale,
+    term.description,
+    term.descriptionZh,
+    phrases,
   );
 
   const activeSlug =
@@ -120,6 +147,11 @@ export default async function VideoFormatArchivePage({ params }: Props) {
       <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
       <SectionWrapper className="vp-portfolio-taxonomy">
         <div className="container-fluid px-3 md:px-4">
+          {intro ? (
+            <div className="vp-work-intro container mx-auto mb-8 text-center font-light text-vp-text-muted min-[1400px]:max-w-[1320px]">
+              <p>{intro}</p>
+            </div>
+          ) : null}
           <Suspense fallback={<div className="vp-load-spinner" />}>
             <PortfolioGrid
               locale={typedLocale}
@@ -128,6 +160,7 @@ export default async function VideoFormatArchivePage({ params }: Props) {
               videoFormats={videoFormats}
               industries={industries}
               markets={markets}
+              phrases={phrases}
               presetFilters={{ format: activeSlug }}
             />
           </Suspense>

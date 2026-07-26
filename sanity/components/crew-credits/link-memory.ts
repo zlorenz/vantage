@@ -156,6 +156,8 @@ export interface PropagatePersonLinkInput {
   name: string
   url: string
   linkTitle?: string
+  /** When set, update creditIdentity.url only (no portfolio fan-out). */
+  identityId?: string
 }
 
 /**
@@ -200,7 +202,12 @@ export function applyPersonLinkToCredits(
 type SanityPatchClient = {
   fetch: <T>(query: string, params?: Record<string, unknown>) => Promise<T>
   patch: (id: string) => {
-    set: (attrs: Record<string, unknown>) => {commit: () => Promise<unknown>}
+    set: (attrs: Record<string, unknown>) => {
+      commit: (options?: Record<string, unknown>) => Promise<unknown>
+    }
+    unset: (paths: string[]) => {
+      commit: (options?: Record<string, unknown>) => Promise<unknown>
+    }
   }
 }
 
@@ -214,18 +221,36 @@ function publishedAndDraftIds(documentId: string | undefined): Set<string> {
 }
 
 /**
- * Push a person link to every other portfolioEntry that credits the same name.
- * Skips the document currently being edited (draft + published ids).
+ * Save a person link.
+ * - With identityId: patch creditIdentity.url only (fast path).
+ * - Without: fan-out by name across portfolio entries (legacy / unlinked people).
  */
 export async function propagatePersonLinkAcrossPortfolio(
   client: SanityPatchClient,
   link: PropagatePersonLinkInput,
   opts?: {excludeDocumentId?: string},
-): Promise<{documentsUpdated: number; peopleUpdated: number}> {
-  const nameKey = normalizePersonName(link.name)
+): Promise<{documentsUpdated: number; peopleUpdated: number; viaIdentity: boolean}> {
+  const identityId = link.identityId?.trim()
   const url = link.url.trim()
+
+  if (identityId) {
+    if (url) {
+      await client
+        .patch(identityId)
+        .set({url})
+        .commit({returnDocuments: false})
+    } else {
+      await client
+        .patch(identityId)
+        .unset(['url'])
+        .commit({returnDocuments: false})
+    }
+    return {documentsUpdated: 1, peopleUpdated: 1, viaIdentity: true}
+  }
+
+  const nameKey = normalizePersonName(link.name)
   if (!nameKey || !url) {
-    return {documentsUpdated: 0, peopleUpdated: 0}
+    return {documentsUpdated: 0, peopleUpdated: 0, viaIdentity: false}
   }
 
   const docs = await client.fetch<
@@ -240,7 +265,7 @@ export async function propagatePersonLinkAcrossPortfolio(
         roleKey,
         role,
         isCustomRole,
-        people[]{_key, _type, name, url, linkTitle}
+        people[]{_key, _type, name, url, linkTitle, identity}
       }
     }`,
   )
@@ -258,16 +283,18 @@ export async function propagatePersonLinkAcrossPortfolio(
     peopleUpdated += result.peopleUpdated
   }
 
-  return {documentsUpdated, peopleUpdated}
+  return {documentsUpdated, peopleUpdated, viaIdentity: false}
 }
 
 export interface PropagatePersonRenameInput {
   fromName: string
   toName: string
+  /** When set, rename by identity ref (preferred) and patch the identity document name. */
+  identityId?: string
 }
 
 /**
- * Rename every person slot that matches fromName (normalized) within one credits array.
+ * Rename every person slot that matches fromName (normalized) or identityId.
  * Preserves url and linkTitle on renamed slots.
  */
 export function applyPersonRenameToCredits(
@@ -276,15 +303,26 @@ export function applyPersonRenameToCredits(
 ): {credits: CrewCreditValue[]; peopleUpdated: number} {
   const fromName = rename.fromName.trim()
   const toName = rename.toName.trim()
+  const identityId = rename.identityId?.trim()
   const fromKey = normalizePersonName(fromName)
-  if (!fromKey || !toName || fromName === toName || !credits?.length) {
+  if (!toName || !credits?.length) {
+    return {credits: credits ?? [], peopleUpdated: 0}
+  }
+  if (!identityId && (!fromKey || fromName === toName)) {
+    return {credits: credits ?? [], peopleUpdated: 0}
+  }
+  if (identityId && fromName === toName) {
     return {credits: credits ?? [], peopleUpdated: 0}
   }
 
   let peopleUpdated = 0
   const next = credits.map((credit) => {
     const people = (credit.people ?? []).map((person) => {
-      if (normalizePersonName(person.name ?? '') !== fromKey) return person
+      const matchesIdentity =
+        Boolean(identityId) && person.identity?._ref === identityId
+      const matchesName =
+        !identityId && Boolean(fromKey) && normalizePersonName(person.name ?? '') === fromKey
+      if (!matchesIdentity && !matchesName) return person
       if (person.name === toName) return person
       peopleUpdated += 1
       return {...person, name: toName}
@@ -296,8 +334,9 @@ export function applyPersonRenameToCredits(
 }
 
 /**
- * Rename a credited person on every other portfolioEntry that matches fromName.
- * Skips the document currently being edited (draft + published ids).
+ * Rename a credited person on every other portfolioEntry.
+ * Prefer identityId when provided; otherwise match by normalized name.
+ * Also patches the creditIdentity document name when identityId is set.
  */
 export async function propagatePersonRenameAcrossPortfolio(
   client: SanityPatchClient,
@@ -306,9 +345,17 @@ export async function propagatePersonRenameAcrossPortfolio(
 ): Promise<{documentsUpdated: number; peopleUpdated: number}> {
   const fromName = rename.fromName.trim()
   const toName = rename.toName.trim()
+  const identityId = rename.identityId?.trim()
   const fromKey = normalizePersonName(fromName)
-  if (!fromKey || !toName || fromName === toName) {
+  if (!toName || fromName === toName) {
     return {documentsUpdated: 0, peopleUpdated: 0}
+  }
+  if (!identityId && !fromKey) {
+    return {documentsUpdated: 0, peopleUpdated: 0}
+  }
+
+  if (identityId) {
+    await client.patch(identityId).set({name: toName}).commit({returnDocuments: false})
   }
 
   const docs = await client.fetch<
@@ -323,7 +370,7 @@ export async function propagatePersonRenameAcrossPortfolio(
         roleKey,
         role,
         isCustomRole,
-        people[]{_key, _type, name, url, linkTitle}
+        people[]{_key, _type, name, url, linkTitle, identity}
       }
     }`,
   )
@@ -334,7 +381,11 @@ export async function propagatePersonRenameAcrossPortfolio(
 
   for (const doc of docs ?? []) {
     if (skip.has(doc._id)) continue
-    const result = applyPersonRenameToCredits(doc.crewCredits, {fromName, toName})
+    const result = applyPersonRenameToCredits(doc.crewCredits, {
+      fromName,
+      toName,
+      ...(identityId ? {identityId} : {}),
+    })
     if (!result.peopleUpdated) continue
     await client.patch(doc._id).set({crewCredits: result.credits}).commit()
     documentsUpdated += 1

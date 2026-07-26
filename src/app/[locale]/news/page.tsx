@@ -12,6 +12,7 @@ import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { newsPageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import { buildBreadcrumbs, homeBreadcrumb, newsBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -50,10 +51,11 @@ export default async function NewsPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [page, posts, categories] = await Promise.all([
+  const [page, posts, categories, phrases] = await Promise.all([
     sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, { slug: 'news' }),
     sanityClient.fetch<BlogPostCardData[]>(ALL_POSTS_QUERY),
     sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
+    getPhraseRecord(),
   ]);
 
   if (!page) notFound();
@@ -83,13 +85,18 @@ export default async function NewsPage({ params }: Props) {
 
               <div className="vp-news-posts flex flex-col gap-16">
                 {posts.map((post) => (
-                  <BlogPostCard key={post._id} post={post} locale={typedLocale} />
+                  <BlogPostCard
+                    key={post._id}
+                    post={post}
+                    locale={typedLocale}
+                    phrases={phrases}
+                  />
                 ))}
               </div>
             </div>
 
             <div className="lg:col-span-4">
-              <BlogSidebar categories={categories} locale={typedLocale} />
+              <BlogSidebar categories={categories} locale={typedLocale} phrases={phrases} />
             </div>
           </div>
         </div>

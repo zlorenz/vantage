@@ -2,7 +2,7 @@
  * Deep audit: WordPress Yoast SEO vs Sanity SEO fields.
  *
  * Checks postmeta + yoast_indexable (if present) for pages, posts, portfolio,
- * then diffs metaDescription / focusKeyword against live Sanity documents.
+ * then diffs metaDescription against live Sanity documents.
  *
  *   npx tsx scripts/migration/audit/yoast-seo.ts
  */
@@ -61,7 +61,6 @@ const USEFUL_YOAST_KEYS = new Set([
 
 const MIGRATED_KEYS = new Set([
   '_yoast_wpseo_metadesc',
-  '_yoast_wpseo_focuskw',
 ])
 
 function clean(value: string | null | undefined): string | undefined {
@@ -177,12 +176,11 @@ async function main() {
       seo?: {
         metaDescription?: string
         metaDescriptionZh?: string
-        focusKeyword?: string
       }
     }>
   >(`*[_type in ["page", "blogPost", "portfolioEntry"]]{
     _id, _type, title, "slug": slug.current, noIndex, isHidden,
-    seo { metaDescription, metaDescriptionZh, focusKeyword }
+    seo { metaDescription, metaDescriptionZh }
   }`)
 
   const sanityById = new Map(sanityDocs.map((d) => [d._id, d]))
@@ -190,7 +188,6 @@ async function main() {
   const mismatches: unknown[] = []
   const missingInSanity: unknown[] = []
   const missingMetadesc: unknown[] = []
-  const missingFocuskw: unknown[] = []
   const usefulUnmigratedExamples: unknown[] = []
   const typeSummaries: Record<string, unknown> = {}
 
@@ -199,18 +196,14 @@ async function main() {
     const metaMap = await fetchAllPostMeta(posts.map((p) => p.ID))
 
     let wpMetadesc = 0
-    let wpFocus = 0
     let matched = 0
     let metadescOk = 0
-    let focusOk = 0
     let metadescMismatch = 0
-    let focusMismatch = 0
     let sanityMissing = 0
 
     for (const post of posts) {
       const meta = metaMap.get(post.ID) ?? {}
       const wpMetadescVal = clean(meta['_yoast_wpseo_metadesc'])
-      const wpFocusVal = clean(meta['_yoast_wpseo_focuskw'])
       const wpTitle = clean(meta['_yoast_wpseo_title'])
       const wpCanonical = clean(meta['_yoast_wpseo_canonical'])
       const wpOgTitle = clean(meta['_yoast_wpseo_opengraph-title'])
@@ -221,7 +214,6 @@ async function main() {
       const wpSchemaArticle = clean(meta['_yoast_wpseo_schema_article_type'])
 
       if (wpMetadescVal) wpMetadesc++
-      if (wpFocusVal) wpFocus++
 
       // Collect interesting unmigrated SEO fields that actually have values
       // (skip pure Yoast %%variable%% title templates — those are regenerated in Next)
@@ -272,14 +264,12 @@ async function main() {
           expectedSanityId: sanityId(post),
           title: post.post_title,
           hasMetadesc: Boolean(wpMetadescVal),
-          hasFocuskw: Boolean(wpFocusVal),
         })
         continue
       }
 
       matched++
       const sMetadesc = clean(sanity.seo?.metaDescription)
-      const sFocus = clean(sanity.seo?.focusKeyword)
 
       if (wpMetadescVal) {
         if (norm(sMetadesc) === norm(wpMetadescVal)) metadescOk++
@@ -304,29 +294,6 @@ async function main() {
           note: 'No Yoast metadesc in WP and none in Sanity',
         })
       }
-
-      if (wpFocusVal) {
-        if (norm(sFocus) === norm(wpFocusVal)) focusOk++
-        else {
-          focusMismatch++
-          mismatches.push({
-            field: 'focusKeyword',
-            wpId: post.ID,
-            type: wpType,
-            slug: post.post_name,
-            sanityId: sanity._id,
-            wp: wpFocusVal,
-            sanity: sFocus ?? null,
-          })
-        }
-      } else if (!sFocus) {
-        missingFocuskw.push({
-          wpId: post.ID,
-          type: wpType,
-          slug: post.post_name,
-          sanityId: sanity._id,
-        })
-      }
     }
 
     typeSummaries[label] = {
@@ -334,11 +301,8 @@ async function main() {
       matchedInSanity: matched,
       missingInSanity: sanityMissing,
       wpWithMetadesc: wpMetadesc,
-      wpWithFocuskw: wpFocus,
       metadescExactMatch: metadescOk,
       metadescMismatch,
-      focusExactMatch: focusOk,
-      focusMismatch,
     }
   }
 
@@ -365,9 +329,9 @@ async function main() {
   const report = {
     generatedAt: new Date().toISOString(),
     design: {
-      migratedFields: ['_yoast_wpseo_metadesc', '_yoast_wpseo_focuskw'],
+      migratedFields: ['_yoast_wpseo_metadesc'],
       intentionallyNotMigrated:
-        'SEO titles, OG/Twitter, canonical, robots, schema types — generated in Next.js per content-schema.md §7',
+        'Focus keyword, SEO titles, OG/Twitter, canonical, robots, schema types — focus keyword was Yoast-internal; titles/OG/etc. are generated in Next.js per content-schema.md §7',
     },
     yoastPostmetaKeys: keySummary,
     usefulKeysWithData,
@@ -380,7 +344,6 @@ async function main() {
     mismatches,
     missingInSanity,
     missingMetadesc,
-    missingFocuskw: missingFocuskw.slice(0, 50),
     usefulUnmigratedExamples: usefulUnmigratedExamples.slice(0, 100),
     sanityGaps: {
       withoutMetaDescription: sanityWithoutMetadesc.map((d) => ({

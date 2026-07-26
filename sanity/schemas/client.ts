@@ -4,7 +4,7 @@
  * Source: content-schema.md §4.7
  * WordPress origin: `client` taxonomy (67 terms)
  *
- * Referenced from portfolioEntry.clients and credits.prod_brand.
+ * Referenced from portfolioEntry.clients (legacy) and Brand crewCredits.
  * Used for /work-internal/ filtering — not exposed on public taxonomy archives.
  */
 

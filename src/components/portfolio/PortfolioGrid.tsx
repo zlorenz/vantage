@@ -12,6 +12,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { flattenTaxonomyTree, optionIndent } from '@/lib/taxonomy-tree';
 import { PortfolioCard } from './PortfolioCard';
 import type { Locale } from '@/i18n/routing';
@@ -46,6 +47,8 @@ interface PortfolioGridProps {
   artDirectors?: CrewMemberTerm[];
   /** Pre-select taxonomy filters on archive pages. */
   presetFilters?: PublicPresetFilters;
+  /** Exact EN→ZH phrase book for card titles and filter labels. */
+  phrases?: Record<string, string>;
 }
 
 interface PublicFilters {
@@ -65,9 +68,17 @@ function termSlug(term: TaxonomyTerm, locale: Locale): string {
   return locale === 'zh' ? term.slugZh || term.slug : term.slug;
 }
 
-function termLabel(term: TaxonomyTerm, locale: Locale): string {
-  const raw =
-    locale === 'zh' && term.titleZh ? term.titleZh : term.title;
+function termLabel(
+  term: TaxonomyTerm,
+  locale: Locale,
+  phrases?: Record<string, string>,
+): string {
+  const raw = pickLocaleFieldWithPhrases(
+    locale,
+    term.title,
+    term.titleZh,
+    phrases,
+  );
   return decodeHtmlEntities(raw);
 }
 
@@ -128,6 +139,7 @@ function publicFilterOptions(
   key: keyof PublicFilters,
   terms: TaxonomyTerm[],
   locale: Locale,
+  phrases?: Record<string, string>,
 ): { value: string; label: string; disabled: boolean }[] {
   return flattenTaxonomyTree(terms).map(({ term, depth }) => {
     const slug = termSlug(term, locale);
@@ -136,7 +148,7 @@ function publicFilterOptions(
       value: slug,
       label:
         optionIndent(depth) +
-        optionCountLabel(count, termLabel(term, locale)),
+        optionCountLabel(count, termLabel(term, locale, phrases)),
       disabled: count === 0 && filters[key] !== slug,
     };
   });
@@ -199,6 +211,7 @@ export function PortfolioGrid({
   dops = [],
   artDirectors = [],
   presetFilters,
+  phrases,
 }: PortfolioGridProps) {
   const t = useTranslations('Filters');
   const router = useRouter();
@@ -256,9 +269,10 @@ export function PortfolioGrid({
             'format',
             videoFormats,
             locale,
+            phrases,
           )
         : [],
-    [filterMode, entries, publicFilters, videoFormats, locale],
+    [filterMode, entries, publicFilters, videoFormats, locale, phrases],
   );
   const industryOptions = useMemo(
     () =>
@@ -269,9 +283,10 @@ export function PortfolioGrid({
             'industry',
             industries,
             locale,
+            phrases,
           )
         : [],
-    [filterMode, entries, publicFilters, industries, locale],
+    [filterMode, entries, publicFilters, industries, locale, phrases],
   );
   const marketOptions = useMemo(
     () =>
@@ -282,9 +297,10 @@ export function PortfolioGrid({
             'market',
             markets,
             locale,
+            phrases,
           )
         : [],
-    [filterMode, entries, publicFilters, markets, locale],
+    [filterMode, entries, publicFilters, markets, locale, phrases],
   );
 
   const [visibleCount, setVisibleCount] = useState(PER_PAGE);
@@ -591,6 +607,7 @@ export function PortfolioGrid({
               entry={entry}
               locale={locale}
               revealIndex={index % PER_PAGE}
+              phrases={phrases}
             />
           ))}
         </div>

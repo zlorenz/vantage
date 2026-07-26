@@ -1,5 +1,9 @@
 /**
  * crewPerson — One credited person or company with an optional URL.
+ *
+ * For Work Library filter roles (Brand, Director, DOP, Art Director, Editor),
+ * `identity` links to a stable creditIdentity document. `name` stays denormalized
+ * for display / CSV; role lives on the parent crewCredit row.
  */
 
 import {defineField, defineType} from 'sanity'
@@ -9,6 +13,15 @@ export const crewPerson = defineType({
   title: 'Crew Person',
   type: 'object',
   fields: [
+    defineField({
+      name: 'identity',
+      title: 'Identity',
+      type: 'reference',
+      to: [{type: 'creditIdentity'}],
+      description:
+        'Stable vendor identity (opaque ID). Optional for non-filter roles; set for Brand / Director / DOP / Art Director / Editor.',
+      weak: true,
+    }),
     defineField({
       name: 'name',
       title: 'Name',

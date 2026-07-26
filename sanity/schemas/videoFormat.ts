@@ -8,7 +8,9 @@
  * URL pattern: /video-format/[slug]/ (EN), /zh/视频格式/[slugZh]/ (ZH)
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
+
+import {defineLocalePair} from '../lib/define-locale-pair'
 
 export const videoFormat = defineType({
   name: 'videoFormat',
@@ -16,54 +18,43 @@ export const videoFormat = defineType({
   type: 'document',
 
   fields: [
-    defineField({
+    ...defineLocalePair({
       name: 'title',
-      title: 'Title (English)',
+      title: 'Title',
       type: 'string',
-      description:
-        'Format display name in English (e.g. Commercial Spot, Brand Film).',
+      description: 'Format display name in English (e.g. Commercial Spot, Brand Film).',
+      zhDescription: 'Format display name in Chinese Simplified.',
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
-    defineField({
-      name: 'titleZh',
-      title: 'Title (Chinese)',
-      type: 'string',
-      description: 'Format display name in Chinese Simplified.',
-    }),
-
-    defineField({
+    ...defineLocalePair({
       name: 'slug',
-      title: 'Slug (English)',
+      title: 'Slug',
       type: 'slug',
       description:
-        'URL slug for English archive pages (/video-format/[slug]/). ' +
-        'Must match live site slugs exactly for SEO.',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+        'URL slug for archive pages (/video-format/[slug]/ · /zh/视频格式/[slug]/). ' +
+        'Must match live site slugs exactly for SEO. ZH is stored explicitly.',
+      options: {source: 'title', maxLength: 96},
+      zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
-    defineField({
-      name: 'slugZh',
-      title: 'Slug (Chinese)',
-      type: 'slug',
-      description:
-        'URL slug for Chinese archive pages (/zh/视频格式/[slug]/). ' +
-        'Stored explicitly — never auto-generated from the English slug.',
-      options: {
-        source: 'titleZh',
-        maxLength: 96,
-      },
+    ...defineLocalePair({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 5,
+      description: 'Intro paragraph on the archive page.',
+      optional: true,
     }),
 
     defineField({
       name: 'parent',
       title: 'Parent Video Format',
       type: 'reference',
-      to: [{ type: 'videoFormat' }],
+      to: [{type: 'videoFormat'}],
       description: 'Optional parent category for nested filter dropdowns.',
     }),
   ],
@@ -74,12 +65,12 @@ export const videoFormat = defineType({
       subtitle: 'titleZh',
       parentTitle: 'parent.title',
     },
-    prepare({ title, subtitle, parentTitle }) {
-      const displayTitle = parentTitle ? `↳ ${title}` : title;
+    prepare({title, subtitle, parentTitle}) {
+      const displayTitle = parentTitle ? `↳ ${title}` : title
       return {
         title: displayTitle || 'Untitled format',
         subtitle: subtitle ? `中文: ${subtitle}` : undefined,
-      };
+      }
     },
   },
-});
+})

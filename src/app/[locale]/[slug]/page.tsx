@@ -5,13 +5,15 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
+import { Link, permanentRedirect } from '@/i18n/navigation';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { blogPostTitle, buildOgImage, buildPageMetadata, seoDescription } from '@/lib/metadata';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
-import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
+import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildArticle,
@@ -60,14 +62,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-function formatDate(dateString: string, locale: Locale): string {
-  return new Date(dateString).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
 export default async function BlogPostPage({ params }: Props) {
   const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
@@ -79,11 +73,35 @@ export default async function BlogPostPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const post = await sanityClient.fetch<BlogPost | null>(POST_BY_SLUG_QUERY, { slug });
+  const [post, phrases] = await Promise.all([
+    sanityClient.fetch<BlogPost | null>(POST_BY_SLUG_QUERY, { slug }),
+    getPhraseRecord(),
+  ]);
 
   if (!post) notFound();
 
-  const title = typedLocale === 'zh' && post.titleZh ? post.titleZh : post.title;
+  const canonicalSlug = canonicalSlugForLocale(
+    typedLocale,
+    slug,
+    post.slug,
+    post.slugZh,
+  );
+  if (canonicalSlug) {
+    permanentRedirect({
+      href: {
+        pathname: '/[slug]',
+        params: { slug: canonicalSlug },
+      },
+      locale: typedLocale,
+    });
+  }
+
+  const title = pickLocaleFieldWithPhrases(
+    typedLocale,
+    post.title,
+    post.titleZh,
+    phrases,
+  );
   const bodyBlocks =
     typedLocale === 'zh' && post.bodyZh?.length
       ? mergeChineseBodyWithEnglishMedia(post.bodyZh, post.body)
@@ -95,10 +113,12 @@ export default async function BlogPostPage({ params }: Props) {
         data={buildArticle({
           title,
           excerpt: post.excerpt,
+          excerptZh: post.excerptZh,
           featuredImage: post.featuredImage,
-          publishedAt: post.publishedAt,
+          publishedAt: post._createdAt,
           _updatedAt: post._updatedAt,
           seo: post.seo,
+          locale: typedLocale,
         })}
       />
       <JsonLd
@@ -118,14 +138,9 @@ export default async function BlogPostPage({ params }: Props) {
             <h1 className="entry-title mb-4 text-[clamp(2rem,3vw,2.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {title}
             </h1>
-            <div className="entry-meta flex flex-wrap items-center gap-2 text-sm text-vp-text-soft">
-              {post.publishedAt ? (
-                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, typedLocale)}</time>
-              ) : null}
-              {post.categories?.length ? (
-                <>
-                  <span aria-hidden>·</span>
-                  {post.categories.map((category) => {
+            {post.categories?.length ? (
+              <div className="entry-meta flex flex-wrap items-center gap-2 text-sm text-vp-text-soft">
+                {post.categories.map((category) => {
                     const catSlug =
                       typedLocale === 'zh'
                         ? category.slugZh || category.slug
@@ -147,9 +162,8 @@ export default async function BlogPostPage({ params }: Props) {
                       </Link>
                     );
                   })}
-                </>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
           </header>
 
           <div className="entry-content">

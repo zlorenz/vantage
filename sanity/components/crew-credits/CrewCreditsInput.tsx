@@ -25,7 +25,6 @@ import {
   TabList,
   TabPanel,
   Text,
-  TextArea,
   TextInput,
   useToast,
 } from '@sanity/ui'
@@ -47,6 +46,8 @@ import {
   CREW_DEPARTMENT_BY_KEY,
   CREW_ROLE_BY_KEY,
   getDepartmentLabel,
+  isFilterCreditRoleKey,
+  normalizeCreditToken,
   resolveStandardRole,
   type CrewCreditValue,
   type CrewDepartmentKey,
@@ -75,7 +76,7 @@ import {
   type KnownPersonLink,
 } from './link-memory'
 import {
-  attachNameDuplicates,
+  collapseSameNamePeopleInField,
   confirmNameDuplicate,
   countPendingDuplicates,
   duplicateAlertLabel,
@@ -83,6 +84,21 @@ import {
 } from './name-duplicates'
 import {buildRoleCatalogIndexes, type RoleCatalogIndexes} from './name-catalog-index'
 import {PeopleChipsInput} from './PeopleChipsInput'
+import {PreviewPeopleChips} from './PreviewPeopleChips'
+import {preparePreviewPeople} from './preview-people'
+import {
+  attachRoleSuggestions,
+  confirmRoleSuggestion,
+  countPendingRoleSuggestions,
+  roleSuggestionLabel,
+  skipRoleSuggestion,
+} from './role-suggestions'
+import {
+  findIdentityByName,
+  identityRef,
+  newCreditIdentityDoc,
+  type CreditIdentityDoc,
+} from './sync-credit-identities'
 import {FieldLabel} from '../FieldLabel'
 
 type CrewCreditItem = ObjectItem & CrewCreditValue
@@ -132,7 +148,9 @@ function recomputePreviewRow(row: MappedPreviewRow): MappedPreviewRow {
   if (row.roleKey && CREW_ROLE_BY_KEY.has(row.roleKey)) {
     const resolved = CREW_ROLE_BY_KEY.get(row.roleKey)!
     if (department && resolved.departmentKey !== department) {
-      const fromLabel = resolveStandardRole(roleLabel || row.roleRaw)
+      const fromLabel = resolveStandardRole(roleLabel || row.roleRaw, {
+        department: department || null,
+      })
       if (fromLabel && fromLabel.departmentKey === department) {
         return {
           ...row,
@@ -164,7 +182,9 @@ function recomputePreviewRow(row: MappedPreviewRow): MappedPreviewRow {
     }
   }
 
-  const fromLabel = resolveStandardRole(roleLabel || row.roleRaw)
+  const fromLabel = resolveStandardRole(roleLabel || row.roleRaw, {
+    department: department || null,
+  })
   if (fromLabel && (!department || fromLabel.departmentKey === department)) {
     return {
       ...row,
@@ -231,6 +251,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
 
   const [activeDept, setActiveDept] = useState<CrewDepartmentKey>('production')
   const [dragging, setDragging] = useState(false)
+  const dragDepthRef = useRef(0)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [previewRows, setPreviewRows] = useState<MappedPreviewRow[]>([])
   const [importMode, setImportMode] = useState<CrewCreditsImportMode>('fill')
@@ -241,6 +262,9 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     () => new Map(),
   )
   const [siteNameCatalog, setSiteNameCatalog] = useState<NameCatalogEntry[]>([])
+  const [identityUrlById, setIdentityUrlById] = useState<Map<string, string>>(
+    () => new Map(),
+  )
   const [roleCatalogIndexes, setRoleCatalogIndexes] = useState<RoleCatalogIndexes>(() => ({
     roleCatalogByKey: new Map(),
     deptCatalogByKey: new Map(),
@@ -261,22 +285,60 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
   )
 
   const handlePersonLinkApplied = useCallback(
-    async (link: {name: string; url: string; linkTitle?: string}) => {
+    async (link: {
+      name: string
+      url: string
+      linkTitle?: string
+      identityId?: string
+    }) => {
       if (propagatingRef.current || readOnly) return
       propagatingRef.current = true
       try {
         const result = await propagatePersonLinkAcrossPortfolio(client, link, {
           excludeDocumentId: documentId,
         })
+        if (link.identityId) {
+          setIdentityUrlById((prev) => {
+            const next = new Map(prev)
+            if (link.url.trim()) next.set(link.identityId!, link.url.trim())
+            else next.delete(link.identityId!)
+            return next
+          })
+          setSiteNameCatalog((prev) =>
+            prev.map((entry) =>
+              entry.identityId === link.identityId
+                ? {
+                    ...entry,
+                    ...(link.url.trim()
+                      ? {url: link.url.trim()}
+                      : {url: undefined}),
+                  }
+                : entry,
+            ),
+          )
+        }
         setSiteLinkMemory((prev) => {
           const next = new Map(prev)
-          next.set(normalizePersonName(link.name), {
-            url: link.url,
-            ...(link.linkTitle ? {linkTitle: link.linkTitle} : {}),
-          })
+          const key = normalizePersonName(link.name)
+          if (link.url.trim()) {
+            next.set(key, {
+              url: link.url.trim(),
+              ...(link.linkTitle ? {linkTitle: link.linkTitle} : {}),
+            })
+          } else {
+            next.delete(key)
+          }
           return next
         })
-        if (result.documentsUpdated > 0) {
+        if (result.viaIdentity) {
+          toast.push({
+            status: 'success',
+            title: link.url.trim() ? 'Link saved on crew member' : 'Link cleared on crew member',
+            description: link.url.trim()
+              ? `Updated once for “${link.name}” — all credits using this identity inherit it.`
+              : `Cleared the default link for “${link.name}”.`,
+          })
+        } else if (result.documentsUpdated > 0) {
           toast.push({
             status: 'success',
             title: 'Link synced across portfolio',
@@ -286,7 +348,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
       } catch (error) {
         toast.push({
           status: 'warning',
-          title: 'Could not sync link to other pages',
+          title: 'Could not save link',
           description: error instanceof Error ? error.message : 'Unknown error',
         })
       } finally {
@@ -297,7 +359,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
   )
 
   const handlePersonRenameApplied = useCallback(
-    async (rename: {fromName: string; toName: string}) => {
+    async (rename: {fromName: string; toName: string; identityId?: string}) => {
       if (propagatingRef.current || readOnly) return
       if (rename.fromName.trim() === rename.toName.trim()) return
       propagatingRef.current = true
@@ -307,11 +369,15 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
         })
         const fromKey = normalizePersonName(rename.fromName)
         setSiteNameCatalog((prev) =>
-          prev.map((entry) =>
-            normalizePersonName(entry.name) === fromKey
-              ? {...entry, name: rename.toName.trim()}
-              : entry,
-          ),
+          prev.map((entry) => {
+            if (rename.identityId && entry.identityId === rename.identityId) {
+              return {...entry, name: rename.toName.trim()}
+            }
+            if (!rename.identityId && normalizePersonName(entry.name) === fromKey) {
+              return {...entry, name: rename.toName.trim()}
+            }
+            return entry
+          }),
         )
         setSiteLinkMemory((prev) => {
           const known = prev.get(fromKey)
@@ -341,18 +407,23 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     [client, documentId, readOnly, toast],
   )
 
-  // Load site-wide name catalog + link memory once.
+  // Load site-wide name catalog + credit identities + link memory once.
   useEffect(() => {
     let cancelled = false
-    client
-      .fetch<
+    Promise.all([
+      client.fetch<
         {
           crewCredits?: {
             department?: CrewDepartmentKey
             roleKey?: string
             role?: string
             isCustomRole?: boolean
-            people?: {name?: string; url?: string; linkTitle?: string}[]
+            people?: {
+              name?: string
+              url?: string
+              linkTitle?: string
+              identity?: {_ref?: string}
+            }[]
           }[]
         }[]
       >(
@@ -362,15 +433,31 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
             roleKey,
             role,
             isCustomRole,
-            people[]{ name, url, linkTitle }
+            people[]{ name, url, linkTitle, identity }
           }
         }`,
-      )
-      .then((docs) => {
+      ),
+      client.fetch<CreditIdentityDoc[]>(
+        `*[_type == "creditIdentity"]{ _id, name, url }`,
+      ),
+    ])
+      .then(([docs, identities]) => {
         if (cancelled) return
         const creditRows = (docs ?? []).flatMap((doc) => doc.crewCredits ?? [])
         const people = creditRows.flatMap((credit) => credit.people ?? [])
-        setSiteNameCatalog(buildNameCatalogFromCredits(creditRows))
+        const fromCredits = buildNameCatalogFromCredits(creditRows)
+        const fromIdentities: NameCatalogEntry[] = (identities ?? []).map((doc) => ({
+          name: doc.name,
+          count: 1,
+          identityId: doc._id,
+          ...(doc.url ? {url: doc.url} : {}),
+        }))
+        const urlMap = new Map<string, string>()
+        for (const doc of identities ?? []) {
+          if (doc.url?.trim()) urlMap.set(doc._id, doc.url.trim())
+        }
+        setIdentityUrlById(urlMap)
+        setSiteNameCatalog(mergeNameCatalogs(fromIdentities, fromCredits))
         setRoleCatalogIndexes(buildRoleCatalogIndexes(creditRows))
         setSiteLinkMemory(
           buildLinkMemory(
@@ -381,6 +468,9 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                 name: person.name ?? '',
                 ...(person.url ? {url: person.url} : {}),
                 ...(person.linkTitle ? {linkTitle: person.linkTitle} : {}),
+                ...(person.identity?._ref
+                  ? {identity: {_type: 'reference' as const, _ref: person.identity._ref}}
+                  : {}),
               })),
           ),
         )
@@ -432,12 +522,68 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     [credits],
   )
 
+  const ensureIdentitiesOnPeople = useCallback(
+    async (people: CrewPersonValue[]): Promise<CrewPersonValue[]> => {
+      if (!people.length) return people
+      const existing = await client.fetch<CreditIdentityDoc[]>(
+        `*[_type == "creditIdentity"]{ _id, name, url }`,
+      )
+      const known = [...(existing ?? [])]
+      const pendingByName = new Map<string, string>()
+      const next: CrewPersonValue[] = []
+
+      for (const person of people) {
+        if (person.identity?._ref || !person.name?.trim()) {
+          next.push(person)
+          continue
+        }
+        const name = person.name.trim()
+        const key = normalizeCreditToken(name)
+        const found = findIdentityByName(name, known)
+        let id = found?._id ?? pendingByName.get(key)
+        if (!id) {
+          const doc = newCreditIdentityDoc(name, {url: person.url})
+          await client.createIfNotExists(doc)
+          known.push({_id: doc._id, name: doc.name, url: doc.url})
+          pendingByName.set(key, doc._id)
+          id = doc._id
+          setSiteNameCatalog((prev) =>
+            mergeNameCatalogs(prev, [
+              {
+                name: doc.name,
+                count: 1,
+                identityId: doc._id,
+                ...(doc.url ? {url: doc.url} : {}),
+              },
+            ]),
+          )
+        }
+        next.push({...person, identity: identityRef(id)})
+      }
+      return next
+    },
+    [client],
+  )
+
   const commitStandardPeople = useCallback(
-    (dept: CrewDepartmentKey, role: CrewRoleDefinition, people: CrewPersonValue[]) => {
+    async (dept: CrewDepartmentKey, role: CrewRoleDefinition, people: CrewPersonValue[]) => {
       const existing = findStandard(dept, role.key)
       const next = credits.filter((credit) => credit !== existing)
 
-      if (people.length) {
+      let linkedPeople = people
+      if (people.length && isFilterCreditRoleKey(role.key)) {
+        try {
+          linkedPeople = await ensureIdentitiesOnPeople(people)
+        } catch (error) {
+          toast.push({
+            status: 'warning',
+            title: 'Could not link credit identities',
+            description: error instanceof Error ? error.message : 'Unknown error',
+          })
+        }
+      }
+
+      if (linkedPeople.length) {
         next.push({
           _type: 'crewCredit',
           _key: existing?._key || newArrayKey(),
@@ -445,13 +591,13 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
           roleKey: role.key,
           role: role.label,
           isCustomRole: false,
-          people,
+          people: linkedPeople,
         })
       }
 
       commitCredits(next)
     },
-    [commitCredits, credits, findStandard],
+    [commitCredits, credits, ensureIdentitiesOnPeople, findStandard, toast],
   )
 
   // --- custom (additional) rows ----------------------------------------------
@@ -544,13 +690,15 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     const custom = previewRows.filter((row) => row.status === 'custom').length
     const warnings = previewRows.filter((row) => row.warning).length
     const duplicates = countPendingDuplicates(previewRows)
-    return {blocking, mapped, custom, warnings, duplicates}
+    const roleSuggestions = countPendingRoleSuggestions(previewRows)
+    return {blocking, mapped, custom, warnings, duplicates, roleSuggestions}
   }, [previewRows])
 
   const applyDisabled =
     readOnly ||
     stats.blocking > 0 ||
     stats.duplicates > 0 ||
+    stats.roleSuggestions > 0 ||
     previewRows.length === 0 ||
     (importMode === 'replace' && !confirmReplace)
 
@@ -572,17 +720,18 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
       }
 
       const mapped = mapCrewCreditsCsvRows(parsed.rows, credits as CrewCreditValue[])
-      const withDuplicates = mapped.previewRows.map((row) => ({
+      const linkMemory = mergeLinkMemories(siteLinkMemory, documentLinkMemory)
+      const withPeople = mapped.previewRows.map((row) => ({
         ...row,
-        people: attachNameDuplicates(row.people, nameCatalog),
+        people: preparePreviewPeople(row.people, nameCatalog, linkMemory),
       }))
       setParseErrors([])
-      setPreviewRows(withDuplicates)
+      setPreviewRows(attachRoleSuggestions(withPeople))
       setImportMode('fill')
       setConfirmReplace(false)
       setDialogOpen(true)
     },
-    [credits, nameCatalog, readOnly, toast],
+    [credits, documentLinkMemory, nameCatalog, readOnly, siteLinkMemory, toast],
   )
 
   const onFileChange = useCallback(
@@ -597,6 +746,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
   const onDrop = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault()
+      dragDepthRef.current = 0
       setDragging(false)
       const file = event.dataTransfer.files?.[0]
       if (file) void ingestFile(file)
@@ -604,37 +754,58 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     [ingestFile],
   )
 
+  const onDragEnter = useCallback((event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    dragDepthRef.current += 1
+    setDragging(true)
+  }, [])
+
+  const onDragLeave = useCallback((event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1)
+    if (dragDepthRef.current === 0) {
+      setDragging(false)
+    }
+  }, [])
+
+  const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+  }, [])
+
   const updateRow = useCallback(
     (id: string, patch: Partial<MappedPreviewRow>) => {
       setPreviewRows((rows) =>
-        rows.map((row) => {
-          if (row.id !== id) return row
+        attachRoleSuggestions(
+          rows.map((row) => {
+            if (row.id !== id) return row
 
-          let next: MappedPreviewRow = {...row, ...patch}
+            let next: MappedPreviewRow = {...row, ...patch}
 
-          if (
-            patch.roleLabel !== undefined ||
-            patch.department !== undefined ||
-            patch.isCustomRole !== undefined ||
-            patch.roleKey !== undefined
-          ) {
-            next = recomputePreviewRow(next)
-          } else if (!next.people.length && next.status !== 'invalid') {
-            next = {...next, status: 'invalid', error: 'At least one name is required'}
-          }
-
-          if (patch.people !== undefined) {
-            next = {
-              ...next,
-              people: attachNameDuplicates(next.people, nameCatalog),
+            if (
+              patch.roleLabel !== undefined ||
+              patch.department !== undefined ||
+              patch.isCustomRole !== undefined ||
+              patch.roleKey !== undefined
+            ) {
+              next = recomputePreviewRow(next)
+            } else if (!next.people.length && next.status !== 'invalid') {
+              next = {...next, status: 'invalid', error: 'At least one name is required'}
             }
-          }
 
-          return next
-        }),
+            if (patch.people !== undefined) {
+              const linkMemory = mergeLinkMemories(siteLinkMemory, documentLinkMemory)
+              next = {
+                ...next,
+                people: preparePreviewPeople(next.people, nameCatalog, linkMemory),
+              }
+            }
+
+            return next
+          }),
+        ),
       )
     },
-    [nameCatalog],
+    [documentLinkMemory, nameCatalog, siteLinkMemory],
   )
 
   const resolveDuplicate = useCallback(
@@ -658,7 +829,11 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
             }
             return skipNameDuplicate(person)
           })
-          return {...row, people}
+          return {
+            ...row,
+            people:
+              action === 'confirm' ? collapseSameNamePeopleInField(people) : people,
+          }
         }),
       )
 
@@ -668,6 +843,17 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     },
     [handlePersonRenameApplied],
   )
+
+  const resolveRoleSuggestion = useCallback((rowId: string, action: 'confirm' | 'skip') => {
+    setPreviewRows((rows) =>
+      attachRoleSuggestions(
+        rows.map((row) => {
+          if (row.id !== rowId) return row
+          return action === 'confirm' ? confirmRoleSuggestion(row) : skipRoleSuggestion(row)
+        }),
+      ),
+    )
+  }, [])
   const applyImport = useCallback(() => {
     if (applyDisabled) return
     // Document links win over site-wide memory for the same name.
@@ -724,12 +910,9 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
         shadow={1}
         tone={dragging ? 'primary' : 'transparent'}
         border
-        onDragEnter={(event) => {
-          event.preventDefault()
-          setDragging(true)
-        }}
-        onDragOver={(event) => event.preventDefault()}
-        onDragLeave={() => setDragging(false)}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
         onDrop={onDrop}
       >
         <Flex align="center" gap={2} wrap="wrap">
@@ -807,11 +990,15 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                       <PeopleChipsInput
                         people={existing?.people ?? []}
                         readOnly={Boolean(readOnly)}
+                        roleKey={role.key}
                         linkMemory={combinedLinkMemory}
                         nameCatalog={nameCatalog}
                         roleCatalog={roleCatalogIndexes.roleCatalogByKey.get(role.key)}
                         catalogReady={catalogReady}
-                        onCommit={(people) => commitStandardPeople(dept.key, role, people)}
+                        identityUrlById={identityUrlById}
+                        onCommit={(people) => {
+                          void commitStandardPeople(dept.key, role, people)
+                        }}
                         onLinkApplied={handlePersonLinkApplied}
                         onRenameApplied={handlePersonRenameApplied}
                       />
@@ -858,6 +1045,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                           nameCatalog={nameCatalog}
                           roleCatalog={roleCatalogIndexes.deptCatalogByKey.get(dept.key)}
                           catalogReady={catalogReady}
+                          identityUrlById={identityUrlById}
                           onCommit={(people) => commitCustomRow(item, {people})}
                           onLinkApplied={handlePersonLinkApplied}
                           onRenameApplied={handlePersonRenameApplied}
@@ -901,6 +1089,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                           nameCatalog={nameCatalog}
                           roleCatalog={roleCatalogIndexes.deptCatalogByKey.get(dept.key)}
                           catalogReady={catalogReady}
+                          identityUrlById={identityUrlById}
                           onCommit={(people) => updatePendingRow(dept.key, row.id, {people})}
                           onLinkApplied={handlePersonLinkApplied}
                           onRenameApplied={handlePersonRenameApplied}
@@ -966,6 +1155,9 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                     <PreviewStatText count={stats.duplicates} tone="caution">
                       Duplicates: {stats.duplicates}
                     </PreviewStatText>
+                    <PreviewStatText count={stats.roleSuggestions} tone="caution">
+                      Role variants: {stats.roleSuggestions}
+                    </PreviewStatText>
                     <PreviewStatText count={stats.blocking} tone="critical">
                       Errors: {stats.blocking}
                     </PreviewStatText>
@@ -1012,14 +1204,20 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                         row.status === 'warning' ||
                         row.status === 'custom',
                     )}
+                    nameCatalog={nameCatalog}
+                    linkMemory={combinedLinkMemory}
                     onChange={updateRow}
                     onResolveDuplicate={resolveDuplicate}
+                    onResolveRoleSuggestion={resolveRoleSuggestion}
                   />
                   <PreviewSection
                     title="Errors"
                     rows={previewRows.filter((row) => row.status === 'invalid')}
+                    nameCatalog={nameCatalog}
+                    linkMemory={combinedLinkMemory}
                     onChange={updateRow}
                     onResolveDuplicate={resolveDuplicate}
+                    onResolveRoleSuggestion={resolveRoleSuggestion}
                     tone="critical"
                   />
                 </>
@@ -1123,11 +1321,23 @@ function PreviewRowPanel(props: {
 function PreviewSection(props: {
   title: string
   rows: MappedPreviewRow[]
+  nameCatalog: NameCatalogEntry[]
+  linkMemory: Map<string, KnownPersonLink>
   onChange: (id: string, patch: Partial<MappedPreviewRow>) => void
   onResolveDuplicate: (rowId: string, personIndex: number, action: 'confirm' | 'skip') => void
+  onResolveRoleSuggestion: (rowId: string, action: 'confirm' | 'skip') => void
   tone?: 'critical' | 'default'
 }) {
-  const {title, rows, onChange, onResolveDuplicate, tone} = props
+  const {
+    title,
+    rows,
+    nameCatalog,
+    linkMemory,
+    onChange,
+    onResolveDuplicate,
+    onResolveRoleSuggestion,
+    tone,
+  } = props
   if (!rows.length) return null
 
   return (
@@ -1139,6 +1349,7 @@ function PreviewSection(props: {
         const existingNames = row.existingPeople.map((person) => person.name).join(', ')
         const existingUrls = row.existingPeople.map((person) => person.url?.trim() ?? '')
         const hasExistingUrls = existingUrls.some(Boolean)
+        const roleAlert = row.roleSuggestion
 
         return (
         <PreviewRowPanel key={row.id} row={row} sectionTone={tone}>
@@ -1154,6 +1365,37 @@ function PreviewSection(props: {
                 }}
               >
                 {row.error ?? row.warning}
+              </Text>
+            ) : null}
+            {roleAlert?.status === 'pending' ? (
+              <Card padding={2} radius={2} tone="caution" border>
+                <Stack space={2}>
+                  <Text size={1}>{roleSuggestionLabel(roleAlert)}</Text>
+                  <Flex gap={2} wrap="wrap">
+                    <Button
+                      text="Confirm merge"
+                      tone="caution"
+                      fontSize={1}
+                      onClick={() => onResolveRoleSuggestion(row.id, 'confirm')}
+                    />
+                    <Button
+                      text="Skip"
+                      mode="ghost"
+                      fontSize={1}
+                      onClick={() => onResolveRoleSuggestion(row.id, 'skip')}
+                    />
+                  </Flex>
+                </Stack>
+              </Card>
+            ) : null}
+            {roleAlert?.status === 'skipped' ? (
+              <Text size={0} muted>
+                Skipped role merge for {roleAlert.originalRole}
+              </Text>
+            ) : null}
+            {roleAlert?.status === 'confirmed' ? (
+              <Text size={0} muted>
+                Merged role to “{roleAlert.label}”
               </Text>
             ) : null}
             <Flex gap={2} wrap="wrap">
@@ -1219,33 +1461,16 @@ function PreviewSection(props: {
               </Box>
             </Flex>
             <Stack space={2}>
-              <FieldLabel>Names (comma-separated)</FieldLabel>
-              <TextArea
-                rows={2}
-                value={row.people.map((person) => person.name).join(', ')}
-                onChange={(event) => {
-                  const names = event.currentTarget.value
-                    .split(',')
-                    .map((part) => part.trim())
-                    .filter(Boolean)
-                  const urls = row.people.map((person) => person.url ?? '')
-                  const linkTitles = row.people.map((person) => person.linkTitle ?? '')
-                  onChange(row.id, {
-                    people: names.map((name, index) => {
-                      const url = urls[index]?.trim()
-                      const linkTitle = linkTitles[index]?.trim()
-                      return {
-                        name,
-                        ...(url ? {url} : {}),
-                        ...(linkTitle ? {linkTitle} : {}),
-                      }
-                    }),
-                  })
-                }}
+              <PreviewPeopleChips
+                people={row.people}
+                nameCatalog={nameCatalog}
+                linkMemory={linkMemory}
+                onChange={(people) => onChange(row.id, {people})}
               />
               {existingNames ? (
                 <Text size={0} muted>
                   Current names: {existingNames}
+                  {hasExistingUrls ? ` · URLs: ${existingUrls.filter(Boolean).join(', ')}` : ''}
                 </Text>
               ) : null}
               {row.people.map((person, personIndex) => {
@@ -1297,33 +1522,6 @@ function PreviewSection(props: {
                   </Card>
                 )
               })}
-            </Stack>
-            <Stack space={2}>
-              <FieldLabel optional>URLs (aligned to names)</FieldLabel>
-              <TextInput
-                value={row.people.map((person) => person.url ?? '').join(',')}
-                onChange={(event) => {
-                  const urlParts = event.currentTarget.value
-                    .split(',')
-                    .map((part) => part.trim())
-                  onChange(row.id, {
-                    people: row.people.map((person, index) => {
-                      const url = urlParts[index]
-                      return {
-                        name: person.name,
-                        ...(url ? {url} : {}),
-                        ...(person.linkTitle ? {linkTitle: person.linkTitle} : {}),
-                        ...(person.duplicate ? {duplicate: person.duplicate} : {}),
-                      }
-                    }),
-                  })
-                }}
-              />
-              {hasExistingUrls ? (
-                <Text size={0} muted>
-                  Current URLs: {existingUrls.join(', ')}
-                </Text>
-              ) : null}
             </Stack>
             <Flex align="center" gap={2}>
               <Checkbox

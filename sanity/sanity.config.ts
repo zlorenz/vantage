@@ -2,6 +2,7 @@ import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {media} from 'sanity-plugin-media'
+import {VantageLogoIcon} from './components/VantageLogoIcon'
 import {schemaTypes} from './schemas'
 import {structure} from './structure'
 import {contentTool} from './tools/content'
@@ -11,6 +12,7 @@ import './studio.css'
 export default defineConfig({
   name: 'default',
   title: 'Vantage Pictures Website',
+  icon: VantageLogoIcon,
 
   projectId: '7oesp86l',
   dataset: 'production',

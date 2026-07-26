@@ -10,7 +10,8 @@
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
     "start": "sanity start",
-    "test:crew-credits": "tsx components/crew-credits/crew-credits-csv.test.ts"
+    "test:crew-credits": "tsx components/crew-credits/crew-credits-csv.test.ts",
+    "test:display-titles": "tsx ../shared/display-titles/display-titles.test.ts"
   },
   "keywords": [
     "sanity"
@@ -18,10 +19,10 @@
   "dependencies": {
     "@sanity/icons": "3.8.0",
     "@sanity/ui": "^3.3.5",
-    "@sanity/vision": "^6.5.0",
+    "@sanity/vision": "^6.6.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "sanity": "^6.5.0",
+    "sanity": "^6.6.0",
     "sanity-plugin-media": "^6.0.2",
     "styled-components": "^6.1.18"
   },

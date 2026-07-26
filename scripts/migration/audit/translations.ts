@@ -231,7 +231,6 @@ function scanKeySourceFiles(srcDir: string): string[] {
     'components/search/SearchPageClient.tsx',
     'app/[locale]/about/page.tsx',
     'lib/cta-content.ts',
-    'lib/home-content.ts',
   ];
   const found = new Set<string>();
   const stringPattern = /['"`]([A-Z][A-Za-z0-9 '&!?.,\-]{2,})['"`]/g;
@@ -431,7 +430,6 @@ async function main() {
           'SearchPageClient.tsx',
           'about/page.tsx',
           'cta-content.ts',
-          'home-content.ts',
         ],
         totalUppercaseStrings: scannedUppercase.length,
         dictionaryHits: scannedWithHits.length,

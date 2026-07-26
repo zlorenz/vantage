@@ -10,6 +10,8 @@ export interface ExportedTaxonomy {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  description?: string;
+  descriptionZh?: string;
   sanityType: string;
   parentWpTermId?: number;
   parentSlug?: string;
@@ -43,6 +45,9 @@ export async function exportTaxonomies(): Promise<{
       titleZh,
       slug: term.slug,
       slugZh: slugZh && slugZh !== term.slug ? slugZh : undefined,
+      ...(term.description?.trim()
+        ? { description: term.description.trim() }
+        : {}),
       sanityType: TAXONOMY_MAP[term.taxonomy],
       ...(term.parentTermId > 0
         ? { parentWpTermId: term.parentTermId, parentSlug }

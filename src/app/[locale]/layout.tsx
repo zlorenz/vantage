@@ -19,8 +19,9 @@ import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { LayoutShell } from '@/components/layout/LayoutShell';
 import { routing } from '@/i18n/routing';
-import { poppins } from '@/lib/fonts';
+import { nunito, poppins } from '@/lib/fonts';
 import { METADATA_BASE } from '@/lib/metadata';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import { NAV_PAGES_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import type { NavPage, SiteSettings } from '@/types/sanity';
@@ -50,9 +51,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   // Single server-side fetch for global layout data — no redundant per-page queries.
-  const [siteSettings, navPages] = await Promise.all([
+  const [siteSettings, navPages, phrases] = await Promise.all([
     sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
     sanityClient.fetch<NavPage[]>(NAV_PAGES_QUERY),
+    getPhraseRecord(),
   ]);
 
   if (!siteSettings) {
@@ -62,7 +64,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={`h-full ${poppins.variable}`}
+      className={`h-full ${poppins.variable} ${nunito.variable}`}
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-vp-bg font-vp-sans text-vp-text">
@@ -71,6 +73,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             locale={locale as Locale}
             siteSettings={siteSettings}
             navPages={navPages}
+            phrases={phrases}
           >
             {children}
           </LayoutShell>

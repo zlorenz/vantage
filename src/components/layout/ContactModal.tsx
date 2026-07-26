@@ -4,17 +4,20 @@
  * ContactModal — global informational contact overlay.
  *
  * Opened from the Contact nav item via ContactModalContext. No form —
- * displays email, WhatsApp, and address from siteSettings. Empty fields
- * are omitted.
+ * displays email, WhatsApp, address, and optional CMS copy from siteSettings.
  */
 
 import { useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { PortableText } from '@portabletext/react';
+import type { Locale } from '@/i18n/routing';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { SiteSettings } from '@/types/sanity';
 import { useContactModal } from './ContactModalContext';
 
 interface ContactModalProps {
   siteSettings: SiteSettings;
+  phrases?: Record<string, string>;
 }
 
 function whatsappHref(value: string): string {
@@ -22,8 +25,9 @@ function whatsappHref(value: string): string {
   return digits ? `https://wa.me/${digits}` : '';
 }
 
-export function ContactModal({ siteSettings }: ContactModalProps) {
+export function ContactModal({ siteSettings, phrases }: ContactModalProps) {
   const t = useTranslations('Contact');
+  const locale = useLocale() as Locale;
   const { isOpen, closeContact } = useContactModal();
 
   useEffect(() => {
@@ -41,11 +45,39 @@ export function ContactModal({ siteSettings }: ContactModalProps) {
 
   if (!isOpen) return null;
 
-  const title = siteSettings.contactModalTitle?.trim() || t('modalTitle');
+  const title =
+    pickLocaleFieldWithPhrases(
+      locale,
+      siteSettings.contactModalTitle,
+      siteSettings.contactModalTitleZh,
+      phrases,
+    ).trim() || t('modalTitle');
+  const intro = pickLocaleFieldWithPhrases(
+    locale,
+    siteSettings.contactModalIntro,
+    siteSettings.contactModalIntroZh,
+    phrases,
+  ).trim();
   const email = siteSettings.contactEmail?.trim();
   const whatsapp = siteSettings.contactWhatsapp?.trim();
-  const address = siteSettings.contactAddress?.trim();
+  const address = pickLocaleFieldWithPhrases(
+    locale,
+    siteSettings.contactAddress,
+    siteSettings.contactAddressZh,
+    phrases,
+  ).trim();
   const waLink = whatsapp ? whatsappHref(whatsapp) : '';
+  const ctaText = pickLocaleFieldWithPhrases(
+    locale,
+    siteSettings.contactCtaText,
+    siteSettings.contactCtaTextZh,
+    phrases,
+  ).trim();
+  const ctaUrl = siteSettings.contactCtaUrl?.trim();
+  const modalContent =
+    locale === 'zh' && siteSettings.contactModalContentZh?.length
+      ? siteSettings.contactModalContentZh
+      : siteSettings.contactModalContent;
 
   return (
     <div
@@ -68,9 +100,13 @@ export function ContactModal({ siteSettings }: ContactModalProps) {
           ×
         </button>
 
-        <h2 id="vp-contact-modal-label" className="sr-only">
+        <h2 id="vp-contact-modal-label" className="mb-4 text-xl font-bold uppercase">
           {title}
         </h2>
+
+        {intro ? (
+          <p className="mb-4 font-light text-vp-text-muted whitespace-pre-wrap">{intro}</p>
+        ) : null}
 
         <ul className="mb-4 list-none p-0">
           {email ? (
@@ -116,7 +152,7 @@ export function ContactModal({ siteSettings }: ContactModalProps) {
         </ul>
 
         {address ? (
-          <address className="h5 m-0 text-base font-bold uppercase not-italic leading-snug text-white">
+          <address className="h5 m-0 mb-4 text-base font-bold uppercase not-italic leading-snug text-white">
             {address.split('\n').map((line, i) => (
               <span key={i}>
                 {line}
@@ -124,6 +160,25 @@ export function ContactModal({ siteSettings }: ContactModalProps) {
               </span>
             ))}
           </address>
+        ) : null}
+
+        {modalContent?.length ? (
+          <div className="mb-4 font-light prose prose-invert max-w-none">
+            <PortableText
+              value={modalContent as unknown as Parameters<typeof PortableText>[0]['value']}
+            />
+          </div>
+        ) : null}
+
+        {ctaText && ctaUrl ? (
+          <p className="m-0">
+            <a
+              href={ctaUrl}
+              className="text-vp-link font-bold uppercase hover:text-vp-link-hover"
+            >
+              {ctaText}
+            </a>
+          </p>
         ) : null}
       </div>
     </div>

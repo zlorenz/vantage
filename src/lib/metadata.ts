@@ -15,6 +15,7 @@
 import type { Metadata } from 'next';
 import type { Locale } from '@/i18n/routing';
 import type { PortfolioEntry, SeoFields, SanityImage } from '@/types/sanity';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 
 export const SITE_NAME = 'Vantage Pictures';
@@ -46,11 +47,23 @@ export function taxonomyArchiveTitle(termTitle: string): string {
   return `${termTitle} | ${SITE_NAME}`;
 }
 
-export function portfolioTaxonomyDescription(termTitle: string): string {
+export function portfolioTaxonomyDescription(
+  termTitle: string,
+  locale: Locale = 'en',
+): string {
+  if (locale === 'zh') {
+    return `探索 Vantage Pictures 在「${termTitle}」领域的商业影像作品 — 品牌影片、产品广告与活动内容，由越南团队制作。`;
+  }
   return `Explore our ${termTitle} commercial video work — brand films, product commercials, and campaigns produced by Vantage Pictures in Vietnam.`;
 }
 
-export function blogCategoryDescription(termTitle: string): string {
+export function blogCategoryDescription(
+  termTitle: string,
+  locale: Locale = 'en',
+): string {
+  if (locale === 'zh') {
+    return `Vantage Pictures「${termTitle}」相关文章与案例 — 越南商业影像制作公司。`;
+  }
   return `${termTitle} articles and case studies from Vantage Pictures, a Vietnam-based commercial video production company.`;
 }
 
@@ -118,8 +131,14 @@ export function portfolioEntryMetadata(
   entry: PortfolioEntry,
   locale: Locale,
   defaultOgImage?: SanityImage,
+  phrases?: Record<string, string> | null,
 ): Metadata {
-  const title = locale === 'zh' && entry.titleZh ? entry.titleZh : entry.title;
+  const title = pickLocaleFieldWithPhrases(
+    locale,
+    entry.title,
+    entry.titleZh,
+    phrases,
+  );
   const description = seoDescription(entry.seo, locale);
   const metaTitle = portfolioEntryTitle(title);
   const image = buildOgImage(entry.featuredImage, defaultOgImage);

@@ -38,8 +38,16 @@ export interface SiteSettings {
   contactPhone?: string;
   contactWhatsapp?: string;
   contactAddress?: string;
+  contactAddressZh?: string;
   contactModalTitle?: string;
+  contactModalTitleZh?: string;
+  contactModalIntro?: string;
+  contactModalIntroZh?: string;
   contactModalContent?: PortableTextBlock[];
+  contactModalContentZh?: PortableTextBlock[];
+  contactCtaText?: string;
+  contactCtaTextZh?: string;
+  contactCtaUrl?: string;
   socialVimeo?: string;
   socialInstagram?: string;
   socialFacebook?: string;
@@ -48,6 +56,18 @@ export interface SiteSettings {
   socialXinpianchang?: string;
   socialXiaohongshu?: string;
   defaultOgImage?: SanityImage;
+  campaignCta?: CampaignCta;
+}
+
+/** Shared Campaign Brief CTA (Site Settings). */
+export interface CampaignCta {
+  heading?: string;
+  headingZh?: string;
+  paragraphs?: string[];
+  paragraphsZh?: string[];
+  buttonLabel?: string;
+  buttonLabelZh?: string;
+  buttonHref?: string;
 }
 
 /** Minimal page shape for navigation slug resolution. */
@@ -60,7 +80,6 @@ export interface NavPage {
 export interface SeoFields {
   metaDescription?: string;
   metaDescriptionZh?: string;
-  focusKeyword?: string;
 }
 
 /** Minimal card shape — PortfolioCard component. */
@@ -68,10 +87,20 @@ export interface PortfolioCard {
   _id: string;
   slug: string;
   slugZh?: string;
-  thumbTitle: string;
-  thumbTitleZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
+  thumbTitleOverride?: string;
+  thumbTitleOverrideZh?: string;
   featuredImage: SanityImage;
   isHidden?: boolean;
+}
+
+export interface DisplayTitlePartsValue {
+  brandName?: string;
+  productName?: string;
+  campaignTitle?: string;
+  brandNameZh?: string;
+  productNameZh?: string;
+  campaignTitleZh?: string;
 }
 
 /** Card + filter metadata for PortfolioGrid (public filters). */
@@ -120,14 +149,17 @@ export interface InternalLibraryEntry {
   _id: string;
   title: string;
   titleZh?: string;
-  headerTitle?: string;
-  headerTitleZh?: string;
-  longTitle?: string;
-  longTitleZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
+  heroFilmTitle?: string;
+  heroFilmTitleZh?: string;
+  thumbTitleOverride?: string;
+  thumbTitleOverrideZh?: string;
+  headerTitleOverride?: string;
+  headerTitleOverrideZh?: string;
+  longTitleOverride?: string;
+  longTitleOverrideZh?: string;
   slug: string;
   slugZh?: string;
-  thumbTitle: string;
-  thumbTitleZh?: string;
   featuredImage: SanityImage;
   isHidden?: boolean;
   publishedAt?: string;
@@ -140,42 +172,33 @@ export interface InternalLibraryEntry {
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];
   crewCredits?: CrewCredit[];
-  credits?: PortfolioCredits;
 }
 
-export interface CreditsAdditionalRow {
-  role?: string;
-  names?: string;
-}
-
-/** Credits department — field keys match Sanity schema (prod_brand, cam_dop, etc.). */
-export type CreditsDepartment = Record<
-  string,
-  string | CreditsAdditionalRow[] | undefined
->;
-
-export interface PortfolioCredits {
-  production?: CreditsDepartment;
-  camera?: CreditsDepartment;
-  ge?: CreditsDepartment;
-  art?: CreditsDepartment;
-  casting?: CreditsDepartment;
-  stills?: CreditsDepartment;
-  post?: CreditsDepartment;
-}
-
-/** Structured person/company credit (preferred over legacy HTML name strings). */
+/** Structured person/company credit. */
 export interface CrewPerson {
   _key?: string;
   name: string;
   url?: string;
   linkTitle?: string;
+  /** Opaque creditIdentity document id when linked. */
+  identityId?: string;
+  /** Resolved display name from creditIdentity (may differ from denormalized name). */
+  identityName?: string;
+  /** Optional China-market brand name from creditIdentity. */
+  identityNameZh?: string;
 }
 
 /** Structured crew credit row shared by Studio and the frontend. */
 export interface CrewCredit {
   _key?: string;
-  department: keyof PortfolioCredits;
+  department:
+    | 'production'
+    | 'camera'
+    | 'ge'
+    | 'art'
+    | 'casting'
+    | 'stills'
+    | 'post';
   roleKey?: string;
   role: string;
   isCustomRole?: boolean;
@@ -185,8 +208,9 @@ export interface CrewCredit {
 export interface AdditionalVideo {
   vimeoUrl: string;
   xinpianchangUrl?: string;
-  longTitle: string;
-  longTitleZh?: string;
+  /** Episode title only — composed with campaign Brand/Product/Campaign on the frontend. */
+  videoTitle: string;
+  videoTitleZh?: string;
   description?: string;
   descriptionZh?: string;
 }
@@ -198,12 +222,17 @@ export interface PortfolioEntry {
   titleZh?: string;
   slug: string;
   slugZh?: string;
-  thumbTitle: string;
-  thumbTitleZh?: string;
-  headerTitle: string;
-  headerTitleZh?: string;
-  longTitle: string;
-  longTitleZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
+  heroFilmTitle?: string;
+  heroFilmTitleZh?: string;
+  thumbTitleOverride?: string;
+  thumbTitleOverrideZh?: string;
+  headerTitleOverride?: string;
+  headerTitleOverrideZh?: string;
+  longTitleOverride?: string;
+  longTitleOverrideZh?: string;
+  excerpt?: string;
+  excerptZh?: string;
   description: string;
   descriptionZh?: string;
   featuredImage: SanityImage;
@@ -213,7 +242,6 @@ export interface PortfolioEntry {
   isHidden?: boolean;
   additionalVideos?: AdditionalVideo[];
   crewCredits?: CrewCredit[];
-  credits?: PortfolioCredits;
   seo?: SeoFields;
 }
 
@@ -230,23 +258,33 @@ export interface TaxonomyTerm {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  /** Archive intro paragraph (English). */
+  description?: string;
+  /** Archive intro paragraph (Chinese). */
+  descriptionZh?: string;
   /** Parent term _id for nested filter dropdowns (subcategories). */
   parentId?: string;
 }
 
-/** Client term for work-internal filters. */
+/** Client term for work-internal / public filters. */
 export interface ClientTerm {
   _id: string;
   name: string;
   slug: string;
 }
 
-/** Crew member term for work-internal filters. */
+/** Crew member term for legacy work-internal filters. */
 export interface CrewMemberTerm {
   _id: string;
   name: string;
   slug: string;
-  role: 'director' | 'dop' | 'art-director';
+  role: 'director' | 'dop' | 'art-director' | 'editor';
+}
+
+/** Credit identity term for work-internal filter dropdowns (value = opaque _id). */
+export interface CreditIdentityTerm {
+  _id: string;
+  name: string;
 }
 
 /** Work page document projection. */
@@ -264,13 +302,12 @@ export interface WorkPage {
 export interface HeroSlideData {
   slug: string;
   slugZh?: string;
-  headerTitle: string;
-  headerTitleZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
+  headerTitleOverride?: string;
+  headerTitleOverrideZh?: string;
   description?: string;
   descriptionZh?: string;
   featuredImage: SanityImage;
-  buttonLabel: string;
-  buttonLabelZh?: string;
 }
 
 /** CMS page document — shared shape for static pages. */
@@ -280,6 +317,8 @@ export interface PageDocument {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  excerpt?: string;
+  excerptZh?: string;
   showHeroHeader?: boolean;
   heroTitle?: string;
   heroTitleZh?: string;
@@ -287,6 +326,10 @@ export interface PageDocument {
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
   heroSlides?: HeroSlideData[];
+  /** Curated grid entries (order preserved). Home: “A Bit of Our Work”; VPS: “Shot in Vietnam”. */
+  featuredWork?: PortfolioCard[];
+  /** Homepage brand logo grid (`logoId` from shared registry). */
+  brandLogos?: Array<{ logoId?: string }>;
   founders?: Founder[];
   pdfDownload?: PdfDownload;
   seo?: SeoFields;
@@ -296,9 +339,8 @@ export interface PageDocument {
 export interface Founder {
   name: string;
   jobTitle: string;
+  jobTitleZh?: string;
   image: SanityImage;
-  bio: string;
-  sameAs?: string[];
 }
 
 export interface PdfDownload {
@@ -318,7 +360,7 @@ export interface BlogPostCard {
   titleZh?: string;
   slug: string;
   slugZh?: string;
-  publishedAt?: string;
+  _createdAt?: string;
   featuredImage?: SanityImage;
   excerpt?: string;
   excerptZh?: string;
@@ -348,9 +390,11 @@ export interface SearchResultItem {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  /** Portfolio original release date; blogs use `_createdAt` via query alias. */
   publishedAt?: string;
   featuredImage?: SanityImage;
   description?: string;
+  descriptionZh?: string;
   excerpt?: string;
   excerptZh?: string;
 }

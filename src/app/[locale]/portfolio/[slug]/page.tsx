@@ -8,11 +8,17 @@ import { setRequestLocale } from 'next-intl/server';
 import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
+import { PortfolioDescription } from '@/components/portfolio/PortfolioDescription';
 import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
 import { routing, type Locale } from '@/i18n/routing';
-import { pickLocaleField } from '@/lib/locale-field';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
+import {
+  resolveAdditionalVideoTitle,
+  resolveEntryDisplayTitles,
+} from '@/lib/display-titles';
+import { getPhraseMap, getPhraseRecord } from '@/lib/phrase-book';
 import { portfolioEntryMetadata } from '@/lib/metadata';
-import { decodePathSlug, expandSlugParam } from '@/lib/path-slug';
+import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -22,6 +28,7 @@ import {
   workBreadcrumb,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { permanentRedirect } from '@/i18n/navigation';
 import { SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import {
   PORTFOLIO_ENTRY_QUERY,
@@ -47,9 +54,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug: rawSlug } = await params;
   const slug = decodePathSlug(rawSlug);
-  const [entry, siteSettings] = await Promise.all([
+  const [entry, siteSettings, phrases] = await Promise.all([
     sanityClient.fetch<PortfolioEntry | null>(PORTFOLIO_ENTRY_QUERY, { slug }),
     sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
+    getPhraseRecord(),
   ]);
 
   if (!entry) {
@@ -60,6 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     entry,
     locale as Locale,
     siteSettings?.defaultOgImage,
+    phrases,
   );
 }
 
@@ -69,32 +78,57 @@ export default async function PortfolioEntryPage({ params }: Props) {
   const slug = decodePathSlug(rawSlug);
 
   const typedLocale = locale as Locale;
-  const entry = await sanityClient.fetch<PortfolioEntry | null>(
-    PORTFOLIO_ENTRY_QUERY,
-    { slug },
-  );
+  const [entry, phrases, phraseRecord] = await Promise.all([
+    sanityClient.fetch<PortfolioEntry | null>(PORTFOLIO_ENTRY_QUERY, { slug }),
+    getPhraseMap(),
+    getPhraseRecord(),
+  ]);
 
   if (!entry) {
     notFound();
   }
 
-  const description =
-    typedLocale === 'zh' && entry.descriptionZh
-      ? entry.descriptionZh
-      : entry.description;
-
-  const title =
-    typedLocale === 'zh' && entry.titleZh ? entry.titleZh : entry.title;
-
-  const headerTitle = pickLocaleField(
+  const canonicalSlug = canonicalSlugForLocale(
     typedLocale,
-    entry.headerTitle,
-    entry.headerTitleZh,
+    slug,
+    entry.slug,
+    entry.slugZh,
   );
-  const longTitle = pickLocaleField(
+  if (canonicalSlug) {
+    permanentRedirect({
+      href: {
+        pathname: '/portfolio/[slug]',
+        params: { slug: canonicalSlug },
+      },
+      locale: typedLocale,
+    });
+  }
+
+  const description = pickLocaleFieldWithPhrases(
     typedLocale,
-    entry.longTitle,
-    entry.longTitleZh,
+    entry.description,
+    entry.descriptionZh,
+    phraseRecord,
+  );
+
+  const excerpt = pickLocaleFieldWithPhrases(
+    typedLocale,
+    entry.excerpt,
+    entry.excerptZh,
+    phraseRecord,
+  );
+
+  const title = pickLocaleFieldWithPhrases(
+    typedLocale,
+    entry.title,
+    entry.titleZh,
+    phraseRecord,
+  );
+
+  const { headerTitle, longTitle } = resolveEntryDisplayTitles(
+    entry,
+    typedLocale,
+    phrases,
   );
 
   const breadcrumbItems = [
@@ -122,6 +156,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
       <JsonLd data={buildBreadcrumbs(breadcrumbItems)} />
       <PageHero
         title={headerTitle}
+        description={excerpt}
         backgroundImage={entry.featuredImage}
       />
       <SectionWrapper>
@@ -129,13 +164,11 @@ export default async function PortfolioEntryPage({ params }: Props) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
             <div className="order-2 lg:order-1 lg:col-span-5">
               <h2
-                className="mb-3 text-2xl font-bold uppercase leading-tight tracking-vp-heading"
+                className="mb-3 text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
                 dangerouslySetInnerHTML={{ __html: longTitle }}
               />
               {description ? (
-                <div className="mb-4 whitespace-pre-wrap font-light text-vp-text-muted">
-                  {description}
-                </div>
+                <PortfolioDescription text={description} />
               ) : null}
             </div>
             <div className="order-1 lg:order-2 lg:col-span-7">
@@ -149,8 +182,8 @@ export default async function PortfolioEntryPage({ params }: Props) {
             <div className="order-3 mt-8 lg:col-span-10">
               <PortfolioCredits
                 crewCredits={entry.crewCredits}
-                credits={entry.credits}
                 locale={typedLocale}
+                phrases={phraseRecord}
               />
             </div>
           </div>
@@ -163,16 +196,18 @@ export default async function PortfolioEntryPage({ params }: Props) {
           (typedLocale === 'zh' && video.xinpianchangUrl?.trim());
         if (!hasVideo) return null;
 
-        const videoTitle = pickLocaleField(
+        const videoTitle = resolveAdditionalVideoTitle(
+          entry,
+          video,
           typedLocale,
-          video.longTitle,
-          video.longTitleZh,
+          phrases,
         );
-        const videoDescription = pickLocaleField(
+        const videoDescription = pickLocaleFieldWithPhrases(
           typedLocale,
           video.description,
           video.descriptionZh,
-        ).replace(/<\/?p\b[^>]*>/gi, '').trim();
+          phraseRecord,
+        );
 
         return (
           <SectionWrapper
@@ -184,15 +219,11 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 <div className="order-2 lg:order-1 lg:col-span-5">
                   {videoTitle ? (
                     <h2
-                      className="mb-3 text-2xl font-bold uppercase leading-tight tracking-vp-heading"
+                      className="mb-3 text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
                       dangerouslySetInnerHTML={{ __html: videoTitle }}
                     />
                   ) : null}
-                  {videoDescription ? (
-                    <div className="mb-4 whitespace-pre-wrap font-light text-vp-text-muted">
-                      {videoDescription}
-                    </div>
-                  ) : null}
+                  <PortfolioDescription text={videoDescription} />
                 </div>
                 <div className="order-1 lg:order-2 lg:col-span-7">
                   <PortfolioVideoEmbed

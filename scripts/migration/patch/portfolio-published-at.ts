@@ -30,7 +30,7 @@ async function main() {
     }
 
     await patchSet(portfolioId(item.wpId), {
-      publishedAt: new Date(item.publishedAt).toISOString(),
+      publishedAt: new Date(item.publishedAt).toISOString().slice(0, 10),
     });
     patched++;
   }

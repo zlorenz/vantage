@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-07-24T12:41:56.589Z",
+  "apply": false,
+  "trpDictionarySize": 5018,
+  "phrase": {
+    "updates": 0,
+    "creates": 0,
+    "sample": []
+  },
+  "documents": {
+    "fieldChanges": 0,
+    "docsTouched": 0,
+    "sample": []
+  }
+}

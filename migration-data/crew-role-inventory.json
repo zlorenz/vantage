@@ -1,0 +1,4093 @@
+{
+  "generatedAt": "2026-07-25T12:55:07.348Z",
+  "source": "sanity",
+  "totals": {
+    "portfolioDocsWithCredits": 145,
+    "totalCreditRows": 2490,
+    "distinctRoleAggregates": 106,
+    "distinctCustomRoles": 45,
+    "distinctStandardRoleKeys": 61,
+    "catalogRoleCount": 63,
+    "unusedCatalogRoles": 2
+  },
+  "onlineVsVfx": {
+    "docsWithOnline": 3,
+    "docsWithVfx": 73,
+    "docsWithBoth": 1,
+    "docsWithEither": 75,
+    "docsWithOnlineOnly": 2,
+    "docsWithVfxOnly": 72,
+    "docsWithNeither": 70
+  },
+  "customRoles": [
+    {
+      "roleKey": null,
+      "roleLabel": "Catering",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 36,
+      "entryCount": 36,
+      "sampleNames": [
+        "NTeam",
+        "Jane Mwiana",
+        "Xuan team"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Creative Director",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 29,
+      "entryCount": 29,
+      "sampleNames": [
+        "Paul Moore",
+        "Martin Sutcliffe",
+        "Zacharia Lorenz"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Sound Engineer",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 19,
+      "entryCount": 19,
+      "sampleNames": [
+        "Theuns van Dyk",
+        "Francis",
+        "Trung"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Post House",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 14,
+      "entryCount": 14,
+      "sampleNames": [
+        "Bonjour Saigon",
+        "GlanceLtd",
+        "ColorSpace Vietnam"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Wardrobe Assistant",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 11,
+      "entryCount": 11,
+      "sampleNames": [
+        "Praphaporn Komsree",
+        "Dan Ford",
+        "Đỗ Thị Bích Hạnh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Live-Stream Technician",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 8,
+      "entryCount": 8,
+      "sampleNames": [
+        "Nick Warner",
+        "Nguyen Hi Koi Team",
+        "Eko Wahyono"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Motion Graphic Artist",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 7,
+      "entryCount": 7,
+      "sampleNames": [
+        "Reybe Rempillo",
+        "Sơn Blue",
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Camera Assistants",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Trần Văn Hải",
+        "Nguyễn Hoàng Trâm",
+        "Nguyễn Thành Đô"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Grip & Lighting",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "HKFilm",
+        "HK Film",
+        "Ed Hannaford"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Agency Producer",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Dan Epstien",
+        "Kant Nguyen",
+        "Stuart Howe"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Best Boy Electric",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 5,
+      "entryCount": 5,
+      "sampleNames": [
+        "Thulani Mashiyane",
+        "Nguyễn Hoàng Minh",
+        "Waseem Valli"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Food Stylist",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Lê Trường Nhựt",
+        "Melissa",
+        "Tran Hong Anh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Graphic Design",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Janice Nguyen",
+        "Tự Nguyễn",
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Assistant Producer",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Nguyên Nguyễn",
+        "Duker Tsering",
+        "Husain Amer"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Head of Production",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Julie Janssen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Runner",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Dylan Ha",
+        "Phuong",
+        "Khoi"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Post PA",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Quyên Nguyễn",
+        "Blue Dang"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Post Producer",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Quyên Nguyễn"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Assistant Production Manager",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Noppawan Wachira-Amornlerd",
+        "Kudakwashe"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Medic",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Pitchayuth Deesom",
+        "Graywon Human"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Sound Engineer",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Tran Linh Sound Team",
+        "Daniel Bonilla"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "KV Art Director Assistant",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "KV Post Producer",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Racing Car Team",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Wood's Racing Team"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Toy Car",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Saigon Toy"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Loader",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Brandon Lowu"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Tracking Car",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Bi Hân"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "SFX Technician",
+      "isCustomRole": true,
+      "department": "casting",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Byron Ramsey"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Stunt Driver",
+      "isCustomRole": true,
+      "department": "casting",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Kevin Frame"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Best Boy Grip",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Colin Kondwani Chirombo"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "DMX Operator",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Binh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "GFX",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Online Editor",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Huy Lê"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": "post:online"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC Drone Op",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Dmitriy Tarasov",
+        "Cody Holthus",
+        "Brandon Rehbach"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC Founder/CEO",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Blake Resnick"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC Technician",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Davis Hazen",
+        "Trey Pfeiffer",
+        "Jerrod Tyler"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC VP of Strategy & Marketing Comms",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "David Benowitz"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Director Assistant",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Tyan Klass"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Director's Assistant",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Takuji Nakahira"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Medic On-set",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Hồ Chung Bảo Kim",
+        "Hồ Đình Hải",
+        "Trần Thanh Minh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Soundman",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Cong"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Studio",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Stylish Studio"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Translator",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Tina Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "DI",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Cham99studio"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Lighting",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Hải Nam"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    }
+  ],
+  "standardRolesByKey": [
+    {
+      "roleKey": "production_company",
+      "catalogLabel": "Production Company",
+      "department": "production",
+      "occurrenceCount": 145,
+      "entryCount": 145,
+      "labelVariants": [
+        {
+          "label": "Production Company",
+          "occurrenceCount": 145,
+          "entryCount": 145
+        }
+      ]
+    },
+    {
+      "roleKey": "brand",
+      "catalogLabel": "Brand",
+      "department": "production",
+      "occurrenceCount": 144,
+      "entryCount": 144,
+      "labelVariants": [
+        {
+          "label": "Brand",
+          "occurrenceCount": 144,
+          "entryCount": 144
+        }
+      ]
+    },
+    {
+      "roleKey": "director",
+      "catalogLabel": "Director",
+      "department": "production",
+      "occurrenceCount": 137,
+      "entryCount": 137,
+      "labelVariants": [
+        {
+          "label": "Director",
+          "occurrenceCount": 137,
+          "entryCount": 137
+        }
+      ]
+    },
+    {
+      "roleKey": "dop",
+      "catalogLabel": "DOP",
+      "department": "camera",
+      "occurrenceCount": 102,
+      "entryCount": 102,
+      "labelVariants": [
+        {
+          "label": "DOP",
+          "occurrenceCount": 102,
+          "entryCount": 102
+        }
+      ]
+    },
+    {
+      "roleKey": "producer",
+      "catalogLabel": "Producer",
+      "department": "production",
+      "occurrenceCount": 97,
+      "entryCount": 97,
+      "labelVariants": [
+        {
+          "label": "Producer",
+          "occurrenceCount": 97,
+          "entryCount": 97
+        }
+      ]
+    },
+    {
+      "roleKey": "ep",
+      "catalogLabel": "EP",
+      "department": "production",
+      "occurrenceCount": 89,
+      "entryCount": 89,
+      "labelVariants": [
+        {
+          "label": "EP",
+          "occurrenceCount": 89,
+          "entryCount": 89
+        }
+      ]
+    },
+    {
+      "roleKey": "editor",
+      "catalogLabel": "Editor",
+      "department": "post",
+      "occurrenceCount": 86,
+      "entryCount": 86,
+      "labelVariants": [
+        {
+          "label": "Editor",
+          "occurrenceCount": 86,
+          "entryCount": 86
+        }
+      ]
+    },
+    {
+      "roleKey": "colorist",
+      "catalogLabel": "Colorist",
+      "department": "post",
+      "occurrenceCount": 73,
+      "entryCount": 73,
+      "labelVariants": [
+        {
+          "label": "Colorist",
+          "occurrenceCount": 73,
+          "entryCount": 73
+        }
+      ]
+    },
+    {
+      "roleKey": "vfx",
+      "catalogLabel": "VFX",
+      "department": "post",
+      "occurrenceCount": 73,
+      "entryCount": 73,
+      "labelVariants": [
+        {
+          "label": "VFX",
+          "occurrenceCount": 73,
+          "entryCount": 73
+        }
+      ]
+    },
+    {
+      "roleKey": "1st_ad",
+      "catalogLabel": "1st AD",
+      "department": "production",
+      "occurrenceCount": 72,
+      "entryCount": 72,
+      "labelVariants": [
+        {
+          "label": "1st AD",
+          "occurrenceCount": 72,
+          "entryCount": 72
+        }
+      ]
+    },
+    {
+      "roleKey": "art_director",
+      "catalogLabel": "Art Director",
+      "department": "art",
+      "occurrenceCount": 69,
+      "entryCount": 69,
+      "labelVariants": [
+        {
+          "label": "Art Director",
+          "occurrenceCount": 69,
+          "entryCount": 69
+        }
+      ]
+    },
+    {
+      "roleKey": "sound_design_mix",
+      "catalogLabel": "Sound Design & Mix",
+      "department": "post",
+      "occurrenceCount": 69,
+      "entryCount": 69,
+      "labelVariants": [
+        {
+          "label": "Sound Design & Mix",
+          "occurrenceCount": 69,
+          "entryCount": 69
+        }
+      ]
+    },
+    {
+      "roleKey": "hair_makeup",
+      "catalogLabel": "Hair & Makeup",
+      "department": "art",
+      "occurrenceCount": 66,
+      "entryCount": 66,
+      "labelVariants": [
+        {
+          "label": "Hair & Makeup",
+          "occurrenceCount": 66,
+          "entryCount": 66
+        }
+      ]
+    },
+    {
+      "roleKey": "pa",
+      "catalogLabel": "PA",
+      "department": "production",
+      "occurrenceCount": 65,
+      "entryCount": 65,
+      "labelVariants": [
+        {
+          "label": "PA",
+          "occurrenceCount": 65,
+          "entryCount": 65
+        }
+      ]
+    },
+    {
+      "roleKey": "wardrobe",
+      "catalogLabel": "Wardrobe",
+      "department": "art",
+      "occurrenceCount": 64,
+      "entryCount": 64,
+      "labelVariants": [
+        {
+          "label": "Wardrobe",
+          "occurrenceCount": 64,
+          "entryCount": 64
+        }
+      ]
+    },
+    {
+      "roleKey": "props_master",
+      "catalogLabel": "Props Master",
+      "department": "art",
+      "occurrenceCount": 63,
+      "entryCount": 63,
+      "labelVariants": [
+        {
+          "label": "Props Master",
+          "occurrenceCount": 63,
+          "entryCount": 63
+        }
+      ]
+    },
+    {
+      "roleKey": "talent",
+      "catalogLabel": "Talent",
+      "department": "casting",
+      "occurrenceCount": 53,
+      "entryCount": 53,
+      "labelVariants": [
+        {
+          "label": "Talent",
+          "occurrenceCount": 53,
+          "entryCount": 53
+        }
+      ]
+    },
+    {
+      "roleKey": "gaffer",
+      "catalogLabel": "Gaffer",
+      "department": "ge",
+      "occurrenceCount": 53,
+      "entryCount": 53,
+      "labelVariants": [
+        {
+          "label": "Gaffer",
+          "occurrenceCount": 53,
+          "entryCount": 53
+        }
+      ]
+    },
+    {
+      "roleKey": "dit",
+      "catalogLabel": "DIT",
+      "department": "camera",
+      "occurrenceCount": 52,
+      "entryCount": 52,
+      "labelVariants": [
+        {
+          "label": "DIT",
+          "occurrenceCount": 52,
+          "entryCount": 52
+        }
+      ]
+    },
+    {
+      "roleKey": "focus_puller",
+      "catalogLabel": "Focus Puller",
+      "department": "camera",
+      "occurrenceCount": 51,
+      "entryCount": 51,
+      "labelVariants": [
+        {
+          "label": "Focus Puller",
+          "occurrenceCount": 51,
+          "entryCount": 51
+        }
+      ]
+    },
+    {
+      "roleKey": "rental_house",
+      "catalogLabel": "Rental House",
+      "department": "ge",
+      "occurrenceCount": 50,
+      "entryCount": 50,
+      "labelVariants": [
+        {
+          "label": "Rental House",
+          "occurrenceCount": 50,
+          "entryCount": 50
+        }
+      ]
+    },
+    {
+      "roleKey": "post_supervisor",
+      "catalogLabel": "Post Supervisor",
+      "department": "post",
+      "occurrenceCount": 49,
+      "entryCount": 49,
+      "labelVariants": [
+        {
+          "label": "Post Supervisor",
+          "occurrenceCount": 49,
+          "entryCount": 49
+        }
+      ]
+    },
+    {
+      "roleKey": "storyboards",
+      "catalogLabel": "Storyboards",
+      "department": "art",
+      "occurrenceCount": 48,
+      "entryCount": 48,
+      "labelVariants": [
+        {
+          "label": "Storyboards",
+          "occurrenceCount": 48,
+          "entryCount": 48
+        }
+      ]
+    },
+    {
+      "roleKey": "line_producer",
+      "catalogLabel": "Line Producer",
+      "department": "production",
+      "occurrenceCount": 43,
+      "entryCount": 43,
+      "labelVariants": [
+        {
+          "label": "Line Producer",
+          "occurrenceCount": 43,
+          "entryCount": 43
+        }
+      ]
+    },
+    {
+      "roleKey": "location_manager",
+      "catalogLabel": "Location Manager",
+      "department": "art",
+      "occurrenceCount": 36,
+      "entryCount": 36,
+      "labelVariants": [
+        {
+          "label": "Location Manager",
+          "occurrenceCount": 36,
+          "entryCount": 36
+        }
+      ]
+    },
+    {
+      "roleKey": "agency",
+      "catalogLabel": "Agency",
+      "department": "production",
+      "occurrenceCount": 28,
+      "entryCount": 28,
+      "labelVariants": [
+        {
+          "label": "Agency",
+          "occurrenceCount": 28,
+          "entryCount": 28
+        }
+      ]
+    },
+    {
+      "roleKey": "production_service",
+      "catalogLabel": "Production Service",
+      "department": "production",
+      "occurrenceCount": 27,
+      "entryCount": 27,
+      "labelVariants": [
+        {
+          "label": "Production Service",
+          "occurrenceCount": 27,
+          "entryCount": 27
+        }
+      ]
+    },
+    {
+      "roleKey": "art_assistant",
+      "catalogLabel": "Art Assistant",
+      "department": "art",
+      "occurrenceCount": 25,
+      "entryCount": 25,
+      "labelVariants": [
+        {
+          "label": "Art Assistant",
+          "occurrenceCount": 25,
+          "entryCount": 25
+        }
+      ]
+    },
+    {
+      "roleKey": "production_manager",
+      "catalogLabel": "Production Manager",
+      "department": "production",
+      "occurrenceCount": 25,
+      "entryCount": 25,
+      "labelVariants": [
+        {
+          "label": "Production Manager",
+          "occurrenceCount": 25,
+          "entryCount": 25
+        }
+      ]
+    },
+    {
+      "roleKey": "photographer",
+      "catalogLabel": "Photographer",
+      "department": "stills",
+      "occurrenceCount": 25,
+      "entryCount": 25,
+      "labelVariants": [
+        {
+          "label": "Photographer",
+          "occurrenceCount": 25,
+          "entryCount": 25
+        }
+      ]
+    },
+    {
+      "roleKey": "steadicam_op",
+      "catalogLabel": "Steadicam Op",
+      "department": "camera",
+      "occurrenceCount": 24,
+      "entryCount": 24,
+      "labelVariants": [
+        {
+          "label": "Steadicam Op",
+          "occurrenceCount": 24,
+          "entryCount": 24
+        }
+      ]
+    },
+    {
+      "roleKey": "product_technician",
+      "catalogLabel": "Product Technician",
+      "department": "production",
+      "occurrenceCount": 21,
+      "entryCount": 21,
+      "labelVariants": [
+        {
+          "label": "Product Technician",
+          "occurrenceCount": 21,
+          "entryCount": 21
+        }
+      ]
+    },
+    {
+      "roleKey": "casting_manager",
+      "catalogLabel": "Casting Manager",
+      "department": "casting",
+      "occurrenceCount": 19,
+      "entryCount": 19,
+      "labelVariants": [
+        {
+          "label": "Casting Manager",
+          "occurrenceCount": 19,
+          "entryCount": 19
+        }
+      ]
+    },
+    {
+      "roleKey": "camera_op",
+      "catalogLabel": "Camera Op",
+      "department": "camera",
+      "occurrenceCount": 18,
+      "entryCount": 18,
+      "labelVariants": [
+        {
+          "label": "Camera Op",
+          "occurrenceCount": 18,
+          "entryCount": 18
+        }
+      ]
+    },
+    {
+      "roleKey": "1st_ac",
+      "catalogLabel": "1st AC",
+      "department": "camera",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "labelVariants": [
+        {
+          "label": "1st AC",
+          "occurrenceCount": 16,
+          "entryCount": 16
+        }
+      ]
+    },
+    {
+      "roleKey": "drone_op",
+      "catalogLabel": "Drone Op",
+      "department": "camera",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "labelVariants": [
+        {
+          "label": "Drone Op",
+          "occurrenceCount": 16,
+          "entryCount": 16
+        }
+      ]
+    },
+    {
+      "roleKey": "composer",
+      "catalogLabel": "Composer",
+      "department": "post",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "labelVariants": [
+        {
+          "label": "Composer",
+          "occurrenceCount": 16,
+          "entryCount": 16
+        }
+      ]
+    },
+    {
+      "roleKey": "account_manager",
+      "catalogLabel": "Account Manager",
+      "department": "production",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "labelVariants": [
+        {
+          "label": "Account Manager",
+          "occurrenceCount": 16,
+          "entryCount": 16
+        }
+      ]
+    },
+    {
+      "roleKey": "bts",
+      "catalogLabel": "BTS",
+      "department": "production",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "labelVariants": [
+        {
+          "label": "BTS",
+          "occurrenceCount": 16,
+          "entryCount": 16
+        }
+      ]
+    },
+    {
+      "roleKey": "2nd_ad",
+      "catalogLabel": "2nd AD",
+      "department": "production",
+      "occurrenceCount": 15,
+      "entryCount": 15,
+      "labelVariants": [
+        {
+          "label": "2nd AD",
+          "occurrenceCount": 15,
+          "entryCount": 15
+        }
+      ]
+    },
+    {
+      "roleKey": "production_coordinator",
+      "catalogLabel": "Production Coordinator",
+      "department": "production",
+      "occurrenceCount": 15,
+      "entryCount": 15,
+      "labelVariants": [
+        {
+          "label": "Production Coordinator",
+          "occurrenceCount": 15,
+          "entryCount": 15
+        }
+      ]
+    },
+    {
+      "roleKey": "assistant_editors",
+      "catalogLabel": "Assistant Editors",
+      "department": "post",
+      "occurrenceCount": 14,
+      "entryCount": 14,
+      "labelVariants": [
+        {
+          "label": "Assistant Editors",
+          "occurrenceCount": 14,
+          "entryCount": 14
+        }
+      ]
+    },
+    {
+      "roleKey": "chaperone",
+      "catalogLabel": "Chaperone",
+      "department": "production",
+      "occurrenceCount": 12,
+      "entryCount": 12,
+      "labelVariants": [
+        {
+          "label": "Chaperone",
+          "occurrenceCount": 12,
+          "entryCount": 12
+        }
+      ]
+    },
+    {
+      "roleKey": "3d_animation",
+      "catalogLabel": "3D Animation",
+      "department": "post",
+      "occurrenceCount": 11,
+      "entryCount": 11,
+      "labelVariants": [
+        {
+          "label": "3D Animation",
+          "occurrenceCount": 11,
+          "entryCount": 11
+        }
+      ]
+    },
+    {
+      "roleKey": "casting_director",
+      "catalogLabel": "Casting Director",
+      "department": "casting",
+      "occurrenceCount": 10,
+      "entryCount": 10,
+      "labelVariants": [
+        {
+          "label": "Casting Director",
+          "occurrenceCount": 10,
+          "entryCount": 10
+        }
+      ]
+    },
+    {
+      "roleKey": "key_grip",
+      "catalogLabel": "Key Grip",
+      "department": "ge",
+      "occurrenceCount": 9,
+      "entryCount": 9,
+      "labelVariants": [
+        {
+          "label": "Key Grip",
+          "occurrenceCount": 9,
+          "entryCount": 9
+        }
+      ]
+    },
+    {
+      "roleKey": "transport",
+      "catalogLabel": "Transport",
+      "department": "production",
+      "occurrenceCount": 9,
+      "entryCount": 9,
+      "labelVariants": [
+        {
+          "label": "Transport",
+          "occurrenceCount": 9,
+          "entryCount": 9
+        }
+      ]
+    },
+    {
+      "roleKey": "production_designer",
+      "catalogLabel": "Production Designer",
+      "department": "art",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "labelVariants": [
+        {
+          "label": "Production Designer",
+          "occurrenceCount": 6,
+          "entryCount": 6
+        }
+      ]
+    },
+    {
+      "roleKey": "2nd_ac",
+      "catalogLabel": "2nd AC",
+      "department": "camera",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "labelVariants": [
+        {
+          "label": "2nd AC",
+          "occurrenceCount": 6,
+          "entryCount": 6
+        }
+      ]
+    },
+    {
+      "roleKey": "stunt_coordinator",
+      "catalogLabel": "Stunt Coordinator",
+      "department": "casting",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "labelVariants": [
+        {
+          "label": "Stunt Coordinator",
+          "occurrenceCount": 6,
+          "entryCount": 6
+        }
+      ]
+    },
+    {
+      "roleKey": "electrician",
+      "catalogLabel": "Electrician",
+      "department": "ge",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "labelVariants": [
+        {
+          "label": "Electrician",
+          "occurrenceCount": 6,
+          "entryCount": 6
+        }
+      ]
+    },
+    {
+      "roleKey": "photography_assistant",
+      "catalogLabel": "Photography Assistant",
+      "department": "stills",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "labelVariants": [
+        {
+          "label": "Photography Assistant",
+          "occurrenceCount": 6,
+          "entryCount": 6
+        }
+      ]
+    },
+    {
+      "roleKey": "grip",
+      "catalogLabel": "Grip",
+      "department": "ge",
+      "occurrenceCount": 5,
+      "entryCount": 5,
+      "labelVariants": [
+        {
+          "label": "Grip",
+          "occurrenceCount": 5,
+          "entryCount": 5
+        }
+      ]
+    },
+    {
+      "roleKey": "animal_wrangler",
+      "catalogLabel": "Animal Wrangler",
+      "department": "casting",
+      "occurrenceCount": 4,
+      "entryCount": 4,
+      "labelVariants": [
+        {
+          "label": "Animal Wrangler",
+          "occurrenceCount": 4,
+          "entryCount": 4
+        }
+      ]
+    },
+    {
+      "roleKey": "choreographer",
+      "catalogLabel": "Choreographer",
+      "department": "casting",
+      "occurrenceCount": 4,
+      "entryCount": 4,
+      "labelVariants": [
+        {
+          "label": "Choreographer",
+          "occurrenceCount": 4,
+          "entryCount": 4
+        }
+      ]
+    },
+    {
+      "roleKey": "kv_art_director",
+      "catalogLabel": "KV Art Director",
+      "department": "stills",
+      "occurrenceCount": 4,
+      "entryCount": 4,
+      "labelVariants": [
+        {
+          "label": "KV Art Director",
+          "occurrenceCount": 4,
+          "entryCount": 4
+        }
+      ]
+    },
+    {
+      "roleKey": "motion_control",
+      "catalogLabel": "Motion Control",
+      "department": "camera",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "labelVariants": [
+        {
+          "label": "Motion Control",
+          "occurrenceCount": 3,
+          "entryCount": 3
+        }
+      ]
+    },
+    {
+      "roleKey": "online",
+      "catalogLabel": "Online",
+      "department": "post",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "labelVariants": [
+        {
+          "label": "Online",
+          "occurrenceCount": 3,
+          "entryCount": 3
+        }
+      ]
+    },
+    {
+      "roleKey": "qtake",
+      "catalogLabel": "QTake",
+      "department": "camera",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "labelVariants": [
+        {
+          "label": "QTake",
+          "occurrenceCount": 1,
+          "entryCount": 1
+        }
+      ]
+    },
+    {
+      "roleKey": "voice_over",
+      "catalogLabel": "Voice Over",
+      "department": "post",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "labelVariants": [
+        {
+          "label": "Voice Over",
+          "occurrenceCount": 1,
+          "entryCount": 1
+        }
+      ]
+    },
+    {
+      "roleKey": "photography_producer",
+      "catalogLabel": "Photography Producer",
+      "department": "stills",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "labelVariants": [
+        {
+          "label": "Photography Producer",
+          "occurrenceCount": 1,
+          "entryCount": 1
+        }
+      ]
+    }
+  ],
+  "standardRolesUnexpectedLabels": [],
+  "synonymGroups": [
+    {
+      "department": "production",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "director",
+          "roleLabel": "Director",
+          "isCustomRole": false,
+          "occurrenceCount": 137,
+          "entryCount": 137,
+          "normalized": "director"
+        },
+        {
+          "roleKey": "producer",
+          "roleLabel": "Producer",
+          "isCustomRole": false,
+          "occurrenceCount": 97,
+          "entryCount": 97,
+          "normalized": "producer"
+        },
+        {
+          "roleKey": "line_producer",
+          "roleLabel": "Line Producer",
+          "isCustomRole": false,
+          "occurrenceCount": 43,
+          "entryCount": 43,
+          "normalized": "line producer"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Creative Director",
+          "isCustomRole": true,
+          "occurrenceCount": 29,
+          "entryCount": 29,
+          "normalized": "creative director"
+        },
+        {
+          "roleKey": "agency",
+          "roleLabel": "Agency",
+          "isCustomRole": false,
+          "occurrenceCount": 28,
+          "entryCount": 28,
+          "normalized": "agency"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Agency Producer",
+          "isCustomRole": true,
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "normalized": "agency producer"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Assistant Producer",
+          "isCustomRole": true,
+          "occurrenceCount": 3,
+          "entryCount": 3,
+          "normalized": "assistant producer"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Director Assistant",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "director assistant"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Director's Assistant",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "director s assistant"
+        }
+      ]
+    },
+    {
+      "department": "production",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "production_company",
+          "roleLabel": "Production Company",
+          "isCustomRole": false,
+          "occurrenceCount": 145,
+          "entryCount": 145,
+          "normalized": "production company"
+        },
+        {
+          "roleKey": "pa",
+          "roleLabel": "PA",
+          "isCustomRole": false,
+          "occurrenceCount": 65,
+          "entryCount": 65,
+          "normalized": "pa"
+        },
+        {
+          "roleKey": "production_service",
+          "roleLabel": "Production Service",
+          "isCustomRole": false,
+          "occurrenceCount": 27,
+          "entryCount": 27,
+          "normalized": "production service"
+        },
+        {
+          "roleKey": "production_manager",
+          "roleLabel": "Production Manager",
+          "isCustomRole": false,
+          "occurrenceCount": 25,
+          "entryCount": 25,
+          "normalized": "production manager"
+        },
+        {
+          "roleKey": "account_manager",
+          "roleLabel": "Account Manager",
+          "isCustomRole": false,
+          "occurrenceCount": 16,
+          "entryCount": 16,
+          "normalized": "account manager"
+        },
+        {
+          "roleKey": "production_coordinator",
+          "roleLabel": "Production Coordinator",
+          "isCustomRole": false,
+          "occurrenceCount": 15,
+          "entryCount": 15,
+          "normalized": "production coordinator"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Assistant Production Manager",
+          "isCustomRole": true,
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "normalized": "assistant production manager"
+        }
+      ]
+    },
+    {
+      "department": "art",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "art_director",
+          "roleLabel": "Art Director",
+          "isCustomRole": false,
+          "occurrenceCount": 69,
+          "entryCount": 69,
+          "normalized": "art director"
+        },
+        {
+          "roleKey": "wardrobe",
+          "roleLabel": "Wardrobe",
+          "isCustomRole": false,
+          "occurrenceCount": 64,
+          "entryCount": 64,
+          "normalized": "wardrobe"
+        },
+        {
+          "roleKey": "art_assistant",
+          "roleLabel": "Art Assistant",
+          "isCustomRole": false,
+          "occurrenceCount": 25,
+          "entryCount": 25,
+          "normalized": "art assistant"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Wardrobe Assistant",
+          "isCustomRole": true,
+          "occurrenceCount": 11,
+          "entryCount": 11,
+          "normalized": "wardrobe assistant"
+        }
+      ]
+    },
+    {
+      "department": "post",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "editor",
+          "roleLabel": "Editor",
+          "isCustomRole": false,
+          "occurrenceCount": 86,
+          "entryCount": 86,
+          "normalized": "editor"
+        },
+        {
+          "roleKey": "assistant_editors",
+          "roleLabel": "Assistant Editors",
+          "isCustomRole": false,
+          "occurrenceCount": 14,
+          "entryCount": 14,
+          "normalized": "assistant editors"
+        },
+        {
+          "roleKey": "online",
+          "roleLabel": "Online",
+          "isCustomRole": false,
+          "occurrenceCount": 3,
+          "entryCount": 3,
+          "normalized": "online"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Online Editor",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "online editor"
+        }
+      ]
+    },
+    {
+      "department": "post",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "post_supervisor",
+          "roleLabel": "Post Supervisor",
+          "isCustomRole": false,
+          "occurrenceCount": 49,
+          "entryCount": 49,
+          "normalized": "post supervisor"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Post House",
+          "isCustomRole": true,
+          "occurrenceCount": 14,
+          "entryCount": 14,
+          "normalized": "post house"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Post PA",
+          "isCustomRole": true,
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "normalized": "post pa"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Post Producer",
+          "isCustomRole": true,
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "normalized": "post producer"
+        }
+      ]
+    },
+    {
+      "department": "casting",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "casting_manager",
+          "roleLabel": "Casting Manager",
+          "isCustomRole": false,
+          "occurrenceCount": 19,
+          "entryCount": 19,
+          "normalized": "casting manager"
+        },
+        {
+          "roleKey": "casting_director",
+          "roleLabel": "Casting Director",
+          "isCustomRole": false,
+          "occurrenceCount": 10,
+          "entryCount": 10,
+          "normalized": "casting director"
+        }
+      ]
+    },
+    {
+      "department": "ge",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "key_grip",
+          "roleLabel": "Key Grip",
+          "isCustomRole": false,
+          "occurrenceCount": 9,
+          "entryCount": 9,
+          "normalized": "key grip"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Grip & Lighting",
+          "isCustomRole": true,
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "normalized": "grip and lighting"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Best Boy Electric",
+          "isCustomRole": true,
+          "occurrenceCount": 5,
+          "entryCount": 5,
+          "normalized": "best boy electric"
+        },
+        {
+          "roleKey": "grip",
+          "roleLabel": "Grip",
+          "isCustomRole": false,
+          "occurrenceCount": 5,
+          "entryCount": 5,
+          "normalized": "grip"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Best Boy Grip",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "best boy grip"
+        }
+      ]
+    },
+    {
+      "department": "camera",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "camera_op",
+          "roleLabel": "Camera Op",
+          "isCustomRole": false,
+          "occurrenceCount": 18,
+          "entryCount": 18,
+          "normalized": "camera op"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Camera Assistants",
+          "isCustomRole": true,
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "normalized": "camera assistants"
+        }
+      ]
+    },
+    {
+      "department": "production",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "product_technician",
+          "roleLabel": "Product Technician",
+          "isCustomRole": false,
+          "occurrenceCount": 21,
+          "entryCount": 21,
+          "normalized": "product technician"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "BRINC Technician",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "brinc technician"
+        }
+      ]
+    },
+    {
+      "department": "casting",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "stunt_coordinator",
+          "roleLabel": "Stunt Coordinator",
+          "isCustomRole": false,
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "normalized": "stunt coordinator"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Stunt Driver",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "stunt driver"
+        }
+      ]
+    },
+    {
+      "department": "stills",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "photography_assistant",
+          "roleLabel": "Photography Assistant",
+          "isCustomRole": false,
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "normalized": "photography assistant"
+        },
+        {
+          "roleKey": "photography_producer",
+          "roleLabel": "Photography Producer",
+          "isCustomRole": false,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "photography producer"
+        }
+      ]
+    },
+    {
+      "department": "stills",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": "kv_art_director",
+          "roleLabel": "KV Art Director",
+          "isCustomRole": false,
+          "occurrenceCount": 4,
+          "entryCount": 4,
+          "normalized": "kv art director"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "KV Art Director Assistant",
+          "isCustomRole": true,
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "normalized": "kv art director assistant"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "DI",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "di"
+        }
+      ]
+    },
+    {
+      "department": "production",
+      "reason": "same department; close normalizeCreditToken / shared tokens",
+      "members": [
+        {
+          "roleKey": null,
+          "roleLabel": "Medic",
+          "isCustomRole": true,
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "normalized": "medic"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Medic On-set",
+          "isCustomRole": true,
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "normalized": "medic on set"
+        }
+      ]
+    }
+  ],
+  "interestClusters": [
+    {
+      "cluster": "sound",
+      "roles": [
+        {
+          "roleKey": "sound_design_mix",
+          "roleLabel": "Sound Design & Mix",
+          "isCustomRole": false,
+          "department": "post",
+          "occurrenceCount": 69,
+          "entryCount": 69,
+          "sampleNames": [
+            "Two AM Music",
+            "Trần Đăng Khoa",
+            "Aurae Studios"
+          ],
+          "catalogLabel": "Sound Design & Mix",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "post:sound_design_mix"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Sound Engineer",
+          "isCustomRole": true,
+          "department": "post",
+          "occurrenceCount": 19,
+          "entryCount": 19,
+          "sampleNames": [
+            "Theuns van Dyk",
+            "Francis",
+            "Trung"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Sound Engineer",
+          "isCustomRole": true,
+          "department": "production",
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "sampleNames": [
+            "Tran Linh Sound Team",
+            "Daniel Bonilla"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        }
+      ]
+    },
+    {
+      "cluster": "lighting_electric",
+      "roles": [
+        {
+          "roleKey": "gaffer",
+          "roleLabel": "Gaffer",
+          "isCustomRole": false,
+          "department": "ge",
+          "occurrenceCount": 53,
+          "entryCount": 53,
+          "sampleNames": [
+            "Nhan Nguyen",
+            "Wade Grobler",
+            "Stu Haight"
+          ],
+          "catalogLabel": "Gaffer",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "ge:gaffer"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Grip & Lighting",
+          "isCustomRole": true,
+          "department": "ge",
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "sampleNames": [
+            "HKFilm",
+            "HK Film",
+            "Ed Hannaford"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Best Boy Electric",
+          "isCustomRole": true,
+          "department": "ge",
+          "occurrenceCount": 5,
+          "entryCount": 5,
+          "sampleNames": [
+            "Thulani Mashiyane",
+            "Nguyễn Hoàng Minh",
+            "Waseem Valli"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Best Boy Grip",
+          "isCustomRole": true,
+          "department": "ge",
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "sampleNames": [
+            "Colin Kondwani Chirombo"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Lighting",
+          "isCustomRole": true,
+          "department": "stills",
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "sampleNames": [
+            "Hải Nam"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        }
+      ]
+    },
+    {
+      "cluster": "grip",
+      "roles": [
+        {
+          "roleKey": "key_grip",
+          "roleLabel": "Key Grip",
+          "isCustomRole": false,
+          "department": "ge",
+          "occurrenceCount": 9,
+          "entryCount": 9,
+          "sampleNames": [
+            "Eric Tientcheu",
+            "Brian Dinkel",
+            "Ian Chilcote"
+          ],
+          "catalogLabel": "Key Grip",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "ge:key_grip"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Grip & Lighting",
+          "isCustomRole": true,
+          "department": "ge",
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "sampleNames": [
+            "HKFilm",
+            "HK Film",
+            "Ed Hannaford"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": "grip",
+          "roleLabel": "Grip",
+          "isCustomRole": false,
+          "department": "ge",
+          "occurrenceCount": 5,
+          "entryCount": 5,
+          "sampleNames": [
+            "Yaseen Richards",
+            "Morgan Hendrickson",
+            "Madoda Mkonjiswa"
+          ],
+          "catalogLabel": "Grip",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "ge:grip"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Best Boy Grip",
+          "isCustomRole": true,
+          "department": "ge",
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "sampleNames": [
+            "Colin Kondwani Chirombo"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        }
+      ]
+    },
+    {
+      "cluster": "post_online_vfx",
+      "roles": [
+        {
+          "roleKey": "editor",
+          "roleLabel": "Editor",
+          "isCustomRole": false,
+          "department": "post",
+          "occurrenceCount": 86,
+          "entryCount": 86,
+          "sampleNames": [
+            "Cyrel de los Reyes",
+            "Andrew Pigott",
+            "Huynh Trong Nghia"
+          ],
+          "catalogLabel": "Editor",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "post:editor"
+        },
+        {
+          "roleKey": "vfx",
+          "roleLabel": "VFX",
+          "isCustomRole": false,
+          "department": "post",
+          "occurrenceCount": 73,
+          "entryCount": 73,
+          "sampleNames": [
+            "Trinix Creative Studio",
+            "Benjamin Villataspaisarn",
+            "SPICE fx"
+          ],
+          "catalogLabel": "VFX",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "post:vfx"
+        },
+        {
+          "roleKey": "online",
+          "roleLabel": "Online",
+          "isCustomRole": false,
+          "department": "post",
+          "occurrenceCount": 3,
+          "entryCount": 3,
+          "sampleNames": [
+            "Benjamin Villataspaisarn",
+            "Love Tech & Magic",
+            "Huy Lê"
+          ],
+          "catalogLabel": "Online",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "post:online"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Online Editor",
+          "isCustomRole": true,
+          "department": "post",
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "sampleNames": [
+            "Huy Lê"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": "post:online"
+        }
+      ]
+    },
+    {
+      "cluster": "producer_variants",
+      "roles": [
+        {
+          "roleKey": "producer",
+          "roleLabel": "Producer",
+          "isCustomRole": false,
+          "department": "production",
+          "occurrenceCount": 97,
+          "entryCount": 97,
+          "sampleNames": [
+            "An Hoang",
+            "Việt Anh Nguyễn",
+            "Kimmy Nguyễn"
+          ],
+          "catalogLabel": "Producer",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "production:producer"
+        },
+        {
+          "roleKey": "ep",
+          "roleLabel": "EP",
+          "isCustomRole": false,
+          "department": "production",
+          "occurrenceCount": 89,
+          "entryCount": 89,
+          "sampleNames": [
+            "James Duong",
+            "Shelley McMorrow",
+            "Alexis Odiowei"
+          ],
+          "catalogLabel": "EP",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "production:ep"
+        },
+        {
+          "roleKey": "line_producer",
+          "roleLabel": "Line Producer",
+          "isCustomRole": false,
+          "department": "production",
+          "occurrenceCount": 43,
+          "entryCount": 43,
+          "sampleNames": [
+            "Hippo",
+            "Sejin Park",
+            "Nguyễn Huỳnh Thủy Ngân"
+          ],
+          "catalogLabel": "Line Producer",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "production:line_producer"
+        },
+        {
+          "roleKey": "production_manager",
+          "roleLabel": "Production Manager",
+          "isCustomRole": false,
+          "department": "production",
+          "occurrenceCount": 25,
+          "entryCount": 25,
+          "sampleNames": [
+            "Lê Võ Khả Ái",
+            "Việt Anh Nguyễn",
+            "Bridie O’Connell"
+          ],
+          "catalogLabel": "Production Manager",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "production:production_manager"
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Agency Producer",
+          "isCustomRole": true,
+          "department": "production",
+          "occurrenceCount": 6,
+          "entryCount": 6,
+          "sampleNames": [
+            "Dan Epstien",
+            "Kant Nguyen",
+            "Stuart Howe"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Assistant Producer",
+          "isCustomRole": true,
+          "department": "production",
+          "occurrenceCount": 3,
+          "entryCount": 3,
+          "sampleNames": [
+            "Nguyên Nguyễn",
+            "Duker Tsering",
+            "Husain Amer"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Post Producer",
+          "isCustomRole": true,
+          "department": "post",
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "sampleNames": [
+            "Quyên Nguyễn"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "Assistant Production Manager",
+          "isCustomRole": true,
+          "department": "production",
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "sampleNames": [
+            "Noppawan Wachira-Amornlerd",
+            "Kudakwashe"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": null,
+          "roleLabel": "KV Post Producer",
+          "isCustomRole": true,
+          "department": "stills",
+          "occurrenceCount": 2,
+          "entryCount": 2,
+          "sampleNames": [
+            "Lynn Nguyen"
+          ],
+          "catalogLabel": null,
+          "labelMatchesCatalog": null,
+          "resolvedFromLabel": null
+        },
+        {
+          "roleKey": "photography_producer",
+          "roleLabel": "Photography Producer",
+          "isCustomRole": false,
+          "department": "stills",
+          "occurrenceCount": 1,
+          "entryCount": 1,
+          "sampleNames": [
+            "Tự Nguyễn"
+          ],
+          "catalogLabel": "Photography Producer",
+          "labelMatchesCatalog": true,
+          "resolvedFromLabel": "stills:photography_producer"
+        }
+      ]
+    }
+  ],
+  "unusedCatalogRoles": [
+    {
+      "department": "stills",
+      "roleKey": "photo_talent",
+      "label": "Photo Talent"
+    },
+    {
+      "department": "post",
+      "roleKey": "on_set_editor",
+      "label": "On-Set Editor"
+    }
+  ],
+  "allRoleAggregates": [
+    {
+      "roleKey": "production_company",
+      "roleLabel": "Production Company",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 145,
+      "entryCount": 145,
+      "sampleNames": [
+        "Vantage Pictures",
+        "Flex Films",
+        "VeryBig"
+      ],
+      "catalogLabel": "Production Company",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:production_company"
+    },
+    {
+      "roleKey": "brand",
+      "roleLabel": "Brand",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 144,
+      "entryCount": 144,
+      "sampleNames": [
+        "Violoop",
+        "Hyundai",
+        "Zhiyun"
+      ],
+      "catalogLabel": "Brand",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:brand"
+    },
+    {
+      "roleKey": "director",
+      "roleLabel": "Director",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 137,
+      "entryCount": 137,
+      "sampleNames": [
+        "Alexis Odiowei",
+        "Junhyung Kim",
+        "Paul Moore"
+      ],
+      "catalogLabel": "Director",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:director"
+    },
+    {
+      "roleKey": "dop",
+      "roleLabel": "DOP",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 102,
+      "entryCount": 102,
+      "sampleNames": [
+        "Ray Lavers",
+        "Võ Thiệu Hưng",
+        "Sean Lee"
+      ],
+      "catalogLabel": "DOP",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:dop"
+    },
+    {
+      "roleKey": "producer",
+      "roleLabel": "Producer",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 97,
+      "entryCount": 97,
+      "sampleNames": [
+        "An Hoang",
+        "Việt Anh Nguyễn",
+        "Kimmy Nguyễn"
+      ],
+      "catalogLabel": "Producer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:producer"
+    },
+    {
+      "roleKey": "ep",
+      "roleLabel": "EP",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 89,
+      "entryCount": 89,
+      "sampleNames": [
+        "James Duong",
+        "Shelley McMorrow",
+        "Alexis Odiowei"
+      ],
+      "catalogLabel": "EP",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:ep"
+    },
+    {
+      "roleKey": "editor",
+      "roleLabel": "Editor",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 86,
+      "entryCount": 86,
+      "sampleNames": [
+        "Cyrel de los Reyes",
+        "Andrew Pigott",
+        "Huynh Trong Nghia"
+      ],
+      "catalogLabel": "Editor",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:editor"
+    },
+    {
+      "roleKey": "colorist",
+      "roleLabel": "Colorist",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 73,
+      "entryCount": 73,
+      "sampleNames": [
+        "Yulia Bulashenko",
+        "Davide Pini",
+        "Yerlan Tanayev"
+      ],
+      "catalogLabel": "Colorist",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:colorist"
+    },
+    {
+      "roleKey": "vfx",
+      "roleLabel": "VFX",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 73,
+      "entryCount": 73,
+      "sampleNames": [
+        "Trinix Creative Studio",
+        "Benjamin Villataspaisarn",
+        "SPICE fx"
+      ],
+      "catalogLabel": "VFX",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:vfx"
+    },
+    {
+      "roleKey": "1st_ad",
+      "roleLabel": "1st AD",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 72,
+      "entryCount": 72,
+      "sampleNames": [
+        "Tuan Chu",
+        "Nguyễn Minh Đức",
+        "Andy Chang"
+      ],
+      "catalogLabel": "1st AD",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:1st_ad"
+    },
+    {
+      "roleKey": "art_director",
+      "roleLabel": "Art Director",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 69,
+      "entryCount": 69,
+      "sampleNames": [
+        "Jean Phan",
+        "Kelly Hoang",
+        "Wilfred Cho"
+      ],
+      "catalogLabel": "Art Director",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:art_director"
+    },
+    {
+      "roleKey": "sound_design_mix",
+      "roleLabel": "Sound Design & Mix",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 69,
+      "entryCount": 69,
+      "sampleNames": [
+        "Two AM Music",
+        "Trần Đăng Khoa",
+        "Aurae Studios"
+      ],
+      "catalogLabel": "Sound Design & Mix",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:sound_design_mix"
+    },
+    {
+      "roleKey": "hair_makeup",
+      "roleLabel": "Hair & Makeup",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 66,
+      "entryCount": 66,
+      "sampleNames": [
+        "Mai Tấn Sang",
+        "Nguyễn Nhật Linh",
+        "Phạm Hà"
+      ],
+      "catalogLabel": "Hair & Makeup",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:hair_makeup"
+    },
+    {
+      "roleKey": "pa",
+      "roleLabel": "PA",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 65,
+      "entryCount": 65,
+      "sampleNames": [
+        "Cao Minh Phuong",
+        "Phuc Tran",
+        "Trong Khiem"
+      ],
+      "catalogLabel": "PA",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:pa"
+    },
+    {
+      "roleKey": "wardrobe",
+      "roleLabel": "Wardrobe",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 64,
+      "entryCount": 64,
+      "sampleNames": [
+        "Tukie",
+        "Kellie & Anton",
+        "Michelle Diers"
+      ],
+      "catalogLabel": "Wardrobe",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:wardrobe"
+    },
+    {
+      "roleKey": "props_master",
+      "roleLabel": "Props Master",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 63,
+      "entryCount": 63,
+      "sampleNames": [
+        "Tony Toan",
+        "Cong Thanh",
+        "Lê Minh Sang"
+      ],
+      "catalogLabel": "Props Master",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:props_master"
+    },
+    {
+      "roleKey": "talent",
+      "roleLabel": "Talent",
+      "isCustomRole": false,
+      "department": "casting",
+      "occurrenceCount": 53,
+      "entryCount": 53,
+      "sampleNames": [
+        "Ross",
+        "Kaisa",
+        "Zion"
+      ],
+      "catalogLabel": "Talent",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "casting:talent"
+    },
+    {
+      "roleKey": "gaffer",
+      "roleLabel": "Gaffer",
+      "isCustomRole": false,
+      "department": "ge",
+      "occurrenceCount": 53,
+      "entryCount": 53,
+      "sampleNames": [
+        "Nhan Nguyen",
+        "Wade Grobler",
+        "Stu Haight"
+      ],
+      "catalogLabel": "Gaffer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "ge:gaffer"
+    },
+    {
+      "roleKey": "dit",
+      "roleLabel": "DIT",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 52,
+      "entryCount": 52,
+      "sampleNames": [
+        "Quách Hải Thọ",
+        "Nguyen Hi Koi",
+        "Dat Tran"
+      ],
+      "catalogLabel": "DIT",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:dit"
+    },
+    {
+      "roleKey": "focus_puller",
+      "roleLabel": "Focus Puller",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 51,
+      "entryCount": 51,
+      "sampleNames": [
+        "Trung To",
+        "Truong Nguyen",
+        "Andrew Greenen"
+      ],
+      "catalogLabel": "Focus Puller",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:focus_puller"
+    },
+    {
+      "roleKey": "rental_house",
+      "roleLabel": "Rental House",
+      "isCustomRole": false,
+      "department": "ge",
+      "occurrenceCount": 50,
+      "entryCount": 50,
+      "sampleNames": [
+        "CineSpace",
+        "PS Vietnam",
+        "Gear Head"
+      ],
+      "catalogLabel": "Rental House",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "ge:rental_house"
+    },
+    {
+      "roleKey": "post_supervisor",
+      "roleLabel": "Post Supervisor",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 49,
+      "entryCount": 49,
+      "sampleNames": [
+        "Huy Lê",
+        "Thạch Thảo",
+        "Nguyễn Huỳnh Thủy Ngân"
+      ],
+      "catalogLabel": "Post Supervisor",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:post_supervisor"
+    },
+    {
+      "roleKey": "storyboards",
+      "roleLabel": "Storyboards",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 48,
+      "entryCount": 48,
+      "sampleNames": [
+        "Nguyễn Trường Giang",
+        "Tự Nguyễn",
+        "Duc Nguyen"
+      ],
+      "catalogLabel": "Storyboards",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:storyboards"
+    },
+    {
+      "roleKey": "line_producer",
+      "roleLabel": "Line Producer",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 43,
+      "entryCount": 43,
+      "sampleNames": [
+        "Hippo",
+        "Sejin Park",
+        "Nguyễn Huỳnh Thủy Ngân"
+      ],
+      "catalogLabel": "Line Producer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:line_producer"
+    },
+    {
+      "roleKey": "location_manager",
+      "roleLabel": "Location Manager",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 36,
+      "entryCount": 36,
+      "sampleNames": [
+        "May Trần",
+        "Tawanda Mavaza",
+        "Michael Littlefield"
+      ],
+      "catalogLabel": "Location Manager",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:location_manager"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Catering",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 36,
+      "entryCount": 36,
+      "sampleNames": [
+        "NTeam",
+        "Jane Mwiana",
+        "Xuan team"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Creative Director",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 29,
+      "entryCount": 29,
+      "sampleNames": [
+        "Paul Moore",
+        "Martin Sutcliffe",
+        "Zacharia Lorenz"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "agency",
+      "roleLabel": "Agency",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 28,
+      "entryCount": 28,
+      "sampleNames": [
+        "CNN Create",
+        "Top Boy Creative",
+        "Cheil"
+      ],
+      "catalogLabel": "Agency",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:agency"
+    },
+    {
+      "roleKey": "production_service",
+      "roleLabel": "Production Service",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 27,
+      "entryCount": 27,
+      "sampleNames": [
+        "Vantage Pictures",
+        "AG Films Lisbon",
+        "Farm Films South Africa"
+      ],
+      "catalogLabel": "Production Service",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:production_service"
+    },
+    {
+      "roleKey": "art_assistant",
+      "roleLabel": "Art Assistant",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 25,
+      "entryCount": 25,
+      "sampleNames": [
+        "Dion Nguyen",
+        "Vu Tran",
+        "Brandon Willmore"
+      ],
+      "catalogLabel": "Art Assistant",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:art_assistant"
+    },
+    {
+      "roleKey": "production_manager",
+      "roleLabel": "Production Manager",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 25,
+      "entryCount": 25,
+      "sampleNames": [
+        "Lê Võ Khả Ái",
+        "Việt Anh Nguyễn",
+        "Bridie O’Connell"
+      ],
+      "catalogLabel": "Production Manager",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:production_manager"
+    },
+    {
+      "roleKey": "photographer",
+      "roleLabel": "Photographer",
+      "isCustomRole": false,
+      "department": "stills",
+      "occurrenceCount": 25,
+      "entryCount": 25,
+      "sampleNames": [
+        "Ratchaphat Sudecha",
+        "Le Thanh Tung",
+        "Melanie Clearly"
+      ],
+      "catalogLabel": "Photographer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "stills:photographer"
+    },
+    {
+      "roleKey": "steadicam_op",
+      "roleLabel": "Steadicam Op",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 24,
+      "entryCount": 24,
+      "sampleNames": [
+        "Anh Phạm",
+        "Myles Shank",
+        "Lê Thanh Tùng"
+      ],
+      "catalogLabel": "Steadicam Op",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:steadicam_op"
+    },
+    {
+      "roleKey": "product_technician",
+      "roleLabel": "Product Technician",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 21,
+      "entryCount": 21,
+      "sampleNames": [
+        "Huy Nguyễn",
+        "Dương Đặng",
+        "Maurice Reid"
+      ],
+      "catalogLabel": "Product Technician",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:product_technician"
+    },
+    {
+      "roleKey": "casting_manager",
+      "roleLabel": "Casting Manager",
+      "isCustomRole": false,
+      "department": "casting",
+      "occurrenceCount": 19,
+      "entryCount": 19,
+      "sampleNames": [
+        "Stephane Prou",
+        "Babyface Casting Agency",
+        "Bao Tran"
+      ],
+      "catalogLabel": "Casting Manager",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "casting:casting_manager"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Sound Engineer",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 19,
+      "entryCount": 19,
+      "sampleNames": [
+        "Theuns van Dyk",
+        "Francis",
+        "Trung"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "camera_op",
+      "roleLabel": "Camera Op",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 18,
+      "entryCount": 18,
+      "sampleNames": [
+        "Sarawut Chuparkpanich",
+        "Leo Le",
+        "Manh Pham"
+      ],
+      "catalogLabel": "Camera Op",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:camera_op"
+    },
+    {
+      "roleKey": "1st_ac",
+      "roleLabel": "1st AC",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "sampleNames": [
+        "Brandon Eastman",
+        "Phonchawanat Phaithong",
+        "Mark Van Zyl"
+      ],
+      "catalogLabel": "1st AC",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:1st_ac"
+    },
+    {
+      "roleKey": "drone_op",
+      "roleLabel": "Drone Op",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "sampleNames": [
+        "Arrow Flycam",
+        "Ferdinand Wolf",
+        "Nansen Weber"
+      ],
+      "catalogLabel": "Drone Op",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:drone_op"
+    },
+    {
+      "roleKey": "composer",
+      "roleLabel": "Composer",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "sampleNames": [
+        "Two AM Music",
+        "Chris Skipper",
+        "Hoang Twee"
+      ],
+      "catalogLabel": "Composer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:composer"
+    },
+    {
+      "roleKey": "account_manager",
+      "roleLabel": "Account Manager",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "sampleNames": [
+        "Karen Liu",
+        "Karen Moore"
+      ],
+      "catalogLabel": "Account Manager",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:account_manager"
+    },
+    {
+      "roleKey": "bts",
+      "roleLabel": "BTS",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 16,
+      "entryCount": 16,
+      "sampleNames": [
+        "Leo Nguyễn Danh Nghĩa",
+        "Janice Nguyen",
+        "Trương Hoàng Tú"
+      ],
+      "catalogLabel": "BTS",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:bts"
+    },
+    {
+      "roleKey": "2nd_ad",
+      "roleLabel": "2nd AD",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 15,
+      "entryCount": 15,
+      "sampleNames": [
+        "Panupong Pattananurak",
+        "Phan Anh",
+        "Huynh Nga"
+      ],
+      "catalogLabel": "2nd AD",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:2nd_ad"
+    },
+    {
+      "roleKey": "production_coordinator",
+      "roleLabel": "Production Coordinator",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 15,
+      "entryCount": 15,
+      "sampleNames": [
+        "Anlia Nefdt",
+        "Huỳnh Mai Cát Linh",
+        "Vĩnh Nghi"
+      ],
+      "catalogLabel": "Production Coordinator",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:production_coordinator"
+    },
+    {
+      "roleKey": "assistant_editors",
+      "roleLabel": "Assistant Editors",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 14,
+      "entryCount": 14,
+      "sampleNames": [
+        "Huy Lê",
+        "Mark Anthony Hernandez",
+        "Tuyen Cong Tran"
+      ],
+      "catalogLabel": "Assistant Editors",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:assistant_editors"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Post House",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 14,
+      "entryCount": 14,
+      "sampleNames": [
+        "Bonjour Saigon",
+        "GlanceLtd",
+        "ColorSpace Vietnam"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "chaperone",
+      "roleLabel": "Chaperone",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 12,
+      "entryCount": 12,
+      "sampleNames": [
+        "ViVi",
+        "Brandon Wilson",
+        "Blue Dang"
+      ],
+      "catalogLabel": "Chaperone",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:chaperone"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Wardrobe Assistant",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 11,
+      "entryCount": 11,
+      "sampleNames": [
+        "Praphaporn Komsree",
+        "Dan Ford",
+        "Đỗ Thị Bích Hạnh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "3d_animation",
+      "roleLabel": "3D Animation",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 11,
+      "entryCount": 11,
+      "sampleNames": [
+        "Dopamine Design",
+        "Benjamin Villataspaisarn",
+        "Meccanica EFX"
+      ],
+      "catalogLabel": "3D Animation",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:3d_animation"
+    },
+    {
+      "roleKey": "casting_director",
+      "roleLabel": "Casting Director",
+      "isCustomRole": false,
+      "department": "casting",
+      "occurrenceCount": 10,
+      "entryCount": 10,
+      "sampleNames": [
+        "Weraya Komolsai",
+        "Bao Tran",
+        "Lexi Fismer"
+      ],
+      "catalogLabel": "Casting Director",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "casting:casting_director"
+    },
+    {
+      "roleKey": "key_grip",
+      "roleLabel": "Key Grip",
+      "isCustomRole": false,
+      "department": "ge",
+      "occurrenceCount": 9,
+      "entryCount": 9,
+      "sampleNames": [
+        "Eric Tientcheu",
+        "Brian Dinkel",
+        "Ian Chilcote"
+      ],
+      "catalogLabel": "Key Grip",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "ge:key_grip"
+    },
+    {
+      "roleKey": "transport",
+      "roleLabel": "Transport",
+      "isCustomRole": false,
+      "department": "production",
+      "occurrenceCount": 9,
+      "entryCount": 9,
+      "sampleNames": [
+        "Trung Oanh",
+        "Nguyễn Tiến Nam",
+        "Sơn Ngọc Hiệp"
+      ],
+      "catalogLabel": "Transport",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "production:transport"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Live-Stream Technician",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 8,
+      "entryCount": 8,
+      "sampleNames": [
+        "Nick Warner",
+        "Nguyen Hi Koi Team",
+        "Eko Wahyono"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Motion Graphic Artist",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 7,
+      "entryCount": 7,
+      "sampleNames": [
+        "Reybe Rempillo",
+        "Sơn Blue",
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "production_designer",
+      "roleLabel": "Production Designer",
+      "isCustomRole": false,
+      "department": "art",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Aekkarin Thippawan",
+        "Magdalene Bitter-Suermann",
+        "Jean Phan"
+      ],
+      "catalogLabel": "Production Designer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "art:production_designer"
+    },
+    {
+      "roleKey": "2nd_ac",
+      "roleLabel": "2nd AC",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Chanakrit Ploynumpon",
+        "Miles Ritchie",
+        "Nguyễn Thế Huy"
+      ],
+      "catalogLabel": "2nd AC",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:2nd_ac"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Camera Assistants",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Trần Văn Hải",
+        "Nguyễn Hoàng Trâm",
+        "Nguyễn Thành Đô"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "stunt_coordinator",
+      "roleLabel": "Stunt Coordinator",
+      "isCustomRole": false,
+      "department": "casting",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Jakkrit Kanokpodjananon",
+        "Long Nguyen",
+        "Quoc Thinh Stunt Team"
+      ],
+      "catalogLabel": "Stunt Coordinator",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "casting:stunt_coordinator"
+    },
+    {
+      "roleKey": "electrician",
+      "roleLabel": "Electrician",
+      "isCustomRole": false,
+      "department": "ge",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Issa Zaidi",
+        "Charles Hakata",
+        "Nguyễn Hoàng Minh"
+      ],
+      "catalogLabel": "Electrician",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "ge:electrician"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Grip & Lighting",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "HKFilm",
+        "HK Film",
+        "Ed Hannaford"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Agency Producer",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Dan Epstien",
+        "Kant Nguyen",
+        "Stuart Howe"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "photography_assistant",
+      "roleLabel": "Photography Assistant",
+      "isCustomRole": false,
+      "department": "stills",
+      "occurrenceCount": 6,
+      "entryCount": 6,
+      "sampleNames": [
+        "Johmar Pretorius",
+        "Stan Kaplan",
+        "Miles Dicky"
+      ],
+      "catalogLabel": "Photography Assistant",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "stills:photography_assistant"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Best Boy Electric",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 5,
+      "entryCount": 5,
+      "sampleNames": [
+        "Thulani Mashiyane",
+        "Nguyễn Hoàng Minh",
+        "Waseem Valli"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "grip",
+      "roleLabel": "Grip",
+      "isCustomRole": false,
+      "department": "ge",
+      "occurrenceCount": 5,
+      "entryCount": 5,
+      "sampleNames": [
+        "Yaseen Richards",
+        "Morgan Hendrickson",
+        "Madoda Mkonjiswa"
+      ],
+      "catalogLabel": "Grip",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "ge:grip"
+    },
+    {
+      "roleKey": "animal_wrangler",
+      "roleLabel": "Animal Wrangler",
+      "isCustomRole": false,
+      "department": "casting",
+      "occurrenceCount": 4,
+      "entryCount": 4,
+      "sampleNames": [
+        "Nicole Jennings",
+        "Dee Terblanche",
+        "Tung Anh"
+      ],
+      "catalogLabel": "Animal Wrangler",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "casting:animal_wrangler"
+    },
+    {
+      "roleKey": "choreographer",
+      "roleLabel": "Choreographer",
+      "isCustomRole": false,
+      "department": "casting",
+      "occurrenceCount": 4,
+      "entryCount": 4,
+      "sampleNames": [
+        "Chi Zoe",
+        "Emc Wirunphan Bunmi",
+        "Cường Tuấn Nguyễn"
+      ],
+      "catalogLabel": "Choreographer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "casting:choreographer"
+    },
+    {
+      "roleKey": "kv_art_director",
+      "roleLabel": "KV Art Director",
+      "isCustomRole": false,
+      "department": "stills",
+      "occurrenceCount": 4,
+      "entryCount": 4,
+      "sampleNames": [
+        "Tự Nguyễn"
+      ],
+      "catalogLabel": "KV Art Director",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "stills:kv_art_director"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Food Stylist",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Lê Trường Nhựt",
+        "Melissa",
+        "Tran Hong Anh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "motion_control",
+      "roleLabel": "Motion Control",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "BOLTDEE.vn",
+        "Alexander Kovalevskyi",
+        "Yessen Syrlybaev"
+      ],
+      "catalogLabel": "Motion Control",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:motion_control"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Graphic Design",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Janice Nguyen",
+        "Tự Nguyễn",
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "online",
+      "roleLabel": "Online",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Benjamin Villataspaisarn",
+        "Love Tech & Magic",
+        "Huy Lê"
+      ],
+      "catalogLabel": "Online",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:online"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Assistant Producer",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Nguyên Nguyễn",
+        "Duker Tsering",
+        "Husain Amer"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Head of Production",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Julie Janssen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Runner",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 3,
+      "entryCount": 3,
+      "sampleNames": [
+        "Dylan Ha",
+        "Phuong",
+        "Khoi"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Post PA",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Quyên Nguyễn",
+        "Blue Dang"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Post Producer",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Quyên Nguyễn"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Assistant Production Manager",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Noppawan Wachira-Amornlerd",
+        "Kudakwashe"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Medic",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Pitchayuth Deesom",
+        "Graywon Human"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Sound Engineer",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Tran Linh Sound Team",
+        "Daniel Bonilla"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "KV Art Director Assistant",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "KV Post Producer",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 2,
+      "entryCount": 2,
+      "sampleNames": [
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Racing Car Team",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Wood's Racing Team"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Toy Car",
+      "isCustomRole": true,
+      "department": "art",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Saigon Toy"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Loader",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Brandon Lowu"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "qtake",
+      "roleLabel": "QTake",
+      "isCustomRole": false,
+      "department": "camera",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Quang"
+      ],
+      "catalogLabel": "QTake",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "camera:qtake"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Tracking Car",
+      "isCustomRole": true,
+      "department": "camera",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Bi Hân"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "SFX Technician",
+      "isCustomRole": true,
+      "department": "casting",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Byron Ramsey"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Stunt Driver",
+      "isCustomRole": true,
+      "department": "casting",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Kevin Frame"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Best Boy Grip",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Colin Kondwani Chirombo"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "DMX Operator",
+      "isCustomRole": true,
+      "department": "ge",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Binh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "GFX",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Lynn Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Online Editor",
+      "isCustomRole": true,
+      "department": "post",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Huy Lê"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": "post:online"
+    },
+    {
+      "roleKey": "voice_over",
+      "roleLabel": "Voice Over",
+      "isCustomRole": false,
+      "department": "post",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Eric Wibbelsmann"
+      ],
+      "catalogLabel": "Voice Over",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "post:voice_over"
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC Drone Op",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Dmitriy Tarasov",
+        "Cody Holthus",
+        "Brandon Rehbach"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC Founder/CEO",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Blake Resnick"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC Technician",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Davis Hazen",
+        "Trey Pfeiffer",
+        "Jerrod Tyler"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "BRINC VP of Strategy & Marketing Comms",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "David Benowitz"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Director Assistant",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Tyan Klass"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Director's Assistant",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Takuji Nakahira"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Medic On-set",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Hồ Chung Bảo Kim",
+        "Hồ Đình Hải",
+        "Trần Thanh Minh"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Soundman",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Cong"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Studio",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Stylish Studio"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Translator",
+      "isCustomRole": true,
+      "department": "production",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Tina Nguyen"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "DI",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Cham99studio"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": null,
+      "roleLabel": "Lighting",
+      "isCustomRole": true,
+      "department": "stills",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Hải Nam"
+      ],
+      "catalogLabel": null,
+      "labelMatchesCatalog": null,
+      "resolvedFromLabel": null
+    },
+    {
+      "roleKey": "photography_producer",
+      "roleLabel": "Photography Producer",
+      "isCustomRole": false,
+      "department": "stills",
+      "occurrenceCount": 1,
+      "entryCount": 1,
+      "sampleNames": [
+        "Tự Nguyễn"
+      ],
+      "catalogLabel": "Photography Producer",
+      "labelMatchesCatalog": true,
+      "resolvedFromLabel": "stills:photography_producer"
+    }
+  ]
+}

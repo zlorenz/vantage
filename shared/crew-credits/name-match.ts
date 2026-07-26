@@ -26,6 +26,8 @@ export interface NameCatalogEntry {
   linkTitle?: string
   /** Display labels for crew roles this name appears in (e.g. DOP, Editor). */
   roles?: string[]
+  /** Opaque creditIdentity _id when known. */
+  identityId?: string
 }
 
 export interface NameMatch {
@@ -243,6 +245,25 @@ export function confidenceForReasons(
 }
 
 /**
+ * Exact catalog hit (same normalized spelling). Used to mark “known” names in
+ * CSV preview — distinct from findNameMatch, which never returns exact equals.
+ */
+export function findExactNameInCatalog(
+  rawName: string,
+  catalog: NameCatalogEntry[],
+): NameCatalogEntry | null {
+  const input = rawName.trim()
+  if (!input || !catalog.length) return null
+
+  const exact = catalog.find((entry) => entry.name.trim() === input)
+  if (exact) return exact
+
+  const key = normName(input)
+  if (!key) return null
+  return catalog.find((entry) => normName(entry.name) === key) ?? null
+}
+
+/**
  * Find the best site-wide name that looks like a variant of the CSV name.
  * Exact same spelling (after trim) is never flagged.
  * Only high/medium confidence matches are returned.
@@ -314,7 +335,13 @@ export interface CreditRowForNameCatalog {
   roleKey?: string
   role?: string
   isCustomRole?: boolean
-  people?: Array<{name?: string; url?: string; linkTitle?: string}>
+  people?: Array<{
+    name?: string
+    url?: string
+    linkTitle?: string
+    identity?: {_ref?: string}
+    identityId?: string
+  }>
 }
 
 /** Resolve the display role label stored on a crew credit row. */
@@ -373,6 +400,7 @@ export function mergeNameCatalogs(...catalogs: NameCatalogEntry[][]): NameCatalo
         count: existing.count + entry.count,
         url: existing.url ?? entry.url,
         linkTitle: existing.linkTitle ?? entry.linkTitle,
+        identityId: existing.identityId ?? entry.identityId,
         roles: mergeCatalogRoleSets(existing.roles, entry.roles),
       })
     }
@@ -385,12 +413,23 @@ export function mergeNameCatalogs(...catalogs: NameCatalogEntry[][]): NameCatalo
 export function buildNameCatalogFromCredits(
   credits: CreditRowForNameCatalog[],
 ): NameCatalogEntry[] {
-  const occurrences: Array<{name?: string; url?: string; linkTitle?: string; roleLabel: string}> = []
+  const occurrences: Array<{
+    name?: string
+    url?: string
+    linkTitle?: string
+    identityId?: string
+    roleLabel: string
+  }> = []
 
   for (const credit of credits) {
     const roleLabel = resolveCreditRoleLabel(credit)
     for (const person of credit.people ?? []) {
-      occurrences.push({...person, roleLabel})
+      const identityId = person.identityId || person.identity?._ref
+      occurrences.push({
+        ...person,
+        ...(identityId ? {identityId} : {}),
+        roleLabel,
+      })
     }
   }
 
@@ -402,6 +441,7 @@ export function buildNameCatalogFromCredits(
       urlCounts: Map<string, number>
       linkTitles: Map<string, number>
       roles: Set<string>
+      identityId?: string
     }
   >()
 
@@ -420,11 +460,15 @@ export function buildNameCatalogFromCredits(
         urlCounts,
         linkTitles,
         roles: new Set([person.roleLabel]),
+        ...(person.identityId ? {identityId: person.identityId} : {}),
       })
       continue
     }
     existing.count++
     existing.roles.add(person.roleLabel)
+    if (!existing.identityId && person.identityId) {
+      existing.identityId = person.identityId
+    }
     if (person.url?.trim()) {
       const url = person.url.trim()
       existing.urlCounts.set(url, (existing.urlCounts.get(url) ?? 0) + 1)
@@ -445,6 +489,7 @@ export function buildNameCatalogFromCredits(
       roles,
       ...(bestUrl ? {url: bestUrl} : {}),
       ...(bestTitle ? {linkTitle: bestTitle} : {}),
+      ...(entry.identityId ? {identityId: entry.identityId} : {}),
     }
   })
 }

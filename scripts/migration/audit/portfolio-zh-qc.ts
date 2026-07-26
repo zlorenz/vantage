@@ -16,7 +16,7 @@ import { PATHS } from '../config';
 import { writeJson } from '../lib/fs';
 import { getWriteClient } from '../lib/sanity-client';
 import { CREDIT_LABEL_ZH } from '../../../src/lib/credits-labels-zh';
-import { CREDITS_CONFIG } from '../../../src/lib/credits-config';
+import { CREW_DEPARTMENTS } from '../../../shared/crew-credits';
 
 type Severity = 'error' | 'warn' | 'info';
 
@@ -29,22 +29,28 @@ interface Finding {
   preview?: string;
 }
 
+interface DisplayTitleParts {
+  brandName?: string;
+  productName?: string;
+  campaignTitle?: string;
+  brandNameZh?: string;
+  productNameZh?: string;
+  campaignTitleZh?: string;
+}
+
 interface PortfolioDoc {
   _id: string;
   title?: string;
   titleZh?: string;
   slug: string;
-  thumbTitle?: string;
-  thumbTitleZh?: string;
-  headerTitle?: string;
-  headerTitleZh?: string;
-  longTitle?: string;
-  longTitleZh?: string;
+  displayTitleParts?: DisplayTitleParts;
+  heroFilmTitle?: string;
+  heroFilmTitleZh?: string;
   description?: string;
   descriptionZh?: string;
   additionalVideos?: Array<{
-    longTitle?: string;
-    longTitleZh?: string;
+    videoTitle?: string;
+    videoTitleZh?: string;
     description?: string;
     descriptionZh?: string;
   }>;
@@ -180,11 +186,11 @@ function collectUnmappedCreditRoles(credits: PortfolioDoc['credits']): string[] 
   if (!credits) return [];
   const unmapped = new Set<string>();
 
-  for (const dept of CREDITS_CONFIG) {
+  for (const dept of CREW_DEPARTMENTS) {
     const block = credits[dept.key];
     if (!block) continue;
     // Sanity stores `additional`; repeater slug is legacy WP ACF name
-    const additional = block.additional ?? block[dept.repeater];
+    const additional = block.additional ?? block[dept.legacyRepeater];
     if (!Array.isArray(additional)) continue;
     for (const row of additional) {
       const role = String((row as { role?: string }).role ?? '').trim();
@@ -198,11 +204,37 @@ function collectUnmappedCreditRoles(credits: PortfolioDoc['credits']): string[] 
 function auditDoc(doc: PortfolioDoc): Finding[] {
   const findings: Finding[] = [];
   const slug = doc.slug;
+  const parts = doc.displayTitleParts ?? {};
 
   pushMissingZh(findings, slug, 'titleZh', doc.title, doc.titleZh);
-  pushMissingZh(findings, slug, 'thumbTitleZh', doc.thumbTitle, doc.thumbTitleZh);
-  pushMissingZh(findings, slug, 'headerTitleZh', doc.headerTitle, doc.headerTitleZh);
-  pushMissingZh(findings, slug, 'longTitleZh', doc.longTitle, doc.longTitleZh);
+  pushMissingZh(
+    findings,
+    slug,
+    'displayTitleParts.brandNameZh',
+    parts.brandName,
+    parts.brandNameZh,
+  );
+  pushMissingZh(
+    findings,
+    slug,
+    'displayTitleParts.productNameZh',
+    parts.productName,
+    parts.productNameZh,
+  );
+  pushMissingZh(
+    findings,
+    slug,
+    'displayTitleParts.campaignTitleZh',
+    parts.campaignTitle,
+    parts.campaignTitleZh,
+  );
+  pushMissingZh(
+    findings,
+    slug,
+    'heroFilmTitleZh',
+    doc.heroFilmTitle,
+    doc.heroFilmTitleZh,
+  );
   pushMissingZh(findings, slug, 'descriptionZh', doc.description, doc.descriptionZh);
 
   (doc.additionalVideos ?? []).forEach((video, i) => {
@@ -210,9 +242,9 @@ function auditDoc(doc: PortfolioDoc): Finding[] {
     pushMissingZh(
       findings,
       slug,
-      `${prefix}.longTitleZh`,
-      video.longTitle,
-      video.longTitleZh,
+      `${prefix}.videoTitleZh`,
+      video.videoTitle,
+      video.videoTitleZh,
     );
     if (plain(video.description)) {
       pushMissingZh(
@@ -268,17 +300,21 @@ async function main() {
       title,
       titleZh,
       "slug": slug.current,
-      thumbTitle,
-      thumbTitleZh,
-      headerTitle,
-      headerTitleZh,
-      longTitle,
-      longTitleZh,
+      displayTitleParts{
+        brandName,
+        productName,
+        campaignTitle,
+        brandNameZh,
+        productNameZh,
+        campaignTitleZh
+      },
+      heroFilmTitle,
+      heroFilmTitleZh,
       description,
       descriptionZh,
       additionalVideos[]{
-        longTitle,
-        longTitleZh,
+        videoTitle,
+        videoTitleZh,
         description,
         descriptionZh
       },

@@ -9,16 +9,12 @@ import { WorkInternalApp } from '@/components/work-internal/WorkInternalApp';
 import { routing, type Locale } from '@/i18n/routing';
 import { sanityClient } from '@/lib/sanity';
 import {
-  ALL_CLIENTS_QUERY,
-  CREW_MEMBERS_BY_ROLE_QUERY,
   INDUSTRIES_QUERY,
   INTERNAL_LIBRARY_QUERY,
   MARKETS_QUERY,
   VIDEO_FORMATS_QUERY,
 } from '@/sanity/queries/portfolio';
 import type {
-  ClientTerm,
-  CrewMemberTerm,
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
@@ -42,27 +38,8 @@ export default async function WorkInternalPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [
-    entries,
-    clients,
-    directors,
-    dops,
-    artDirectors,
-    videoFormats,
-    industries,
-    markets,
-  ] = await Promise.all([
+  const [entries, videoFormats, industries, markets] = await Promise.all([
     sanityClient.fetch<InternalLibraryEntry[]>(INTERNAL_LIBRARY_QUERY),
-    sanityClient.fetch<ClientTerm[]>(ALL_CLIENTS_QUERY),
-    sanityClient.fetch<CrewMemberTerm[]>(CREW_MEMBERS_BY_ROLE_QUERY, {
-      role: 'director',
-    }),
-    sanityClient.fetch<CrewMemberTerm[]>(CREW_MEMBERS_BY_ROLE_QUERY, {
-      role: 'dop',
-    }),
-    sanityClient.fetch<CrewMemberTerm[]>(CREW_MEMBERS_BY_ROLE_QUERY, {
-      role: 'art-director',
-    }),
     sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
     sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
     sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
@@ -74,10 +51,6 @@ export default async function WorkInternalPage({ params }: Props) {
         <WorkInternalApp
           locale={typedLocale}
           entries={entries}
-          clients={clients}
-          directors={directors}
-          dops={dops}
-          artDirectors={artDirectors}
           videoFormats={videoFormats}
           industries={industries}
           markets={markets}

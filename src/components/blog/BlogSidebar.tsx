@@ -4,6 +4,7 @@
 
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { CategoryTerm } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
 
@@ -11,9 +12,15 @@ interface BlogSidebarProps {
   categories: CategoryTerm[];
   locale: Locale;
   activeSlug?: string;
+  phrases?: Record<string, string>;
 }
 
-export async function BlogSidebar({ categories, locale, activeSlug }: BlogSidebarProps) {
+export async function BlogSidebar({
+  categories,
+  locale,
+  activeSlug,
+  phrases,
+}: BlogSidebarProps) {
   const t = await getTranslations('Blog');
 
   return (
@@ -26,10 +33,12 @@ export async function BlogSidebar({ categories, locale, activeSlug }: BlogSideba
           {categories.map((category) => {
             const slugParam =
               locale === 'zh' ? category.slugZh || category.slug : category.slug;
-            const label =
-              locale === 'zh' && category.titleZh
-                ? category.titleZh
-                : category.title;
+            const label = pickLocaleFieldWithPhrases(
+              locale,
+              category.title,
+              category.titleZh,
+              phrases,
+            );
             const isActive =
               activeSlug === category.slug || activeSlug === category.slugZh;
 

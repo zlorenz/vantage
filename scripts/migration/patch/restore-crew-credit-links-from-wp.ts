@@ -211,11 +211,12 @@ async function main() {
       "slug": slug.current,
       crewCredits[]{
         _key,
+        _type,
         department,
         roleKey,
         role,
         isCustomRole,
-        people[]{ _key, name, url, linkTitle }
+        people[]{ _key, _type, name, url, linkTitle }
       }
     }
   `);

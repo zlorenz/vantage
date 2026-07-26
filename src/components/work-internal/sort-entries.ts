@@ -22,7 +22,8 @@ export function sortLibraryEntries(
       return copy.sort((a, b) => {
         const at = a.publishedAt ? Date.parse(a.publishedAt) : 0;
         const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
-        return at - bt;
+        if (at !== bt) return at - bt;
+        return compareStrings(getDisplayTitle(a), getDisplayTitle(b));
       });
     case 'title-asc':
       return copy.sort((a, b) =>
@@ -37,7 +38,8 @@ export function sortLibraryEntries(
       return copy.sort((a, b) => {
         const at = a.publishedAt ? Date.parse(a.publishedAt) : 0;
         const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
-        return bt - at;
+        if (at !== bt) return bt - at;
+        return compareStrings(getDisplayTitle(a), getDisplayTitle(b));
       });
   }
 }

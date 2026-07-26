@@ -36,6 +36,9 @@ export function crewMemberId(role: string, slug: string): string {
   return `crew-${role}-${slug}`;
 }
 
+export {creditIdentityId} from '../../../shared/crew-credits/identity';
+
+
 export function platformId(slug: string): string {
   return `platform-${slug}`;
 }

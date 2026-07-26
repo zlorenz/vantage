@@ -10,8 +10,11 @@ import {
   buildNameCatalog,
   buildNameCatalogFromCredits,
   findNameMatch,
+  findExactNameInCatalog,
+  findRoleMatch,
   normalizeCreditToken,
   parseLegacyNamesHtml,
+  resolveCustomRoleCanonical,
   resolveDepartment,
   resolveStandardRole,
   searchNameSuggestions,
@@ -19,6 +22,15 @@ import {
 
 import {mapCrewCreditsCsvRows} from './csv-map'
 import {buildRoleCatalogIndexes} from './name-catalog-index'
+import {
+  planTaxonomySyncFromCredits,
+  resolveTaxonomyPatch,
+  slugifyPersonName,
+} from './sync-taxonomies-from-credits'
+import {
+  planIdentitySyncFromCredits,
+  resolveIdentityLinksOnCredits,
+} from './sync-credit-identities'
 import {mergeCrewCredits} from './csv-merge'
 import {parseCrewCreditsCsv, stripBom} from './csv-parse'
 import {buildCrewCreditsCsvTemplate} from './csv-template'
@@ -32,15 +44,23 @@ import {
 } from './link-memory'
 import {
   attachNameDuplicates,
+  collapseSameNamePeopleInField,
   confirmNameDuplicate,
   countPendingDuplicates,
   duplicateAlertLabel,
   skipNameDuplicate,
 } from './name-duplicates'
+import {
+  attachRoleSuggestions,
+  confirmRoleSuggestion,
+  countPendingRoleSuggestions,
+  skipRoleSuggestion,
+} from './role-suggestions'
+import {isKnownPreviewPerson, preparePreviewPeople} from './preview-people'
 
 // --- catalog integrity ------------------------------------------------------
 
-assert.equal(CREW_ROLES_FLAT.length, 63)
+assert.equal(CREW_ROLES_FLAT.length, 70)
 
 // --- normalize / aliases ----------------------------------------------------
 
@@ -54,6 +74,7 @@ assert.equal(resolveStandardRole('Exec Producer')?.role.key, 'ep')
 assert.equal(resolveStandardRole('First Assistant Director')?.role.key, '1st_ad')
 assert.equal(resolveStandardRole('Production Assistant')?.role.key, 'pa')
 assert.equal(resolveStandardRole('PAs')?.role.key, 'pa')
+assert.equal(resolveStandardRole('Runner')?.role.key, 'pa')
 assert.equal(resolveStandardRole('Camera Operator')?.role.key, 'camera_op')
 assert.equal(resolveStandardRole('Cam Op')?.role.key, 'camera_op')
 assert.equal(resolveStandardRole('Steadicam Operator')?.role.key, 'steadicam_op')
@@ -72,9 +93,37 @@ assert.equal(resolveStandardRole('VO')?.role.key, 'voice_over')
 assert.equal(resolveStandardRole('Voiceover')?.role.key, 'voice_over')
 assert.equal(resolveStandardRole('3D')?.role.key, '3d_animation')
 assert.equal(resolveStandardRole('3D Animator')?.role.key, '3d_animation')
+assert.equal(resolveStandardRole('Creative Director')?.role.key, 'creative_director')
+assert.equal(resolveStandardRole('Catering')?.role.key, 'catering')
+assert.equal(resolveStandardRole('Soundman')?.role.key, 'sound_recordist')
+assert.equal(resolveStandardRole('Spark')?.role.key, 'electrician')
+assert.equal(resolveStandardRole('Juicer')?.role.key, 'electrician')
+assert.equal(resolveStandardRole('Grip & Lighting')?.role.key, 'rental_house')
+assert.equal(resolveStandardRole('Post Producer')?.role.key, 'post_supervisor')
+assert.equal(resolveStandardRole('Motion Graphic Artist')?.role.key, 'motion_graphics')
+assert.equal(resolveStandardRole('GFX')?.role.key, 'motion_graphics')
+assert.equal(resolveStandardRole('Online Editor')?.role.key, 'online')
+assert.equal(resolveStandardRole('Online')?.role.key, 'online')
+assert.equal(resolveStandardRole('VFX')?.role.key, 'vfx')
+assert.notEqual(resolveStandardRole('Online')?.role.key, 'vfx')
+assert.equal(
+  resolveStandardRole('Sound Engineer', {department: 'post'})?.role.key,
+  'sound_design_mix',
+)
+assert.equal(
+  resolveStandardRole('Sound Engineer', {department: 'production'})?.role.key,
+  'sound_recordist',
+)
+assert.equal(resolveStandardRole('Sound Engineer')?.role.key, 'sound_design_mix')
+assert.equal(resolveCustomRoleCanonical('boom operator'), 'Boom Op')
+assert.equal(resolveCustomRoleCanonical('Boom Op'), null)
+assert.equal(resolveCustomRoleCanonical('Medic On-set'), 'Medic')
+assert.equal(resolveCustomRoleCanonical('Director Assistant'), "Director's Assistant")
 assert.equal(resolveDepartment('G&E'), 'ge')
 assert.equal(resolveDepartment('Post-Production'), 'post')
 assert.equal(resolveDepartment('Stills'), 'stills')
+assert.equal(findRoleMatch('boom operator')?.label, 'Boom Op')
+assert.equal(findRoleMatch('Director')?.kind, undefined) // exact → null
 
 // --- BOM + header aliases + blank rows --------------------------------------
 
@@ -98,14 +147,91 @@ assert.ok(mapped.mappedCount >= 2)
 assert.equal(mapped.blockingErrorCount, 2) // unknown dept + missing dept for custom
 assert.ok(mapped.previewRows.some((row) => row.roleKey === 'director'))
 assert.ok(mapped.previewRows.some((row) => row.roleKey === 'dop'))
-assert.ok(mapped.previewRows.some((row) => row.isCustomRole && row.roleLabel === 'Creative Director'))
-assert.ok(mapped.previewRows.some((row) => row.isCustomRole && row.roleLabel === 'Runner'))
+assert.ok(mapped.previewRows.some((row) => row.roleKey === 'creative_director'))
+assert.ok(mapped.previewRows.some((row) => row.roleKey === 'pa' && row.roleRaw === 'Runner'))
 
-const creative = mapped.previewRows.find((row) => row.roleLabel === 'Creative Director')
+const creative = mapped.previewRows.find((row) => row.roleKey === 'creative_director')
 assert.ok(creative)
 assert.equal(creative!.people.length, 2)
 assert.equal(creative!.people[0].url, 'https://example.com/jane')
 
+// --- dept-scoped Sound Engineer + boom custom canonical ---------------------
+
+const soundCsv = mapCrewCreditsCsvRows(
+  parseCrewCreditsCsv(`Department,Role,Names
+Post,Sound Engineer,Trung
+Production,Sound Engineer,OnSet Mixer
+Production,Boom Operator,Boom Person
+`).rows,
+)
+assert.equal(
+  soundCsv.previewRows.find((r) => r.roleRaw === 'Sound Engineer' && r.department === 'post')
+    ?.roleKey,
+  'sound_design_mix',
+)
+assert.equal(
+  soundCsv.previewRows.find(
+    (r) => r.roleRaw === 'Sound Engineer' && r.department === 'production',
+  )?.roleKey,
+  'sound_recordist',
+)
+const boomRow = soundCsv.previewRows.find((r) => r.roleRaw === 'Boom Operator')
+assert.ok(boomRow?.isCustomRole)
+assert.equal(boomRow?.roleLabel, 'Boom Op')
+
+// --- role suggestion Confirm / Skip blocks apply gate -----------------------
+
+const fuzzyCsv = mapCrewCreditsCsvRows(
+  parseCrewCreditsCsv(`Department,Role,Names
+Production,Agency Producer,Someone
+`).rows,
+)
+const withRoleSuggestions = attachRoleSuggestions(fuzzyCsv.previewRows)
+const agencyRow = withRoleSuggestions.find((r) => r.roleLabel === 'Agency Producer')
+assert.ok(agencyRow?.isCustomRole)
+// Agency Producer should stay custom without a forced standard suggestion in most cases;
+// if a suggestion appears it must be pending until resolved.
+if (agencyRow?.roleSuggestion?.status === 'pending') {
+  assert.equal(countPendingRoleSuggestions(withRoleSuggestions), 1)
+  const skipped = withRoleSuggestions.map((row) =>
+    row.id === agencyRow.id ? skipRoleSuggestion(row) : row,
+  )
+  assert.equal(countPendingRoleSuggestions(skipped), 0)
+}
+
+// Force a confirm path via a near-standard custom that findRoleMatch can hit
+const nearMatchRows = attachRoleSuggestions(
+  mapCrewCreditsCsvRows(
+    parseCrewCreditsCsv(`Department,Role,Names
+G&E,Sparks,Sparky
+`).rows,
+  ).previewRows,
+)
+// "Sparks" exact-aliases to electrician via catalog — should auto-map, no suggestion
+assert.ok(nearMatchRows.some((r) => r.roleKey === 'electrician'))
+assert.equal(countPendingRoleSuggestions(nearMatchRows), 0)
+
+const confirmDemo = attachRoleSuggestions([
+  {
+    id: 'demo',
+    lineNumbers: [1],
+    department: 'production',
+    departmentRaw: 'Production',
+    roleRaw: 'Prod Manager',
+    roleLabel: 'Prod Manager',
+    isCustomRole: true,
+    people: [{name: 'Pat'}],
+    status: 'custom' as const,
+    existingPeople: [],
+  },
+])
+if (confirmDemo[0]?.roleSuggestion?.status === 'pending') {
+  const confirmed = confirmRoleSuggestion(confirmDemo[0])
+  assert.equal(confirmed.isCustomRole, false)
+  assert.ok(confirmed.roleKey)
+  assert.equal(confirmed.roleSuggestion?.status, 'confirmed')
+  assert.equal(countPendingRoleSuggestions([confirmed]), 0)
+}
 // --- names-only CSV (no URL column) ----------------------------------------
 
 const namesOnly = parseCrewCreditsCsv(`Department,Role,Names
@@ -162,9 +288,9 @@ assert.equal(replace.credits.find((c) => c.roleKey === 'director')?._key, 'keep-
 
 const customPreview = mapCrewCreditsCsvRows(
   parseCrewCreditsCsv(`Department,Role,Names
-Production,Runner,Alex
-Production,Runner,Alex
-Production,Runner,Blake
+Production,Agency Producer,Alex
+Production,Agency Producer,Alex
+Production,Agency Producer,Blake
 `).rows,
 )
 
@@ -174,7 +300,7 @@ const withCustom = mergeCrewCredits(
       _key: 'custom-1',
       _type: 'crewCredit',
       department: 'production',
-      role: 'Runner',
+      role: 'Agency Producer',
       isCustomRole: true,
       people: [{_key: 'a', _type: 'crewPerson', name: 'Alex'}],
     },
@@ -183,10 +309,10 @@ const withCustom = mergeCrewCredits(
   'fill',
 )
 
-const runner = withCustom.credits.find((c) => c.role === 'Runner')
-assert.ok(runner)
+const agencyProducer = withCustom.credits.find((c) => c.role === 'Agency Producer')
+assert.ok(agencyProducer)
 assert.deepEqual(
-  runner!.people.map((p) => p.name),
+  agencyProducer!.people.map((p) => p.name),
   ['Alex', 'Blake'],
 )
 
@@ -199,6 +325,30 @@ assert.doesNotMatch(template, /Department,Role,Names,URL/)
 assert.match(template, /Production,Brand,/)
 assert.match(template, /Camera,DOP,/)
 assert.match(template, /Post,3D Animation,/)
+// New standards from role-merge promote pass
+assert.match(template, /Production,Creative Director,/)
+assert.match(template, /Production,Catering,/)
+assert.match(template, /Production,Sound Recordist,/)
+assert.match(template, /Camera,Camera Assistants,/)
+assert.match(template, /Art,Wardrobe Assistant,/)
+assert.match(template, /Post,Post House,/)
+assert.match(template, /Post,Motion Graphics,/)
+assert.match(template, /Post,Online,/)
+assert.match(template, /Post,VFX,/)
+// Recurring customs (kept out of catalog)
+assert.match(template, /Production,Boom Op,/)
+assert.match(template, /Production,Agency Producer,/)
+assert.match(template, /Production,Director's Assistant,/)
+assert.match(template, /Production,Medic,/)
+assert.match(template, /G&E,Best Boy Electric,/)
+assert.match(template, /Camera,Live-Stream Technician,/)
+assert.match(template, /Post,Post PA,/)
+const templateDataRows = template
+  .replace(/^\uFEFF/, '')
+  .trim()
+  .split('\n')
+  .slice(1)
+assert.equal(templateDataRows.length, 70 + 11) // standards + recurring customs
 
 // --- quoted Excel-style fields ----------------------------------------------
 
@@ -384,6 +534,31 @@ const alreadyRenamed = applyPersonRenameToCredits(renameTarget.credits, {
 })
 assert.equal(alreadyRenamed.peopleUpdated, 0)
 
+// --- rename by identity id (preferred over name matching) -------------------
+
+const identityRename = applyPersonRenameToCredits(
+  [
+    {
+      _type: 'crewCredit',
+      department: 'camera',
+      roleKey: 'dop',
+      role: 'DOP',
+      people: [
+        {
+          _type: 'crewPerson',
+          name: 'Old Spelling',
+          identity: {_type: 'reference', _ref: 'ci_testperson'},
+        },
+        {_type: 'crewPerson', name: 'Old Spelling'},
+      ],
+    },
+  ],
+  {fromName: 'Old Spelling', toName: 'New Spelling', identityId: 'ci_testperson'},
+)
+assert.equal(identityRename.peopleUpdated, 1)
+assert.equal(identityRename.credits[0].people[0].name, 'New Spelling')
+assert.equal(identityRename.credits[0].people[1].name, 'Old Spelling')
+
 // --- merge applies link memory on CSV names ---------------------------------
 
 const brandCsv = mapCrewCreditsCsvRows(
@@ -453,6 +628,45 @@ assert.ok(wordOrderMatch!.reasons.includes('word_order'))
 assert.equal(findNameMatch('Paul Moore', catalog), null)
 assert.equal(findNameMatch('Totally Unknown Person', catalog), null)
 
+const exactHyundai = findExactNameInCatalog('Hyundai', [
+  {name: 'Hyundai', count: 5, url: 'https://hyundai.com'},
+  {name: 'Paul Moore', count: 2},
+])
+assert.ok(exactHyundai)
+assert.equal(exactHyundai!.url, 'https://hyundai.com')
+assert.equal(findExactNameInCatalog('hyundai', [{name: 'Hyundai', count: 1}])?.name, 'Hyundai')
+assert.equal(findExactNameInCatalog('Brand New Co', catalog), null)
+
+const previewEnriched = preparePreviewPeople(
+  [{name: 'Hyundai'}, {name: 'Brand New Co'}, {name: 'Moore Paul'}],
+  [
+    {name: 'Hyundai', count: 12, url: 'https://hyundai.com'},
+    {name: 'Paul Moore', count: 4, url: 'https://paul.example'},
+  ],
+  buildLinkMemory([
+    {
+      _type: 'crewCredit',
+      department: 'production',
+      role: 'Brand',
+      people: [{name: 'Hyundai', url: 'https://hyundai.com'}],
+    },
+  ]),
+)
+assert.equal(previewEnriched[0].url, 'https://hyundai.com')
+assert.equal(previewEnriched[1].url, undefined)
+assert.equal(previewEnriched[2].duplicate?.status, 'pending')
+assert.ok(
+  isKnownPreviewPerson(
+    previewEnriched[0],
+    [{name: 'Hyundai', count: 12, url: 'https://hyundai.com'}],
+    new Map(),
+  ),
+)
+assert.equal(
+  isKnownPreviewPerson(previewEnriched[1], [{name: 'Hyundai', count: 12}], new Map()),
+  false,
+)
+
 const attached = attachNameDuplicates(
   [{name: 'Tuyen Tran'}, {name: 'Paul Moore'}],
   roleCatalog,
@@ -473,6 +687,34 @@ assert.equal(confirmed.url, 'https://example.com/tuyen')
 assert.equal(confirmed.linkTitle, 'Tuyển Trần')
 assert.equal(confirmed.duplicate?.status, 'confirmed')
 assert.equal(countPendingDuplicates([{people: [confirmed, attached[1]]}]), 0)
+
+// Confirm merge beside an existing same-field canonical → one pill
+const fieldWithVariant = attachNameDuplicates(
+  [
+    {name: 'Paul Moore', url: 'https://paul.example'},
+    {name: 'Moore Paul'},
+  ],
+  [{name: 'Paul Moore', count: 51, url: 'https://paul.example', roles: ['Director']}],
+)
+assert.equal(fieldWithVariant[1].duplicate?.status, 'pending')
+const afterConfirm = collapseSameNamePeopleInField([
+  fieldWithVariant[0],
+  confirmNameDuplicate(fieldWithVariant[1]),
+])
+assert.equal(afterConfirm.length, 1)
+assert.equal(afterConfirm[0].name, 'Paul Moore')
+assert.equal(afterConfirm[0].url, 'https://paul.example')
+assert.equal(afterConfirm[0].duplicate?.status, 'confirmed')
+
+// Exact identical names in one field collapse on prepare
+const exactDupes = preparePreviewPeople(
+  [{name: 'Hyundai'}, {name: 'Hyundai'}, {name: 'VeryBig'}],
+  [{name: 'Hyundai', count: 3, url: 'https://hyundai.com'}],
+  new Map(),
+)
+assert.equal(exactDupes.length, 2)
+assert.equal(exactDupes[0].name, 'Hyundai')
+assert.equal(exactDupes[0].url, 'https://hyundai.com')
 
 const skipped = skipNameDuplicate(attached[0])
 assert.equal(skipped.name, 'Tuyen Tran')
@@ -530,5 +772,130 @@ const roleIndexes = buildRoleCatalogIndexes([
 ])
 assert.ok(roleIndexes.roleCatalogByKey.get('dop')?.some((entry) => entry.name === 'Tóth Widamon Máté'))
 assert.ok(roleIndexes.deptCatalogByKey.get('camera')?.some((entry) => entry.name === 'Paul Moore'))
+
+// --- taxonomy sync from Brand / Director / DOP / Art Director ---------------
+
+assert.equal(slugifyPersonName('Zacharia Lorenz'), 'zacharia-lorenz')
+assert.equal(slugifyPersonName('Minh Thuận'), 'minh-thuan')
+assert.equal(slugifyPersonName('Nguyễn Đức Hải'), 'nguyen-duc-hai')
+
+const taxonomyPlan = planTaxonomySyncFromCredits([
+  {
+    _type: 'crewCredit',
+    department: 'production',
+    roleKey: 'brand',
+    role: 'Brand',
+    people: [
+      {_type: 'crewPerson', name: 'Mammotion'},
+      {_type: 'crewPerson', name: 'Mammotion'},
+    ],
+  },
+  {
+    _type: 'crewCredit',
+    department: 'production',
+    roleKey: 'director',
+    role: 'Director',
+    people: [
+      {_type: 'crewPerson', name: 'Zacharia Lorenz'},
+      {_type: 'crewPerson', name: 'Paul Moore'},
+    ],
+  },
+  {
+    _type: 'crewCredit',
+    department: 'camera',
+    roleKey: 'dop',
+    role: 'DOP',
+    people: [{_type: 'crewPerson', name: 'Robin Taylor'}],
+  },
+  {
+    _type: 'crewCredit',
+    department: 'art',
+    roleKey: 'art_director',
+    role: 'Art Director',
+    people: [{_type: 'crewPerson', name: 'Deen Abrahams'}],
+  },
+])
+
+assert.deepEqual(taxonomyPlan.clientNames, ['Mammotion'])
+assert.deepEqual(taxonomyPlan.crewByRole.director, ['Zacharia Lorenz', 'Paul Moore'])
+assert.deepEqual(taxonomyPlan.crewByRole.dop, ['Robin Taylor'])
+assert.deepEqual(taxonomyPlan.crewByRole['art-director'], ['Deen Abrahams'])
+
+const taxonomyPatch = resolveTaxonomyPatch(
+  taxonomyPlan,
+  [{_id: 'client-mammotion', name: 'Mammotion', slug: 'mammotion'}],
+  [
+    {
+      _id: 'crew-director-paul-moore',
+      name: 'Paul Moore',
+      slug: 'paul-moore',
+      role: 'director',
+    },
+  ],
+)
+assert.equal(taxonomyPatch.clients.length, 1)
+assert.equal(taxonomyPatch.clients[0]._ref, 'client-mammotion')
+assert.equal(taxonomyPatch.createClients.length, 0)
+assert.equal(taxonomyPatch.crewMembers.length, 4)
+assert.equal(taxonomyPatch.createCrewMembers.length, 3)
+assert.ok(
+  taxonomyPatch.crewMembers.some((ref) => ref._ref === 'crew-director-paul-moore'),
+)
+assert.ok(
+  taxonomyPatch.createCrewMembers.some(
+    (doc) => doc.name === 'Zacharia Lorenz' && doc.role === 'director',
+  ),
+)
+
+// --- creditIdentity link resolve --------------------------------------------
+
+const identityPlan = planIdentitySyncFromCredits([
+  {
+    _type: 'crewCredit',
+    department: 'production',
+    roleKey: 'brand',
+    role: 'Brand',
+    people: [{_type: 'crewPerson', name: 'Mammotion'}],
+  },
+  {
+    _type: 'crewCredit',
+    department: 'post',
+    roleKey: 'editor',
+    role: 'Editor',
+    people: [{_type: 'crewPerson', name: 'Jane Editor'}],
+  },
+])
+assert.deepEqual(identityPlan.namesByRole.brand, ['Mammotion'])
+assert.deepEqual(identityPlan.namesByRole.editor, ['Jane Editor'])
+
+const identityLinks = resolveIdentityLinksOnCredits(
+  [
+    {
+      _type: 'crewCredit',
+      department: 'camera',
+      roleKey: 'dop',
+      role: 'DOP',
+      people: [{_type: 'crewPerson', name: 'Nguyễn Đức Hải'}],
+    },
+    {
+      _type: 'crewCredit',
+      department: 'production',
+      roleKey: 'director',
+      role: 'Director',
+      people: [{_type: 'crewPerson', name: 'Nguyễn Đức Hải'}],
+    },
+  ],
+  [],
+)
+assert.equal(identityLinks.createIdentities.length, 1)
+assert.equal(identityLinks.links.length, 2)
+assert.equal(
+  identityLinks.nextCredits[0].people[0].identity?._ref,
+  identityLinks.createIdentities[0]._id,
+)
+assert.equal(
+  identityLinks.nextCredits[1].people[0].identity?._ref,
+  identityLinks.createIdentities[0]._id,
+)
 
 console.log('crew-credits-csv.test.ts: all assertions passed')

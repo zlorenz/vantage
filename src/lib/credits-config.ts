@@ -1,145 +1,46 @@
 /**
  * Portfolio credits department configuration and rendering helpers.
  *
- * Structured `crewCredits` is preferred. Legacy `credits` department objects
- * remain supported for dual-read until migration backfill completes.
+ * Structured `crewCredits` is the sole source for display and filters.
  */
 
 import {
   CREW_DEPARTMENTS,
   CREW_ROLE_BY_KEY,
+  canonicalCrewRoleLabel,
   getRoleDisplayLabel,
   type CrewCreditValue,
   type CrewDepartmentKey,
 } from '@crew-credits';
+import {
+  lookupPhrase,
+  phraseRecordToMap,
+  type PhraseMap,
+} from '@phrase-book';
 import type { Locale } from '@/i18n/routing';
 import { CREDIT_LABEL_ZH } from '@/lib/credits-labels-zh';
-import type {
-  CreditsAdditionalRow,
-  CrewCredit,
-  CrewPerson,
-  PortfolioCredits,
-} from '@/types/sanity';
-
-export interface CreditFieldConfig {
-  slug: string;
-  label: string;
-  roleKey: string;
-}
-
-export interface CreditDepartmentConfig {
-  key: CrewDepartmentKey;
-  label: string;
-  fields: CreditFieldConfig[];
-  repeater: string;
-}
-
-export const DEPARTMENT_LABELS = Object.fromEntries(
-  CREW_DEPARTMENTS.map((dept) => [dept.key, dept.label]),
-) as Record<CrewDepartmentKey, string>;
-
-/** Legacy-compatible config derived from the shared catalog. */
-export const CREDITS_CONFIG: CreditDepartmentConfig[] = CREW_DEPARTMENTS.map((dept) => ({
-  key: dept.key,
-  label: dept.label,
-  repeater: dept.legacyRepeater,
-  fields: dept.roles.map((role) => ({
-    slug: role.legacyField,
-    label: role.label,
-    roleKey: role.key,
-  })),
-}));
+import type { CrewCredit, CrewPerson } from '@/types/sanity';
 
 /** Localize a department or role label for the active locale. */
-export function localizeCreditLabel(label: string, locale: Locale): string {
+export function localizeCreditLabel(
+  label: string,
+  locale: Locale,
+  phrases?: PhraseMap | Record<string, string> | null,
+): string {
   if (locale !== 'zh') return label;
-  return CREDIT_LABEL_ZH[label] ?? label;
-}
-
-/** Pluralize role label when names contain multiple comma-separated entries. */
-export function pluralizeCreditRole(role: string, names: string): string {
-  if (!names.includes(',')) return role;
-
-  const fromCatalog = CREW_DEPARTMENTS.flatMap((dept) => dept.roles).find(
-    (entry) => entry.label === role || entry.pluralLabel === role,
-  );
-  if (fromCatalog) return fromCatalog.pluralLabel;
-
-  const irregular: Record<string, string> = {
-    'Production Company': 'Production Companies',
-    'Production Service': 'Production Services',
-    Agency: 'Agencies',
-    Talent: 'Talent',
-    Transport: 'Transport',
-    'G&E': 'G&E',
-    BTS: 'BTS',
-    'Hair & Makeup': 'Hair & Makeup',
-    VFX: 'VFX',
-    Storyboards: 'Storyboards',
-    'Assistant Editors': 'Assistant Editors',
-    'Sound Design & Mix': 'Sound Design & Mix',
-    Wardrobe: 'Wardrobe',
-    '3D Animation': '3D Animations',
-    'Product Technician': 'Product Technicians',
-    Chaperone: 'Chaperones',
-  };
-  if (irregular[role]) return irregular[role];
-
-  const abbrevPlural: Record<string, string> = {
-    '1st AD': '1st ADs',
-    '2nd AD': '2nd ADs',
-    PA: 'PAs',
-    EP: 'EPs',
-    DOP: 'DOPs',
-    '1st AC': '1st ACs',
-    '2nd AC': '2nd ACs',
-    DIT: 'DITs',
-  };
-  if (abbrevPlural[role]) return abbrevPlural[role];
-
-  if (/s$|x$|ch$|sh$/i.test(role)) return role;
-  return `${role}s`;
+  const fromBook = lookupPhrase(phraseRecordToMap(phrases), label)
+  if (fromBook) return fromBook
+  return (
+    CREDIT_LABEL_ZH[label] ??
+    CREDIT_LABEL_ZH[canonicalCrewRoleLabel(label)] ??
+    label
+  )
 }
 
 export interface CreditPair {
   role: string;
   names: string;
   people?: CrewPerson[];
-}
-
-export function getDepartmentCreditPairs(
-  department: Record<string, string | CreditsAdditionalRow[] | undefined> | undefined,
-  config: CreditDepartmentConfig,
-  locale: Locale = 'en',
-): CreditPair[] {
-  if (!department) return [];
-
-  const pairs: CreditPair[] = [];
-
-  for (const field of config.fields) {
-    const val = String(department[field.slug] ?? '').trim();
-    if (val) {
-      const roleEn = pluralizeCreditRole(field.label, val);
-      pairs.push({
-        role: localizeCreditLabel(roleEn, locale),
-        names: val,
-      });
-    }
-  }
-
-  // Sanity schema uses `additional`; legacy WP ACF keys were prod_additional, etc.
-  const additional = department.additional ?? department[config.repeater];
-  if (Array.isArray(additional)) {
-    for (const row of additional) {
-      const role = String(row.role ?? '').trim();
-      const names = String(row.names ?? '').trim();
-      if (role && names) {
-        pairs.push({ role: localizeCreditLabel(role, locale), names });
-      }
-    }
-  }
-
-  return pairs;
 }
 
 function sortStructuredCredits(credits: CrewCredit[]): CrewCredit[] {
@@ -171,6 +72,7 @@ export interface StructuredDepartmentCredits {
 export function getStructuredDepartmentRows(
   crewCredits: CrewCredit[] | CrewCreditValue[] | undefined,
   locale: Locale = 'en',
+  phrases?: PhraseMap | Record<string, string> | null,
 ): StructuredDepartmentCredits[] {
   if (!crewCredits?.length) return [];
 
@@ -183,7 +85,7 @@ export function getStructuredDepartmentRows(
 
     const roleEn = getRoleDisplayLabel(credit.roleKey, credit.role, people.length);
     const pair: CreditPair = {
-      role: localizeCreditLabel(roleEn, locale),
+      role: localizeCreditLabel(roleEn, locale, phrases),
       names: people.map((person) => person.name).join(', '),
       people,
     };
@@ -199,36 +101,24 @@ export function getStructuredDepartmentRows(
     return [
       {
         key: dept.key,
-        label: localizeCreditLabel(dept.label, locale),
+        label: localizeCreditLabel(dept.label, locale, phrases),
         pairs,
       },
     ];
   });
 }
 
-/** Prefer non-empty structured credits; fall back to legacy department objects. */
+/** Resolve department rows for portfolio credit display. */
 export function resolveCreditsForDisplay(opts: {
   crewCredits?: CrewCredit[];
-  credits?: PortfolioCredits;
   locale?: Locale;
+  phrases?: PhraseMap | Record<string, string> | null;
 }): StructuredDepartmentCredits[] {
-  const locale = opts.locale ?? 'en';
-  const structured = getStructuredDepartmentRows(opts.crewCredits, locale);
-  if (structured.length) return structured;
-
-  if (!opts.credits) return [];
-
-  return CREDITS_CONFIG.flatMap((config) => {
-    const pairs = getDepartmentCreditPairs(opts.credits?.[config.key], config, locale);
-    if (!pairs.length) return [];
-    return [
-      {
-        key: config.key,
-        label: localizeCreditLabel(config.label, locale),
-        pairs,
-      },
-    ];
-  });
+  return getStructuredDepartmentRows(
+    opts.crewCredits,
+    opts.locale ?? 'en',
+    opts.phrases,
+  );
 }
 
 /** Collect people names for a structured role key across departments. */

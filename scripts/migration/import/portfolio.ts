@@ -42,7 +42,7 @@ export async function importPortfolio(): Promise<number> {
       description: item.description,
       vimeoUrl: item.vimeoUrl.includes('placeholder') ? undefined : item.vimeoUrl,
       isHidden: item.isHidden,
-      publishedAt: new Date(item.publishedAt).toISOString(),
+      publishedAt: new Date(item.publishedAt).toISOString().slice(0, 10),
     };
 
     if (item.titleZh) doc.titleZh = item.titleZh;
@@ -84,7 +84,6 @@ export async function importPortfolio(): Promise<number> {
     const seo: Record<string, string> = {};
     if (item.seo.metaDescription) seo.metaDescription = item.seo.metaDescription;
     if (item.seo.metaDescriptionZh) seo.metaDescriptionZh = item.seo.metaDescriptionZh;
-    if (item.seo.focusKeyword) seo.focusKeyword = item.seo.focusKeyword;
     if (Object.keys(seo).length) doc.seo = seo;
 
     await createOrReplace(doc);

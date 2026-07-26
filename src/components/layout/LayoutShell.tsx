@@ -18,6 +18,7 @@ interface LayoutShellProps {
   locale: Locale;
   siteSettings: SiteSettings;
   navPages: NavPage[];
+  phrases?: Record<string, string>;
   children: ReactNode;
 }
 
@@ -25,6 +26,7 @@ export async function LayoutShell({
   locale,
   siteSettings,
   navPages,
+  phrases,
   children,
 }: LayoutShellProps) {
   return (
@@ -34,7 +36,7 @@ export async function LayoutShell({
         {children}
       </main>
       <SiteFooter siteSettings={siteSettings} />
-      <ContactModal siteSettings={siteSettings} />
+      <ContactModal siteSettings={siteSettings} phrases={phrases} />
     </ContactModalProvider>
   );
 }

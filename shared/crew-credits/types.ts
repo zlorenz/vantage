@@ -14,10 +14,27 @@ export type CrewDepartmentKey =
 export interface CrewPersonValue {
   _key?: string
   _type?: 'crewPerson'
+  /** Stable vendor identity — set for Work Library filter roles. */
+  identity?: {_type?: 'reference'; _ref: string; _weak?: boolean}
   name: string
   url?: string
   /** Optional anchor title (tooltip) when different from the visible name. */
   linkTitle?: string
+}
+
+/** roleKeys that get permanent creditIdentity links + Work Library filters. */
+export const FILTER_CREDIT_ROLE_KEYS = [
+  'brand',
+  'director',
+  'dop',
+  'art_director',
+  'editor',
+] as const
+
+export type FilterCreditRoleKey = (typeof FILTER_CREDIT_ROLE_KEYS)[number]
+
+export function isFilterCreditRoleKey(value: string | undefined): value is FilterCreditRoleKey {
+  return Boolean(value && (FILTER_CREDIT_ROLE_KEYS as readonly string[]).includes(value))
 }
 
 export interface CrewCreditValue {

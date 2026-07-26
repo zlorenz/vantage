@@ -11,10 +11,10 @@ import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { getVietnamCtaContent } from '@/lib/cta-content';
 import { filterVietnamProductionServiceBody } from '@/lib/portable-text-filters';
 import { pageTitle, seoDescription, buildOgImage, buildPageMetadata } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
   buildProfessionalService,
@@ -70,16 +70,22 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   if (!page) notFound();
 
-  const vietnamMarket = await sanityClient.fetch<{ _id: string } | null>(
-    MARKET_BY_SLUG_QUERY,
-    { slug: 'vietnam' },
-  );
+  // Curated CMS list when set; otherwise all public Vietnam-tagged projects.
+  let vietnamPortfolio: PortfolioCardData[] = page.featuredWork ?? [];
 
-  const vietnamPortfolio = vietnamMarket
-    ? await sanityClient.fetch<PortfolioCardData[]>(PORTFOLIO_BY_MARKET_QUERY, {
-        termId: vietnamMarket._id,
-      })
-    : [];
+  if (!vietnamPortfolio.length) {
+    const vietnamMarket = await sanityClient.fetch<{ _id: string } | null>(
+      MARKET_BY_SLUG_QUERY,
+      { slug: 'vietnam' },
+    );
+    vietnamPortfolio = vietnamMarket
+      ? await sanityClient.fetch<PortfolioCardData[]>(PORTFOLIO_BY_MARKET_QUERY, {
+          termId: vietnamMarket._id,
+        })
+      : [];
+  }
+
+  const phrases = await getPhraseRecord();
 
   const heroTitle =
     typedLocale === 'zh' && page.heroTitleZh
@@ -132,6 +138,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
                   entry={entry}
                   locale={typedLocale}
                   revealIndex={index}
+                  phrases={phrases}
                 />
               ))}
             </div>
@@ -139,7 +146,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
         </SectionWrapper>
       ) : null}
 
-      <CtaSection locale={typedLocale} content={getVietnamCtaContent(typedLocale)} />
+      <CtaSection locale={typedLocale} />
     </>
   );
 }

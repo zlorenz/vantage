@@ -14,6 +14,7 @@ import {
   SEARCH_PAGE_DESCRIPTION_ZH,
   buildPageMetadata,
 } from '@/lib/metadata';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, searchBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 
@@ -45,6 +46,7 @@ export default async function SearchPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
   const t = await getTranslations('Search');
+  const phrases = await getPhraseRecord();
 
   return (
     <>
@@ -57,7 +59,7 @@ export default async function SearchPage({ params }: Props) {
           {t('title')}
         </h1>
         <Suspense fallback={<div className="vp-load-spinner" />}>
-          <SearchPageClient locale={typedLocale} />
+          <SearchPageClient locale={typedLocale} phrases={phrases} />
         </Suspense>
       </div>
     </SectionWrapper>

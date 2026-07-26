@@ -109,6 +109,7 @@ async function main() {
       "slug": slug.current,
       crewCredits[]{
         _key,
+        _type,
         department,
         role,
         roleKey,

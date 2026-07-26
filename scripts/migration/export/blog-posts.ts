@@ -27,7 +27,6 @@ export interface ExportedBlogPost {
   seo: {
     metaDescription?: string;
     metaDescriptionZh?: string;
-    focusKeyword?: string;
   };
 }
 
@@ -70,7 +69,6 @@ export async function exportBlogPosts(): Promise<ExportedBlogPost[]> {
       seo: {
         metaDescription: yoast.metaDescription,
         metaDescriptionZh,
-        focusKeyword: yoast.focusKeyword,
       },
     });
 

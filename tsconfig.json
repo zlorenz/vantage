@@ -21,7 +21,17 @@
     "paths": {
       "@/*": ["./src/*"],
       "@crew-credits": ["./shared/crew-credits"],
-      "@crew-credits/*": ["./shared/crew-credits/*"]
+      "@crew-credits/*": ["./shared/crew-credits/*"],
+      "@display-titles": ["./shared/display-titles"],
+      "@display-titles/*": ["./shared/display-titles/*"],
+      "@phrase-book": ["./shared/phrase-book"],
+      "@phrase-book/*": ["./shared/phrase-book/*"],
+      "@ai-translation": ["./shared/ai-translation"],
+      "@ai-translation/*": ["./shared/ai-translation/*"],
+      "@video-url": ["./shared/video-url"],
+      "@video-url/*": ["./shared/video-url/*"],
+      "@client-logos": ["./shared/client-logos"],
+      "@client-logos/*": ["./shared/client-logos/*"]
     }
   },
   "include": [

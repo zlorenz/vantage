@@ -1,13 +1,17 @@
 /**
- * PortfolioVideoEmbed — locale-aware lazy video (Vimeo or Xinpianchang on ZH).
+ * PortfolioVideoEmbed — locale-aware lazy video.
  *
- * Primary rows pass `featuredImage` (campaign still). Additional rows omit it
- * and get a per-video Vimeo thumbnail so multi-video campaigns don’t all show
- * the hero frame.
+ * EN (and ZH fallback): Vimeo or YouTube from `vimeoUrl`.
+ * ZH: Xinpianchang when set; otherwise same as EN.
+ *
+ * Vimeo posters use the video’s Vimeo thumbnail. YouTube uses YouTube posters.
+ * Featured image is only a fallback for Xinpianchang embeds.
  */
 
 import { getTranslations } from 'next-intl/server';
+import { LazyYouTubePlayer } from '@/components/ui/LazyYouTubePlayer';
 import { urlForImage } from '@/lib/sanity';
+import { parseVideoUrl } from '@/lib/video-url';
 import { vimeoThumbnailUrl } from '@/lib/vimeo';
 import { xinpianchangToEmbedUrl } from '@/lib/xinpianchang';
 import type { Locale } from '@/i18n/routing';
@@ -30,12 +34,12 @@ export async function PortfolioVideoEmbed({
 }: PortfolioVideoEmbedProps) {
   const t = await getTranslations('Portfolio');
 
-  const posterUrl =
-    (featuredImage
-      ? urlForImage(featuredImage).width(1280).height(720).fit('crop').url()
-      : undefined) ??
-    (vimeoUrl?.trim() ? vimeoThumbnailUrl(vimeoUrl) : null) ??
-    undefined;
+  const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null;
+  const vimeoPoster =
+    parsed?.provider === 'vimeo' ? (vimeoThumbnailUrl(parsed.url) ?? undefined) : undefined;
+  const featuredPoster = featuredImage
+    ? urlForImage(featuredImage).width(1280).height(720).fit('crop').url()
+    : undefined;
 
   if (
     locale === 'zh' &&
@@ -45,7 +49,7 @@ export async function PortfolioVideoEmbed({
     return (
       <LazyXinpianchangPlayer
         embedUrl={xinpianchangUrl}
-        posterUrl={posterUrl}
+        posterUrl={featuredPoster ?? vimeoPoster}
       />
     );
   }
@@ -58,5 +62,17 @@ export async function PortfolioVideoEmbed({
     );
   }
 
-  return <LazyVimeoPlayer vimeoUrl={vimeoUrl} posterUrl={posterUrl} />;
+  if (parsed?.provider === 'youtube') {
+    return <LazyYouTubePlayer videoId={parsed.id} />;
+  }
+
+  if (parsed?.provider === 'vimeo') {
+    return <LazyVimeoPlayer vimeoUrl={parsed.url} posterUrl={vimeoPoster} />;
+  }
+
+  return (
+    <div className="flex aspect-video items-center justify-center bg-black/50 p-4 text-vp-text-soft">
+      Invalid video URL
+    </div>
+  );
 }

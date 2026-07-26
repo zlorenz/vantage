@@ -18,6 +18,7 @@ export interface LibraryFilters {
   director: string;
   dop: string;
   'art-director': string;
+  editor: string;
   format: string;
   industry: string;
   market: string;
@@ -30,6 +31,7 @@ export const DEFAULT_FILTERS: LibraryFilters = {
   director: '',
   dop: '',
   'art-director': '',
+  editor: '',
   format: '',
   industry: '',
   market: '',

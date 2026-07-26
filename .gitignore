@@ -93,3 +93,6 @@ wp-config.php
 # (already-tracked child-theme files stay tracked until removed)
 /wp-content/plugins/
 /wp-content/themes/
+
+# Sanity dataset exports
+*.tar.gz

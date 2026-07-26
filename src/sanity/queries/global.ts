@@ -19,8 +19,16 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   contactPhone,
   contactWhatsapp,
   contactAddress,
+  contactAddressZh,
   contactModalTitle,
+  contactModalTitleZh,
+  contactModalIntro,
+  contactModalIntroZh,
   contactModalContent,
+  contactModalContentZh,
+  contactCtaText,
+  contactCtaTextZh,
+  contactCtaUrl,
   socialVimeo,
   socialInstagram,
   socialFacebook,
@@ -28,7 +36,16 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   socialYoutube,
   socialXinpianchang,
   socialXiaohongshu,
-  defaultOgImage
+  defaultOgImage,
+  campaignCta{
+    heading,
+    headingZh,
+    paragraphs,
+    paragraphsZh,
+    buttonLabel,
+    buttonLabelZh,
+    buttonHref
+  }
 }`;
 
 /**

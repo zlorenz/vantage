@@ -8,7 +8,9 @@
  * URL pattern: /category/[slug]/ (EN), /zh/类别/[slugZh]/ (ZH)
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineType} from 'sanity'
+
+import {defineLocalePair} from '../lib/define-locale-pair'
 
 export const category = defineType({
   name: 'category',
@@ -16,46 +18,27 @@ export const category = defineType({
   type: 'document',
 
   fields: [
-    defineField({
+    ...defineLocalePair({
       name: 'title',
-      title: 'Title (English)',
+      title: 'Title',
       type: 'string',
       description: 'Category display name in English (canonical language).',
+      zhDescription: 'Category display name in Chinese Simplified.',
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
-    defineField({
-      name: 'titleZh',
-      title: 'Title (Chinese)',
-      type: 'string',
-      description: 'Category display name in Chinese Simplified.',
-    }),
-
-    defineField({
+    ...defineLocalePair({
       name: 'slug',
-      title: 'Slug (English)',
+      title: 'Slug',
       type: 'slug',
       description:
-        'URL slug for English archive pages (/category/[slug]/). ' +
-        'Must match live site slugs exactly for SEO.',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+        'URL slug for archive pages (/category/[slug]/ · /zh/类别/[slug]/). ' +
+        'Must match live site slugs exactly for SEO. ZH is stored explicitly.',
+      options: {source: 'title', maxLength: 96},
+      zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'slugZh',
-      title: 'Slug (Chinese)',
-      type: 'slug',
-      description:
-        'URL slug for Chinese archive pages (/zh/类别/[slug]/). ' +
-        'Stored explicitly — never auto-generated from the English slug.',
-      options: {
-        source: 'titleZh',
-        maxLength: 96,
-      },
+      optional: false,
     }),
   ],
 
@@ -64,11 +47,11 @@ export const category = defineType({
       title: 'title',
       subtitle: 'titleZh',
     },
-    prepare({ title, subtitle }) {
+    prepare({title, subtitle}) {
       return {
         title: title || 'Untitled category',
         subtitle: subtitle ? `中文: ${subtitle}` : undefined,
-      };
+      }
     },
   },
-});
+})

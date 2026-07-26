@@ -7,6 +7,7 @@ import {
   creditIdentityKey,
   getDepartmentLabel,
   peopleIdentityKey,
+  resolveCustomRoleCanonical,
   resolveDepartment,
   resolveStandardRole,
   parseLegacyNamesHtml,
@@ -20,6 +21,19 @@ import {
 import type {ParsedCsvRow} from './csv-parse'
 import {newArrayKey} from './keys'
 import type {PersonDuplicateAlert} from './name-duplicates'
+
+export type RoleSuggestionStatus = 'pending' | 'confirmed' | 'skipped'
+
+export interface RoleSuggestionAlert {
+  kind: 'standard' | 'custom_canonical'
+  confidence: 'high' | 'medium'
+  label: string
+  roleKey?: string
+  departmentKey?: CrewDepartmentKey
+  reason: string
+  status: RoleSuggestionStatus
+  originalRole: string
+}
 
 export type PreviewRowStatus =
   | 'mapped'
@@ -48,6 +62,8 @@ export interface MappedPreviewRow {
   status: PreviewRowStatus
   error?: string
   warning?: string
+  /** Suggested synonym merge for a custom / near-match role. */
+  roleSuggestion?: RoleSuggestionAlert
   /** Existing people already on this credit identity in the document. */
   existingPeople: PreviewPerson[]
 }
@@ -185,8 +201,8 @@ export function mapCrewCreditsCsvRows(
       continue
     }
 
-    const standard = resolveStandardRole(row.role)
     const deptFromCsv = resolveDepartment(row.department)
+    const standard = resolveStandardRole(row.role, {department: deptFromCsv})
 
     if (standard) {
       const department = standard.departmentKey
@@ -250,9 +266,11 @@ export function mapCrewCreditsCsvRows(
       continue
     }
 
+    const customLabel = resolveCustomRoleCanonical(row.role) ?? row.role.trim()
+
     const identity = creditIdentityKey({
       department: deptFromCsv,
-      role: row.role.trim(),
+      role: customLabel,
       isCustomRole: true,
     })
 
@@ -269,7 +287,7 @@ export function mapCrewCreditsCsvRows(
       department: deptFromCsv,
       departmentRaw: row.department,
       roleRaw: row.role,
-      roleLabel: row.role.trim(),
+      roleLabel: customLabel,
       isCustomRole: true,
       people: [...people],
       status: 'custom',

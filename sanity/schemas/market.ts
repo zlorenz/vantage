@@ -7,7 +7,9 @@
  * URL pattern: /market/[slug]/ (EN), /zh/市场/[slugZh]/ (ZH)
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
+
+import {defineLocalePair} from '../lib/define-locale-pair'
 
 export const market = defineType({
   name: 'market',
@@ -15,53 +17,43 @@ export const market = defineType({
   type: 'document',
 
   fields: [
-    defineField({
+    ...defineLocalePair({
       name: 'title',
-      title: 'Title (English)',
+      title: 'Title',
       type: 'string',
       description: 'Market display name in English (canonical language).',
+      zhDescription: 'Market display name in Chinese Simplified.',
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
-    defineField({
-      name: 'titleZh',
-      title: 'Title (Chinese)',
-      type: 'string',
-      description: 'Market display name in Chinese Simplified.',
-    }),
-
-    defineField({
+    ...defineLocalePair({
       name: 'slug',
-      title: 'Slug (English)',
+      title: 'Slug',
       type: 'slug',
       description:
-        'URL slug for English archive pages (/market/[slug]/). ' +
-        'Must match live site slugs exactly for SEO.',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+        'URL slug for archive pages (/market/[slug]/ · /zh/市场/[slug]/). ' +
+        'Must match live site slugs exactly for SEO. ZH is stored explicitly.',
+      options: {source: 'title', maxLength: 96},
+      zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
-    defineField({
-      name: 'slugZh',
-      title: 'Slug (Chinese)',
-      type: 'slug',
-      description:
-        'URL slug for Chinese archive pages (/zh/市场/[slug]/). ' +
-        'Stored explicitly — never auto-generated from the English slug.',
-      options: {
-        source: 'titleZh',
-        maxLength: 96,
-      },
+    ...defineLocalePair({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 5,
+      description: 'Intro paragraph on the archive page.',
+      optional: true,
     }),
 
     defineField({
       name: 'parent',
       title: 'Parent Market',
       type: 'reference',
-      to: [{ type: 'market' }],
+      to: [{type: 'market'}],
       description: 'Optional parent category for nested filter dropdowns.',
     }),
   ],
@@ -72,12 +64,12 @@ export const market = defineType({
       subtitle: 'titleZh',
       parentTitle: 'parent.title',
     },
-    prepare({ title, subtitle, parentTitle }) {
-      const displayTitle = parentTitle ? `↳ ${title}` : title;
+    prepare({title, subtitle, parentTitle}) {
+      const displayTitle = parentTitle ? `↳ ${title}` : title
       return {
         title: displayTitle || 'Untitled market',
         subtitle: subtitle ? `中文: ${subtitle}` : undefined,
-      };
+      }
     },
   },
-});
+})

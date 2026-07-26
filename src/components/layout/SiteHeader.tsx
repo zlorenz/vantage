@@ -2,11 +2,10 @@
  * SiteHeader — fixed top navigation bar (server component).
  *
  * Receives siteSettings and navPages from the locale layout (single fetch).
- * Logo is a static brand asset in /public/brand/. Interactive nav is
+ * Logo is the Vantage wordmark SVG in /public/brand/. Interactive nav is
  * delegated to the NavBar client component.
  */
 
-import Image from 'next/image';
 import type { ComponentProps } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
@@ -60,14 +59,14 @@ export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
       >
         <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-2.5">
           <Link className="navbar-brand shrink-0" href={homeHref} rel="home">
-            <Image
-              src="/brand/Brand_Vantage_v2_LIGHT.png"
+            {/* SVG via <img> — next/image does not optimize SVGs */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/vantage-wordmark.svg"
               alt="Vantage Pictures"
-              width={200}
-              height={90}
-              priority
-              className="block h-[46px] w-auto sm:h-[51px] md:h-[90px]"
-              style={{ width: 'auto' }}
+              width={220}
+              height={36}
+              className="block h-6 w-auto sm:h-7 md:h-8"
             />
           </Link>
 

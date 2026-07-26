@@ -1,5 +1,7 @@
 import type {StructureResolver} from 'sanity/structure'
 
+import {STUDIO_PAGE_LIST_GROQ_FILTER} from './lib/page-visibility'
+
 /**
  * Flat top-level lists so edit tabs opened from the Content tool
  * render as list + editor (2 panes max), not nested folder columns.
@@ -19,7 +21,15 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('blogPost').title('Blog Posts'),
       S.documentTypeListItem('category'),
       S.divider(),
-      S.documentTypeListItem('page'),
+      S.listItem()
+        .title('Pages')
+        .schemaType('page')
+        .child(
+          S.documentTypeList('page')
+            .title('Pages')
+            .filter(`_type == "page" && ${STUDIO_PAGE_LIST_GROQ_FILTER}`),
+        ),
       S.documentTypeListItem('platform'),
+      S.documentTypeListItem('translatedPhrase').title('Phrases (EN→ZH)'),
       S.documentTypeListItem('siteSettings'),
     ])

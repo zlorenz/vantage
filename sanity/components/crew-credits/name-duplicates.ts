@@ -6,6 +6,7 @@ import {
   buildNameCatalog,
   findNameMatch,
   formatCatalogRoles,
+  normalizeCreditToken,
   type MatchReason,
   type NameCatalogEntry,
 } from '@crew-credits'
@@ -112,6 +113,51 @@ export function confirmNameDuplicate(person: PreviewPerson): PreviewPerson {
       originalName: alert.originalName || person.name,
     },
   }
+}
+
+/**
+ * Collapse people that share the same normalized name within a single Names
+ * field (e.g. after Confirm merge turns "Moore Paul" into "Paul Moore" beside
+ * an existing Paul Moore). Does not touch people across different roles/rows.
+ */
+export function collapseSameNamePeopleInField(people: PreviewPerson[]): PreviewPerson[] {
+  const result: PreviewPerson[] = []
+  const indexByKey = new Map<string, number>()
+
+  for (const person of people) {
+    const key = normalizeCreditToken(person.name)
+    if (!key) continue
+
+    const existingIndex = indexByKey.get(key)
+    if (existingIndex === undefined) {
+      indexByKey.set(key, result.length)
+      result.push(person)
+      continue
+    }
+
+    const existing = result[existingIndex]!
+    const url = existing.url?.trim() || person.url?.trim()
+    const linkTitle = existing.linkTitle?.trim() || person.linkTitle?.trim()
+    const duplicate =
+      existing.duplicate?.status === 'confirmed'
+        ? existing.duplicate
+        : person.duplicate?.status === 'confirmed'
+          ? person.duplicate
+          : existing.duplicate?.status === 'pending'
+            ? existing.duplicate
+            : person.duplicate
+
+    result[existingIndex] = {
+      // Prefer the longer / already-known spelling when collapsing.
+      name:
+        existing.name.trim().length >= person.name.trim().length ? existing.name : person.name,
+      ...(url ? {url} : {}),
+      ...(linkTitle ? {linkTitle} : {}),
+      ...(duplicate ? {duplicate} : {}),
+    }
+  }
+
+  return result
 }
 
 export function skipNameDuplicate(person: PreviewPerson): PreviewPerson {

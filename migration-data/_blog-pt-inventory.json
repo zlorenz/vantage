@@ -1,0 +1,1108 @@
+{
+  "fetchedAt": "2026-07-25T16:09:01.893Z",
+  "postCount": 23,
+  "totals": {
+    "posts": 23,
+    "body:blockCount": 507,
+    "type:block": 877,
+    "style:h3": 160,
+    "annotation:link": 30,
+    "mark:link": 26,
+    "style:normal": 689,
+    "pattern:videoUrlOnly": 77,
+    "pattern:videoVimeo": 72,
+    "style:blockquote": 16,
+    "mark:em": 9,
+    "type:image": 112,
+    "image:withAsset": 112,
+    "image:withAlt": 48,
+    "pattern:emptyBlock": 30,
+    "bodyZh:blockCount": 482,
+    "mark:strong": 48,
+    "style:h2": 6,
+    "pattern:videoYoutube": 5,
+    "style:h4": 6,
+    "list:bullet": 10,
+    "listLevel:1": 8,
+    "listLevel:2": 2
+  },
+  "anomalies": [],
+  "postSummaries": [
+    {
+      "id": "blogPost-4507",
+      "title": "A talking dog, AI, and everyday chaos: behind Govee’s new campaign via Vantage Pictures",
+      "slug": "a-talking-dog-ai-and-everyday-chaos-behind-govees-new-campaign-via-vantage-pictures",
+      "bodyLen": 27,
+      "bodyZhLen": 24,
+      "hasBodyZh": true,
+      "bodyImages": 6,
+      "zhImages": 6,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 3,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal",
+        "blockquote"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal",
+        "blockquote"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-4468",
+      "title": "Vantage Pictures translates next-gen drone tech into gritty storytelling for BRINC",
+      "slug": "vantage-pictures-translates-next-gen-drone-tech-into-gritty-storytelling-for-brinc",
+      "bodyLen": 38,
+      "bodyZhLen": 36,
+      "hasBodyZh": true,
+      "bodyImages": 8,
+      "zhImages": 8,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 2,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal",
+        "blockquote",
+        "h2"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal",
+        "blockquote",
+        "h2"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-4467",
+      "title": "Vantage Pictures elevates Mammotion LUBA 3 with cinematic product-first campaign",
+      "slug": "vantage-pictures-elevates-mammotion-luba-3-with-cinematic-product-first-campaign",
+      "bodyLen": 30,
+      "bodyZhLen": 30,
+      "hasBodyZh": true,
+      "bodyImages": 4,
+      "zhImages": 4,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-4500",
+      "title": "Vantage Pictures' James Duong on bringing Chinese productions to Vietnam",
+      "slug": "vantage-pictures-james-duong-on-bringing-chinese-productions-to-vietnam",
+      "bodyLen": 64,
+      "bodyZhLen": 64,
+      "hasBodyZh": true,
+      "bodyImages": 1,
+      "zhImages": 1,
+      "bodyVideo": 0,
+      "zhVideo": 0,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3688",
+      "title": "Bitget and Vantage Pictures launch campaign starring World Cup Champion Julián Álvarez",
+      "slug": "bitget-and-vantage-pictures-launch-campaign-starring-world-cup-champion-julian-alvarez",
+      "bodyLen": 8,
+      "bodyZhLen": 9,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 2,
+      "zhVideo": 3,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-3678",
+      "title": "Vantage Pictures delivers high-energy waterproof chaos in global campaign for the new realme C85 smartphone",
+      "slug": "vantage-pictures-delivers-high-energy-waterproof-chaos-in-global-campaign-for-the-new-realme-c85-smartphone",
+      "bodyLen": 21,
+      "bodyZhLen": 17,
+      "hasBodyZh": true,
+      "bodyImages": 5,
+      "zhImages": 5,
+      "bodyVideo": 2,
+      "zhVideo": 2,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 5,
+      "emptyZh": 1,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3570",
+      "title": "Vantage Pictures and realme turn nightlife into an AI-powered dream in “Live For Real” campaign",
+      "slug": "vantage-pictures-and-realme-turn-nightlife-into-an-ai-powered-dream-in-live-for-real-campaign",
+      "bodyLen": 19,
+      "bodyZhLen": 17,
+      "hasBodyZh": true,
+      "bodyImages": 4,
+      "zhImages": 4,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 2,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3559",
+      "title": "Govee’s haunted light show: Vantage Pictures turns Vietnam suburb into a horror film set",
+      "slug": "govees-haunted-light-show-vantage-pictures-turns-vietnam-suburb-into-a-horror-film-set",
+      "bodyLen": 24,
+      "bodyZhLen": 22,
+      "hasBodyZh": true,
+      "bodyImages": 3,
+      "zhImages": 3,
+      "bodyVideo": 4,
+      "zhVideo": 4,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 2,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3579",
+      "title": "Director’s Brief: 12 Questions with Zacharia Lorenz at Vantage Pictures",
+      "slug": "directors-brief-12-questions-with-zacharia-lorenz-at-vantage-pictures",
+      "bodyLen": 69,
+      "bodyZhLen": 65,
+      "hasBodyZh": true,
+      "bodyImages": 6,
+      "zhImages": 6,
+      "bodyVideo": 4,
+      "zhVideo": 4,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 4,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal",
+        "h4"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal",
+        "h4"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3542",
+      "title": "Director’s Brief: 12 Questions with Alexis Odiowei at Vantage Pictures",
+      "slug": "directors-brief-12-questions-with-alexis-odiowei-at-vantage-pictures",
+      "bodyLen": 29,
+      "bodyZhLen": 29,
+      "hasBodyZh": true,
+      "bodyImages": 3,
+      "zhImages": 3,
+      "bodyVideo": 0,
+      "zhVideo": 0,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3537",
+      "title": "Confidence in every frame: Ulike taps Vantage Pictures for humorous beauty campaign",
+      "slug": "confidence-in-every-frame-ulike-taps-vantage-pictures-for-humorous-beauty-campaign",
+      "bodyLen": 10,
+      "bodyZhLen": 10,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 3,
+      "zhVideo": 3,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-3528",
+      "title": "Vantage Pictures drops cinematic global campaign for OnePlus Pad 3 launch",
+      "slug": "vantage-pictures-drops-cinematic-global-campaign-for-oneplus-pad-3-launch",
+      "bodyLen": 11,
+      "bodyZhLen": 9,
+      "hasBodyZh": true,
+      "bodyImages": 3,
+      "zhImages": 3,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 2,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3468",
+      "title": "MSI taps Vantage Pictures for its first global brand film in the B2B space",
+      "slug": "msi-taps-vantage-pictures-for-its-first-global-brand-film-in-the-b2b-space",
+      "bodyLen": 19,
+      "bodyZhLen": 16,
+      "hasBodyZh": true,
+      "bodyImages": 5,
+      "zhImages": 5,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 3,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3423",
+      "title": "realme Unveils Humorous and Chaotic Spot for New 'Mishap Proof' C75",
+      "slug": "realme-unveils-humorous-and-chaotic-spot-for-new-mishap-proof-c75",
+      "bodyLen": 8,
+      "bodyZhLen": 8,
+      "hasBodyZh": true,
+      "bodyImages": 1,
+      "zhImages": 1,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3407",
+      "title": "Bitget’s Humorous Human Moments Shake Up Crypto Trading",
+      "slug": "bitgets-humorous-human-moments-shake-up-crypto-trading",
+      "bodyLen": 23,
+      "bodyZhLen": 24,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 2,
+      "zhVideo": 3,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-3402",
+      "title": "Bitget and Vantage Pictures Team Up to Inject Humour into Crypto Trading",
+      "slug": "bitget-and-vantage-pictures-team-up-to-inject-humour-into-crypto-trading",
+      "bodyLen": 9,
+      "bodyZhLen": 10,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 3,
+      "zhVideo": 4,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-3394",
+      "title": "realme 13+ 5G Blurs the Line Between Reality and Gaming in Immersive Ad",
+      "slug": "realme-13-5g-blurs-the-line-between-reality-and-gaming-in-immersive-ad",
+      "bodyLen": 6,
+      "bodyZhLen": 6,
+      "hasBodyZh": true,
+      "bodyImages": 1,
+      "zhImages": 1,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3374",
+      "title": "OnePlus 12 Campaign Celebrates a Bygone Era of Authentic Imagery",
+      "slug": "oneplus-12-campaign-celebrates-a-bygone-era-of-authentic-imagery",
+      "bodyLen": 21,
+      "bodyZhLen": 18,
+      "hasBodyZh": true,
+      "bodyImages": 3,
+      "zhImages": 3,
+      "bodyVideo": 2,
+      "zhVideo": 2,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 3,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3370",
+      "title": "ASUS Business Lets You 'Upgrade to Incredible' in Campaign from Byron McKenzie",
+      "slug": "asus-business-lets-you-upgrade-to-incredible-in-campaign-from-byron-mckenzie",
+      "bodyLen": 8,
+      "bodyZhLen": 8,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 2,
+      "zhVideo": 2,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-2952",
+      "title": "How We Produced One of the Most Successful Crowdfunding Campaigns in History",
+      "slug": "how-we-produced-one-of-the-most-successful-crowdfunding-campaigns-in-history",
+      "bodyLen": 35,
+      "bodyZhLen": 32,
+      "hasBodyZh": true,
+      "bodyImages": 3,
+      "zhImages": 3,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 1,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal",
+        "h2",
+        "blockquote"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal",
+        "h2",
+        "blockquote"
+      ],
+      "listsEn": [
+        "bullet"
+      ],
+      "nestedLists": 2,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block",
+        "image"
+      ],
+      "zhTypes": [
+        "block",
+        "image"
+      ]
+    },
+    {
+      "id": "blogPost-3355",
+      "title": "This Cross-Cultural OPPO Spot Delivers Much-Needed Nostalgia for Mother’s Day",
+      "slug": "this-cross-cultural-oppo-spot-delivers-much-needed-nostalgia-for-mothers-day",
+      "bodyLen": 6,
+      "bodyZhLen": 6,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 1,
+      "emptyZh": 1,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-3334",
+      "title": "Vantage Pictures Taps into Inner Romance for OnePlus Y-Series TV Spot",
+      "slug": "vantage-pictures-taps-into-inner-romance-for-oneplus-y-series-tv-spot",
+      "bodyLen": 6,
+      "bodyZhLen": 6,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 1,
+      "zhVideo": 1,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    },
+    {
+      "id": "blogPost-3339",
+      "title": "Roborock Gives a Quirky Makeover to the Cordless Vacuum Cleaner",
+      "slug": "roborock-gives-quirky-makeover-to-cordless-vacuum-cleaner",
+      "bodyLen": 16,
+      "bodyZhLen": 16,
+      "hasBodyZh": true,
+      "bodyImages": 0,
+      "zhImages": 0,
+      "bodyVideo": 2,
+      "zhVideo": 2,
+      "bodyGalleries": 0,
+      "zhGalleries": 0,
+      "bodyCtas": 0,
+      "zhCtas": 0,
+      "emptyEn": 0,
+      "emptyZh": 0,
+      "stylesEn": [
+        "h3",
+        "normal"
+      ],
+      "stylesZh": [
+        "h3",
+        "normal"
+      ],
+      "listsEn": [],
+      "nestedLists": 0,
+      "nestedListsZh": 0,
+      "bodyTypes": [
+        "block"
+      ],
+      "zhTypes": [
+        "block"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "slug": "about",
+      "title": "About",
+      "bodyLen": 5,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": [
+        "block"
+      ],
+      "styles": [
+        "h1",
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 0
+    },
+    {
+      "slug": "contact",
+      "title": "Contact",
+      "bodyLen": 10,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": [
+        "block"
+      ],
+      "styles": [
+        "h3",
+        "normal",
+        "h2"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 0
+    },
+    {
+      "slug": "home",
+      "title": "Home",
+      "bodyLen": 6,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": [
+        "block"
+      ],
+      "styles": [
+        "h1",
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 0
+    },
+    {
+      "slug": "news",
+      "title": "News",
+      "bodyLen": 1,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": [
+        "block"
+      ],
+      "styles": [
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 0
+    },
+    {
+      "slug": "video-campaign-brief",
+      "title": "Video Campaign Brief",
+      "bodyLen": 1,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": null,
+      "styles": [
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 1
+    },
+    {
+      "slug": "vietnam-location-guide",
+      "title": "Vietnam Location Guidebook",
+      "bodyLen": 3,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": [
+        "block"
+      ],
+      "styles": [
+        "h1",
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 0
+    },
+    {
+      "slug": "vietnam-production-service",
+      "title": "Vietnam Production Service",
+      "bodyLen": 17,
+      "bodyTypes": [
+        "block",
+        "imageGallery",
+        "ctaButton"
+      ],
+      "bodyZhTypes": [
+        "block",
+        "imageGallery",
+        "ctaButton"
+      ],
+      "styles": [
+        "h1",
+        "normal",
+        "h2"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 1,
+      "galleryCount": 2,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 1
+    },
+    {
+      "slug": "work",
+      "title": "Work",
+      "bodyLen": 1,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": [
+        "block"
+      ],
+      "styles": [
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 0
+    },
+    {
+      "slug": "work-internal",
+      "title": "Work (Internal)",
+      "bodyLen": 1,
+      "bodyTypes": [
+        "block"
+      ],
+      "bodyZhTypes": null,
+      "styles": [
+        "normal"
+      ],
+      "lists": [
+        null
+      ],
+      "ctaCount": 0,
+      "galleryCount": 0,
+      "imageCount": 0,
+      "videoOnly": 0,
+      "emptyBlocks": 1
+    }
+  ],
+  "pageTotals": {
+    "pageBody:blockCount": 45,
+    "type:block": 80,
+    "style:h1": 20,
+    "style:normal": 48,
+    "pageBodyZh:blockCount": 41,
+    "style:h3": 2,
+    "annotation:link": 7,
+    "mark:link": 8,
+    "style:h2": 10,
+    "pattern:emptyBlock": 4,
+    "pageBodyZh:emptyOrMissing": 2,
+    "type:imageGallery": 4,
+    "gallery:count": 4,
+    "gallery:images": 48,
+    "gallery:columns:4": 2,
+    "type:ctaButton": 2,
+    "cta:count": 2,
+    "gallery:columns:3": 2
+  }
+}

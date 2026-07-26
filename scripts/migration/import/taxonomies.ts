@@ -29,6 +29,8 @@ async function importTaxonomyFile(
       ...(item.titleZh ? { titleZh: item.titleZh } : {}),
       slug: slugField(item.slug),
       ...(item.slugZh ? { slugZh: slugField(item.slugZh) } : {}),
+      ...(item.description ? { description: item.description } : {}),
+      ...(item.descriptionZh ? { descriptionZh: item.descriptionZh } : {}),
     };
 
     if (item.sanityType === 'industry' && item.parentSlug) {

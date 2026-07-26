@@ -1,25 +1,36 @@
 /**
  * WorkInternalApp — client shell for the internal work library.
  *
- * URL-synced search/filters/sort/view.
+ * Filter state lives in React (not URL-driven navigation). The query string is
+ * mirrored with history.replaceState so shareable links still work without
+ * triggering an App Router RSC refetch of the whole Sanity library on every
+ * keystroke — that was making search unusable on slow connections.
  */
 
 'use client';
 
-import { useCallback, useMemo, useTransition } from 'react';
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import type {
-  ClientTerm,
-  CrewMemberTerm,
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
 import {
-  artDirectorNameBySlug,
   buildArtDirectorFilterOptions,
+  buildClientFilterOptions,
+  buildDirectorFilterOptions,
+  buildDopFilterOptions,
+  buildEditorFilterOptions,
+  buildSearchTextByEntryId,
   filterLibraryEntries,
+  identityNameById,
 } from './filter-entries';
 import { sortLibraryEntries } from './sort-entries';
 import {
@@ -43,101 +54,125 @@ import { WorkInternalToolbar } from './WorkInternalToolbar';
 export interface WorkInternalAppProps {
   locale: Locale;
   entries: InternalLibraryEntry[];
-  clients: ClientTerm[];
-  directors: CrewMemberTerm[];
-  dops: CrewMemberTerm[];
-  artDirectors: CrewMemberTerm[];
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
 }
 
+function replaceLibraryUrl(state: {
+  filters: LibraryFilters;
+  sort: LibrarySort;
+  view: LibraryViewMode;
+}): void {
+  const query = buildLibraryQuery(state);
+  const params = new URLSearchParams(query);
+  const qs = params.toString();
+  const next = qs
+    ? `${window.location.pathname}?${qs}`
+    : window.location.pathname;
+  const current = `${window.location.pathname}${window.location.search}`;
+  if (next === current) return;
+  window.history.replaceState(window.history.state, '', next);
+}
+
 export function WorkInternalApp({
   locale,
   entries,
-  clients,
-  directors,
-  dops,
-  artDirectors,
   videoFormats,
   industries,
   markets,
 }: WorkInternalAppProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const [, startTransition] = useTransition();
 
-  const filters = useMemo(
-    () => readFilters(searchParams),
-    [searchParams],
-  );
-  const sort = useMemo(() => readSort(searchParams), [searchParams]);
-  const view = useMemo(() => readView(searchParams), [searchParams]);
+  const [filters, setFilters] = useState(() => readFilters(searchParams));
+  const [sort, setSort] = useState(() => readSort(searchParams));
+  const [view, setView] = useState(() => readView(searchParams));
 
-  const replaceQuery = useCallback(
-    (next: {
-      filters: LibraryFilters;
-      sort: LibrarySort;
-      view: LibraryViewMode;
-    }) => {
-      const query = buildLibraryQuery(next);
-      startTransition(() => {
-        router.replace(
-          {
-            pathname: '/work-internal',
-            query,
-          } as Parameters<typeof router.replace>[0],
-          { scroll: false },
-        );
-      });
-    },
-    [router],
-  );
+  // Keep grid/facet work off the typing critical path.
+  const deferredFilters = useDeferredValue(filters);
+  const deferredSort = useDeferredValue(sort);
+  const filtersPending = deferredFilters !== filters;
+
+  useEffect(() => {
+    replaceLibraryUrl({ filters, sort, view });
+  }, [filters, sort, view]);
+
+  // Browser back/forward: re-read the query string we mirrored above.
+  useEffect(() => {
+    function onPopState() {
+      const params = new URLSearchParams(window.location.search);
+      setFilters(readFilters(params));
+      setSort(readSort(params));
+      setView(readView(params));
+    }
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const artDirectorOptions = useMemo(
-    () => buildArtDirectorFilterOptions(artDirectors, entries),
-    [artDirectors, entries],
+    () => buildArtDirectorFilterOptions(entries),
+    [entries],
+  );
+  const directorOptions = useMemo(
+    () => buildDirectorFilterOptions(entries),
+    [entries],
+  );
+  const dopOptions = useMemo(
+    () => buildDopFilterOptions(entries),
+    [entries],
+  );
+  const clientOptions = useMemo(
+    () => buildClientFilterOptions(entries),
+    [entries],
+  );
+  const editorOptions = useMemo(
+    () => buildEditorFilterOptions(entries),
+    [entries],
   );
 
-  const filterCtx = useMemo(
-    () => ({
-      artDirectorNameBySlug: artDirectorNameBySlug(artDirectorOptions),
-    }),
-    [artDirectorOptions],
-  );
+  const filterCtx = useMemo(() => {
+    const nameByFilterId = new Map<string, string>();
+    for (const map of [
+      identityNameById(clientOptions),
+      identityNameById(directorOptions),
+      identityNameById(dopOptions),
+      identityNameById(artDirectorOptions),
+      identityNameById(editorOptions),
+    ]) {
+      for (const [id, name] of map) nameByFilterId.set(id, name);
+    }
+    return {
+      nameByFilterId,
+      searchTextByEntryId: buildSearchTextByEntryId(entries),
+    };
+  }, [
+    artDirectorOptions,
+    clientOptions,
+    directorOptions,
+    dopOptions,
+    editorOptions,
+    entries,
+  ]);
 
   const filteredSorted = useMemo(() => {
     return sortLibraryEntries(
-      filterLibraryEntries(entries, filters, filterCtx),
-      sort,
+      filterLibraryEntries(entries, deferredFilters, filterCtx),
+      deferredSort,
     );
-  }, [entries, filters, filterCtx, sort]);
+  }, [entries, deferredFilters, filterCtx, deferredSort]);
 
   const visibilityTotal = useMemo(() => {
     return entries.filter((entry) =>
-      filters.visibility === 'hidden' ? entry.isHidden : !entry.isHidden,
+      deferredFilters.visibility === 'hidden'
+        ? entry.isHidden
+        : !entry.isHidden,
     ).length;
-  }, [entries, filters.visibility]);
+  }, [entries, deferredFilters.visibility]);
 
-  function setFilters(next: LibraryFilters) {
-    replaceQuery({ filters: next, sort, view });
-  }
-
-  function setSort(next: LibrarySort) {
-    replaceQuery({ filters, sort: next, view });
-  }
-
-  function setView(next: LibraryViewMode) {
-    replaceQuery({ filters, sort, view: next });
-  }
-
-  function clearFilters() {
-    replaceQuery({
-      filters: DEFAULT_FILTERS,
-      sort: DEFAULT_SORT,
-      view,
-    });
-  }
+  const clearFilters = useCallback(() => {
+    setFilters(DEFAULT_FILTERS);
+    setSort(DEFAULT_SORT);
+  }, []);
 
   return (
     <div className="vp-internal-app">
@@ -148,14 +183,17 @@ export function WorkInternalApp({
       <WorkInternalToolbar
         entries={entries}
         filters={filters}
+        deferredFilters={deferredFilters}
         sort={sort}
         view={view}
         resultCount={filteredSorted.length}
         totalCount={visibilityTotal}
-        clients={clients}
-        directors={directors}
-        dops={dops}
+        filtersPending={filtersPending}
+        clients={clientOptions}
+        directors={directorOptions}
+        dops={dopOptions}
         artDirectors={artDirectorOptions}
+        editors={editorOptions}
         filterCtx={filterCtx}
         videoFormats={videoFormats}
         industries={industries}
@@ -166,7 +204,10 @@ export function WorkInternalApp({
         onClear={clearFilters}
       />
 
-      <div className="vp-internal-app__body">
+      <div
+        className="vp-internal-app__body"
+        style={filtersPending ? {opacity: 0.72} : undefined}
+      >
         <div className="vp-internal-app__main">
           {filteredSorted.length === 0 ? (
             <p className="vp-internal-empty">

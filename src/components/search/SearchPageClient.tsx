@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { blogCardExcerpt } from '@/lib/blog-excerpt';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { Locale } from '@/i18n/routing';
 
 interface SearchResultWithImage {
@@ -19,14 +20,16 @@ interface SearchResultWithImage {
   slug: string;
   slugZh?: string;
   excerpt?: string;
+  excerptZh?: string;
   imageUrl?: string | null;
 }
 
 interface SearchPageClientProps {
   locale: Locale;
+  phrases?: Record<string, string>;
 }
 
-export function SearchPageClient({ locale }: SearchPageClientProps) {
+export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
   const t = useTranslations('Search');
   const searchParams = useSearchParams();
   const query = searchParams.get('q')?.trim() ?? '';
@@ -91,7 +94,12 @@ export function SearchPageClient({ locale }: SearchPageClientProps) {
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {portfolioResults.map((item) => (
-              <SearchCard key={`${item._type}-${item.slug}`} item={item} locale={locale} />
+              <SearchCard
+                key={`${item._type}-${item.slug}`}
+                item={item}
+                locale={locale}
+                phrases={phrases}
+              />
             ))}
           </div>
         </section>
@@ -104,7 +112,12 @@ export function SearchPageClient({ locale }: SearchPageClientProps) {
           </h2>
           <div className="flex flex-col gap-12">
             {newsResults.map((item) => (
-              <SearchNewsCard key={`${item._type}-${item.slug}`} item={item} locale={locale} />
+              <SearchNewsCard
+                key={`${item._type}-${item.slug}`}
+                item={item}
+                locale={locale}
+                phrases={phrases}
+              />
             ))}
           </div>
         </section>
@@ -113,9 +126,17 @@ export function SearchPageClient({ locale }: SearchPageClientProps) {
   );
 }
 
-function SearchCard({ item, locale }: { item: SearchResultWithImage; locale: Locale }) {
+function SearchCard({
+  item,
+  locale,
+  phrases,
+}: {
+  item: SearchResultWithImage;
+  locale: Locale;
+  phrases?: Record<string, string>;
+}) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
-  const title = locale === 'zh' && item.titleZh ? item.titleZh : item.title;
+  const title = pickLocaleFieldWithPhrases(locale, item.title, item.titleZh, phrases);
 
   return (
     <article className="vp-card vp-card-reveal">
@@ -135,10 +156,20 @@ function SearchCard({ item, locale }: { item: SearchResultWithImage; locale: Loc
   );
 }
 
-function SearchNewsCard({ item, locale }: { item: SearchResultWithImage; locale: Locale }) {
+function SearchNewsCard({
+  item,
+  locale,
+  phrases,
+}: {
+  item: SearchResultWithImage;
+  locale: Locale;
+  phrases?: Record<string, string>;
+}) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
-  const title = locale === 'zh' && item.titleZh ? item.titleZh : item.title;
-  const excerpt = blogCardExcerpt(item.excerpt);
+  const title = pickLocaleFieldWithPhrases(locale, item.title, item.titleZh, phrases);
+  const excerpt = blogCardExcerpt(
+    pickLocaleFieldWithPhrases(locale, item.excerpt, item.excerptZh, phrases),
+  );
 
   return (
     <article className="vp-post-card">

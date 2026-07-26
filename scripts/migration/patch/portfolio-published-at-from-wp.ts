@@ -14,7 +14,7 @@ async function main() {
 
   for (const post of posts) {
     await patchSet(portfolioId(post.ID), {
-      publishedAt: new Date(post.post_date).toISOString(),
+      publishedAt: new Date(post.post_date).toISOString().slice(0, 10),
     });
   }
 

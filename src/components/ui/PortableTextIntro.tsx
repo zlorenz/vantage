@@ -1,6 +1,6 @@
 /**
  * Simple Portable Text paragraph renderer for CMS body intros.
- * Server-only — renders block children as centred paragraphs.
+ * Server-only — renders block children as paragraphs with consistent spacing.
  */
 
 import type { PortableTextBlock } from '@/types/sanity';
@@ -23,7 +23,7 @@ export function PortableTextIntro({
           .join('');
         if (!text.trim()) return null;
         return (
-          <p key={index} className="mb-0">
+          <p key={index} className="mb-4 leading-relaxed last:mb-0">
             {text}
           </p>
         );

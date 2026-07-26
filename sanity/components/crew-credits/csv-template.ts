@@ -2,7 +2,11 @@
  * CSV template generation from the shared crew-credit catalog.
  */
 
-import {CREW_DEPARTMENTS} from '@crew-credits'
+import {
+  CREW_CUSTOM_TEMPLATE_ROLES,
+  CREW_DEPARTMENT_BY_KEY,
+  CREW_DEPARTMENTS,
+} from '@crew-credits'
 
 function csvEscape(value: string): string {
   if (/[",\n\r]/.test(value)) {
@@ -11,8 +15,12 @@ function csvEscape(value: string): string {
   return value
 }
 
-/** Build a UTF-8 CSV template with a BOM for Excel compatibility.
+/**
+ * Build a UTF-8 CSV template with a BOM for Excel compatibility.
  * Names only — links are managed in Studio and auto-applied from name memory.
+ *
+ * Rows: every standard catalog role, then recurring custom roles per department
+ * (Agency Producer, Boom Op, Best Boy Electric, etc.).
  */
 export function buildCrewCreditsCsvTemplate(): string {
   const lines = ['Department,Role,Names']
@@ -20,6 +28,10 @@ export function buildCrewCreditsCsvTemplate(): string {
   for (const dept of CREW_DEPARTMENTS) {
     for (const role of dept.roles) {
       lines.push([dept.label, role.label, ''].map(csvEscape).join(','))
+    }
+    for (const custom of CREW_CUSTOM_TEMPLATE_ROLES.filter((row) => row.department === dept.key)) {
+      const departmentLabel = CREW_DEPARTMENT_BY_KEY[custom.department]?.label ?? custom.department
+      lines.push([departmentLabel, custom.label, ''].map(csvEscape).join(','))
     }
   }
 

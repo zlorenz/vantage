@@ -8,12 +8,35 @@
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
       "@crew-credits": ["../shared/crew-credits"],
-      "@crew-credits/*": ["../shared/crew-credits/*"]
+      "@crew-credits/*": ["../shared/crew-credits/*"],
+      "@display-titles": ["../shared/display-titles"],
+      "@display-titles/*": ["../shared/display-titles/*"],
+      "@phrase-book": ["../shared/phrase-book"],
+      "@phrase-book/*": ["../shared/phrase-book/*"],
+      "@ai-translation": ["../shared/ai-translation"],
+      "@ai-translation/*": ["../shared/ai-translation/*"],
+      "@video-url": ["../shared/video-url"],
+      "@video-url/*": ["../shared/video-url/*"],
+      "@client-logos": ["../shared/client-logos"],
+      "@client-logos/*": ["../shared/client-logos/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "../shared/crew-credits/**/*.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../shared/crew-credits/**/*.ts",
+    "../shared/display-titles/**/*.ts",
+    "../shared/phrase-book/**/*.ts",
+    "../shared/ai-translation/**/*.ts",
+    "../shared/video-url/**/*.ts",
+    "../shared/client-logos/**/*.ts",
+    "../messages/**/*.json",
+    "../src/lib/campaign-brief-fields.ts",
+    "../src/lib/campaign-brief-i18n.ts"
+  ]
 }

@@ -1,0 +1,3470 @@
+{
+  "generatedAt": "2026-07-24T11:07:40.938Z",
+  "trpDictionarySize": 5018,
+  "phraseBook": {
+    "total": 487,
+    "tally": {
+      "match": 149,
+      "mismatch": 143,
+      "trp_missing": 132,
+      "identical_en_zh": 54,
+      "trp_same_as_en": 9
+    },
+    "matchRate": 30.6,
+    "mismatchKinds": {
+      "cosmetic": 18,
+      "subset_or_truncation": 26,
+      "title_structure": 53,
+      "wording_diff": 46
+    },
+    "mismatches": [
+      {
+        "en": "907X Special Edition",
+        "sanityZh": "907X",
+        "trpZh": "907X 特别版",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.907x-special-edition.4b65f6ae"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "A Cosmic Voyage",
+        "sanityZh": "Mavic 2 视频展示",
+        "trpZh": "宇宙之旅",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.a-cosmic-voyage.2ed7e7ef"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "A New Era of Response",
+        "sanityZh": "无人机",
+        "trpZh": "响应新时代",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.a-new-era-of-response.1d474b10"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Absolute Charisma",
+        "sanityZh": "凯美瑞2022",
+        "trpZh": "魅力四射",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.absolute-charisma.72caddfa"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "App",
+        "sanityZh": "应用程序",
+        "trpZh": "应用",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.app.81f51acc"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "ASMOKE Essential – Grill Like a Pro Anywhere",
+        "sanityZh": "ASMOKE Essential",
+        "trpZh": "ASMOKE Essential – 随时随地像专业人士一样烧烤",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.asmoke-essential-grill-like-a-pro-anywhere.7c2ea6dc"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "ASUS",
+        "sanityZh": "华硕电脑升级至不可思议",
+        "trpZh": "华硕",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.asus.d648cf01"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "ASUS Business – Upgrade to Incredible",
+        "sanityZh": "华硕电脑升级至不可思议",
+        "trpZh": "华硕商务 - 升级至不可思议",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.asus-business-upgrade-to-incredible.94013560"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "ASUS Business Lets You 'Upgrade to Incredible' in Campaign from Byron McKenzie",
+        "sanityZh": "ASUS Business 在 Byron McKenzie 指导的广告中邀您『升级至非凡』",
+        "trpZh": "Byron McKenzie 的华硕商务广告让您 ‘升级到不可思议’。",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.asus-business-lets-you-upgrade-to-incredible-in-campaign-from-by.ab70e4bb"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "ASUS Education – A Day in the Life",
+        "sanityZh": "华硕电脑教育",
+        "trpZh": "华硕教育 – 一天的生活",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.asus-education-a-day-in-the-life.cb7f3231"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Automated Robot Lawn Mower",
+        "sanityZh": "自动割草机器人",
+        "trpZh": "自动化机器人割草机",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.automated-robot-lawn-mower.c2b2d38f"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Bambu Lab H2D – Your Personal Manufacturing Hub",
+        "sanityZh": "拓竹 H2D",
+        "trpZh": "拓竹 H2D – 您的个人制造中心",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.bambu-lab-h2d-your-personal-manufacturing-hub.2906d696"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Bambu Lab X1 – The New Pioneer in 3D Printing",
+        "sanityZh": "拓竹 X1",
+        "trpZh": "拓竹 X1 – 3D打印新先锋",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.bambu-lab-x1-the-new-pioneer-in-3d-printing.eda466dd"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "BIDV SmartBanking – Hòa nhịp sống thông minh",
+        "sanityZh": "BIDV 智能银行 – 与智慧生活同频",
+        "trpZh": "BIDV 智能银行 - 智能生活脉搏",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.bidv-smartbanking-ho-a-nhi-p-so-ng-tho-ng-minh.48b403f0"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Bitget – Elite Traders",
+        "sanityZh": "Bitget – 精英交易员",
+        "trpZh": "Bitget – 交易精英",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.bitget-elite-traders.a73cf97b"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Bitget – GetAgent ft. Julián Álvarez",
+        "sanityZh": "Bitget – GetAgent",
+        "trpZh": "Bitget - GetAgent ft.Julián Álvarez",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.bitget-getagent-ft-juli-n-lvarez.bccb3c1a"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Brand film for 3D printer manufacturer Snapmaker.",
+        "sanityZh": "3D 打印机制造商 Snapmaker 的品牌宣传片。",
+        "trpZh": "3D 打印机制造商 Snapmaker 的品牌宣传片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.brand-film-for-3d-printer-manufacturer-snapmaker.cccf26fb"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Branded documentary for the DJI Matrice 200 enterprise drone series.",
+        "sanityZh": "DJI Matrice 200 企业无人机系列的品牌纪录片。",
+        "trpZh": "DJI Matrice 200 企业无人机系列的品牌纪录片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.branded-documentary-for-the-dji-matrice-200-enterprise-drone-ser.1e6450b2"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Braun x DJI – Dare to Be Different",
+        "sanityZh": "Braun x DJI – 敢于与众不同",
+        "trpZh": "博朗 x 大疆 – 敢于不同",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.braun-x-dji-dare-to-be-different.d259f8a8"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "BRINC – A New Era of Response",
+        "sanityZh": "BRINC – 无人机",
+        "trpZh": "BRINC - 响应的新时代",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.brinc-a-new-era-of-response.4052f031"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "BRINC Guardian – Next Generation of Response",
+        "sanityZh": "BRINC Guardian",
+        "trpZh": "BRINC 守护者 - 下一代响应系统",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.brinc-guardian-next-generation-of-response.0cda6c26"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Camry 2022",
+        "sanityZh": "凯美瑞 2022",
+        "trpZh": "凯美瑞2022",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.camry-2022.39a7e861"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Capture Your Passion",
+        "sanityZh": "晓SPARK",
+        "trpZh": "捕捉你的热情",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.capture-your-passion.62cd41c9"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Chuản Phải Là Tủ Đông Hoà Phát",
+        "sanityZh": "冰箱",
+        "trpZh": "应该是一个华体会冰箱",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.chua-n-pha-i-la-tu-o-ng-hoa-pha-t.ae37212b"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Commercial spot campaign for the Ulike Air 10 IPL hair removal device.",
+        "sanityZh": "为 Ulike Air 10 IPL 脱毛器制作商业广告。",
+        "trpZh": "为 Ulike Air 10 IPL 脱毛器制作商业广告。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.commercial-spot-campaign-for-the-ulike-air-10-ipl-hair-removal-d.d4283703"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Commercial spot for the Oppo Reno 6 Pro 5G online launch event.",
+        "sanityZh": "Oppo 雷诺 6 Pro 5G 在线发布会广告片。",
+        "trpZh": "Oppo 雷诺 6 Pro 5G 在线发布会广告片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.commercial-spot-for-the-oppo-reno-6-pro-5g-online-launch-event.ef86d67c"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Cung đường đam mê",
+        "sanityZh": "S21 爆红视频",
+        "trpZh": "激情之路",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.cung-ng-am-m.0d0a0ff3"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "DJI – My Mavic",
+        "sanityZh": "大疆 – 我的Mavic",
+        "trpZh": "DJI – 我的御",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.dji-my-mavic.29b3bed3"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "DJI Mavic 2 – Rapid Recap",
+        "sanityZh": "DJI大疆创新 Mavic 2 快速回顾 – Mavic 2 快速回顾",
+        "trpZh": "大疆御 2 快速回顾",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.dji-mavic-2-rapid-recap.593e788c"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "DJI Mavic 2 – Ski-Mountaineering with Jimmy Chin",
+        "sanityZh": "DJI大疆创新 Mavic 2 Jimmy Chin – Mavic 2 Jimmy Chin",
+        "trpZh": "大疆御 2 – 吉米·金的滑雪登山之旅",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.dji-mavic-2-ski-mountaineering-with-jimmy-chin.c9445f9e"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "DJI Mavic Air – The Last Wild Place on Earth",
+        "sanityZh": "大疆无人机 巴塔哥尼亚",
+        "trpZh": "大疆 Mavic Air – 地球上最后的净土",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.dji-mavic-air-the-last-wild-place-on-earth.5faa3350"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "DJI Osmo Mobile – Beyond Smart",
+        "sanityZh": "大疆 灵眸Osmo",
+        "trpZh": "大疆灵眸 Osmo Mobile – 超越智能",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.dji-osmo-mobile-beyond-smart.3d88f2cb"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "DJI Profiles – Wedding Photography Reimagined",
+        "sanityZh": "大疆人物 婚礼摄影",
+        "trpZh": "DJI 影像预设 – 婚礼摄影的革新",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.dji-profiles-wedding-photography-reimagined.0a0d70f7"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "DJI Spark",
+        "sanityZh": "大疆",
+        "trpZh": "大疆 晓SPARK",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.dji-spark.bf0b790f"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "EcoFlow DELTA Series – Live Without Limits",
+        "sanityZh": "正浩 DELTA系列",
+        "trpZh": "EcoFlow DELTA 系列 – 无拘无束地生活",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.ecoflow-delta-series-live-without-limits.b86a2a36"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "EcoFlow RIVER 600 – Customizable Backup Power",
+        "sanityZh": "正浩 RIVER 600 – 可定制的备用电源",
+        "trpZh": "EcoFlow RIVER 600 – 可定制的备用电源",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.ecoflow-river-600-customizable-backup-power.9b6763dc"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "EcoFlow RIVER Mini – Power at Hand",
+        "sanityZh": "正浩 睿RIVER Mini",
+        "trpZh": "EcoFlow RIVER Mini – 触手可及的能量",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.ecoflow-river-mini-power-at-hand.6027549d"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "EcoFlow Wave – Keep It Cool",
+        "sanityZh": "正浩 户外移动空调Wave",
+        "trpZh": "EcoFlow Wave – 保持凉爽",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.ecoflow-wave-keep-it-cool.dd4f2e81"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Essential Power, Ultimate Convenience",
+        "sanityZh": "Qrevo-S",
+        "trpZh": "强大动力，极致便捷",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.essential-power-ultimate-convenience.b9f1b562"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Explore Life Refocused with the Galaxy S21",
+        "sanityZh": "x 探索频道",
+        "trpZh": "在 Galaxy S21 上探索焕新生活",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.explore-life-refocused-with-the-galaxy-s21.e69c96d9"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Finance",
+        "sanityZh": "金融",
+        "trpZh": "财务",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.finance.c5dd218d"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Fujifilm – A Journey Toward More Accessible Medicine",
+        "sanityZh": "富士胶片",
+        "trpZh": "富士胶片——通往更普及医疗的旅程",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.fujifilm-a-journey-toward-more-accessible-medicine.2d779f2b"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Funny 20-second ad campaign for the Roborock H7 intelligent vacuum.",
+        "sanityZh": "有趣的20秒广告宣传片，用于宣传石头 H7 智能吸尘器。",
+        "trpZh": "有趣的20秒广告宣传片，用于宣传石头 H7 智能吸尘器。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.funny-20-second-ad-campaign-for-the-roborock-h7-intelligent-vacu.6389c353"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Funny commercial spot for the DJI Spark lightweight drone.",
+        "sanityZh": "大疆 Spark 轻型无人机的搞笑广告片。",
+        "trpZh": "大疆 Spark 轻型无人机的搞笑广告片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.funny-commercial-spot-for-the-dji-spark-lightweight-drone.c81fb707"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Gendome",
+        "sanityZh": "国轩高科",
+        "trpZh": "国轩高科Gendome",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.gendome.90f7526a"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Gendome Home 3000 – Your Smart Portable Power Station",
+        "sanityZh": "国轩高科 Gendome Home 3000",
+        "trpZh": "Gendome Home 3000 - 您的智能便携式电站",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.gendome-home-3000-your-smart-portable-power-station.75f0f7d5"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "GetAgent ft. Julián Álvarez",
+        "sanityZh": "GetAgent",
+        "trpZh": "GetAgent ft.Julián Álvarez",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.getagent-ft-juli-n-lvarez.c7434a3c"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Global product launch campaign for the OnePlus Pad 3 tablet.",
+        "sanityZh": "OnePlus Pad 3 平板电脑的全球产品发布活动。",
+        "trpZh": "OnePlus Pad 3 平板电脑的全球产品发布活动。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.global-product-launch-campaign-for-the-oneplus-pad-3-tablet.4da0ad40"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Global product launch film for the realme 15 Series 5G smartphone.",
+        "sanityZh": "realme 15 系列 5G 智能手机全球产品发布宣传片。",
+        "trpZh": "realme 15 系列 5G 智能手机全球产品发布宣传片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.global-product-launch-film-for-the-realme-15-series-5g-smartphon.df1fbe5a"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Govee – For Every Mood of Home",
+        "sanityZh": "Govee 适合各种心情 – 满足家居的每种氛围",
+        "trpZh": "Govee - 点亮您的居家生活",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.govee-for-every-mood-of-home.07a35fe7"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Govee – Lit By Govee",
+        "sanityZh": "Govee – 闪耀由 Govee 点亮",
+        "trpZh": "Govee – 闪耀由Govee点亮",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.govee-lit-by-govee.94edafa8"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Hasselblad X1D II 50C – Travel Photographer",
+        "sanityZh": "哈苏 X1D",
+        "trpZh": "哈苏 X1D II 50C – 旅行摄影师",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.hasselblad-x1d-ii-50c-travel-photographer.1f085623"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Herbalife – Chọn Dinh Dưỡng Lành Mạnh, Chọn Herbalife Nutrition",
+        "sanityZh": "康宝莱 – Chọn Dinh Dưỡng Lành Mạnh, Chọn Herbalife Nutrition",
+        "trpZh": "康宝莱——选择健康营养，选择康宝莱营养",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.herbalife-cho-n-dinh-du-o-ng-la-nh-ma-nh-cho-n-herbalife-nutriti.b504564f"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Hòa nhịp sống thông minh",
+        "sanityZh": "与智慧生活同频",
+        "trpZh": "智能生活协调",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.ho-a-nhi-p-so-ng-tho-ng-minh.8d80fd81"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Hollywood-Grade Home Cinema Experience",
+        "sanityZh": "VisionMaster Max",
+        "trpZh": "好莱坞级家庭影院体验",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.hollywood-grade-home-cinema-experience.f72311da"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Hospitality",
+        "sanityZh": "酒店与接待",
+        "trpZh": "接待服务",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.hospitality.c2894e15"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Hyundai",
+        "sanityZh": "现代人类的进步",
+        "trpZh": "现代汽车",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.hyundai.86dd6b01"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Indonesian branding spot for realme during the Ramadan holiday 2024.",
+        "sanityZh": "2024 年斋月假期期间，印度尼西亚 realme 品牌广告。",
+        "trpZh": "2024 年斋月假期期间，印度尼西亚 realme 品牌广告。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.indonesian-branding-spot-for-realme-during-the-ramadan-holiday-2.a014b2ff"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Insta360 Link – The AI-Powered 4K Webcam",
+        "sanityZh": "影石Insta360 Link",
+        "trpZh": "Insta360 Link - 人工智能驱动的 4K 网络摄像头",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.insta360-link-the-ai-powered-4k-webcam.5a4559f8"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Introducing FlightHub",
+        "sanityZh": "介绍 FlightHub",
+        "trpZh": "FlightHub 简介",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.introducing-flighthub.edfe11f0"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Introducing Phantom 4 Pro",
+        "sanityZh": "介绍 Phantom 4 Pro",
+        "trpZh": "介绍大疆 Phantom 4 Pro",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.introducing-phantom-4-pro.5aa2bb73"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Introducing Zenmuse X5 Series",
+        "sanityZh": "介绍 Zenmuse X5 系列",
+        "trpZh": "Zenmuse X5 系列介绍",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.introducing-zenmuse-x5-series.9e83f81e"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Introducing Zenmuse XT2",
+        "sanityZh": "Zenmuse XT2",
+        "trpZh": "介绍 Zenmuse XT2",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.introducing-zenmuse-xt2.860f0148"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Jackery Explorer 5000 Plus – Whole-Home Backup Power",
+        "sanityZh": "电小二 探索者 5000 Plus",
+        "trpZh": "Jackery Explorer 5000 Plus - 全屋备用电源",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.jackery-explorer-5000-plus-whole-home-backup-power.24c0cff5"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Launch Teaser",
+        "sanityZh": "Reno 6 Pro 5G",
+        "trpZh": "上线预告",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.launch-teaser.ff2d3fae"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Leave the Lights On",
+        "sanityZh": "Air 10",
+        "trpZh": "留灯",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.leave-the-lights-on.08fd69c1"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Loisaba Safari",
+        "sanityZh": "野生动物园",
+        "trpZh": "洛伊萨巴野生动物保护区",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.loisaba-safari.41d9194a"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Make Your Drone Your Own",
+        "sanityZh": "Mavic Mini 视频推广",
+        "trpZh": "让你的无人机独一无二",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.make-your-drone-your-own.6dc37feb"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Mammotion LUBA 2 AWD – Perimeter-Wire-Free Robot Lawn Mower",
+        "sanityZh": "库犸科技 路霸 2 AWD",
+        "trpZh": "库犸科技 LUBA 2 AWD – 无周界电线机器人割草机",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.mammotion-luba-2-awd-perimeter-wire-free-robot-lawn-mower.22271cd3"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Mammotion YUKA – 3D Vision Robot Lawn Sweeping Mower",
+        "sanityZh": "库犸科技 YUKA",
+        "trpZh": "库犸科技 YUKA - 3D 视觉机器人扫草机",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.mammotion-yuka-3d-vision-robot-lawn-sweeping-mower.7df70dd6"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Mammotion YUKA Mini – Effortless Lawn Care, Redefined",
+        "sanityZh": "库犸科技 迷你 YUKA",
+        "trpZh": "库犸科技 YUKA Mini – 轻松重新定义您的草坪养护",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.mammotion-yuka-mini-effortless-lawn-care-redefined.8b34c922"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Master Workshop with Ben Thomas",
+        "sanityZh": "Find X5 Pro 大师课程",
+        "trpZh": "本·托马斯大师工作坊",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.master-workshop-with-ben-thomas.694f1d5f"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Matrice 200 Series",
+        "sanityZh": "200",
+        "trpZh": "御 200 系列",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.matrice-200-series.642bcea3"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Matrice 600",
+        "sanityZh": "600",
+        "trpZh": "六旋翼无人机",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.matrice-600.1604f92a"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Mavic Mini Campaign",
+        "sanityZh": "视频推广",
+        "trpZh": "Mavic Mini 活动",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.mavic-mini-campaign.34ab8720"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Meet Osmo Pocket",
+        "sanityZh": "Osmo Pocket",
+        "trpZh": "认识 Osmo Pocket",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.meet-osmo-pocket.cc4b66b6"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Meet RoboMaster S1",
+        "sanityZh": "RoboMaster S1",
+        "trpZh": "认识一下RoboMaster S1",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.meet-robomaster-s1.b9c7d7bc"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Meet Spark",
+        "sanityZh": "晓SPARK",
+        "trpZh": "你好，Spark",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.meet-spark.f69e2faf"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "MEXC – 7th Anniversary",
+        "sanityZh": "墨西哥城 – 七周年",
+        "trpZh": "MEXC – 7周年庆",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.mexc-7th-anniversary.3c570434"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Mobile",
+        "sanityZh": "手机银行",
+        "trpZh": "移动电话",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.mobile.3e0ba797"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Moprobo One-Go – Say Goodbye to the Vacuum",
+        "sanityZh": "摩普罗博 一次性",
+        "trpZh": "Moprobo One-Go – 告别吸尘器",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.moprobo-one-go-say-goodbye-to-the-vacuum.944505b8"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "MSI 120Hz PerfectEdge Monitor",
+        "sanityZh": "微星 120Hz PerfectEdge 显示器",
+        "trpZh": "MSI 120Hz PerfectEdge 显示器",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.msi-120hz-perfectedge-monitor.b740d91d"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "MSI Business – Elevate Everyday Work",
+        "sanityZh": "微星业务 – 提升日常工作",
+        "trpZh": "MSI 商務 – 提升日常工作",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.msi-business-elevate-everyday-work.e5c44e5d"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "My Mavic",
+        "sanityZh": "我的Mavic",
+        "trpZh": "我的 Mavic",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.my-mavic.a5a8ed57"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "OnePlus – Make the Moment with Mohan Dravid",
+        "sanityZh": "一加 把握时机",
+        "trpZh": "OnePlus - 与莫汉-德拉维德一起创造精彩瞬间",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.oneplus-make-the-moment-with-mohan-dravid.4daca698"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "OnePlus 12 – Chasing Luna",
+        "sanityZh": "一加 12",
+        "trpZh": "一加 12 – 追逐月球",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.oneplus-12-chasing-luna.c0f9fa1c"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "OnePlus Pad 3 – Masterful By Every Measure",
+        "sanityZh": "一加 Pad 3",
+        "trpZh": "一加平板 3 – 全面掌控",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.oneplus-pad-3-masterful-by-every-measure.1b88d3eb"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "OnePlus Y-Series TV – Smarter TV, Smarter Choice",
+        "sanityZh": "一加 Y系列电视",
+        "trpZh": "OnePlus Y 系列电视 – 更智能的电视，更明智的选择",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.oneplus-y-series-tv-smarter-tv-smarter-choice.15466112"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "OPPO Find X5 Pro – Master Workshop with Ben Thomas",
+        "sanityZh": "OPPO Find X5 Pro 大师课程 – Find X5 Pro 大师课程",
+        "trpZh": "OPPO Find X5 Pro – 本·托马斯大师工坊",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.oppo-find-x5-pro-master-workshop-with-ben-thomas.0b8e80bf"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Oppo Reno 7 Pro – Unlimited Mom, in Portrait",
+        "sanityZh": "Oppo Reno 7 Pro – 无尽的妈妈，肖像",
+        "trpZh": "Oppo Reno 7 Pro – 无限妈妈，人像模式",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.oppo-reno-7-pro-unlimited-mom-in-portrait.96c651f2"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Outdoor Lights",
+        "sanityZh": "户外灯具",
+        "trpZh": "户外照明",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.outdoor-lights.663f2204"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "P/S Vietnam",
+        "sanityZh": "联合利华",
+        "trpZh": "越南",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.p-s-vietnam.b3b68015"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "P/S Vietnam – Smiles Matter",
+        "sanityZh": "联合利华 微笑很重要",
+        "trpZh": "P/S 越南 - 微笑很重要",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.p-s-vietnam-smiles-matter.3a910ab2"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Portable Power",
+        "sanityZh": "Osmo Pocket 动画活动",
+        "trpZh": "便携式电源",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.portable-power.5d5d20cf"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Product commercial campaign for MSI's 120Hz PerfectEdge desktop monitor.",
+        "sanityZh": "微星 120Hz PerfectEdge 台式机显示器的产品广告宣传。",
+        "trpZh": "微星 120Hz PerfectEdge 台式机显示器的产品广告宣传。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-commercial-campaign-for-msi-s-120hz-perfectedge-desktop-.34bf06ab"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product introduction video for the DJI Mavic 2 drone series.",
+        "sanityZh": "大疆 Mavic 2 系列无人机的产品介绍视频。",
+        "trpZh": "大疆 Mavic 2 系列无人机的产品介绍视频。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-introduction-video-for-the-dji-mavic-2-drone-series.0267602f"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product introduction video for the DJI Spark mini drone.",
+        "sanityZh": "DJI Spark 微型无人机的产品介绍视频。",
+        "trpZh": "DJI Spark 微型无人机的产品介绍视频。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-introduction-video-for-the-dji-spark-mini-drone.aadffc6a"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product launch film for the Bambu Lab H2D personal manufacturing hub 3D printer.",
+        "sanityZh": "Bambu Lab H2D 个人制造中心 3D 打印机的产品发布影片。",
+        "trpZh": "Bambu Lab H2D 个人制造中心 3D 打印机的产品发布影片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-launch-film-for-the-bambu-lab-h2d-personal-manufacturing.3039a217"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product launch film for the Jackery Explorer 5000 Plus home backup power system.",
+        "sanityZh": "Jackery Explorer 5000 Plus 家庭备用电源系统的产品发布宣传片。",
+        "trpZh": "Jackery Explorer 5000 Plus 家庭备用电源系统的产品发布宣传片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-launch-film-for-the-jackery-explorer-5000-plus-home-back.2de8280b"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product launch film for the Mammotion LUBA Mini AWD automated robot lawn mower.",
+        "sanityZh": "Mammotion LUBA Mini AWD 自动驾驶割草机器人产品发布影片。",
+        "trpZh": "Mammotion LUBA Mini AWD 自动驾驶割草机器人产品发布影片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-launch-film-for-the-mammotion-luba-mini-awd-automated-ro.f7f0d161"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product launch film for the Mammotion YUKA Mini 2 automated robot lawn mower.",
+        "sanityZh": "Mammotion YUKA Mini 2 自动割草机器人产品发布宣传片。",
+        "trpZh": "Mammotion YUKA Mini 2 自动割草机器人产品发布宣传片。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-launch-film-for-the-mammotion-yuka-mini-2-automated-robo.654e9f13"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Product launch video for the Bambu Lab X1 series of 3D printers.",
+        "sanityZh": "Bambu Lab X1 系列 3D 打印机的产品发布视频。",
+        "trpZh": "Bambu Lab X1 系列 3D 打印机的产品发布视频。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.product-launch-video-for-the-bambu-lab-x1-series-of-3d-printers.6950abbf"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Rapid Recap",
+        "sanityZh": "Mavic 2 快速回顾",
+        "trpZh": "快速回顾",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.rapid-recap.b034bcda"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "realme – The Blessings of Ramadan",
+        "sanityZh": "realme",
+        "trpZh": "realme – 开斋节的祝福",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.realme-the-blessings-of-ramadan.26ab136e"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "realme 13+ 5G – Unleash Your Gaming Potential",
+        "sanityZh": "真我 13+ 5G",
+        "trpZh": "realme 13+ 5G – 释放你的游戏潜能",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.realme-13-5g-unleash-your-gaming-potential.09c11df5"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "realme 15 Series 5G – Live Real in Every Shot",
+        "sanityZh": "真我 15 系列 5G – 在每一拍中真实呈现",
+        "trpZh": "realme 15 系列 5G – 每一拍都真实生动",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.realme-15-series-5g-live-real-in-every-shot.1f956a87"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "realme C75 – Everything Proof",
+        "sanityZh": "realme C75 – 万无一失",
+        "trpZh": "真我 C75 – 全方位防护",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.realme-c75-everything-proof.d60feffa"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "realme C85 – Your Ultimate Outdoor Sidekick",
+        "sanityZh": "真我 C85",
+        "trpZh": "真我 C85 – 您的终极户外玩伴",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.realme-c85-your-ultimate-outdoor-sidekick.ab1205a3"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "realme Unveils Humorous and Chaotic Spot for New 'Mishap Proof' C75",
+        "sanityZh": "realme 推出幽默混乱的全新 C75『防意外』广告",
+        "trpZh": "realme 为新款 ‘防事故 ’C75 发布幽默而混乱的广告片",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.realme-unveils-humorous-and-chaotic-spot-for-new-mishap-proof-c7.cfbbb3bb"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Realme X7",
+        "sanityZh": "真我",
+        "trpZh": "真我 X7",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.realme-x7.9c17c0d8"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "RIVER Power Station",
+        "sanityZh": "睿RIVER",
+        "trpZh": "河流水电站",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.river-power-station.27c6bc80"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Roborock H7",
+        "sanityZh": "石头 H7",
+        "trpZh": "石头H7系列",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.roborock-h7.7176cf65"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Roborock Qrevo-S – Essential Power, Ultimate Convenience",
+        "sanityZh": "Roborock – Qrevo-S",
+        "trpZh": "Roborock Qrevo-S – 必备动力，极致便捷",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.roborock-qrevo-s-essential-power-ultimate-convenience.19c41295"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Roborock S7 MaxV Ultra – Everything Made Easy",
+        "sanityZh": "石头科技自清洁扫拖机器人G20",
+        "trpZh": "石头 S7 MaxV Ultra – 一切尽在掌握",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.roborock-s7-maxv-ultra-everything-made-easy.5299bdeb"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Samsung x Discovery",
+        "sanityZh": "三星 x",
+        "trpZh": "三星 x Discovery",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.samsung-x-discovery.73ce45cd"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Samsung x Discovery – Explore Life Refocused with the Galaxy S21",
+        "sanityZh": "三星 x Discovery – x 探索频道",
+        "trpZh": "三星 x Discovery – 借 Galaxy S21 探索生活，聚焦全新视角",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.samsung-x-discovery-explore-life-refocused-with-the-galaxy-s21.7c51b4fc"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Sandalwood",
+        "sanityZh": "檀香",
+        "trpZh": "檀香洗发水",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.sandalwood.23750da7"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Search & Rescue in Extreme Environments",
+        "sanityZh": "200 搜索与救援",
+        "trpZh": "极限环境下的搜救",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.search-rescue-in-extreme-environments.bc204ae7"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Series of short global commercial spots for the Realme X7 smartphone.",
+        "sanityZh": "Realme X7 智能手机的全球广告短片系列。",
+        "trpZh": "Realme X7 智能手机的全球广告短片系列。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.series-of-short-global-commercial-spots-for-the-realme-x7-smartp.64f9b535"
+        ],
+        "kind": "cosmetic"
+      },
+      {
+        "en": "Ski-Mountaineering with Jimmy Chin",
+        "sanityZh": "Mavic 2 Jimmy Chin",
+        "trpZh": "吉米·钦的滑雪登山",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.ski-mountaineering-with-jimmy-chin.7155dbfc"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Surprisingly Lightweight",
+        "sanityZh": "出乎意料地轻巧",
+        "trpZh": "出乎意料的轻",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.surprisingly-lightweight.0c78b4b6"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Tech",
+        "sanityZh": "科技",
+        "trpZh": "技术",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.tech.24254d91"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Tello – Iron Man Edition Assembled",
+        "sanityZh": "特洛 钢铁侠",
+        "trpZh": "Tello – 钢铁侠限量版 组装完成",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.tello-iron-man-edition-assembled.01c09f2e"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "The Endless Beauty of Vietnam",
+        "sanityZh": "Galaxy S8",
+        "trpZh": "越南无尽的美",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.the-endless-beauty-of-vietnam.89573229"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "The Traveler",
+        "sanityZh": "Mobile 视频推广",
+        "trpZh": "旅行者",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.the-traveler.1c6aef9f"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Thơm Gỗ Đàn Hương Nam Tính",
+        "sanityZh": "Spice檀香洗发水",
+        "trpZh": "檀香洗发水",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.tho-m-go-a-n-hu-o-ng-nam-ti-nh.27dcc705"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Toyota",
+        "sanityZh": "丰田",
+        "trpZh": "丰田汽车",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.toyota.a25fb09f"
+        ],
+        "kind": "subset_or_truncation"
+      },
+      {
+        "en": "Toyota Camry 2022 – Absolute Charisma",
+        "sanityZh": "丰田 凯美瑞 2022 – 凯美瑞2022",
+        "trpZh": "丰田凯美瑞 2022 – 极致魅力",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.toyota-camry-2022-absolute-charisma.9b0726e1"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Trade Smarter",
+        "sanityZh": "智慧交易",
+        "trpZh": "更明智的贸易",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.trade-smarter.6ec27843"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Trữ Đông Là Phải Chuản, Chuản Phải Là Tủ Đông Hoà Phát",
+        "sanityZh": "Phát 冰箱",
+        "trpZh": "去除防腐剂必须合格，合格必须是“东华和”冰箱",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.tru-o-ng-la-pha-i-chua-n-chua-n-pha-i-la-tu-o-ng-hoa-pha-t.5a9a2a48"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Ulike Air 10 – Leave the Lights On",
+        "sanityZh": "优利克 空气 10 – Air 10",
+        "trpZh": "Ulike Air 10 – 灯光常亮",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.ulike-air-10-leave-the-lights-on.38063237"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Valerion VisionMaster Max – Hollywood-Grade Home Cinema Experience",
+        "sanityZh": "Valerion – VisionMaster Max",
+        "trpZh": "Valerion VisionMaster Max - 好莱坞级家庭影院体验",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.valerion-visionmaster-max-hollywood-grade-home-cinema-experience.4f8ea853"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Vantage Pictures' James Duong on bringing Chinese productions to Vietnam",
+        "sanityZh": "Vantage Pictures 执行制片人 James Duong 谈将中国项目带到越南",
+        "trpZh": "’Vantage Pictures”与“James Duong”谈将中国作品引入越南",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.vantage-pictures-james-duong-on-bringing-chinese-productions-to-.13474df3"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Video Campaign Brief",
+        "sanityZh": "视频活动简介",
+        "trpZh": "视频宣传简介",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.video-campaign-brief.524d6cda"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Vinamilk Probi – Vững Dạ Mới Sáng Suốt, Êm Ruột Nuột Đời",
+        "sanityZh": "Vinamilk Probi – 肠胃舒适，一生顺畅",
+        "trpZh": "菲仕兰活力益生菌 – 强健肠道，活力充沛，柔软顺滑",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.vinamilk-probi-vu-ng-da-mo-i-sa-ng-suo-t-e-m-ruo-t-nuo-t-o-i.de3c7ec1"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Vững Dạ Mới Sáng Suốt, Êm Ruột Nuột Đời",
+        "sanityZh": "肠胃舒适，一生顺畅",
+        "trpZh": "稳固的夜晚，全新的黎明，宁静的腹部。",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.vu-ng-da-mo-i-sa-ng-suo-t-e-m-ruo-t-nuo-t-o-i.1156c3a7"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Wall-to-Wall Art",
+        "sanityZh": "Pro 墙艺",
+        "trpZh": "墙到墙艺术",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.wall-to-wall-art.4c604ff5"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "XGIMI Horizon Pro – Fill Your Horizon with Greatness",
+        "sanityZh": "极米 地平线专业版",
+        "trpZh": "XGIMI Horizon Pro – 让您的视野充满伟岸",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.xgimi-horizon-pro-fill-your-horizon-with-greatness.a2c761c7"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Zenmuse X7 Showreel",
+        "sanityZh": "X7 视频展示",
+        "trpZh": "云台X7样片",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.zenmuse-x7-showreel.040ad64a"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Zenmuse Z30",
+        "sanityZh": "Z30",
+        "trpZh": "悟X30",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.zenmuse-z30.ceddcd71"
+        ],
+        "kind": "wording_diff"
+      },
+      {
+        "en": "Zhiyun Smooth 5 – Film Like a Pro",
+        "sanityZh": "智云 Smooth 5",
+        "trpZh": "智云Smooth 5 – 专业电影拍摄",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.zhiyun-smooth-5-film-like-a-pro.c929a737"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Zhiyun Smooth Q3 – Illuminate to Create",
+        "sanityZh": "智云 顺滑Q3",
+        "trpZh": "智云Smooth Q3 – 照亮创作",
+        "status": "mismatch",
+        "matchMode": "normalized",
+        "sources": [
+          "phrase.zhiyun-smooth-q3-illuminate-to-create.e6798d22"
+        ],
+        "kind": "title_structure"
+      },
+      {
+        "en": "Zhiyun WEEBILL 3S & CRANE-M 3S – Portable Visual Storytelling 2.0",
+        "sanityZh": "智云 WEEBILL 3S & CRANE-M 3S",
+        "trpZh": "智云 WEEBILL 3S &amp; CRANE-M 3S – 便携式视觉叙事 2.0",
+        "status": "mismatch",
+        "matchMode": "exact",
+        "sources": [
+          "phrase.zhiyun-weebill-3s-crane-m-3s-portable-visual-storytelling-2-0.ee76b1c7"
+        ],
+        "kind": "title_structure"
+      }
+    ],
+    "trpMissing": [
+      {
+        "en": "<span>DJI </span> My Hong Kong <span> Mountain Biking </span>",
+        "sanityZh": "<span>大疆 </span> 我的香港 <span> 山地自行车 </span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.span-dji-span-my-hong-kong-span-mountain-biking-span.d5b499b2"
+        ]
+      },
+      {
+        "en": "<span>DJI </span> My Mavic <span> Tech Geek (ft. Kai Man Wong) </span>",
+        "sanityZh": "<span>大疆 </span> 我的 Mavic <span> 科技极客（特邀：黄健仁） </span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.span-dji-span-my-mavic-span-tech-geek-ft-kai-man-wong-span.bb3e347d"
+        ]
+      },
+      {
+        "en": "AI Agent for your PC",
+        "sanityZh": "适用于您PC的AI代理",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ai-agent-for-your-pc.f82ccdd1"
+        ]
+      },
+      {
+        "en": "Aquafina Vietnam – Sải Bước Cộng Đồng Sóng Xanh",
+        "sanityZh": "Aquafina",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.aquafina-vietnam-sa-i-bu-o-c-co-ng-o-ng-so-ng-xanh.8a482665"
+        ]
+      },
+      {
+        "en": "ASICS DYNABLAST",
+        "sanityZh": "亚瑟士 动态平衡",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.asics-dynablast.0d07476a"
+        ]
+      },
+      {
+        "en": "ASUS Education <span>Upgrading Education to Incredible</span>",
+        "sanityZh": "华硕电脑教育 <span>提升教育品质，迈向卓越</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.asus-education-span-upgrading-education-to-incredible-span.76bce119"
+        ]
+      },
+      {
+        "en": "Bambu Lab Vortek Hotend Change System",
+        "sanityZh": "拓竹 Vortek 热端更换系统",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bambu-lab-vortek-hotend-change-system.08d2e873"
+        ]
+      },
+      {
+        "en": "Banyan Tree – There's More to Discovery",
+        "sanityZh": "悦榕庄",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.banyan-tree-there-s-more-to-discovery.874140f7"
+        ]
+      },
+      {
+        "en": "Bitget Elite Traders <span>Annii (Trade Travel Chill)</span>",
+        "sanityZh": "Bitget 精英交易商 <span>安尼（商旅休闲）</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-elite-traders-span-annii-trade-travel-chill-span.dc6be9c9"
+        ]
+      },
+      {
+        "en": "Bitget Elite Traders <span>David Justin Academy</span>",
+        "sanityZh": "Bitget 精英交易商 <span>戴维·贾斯汀学院</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-elite-traders-span-david-justin-academy-span.1eb4203a"
+        ]
+      },
+      {
+        "en": "Bitget Elite Traders <span>Long</span>",
+        "sanityZh": "Bitget 精英交易商 <span>长</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-elite-traders-span-long-span.63583c47"
+        ]
+      },
+      {
+        "en": "Bitget Elite Traders <span>Raizel (Brain Bro Crypto)</span>",
+        "sanityZh": "Bitget 精英交易商 <span>雷泽尔（大脑兄弟加密）</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-elite-traders-span-raizel-brain-bro-crypto-span.6c890de9"
+        ]
+      },
+      {
+        "en": "Bitget Trade Smarter – The Concert",
+        "sanityZh": "Bitget 智慧交易",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-trade-smarter-the-concert.0886dcf0"
+        ]
+      },
+      {
+        "en": "Bitget Trade Smarter <span>The Dinner</span>",
+        "sanityZh": "Bitget 智能交易 <span>晚餐</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-trade-smarter-span-the-dinner-span.60866328"
+        ]
+      },
+      {
+        "en": "Bitget Trade Smarter <span>The Mandatory</span>",
+        "sanityZh": "Bitget 智能交易 <span>强制性</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-trade-smarter-span-the-mandatory-span.a7bec20f"
+        ]
+      },
+      {
+        "en": "Bitget Trade Smarter <span>The Traveler</span>",
+        "sanityZh": "Bitget 智能交易 <span>旅行者</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.bitget-trade-smarter-span-the-traveler-span.1a9eab89"
+        ]
+      },
+      {
+        "en": "Coca-Cola x The Ocean Cleanup",
+        "sanityZh": "可口可乐公司 x 海洋清洁",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.coca-cola-x-the-ocean-cleanup.d7901916"
+        ]
+      },
+      {
+        "en": "Commercial Film Director",
+        "sanityZh": "商业电影导演",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.commercial-film-director.ce3464f1"
+        ]
+      },
+      {
+        "en": "DJI FlightHub – Introducing FlightHub",
+        "sanityZh": "DJI – 介绍 FlightHub",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-flighthub-introducing-flighthub.d6112d35"
+        ]
+      },
+      {
+        "en": "DJI Master Wheels – Introducing Master Wheels",
+        "sanityZh": "大疆 Master Wheels",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-master-wheels-introducing-master-wheels.6413b3b1"
+        ]
+      },
+      {
+        "en": "DJI Matrice 200 – Search & Rescue in Extreme Environments",
+        "sanityZh": "大疆Matrice 200 搜索与救援 – 200 搜索与救援",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-matrice-200-search-rescue-in-extreme-environments.ea3463fa"
+        ]
+      },
+      {
+        "en": "DJI Matrice 200 Series – Introducing Matrice 200 Series",
+        "sanityZh": "大疆Matrice 200",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-matrice-200-series-introducing-matrice-200-series.83995327"
+        ]
+      },
+      {
+        "en": "DJI Matrice 600 – Introducing Matrice 600",
+        "sanityZh": "大疆灵眸Matrice 600",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-matrice-600-introducing-matrice-600.68cb87cd"
+        ]
+      },
+      {
+        "en": "DJI Mavic – Travel Tips",
+        "sanityZh": "大疆 Mavic",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-travel-tips.bea668f5"
+        ]
+      },
+      {
+        "en": "DJI Mavic 2 – Introducing Mavic 2 Series",
+        "sanityZh": "DJI大疆创新 Mavic 2",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-2-introducing-mavic-2-series.b83bab62"
+        ]
+      },
+      {
+        "en": "DJI Mavic 2 <span> Expedition Greenland </span> Behind the Scenes",
+        "sanityZh": "DJI大疆创新 Mavic 2 <span> 格陵兰探险 </span> 幕后花絮",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-2-span-expedition-greenland-span-behind-the-scenes.a77c8f2e"
+        ]
+      },
+      {
+        "en": "DJI Mavic 2 Showreel – A Cosmic Voyage",
+        "sanityZh": "DJI大疆创新 Mavic 2 视频展示 – Mavic 2 视频展示",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-2-showreel-a-cosmic-voyage.90af7a54"
+        ]
+      },
+      {
+        "en": "DJI Mavic Mini <span> It's Easy </span>",
+        "sanityZh": "DJI Mavic Mini <span> 很简单 </span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-mini-span-it-s-easy-span.48248d6b"
+        ]
+      },
+      {
+        "en": "DJI Mavic Mini <span> Take Better Selfies </span>",
+        "sanityZh": "DJI Mavic Mini <span> 拍出更好的自拍照 </span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-mini-span-take-better-selfies-span.0617b49e"
+        ]
+      },
+      {
+        "en": "DJI Mavic Mini Campaign – Make Your Drone Your Own",
+        "sanityZh": "DJI Mavic Mini 视频推广 – Mavic Mini 视频推广",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-mini-campaign-make-your-drone-your-own.d0f37afa"
+        ]
+      },
+      {
+        "en": "DJI Mavic Pro Wall Art – Wall-to-Wall Art",
+        "sanityZh": "大疆Mavic Pro 墙艺 – Pro 墙艺",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-mavic-pro-wall-art-wall-to-wall-art.5b5bad51"
+        ]
+      },
+      {
+        "en": "DJI Meet Spark",
+        "sanityZh": "大疆 晓SPARK",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-meet-spark.3d296e20"
+        ]
+      },
+      {
+        "en": "DJI My Hong Kong – DJI My Hong Kong",
+        "sanityZh": "大疆 我的香港",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-my-hong-kong-dji-my-hong-kong.d14fc11c"
+        ]
+      },
+      {
+        "en": "DJI Osmo Mobile <span> The Vlogger </span>",
+        "sanityZh": "大疆灵眸Osmo Mobile <span> 视频博主 </span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-osmo-mobile-span-the-vlogger-span.841b9e50"
+        ]
+      },
+      {
+        "en": "DJI Osmo Mobile Campaign – The Traveler",
+        "sanityZh": "大疆灵眸Osmo Mobile 视频推广 – Mobile 视频推广",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-osmo-mobile-campaign-the-traveler.6e3bd119"
+        ]
+      },
+      {
+        "en": "DJI Osmo Pocket – Meet Osmo Pocket",
+        "sanityZh": "DJI – Osmo Pocket",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-osmo-pocket-meet-osmo-pocket.f049118a"
+        ]
+      },
+      {
+        "en": "DJI Osmo Pocket <span>Compact Convenience</span>",
+        "sanityZh": "DJI Osmo Pocket <span>便捷小巧</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-osmo-pocket-span-compact-convenience-span.7c788323"
+        ]
+      },
+      {
+        "en": "DJI Osmo Pocket Animated Campaign – Portable Power",
+        "sanityZh": "DJI Osmo Pocket 动画活动 – Osmo Pocket 动画活动",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-osmo-pocket-animated-campaign-portable-power.4bfb3948"
+        ]
+      },
+      {
+        "en": "DJI P4P Hawaiian Lava",
+        "sanityZh": "大疆精灵Phantom 4 Pro 夏威夷熔岩 – 4 Pro 夏威夷熔岩",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-p4p-hawaiian-lava.e0025c2e"
+        ]
+      },
+      {
+        "en": "DJI Phantom 4 Pro – Introducing Phantom 4 Pro",
+        "sanityZh": "DJI – 介绍 Phantom 4 Pro",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-phantom-4-pro-introducing-phantom-4-pro.d3a1a355"
+        ]
+      },
+      {
+        "en": "DJI Profiles Know Your Passion",
+        "sanityZh": "大疆人物 认识自己的热爱",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-profiles-know-your-passion.3e7b7cfb"
+        ]
+      },
+      {
+        "en": "DJI Profiles Time is Fluid",
+        "sanityZh": "大疆人物 时间是流动的",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-profiles-time-is-fluid.9094a447"
+        ]
+      },
+      {
+        "en": "DJI Spark Capture Your Passion",
+        "sanityZh": "大疆 晓SPARK",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-spark-capture-your-passion.012b9511"
+        ]
+      },
+      {
+        "en": "DJI Stories Building Our Future",
+        "sanityZh": "大疆故事 建立人类未来",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-building-our-future.252a204e"
+        ]
+      },
+      {
+        "en": "DJI Stories Chernobyl – The Lost City of Chernobyl",
+        "sanityZh": "大疆故事 切尔诺贝利",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-chernobyl-the-lost-city-of-chernobyl.171dac31"
+        ]
+      },
+      {
+        "en": "DJI Stories Coastline Watch – Australian Coastline Watch",
+        "sanityZh": "大疆故事 海岸线观察",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-coastline-watch-australian-coastline-watch.56176500"
+        ]
+      },
+      {
+        "en": "DJI Stories Feed the World – Feeding the World",
+        "sanityZh": "大疆故事 养活地球",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-feed-the-world-feeding-the-world.31140ad4"
+        ]
+      },
+      {
+        "en": "DJI Stories Humpbacks of Rarotonga – Humpback Whales of Rarotonga",
+        "sanityZh": "大疆故事 拉罗汤加的座头鲸",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-humpbacks-of-rarotonga-humpback-whales-of-rarotonga.9e6a8011"
+        ]
+      },
+      {
+        "en": "DJI Stories Linkin Park",
+        "sanityZh": "大疆故事 林肯公园",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-linkin-park.20395d6e"
+        ]
+      },
+      {
+        "en": "DJI Stories Maldives – Mapping the Maldives",
+        "sanityZh": "大疆故事 马尔代夫",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-maldives-mapping-the-maldives.f92f2b01"
+        ]
+      },
+      {
+        "en": "DJI Stories Polo",
+        "sanityZh": "大疆故事 马球",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-stories-polo.50a56f59"
+        ]
+      },
+      {
+        "en": "DJI World <span> The Story of Aisholpan </span> Behind the Scenes",
+        "sanityZh": "大疆世界 <span> 阿依夏的传说 </span> 幕后花絮",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-world-span-the-story-of-aisholpan-span-behind-the-scenes.f0e7ad6b"
+        ]
+      },
+      {
+        "en": "DJI World Eagle Huntress – The Story of Aisholpan",
+        "sanityZh": "大疆世界 鹰猎女孩",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-world-eagle-huntress-the-story-of-aisholpan.f47a4dbd"
+        ]
+      },
+      {
+        "en": "DJI Zenmuse X5 Series – Introducing Zenmuse X5 Series",
+        "sanityZh": "大疆 禅思X5系列 – 介绍 Zenmuse X5 系列",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-zenmuse-x5-series-introducing-zenmuse-x5-series.254dd999"
+        ]
+      },
+      {
+        "en": "DJI Zenmuse X7 Showreel – Zenmuse X7 Showreel",
+        "sanityZh": "大疆创新禅思 X7 视频展示 – X7 视频展示",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-zenmuse-x7-showreel-zenmuse-x7-showreel.8ca202db"
+        ]
+      },
+      {
+        "en": "DJI Zenmuse XT2 – Introducing Zenmuse XT2",
+        "sanityZh": "大疆 禅思XT2 – Zenmuse XT2",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-zenmuse-xt2-introducing-zenmuse-xt2.845894e9"
+        ]
+      },
+      {
+        "en": "DJI Zenmuse Z30 – Introducing Zenmuse Z30",
+        "sanityZh": "大疆Zenmuse Z30",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.dji-zenmuse-z30-introducing-zenmuse-z30.c2ff2db9"
+        ]
+      },
+      {
+        "en": "EcoFlow DELTA – DELTA Battery Generator",
+        "sanityZh": "正浩 DELTA",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ecoflow-delta-delta-battery-generator.79ff41e7"
+        ]
+      },
+      {
+        "en": "EcoFlow DELTA Max <span>Unleash Your Capacity</span>",
+        "sanityZh": "EcoFlow 德DELTA Max <span>释放你的潜力</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ecoflow-delta-max-span-unleash-your-capacity-span.8e77abfe"
+        ]
+      },
+      {
+        "en": "EcoFlow DELTA Mini <span>Move With Power</span>",
+        "sanityZh": "EcoFlow DELTA Mini <span>动力前进</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ecoflow-delta-mini-span-move-with-power-span.752e7a98"
+        ]
+      },
+      {
+        "en": "EcoFlow RIVER Power Station – RIVER Mobile Power Station",
+        "sanityZh": "正浩 睿RIVER",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ecoflow-river-power-station-river-mobile-power-station.4cf626dd"
+        ]
+      },
+      {
+        "en": "Elewana Collection – Loisaba Safari",
+        "sanityZh": "Elewana 系列 – 野生动物园",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.elewana-collection-loisaba-safari.9fe8670a"
+        ]
+      },
+      {
+        "en": "For Every Mood of Home",
+        "sanityZh": "满足家居的每种氛围",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.for-every-mood-of-home.511d7a0e"
+        ]
+      },
+      {
+        "en": "Fujifilm <span>Smarter Systems, Happier Patients</span>",
+        "sanityZh": "富士胶片 <span>更智慧的系统，更幸福的患者</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.fujifilm-span-smarter-systems-happier-patients-span.0bb77195"
+        ]
+      },
+      {
+        "en": "Govee – Halloween",
+        "sanityZh": "Govee – 万圣节",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.govee-halloween.7d882c77"
+        ]
+      },
+      {
+        "en": "Govee <span> Permanent Outdoor Lights </span>Battle of the Block",
+        "sanityZh": "Govee <span> 永久户外灯 </span>街区大战",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.govee-span-permanent-outdoor-lights-span-battle-of-the-block.1d4acf8e"
+        ]
+      },
+      {
+        "en": "Govee <span>Connect, Inspire, and Shine with the Govee Community</span>",
+        "sanityZh": "Govee <span>加入 Govee 社区，连接、启发、闪耀</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.govee-span-connect-inspire-and-shine-with-the-govee-community-sp.8aa9ced4"
+        ]
+      },
+      {
+        "en": "Govee <span>Halloween x Amazon Alexa </span>",
+        "sanityZh": "Govee <span>万圣节 x Amazon Alexa </span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.govee-span-halloween-x-amazon-alexa-span.b8d91446"
+        ]
+      },
+      {
+        "en": "Govee Outdoor Lights – Unstoppable Fun",
+        "sanityZh": "Govee 户外灯具 – 乐趣不设限",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.govee-outdoor-lights-unstoppable-fun.e5c7af1b"
+        ]
+      },
+      {
+        "en": "Govee Permanent Outdoor Lights Prism",
+        "sanityZh": "Govee 永久户外灯",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.govee-permanent-outdoor-lights-prism.bf129f35"
+        ]
+      },
+      {
+        "en": "Hasselblad 907X Special Edition – Introducing 907X Special Edition",
+        "sanityZh": "哈苏 907X",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.hasselblad-907x-special-edition-introducing-907x-special-edition.529cec2d"
+        ]
+      },
+      {
+        "en": "Huawei Magic 2 – Magic 2 AI",
+        "sanityZh": "华为 魔法 2",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.huawei-magic-2-magic-2-ai.7b5edecd"
+        ]
+      },
+      {
+        "en": "Hyundai <span>Experiencing More in a Tiny Home</span>",
+        "sanityZh": "现代汽车 <span>微型房屋里，体验更多</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.hyundai-span-experiencing-more-in-a-tiny-home-span.6a1d4d35"
+        ]
+      },
+      {
+        "en": "Hyundai Progress for Humanity – IONIQ5 Design Teaser",
+        "sanityZh": "现代人类的进步",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.hyundai-progress-for-humanity-ioniq5-design-teaser.70d2db74"
+        ]
+      },
+      {
+        "en": "IndelB ICECO Go20 – Let's own a different summer!",
+        "sanityZh": "IndelB Go20",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.indelb-iceco-go20-let-s-own-a-different-summer.5156ff32"
+        ]
+      },
+      {
+        "en": "Indwell 2-in-1 Fridge & Air Conditioner",
+        "sanityZh": "Indwell 二合一冰箱和空调",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.indwell-2-in-1-fridge-air-conditioner.9574d4f3"
+        ]
+      },
+      {
+        "en": "Lay's Max",
+        "sanityZh": "莱斯最大",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.lay-s-max.8ebc2661"
+        ]
+      },
+      {
+        "en": "Lay's Max – Max Uốn Lượn, Giòn Cực Đã",
+        "sanityZh": "莱斯最大",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.lay-s-max-max-uo-n-lu-o-n-gio-n-cu-c-a.d152ba1c"
+        ]
+      },
+      {
+        "en": "Mammotion <span>Let LUBA 2 Do It</span> Conquer Any Terrain with Ease",
+        "sanityZh": "库犸科技 <span>让 LUBA 2 来做</span> 轻松征服任何地形",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.mammotion-span-let-luba-2-do-it-span-conquer-any-terrain-with-ea.efe96b68"
+        ]
+      },
+      {
+        "en": "Mammotion LUBA 2 – Let LUBA 2 Do It",
+        "sanityZh": "库犸科技 LUBA 2 – 让 LUBA 2 来做",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.mammotion-luba-2-let-luba-2-do-it.eedcdf2a"
+        ]
+      },
+      {
+        "en": "Mammotion LUBA 3 AWD",
+        "sanityZh": "库犸科技 路霸 3 AWD",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.mammotion-luba-3-awd.88564bf3"
+        ]
+      },
+      {
+        "en": "Mammotion Luba Lawn Mower – Automated Robot Lawn Mower",
+        "sanityZh": "库犸科技 LUBA 割草机 – 自动割草机器人",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.mammotion-luba-lawn-mower-automated-robot-lawn-mower.1704212f"
+        ]
+      },
+      {
+        "en": "Mammotion LUBA Mini AWD – Compact, Powerful & Ready to Conquer Your Lawn",
+        "sanityZh": "库犸科技 路霸迷你 AWD",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.mammotion-luba-mini-awd-compact-powerful-ready-to-conquer-your-l.3ff9347f"
+        ]
+      },
+      {
+        "en": "MSI 120Hz PerfectEdge Monitor <span>Your Daily Sidekick</span> Accessory Slot",
+        "sanityZh": "MSI 120Hz PerfectEdge 显示器 <span>您的日常伙伴</span> 配件插槽",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.msi-120hz-perfectedge-monitor-span-your-daily-sidekick-span-acce.c1c314cd"
+        ]
+      },
+      {
+        "en": "MSI 120Hz PerfectEdge Monitor <span>Your Daily Sidekick</span> EyesErgo",
+        "sanityZh": "MSI 120Hz PerfectEdge 显示器 <span>您的日常伙伴</span> 艾塞尔戈",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.msi-120hz-perfectedge-monitor-span-your-daily-sidekick-span-eyes.52ed9f24"
+        ]
+      },
+      {
+        "en": "Old Spice Sandalwood – Thơm Gỗ Đàn Hương Nam Tính",
+        "sanityZh": "Old Spice 檀香 – Spice檀香洗发水",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.old-spice-sandalwood-tho-m-go-a-n-hu-o-ng-nam-ti-nh.becb755d"
+        ]
+      },
+      {
+        "en": "OnePlus 10T – Fast & Smooth",
+        "sanityZh": "一加 10T – 快速流畅",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oneplus-10t-fast-smooth.6d4a1077"
+        ]
+      },
+      {
+        "en": "OnePlus 12 <span>Chasing Luna</span> Behind the Scenes",
+        "sanityZh": "一加 12 <span>追逐月亮</span> 幕后花絮",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oneplus-12-span-chasing-luna-span-behind-the-scenes.46ba0cde"
+        ]
+      },
+      {
+        "en": "OnePlus 8T <span>Gaming Supercharged</span>",
+        "sanityZh": "一加8T <span>游戏超频</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oneplus-8t-span-gaming-supercharged-span.244d2eb2"
+        ]
+      },
+      {
+        "en": "OnePlus 8T Launch Campaign – Meet the OnePlus 8T",
+        "sanityZh": "一加8T",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oneplus-8t-launch-campaign-meet-the-oneplus-8t.ae6bfbff"
+        ]
+      },
+      {
+        "en": "Oppo Reno 6 Pro 5G – Launch Teaser",
+        "sanityZh": "OPPO – Reno 6 Pro 5G",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno-6-pro-5g-launch-teaser.19342d1a"
+        ]
+      },
+      {
+        "en": "OPPO Reno10 Pro+ 5G – Fast Charging",
+        "sanityZh": "OPPO Reno10 Pro+",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno10-pro-5g-fast-charging.20c04872"
+        ]
+      },
+      {
+        "en": "OPPO Reno10 Pro+ 5G <span>Long-Lasting Battery</span>",
+        "sanityZh": "OPPO Reno10 Pro+ 5G <span>持久电池</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno10-pro-5g-span-long-lasting-battery-span.ffb3a287"
+        ]
+      },
+      {
+        "en": "OPPO Reno10 Pro+ 5G <span>Low Light</span>",
+        "sanityZh": "OPPO Reno10 Pro+ 5G <span>弱光</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno10-pro-5g-span-low-light-span.d400879f"
+        ]
+      },
+      {
+        "en": "OPPO Reno10 Pro+ 5G <span>Messy Street</span>",
+        "sanityZh": "OPPO Reno10 Pro+ 5G <span>凌乱的街道</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno10-pro-5g-span-messy-street-span.fbda538b"
+        ]
+      },
+      {
+        "en": "OPPO Reno10 Pro+ 5G <span>Nature</span>",
+        "sanityZh": "OPPO Reno10 Pro+ 5G <span>自然</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno10-pro-5g-span-nature-span.a37d5698"
+        ]
+      },
+      {
+        "en": "OPPO Reno10 Pro+ 5G <span>System Smoothness</span>",
+        "sanityZh": "OPPO Reno10 Pro+ 5G <span>系统流畅度</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.oppo-reno10-pro-5g-span-system-smoothness-span.c5aa9703"
+        ]
+      },
+      {
+        "en": "Osmo Mobile",
+        "sanityZh": "灵眸Osmo",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.osmo-mobile.9c42bffb"
+        ]
+      },
+      {
+        "en": "Parksible – The Drive Never Ends",
+        "sanityZh": "Parksible – 征途永不停止",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.parksible-the-drive-never-ends.f6f25b34"
+        ]
+      },
+      {
+        "en": "Permanent Outdoor Lights Prism",
+        "sanityZh": "永久户外灯",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.permanent-outdoor-lights-prism.9e56340b"
+        ]
+      },
+      {
+        "en": "Petkit Purobot Ultra – Say Hello to Purobot Ultra",
+        "sanityZh": "小佩 Purobot Ultra",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.petkit-purobot-ultra-say-hello-to-purobot-ultra.ce31dd5f"
+        ]
+      },
+      {
+        "en": "Realme X7 Campaign – Fast & Powerful",
+        "sanityZh": "真我 X7 – 快速强大",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.realme-x7-campaign-fast-powerful.09641047"
+        ]
+      },
+      {
+        "en": "Roborock H7 <span>Capture Pet Hair Everywhere</span>",
+        "sanityZh": "石头 H7 <span>随处捕捉宠物毛发</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-h7-span-capture-pet-hair-everywhere-span.10aa13cf"
+        ]
+      },
+      {
+        "en": "Roborock H7 <span>Keep Accessories Close with MagBase</span>",
+        "sanityZh": "石头 H7 <span>使用 MagBase，配件触手可及</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-h7-span-keep-accessories-close-with-magbase-span.0ce3f9cd"
+        ]
+      },
+      {
+        "en": "Roborock H7 <span>Less Mess with a Dustbag</span>",
+        "sanityZh": "石头 H7 <span>集尘袋，减少扬尘</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-h7-span-less-mess-with-a-dustbag-span.7ce0d1e6"
+        ]
+      },
+      {
+        "en": "Roborock H7 <span>Long-Lasting Power</span>",
+        "sanityZh": "石头 H7 <span>持久动力</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-h7-span-long-lasting-power-span.295ca288"
+        ]
+      },
+      {
+        "en": "Roborock H7 <span>Seriously Strong Suction</span>",
+        "sanityZh": "石头 H7 <span>强劲吸力</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-h7-span-seriously-strong-suction-span.3c994e1b"
+        ]
+      },
+      {
+        "en": "Roborock H7 Campaign – Surprisingly Lightweight",
+        "sanityZh": "石头 H7 – 出乎意料地轻巧",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-h7-campaign-surprisingly-lightweight.8a14174f"
+        ]
+      },
+      {
+        "en": "Roborock S8 Pro Ultra <span>Forget About Cleaning, Really</span>",
+        "sanityZh": "石头 G10S 旗舰版 <span>忘掉清洁吧，真的</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-s8-pro-ultra-span-forget-about-cleaning-really-span.131d771d"
+        ]
+      },
+      {
+        "en": "Roborock S8 Series – Forget About Cleaning, Really",
+        "sanityZh": "Roborock S8 Series – 忘掉清洁吧，真的",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.roborock-s8-series-forget-about-cleaning-really.7b3604f1"
+        ]
+      },
+      {
+        "en": "Samsung Galaxy S21 – Director's View (feat. BinZ)",
+        "sanityZh": "三星 Galaxy S21",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.samsung-galaxy-s21-director-s-view-feat-binz.1c82bf5f"
+        ]
+      },
+      {
+        "en": "Samsung Galaxy S21 Ultra 5G <span>Active with Fixed Earphones</span>",
+        "sanityZh": "三星 Galaxy S21 Ultra 5G <span>有线耳机</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.samsung-galaxy-s21-ultra-5g-span-active-with-fixed-earphones-spa.b6266bcf"
+        ]
+      },
+      {
+        "en": "Samsung Galaxy S21 Ultra 5G <span>Nailed It</span>",
+        "sanityZh": "三星 Galaxy S21 Ultra 5G <span>做得太棒了</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.samsung-galaxy-s21-ultra-5g-span-nailed-it-span.3e61881e"
+        ]
+      },
+      {
+        "en": "Samsung Vietnam Galaxy S21 – Cung đường đam mê",
+        "sanityZh": "三星 Galaxy S21 热门短片 – S21 爆红视频",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.samsung-vietnam-galaxy-s21-cung-ng-am-m.5a9c2c54"
+        ]
+      },
+      {
+        "en": "Samsung Vietnam Galaxy S8 – The Endless Beauty of Vietnam",
+        "sanityZh": "越南三星 – Galaxy S8",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.samsung-vietnam-galaxy-s8-the-endless-beauty-of-vietnam.cbe4618f"
+        ]
+      },
+      {
+        "en": "Sensoro Story of Pema – The Story of Pema",
+        "sanityZh": "Sensoro 佩玛的故事",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.sensoro-story-of-pema-the-story-of-pema.8237e0d2"
+        ]
+      },
+      {
+        "en": "Snapmaker Brand Film – Make Something Wonderful",
+        "sanityZh": "骁将 品牌电影",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.snapmaker-brand-film-make-something-wonderful.16cdb81b"
+        ]
+      },
+      {
+        "en": "Techcombank – Hành Trình Rực Rỡ Cùng Thế Hệ Why Not",
+        "sanityZh": "Techcombank",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.techcombank-ha-nh-tri-nh-ru-c-ro-cu-ng-the-he-why-not.43407452"
+        ]
+      },
+      {
+        "en": "Techcombank Mobile",
+        "sanityZh": "Techcombank 手机银行 – 移动电话",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.techcombank-mobile.14b50566"
+        ]
+      },
+      {
+        "en": "The Drive Never Ends",
+        "sanityZh": "征途永不停止",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.the-drive-never-ends.36bec754"
+        ]
+      },
+      {
+        "en": "The Westin – Busy Resting",
+        "sanityZh": "威斯汀 – 忙碌的休息",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.the-westin-busy-resting.b2bf1c58"
+        ]
+      },
+      {
+        "en": "TPBank <span>5 phút có thẻ xài ngay</span>",
+        "sanityZh": "TPBank <span>5分钟即可使用</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.tpbank-span-5-phu-t-co-the-xa-i-ngay-span.2322a099"
+        ]
+      },
+      {
+        "en": "TPBank App – Chuyển tiền y như chat",
+        "sanityZh": "TPBank 应用程序 – 转账就像聊天",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.tpbank-app-chuye-n-tie-n-y-nhu-chat.5e3fa223"
+        ]
+      },
+      {
+        "en": "Ulike Air 10 <span>Love Doesn't Have To Be Painful</span>",
+        "sanityZh": "Ulike Air 10 <span>爱不必痛苦</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ulike-air-10-span-love-doesn-t-have-to-be-painful-span.eb1351b0"
+        ]
+      },
+      {
+        "en": "Ulike Air 10 <span>Smooth Skin, Unstoppable Confidence</span>",
+        "sanityZh": "Ulike Air 10 <span>光滑的肌肤，无尽的自信</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.ulike-air-10-span-smooth-skin-unstoppable-confidence-span.26a65253"
+        ]
+      },
+      {
+        "en": "Unstoppable Fun",
+        "sanityZh": "乐趣不设限",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.unstoppable-fun.33ae8ffb"
+        ]
+      },
+      {
+        "en": "Vinamilk Probi <span>Hạnh Phúc 26 Tỷ, Êm Ruột Nuột Đời</span>",
+        "sanityZh": "菲仕兰 <span>26亿的幸福，尽享人生</span>",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.vinamilk-probi-span-ha-nh-phu-c-26-ty-e-m-ruo-t-nuo-t-o-i-span.071a7191"
+        ]
+      },
+      {
+        "en": "VioLoop – AI Agent for your PC",
+        "sanityZh": "VioLoop AI 智能体 – PC 专属 AI 智能体",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.violoop-ai-agent-for-your-pc.21fda3ba"
+        ]
+      },
+      {
+        "en": "Westin Hotels &amp; Resorts <span>Himalayas</span> Busy Resting",
+        "sanityZh": "威斯汀酒店及度假村 <span>喜马拉雅山脉</span> 忙碌的休息",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.westin-hotels-amp-resorts-span-himalayas-span-busy-resting.431b7290"
+        ]
+      },
+      {
+        "en": "Zhiyun Crane 2S – Introducing Crane 2S",
+        "sanityZh": "智云 起重机 2S",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.zhiyun-crane-2s-introducing-crane-2s.719d2e8b"
+        ]
+      },
+      {
+        "en": "Zhiyun Crane 3S",
+        "sanityZh": "智云 起重机 3S",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.zhiyun-crane-3s.a0f390d3"
+        ]
+      },
+      {
+        "en": "Zhiyun Crane M2 – Say Hello to Crane M2",
+        "sanityZh": "智云 智云稳定器 M2",
+        "status": "trp_missing",
+        "sources": [
+          "phrase.zhiyun-crane-m2-say-hello-to-crane-m2.259f1217"
+        ]
+      }
+    ],
+    "identicalEnZh": [
+      {
+        "en": "10T",
+        "sanityZh": "10T",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.10t.03333730"
+        ]
+      },
+      {
+        "en": "12",
+        "sanityZh": "12",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.12.1deb2d6a"
+        ]
+      },
+      {
+        "en": "13+ 5G",
+        "sanityZh": "13+ 5G",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.13-5g.70e7b3aa"
+        ]
+      },
+      {
+        "en": "Áo Xuân Tươi Màu, Disco Xin Vía",
+        "sanityZh": "Áo Xuân Tươi Màu, Disco Xin Vía",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.o-xu-n-t-i-m-u-disco-xin-v-a.5c631c4f"
+        ]
+      },
+      {
+        "en": "Aquafina",
+        "sanityZh": "Aquafina",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.aquafina.15bf29d1"
+        ]
+      },
+      {
+        "en": "BIDV",
+        "sanityZh": "BIDV",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.bidv.916fa0c2"
+        ]
+      },
+      {
+        "en": "Bitget",
+        "sanityZh": "Bitget",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.bitget.d4f7afac"
+        ]
+      },
+      {
+        "en": "Braun x DJI",
+        "sanityZh": "Braun x DJI",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.braun-x-dji.e02e93fe"
+        ]
+      },
+      {
+        "en": "BRINC",
+        "sanityZh": "BRINC",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.brinc.c4cb9477"
+        ]
+      },
+      {
+        "en": "C85",
+        "sanityZh": "C85",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.c85.ac876791"
+        ]
+      },
+      {
+        "en": "Chọn Dinh Dưỡng Lành Mạnh, Chọn Herbalife Nutrition",
+        "sanityZh": "Chọn Dinh Dưỡng Lành Mạnh, Chọn Herbalife Nutrition",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.cho-n-dinh-du-o-ng-la-nh-ma-nh-cho-n-herbalife-nutrition.877a6ea8"
+        ]
+      },
+      {
+        "en": "Comfort x Tóc Tiên",
+        "sanityZh": "Comfort x Tóc Tiên",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.comfort-x-t-c-ti-n.86eb0510"
+        ]
+      },
+      {
+        "en": "Comfort x Tóc Tiên – Áo Xuân Tươi Màu, Disco Xin Vía",
+        "sanityZh": "Comfort x Tóc Tiên – Áo Xuân Tươi Màu, Disco Xin Vía",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.comfort-x-t-c-ti-n-o-xu-n-t-i-m-u-disco-xin-v-a.d096a691"
+        ]
+      },
+      {
+        "en": "DELTA",
+        "sanityZh": "DELTA",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.delta.3aed32c1"
+        ]
+      },
+      {
+        "en": "DJI Osmo Pocket",
+        "sanityZh": "DJI Osmo Pocket",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.dji-osmo-pocket.5fb1ea56"
+        ]
+      },
+      {
+        "en": "DJI RoboMaster S1",
+        "sanityZh": "DJI RoboMaster S1",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.dji-robomaster-s1.5ebc169c"
+        ]
+      },
+      {
+        "en": "Govee",
+        "sanityZh": "Govee",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.govee.ff4d53b9"
+        ]
+      },
+      {
+        "en": "Guardian",
+        "sanityZh": "Guardian",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.guardian.d9295f46"
+        ]
+      },
+      {
+        "en": "H1",
+        "sanityZh": "H1",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.h1.8feb83b2"
+        ]
+      },
+      {
+        "en": "H2D",
+        "sanityZh": "H2D",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.h2d.57be3541"
+        ]
+      },
+      {
+        "en": "HiDock",
+        "sanityZh": "HiDock",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.hidock.e8f4509d"
+        ]
+      },
+      {
+        "en": "IndelB",
+        "sanityZh": "IndelB",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.indelb.2588885f"
+        ]
+      },
+      {
+        "en": "Indwell",
+        "sanityZh": "Indwell",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.indwell.8188d52a"
+        ]
+      },
+      {
+        "en": "Link",
+        "sanityZh": "Link",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.link.8e08e589"
+        ]
+      },
+      {
+        "en": "LUBA 2",
+        "sanityZh": "LUBA 2",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.luba-2.6f101ad9"
+        ]
+      },
+      {
+        "en": "Master Wheels",
+        "sanityZh": "Master Wheels",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.master-wheels.73f88551"
+        ]
+      },
+      {
+        "en": "Mavic",
+        "sanityZh": "Mavic",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.mavic.7dfb341b"
+        ]
+      },
+      {
+        "en": "Mutosi",
+        "sanityZh": "Mutosi",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.mutosi.2a31023e"
+        ]
+      },
+      {
+        "en": "Mutosi – Nước Khoẻ Chuẩn Nhật",
+        "sanityZh": "Mutosi – Nước Khoẻ Chuẩn Nhật",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.mutosi-nu-o-c-khoe-chua-n-nha-t.bcaaa1f1"
+        ]
+      },
+      {
+        "en": "Nước Khoẻ Chuẩn Nhật",
+        "sanityZh": "Nước Khoẻ Chuẩn Nhật",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.nu-o-c-khoe-chua-n-nha-t.a1ffe54d"
+        ]
+      },
+      {
+        "en": "Old Spice",
+        "sanityZh": "Old Spice",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.old-spice.ea64d434"
+        ]
+      },
+      {
+        "en": "Oppo",
+        "sanityZh": "Oppo",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.oppo.32a6b373"
+        ]
+      },
+      {
+        "en": "OPPO",
+        "sanityZh": "OPPO",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.oppo.b06b9b53"
+        ]
+      },
+      {
+        "en": "OPPO Find X5 Pro",
+        "sanityZh": "OPPO Find X5 Pro",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.oppo-find-x5-pro.8ce378ba"
+        ]
+      },
+      {
+        "en": "Pad 3",
+        "sanityZh": "Pad 3",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.pad-3.3adf5e17"
+        ]
+      },
+      {
+        "en": "Probi",
+        "sanityZh": "Probi",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.probi.4bdd2a05"
+        ]
+      },
+      {
+        "en": "Purobot Ultra",
+        "sanityZh": "Purobot Ultra",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.purobot-ultra.26c69288"
+        ]
+      },
+      {
+        "en": "realme C75",
+        "sanityZh": "realme C75",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.realme-c75.821bcaa6"
+        ]
+      },
+      {
+        "en": "Reno 7 Pro",
+        "sanityZh": "Reno 7 Pro",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.reno-7-pro.2e0d76b1"
+        ]
+      },
+      {
+        "en": "RIVER 600",
+        "sanityZh": "RIVER 600",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.river-600.f0b6d307"
+        ]
+      },
+      {
+        "en": "RoboMaster S1",
+        "sanityZh": "RoboMaster S1",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.robomaster-s1.08685539"
+        ]
+      },
+      {
+        "en": "Roborock",
+        "sanityZh": "Roborock",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.roborock.0ed51f08"
+        ]
+      },
+      {
+        "en": "S8 Series",
+        "sanityZh": "S8 Series",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.s8-series.7d6471b3"
+        ]
+      },
+      {
+        "en": "Sensoro",
+        "sanityZh": "Sensoro",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.sensoro.9c81901c"
+        ]
+      },
+      {
+        "en": "Smooth 5",
+        "sanityZh": "Smooth 5",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.smooth-5.afe4f598"
+        ]
+      },
+      {
+        "en": "Techcombank",
+        "sanityZh": "Techcombank",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.techcombank.ad4e4e84"
+        ]
+      },
+      {
+        "en": "TPBank",
+        "sanityZh": "TPBank",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.tpbank.1c111303"
+        ]
+      },
+      {
+        "en": "Valerion",
+        "sanityZh": "Valerion",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.valerion.224e881f"
+        ]
+      },
+      {
+        "en": "Vinamilk",
+        "sanityZh": "Vinamilk",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.vinamilk.45e7784e"
+        ]
+      },
+      {
+        "en": "VioLoop",
+        "sanityZh": "VioLoop",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.violoop.b27cc273"
+        ]
+      },
+      {
+        "en": "WEEBILL 3S & CRANE-M 3S",
+        "sanityZh": "WEEBILL 3S & CRANE-M 3S",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.weebill-3s-crane-m-3s.3dd591ba"
+        ]
+      },
+      {
+        "en": "X1",
+        "sanityZh": "X1",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.x1.10135ca2"
+        ]
+      },
+      {
+        "en": "YUKA",
+        "sanityZh": "YUKA",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.yuka.817ac62b"
+        ]
+      },
+      {
+        "en": "YUKA Mini 2",
+        "sanityZh": "YUKA Mini 2",
+        "status": "identical_en_zh",
+        "sources": [
+          "phrase.yuka-mini-2.968a26e0"
+        ]
+      }
+    ]
+  },
+  "documentPairs": {
+    "hitCount": 576,
+    "uniqueEn": 493,
+    "tally": {
+      "match": 150,
+      "mismatch": 147,
+      "trp_missing": 133,
+      "identical_en_zh": 54,
+      "trp_same_as_en": 9
+    },
+    "matchRate": 30.4,
+    "conflicts": [
+      {
+        "en": "Brand Film",
+        "variants": [
+          {
+            "zh": "品牌电影",
+            "count": 1
+          },
+          {
+            "zh": "品牌影片",
+            "count": 1
+          }
+        ],
+        "trpZh": "品牌电影",
+        "trpAgreesWith": "品牌电影"
+      },
+      {
+        "en": "Campaign",
+        "variants": [
+          {
+            "zh": "X7",
+            "count": 1
+          },
+          {
+            "zh": "视频推广",
+            "count": 1
+          }
+        ],
+        "trpZh": "视频推广",
+        "trpAgreesWith": "视频推广"
+      },
+      {
+        "en": "DJI",
+        "variants": [
+          {
+            "zh": "大疆",
+            "count": 8
+          },
+          {
+            "zh": "DJI",
+            "count": 4
+          },
+          {
+            "zh": "DJI大疆创新 Mavic 2",
+            "count": 1
+          },
+          {
+            "zh": "DJI Mavic Mini",
+            "count": 1
+          },
+          {
+            "zh": "DJI大疆创新",
+            "count": 1
+          },
+          {
+            "zh": "大疆灵眸Matrice",
+            "count": 1
+          },
+          {
+            "zh": "大疆Matrice",
+            "count": 1
+          },
+          {
+            "zh": "大疆Zenmuse",
+            "count": 1
+          }
+        ],
+        "trpZh": "大疆",
+        "trpAgreesWith": "大疆"
+      },
+      {
+        "en": "Galaxy S21",
+        "variants": [
+          {
+            "zh": "热门短片",
+            "count": 1
+          },
+          {
+            "zh": "Galaxy S21",
+            "count": 1
+          }
+        ],
+        "trpZh": "银河 S21"
+      },
+      {
+        "en": "HiDock H1 – ChatGPT-Powered Audio Dock",
+        "variants": [
+          {
+            "zh": "HiDock H1",
+            "count": 1
+          },
+          {
+            "zh": "HiDock",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "en": "Mammotion",
+        "variants": [
+          {
+            "zh": "库犸科技",
+            "count": 6
+          },
+          {
+            "zh": "Mammotion",
+            "count": 1
+          }
+        ],
+        "trpZh": "库犸科技",
+        "trpAgreesWith": "库犸科技"
+      },
+      {
+        "en": "Mavic 2",
+        "variants": [
+          {
+            "zh": "快速回顾",
+            "count": 1
+          },
+          {
+            "zh": "Mavic 2",
+            "count": 1
+          }
+        ],
+        "trpZh": "御2"
+      },
+      {
+        "en": "realme",
+        "variants": [
+          {
+            "zh": "真我",
+            "count": 3
+          },
+          {
+            "zh": "realme",
+            "count": 1
+          }
+        ],
+        "trpZh": "真我",
+        "trpAgreesWith": "真我"
+      },
+      {
+        "en": "Roborock",
+        "variants": [
+          {
+            "zh": "Roborock",
+            "count": 2
+          },
+          {
+            "zh": "石头科技自清洁扫拖机器人G20",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "en": "Samsung Vietnam",
+        "variants": [
+          {
+            "zh": "三星 Galaxy S21",
+            "count": 1
+          },
+          {
+            "zh": "越南三星",
+            "count": 1
+          }
+        ],
+        "trpZh": "越南三星",
+        "trpAgreesWith": "越南三星"
+      },
+      {
+        "en": "Zhiyun",
+        "variants": [
+          {
+            "zh": "智云",
+            "count": 5
+          },
+          {
+            "zh": "Zhiyun",
+            "count": 1
+          }
+        ],
+        "trpZh": "智云",
+        "trpAgreesWith": "智云"
+      }
+    ]
+  },
+  "conflicts": [
+    {
+      "en": "Brand Film",
+      "variants": [
+        {
+          "zh": "品牌电影",
+          "count": 1
+        },
+        {
+          "zh": "品牌影片",
+          "count": 1
+        }
+      ],
+      "trpZh": "品牌电影",
+      "trpAgreesWith": "品牌电影"
+    },
+    {
+      "en": "Campaign",
+      "variants": [
+        {
+          "zh": "X7",
+          "count": 1
+        },
+        {
+          "zh": "视频推广",
+          "count": 1
+        }
+      ],
+      "trpZh": "视频推广",
+      "trpAgreesWith": "视频推广"
+    },
+    {
+      "en": "DJI",
+      "variants": [
+        {
+          "zh": "大疆",
+          "count": 8
+        },
+        {
+          "zh": "DJI",
+          "count": 4
+        },
+        {
+          "zh": "DJI大疆创新 Mavic 2",
+          "count": 1
+        },
+        {
+          "zh": "DJI Mavic Mini",
+          "count": 1
+        },
+        {
+          "zh": "DJI大疆创新",
+          "count": 1
+        },
+        {
+          "zh": "大疆灵眸Matrice",
+          "count": 1
+        },
+        {
+          "zh": "大疆Matrice",
+          "count": 1
+        },
+        {
+          "zh": "大疆Zenmuse",
+          "count": 1
+        }
+      ],
+      "trpZh": "大疆",
+      "trpAgreesWith": "大疆"
+    },
+    {
+      "en": "Galaxy S21",
+      "variants": [
+        {
+          "zh": "热门短片",
+          "count": 1
+        },
+        {
+          "zh": "Galaxy S21",
+          "count": 1
+        }
+      ],
+      "trpZh": "银河 S21"
+    },
+    {
+      "en": "HiDock H1 – ChatGPT-Powered Audio Dock",
+      "variants": [
+        {
+          "zh": "HiDock H1",
+          "count": 1
+        },
+        {
+          "zh": "HiDock",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "en": "Mammotion",
+      "variants": [
+        {
+          "zh": "库犸科技",
+          "count": 6
+        },
+        {
+          "zh": "Mammotion",
+          "count": 1
+        }
+      ],
+      "trpZh": "库犸科技",
+      "trpAgreesWith": "库犸科技"
+    },
+    {
+      "en": "Mavic 2",
+      "variants": [
+        {
+          "zh": "快速回顾",
+          "count": 1
+        },
+        {
+          "zh": "Mavic 2",
+          "count": 1
+        }
+      ],
+      "trpZh": "御2"
+    },
+    {
+      "en": "realme",
+      "variants": [
+        {
+          "zh": "真我",
+          "count": 3
+        },
+        {
+          "zh": "realme",
+          "count": 1
+        }
+      ],
+      "trpZh": "真我",
+      "trpAgreesWith": "真我"
+    },
+    {
+      "en": "Roborock",
+      "variants": [
+        {
+          "zh": "Roborock",
+          "count": 2
+        },
+        {
+          "zh": "石头科技自清洁扫拖机器人G20",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "en": "Samsung Vietnam",
+      "variants": [
+        {
+          "zh": "三星 Galaxy S21",
+          "count": 1
+        },
+        {
+          "zh": "越南三星",
+          "count": 1
+        }
+      ],
+      "trpZh": "越南三星",
+      "trpAgreesWith": "越南三星"
+    },
+    {
+      "en": "Zhiyun",
+      "variants": [
+        {
+          "zh": "智云",
+          "count": 5
+        },
+        {
+          "zh": "Zhiyun",
+          "count": 1
+        }
+      ],
+      "trpZh": "智云",
+      "trpAgreesWith": "智云"
+    }
+  ]
+}

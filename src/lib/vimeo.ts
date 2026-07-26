@@ -1,29 +1,23 @@
-/**
- * Extract numeric Vimeo video ID from a Vimeo URL string.
- */
-export function extractVimeoId(url: string): string | null {
-  const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  return match?.[1] ?? null;
-}
+import {extractVimeoId, vimeoThumbnailUrl} from '@video-url'
+
+export {extractVimeoId, vimeoThumbnailUrl};
 
 /**
- * Public Vimeo still URL (no oEmbed — Vimeo’s API is often blocked from servers).
- * Used for additional portfolio embeds so each row shows its own frame.
+ * Privacy hash required for some unlisted/private embeds.
+ * Supports `?h=…` and path form `vimeo.com/{id}/{hash}`.
  */
-export function vimeoThumbnailUrl(urlOrId: string): string | null {
-  const id = /^\d+$/.test(urlOrId) ? urlOrId : extractVimeoId(urlOrId);
-  if (!id) return null;
-  return `https://vumbnail.com/${id}.jpg`;
-}
-
-/** Privacy hash (`h=…`) required for some unlisted/private embeds. */
 export function extractVimeoPrivacyHash(url: string): string | null {
   try {
     const parsed = new URL(url);
-    return parsed.searchParams.get('h');
+    const fromQuery = parsed.searchParams.get('h');
+    if (fromQuery) return fromQuery;
+    const pathMatch = parsed.pathname.match(/^\/(?:video\/)?(\d+)\/([a-zA-Z0-9]+)/);
+    return pathMatch?.[2] ?? null;
   } catch {
-    const match = url.match(/[?&]h=([a-zA-Z0-9]+)/);
-    return match?.[1] ?? null;
+    const queryMatch = url.match(/[?&]h=([a-zA-Z0-9]+)/);
+    if (queryMatch?.[1]) return queryMatch[1];
+    const pathMatch = url.match(/vimeo\.com\/(?:video\/)?\d+\/([a-zA-Z0-9]+)/);
+    return pathMatch?.[1] ?? null;
   }
 }
 
@@ -39,7 +33,11 @@ export function vimeoPlayerEmbedSrc(
   if (!id) return null;
 
   const params = new URLSearchParams();
-  if (options.autoplay) params.set('autoplay', '1');
+  if (options.autoplay) {
+    params.set('autoplay', '1');
+    // Browsers block unmuted autoplay; mute so playback can start after click-to-load.
+    params.set('muted', '1');
+  }
 
   if (!/^\d+$/.test(urlOrId)) {
     const hash = extractVimeoPrivacyHash(urlOrId);

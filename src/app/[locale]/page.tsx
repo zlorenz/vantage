@@ -8,12 +8,13 @@ import { BrandLogoGrid } from '@/components/home/BrandLogoGrid';
 import { HeroCarousel } from '@/components/home/HeroCarousel';
 import { PortfolioCard } from '@/components/portfolio/PortfolioCard';
 import { CtaSection } from '@/components/ui/CtaSection';
+import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
-import { getHomeAboutParagraphs } from '@/lib/home-content';
 import { SITE_DESCRIPTION, buildOgImage, buildPageMetadata, homePageTitle } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
+import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, buildOrganization, homeBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { HOME_PAGE_QUERY } from '@/sanity/queries/pages';
@@ -21,16 +22,17 @@ import { RECENT_PORTFOLIO_QUERY } from '@/sanity/queries/portfolio';
 import type {
   HeroSlideData,
   PortfolioCard as PortfolioCardData,
+  PortableTextBlock,
   SanityImage,
 } from '@/types/sanity';
 
 type HomePageData = {
   featuredImage?: SanityImage;
-  heroSlides?: Array<{
-    buttonLabel: string;
-    buttonLabelZh?: string;
-    portfolioRef: Omit<HeroSlideData, 'buttonLabel' | 'buttonLabelZh'> | null;
-  }>;
+  body?: PortableTextBlock[];
+  bodyZh?: PortableTextBlock[];
+  heroSlides?: HeroSlideData[];
+  featuredWork?: PortfolioCardData[];
+  brandLogos?: Array<{ logoId?: string }>;
   seo?: { metaDescription?: string; metaDescriptionZh?: string };
 };
 
@@ -67,28 +69,34 @@ export default async function HomePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [homePage, recentWork] = await Promise.all([
+  const [homePage, recentWork, phrases] = await Promise.all([
     sanityClient.fetch<HomePageData | null>(HOME_PAGE_QUERY),
     sanityClient.fetch<PortfolioCardData[]>(RECENT_PORTFOLIO_QUERY),
+    getPhraseRecord(),
   ]);
 
-  const slides: HeroSlideData[] =
-    homePage?.heroSlides
-      ?.filter((slide) => slide.portfolioRef)
-      .map((slide) => ({
-        ...slide.portfolioRef!,
-        buttonLabel: slide.buttonLabel,
-        buttonLabelZh: slide.buttonLabelZh,
-      })) ?? [];
+  const slides: HeroSlideData[] = homePage?.heroSlides ?? [];
 
-  const aboutParagraphs = getHomeAboutParagraphs(typedLocale);
+  // Curated CMS list when set; otherwise nine most recent public entries.
+  const featuredWork =
+    homePage?.featuredWork?.length ? homePage.featuredWork : recentWork;
+
+  const bodyBlocks =
+    typedLocale === 'zh' && homePage?.bodyZh?.length
+      ? homePage.bodyZh
+      : homePage?.body;
+
+  const brandLogoIds = homePage?.brandLogos
+    ?.map((item) => item.logoId)
+    .filter((id): id is string => Boolean(id));
+
   const t = await getTranslations('Home');
 
   return (
     <>
       <JsonLd data={buildOrganization()} />
       <JsonLd data={buildBreadcrumbs([homeBreadcrumb(typedLocale)])} />
-      <HeroCarousel slides={slides} locale={typedLocale} />
+      <HeroCarousel slides={slides} locale={typedLocale} phrases={phrases} />
 
       {/* A Bit of Our Work */}
       <SectionWrapper>
@@ -97,12 +105,13 @@ export default async function HomePage({ params }: Props) {
             <span className="vp-outline">{t('workSectionOutline')}</span> {t('workSection')}
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {recentWork.map((entry, index) => (
+            {featuredWork.map((entry, index) => (
               <PortfolioCard
                 key={entry._id}
                 entry={entry}
                 locale={typedLocale}
                 revealIndex={index}
+                phrases={phrases}
               />
             ))}
           </div>
@@ -127,13 +136,7 @@ export default async function HomePage({ params }: Props) {
               <span className="vp-outline">{t('aboutHeadingBrands')}</span>
             </h2>
           )}
-          <div className="space-y-4 font-light text-vp-text-muted">
-            {aboutParagraphs.map((paragraph, index) => (
-              <p key={index} className="m-0">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+          <PortableTextContent blocks={bodyBlocks} />
           <div className="mt-8">
             <VpButton href="/about">{t('learnMoreAboutUs')}</VpButton>
           </div>
@@ -146,7 +149,7 @@ export default async function HomePage({ params }: Props) {
           <h2 className="vp-section-heading mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
             <span className="vp-outline">{t('brandsOutline')}</span> {t('brands')}
           </h2>
-          <BrandLogoGrid />
+          <BrandLogoGrid logoIds={brandLogoIds} />
         </div>
       </SectionWrapper>
 

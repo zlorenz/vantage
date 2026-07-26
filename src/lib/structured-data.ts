@@ -14,7 +14,7 @@ import {
   videoFormatPaths,
 } from '@/lib/sitemap-urls';
 import { urlForImage } from '@/lib/sanity';
-import { extractVimeoId } from '@/lib/vimeo';
+import { parseVideoUrl } from '@/lib/video-url';
 import type { SanityImage, SeoFields } from '@/types/sanity';
 
 const ORGANIZATION_ID = 'https://vantage.pictures/#organization';
@@ -43,10 +43,12 @@ export interface VideoObjectInput {
 export interface ArticleInput {
   title: string;
   excerpt?: string;
+  excerptZh?: string;
   featuredImage?: SanityImage;
   publishedAt?: string;
   _updatedAt?: string;
   seo?: SeoFields;
+  locale?: Locale;
 }
 
 function plainTextDescription(value?: string): string | undefined {
@@ -54,9 +56,34 @@ function plainTextDescription(value?: string): string | undefined {
   return decodeHtmlEntities(value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim());
 }
 
-function vimeoEmbedUrl(vimeoUrl: string): string | undefined {
-  const id = extractVimeoId(vimeoUrl);
-  return id ? `https://player.vimeo.com/video/${id}` : undefined;
+function articleSchemaDescription(post: ArticleInput): string | undefined {
+  const locale = post.locale ?? 'en';
+  if (locale === 'zh') {
+    const fromSeoZh = plainTextDescription(post.seo?.metaDescriptionZh);
+    if (fromSeoZh) return fromSeoZh;
+    const fromExcerptZh = plainTextDescription(post.excerptZh);
+    if (fromExcerptZh) {
+      return fromExcerptZh.length > 300
+        ? fromExcerptZh.slice(0, 300).trim()
+        : fromExcerptZh;
+    }
+  }
+
+  const fromSeo = plainTextDescription(post.seo?.metaDescription);
+  if (fromSeo) return fromSeo;
+
+  const fromExcerpt = plainTextDescription(post.excerpt);
+  if (!fromExcerpt) return undefined;
+  return fromExcerpt.length > 300 ? fromExcerpt.slice(0, 300).trim() : fromExcerpt;
+}
+
+function videoEmbedUrl(videoUrl: string): string | undefined {
+  const parsed = parseVideoUrl(videoUrl);
+  if (!parsed) return undefined;
+  if (parsed.provider === 'youtube') {
+    return `https://www.youtube.com/embed/${parsed.id}`;
+  }
+  return `https://player.vimeo.com/video/${parsed.id}`;
 }
 
 export function homeBreadcrumb(locale: Locale): BreadcrumbItem {
@@ -141,8 +168,7 @@ export function buildOrganization() {
         '@id': ORGANIZATION_ID,
         name: 'Vantage Pictures',
         url: 'https://vantage.pictures',
-        // TODO: replace logo URL with final production URL before launch
-        logo: 'https://vantage.pictures/brand/vantage-logo.png',
+        logo: 'https://vantage.pictures/brand/vantage-logo.svg',
         description:
           'Vietnam-based commercial video production company specialising in brand films, product commercials, and social media campaigns for global brands.',
         email: 'info@vantage.pictures',
@@ -171,7 +197,7 @@ export function buildOrganization() {
 }
 
 export function buildVideoObject(entry: VideoObjectInput) {
-  const embedUrl = vimeoEmbedUrl(entry.vimeoUrl);
+  const embedUrl = videoEmbedUrl(entry.vimeoUrl);
   const thumbnailUrl = entry.featuredImage
     ? urlForImage(entry.featuredImage).width(1280).height(720).fit('crop').url()
     : undefined;
@@ -186,15 +212,6 @@ export function buildVideoObject(entry: VideoObjectInput) {
     embedUrl,
     publisher: { '@id': ORGANIZATION_ID },
   };
-}
-
-function articleSchemaDescription(post: ArticleInput): string | undefined {
-  const fromSeo = plainTextDescription(post.seo?.metaDescription);
-  if (fromSeo) return fromSeo;
-
-  const fromExcerpt = plainTextDescription(post.excerpt);
-  if (!fromExcerpt) return undefined;
-  return fromExcerpt.length > 300 ? fromExcerpt.slice(0, 300).trim() : fromExcerpt;
 }
 
 export function buildArticle(post: ArticleInput) {

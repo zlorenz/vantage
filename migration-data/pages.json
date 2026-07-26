@@ -102,34 +102,22 @@
     "bodyHtmlZh": "\n\n<h1 class=\"wp-block-heading has-text-align-center\" id=\"h-a-bit-of-our-work\">精选作品</h1>\n\n\n\n\n\n\n\n\n\n<h1 class=\"wp-block-heading\" id=\"h-global-commercial-film-production-for-ambitious-brands\">面向全球品牌的商业影像制作</h1>\n\n\n\n<p>Vantage Pictures 是一家面向全球市场的商业影像制作公司，专注于品牌影片、产品发布广告以及科技类商业广告制作。我们与快速成长的创新企业和成熟的全球品牌合作，通过视觉精致、策略清晰的影片提升品牌故事与产品价值。</p>\n\n\n\n<p>我们的核心优势之一，是帮助亚洲科技品牌（尤其是中国企业）通过国际化水准的广告影片，与欧美市场建立更有效的沟通。</p>\n\n\n\n<p>除了科技领域，我们的作品还涵盖生活方式、汽车、能源、体育以及纪录片风格的品牌影片。所有项目均以严谨的制作标准、电影级视觉语言以及跨境制作经验完成。</p>\n\n\n\n\n\n\n\n\n\n<h1 class=\"wp-block-heading has-text-align-center\" id=\"h-brands-nbsp-we-work-with\">合作品牌</h1>\n\n\n\n<figure class=\"wp-block-gallery has-nested-images columns-4 is-cropped brand-logos\">\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/cnn.png\" alt=\"CNN logo white transparent\" class=\"wp-image-45\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/oneplus.png\" alt=\"OnePlus logo white transparent\" class=\"wp-image-52\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hyundai.png\" alt=\"Hyundai logo white transparent\" class=\"wp-image-49\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/samsung.png\" alt=\"Samsung logo white transparent\" class=\"wp-image-55\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/huawei.png\" alt=\"Huawei logo white transparent\" class=\"wp-image-48\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/realme.png\" alt=\"realme logo white transparent\" class=\"wp-image-54\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/hasselblad.png\" alt=\"Hasselblad logo white transparent\" class=\"wp-image-47\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/dji.png\" alt=\"DJI logo white transparent\" class=\"wp-image-46\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/braun.png\" alt=\"Braun logo white transparent\" class=\"wp-image-44\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/the-north-face.png\" alt=\"The North Face logo white transparent\" class=\"wp-image-56\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/jw-marriott.png\" alt=\"JW Marriott logo white transparent\" class=\"wp-image-51\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/12/toyota.png\" alt=\"Toyota logo white transparent\" class=\"wp-image-3035\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/12/png.png\" alt=\"Procter &amp; Gamble logo white transparent\" class=\"wp-image-3034\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/zhiyun.png\" alt=\"Zhiyun logo white transparent\" class=\"wp-image-59\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2022/12/coca-cola.png\" alt=\"Coca Cola logo white transparent\" class=\"wp-image-3032\"></figure>\n\n\n\n<figure class=\"wp-block-image size-full\"><img src=\"http://localhost:8888/vantage-local/wp-content/uploads/2021/06/unilever.png\" alt=\"Unilever logo white transparent\" class=\"wp-image-57\"></figure>\n</figure>\n\n\n\n",
     "heroSlides": [
       {
-        "portfolioWpId": 4449,
-        "buttonLabel": "Watch",
-        "buttonLabelZh": "立即观看"
+        "portfolioWpId": 4449
       },
       {
-        "portfolioWpId": 4453,
-        "buttonLabel": "Watch",
-        "buttonLabelZh": "立即观看"
+        "portfolioWpId": 4453
       },
       {
-        "portfolioWpId": 3519,
-        "buttonLabel": "Watch",
-        "buttonLabelZh": "立即观看"
+        "portfolioWpId": 3519
       },
       {
-        "portfolioWpId": 3524,
-        "buttonLabel": "Watch",
-        "buttonLabelZh": "立即观看"
+        "portfolioWpId": 3524
       },
       {
-        "portfolioWpId": 3276,
-        "buttonLabel": "Watch",
-        "buttonLabelZh": "立即观看"
+        "portfolioWpId": 3276
       },
       {
-        "portfolioWpId": 3239,
-        "buttonLabel": "Watch",
-        "buttonLabelZh": "立即观看"
+        "portfolioWpId": 3239
       }
     ],
     "noIndex": false,
@@ -138,7 +126,21 @@
       "metaDescriptionZh": "Vantage Pictures 是一家全球商业影像制作公司，为科技企业和国际品牌制作品牌影片、商业广告和产品发布影片。",
       "focusKeyword": "Global Commercial Film Production Company"
     },
-    "publishedAt": "2026-03-02T11:54:56.000Z"
+    "publishedAt": "2026-03-02T11:54:56.000Z",
+    "featuredWorkWpIds": [
+      3519,
+      3524,
+      3504,
+      3283,
+      3239,
+      3276,
+      3499,
+      3518,
+      3173,
+      3101,
+      2059,
+      3040
+    ]
   },
   {
     "wpId": 3778,
@@ -155,43 +157,23 @@
       {
         "name": "Alexis Odiowei",
         "jobTitle": "Commercial Film Director",
-        "imageWpId": 2851,
-        "bio": "Alexis Odiowei is a commercial film director and Managing Director of Vantage Pictures. He leads global advertising productions for technology and consumer brands, overseeing creative development and international production operations.",
-        "bioZh": "Alexis Odiowei 是一名商业电影导演，也是 Vantage Pictures 公司的总经理。他负责技术和消费品牌的全球广告制作，监督创意开发和国际制作运营。",
-        "sameAs": [
-          "3"
-        ]
+        "imageWpId": 2851
       },
       {
         "name": "Paul Moore",
         "jobTitle": "Commercial Film Director",
-        "imageWpId": 2856,
-        "bio": "Paul Moore is a commercial film director and Creative Director at Vantage Pictures. He develops cinematic campaigns for global brands, specializing in visual storytelling, creative strategy, and high-end commercial production.",
-        "bioZh": "保罗-摩尔（Paul Moore）是一名商业电影导演，也是 Vantage Pictures 公司的创意总监。他为全球品牌开发电影宣传活动，擅长视觉叙事、创意战略和高端商业制作。",
-        "sameAs": [
-          "4"
-        ]
+        "imageWpId": 2856
       },
       {
         "name": "Zacharia Lorenz",
         "jobTitle": "Commercial Film Director",
-        "imageWpId": 2860,
-        "bio": "Zacharia Lorenz is a commercial film director and Marketing Director of Vantage Pictures. He produces global brand campaigns and leads marketing strategy, business development, and international client partnerships.",
-        "bioZh": "Zacharia Lorenz 是 Vantage Pictures 的广告片导演兼市场总监。他负责制作全球品牌活动，领导营销战略、业务开发和国际客户合作。",
-        "sameAs": [
-          "6"
-        ]
+        "imageWpId": 2860
       },
       {
         "name": "James Duong",
         "jobTitle": "Executive Producer",
         "jobTitleZh": "执行制片人",
-        "imageWpId": 2853,
-        "bio": "James Duong is Executive Producer and co-founder of Vantage Pictures. He oversees production operations across Asia, managing large-scale commercial campaigns for global technology and consumer brands.",
-        "bioZh": "James Duong 是 Vantage Pictures 的执行制片人和联合创始人。他负责亚洲地区的制作运营，管理全球技术和消费品牌的大型商业活动。",
-        "sameAs": [
-          "3"
-        ]
+        "imageWpId": 2853
       }
     ],
     "noIndex": false,

@@ -11,7 +11,8 @@ import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { VpButton } from '@/components/ui/VpButton';
-import { pickLocaleField } from '@/lib/locale-field';
+import { phraseRecordToMap } from '@phrase-book';
+import { resolveEntryDisplayTitles } from '@/lib/display-titles';
 import { urlForImage } from '@/lib/sanity';
 import type { HeroSlideData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -19,11 +20,12 @@ import type { Locale } from '@/i18n/routing';
 interface HeroCarouselProps {
   slides: HeroSlideData[];
   locale: Locale;
+  phrases?: Record<string, string>;
 }
 
 const INTERVAL_MS = 6000;
 
-export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
+export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
   const t = useTranslations('Home');
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -89,19 +91,15 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
         {slides.map((slide, index) => {
           const slugParam =
             locale === 'zh' ? slide.slugZh || slide.slug : slide.slug;
-          const buttonLabel =
-            locale === 'zh' && slide.buttonLabelZh
-              ? slide.buttonLabelZh
-              : slide.buttonLabel;
           const description =
             locale === 'zh' && slide.descriptionZh
               ? slide.descriptionZh
               : slide.description;
-          const headerTitle = pickLocaleField(
+          const headerTitle = resolveEntryDisplayTitles(
+            slide,
             locale,
-            slide.headerTitle,
-            slide.headerTitleZh,
-          );
+            phraseRecordToMap(phrases),
+          ).headerTitle;
 
           return (
             <div
@@ -128,7 +126,7 @@ export function HeroCarousel({ slides, locale }: HeroCarouselProps) {
                 className="pointer-events-auto inline-flex items-center gap-2"
               >
                 <span aria-hidden>▶</span>
-                {buttonLabel}
+                {t('watchButton')}
               </VpButton>
             </div>
           );

@@ -1,30 +1,52 @@
 /**
- * PortfolioCredits — department grid with inline credit pairs.
- *
- * Prefers structured crewCredits (safe React links). Falls back to legacy
- * department objects with sanitized HTML name strings.
+ * PortfolioCredits — department grid with inline credit pairs from crewCredits.
  */
 
 import { resolveCreditsForDisplay } from '@/lib/credits-config';
-import { sanitizeCreditHtml } from '@/lib/sanitize-credit-html';
+import { phraseRecordToMap, resolveLocalizedString } from '@phrase-book';
 import type { Locale } from '@/i18n/routing';
-import type {
-  CrewCredit,
-  CrewPerson,
-  PortfolioCredits as PortfolioCreditsData,
-} from '@/types/sanity';
+import type { CrewCredit, CrewPerson } from '@/types/sanity';
 
 interface PortfolioCreditsProps {
   crewCredits?: CrewCredit[];
-  credits?: PortfolioCreditsData;
   locale?: Locale;
+  phrases?: Record<string, string>;
 }
 
-function CreditNames({ people, fallbackHtml }: { people?: CrewPerson[]; fallbackHtml: string }) {
-  if (people?.length) {
-    return (
-      <>
-        {people.map((person, index) => (
+function creditDisplayName(
+  person: CrewPerson,
+  locale: Locale,
+  phrases?: Record<string, string>,
+): string {
+  const map = phraseRecordToMap(phrases);
+  if (locale === 'zh') {
+    const identityZh = person.identityNameZh?.trim();
+    if (identityZh) return identityZh;
+    return resolveLocalizedString({
+      locale: 'zh',
+      en: person.identityName || person.name,
+      phrases: map,
+    });
+  }
+  return person.name;
+}
+
+function CreditNames({
+  people,
+  locale,
+  phrases,
+}: {
+  people?: CrewPerson[];
+  locale: Locale;
+  phrases?: Record<string, string>;
+}) {
+  if (!people?.length) return null;
+
+  return (
+    <>
+      {people.map((person, index) => {
+        const displayName = creditDisplayName(person, locale, phrases);
+        return (
           <span key={`${person.name}-${index}`}>
             {index > 0 ? ', ' : null}
             {person.url ? (
@@ -36,32 +58,24 @@ function CreditNames({ people, fallbackHtml }: { people?: CrewPerson[]; fallback
                   ? { title: person.linkTitle.trim() }
                   : {})}
               >
-                {person.name}
+                {displayName}
               </a>
             ) : (
-              person.name
+              displayName
             )}
           </span>
-        ))}
-      </>
-    );
-  }
-
-  return (
-    <span
-      dangerouslySetInnerHTML={{
-        __html: sanitizeCreditHtml(fallbackHtml),
-      }}
-    />
+        );
+      })}
+    </>
   );
 }
 
 export function PortfolioCredits({
   crewCredits,
-  credits,
   locale = 'en',
+  phrases,
 }: PortfolioCreditsProps) {
-  const rows = resolveCreditsForDisplay({ crewCredits, credits, locale });
+  const rows = resolveCreditsForDisplay({ crewCredits, locale, phrases });
   if (!rows.length) return null;
 
   return (
@@ -74,7 +88,11 @@ export function PortfolioCredits({
               <span key={`${pair.role}-${index}`} className="vp-credit-pair">
                 <span className="vp-credit-role">{pair.role} </span>
                 <span className="vp-credit-names">
-                  <CreditNames people={pair.people} fallbackHtml={pair.names} />
+                  <CreditNames
+                    people={pair.people}
+                    locale={locale}
+                    phrases={phrases}
+                  />
                 </span>
                 {index < row.pairs.length - 1 ? ' ' : null}
               </span>

@@ -5,6 +5,7 @@
 import {
   CREW_DEPARTMENTS,
   CREW_DEPARTMENT_BY_KEY,
+  CREW_ROLE_BY_KEY,
   CREW_ROLES_FLAT,
   type ResolvedCrewRole,
 } from './catalog'
@@ -61,6 +62,40 @@ for (const entry of CREW_ROLES_FLAT) {
   }
 }
 
+/**
+ * Aliases that resolve differently by department.
+ * "sound engineer" → Sound Design & Mix (post) or Sound Recordist (production).
+ * Default without department: post (majority of live data).
+ */
+const DEPT_SCOPED_ROLE_ALIASES = new Map<
+  string,
+  {byDepartment: Partial<Record<CrewDepartmentKey, string>>; defaultRoleKey: string}
+>([
+  [
+    normalizeCreditToken('sound engineer'),
+    {
+      byDepartment: {
+        production: 'sound_recordist',
+        post: 'sound_design_mix',
+      },
+      defaultRoleKey: 'sound_design_mix',
+    },
+  ],
+])
+
+/** Custom role label variants → canonical custom label (not catalog standards). */
+const CUSTOM_ROLE_CANONICAL = new Map<string, string>([
+  [normalizeCreditToken('boom operator'), 'Boom Op'],
+  [normalizeCreditToken('boom op'), 'Boom Op'],
+  [normalizeCreditToken('boom'), 'Boom Op'],
+  [normalizeCreditToken('medic on-set'), 'Medic'],
+  [normalizeCreditToken('medic on set'), 'Medic'],
+  [normalizeCreditToken('medic onset'), 'Medic'],
+  [normalizeCreditToken("director's assistant"), "Director's Assistant"],
+  [normalizeCreditToken('directors assistant'), "Director's Assistant"],
+  [normalizeCreditToken('director assistant'), "Director's Assistant"],
+])
+
 export const CSV_HEADER_ALIASES = {
   department: ['department', 'dept', 'section'],
   role: ['role', 'position', 'title', 'credit', 'job'],
@@ -89,9 +124,40 @@ export function resolveDepartment(raw: string | undefined | null): CrewDepartmen
   return DEPARTMENT_ALIAS_TO_KEY.get(normalized) ?? null
 }
 
-export function resolveStandardRole(raw: string | undefined | null): ResolvedCrewRole | null {
+export interface ResolveStandardRoleOptions {
+  /** When set, dept-scoped aliases (e.g. Sound Engineer) pick the matching catalog role. */
+  department?: CrewDepartmentKey | null
+}
+
+export function resolveStandardRole(
+  raw: string | undefined | null,
+  options?: ResolveStandardRoleOptions,
+): ResolvedCrewRole | null {
   if (!raw?.trim()) return null
-  return ROLE_LOOKUP.get(normalizeCreditToken(raw)) ?? null
+  const normalized = normalizeCreditToken(raw)
+
+  const scoped = DEPT_SCOPED_ROLE_ALIASES.get(normalized)
+  if (scoped) {
+    const dept = options?.department ?? null
+    const roleKey =
+      (dept ? scoped.byDepartment[dept] : undefined) ?? scoped.defaultRoleKey
+    return CREW_ROLE_BY_KEY.get(roleKey) ?? null
+  }
+
+  return ROLE_LOOKUP.get(normalized) ?? null
+}
+
+/**
+ * Canonicalize a custom role label (Boom Op, Medic, Director's Assistant).
+ * Returns null when the label is already canonical or not a known custom variant.
+ */
+export function resolveCustomRoleCanonical(raw: string | undefined | null): string | null {
+  if (!raw?.trim()) return null
+  const normalized = normalizeCreditToken(raw)
+  const canonical = CUSTOM_ROLE_CANONICAL.get(normalized)
+  if (!canonical) return null
+  if (raw.trim() === canonical) return null
+  return canonical
 }
 
 export function isKnownDepartmentKey(value: string): value is CrewDepartmentKey {

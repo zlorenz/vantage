@@ -2,6 +2,7 @@
 
 /**
  * LanguageSwitcher — toggles locale while preserving the current path.
+ * Prefers link[rel=alternate][hreflang] so bilingual slugs (EN ↔ ZH) swap correctly.
  */
 
 import Image from 'next/image';
@@ -20,6 +21,19 @@ const TARGET_LOCALE: Record<Locale, Locale> = {
   zh: 'en',
 };
 
+function alternatePathForLocale(target: Locale): string | null {
+  if (typeof document === 'undefined') return null;
+  const link = document.querySelector(
+    `link[rel="alternate"][hreflang="${target}"]`,
+  ) as HTMLLinkElement | null;
+  if (!link?.href) return null;
+  try {
+    return new URL(link.href).pathname;
+  } catch {
+    return null;
+  }
+}
+
 export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const locale = useLocale() as Locale;
   const t = useTranslations('Nav');
@@ -34,12 +48,18 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
       type="button"
       className={`nav-link inline-flex cursor-pointer items-center border-0 bg-transparent p-2 uppercase ${className}`}
       aria-label={label}
-      onClick={() =>
+      onClick={() => {
+        const alternatePath = alternatePathForLocale(target);
+        if (alternatePath) {
+          // Path-only so production alternate hosts still work in local/staging.
+          window.location.assign(alternatePath);
+          return;
+        }
         router.replace(
           { pathname, params } as Parameters<typeof router.replace>[0],
           { locale: target },
-        )
-      }
+        );
+      }}
     >
       <Image
         src={FLAG_SRC[locale]}

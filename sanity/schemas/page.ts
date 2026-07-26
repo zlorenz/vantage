@@ -2,10 +2,17 @@
  * page — Flexible static page document.
  *
  * Source: content-schema.md §4.4
- * WordPress origin: `page` (9 entries — 8 public bilingual + 1 internal EN-only)
+ *
+ * Two tabs:
+ * - Page Details — Title → Card (image | excerpt) → slug, hero chrome, SEO
+ * - Content — frontend-aligned widgets (carousel → featured work → body → logos…)
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
+
+import {ClearableArrayInput} from '../components/ClearableArrayInput'
+import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
+import {hideUnlessPageSlug} from '../lib/page-visibility'
 
 export const page = defineType({
   name: 'page',
@@ -13,150 +20,83 @@ export const page = defineType({
   type: 'document',
 
   groups: [
-    { name: 'content', title: 'Content', default: true },
-    { name: 'body', title: 'Body' },
-    { name: 'extras', title: 'Extras' },
-    { name: 'seo', title: 'SEO' },
+    {name: 'details', title: 'Page Details', default: true},
+    {name: 'content', title: 'Content'},
   ],
 
   fieldsets: [
-    { name: 'titles', title: 'Titles', options: { columns: 2 } },
-    { name: 'slugs', title: 'Slugs', options: { columns: 2 } },
-    { name: 'hero', title: 'Hero', options: { columns: 2 } },
+    {name: 'card', title: 'Card', options: {columns: 2}},
   ],
 
   fields: [
-    defineField({
+    // —— Page Details (matches blogPost: Title → Card → slug) ——
+    ...defineLocalePair({
       name: 'title',
-      title: 'Title (English)',
+      title: 'Title',
       type: 'string',
-      group: 'content',
-      fieldset: 'titles',
+      group: 'details',
       validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'titleZh',
-      title: 'Title (Chinese)',
-      type: 'string',
-      group: 'content',
-      fieldset: 'titles',
-    }),
-
-    defineField({
-      name: 'slug',
-      title: 'Slug (English)',
-      type: 'slug',
-      group: 'content',
-      fieldset: 'slugs',
-      description: 'Must match live URLs (e.g. about, work, news).',
-      options: { source: 'title', maxLength: 96 },
-      validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: 'slugZh',
-      title: 'Slug (Chinese)',
-      type: 'slug',
-      group: 'content',
-      fieldset: 'slugs',
-      options: { source: 'titleZh', maxLength: 96 },
-    }),
-
-    defineField({
-      name: 'publishedAt',
-      title: 'Published At',
-      type: 'datetime',
-      group: 'content',
-      description: 'Original WordPress publish date.',
-    }),
-
-    defineField({
-      name: 'showHeroHeader',
-      title: 'Show Hero Header',
-      type: 'boolean',
-      group: 'content',
-      description: 'Off for Home and Campaign Brief pages.',
-      initialValue: true,
-    }),
-
-    defineField({
-      name: 'heroTitle',
-      title: 'Hero Title (English)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'hero',
-      description: 'Supports <span class="vp-outline">.',
-    }),
-
-    defineField({
-      name: 'heroTitleZh',
-      title: 'Hero Title (Chinese)',
-      type: 'text',
-      rows: 2,
-      group: 'content',
-      fieldset: 'hero',
+      optional: false,
     }),
 
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
-      group: 'content',
-      options: { hotspot: true },
-      description: 'Hero background when Show Hero Header is on.',
+      group: 'details',
+      fieldset: 'card',
+      options: {hotspot: true},
     }),
 
-    defineField({
-      name: 'body',
-      title: 'Body (English)',
-      type: 'array',
-      group: 'body',
-      of: [{ type: 'block' }, { type: 'image' }, { type: 'imageGallery' }, { type: 'ctaButton' }],
+    ...defineLocalePair({
+      name: 'excerpt',
+      title: 'Excerpt',
+      type: 'text',
+      rows: 3,
+      group: 'details',
+      fieldset: 'card',
+      description: 'Card / teaser copy. Usually the former body lead paragraph.',
+      optional: true,
+    }),
+
+    ...defineLocalePair({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      group: 'details',
+      description: 'Must match live URLs (e.g. about, work, news). ZH: /zh/[slug]/',
+      options: {source: 'title', maxLength: 96},
+      zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
+      optional: false,
     }),
 
     defineField({
-      name: 'bodyZh',
-      title: 'Body (Chinese)',
-      type: 'array',
-      group: 'body',
-      of: [{ type: 'block' }, { type: 'image' }, { type: 'imageGallery' }, { type: 'ctaButton' }],
+      name: 'showHeroHeader',
+      title: 'Show Hero Header',
+      type: 'boolean',
+      group: 'details',
+      description: 'Off for Home and Campaign Brief pages.',
+      initialValue: true,
     }),
 
-    defineField({
-      name: 'heroSlides',
-      title: 'Hero Carousel Slides',
-      type: 'array',
-      group: 'extras',
-      of: [{ type: 'heroSlide' }],
-      description: 'Homepage only.',
-    }),
-
-    defineField({
-      name: 'founders',
-      title: 'Founders',
-      type: 'array',
-      group: 'extras',
-      of: [{ type: 'founder' }],
-      description: 'About page only.',
-    }),
-
-    defineField({
-      name: 'pdfDownload',
-      title: 'PDF Download',
-      type: 'pdfDownload',
-      group: 'extras',
-      description: 'Optional (Vietnam Location Guide).',
+    ...defineLocalePair({
+      name: 'heroTitle',
+      title: 'Hero Title',
+      type: 'text',
+      rows: 2,
+      group: 'details',
+      description: 'Supports <span class="vp-outline">.',
+      optional: true,
+      hidden: ({document}) => document?.showHeroHeader === false,
     }),
 
     defineField({
       name: 'noIndex',
       title: 'No Index',
       type: 'boolean',
-      group: 'seo',
-      description: 'Exclude from search indexing and sitemap (work-internal).',
+      group: 'details',
+      description: 'Exclude from search indexing and sitemap (typically work-internal).',
       initialValue: false,
     }),
 
@@ -164,7 +104,106 @@ export const page = defineType({
       name: 'seo',
       title: 'SEO',
       type: 'seoFields',
-      group: 'seo',
+      group: 'details',
+    }),
+
+    // —— Content (frontend order on Home) ——
+    defineField({
+      name: 'heroSlides',
+      title: 'Hero Carousel Slides',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
+      description:
+        'Full-viewport carousel at the top of the home page (display order). Button label is always “Watch”.',
+      hidden: hideUnlessPageSlug('home'),
+      components: {input: ClearableArrayInput},
+      options: {
+        clearAll: {
+          confirmTitle: 'Clear hero carousel?',
+          confirmBody:
+            'Remove every carousel slide from this draft? The homepage hero will be empty until you add slides again. Publish to make this live.',
+        },
+      } as never,
+    }),
+
+    defineField({
+      name: 'featuredWork',
+      title: 'Featured Work',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
+      description:
+        'Curated portfolio grid (display order). Home: “A Bit of Our Work” (falls back to nine most recent). Vietnam Production Service: “Shot in Vietnam” (falls back to all Vietnam-tagged projects).',
+      hidden: hideUnlessPageSlug([
+        'home',
+        'vietnam-production-service',
+      ]),
+      components: {input: ClearableArrayInput},
+      options: {
+        clearAll: {
+          confirmTitle: 'Clear featured work?',
+          confirmBody:
+            'Remove every featured project from this draft? The grid will fall back to its default list until you curate again. Publish to make this live.',
+        },
+      } as never,
+    }),
+
+    defineField({
+      name: 'body',
+      title: 'Body (English)',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'block'}, {type: 'image'}, {type: 'imageGallery'}, {type: 'ctaButton'}],
+      description: 'Main page copy. On Home: company description under Featured Work.',
+      validation: (rule) => rule.required(),
+    }),
+
+    defineField({
+      name: 'bodyZh',
+      title: 'Body (Chinese)',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'block'}, {type: 'image'}, {type: 'imageGallery'}, {type: 'ctaButton'}],
+      hidden: hideZhPortableText('body'),
+    }),
+
+    defineField({
+      name: 'brandLogos',
+      title: 'Brand Logos',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'brandLogoItem'}],
+      description:
+        '“Brands We Work With” grid on the home page. Drag to reorder. Falls back to the default logo set if empty.',
+      hidden: hideUnlessPageSlug('home'),
+      components: {input: ClearableArrayInput},
+      options: {
+        clearAll: {
+          confirmTitle: 'Clear brand logos?',
+          confirmBody:
+            'Remove every brand logo from this draft? The homepage grid will fall back to the default logo set until you curate again. Publish to make this live.',
+        },
+      } as never,
+    }),
+
+    defineField({
+      name: 'founders',
+      title: 'Founders',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'founder'}],
+      description: 'Team cards on the About page (name, title, photo).',
+      hidden: hideUnlessPageSlug('about'),
+    }),
+
+    defineField({
+      name: 'pdfDownload',
+      title: 'PDF Download',
+      type: 'pdfDownload',
+      group: 'content',
+      description: 'Downloadable PDF shown on the Vietnam Location Guide page.',
+      hidden: hideUnlessPageSlug('vietnam-location-guide'),
     }),
 
     defineField({
@@ -182,12 +221,12 @@ export const page = defineType({
       media: 'featuredImage',
       noIndex: 'noIndex',
     },
-    prepare({ title, subtitle, media, noIndex }) {
+    prepare({title, subtitle, media, noIndex}) {
       return {
         title: noIndex ? `[Noindex] ${title}` : title,
         subtitle: subtitle ? `/${subtitle}/` : undefined,
         media,
-      };
+      }
     },
   },
-});
+})

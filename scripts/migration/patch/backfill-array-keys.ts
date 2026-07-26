@@ -7,8 +7,8 @@
  * Covers:
  * - portfolioEntry: videoFormats, industries, markets, clients, crewMembers,
  *   platforms, additionalVideos, credits.*.additional
- * - blogPost: categories
- * - page: heroSlides, founders
+ * - blogPost: categories, body, bodyZh (incl. nested children/markDefs)
+ * - page: heroSlides, featuredWork, brandLogos, founders, body, bodyZh (incl. nested children/markDefs)
  *
  * Usage: npx tsx scripts/migration/patch/backfill-array-keys.ts
  *
@@ -19,7 +19,11 @@ import { CREDITS_CONFIG } from '../lib/credits-config';
 import { getWriteClient } from '../lib/sanity-client';
 import '../config';
 
-type ArrayItem = Record<string, unknown> & { _key?: string };
+type ArrayItem = Record<string, unknown> & {
+  _key?: string;
+  children?: ArrayItem[];
+  markDefs?: ArrayItem[];
+};
 
 const PORTFOLIO_REF_FIELDS = [
   'videoFormats',
@@ -36,6 +40,7 @@ function newKey(): string {
 
 function ensureKeys(
   items: ArrayItem[] | undefined,
+  opts: { deep?: boolean } = {},
 ): { items: ArrayItem[]; changed: boolean; filled: number } {
   if (!items?.length) {
     return { items: items ?? [], changed: false, filled: 0 };
@@ -44,20 +49,42 @@ function ensureKeys(
   const used = new Set<string>();
   let filled = 0;
   const next = items.map((item) => {
+    let current = item;
     const existing =
-      typeof item._key === 'string' && item._key.length > 0 ? item._key : null;
+      typeof current._key === 'string' && current._key.length > 0
+        ? current._key
+        : null;
     if (existing && !used.has(existing)) {
       used.add(existing);
-      return item;
+    } else {
+      let key = newKey();
+      while (used.has(key)) key = newKey();
+      used.add(key);
+      filled++;
+      current = {...current, _key: key};
     }
-    let key = newKey();
-    while (used.has(key)) key = newKey();
-    used.add(key);
-    filled++;
-    return { ...item, _key: key };
+
+    if (opts.deep) {
+      if (Array.isArray(current.children)) {
+        const children = ensureKeys(current.children, {deep: true});
+        if (children.changed) {
+          current = {...current, children: children.items};
+          filled += children.filled;
+        }
+      }
+      if (Array.isArray(current.markDefs)) {
+        const markDefs = ensureKeys(current.markDefs, {deep: true});
+        if (markDefs.changed) {
+          current = {...current, markDefs: markDefs.items};
+          filled += markDefs.filled;
+        }
+      }
+    }
+
+    return current;
   });
 
-  return { items: next, changed: filled > 0, filled };
+  return {items: next, changed: filled > 0, filled};
 }
 
 async function main() {
@@ -92,9 +119,15 @@ async function main() {
   `);
 
   const blogs = await client.fetch<
-    { _id: string; title?: string; categories?: ArrayItem[] }[]
+    {
+      _id: string;
+      title?: string;
+      categories?: ArrayItem[];
+      body?: ArrayItem[];
+      bodyZh?: ArrayItem[];
+    }[]
   >(`
-    *[_type == "blogPost"]{ _id, title, categories }
+    *[_type == "blogPost"]{ _id, title, categories, body, bodyZh }
   `);
 
   const pages = await client.fetch<
@@ -102,10 +135,14 @@ async function main() {
       _id: string;
       title?: string;
       heroSlides?: ArrayItem[];
+      featuredWork?: ArrayItem[];
+      brandLogos?: ArrayItem[];
       founders?: ArrayItem[];
+      body?: ArrayItem[];
+      bodyZh?: ArrayItem[];
     }[]
   >(`
-    *[_type == "page"]{ _id, title, heroSlides, founders }
+    *[_type == "page"]{ _id, title, heroSlides, featuredWork, brandLogos, founders, body, bodyZh }
   `);
 
   let docsPatched = 0;
@@ -159,14 +196,31 @@ async function main() {
 
   console.log(`\n=== Blog posts (${blogs.length}) ===`);
   for (const doc of blogs) {
-    const result = ensureKeys(doc.categories);
-    if (!result.changed) continue;
-    await client.patch(doc._id).set({ categories: result.items }).commit();
+    const patch: Record<string, unknown> = {};
+    const notes: string[] = [];
+
+    const categories = ensureKeys(doc.categories);
+    if (categories.changed) {
+      patch.categories = categories.items;
+      notes.push(`categories: +${categories.filled} keys`);
+      keysFilled += categories.filled;
+    }
+
+    for (const field of ['body', 'bodyZh'] as const) {
+      const result = ensureKeys(doc[field], {deep: true});
+      if (result.changed) {
+        patch[field] = result.items;
+        notes.push(`${field}: +${result.filled} keys`);
+        keysFilled += result.filled;
+      }
+    }
+
+    if (!Object.keys(patch).length) continue;
+
+    await client.patch(doc._id).set(patch).commit();
     docsPatched++;
-    keysFilled += result.filled;
-    console.log(
-      `✓ ${doc._id}${doc.title ? ` (${doc.title})` : ''} — categories: +${result.filled} keys`,
-    );
+    console.log(`✓ ${doc._id}${doc.title ? ` (${doc.title})` : ''}`);
+    for (const note of notes) console.log(`    ${note}`);
   }
 
   console.log(`\n=== Pages (${pages.length}) ===`);
@@ -174,8 +228,17 @@ async function main() {
     const patch: Record<string, unknown> = {};
     const notes: string[] = [];
 
-    for (const field of ['heroSlides', 'founders'] as const) {
+    for (const field of ['heroSlides', 'featuredWork', 'brandLogos', 'founders'] as const) {
       const result = ensureKeys(doc[field]);
+      if (result.changed) {
+        patch[field] = result.items;
+        notes.push(`${field}: +${result.filled} keys`);
+        keysFilled += result.filled;
+      }
+    }
+
+    for (const field of ['body', 'bodyZh'] as const) {
+      const result = ensureKeys(doc[field], {deep: true});
       if (result.changed) {
         patch[field] = result.items;
         notes.push(`${field}: +${result.filled} keys`);

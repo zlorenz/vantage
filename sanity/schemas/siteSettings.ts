@@ -3,28 +3,30 @@
  *
  * Source: content-schema.md §4.5
  * WordPress origin: ACF Options page (Contact Info)
- *
- * There is exactly one siteSettings document in the dataset.
- * Singleton desk structure will be configured in sanity.config when all
- * schemas are registered.
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
+
+import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
 
 export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Site Settings',
   type: 'document',
 
-  fields: [
-    // -------------------------------------------------------------------------
-    // Contact information (footer, contact modal)
-    // -------------------------------------------------------------------------
+  groups: [
+    {name: 'contact', title: 'Contact', default: true},
+    {name: 'cta', title: 'Campaign CTA'},
+    {name: 'social', title: 'Social'},
+    {name: 'seo', title: 'SEO'},
+  ],
 
+  fields: [
     defineField({
       name: 'contactEmail',
       title: 'Contact Email',
       type: 'string',
+      group: 'contact',
       description:
         'Primary contact email displayed in the footer and contact modal. ' +
         'WordPress default: info@vantage.pictures',
@@ -35,6 +37,7 @@ export const siteSettings = defineType({
       name: 'contactPhone',
       title: 'Contact Phone',
       type: 'string',
+      group: 'contact',
       description: 'Optional phone number shown in the contact modal.',
     }),
 
@@ -42,149 +45,153 @@ export const siteSettings = defineType({
       name: 'contactWhatsapp',
       title: 'Contact WhatsApp',
       type: 'string',
+      group: 'contact',
       description: 'Optional WhatsApp number or link for the contact modal.',
     }),
 
-    defineField({
+    ...defineLocalePair({
       name: 'contactAddress',
       title: 'Contact Address',
       type: 'text',
       rows: 3,
+      group: 'contact',
       description: 'Optional physical address shown in the contact modal.',
+      optional: true,
     }),
 
-    // -------------------------------------------------------------------------
-    // Contact modal content (nav "Contact" opens modal, not /contact/ page)
-    // -------------------------------------------------------------------------
-
-    defineField({
+    ...defineLocalePair({
       name: 'contactModalTitle',
       title: 'Contact Modal Title',
       type: 'string',
-      description:
-        'Heading displayed inside the contact modal. Empty in production WordPress.',
+      group: 'contact',
+      description: 'Heading displayed inside the contact modal.',
+      optional: true,
     }),
 
-    defineField({
+    ...defineLocalePair({
       name: 'contactModalIntro',
       title: 'Contact Modal Intro',
       type: 'text',
       rows: 3,
-      description:
-        'Short introductory text above the contact modal body. Empty in production WordPress.',
+      group: 'contact',
+      description: 'Short introductory text above the contact modal body.',
+      optional: true,
     }),
 
     defineField({
       name: 'contactModalContent',
-      title: 'Contact Modal Content',
+      title: 'Contact Modal Content (English)',
       type: 'array',
-      of: [{ type: 'block' }],
-      description:
-        'Rich text body content for the contact modal (Portable Text). ' +
-        'Empty in production WordPress.',
+      of: [{type: 'block'}],
+      group: 'contact',
+      description: 'Rich text body content for the contact modal (Portable Text).',
     }),
 
     defineField({
+      name: 'contactModalContentZh',
+      title: 'Contact Modal Content (Chinese)',
+      type: 'array',
+      of: [{type: 'block'}],
+      group: 'contact',
+      hidden: hideZhPortableText('contactModalContent'),
+    }),
+
+    ...defineLocalePair({
       name: 'contactCtaText',
       title: 'Contact CTA Text',
       type: 'string',
-      description:
-        'Optional call-to-action button label in the contact modal. Empty in production WordPress.',
+      group: 'contact',
+      description: 'Optional call-to-action button label in the contact modal.',
+      optional: true,
     }),
 
     defineField({
       name: 'contactCtaUrl',
       title: 'Contact CTA URL',
       type: 'url',
-      description:
-        'Optional call-to-action button link in the contact modal. Empty in production WordPress.',
+      group: 'contact',
+      description: 'Optional call-to-action button link in the contact modal.',
       validation: (rule) =>
-        rule.uri({ allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel'] }),
+        rule.uri({allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel']}),
     }),
 
-    // -------------------------------------------------------------------------
-    // Social links (footer — empty field = hidden)
-    // -------------------------------------------------------------------------
+    defineField({
+      name: 'campaignCta',
+      title: 'Campaign Brief CTA',
+      type: 'campaignCta',
+      group: 'cta',
+      description:
+        'Shared CTA block on Home, About, and Vietnam Production Service. Button usually links to the Campaign Brief form.',
+    }),
 
     defineField({
       name: 'socialVimeo',
       title: 'Vimeo URL',
       type: 'url',
-      description: 'Vimeo profile link for the footer social icons.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'socialInstagram',
       title: 'Instagram URL',
       type: 'url',
-      description: 'Instagram profile link for the footer social icons.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'socialFacebook',
       title: 'Facebook URL',
       type: 'url',
-      description: 'Facebook profile link for the footer social icons.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'socialLinkedin',
       title: 'LinkedIn URL',
       type: 'url',
-      description: 'LinkedIn profile link for the footer social icons.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'socialYoutube',
       title: 'YouTube URL',
       type: 'url',
-      description: 'YouTube channel link for the footer social icons.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'socialXinpianchang',
       title: 'Xinpianchang URL',
       type: 'url',
-      description: 'Xinpianchang (新片场) profile link for the footer social icons.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'socialXiaohongshu',
       title: 'Xiaohongshu URL',
       type: 'url',
-      description:
-        'Xiaohongshu (小红书) profile link. Empty = hidden in footer (per production behaviour).',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      group: 'social',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
-
-    // -------------------------------------------------------------------------
-    // SEO / social defaults
-    // -------------------------------------------------------------------------
 
     defineField({
       name: 'defaultOgImage',
       title: 'Default Open Graph Image',
       type: 'image',
-      description:
-        'Fallback OG image for pages without a per-entry image. ' +
-        'WordPress default: vantage-pictures-default.jpg (attachment ID 3627).',
-      options: {
-        hotspot: true,
-      },
+      group: 'seo',
+      options: {hotspot: true},
     }),
   ],
 
   preview: {
     prepare() {
-      return {
-        title: 'Site Settings',
-      };
+      return {title: 'Site Settings'}
     },
   },
-});
+})

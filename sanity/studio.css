@@ -6,3 +6,184 @@ fieldset[data-level] > [data-ui='Box'] {
   border-left: none !important;
   box-shadow: none !important;
 }
+
+/**
+ * Layout-only fieldset chrome (slug|date, Card):
+ * Sanity nests fieldset content with paddingLeft for the accent rail and
+ * always renders a legend (from title or name). Hide the header row and
+ * strip the rail padding so the grid aligns with sibling document fields.
+ * Keep fieldset titles in schema — display:none only; don’t fight FormBuilder.
+ */
+fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Flex']:has(legend),
+fieldset[data-testid='fieldset-card'] > [data-ui='Flex']:has(legend) {
+  display: none !important;
+}
+fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'],
+fieldset[data-testid='fieldset-card'] > [data-ui='Box'] {
+  padding-left: 0 !important;
+}
+
+/**
+ * Portfolio Description fieldset only (excerpt | description): stack when narrow.
+ * Do NOT match blog/page Card fieldsets — those also contain #excerpt and must stay 50/50.
+ */
+fieldset[data-testid='fieldset-copy'] {
+  container-type: inline-size;
+}
+@container (max-width: 640px) {
+  fieldset[data-testid='fieldset-copy'] > [data-ui='Box'] > [data-ui='Grid'] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/**
+ * Blog + Page: Card (image | excerpt) stays equal halves.
+ * Portfolio Publishing/slug|date uses fieldset-slugAndDate (same 50/50 intent).
+ * minmax(0, 1fr) prevents the image input from blowing past 50%.
+ */
+fieldset[data-testid='fieldset-card'] > [data-ui='Box'] > [data-ui='Grid'],
+fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/**
+ * Blog / long-form Portable Text.
+ *
+ * Inline: bump height + widen blocks past theme.container[1] (640px).
+ * Focus: OUR `.vp-body-pt-focus` scrolls; PTE grows with content (no fight
+ * with Sanity’s internal Scroller — that caused stuck/bobbing scroll).
+ */
+.vp-body-pt [data-testid='pt-editor'] {
+  min-height: 420px;
+}
+
+.vp-body-pt .pt-editable > [data-pt-block],
+.vp-body-pt .pt-editable > [data-pt-block='container'] {
+  max-width: min(1120px, 100%) !important;
+}
+
+.vp-body-pt .pt-editable > [data-pt-block='container'] {
+  width: 100% !important;
+}
+
+/* Never use Sanity’s ExpandedLayer fullscreen for body fields */
+.vp-body-pt [class*='FullscreenButtonBox'],
+.vp-body-focus-overlay [class*='FullscreenButtonBox'] {
+  display: none !important;
+}
+
+/* —— Focus overlay —— */
+.vp-body-focus-overlay .vp-body-pt-focus {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* PTE fills at least the viewport, then grows — overlay scrolls */
+.vp-body-pt-focus [data-testid='pt-editor'],
+.vp-body-pt-focus [data-testid='pt-editor'][data-fullscreen='false'] {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  min-height: calc(100vh - 57px) !important;
+  max-height: none !important;
+  resize: none !important;
+  overflow: visible !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.vp-body-pt-focus [data-testid='pt-editor__toolbar-card'] {
+  position: sticky !important;
+  top: 0;
+  z-index: 30;
+  flex: 0 0 auto !important;
+}
+
+/* Disable nested scrollers so wheel events reach our overlay */
+.vp-body-pt-focus [class*='EditableCard'],
+.vp-body-pt-focus [class*='Scroller'],
+.vp-body-pt-focus [data-testid='scroll-container'],
+.vp-body-pt-focus [class*='EditableWrapper'],
+.vp-body-pt-focus [class*='EditableWrapper'] > div,
+.vp-body-pt-focus .pt-editable {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  flex: none !important;
+}
+
+/* Readable writing column */
+.vp-body-pt-focus .pt-editable > [data-pt-block],
+.vp-body-pt-focus .pt-editable > [data-pt-block='container'] {
+  max-width: min(900px, calc(100% - 3rem)) !important;
+}
+
+/* Body media blocks: hover edit/delete chrome (image + video) */
+.vp-body-media-block {
+  position: relative;
+  margin: 0.65rem 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--card-muted-bg-color);
+  border: 1px solid var(--card-border-color);
+}
+
+.vp-body-image-block img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+.vp-body-media-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+  z-index: 2;
+}
+
+.vp-body-media-block:hover .vp-body-media-actions,
+.vp-body-media-block[data-focused='true'] .vp-body-media-actions,
+.vp-body-media-block[data-selected='true'] .vp-body-media-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/*
+ * Blue focus ring: Sanity paints it via [data-border] when PTE root has
+ * [data-focused] (--input-box-shadow). Hide that chrome in Focus mode.
+ */
+.vp-body-pt-focus [data-border] {
+  display: none !important;
+}
+
+.vp-body-pt-focus [data-focused],
+.vp-body-pt-focus [data-testid='pt-editor'],
+.vp-body-pt-focus [class*='OverlayContainer'],
+.vp-body-pt-focus .pt-editable:focus,
+.vp-body-pt-focus .pt-editable:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  --input-box-shadow: none !important;
+  --card-focus-box-shadow: none !important;
+}
+
+/* Quote blocks: clearer left-border preview in the editor */
+.vp-body-pt [data-style='blockquote'] {
+  border-left: 2px solid var(--card-border-color);
+  padding-left: 0.85em;
+  font-style: italic;
+  opacity: 0.95;
+}
