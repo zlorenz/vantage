@@ -15,7 +15,7 @@ import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, workBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
+import { WORK_PAGE_META_QUERY } from '@/sanity/queries/pages';
 import {
   ALL_PORTFOLIO_QUERY,
   INDUSTRIES_QUERY,
@@ -24,10 +24,8 @@ import {
   WORK_PAGE_QUERY,
 } from '@/sanity/queries/portfolio';
 import type {
-  PageDocument,
   PortfolioGridEntry,
   TaxonomyTerm,
-  WorkPage,
 } from '@/types/sanity';
 
 type Props = {
@@ -41,17 +39,15 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const workPageDoc = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'work',
-  });
+  const workPageDoc = await sanityClient.fetch(WORK_PAGE_META_QUERY);
 
   return buildPageMetadata({
     locale: typedLocale,
     enPath: '/work',
     zhPath: '/zh/工作',
     title: workPageTitle(typedLocale),
-    description: seoDescription(workPageDoc?.seo, typedLocale),
-    image: buildOgImage(workPageDoc?.featuredImage),
+    description: seoDescription(workPageDoc?.seo ?? undefined, typedLocale),
+    image: buildOgImage(workPageDoc?.featuredImage ?? undefined),
     type: 'website',
   });
 }
@@ -64,7 +60,7 @@ export default async function WorkPage({ params }: Props) {
 
   const [workPage, entries, videoFormats, industries, markets, phrases] =
     await Promise.all([
-      sanityClient.fetch<WorkPage | null>(WORK_PAGE_QUERY),
+      sanityClient.fetch(WORK_PAGE_QUERY),
       sanityClient.fetch<PortfolioGridEntry[]>(ALL_PORTFOLIO_QUERY),
       sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
       sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
@@ -87,7 +83,7 @@ export default async function WorkPage({ params }: Props) {
       <JsonLd
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), workBreadcrumb(typedLocale)])}
       />
-      <PageHero title={heroTitle} backgroundImage={workPage?.featuredImage} />
+      <PageHero title={heroTitle} backgroundImage={workPage?.featuredImage ?? undefined} />
       <SectionWrapper>
         <div className="container-fluid px-3 md:px-4">
           {introBlocks?.length ? (

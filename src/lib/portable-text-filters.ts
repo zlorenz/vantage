@@ -12,11 +12,13 @@ export function isPdfDownloadArtifactBlock(block: PortableTextBlock): boolean {
   return /\.pdfdownload$/i.test(compact);
 }
 
-export function filterPdfDownloadArtifactBlocks(
-  blocks?: PortableTextBlock[],
-): PortableTextBlock[] | undefined {
-  if (!blocks?.length) return blocks;
-  const filtered = blocks.filter((block) => !isPdfDownloadArtifactBlock(block));
+export function filterPdfDownloadArtifactBlocks<T>(
+  blocks?: readonly T[] | null,
+): T[] | undefined {
+  if (!blocks?.length) return undefined;
+  const filtered = blocks.filter(
+    (block) => !isPdfDownloadArtifactBlock(block as PortableTextBlock),
+  );
   return filtered.length ? filtered : undefined;
 }
 
@@ -43,15 +45,15 @@ function isGalleryCaptionArtifact(block: PortableTextBlock): boolean {
 }
 
 /** Sections rendered separately on vietnam-production-service page. */
-export function filterVietnamProductionServiceBody(
-  blocks?: PortableTextBlock[],
-): PortableTextBlock[] | undefined {
-  if (!blocks?.length) return blocks;
+export function filterVietnamProductionServiceBody<T>(
+  blocks?: readonly T[] | null,
+): T[] | undefined {
+  if (!blocks?.length) return undefined;
 
-  const filtered: PortableTextBlock[] = [];
+  const filtered: T[] = [];
 
   for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i];
+    const block = blocks[i] as PortableTextBlock;
 
     if (block._type === 'block') {
       const text = getPortableTextBlockPlainText(block).trim();
@@ -66,18 +68,18 @@ export function filterVietnamProductionServiceBody(
       if (/^在越南拍摄$/.test(text.replace(/\s+/g, ''))) continue;
 
       if (/^plan your next production/i.test(text)) {
-        const next = blocks[i + 1];
+        const next = blocks[i + 1] as PortableTextBlock | undefined;
         if (next?._type === 'block' && next.style === 'normal') i += 1;
         continue;
       }
       if (/计划下一次制作/.test(text)) {
-        const next = blocks[i + 1];
+        const next = blocks[i + 1] as PortableTextBlock | undefined;
         if (next?._type === 'block' && next.style === 'normal') i += 1;
         continue;
       }
     }
 
-    filtered.push(block);
+    filtered.push(blocks[i]);
   }
 
   return filtered.length ? filtered : undefined;

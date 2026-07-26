@@ -5,15 +5,34 @@
  */
 
 import Image from 'next/image';
+import type { SanityImageSource } from '@sanity/image-url';
 import { Link } from '@/i18n/navigation';
 import { phraseRecordToMap } from '@phrase-book';
 import { resolveEntryDisplayTitles } from '@/lib/display-titles';
 import { urlForImage } from '@/lib/sanity';
-import type { PortfolioCard as PortfolioCardData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
 
+/** Accepts TypeGen featured-work rows and hand-typed PortfolioCard. */
+export type PortfolioCardEntry = {
+  _id: string;
+  slug?: string | null;
+  slugZh?: string | null;
+  displayTitleParts?: {
+    brandName?: string | null;
+    productName?: string | null;
+    campaignTitle?: string | null;
+    brandNameZh?: string | null;
+    productNameZh?: string | null;
+    campaignTitleZh?: string | null;
+  } | null;
+  thumbTitleOverride?: string | null;
+  thumbTitleOverrideZh?: string | null;
+  featuredImage?: SanityImageSource | null;
+  isHidden?: boolean | null;
+};
+
 interface PortfolioCardProps {
-  entry: PortfolioCardData;
+  entry: PortfolioCardEntry;
   locale: Locale;
   /** Stagger index for vp-card-reveal animation delay (× 40ms). */
   revealIndex?: number;
@@ -27,8 +46,10 @@ export function PortfolioCard({
   revealIndex = 0,
   phrases,
 }: PortfolioCardProps) {
-  const slugParam =
-    locale === 'zh' ? entry.slugZh || entry.slug : entry.slug;
+  const slug = entry.slug ?? '';
+  const slugParam = locale === 'zh' ? entry.slugZh || slug : slug;
+
+  if (!entry.featuredImage || !slugParam) return null;
 
   const imageUrl = urlForImage(entry.featuredImage)
     .width(960)

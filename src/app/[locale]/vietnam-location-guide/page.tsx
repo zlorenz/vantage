@@ -24,8 +24,7 @@ import {
   staticPageUrl,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
-import type { PageDocument } from '@/types/sanity';
+import { VIETNAM_LOCATION_GUIDE_PAGE_QUERY } from '@/sanity/queries/pages';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -37,9 +36,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'vietnam-location-guide',
-  });
+  const page = await sanityClient.fetch(VIETNAM_LOCATION_GUIDE_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
   const metaTitle = vietnamLocationGuideTitle(locale as Locale);
@@ -49,8 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     enPath: '/vietnam-location-guide',
     zhPath: `/zh/${page.slugZh || '越南旅游指南'}`,
     title: metaTitle,
-    description: seoDescription(page.seo, locale as Locale),
-    image: buildOgImage(page.featuredImage),
+    description: seoDescription(page.seo ?? undefined, locale as Locale),
+    image: buildOgImage(page.featuredImage ?? undefined),
     type: 'website',
   });
 }
@@ -61,9 +58,7 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'vietnam-location-guide',
-  });
+  const page = await sanityClient.fetch(VIETNAM_LOCATION_GUIDE_PAGE_QUERY);
 
   if (!page) notFound();
 
@@ -91,7 +86,7 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),
           {
-            name: pageTitleLabel,
+            name: pageTitleLabel ?? '',
             url: staticPageUrl(
               typedLocale,
               '/vietnam-location-guide',
@@ -100,7 +95,7 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
           },
         ])}
       />
-      <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
+      <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">

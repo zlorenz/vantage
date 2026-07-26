@@ -29,8 +29,7 @@ import {
   homeBreadcrumb,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
-import type { PageDocument } from '@/types/sanity';
+import { ABOUT_PAGE_QUERY } from '@/sanity/queries/pages';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -42,21 +41,19 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'about',
-  });
+  const page = await sanityClient.fetch(ABOUT_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = aboutContactPageTitle(title, locale as Locale);
+  const metaTitle = aboutContactPageTitle(title ?? '', locale as Locale);
 
   return buildPageMetadata({
     locale: locale as Locale,
     enPath: '/about',
     zhPath: `/zh/${page.slugZh || '关于'}`,
     title: metaTitle,
-    description: seoDescription(page.seo, locale as Locale),
-    image: buildOgImage(page.featuredImage),
+    description: seoDescription(page.seo ?? undefined, locale as Locale),
+    image: buildOgImage(page.featuredImage ?? undefined),
     type: 'website',
   });
 }
@@ -68,9 +65,7 @@ export default async function AboutPage({ params }: Props) {
   const typedLocale = locale as Locale;
 
   const [page, phrases] = await Promise.all([
-    sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-      slug: 'about',
-    }),
+    sanityClient.fetch(ABOUT_PAGE_QUERY),
     getPhraseRecord(),
   ]);
 
@@ -83,9 +78,10 @@ export default async function AboutPage({ params }: Props) {
 
   const bodyBlocks = filterAboutBodyBlocks(
     typedLocale === 'zh' && page.bodyZh?.length
-      ? mergeChineseBodyWithEnglishMedia(page.bodyZh, page.body)
-      : page.body,
-    page.founders?.map((founder) => founder.name) ?? []
+      ? mergeChineseBodyWithEnglishMedia(page.bodyZh, page.body ?? undefined)
+      : page.body ?? undefined,
+    page.founders?.map((founder) => founder.name).filter((name): name is string => Boolean(name)) ??
+      [],
   );
 
   const pageTitleLabel = pickLocaleFieldWithPhrases(
@@ -105,7 +101,7 @@ export default async function AboutPage({ params }: Props) {
           { name: pageTitleLabel, url: aboutBreadcrumb(typedLocale).url },
         ])}
       />
-      <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
+      <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[800px] px-3 md:px-4">
@@ -120,9 +116,9 @@ export default async function AboutPage({ params }: Props) {
               <span className="vp-outline">{t('teamOutline')}</span> {t('team')}
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-              {page.founders.map((founder) => (
+              {page.founders.map((founder, index) => (
                 <FounderCard
-                  key={founder.name}
+                  key={founder.name ?? `founder-${index}`}
                   founder={founder}
                   locale={typedLocale}
                   phrases={phrases}

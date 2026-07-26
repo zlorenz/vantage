@@ -36,6 +36,19 @@ export default defineCliConfig({
      */
     autoUpdates: true,
   },
+  /**
+   * Query + schema TypeGen for the Next app.
+   * Prefer sanity-typegen.json for CLI 6.x (`npx sanity typegen generate` from sanity/).
+   * This block mirrors that config for newer CLI versions that read typegen from defineCliConfig.
+   */
+  typegen: {
+    schema: './schema.json',
+    path: '../src/**/*.{ts,tsx}',
+    // Emit under src/ so `declare module '@sanity/client'` augments the same
+    // package instance the Next app imports (root node_modules), not studio's.
+    generates: '../src/sanity/sanity.types.ts',
+    overloadClientMethods: true,
+  },
   vite: (config) => ({
     ...config,
     resolve: {

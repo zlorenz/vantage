@@ -3,13 +3,11 @@
  * Server-only — renders block children as paragraphs with consistent spacing.
  */
 
-import type { PortableTextBlock } from '@/types/sanity';
-
 export function PortableTextIntro({
   blocks,
   className = '',
 }: {
-  blocks?: PortableTextBlock[];
+  blocks?: readonly unknown[] | null;
   className?: string;
 }) {
   if (!blocks?.length) return null;
@@ -17,10 +15,12 @@ export function PortableTextIntro({
   return (
     <div className={className}>
       {blocks.map((block, index) => {
-        if (block._type !== 'block' || !Array.isArray(block.children)) return null;
-        const text = (block.children as { text?: string }[])
-          .map((child) => child.text ?? '')
-          .join('');
+        const row = block as {
+          _type?: string;
+          children?: { text?: string }[];
+        };
+        if (row._type !== 'block' || !Array.isArray(row.children)) return null;
+        const text = row.children.map((child) => child.text ?? '').join('');
         if (!text.trim()) return null;
         return (
           <p key={index} className="mb-4 leading-relaxed last:mb-0">

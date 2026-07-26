@@ -16,6 +16,9 @@ import { createClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url';
 
+// Load TypeGen SanityQueries augmentation for the same @sanity/client instance.
+import '@/sanity/sanity.types';
+
 /**
  * Read-only Sanity client instance.
  * CDN in production for speed; bypass in development so Studio/migration

@@ -13,8 +13,9 @@
  */
 
 import type { Metadata } from 'next';
+import type { SanityImageSource } from '@sanity/image-url';
 import type { Locale } from '@/i18n/routing';
-import type { PortfolioEntry, SeoFields, SanityImage } from '@/types/sanity';
+import type { PortfolioEntry, SanityImage } from '@/types/sanity';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 
@@ -68,8 +69,8 @@ export function blogCategoryDescription(
 }
 
 export function buildOgImage(
-  featuredImage?: SanityImage,
-  defaultOgImage?: SanityImage,
+  featuredImage?: SanityImageSource | null,
+  defaultOgImage?: SanityImageSource | null,
 ): string | undefined {
   const source = featuredImage ?? defaultOgImage;
   if (!source) return undefined;
@@ -194,11 +195,16 @@ export function campaignBriefPageTitle(locale: Locale = 'en'): string {
 }
 
 export function seoDescription(
-  seo: SeoFields | undefined,
+  seo:
+    | {
+        metaDescription?: string | null;
+        metaDescriptionZh?: string | null;
+      }
+    | undefined,
   locale: Locale,
 ): string | undefined {
   if (!seo) return undefined;
   return locale === 'zh' && seo.metaDescriptionZh
     ? seo.metaDescriptionZh
-    : seo.metaDescription;
+    : seo.metaDescription ?? undefined;
 }

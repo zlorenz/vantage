@@ -23,8 +23,7 @@ import {
   staticPageUrl,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
-import type { PageDocument } from '@/types/sanity';
+import { VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY } from '@/sanity/queries/pages';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -36,9 +35,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'video-campaign-brief',
-  });
+  const page = await sanityClient.fetch(VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
   return buildPageMetadata({
@@ -46,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     enPath: '/video-campaign-brief',
     zhPath: `/zh/${page.slugZh || '视频活动简介'}`,
     title: campaignBriefPageTitle(locale as Locale),
-    description: seoDescription(page.seo, locale as Locale),
-    image: buildOgImage(page.featuredImage),
+    description: seoDescription(page.seo ?? undefined, locale as Locale),
+    image: buildOgImage(page.featuredImage ?? undefined),
     type: 'website',
   });
 }
@@ -56,9 +53,7 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'video-campaign-brief',
-  });
+  const page = await sanityClient.fetch(VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY);
 
   if (!page) notFound();
 
@@ -73,7 +68,7 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),
           {
-            name: title,
+            name: title ?? '',
             url: staticPageUrl(
               typedLocale,
               '/video-campaign-brief',

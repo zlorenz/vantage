@@ -17,8 +17,8 @@ import { sanityClient } from '@/lib/sanity';
 import { buildBreadcrumbs, homeBreadcrumb, newsBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ALL_CATEGORIES_QUERY, ALL_POSTS_QUERY } from '@/sanity/queries/blog';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
-import type { BlogPostCard as BlogPostCardData, CategoryTerm, PageDocument } from '@/types/sanity';
+import { NEWS_PAGE_QUERY } from '@/sanity/queries/pages';
+import type { BlogPostCard as BlogPostCardData, CategoryTerm } from '@/types/sanity';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -30,17 +30,15 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'news',
-  });
+  const page = await sanityClient.fetch(NEWS_PAGE_QUERY);
 
   return buildPageMetadata({
     locale: locale as Locale,
     enPath: '/news',
     zhPath: `/zh/${page?.slugZh || '新闻'}`,
     title: newsPageTitle(locale as Locale),
-    description: seoDescription(page?.seo, locale as Locale),
-    image: buildOgImage(page?.featuredImage),
+    description: seoDescription(page?.seo ?? undefined, locale as Locale),
+    image: buildOgImage(page?.featuredImage ?? undefined),
     type: 'website',
   });
 }
@@ -52,7 +50,7 @@ export default async function NewsPage({ params }: Props) {
   const typedLocale = locale as Locale;
 
   const [page, posts, categories, phrases] = await Promise.all([
-    sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, { slug: 'news' }),
+    sanityClient.fetch(NEWS_PAGE_QUERY),
     sanityClient.fetch<BlogPostCardData[]>(ALL_POSTS_QUERY),
     sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
     getPhraseRecord(),
@@ -73,14 +71,14 @@ export default async function NewsPage({ params }: Props) {
       <JsonLd
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), newsBreadcrumb(typedLocale)])}
       />
-      <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
+      <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
       <SectionWrapper className="vp-news-page">
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
             <div className="lg:col-span-8">
               <div className="vp-news-intro mb-12 max-w-[900px] font-light text-vp-text-muted">
-                <PortableTextIntro blocks={introBlocks} />
+                <PortableTextIntro blocks={introBlocks ?? undefined} />
               </div>
 
               <div className="vp-news-posts flex flex-col gap-16">

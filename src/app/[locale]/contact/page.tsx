@@ -12,8 +12,7 @@ import {
   seoDescription,
 } from '@/lib/metadata';
 import { sanityClient } from '@/lib/sanity';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
-import type { PageDocument } from '@/types/sanity';
+import { CONTACT_PAGE_QUERY } from '@/sanity/queries/pages';
 import { ContactPageClient } from './ContactPageClient';
 
 type Props = {
@@ -26,9 +25,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'contact',
-  });
+  const page = await sanityClient.fetch(CONTACT_PAGE_QUERY);
   if (!page) {
     return {
       title: aboutContactPageTitle(
@@ -44,9 +41,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale: locale as Locale,
     enPath: '/contact',
     zhPath: `/zh/${page.slugZh || '联系'}`,
-    title: aboutContactPageTitle(title, locale as Locale),
-    description: seoDescription(page.seo, locale as Locale),
-    image: buildOgImage(page.featuredImage),
+    title: aboutContactPageTitle(title ?? '', locale as Locale),
+    description: seoDescription(page.seo ?? undefined, locale as Locale),
+    image: buildOgImage(page.featuredImage ?? undefined),
     type: 'website',
   });
 }

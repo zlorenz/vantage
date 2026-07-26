@@ -209,7 +209,8 @@ function createComponents(relaxed = false): PortableTextComponents {
 }
 
 interface PortableTextContentProps {
-  blocks?: SanityPortableTextBlock[];
+  // Accept TypeGen body unions as well as hand-typed PortableTextBlock[].
+  blocks?: readonly unknown[] | null;
   className?: string;
   /** Extra vertical rhythm for long-form CMS pages (e.g. Vietnam production service). */
   relaxed?: boolean;

@@ -6,6 +6,8 @@
  * then filters portfolio entries by term _id via references($termId).
  */
 
+import {defineQuery} from 'groq'
+
 /** Fields needed by PortfolioCard and client-side grid filtering. */
 const PORTFOLIO_CARD_FIELDS = `
   _id,
@@ -364,7 +366,7 @@ export const ALL_CREDIT_IDENTITIES_QUERY = `
 `;
 
 /** Work page CMS content (hero, intro body). */
-export const WORK_PAGE_QUERY = `
+export const WORK_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{
     title,
     titleZh,
@@ -374,4 +376,4 @@ export const WORK_PAGE_QUERY = `
     body,
     bodyZh
   }
-`;
+`)

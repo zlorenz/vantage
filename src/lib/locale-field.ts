@@ -21,13 +21,13 @@ export function pickLocaleField(
 
 export function pickLocaleFieldWithPhrases(
   locale: Locale,
-  en: string | undefined,
+  en: string | null | undefined,
   zh: string | null | undefined,
   phrases?: PhraseMap | Record<string, string> | null,
 ): string {
   return resolveLocalizedString({
     locale: locale === 'zh' ? 'zh' : 'en',
-    en,
+    en: en ?? undefined,
     zh,
     phrases: toPhraseMap(phrases),
   });

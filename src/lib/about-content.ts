@@ -40,15 +40,16 @@ function isFounderGalleryArtifact(block: PortableTextBlock, founderNames: string
  * Keeps "Who We Are" copy; removes migrated "Our Team" heading and name list
  * rendered separately by FounderCard grid.
  */
-export function filterAboutBodyBlocks(
-  blocks: PortableTextBlock[] | undefined,
-  founderNames: string[] = []
-): PortableTextBlock[] | undefined {
-  if (!blocks?.length) return blocks;
+export function filterAboutBodyBlocks<T>(
+  blocks: readonly T[] | null | undefined,
+  founderNames: string[] = [],
+): T[] | undefined {
+  if (!blocks?.length) return undefined;
 
   return blocks.filter((block) => {
-    if (isOurTeamHeading(block)) return false;
-    if (isFounderGalleryArtifact(block, founderNames)) return false;
+    const pt = block as PortableTextBlock;
+    if (isOurTeamHeading(pt)) return false;
+    if (isFounderGalleryArtifact(pt, founderNames)) return false;
     return true;
   });
 }

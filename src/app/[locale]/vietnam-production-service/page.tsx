@@ -22,12 +22,12 @@ import {
   staticPageUrl,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { PAGE_BY_SLUG_QUERY } from '@/sanity/queries/pages';
+import { VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY } from '@/sanity/queries/pages';
 import {
   MARKET_BY_SLUG_QUERY,
   PORTFOLIO_BY_MARKET_QUERY,
 } from '@/sanity/queries/portfolio';
-import type { PageDocument, PortfolioCard as PortfolioCardData } from '@/types/sanity';
+import type { PortfolioCard as PortfolioCardData } from '@/types/sanity';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -39,21 +39,19 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'vietnam-production-service',
-  });
+  const page = await sanityClient.fetch(VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY);
   if (!page) return { title: 'Not Found' };
 
   const title = locale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const metaTitle = pageTitle(title);
+  const metaTitle = pageTitle(title ?? '');
 
   return buildPageMetadata({
     locale: locale as Locale,
     enPath: '/vietnam-production-service',
     zhPath: `/zh/${page.slugZh || '越南生产服务'}`,
     title: metaTitle,
-    description: seoDescription(page.seo, locale as Locale),
-    image: buildOgImage(page.featuredImage),
+    description: seoDescription(page.seo ?? undefined, locale as Locale),
+    image: buildOgImage(page.featuredImage ?? undefined),
     type: 'website',
   });
 }
@@ -64,14 +62,13 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const page = await sanityClient.fetch<PageDocument | null>(PAGE_BY_SLUG_QUERY, {
-    slug: 'vietnam-production-service',
-  });
+  const page = await sanityClient.fetch(VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY);
 
   if (!page) notFound();
 
   // Curated CMS list when set; otherwise all public Vietnam-tagged projects.
-  let vietnamPortfolio: PortfolioCardData[] = page.featuredWork ?? [];
+  let vietnamPortfolio: NonNullable<typeof page.featuredWork> | PortfolioCardData[] =
+    page.featuredWork ?? [];
 
   if (!vietnamPortfolio.length) {
     const vietnamMarket = await sanityClient.fetch<{ _id: string } | null>(
@@ -108,7 +105,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),
           {
-            name: pageTitleLabel,
+            name: pageTitleLabel ?? '',
             url: staticPageUrl(
               typedLocale,
               '/vietnam-production-service',
@@ -117,7 +114,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
           },
         ])}
       />
-      <PageHero title={heroTitle} backgroundImage={page.featuredImage} />
+      <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">

@@ -10,14 +10,14 @@
  * hero fills reliably without depending on next/image `fill` sizing.
  */
 
+import type { SanityImageSource } from '@sanity/image-url';
 import { urlForImage } from '@/lib/sanity';
-import type { SanityImage } from '@/types/sanity';
 
 interface PageHeroProps {
   title: string;
   /** Optional logline under the title — same treatment as homepage hero carousel. */
   description?: string;
-  backgroundImage?: SanityImage;
+  backgroundImage?: SanityImageSource | null;
 }
 
 export function PageHero({ title, description, backgroundImage }: PageHeroProps) {
