@@ -60,5 +60,24 @@ export const resolve: PresentationPluginOptions['resolve'] = {
         return {locations}
       },
     }),
+    page: defineLocations({
+      // Whole slug objects — getFrontEndUrl page case readSlug(slug) → PAGE_ROUTES[slug].
+      select: {
+        title: 'title',
+        slug: 'slug',
+        slugZh: 'slugZh',
+      },
+      resolve: (doc) => {
+        const snapshot = {slug: doc?.slug, slugZh: doc?.slugZh} as FrontEndDocument
+        const enPath = toPath(getFrontEndUrl('page', snapshot, {locale: 'en'}))
+        const zhPath = toPath(getFrontEndUrl('page', snapshot, {locale: 'zh'}))
+        const title = (doc?.title as string) || 'Page'
+
+        const locations = []
+        if (enPath) locations.push({title, href: enPath})
+        if (zhPath && zhPath !== enPath) locations.push({title: `${title} (中文)`, href: zhPath})
+        return {locations}
+      },
+    }),
   },
 }
