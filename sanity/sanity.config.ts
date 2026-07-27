@@ -1,10 +1,12 @@
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
+import {presentationTool} from 'sanity/presentation'
 import {visionTool} from '@sanity/vision'
 import {media} from 'sanity-plugin-media'
 import {VantageLogoIcon} from './components/VantageLogoIcon'
 import {schemaTypes} from './schemas'
 import {structure} from './structure'
+import {resolve} from './presentation/resolve'
 import {contentTool} from './tools/content'
 import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './tools/content/front-end-url'
 import './studio.css'
@@ -23,7 +25,18 @@ export default defineConfig({
     enabled: true,
   },
 
-  plugins: [structureTool({structure}), media(), visionTool()],
+  plugins: [
+    structureTool({structure}),
+    presentationTool({
+      resolve,
+      previewUrl: {
+        origin: 'http://localhost:3000',
+        previewMode: {enable: '/api/draft-mode/enable'},
+      },
+    }),
+    media(),
+    visionTool(),
+  ],
 
   tools: (prev) => [contentTool, ...prev.filter((tool) => tool.name !== 'content')],
 
