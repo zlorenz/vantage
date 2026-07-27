@@ -42,5 +42,23 @@ export const resolve: PresentationPluginOptions['resolve'] = {
         return {locations}
       },
     }),
+    portfolioEntry: defineLocations({
+      select: {
+        brandName: 'displayTitleParts.brandName',
+        slug: 'slug',
+        slugZh: 'slugZh',
+      },
+      resolve: (doc) => {
+        const snapshot = {slug: doc?.slug, slugZh: doc?.slugZh} as FrontEndDocument
+        const enPath = toPath(getFrontEndUrl('portfolioEntry', snapshot, {locale: 'en'}))
+        const zhPath = toPath(getFrontEndUrl('portfolioEntry', snapshot, {locale: 'zh'}))
+        const title = (doc?.brandName as string) || 'Portfolio entry'
+
+        const locations = []
+        if (enPath) locations.push({title, href: enPath})
+        if (zhPath && zhPath !== enPath) locations.push({title: `${title} (中文)`, href: zhPath})
+        return {locations}
+      },
+    }),
   },
 }
