@@ -1,3 +1,5 @@
+import {stegaClean} from '@sanity/client/stega'
+
 import {compileDisplayTitles, hasDisplayTitleParts, trimPart} from './compile'
 import type {
   CompiledDisplayTitles,
@@ -77,16 +79,48 @@ function overridesForLocale(
 }
 
 /**
+ * Strip Sanity stega from every raw input once, before any trimPart / whitespace
+ * normalization. trimPart's /\s+/g would otherwise turn stega U+FEFF into literal
+ * spaces and leave undecodable zero-width junk (Presentation title scatter).
+ */
+function cleanInput(
+  input: ResolveDisplayTitlesInput,
+): ResolveDisplayTitlesInput {
+  const clean = (value: string | null | undefined) =>
+    value == null ? value : stegaClean(value)
+
+  return {
+    brandName: clean(input.brandName),
+    productName: clean(input.productName),
+    campaignTitle: clean(input.campaignTitle),
+    heroFilmTitle: clean(input.heroFilmTitle),
+    brandNameZh: clean(input.brandNameZh),
+    productNameZh: clean(input.productNameZh),
+    campaignTitleZh: clean(input.campaignTitleZh),
+    heroFilmTitleZh: clean(input.heroFilmTitleZh),
+    thumbTitleOverride: clean(input.thumbTitleOverride),
+    headerTitleOverride: clean(input.headerTitleOverride),
+    longTitleOverride: clean(input.longTitleOverride),
+    thumbTitleOverrideZh: clean(input.thumbTitleOverrideZh),
+    headerTitleOverrideZh: clean(input.headerTitleOverrideZh),
+    longTitleOverrideZh: clean(input.longTitleOverrideZh),
+  }
+}
+
+/**
  * Resolve titles for a locale: override → compile(parts).
  * When `phrases` is provided, ZH parts prefer phrase-book hits over doc Zh.
+ *
+ * Stega is stripped once on raw inputs (see cleanInput) before any trimPart.
  */
 export function resolveDisplayTitles(
   input: ResolveDisplayTitlesInput,
   locale: DisplayTitleLocale = 'en',
   phrases?: PhraseLookup | null,
 ): CompiledDisplayTitles {
-  const parts = partsForLocale(input, locale, phrases)
-  const overrides = overridesForLocale(input, locale)
+  const cleaned = cleanInput(input)
+  const parts = partsForLocale(cleaned, locale, phrases)
+  const overrides = overridesForLocale(cleaned, locale)
 
   const compiled = hasDisplayTitleParts(parts)
     ? compileDisplayTitles(parts)

@@ -4,7 +4,6 @@
 
 import {
   resolveDisplayTitles as resolveShared,
-  trimPart,
   type PhraseLookup,
   type ResolveDisplayTitlesInput,
 } from '@display-titles';
@@ -73,8 +72,11 @@ export function resolveAdditionalVideoTitle(
   phrases?: PhraseLookup | null,
 ): string {
   const parts = entry.displayTitleParts ?? {};
-  const episodeEn = trimPart(video.videoTitle);
-  const episodeZh = trimPart(video.videoTitleZh);
+  // Pass raw episode strings — do not trimPart here. trimPart shreds Sanity stega
+  // (U+FEFF → spaces) before resolveDisplayTitles can stegaClean. Downstream
+  // compile still trims after the choke-point clean.
+  const episodeEn = video.videoTitle?.trim() ? video.videoTitle : undefined;
+  const episodeZh = video.videoTitleZh?.trim() ? video.videoTitleZh : undefined;
 
   if (!episodeEn && !episodeZh) return '';
 
@@ -82,8 +84,8 @@ export function resolveAdditionalVideoTitle(
     {
       ...entry,
       // Episode replaces hero for this row — do not inherit the main film's heroFilmTitle.
-      heroFilmTitle: episodeEn || undefined,
-      heroFilmTitleZh: episodeZh || undefined,
+      heroFilmTitle: episodeEn,
+      heroFilmTitleZh: episodeZh,
       displayTitleParts: {
         ...parts,
         heroFilmTitle: undefined,
