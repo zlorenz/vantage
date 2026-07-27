@@ -3,6 +3,7 @@
  * Blank lines in CMS text become separated paragraphs on the page.
  */
 
+import { stegaClean } from '@sanity/client/stega';
 import { htmlDescriptionToPlain } from '@/lib/html-description';
 
 type PortfolioDescriptionProps = {
@@ -14,7 +15,11 @@ export function PortfolioDescription({
   text,
   className = 'mb-4 font-light text-vp-text-muted',
 }: PortfolioDescriptionProps) {
-  const plain = htmlDescriptionToPlain(text);
+  // Display-only: strip draft stega before HTML→plain / paragraph split (same
+  // class as titles — no click-to-edit on this field). No-op when published.
+  const plain = htmlDescriptionToPlain(
+    text == null ? text : stegaClean(text),
+  );
   if (!plain) return null;
 
   const paragraphs = plain

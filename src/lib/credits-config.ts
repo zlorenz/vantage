@@ -4,6 +4,7 @@
  * Structured `crewCredits` is the sole source for display and filters.
  */
 
+import {stegaClean} from '@sanity/client/stega'
 import {
   CREW_DEPARTMENTS,
   CREW_ROLE_BY_KEY,
@@ -68,6 +69,20 @@ export interface StructuredDepartmentCredits {
   pairs: CreditPair[];
 }
 
+/**
+ * Strip Sanity stega from credit fields used as Map/catalog keys.
+ * Draft-mode stega on department/roleKey breaks dept.key lookups → empty UI.
+ * People names/URLs are left encoded (display-only cleanup is not needed there).
+ */
+function cleanCreditForLookup(credit: CrewCredit): CrewCredit {
+  return {
+    ...credit,
+    department: stegaClean(credit.department) as CrewCredit['department'],
+    roleKey: credit.roleKey != null ? stegaClean(credit.roleKey) : credit.roleKey,
+    role: stegaClean(credit.role),
+  }
+}
+
 /** Build ordered department rows from structured crewCredits. */
 export function getStructuredDepartmentRows(
   crewCredits: CrewCredit[] | CrewCreditValue[] | undefined,
@@ -76,7 +91,8 @@ export function getStructuredDepartmentRows(
 ): StructuredDepartmentCredits[] {
   if (!crewCredits?.length) return [];
 
-  const sorted = sortStructuredCredits(crewCredits as CrewCredit[]);
+  const cleaned = (crewCredits as CrewCredit[]).map(cleanCreditForLookup)
+  const sorted = sortStructuredCredits(cleaned);
   const byDept = new Map<CrewDepartmentKey, CreditPair[]>();
 
   for (const credit of sorted) {
