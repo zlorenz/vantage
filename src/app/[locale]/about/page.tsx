@@ -22,7 +22,6 @@ import { filterAboutBodyBlocks } from '@/lib/about-content';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { getPhraseRecord } from '@/lib/phrase-book';
-import { sanityClient } from '@/lib/sanity';
 import {
   aboutBreadcrumb,
   buildBreadcrumbs,
@@ -30,7 +29,9 @@ import {
   homeBreadcrumb,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { ABOUT_PAGE_QUERY } from '@/sanity/queries/pages';
+import type { ABOUT_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -43,7 +44,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const page = await sanityClient.fetch(ABOUT_PAGE_QUERY);
+  const {data} = await sanityFetch({query: ABOUT_PAGE_QUERY, stega: false});
+  const page = data as ABOUT_PAGE_QUERY_RESULT;
   if (!page) return { title: 'Not Found' };
 
   const title = typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
@@ -69,10 +71,11 @@ export default async function AboutPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [page, phrases] = await Promise.all([
-    sanityClient.fetch(ABOUT_PAGE_QUERY),
+  const [pageResult, phrases] = await Promise.all([
+    sanityFetch({query: ABOUT_PAGE_QUERY}),
     getPhraseRecord(),
   ]);
+  const page = pageResult.data as ABOUT_PAGE_QUERY_RESULT;
 
   if (!page) notFound();
 
