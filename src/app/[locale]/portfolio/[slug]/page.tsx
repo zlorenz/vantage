@@ -30,6 +30,7 @@ import {
 import { JsonLd } from '@/components/seo/JsonLd';
 import { permanentRedirect } from '@/i18n/navigation';
 import { SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
+import { sanityFetch } from '@/sanity/lib/live';
 import {
   PORTFOLIO_ENTRY_QUERY,
   PORTFOLIO_SLUGS_QUERY,
@@ -54,11 +55,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug: rawSlug } = await params;
   const slug = decodePathSlug(rawSlug);
-  const [entry, siteSettings, phrases] = await Promise.all([
-    sanityClient.fetch<PortfolioEntry | null>(PORTFOLIO_ENTRY_QUERY, { slug }),
+  const [entryResult, siteSettings, phrases] = await Promise.all([
+    sanityFetch({query: PORTFOLIO_ENTRY_QUERY, params: {slug}, stega: false}),
     sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
     getPhraseRecord(),
   ]);
+  const entry = entryResult.data as PortfolioEntry | null;
 
   if (!entry) {
     return { title: 'Not Found' };
@@ -78,11 +80,12 @@ export default async function PortfolioEntryPage({ params }: Props) {
   const slug = decodePathSlug(rawSlug);
 
   const typedLocale = locale as Locale;
-  const [entry, phrases, phraseRecord] = await Promise.all([
-    sanityClient.fetch<PortfolioEntry | null>(PORTFOLIO_ENTRY_QUERY, { slug }),
+  const [entryResult, phrases, phraseRecord] = await Promise.all([
+    sanityFetch({query: PORTFOLIO_ENTRY_QUERY, params: {slug}}),
     getPhraseMap(),
     getPhraseRecord(),
   ]);
+  const entry = entryResult.data as PortfolioEntry | null;
 
   if (!entry) {
     notFound();
