@@ -1066,33 +1066,13 @@ export function DocumentTable({
       }))
   }, [confirm])
 
+  // Singletons open via ContentTool navigation; this is only a brief fallback
+  // while the router redirects to the document editor.
   if (section.singletonId) {
     return (
-      <Stack space={4} padding={4}>
-        <Text size={3} weight="semibold">
-          {section.title}
-        </Text>
-        <Card padding={4} radius={2} shadow={1}>
-          <Stack space={3}>
-            <Text size={1} muted>
-              Global site configuration (contact, social, default OG image).
-            </Text>
-            <Box>
-              <Button
-                text="Open Site Settings"
-                tone="primary"
-                onClick={() =>
-                  onOpenDocument(
-                    section.singletonId!,
-                    section.documentType,
-                    section.title,
-                  )
-                }
-              />
-            </Box>
-          </Stack>
-        </Card>
-      </Stack>
+      <Flex align="center" justify="center" padding={5} style={{height: '100%'}}>
+        <Spinner muted />
+      </Flex>
     )
   }
 

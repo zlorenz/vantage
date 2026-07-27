@@ -485,8 +485,22 @@ export function ContentTool() {
       }
     : null
 
+  // Singletons have no list pane — open the document as soon as the section is
+  // active (sidebar click, deep link, or Back from a stale URL without doc id).
+  useEffect(() => {
+    if (!section.singletonId || routerState.documentId) return
+    setTitleCache((prev) => ({...prev, [section.singletonId!]: section.title}))
+    router.navigate({section: section.id, documentId: section.singletonId})
+  }, [router, routerState.documentId, section])
+
   const selectSection = useCallback(
     (id: string) => {
+      const leaf = findLeaf(id)
+      if (leaf?.singletonId) {
+        setTitleCache((prev) => ({...prev, [leaf.singletonId!]: leaf.title}))
+        router.navigate({section: leaf.id, documentId: leaf.singletonId})
+        return
+      }
       router.navigate({section: id})
     },
     [router],
@@ -501,8 +515,13 @@ export function ContentTool() {
   )
 
   const closeDocument = useCallback(() => {
+    // No list to return to for singletons — leave the section entirely.
+    if (section.singletonId) {
+      router.navigate({section: defaultLeafId()})
+      return
+    }
     router.navigate({section: activeId})
-  }, [router, activeId])
+  }, [router, activeId, section.singletonId])
 
   const createDocument = useCallback(() => {
     if (section.canCreate === false) return
