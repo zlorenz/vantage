@@ -29,6 +29,7 @@ import {
   newsBreadcrumb,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { POST_BY_SLUG_QUERY, POST_SLUGS_QUERY, RESERVED_PAGE_SLUGS } from '@/sanity/queries/blog';
 import type { BlogPost, PostSlug } from '@/types/sanity';
 
@@ -51,7 +52,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug: rawSlug } = await params;
   const typedLocale = locale as Locale;
   const slug = decodePathSlug(rawSlug);
-  const post = await sanityClient.fetch<BlogPost | null>(POST_BY_SLUG_QUERY, { slug });
+  const {data} = await sanityFetch({query: POST_BY_SLUG_QUERY, params: {slug}, stega: false});
+  const post = data as BlogPost | null;
   if (!post) return { title: 'Not Found' };
 
   const title = typedLocale === 'zh' && post.titleZh ? post.titleZh : post.title;
@@ -85,10 +87,11 @@ export default async function BlogPostPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [post, phrases] = await Promise.all([
-    sanityClient.fetch<BlogPost | null>(POST_BY_SLUG_QUERY, { slug }),
+  const [postResult, phrases] = await Promise.all([
+    sanityFetch({query: POST_BY_SLUG_QUERY, params: {slug}}),
     getPhraseRecord(),
   ]);
+  const post = postResult.data as BlogPost | null;
 
   if (!post) notFound();
 
