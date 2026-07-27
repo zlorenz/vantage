@@ -13,16 +13,20 @@
 
 import '../globals.css';
 import type { Metadata } from 'next';
+import { draftMode } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
+import { VisualEditing } from 'next-sanity/visual-editing';
+import { DisableDraftMode } from '@/components/visual-editing/DisableDraftMode';
 import { LayoutShell } from '@/components/layout/LayoutShell';
 import { routing } from '@/i18n/routing';
 import { nunito, poppins } from '@/lib/fonts';
 import { METADATA_BASE } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
+import { SanityLive } from '@/sanity/lib/live';
 import { NAV_PAGES_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
@@ -78,6 +82,13 @@ export default async function LocaleLayout({ children, params }: Props) {
             {children}
           </LayoutShell>
         </NextIntlClientProvider>
+        <SanityLive />
+        {(await draftMode()).isEnabled && (
+          <>
+            <VisualEditing />
+            <DisableDraftMode />
+          </>
+        )}
       </body>
     </html>
   );
