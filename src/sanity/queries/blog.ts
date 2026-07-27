@@ -2,6 +2,8 @@
  * Blog GROQ queries — news index, single posts, category archives.
  */
 
+import {defineQuery} from 'groq'
+
 const BLOG_CARD_FIELDS = `
   _id,
   title,
@@ -28,7 +30,7 @@ export const ALL_POSTS_QUERY = `
 `;
 
 /** Single blog post by English or Chinese slug. */
-export const POST_BY_SLUG_QUERY = `
+export const POST_BY_SLUG_QUERY = defineQuery(`
   *[_type == "blogPost" && !defined(trash.trashedAt) && (
     slug.current == $slug || slugZh.current == $slug
   )][0]{
@@ -60,7 +62,7 @@ export const POST_BY_SLUG_QUERY = `
       ogImage
     }
   }
-`;
+`)
 
 /** All blog post slugs for generateStaticParams. */
 export const POST_SLUGS_QUERY = `

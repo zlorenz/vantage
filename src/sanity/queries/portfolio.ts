@@ -110,7 +110,7 @@ export const ALL_PORTFOLIO_QUERY = `
 /**
  * Single portfolio entry by slug (English slug or explicit slugZh on Chinese routes).
  */
-export const PORTFOLIO_ENTRY_QUERY = `
+export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
   *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (
     slug.current == $slug || slugZh.current == $slug
   )][0]{
@@ -146,7 +146,7 @@ export const PORTFOLIO_ENTRY_QUERY = `
       ogImage
     }
   }
-`;
+`)
 
 /**
  * All portfolio slugs for generateStaticParams (141 entries × 2 locales).

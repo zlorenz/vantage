@@ -1005,6 +1005,51 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | Geopoint;
 
+// Source: ../src/sanity/queries/blog.ts
+// Variable: POST_BY_SLUG_QUERY
+// Query: *[_type == "blogPost" && !defined(trash.trashedAt) && (    slug.current == $slug || slugZh.current == $slug  )][0]{    _id,    title,    titleZh,    "slug": slug.current,    "slugZh": slugZh.current,    _createdAt,    _updatedAt,    featuredImage,    excerpt,    excerptZh,    body,    bodyZh,    "categories": categories[]->{      _id,      title,      titleZh,      "slug": slug.current,      "slugZh": slugZh.current    },    noIndex,    seo{      metaDescription,      metaDescriptionZh,      metaTitle,      metaTitleZh,      ogImage    }  }
+export type POST_BY_SLUG_QUERY_RESULT = {
+  _id: string;
+  title: string | null;
+  titleZh: string | null;
+  slug: string | null;
+  slugZh: string | null;
+  _createdAt: string;
+  _updatedAt: string;
+  featuredImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  excerpt: string | null;
+  excerptZh: string | null;
+  body: PortableTextBody | null;
+  bodyZh: PortableTextBody | null;
+  categories: Array<{
+    _id: string;
+    title: string | null;
+    titleZh: string | null;
+    slug: string | null;
+    slugZh: string | null;
+  }> | null;
+  noIndex: boolean | null;
+  seo: {
+    metaDescription: string | null;
+    metaDescriptionZh: string | null;
+    metaTitle: string | null;
+    metaTitleZh: string | null;
+    ogImage: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+} | null;
+
 // Source: ../src/sanity/queries/pages.ts
 // Variable: HOME_PAGE_QUERY
 // Query: *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{      _id,  title,  titleZh,  "slug": slug.current,  "slugZh": slugZh.current,  showHeroHeader,  heroTitle,  heroTitleZh,  featuredImage,  body,  bodyZh,  seo{    metaDescription,    metaDescriptionZh,    metaTitle,    metaTitleZh,    ogImage  },  noIndex,    "heroSlides": heroSlides[      !defined(@->trash.trashedAt)    ]->{        "slug": slug.current,  "slugZh": slugZh.current,  displayTitleParts{    brandName,    productName,    campaignTitle,    brandNameZh,    productNameZh,    campaignTitleZh  },  headerTitleOverride,  headerTitleOverrideZh,  "description": coalesce(excerpt, seo.metaDescription),  "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),  featuredImage    },    "featuredWork": featuredWork[      !defined(@->trash.trashedAt) && @->isHidden != true    ]->{        _id,  "slug": slug.current,  "slugZh": slugZh.current,  displayTitleParts{    brandName,    productName,    campaignTitle,    brandNameZh,    productNameZh,    campaignTitleZh  },  thumbTitleOverride,  thumbTitleOverrideZh,  featuredImage,  isHidden    },    brandLogos[]{      logoId    }  }
@@ -1809,6 +1854,164 @@ export type VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY_RESULT = {
 } | null;
 
 // Source: ../src/sanity/queries/portfolio.ts
+// Variable: PORTFOLIO_ENTRY_QUERY
+// Query: *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (    slug.current == $slug || slugZh.current == $slug  )][0]{    _id,    title,    titleZh,    "slug": slug.current,    "slugZh": slugZh.current,      displayTitleParts{    brandName,    productName,    campaignTitle,    brandNameZh,    productNameZh,    campaignTitleZh  },  heroFilmTitle,  heroFilmTitleZh,  thumbTitleOverride,  thumbTitleOverrideZh,  headerTitleOverride,  headerTitleOverrideZh,  longTitleOverride,  longTitleOverrideZh,    excerpt,    excerptZh,    description,    descriptionZh,    featuredImage,    vimeoUrl,    xinpianchangUrl,    publishedAt,    isHidden,    additionalVideos[]{      vimeoUrl,      xinpianchangUrl,      videoTitle,      videoTitleZh,      description,      descriptionZh    },      crewCredits[]{    _key,    department,    roleKey,    role,    isCustomRole,    people[]{      _key,      name,      "url": coalesce(identity->url, url),      linkTitle,      "identityId": identity._ref,      "identityName": identity->name,      "identityNameZh": identity->nameZh    }  },    seo{      metaDescription,      metaDescriptionZh,      metaTitle,      metaTitleZh,      ogImage    }  }
+export type PORTFOLIO_ENTRY_QUERY_RESULT = {
+  _id: string;
+  title: string | null;
+  titleZh: string | null;
+  slug: string | null;
+  slugZh: string | null;
+  displayTitleParts: {
+    brandName: string | null;
+    productName: string | null;
+    campaignTitle: string | null;
+    brandNameZh: string | null;
+    productNameZh: string | null;
+    campaignTitleZh: string | null;
+  } | null;
+  heroFilmTitle: string | null;
+  heroFilmTitleZh: string | null;
+  thumbTitleOverride: string | null;
+  thumbTitleOverrideZh: string | null;
+  headerTitleOverride: string | null;
+  headerTitleOverrideZh: string | null;
+  longTitleOverride: string | null;
+  longTitleOverrideZh: string | null;
+  excerpt: string | null;
+  excerptZh: string | null;
+  description: string | null;
+  descriptionZh: string | null;
+  featuredImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  vimeoUrl: string | null;
+  xinpianchangUrl: string | null;
+  publishedAt: string | null;
+  isHidden: boolean | null;
+  additionalVideos: Array<{
+    vimeoUrl: string | null;
+    xinpianchangUrl: string | null;
+    videoTitle: string | null;
+    videoTitleZh: string | null;
+    description: string | null;
+    descriptionZh: string | null;
+  }> | null;
+  crewCredits: Array<{
+    _key: string;
+    department:
+      | "art"
+      | "camera"
+      | "casting"
+      | "ge"
+      | "post"
+      | "production"
+      | "stills"
+      | null;
+    roleKey:
+      | "1st_ac"
+      | "1st_ad"
+      | "2nd_ac"
+      | "2nd_ad"
+      | "3d_animation"
+      | "account_manager"
+      | "agency"
+      | "animal_wrangler"
+      | "art_assistant"
+      | "art_director"
+      | "assistant_editors"
+      | "brand"
+      | "bts"
+      | "camera_assistants"
+      | "camera_op"
+      | "casting_director"
+      | "casting_manager"
+      | "catering"
+      | "chaperone"
+      | "choreographer"
+      | "colorist"
+      | "composer"
+      | "creative_director"
+      | "director"
+      | "dit"
+      | "dop"
+      | "drone_op"
+      | "editor"
+      | "electrician"
+      | "ep"
+      | "focus_puller"
+      | "gaffer"
+      | "grip"
+      | "hair_makeup"
+      | "key_grip"
+      | "kv_art_director"
+      | "line_producer"
+      | "location_manager"
+      | "motion_control"
+      | "motion_graphics"
+      | "on_set_editor"
+      | "online"
+      | "pa"
+      | "photo_talent"
+      | "photographer"
+      | "photography_assistant"
+      | "photography_producer"
+      | "post_house"
+      | "post_supervisor"
+      | "producer"
+      | "product_technician"
+      | "production_company"
+      | "production_coordinator"
+      | "production_designer"
+      | "production_manager"
+      | "production_service"
+      | "props_master"
+      | "qtake"
+      | "rental_house"
+      | "sound_design_mix"
+      | "sound_recordist"
+      | "steadicam_op"
+      | "storyboards"
+      | "stunt_coordinator"
+      | "talent"
+      | "transport"
+      | "vfx"
+      | "voice_over"
+      | "wardrobe_assistant"
+      | "wardrobe"
+      | null;
+    role: string | null;
+    isCustomRole: boolean | null;
+    people: Array<{
+      _key: string;
+      name: string | null;
+      url: string | null;
+      linkTitle: string | null;
+      identityId: string | null;
+      identityName: string | null;
+      identityNameZh: string | null;
+    }> | null;
+  }> | null;
+  seo: {
+    metaDescription: string | null;
+    metaDescriptionZh: string | null;
+    metaTitle: string | null;
+    metaTitleZh: string | null;
+    ogImage: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+} | null;
+
+// Source: ../src/sanity/queries/portfolio.ts
 // Variable: WORK_PAGE_QUERY
 // Query: *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{    title,    titleZh,    heroTitle,    heroTitleZh,    featuredImage,    body,    bodyZh  }
 export type WORK_PAGE_QUERY_RESULT = {
@@ -1913,6 +2116,7 @@ export type WORK_PAGE_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
+    '\n  *[_type == "blogPost" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    _createdAt,\n    _updatedAt,\n    featuredImage,\n    excerpt,\n    excerptZh,\n    body,\n    bodyZh,\n    "categories": categories[]->{\n      _id,\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    noIndex,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': POST_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{\n    \n  _id,\n  title,\n  titleZh,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  showHeroHeader,\n  heroTitle,\n  heroTitleZh,\n  featuredImage,\n  body,\n  bodyZh,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    "heroSlides": heroSlides[\n      !defined(@->trash.trashedAt)\n    ]->{\n      \n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  "description": coalesce(excerpt, seo.metaDescription),\n  "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),\n  featuredImage\n\n    },\n    "featuredWork": featuredWork[\n      !defined(@->trash.trashedAt) && @->isHidden != true\n    ]->{\n      \n  _id,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  featuredImage,\n  isHidden\n\n    },\n    brandLogos[]{\n      logoId\n    }\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      image\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
@@ -1921,6 +2125,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n,\n    "featuredWork": featuredWork[\n      !defined(@->trash.trashedAt) && @->isHidden != true\n    ]->{\n      \n  _id,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  featuredImage,\n  isHidden\n\n    }\n  }\n': VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': WORK_PAGE_META_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "video-campaign-brief" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    \n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  heroFilmTitle,\n  heroFilmTitleZh,\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  longTitleOverride,\n  longTitleOverrideZh\n,\n    excerpt,\n    excerptZh,\n    description,\n    descriptionZh,\n    featuredImage,\n    vimeoUrl,\n    xinpianchangUrl,\n    publishedAt,\n    isHidden,\n    additionalVideos[]{\n      vimeoUrl,\n      xinpianchangUrl,\n      videoTitle,\n      videoTitleZh,\n      description,\n      descriptionZh\n    },\n    \n  crewCredits[]{\n    _key,\n    department,\n    roleKey,\n    role,\n    isCustomRole,\n    people[]{\n      _key,\n      name,\n      "url": coalesce(identity->url, url),\n      linkTitle,\n      "identityId": identity._ref,\n      "identityName": identity->name,\n      "identityNameZh": identity->nameZh\n    }\n  }\n,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': PORTFOLIO_ENTRY_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{\n    title,\n    titleZh,\n    heroTitle,\n    heroTitleZh,\n    featuredImage,\n    body,\n    bodyZh\n  }\n': WORK_PAGE_QUERY_RESULT;
   }
 }
