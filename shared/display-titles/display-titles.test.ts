@@ -17,9 +17,10 @@ function testCompileMammotion() {
     result.longTitle,
     'Mammotion LUBA Mini AWD<span class="vp-outline"> Compact, Powerful & Ready to Conquer Your Lawn </span>',
   )
+  // Header outlines the campaign (matches longTitle + live site). Changed from product-first 2026-07.
   assert.equal(
     result.headerTitle,
-    'Mammotion<span class="vp-outline"> LUBA Mini AWD </span>',
+    'Mammotion<span class="vp-outline"> Compact, Powerful & Ready to Conquer Your Lawn </span>',
   )
   assert.equal(result.thumbTitle, 'Mammotion LUBA Mini AWD')
   assert.equal(
@@ -132,16 +133,17 @@ function testCompileHeaderMatchesThumbPartsWithoutCapOrBreak() {
   )
   assert.ok(!longCampaign.headerTitle.includes('<br>'))
 
-  // Prefer product over campaign even when product exceeds thumb’s 18-char cap.
+  // Campaign present → header outlines campaign even when a long product exists.
   const longProduct = compileDisplayTitles({
     brandName: 'Bambu Lab',
     productName: 'Vortek Hotend Change System',
     campaignTitle: 'Trade Smarter',
   })
   assert.equal(longProduct.thumbTitle, 'Bambu Lab Trade Smarter')
+  // Header outlines the campaign (matches longTitle + live site). Changed from product-first 2026-07.
   assert.equal(
     longProduct.headerTitle,
-    'Bambu Lab<span class="vp-outline"> Vortek Hotend Change System </span>',
+    'Bambu Lab<span class="vp-outline"> Trade Smarter </span>',
   )
   assert.ok(!longProduct.headerTitle.includes('<br>'))
 }

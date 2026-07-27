@@ -45,7 +45,7 @@ export function thumbSecondLine(
  * Rules:
  * - Full: Brand+Product solid + outlined Campaign; if no campaign, Brand solid + outlined Product
  *   When heroFilmTitle is set (multi-video): Brand+Product+Campaign solid + outlined hero episode
- * - Header: Brand solid + outlined (Product, else Campaign) — never includes heroFilmTitle
+ * - Header: Brand solid + outlined (Campaign, else Product) — never includes heroFilmTitle
  * - Thumb: single-line `Brand Secondary` (product else short campaign); brand-only if secondary too long
  * - Document: `Brand Product – Campaign` (en-dash); hero episode is not part of the document title
  */
@@ -58,8 +58,8 @@ export function compileDisplayTitles(
   const hero = trimPart(parts.heroFilmTitle)
 
   const brandProduct = joinParts(brand, product)
-  // Same preference as thumb (product, else campaign) — unlimited length for header.
-  const headerSecondary = product || campaign
+  // Prefer campaign for header (matches longTitle + live site); fall back to product.
+  const headerSecondary = campaign || product
   const thumbSecondary = thumbSecondLine(product, campaign)
 
   let longTitle = brand
