@@ -11,10 +11,10 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
 import { workPageTitle, resolveMetadataImage, buildPageMetadata, seoDescription, seoMetaTitle } from '@/lib/metadata';
-import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, workBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { WORK_PAGE_META_QUERY } from '@/sanity/queries/pages';
 import {
   ALL_PORTFOLIO_QUERY,
@@ -23,6 +23,10 @@ import {
   VIDEO_FORMATS_QUERY,
   WORK_PAGE_QUERY,
 } from '@/sanity/queries/portfolio';
+import type {
+  WORK_PAGE_META_QUERY_RESULT,
+  WORK_PAGE_QUERY_RESULT,
+} from '@/sanity/sanity.types';
 import type {
   PortfolioGridEntry,
   TaxonomyTerm,
@@ -39,7 +43,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const workPageDoc = await sanityClient.fetch(WORK_PAGE_META_QUERY);
+  const {data} = await sanityFetch({query: WORK_PAGE_META_QUERY, stega: false});
+  const workPageDoc = data as WORK_PAGE_META_QUERY_RESULT;
 
   return buildPageMetadata({
     locale: typedLocale,
@@ -62,15 +67,26 @@ export default async function WorkPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [workPage, entries, videoFormats, industries, markets, phrases] =
-    await Promise.all([
-      sanityClient.fetch(WORK_PAGE_QUERY),
-      sanityClient.fetch<PortfolioGridEntry[]>(ALL_PORTFOLIO_QUERY),
-      sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
-      sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
-      sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
-      getPhraseRecord(),
-    ]);
+  const [
+    workPageResult,
+    entriesResult,
+    videoFormatsResult,
+    industriesResult,
+    marketsResult,
+    phrases,
+  ] = await Promise.all([
+    sanityFetch({query: WORK_PAGE_QUERY}),
+    sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
+    sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
+    sanityFetch({query: INDUSTRIES_QUERY, stega: false}),
+    sanityFetch({query: MARKETS_QUERY, stega: false}),
+    getPhraseRecord(),
+  ]);
+  const workPage = workPageResult.data as WORK_PAGE_QUERY_RESULT;
+  const entries = entriesResult.data as PortfolioGridEntry[];
+  const videoFormats = videoFormatsResult.data as TaxonomyTerm[];
+  const industries = industriesResult.data as TaxonomyTerm[];
+  const markets = marketsResult.data as TaxonomyTerm[];
 
   const heroTitle =
     typedLocale === 'zh' && workPage?.heroTitleZh
