@@ -1,12 +1,14 @@
+import { stegaClean } from '@sanity/client/stega';
 import type { PortableTextBlock } from '@/types/sanity';
 
 type PtSpan = { _type?: string; text?: string };
 
 function getBlockPlainText(block: PortableTextBlock): string {
   if (block._type !== 'block' || !Array.isArray(block.children)) return '';
+  // stegaClean for filter compares only — blocks that pass through keep stega for overlays.
   return (block.children as PtSpan[])
     .filter((child) => child._type === 'span')
-    .map((child) => child.text ?? '')
+    .map((child) => stegaClean(child.text ?? ''))
     .join('');
 }
 
@@ -29,10 +31,12 @@ function isFounderGalleryArtifact(block: PortableTextBlock, founderNames: string
   }
 
   const compact = getBlockPlainText(block).replace(/\s+/g, '');
-  const expected = founderNames.map((name) => name.replace(/\s+/g, '')).join('');
+  // Clean founder names for compare only — same draft-stega issue as body spans.
+  const cleanedNames = founderNames.map((name) => stegaClean(name).replace(/\s+/g, ''));
+  const expected = cleanedNames.join('');
   if (compact === expected) return true;
 
-  return founderNames.length > 1 && founderNames.every((name) => compact.includes(name.replace(/\s+/g, '')));
+  return cleanedNames.length > 1 && cleanedNames.every((name) => compact.includes(name));
 }
 
 /**
