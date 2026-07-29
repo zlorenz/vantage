@@ -32,5 +32,11 @@ export const structure: StructureResolver = (S) =>
         ),
       S.documentTypeListItem('platform'),
       S.documentTypeListItem('translatedPhrase').title('Phrases (EN→ZH)'),
-      S.documentTypeListItem('siteSettings'),
+      S.listItem()
+        .title('Site Settings')
+        .id('siteSettings')
+        .schemaType('siteSettings')
+        .child(
+          S.document().schemaType('siteSettings').documentId('siteSettings'),
+        ),
     ])

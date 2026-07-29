@@ -59,7 +59,12 @@ export default defineConfig({
     // Orphaned WP taxonomy mirrors — keep schema types for historical docs,
     // but do not offer Create in the global + menu.
     newDocumentOptions: (prev) =>
-      prev.filter((t) => t.templateId !== 'client' && t.templateId !== 'crewMember'),
+      prev.filter(
+        (t) =>
+          t.templateId !== 'client' &&
+          t.templateId !== 'crewMember' &&
+          t.templateId !== 'siteSettings',
+      ),
     productionUrl: async (prev, {document}) => {
       const url = getFrontEndUrl(
         document._type,
