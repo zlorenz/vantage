@@ -13,10 +13,10 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import { SITE_DESCRIPTION, homePageTitle, buildPageMetadata, resolveMetadataImage, seoMetaTitle } from '@/lib/metadata';
-import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, buildOrganization, homeBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { HOME_PAGE_QUERY } from '@/sanity/queries/pages';
 import { RECENT_PORTFOLIO_QUERY } from '@/sanity/queries/portfolio';
 import type {
@@ -49,7 +49,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const homePage = await sanityClient.fetch<HomePageData | null>(HOME_PAGE_QUERY);
+  const {data} = await sanityFetch({query: HOME_PAGE_QUERY, stega: false});
+  const homePage = data as HomePageData | null;
   const description =
     typedLocale === 'zh' && homePage?.seo?.metaDescriptionZh
       ? homePage.seo.metaDescriptionZh
@@ -73,11 +74,13 @@ export default async function HomePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [homePage, recentWork, phrases] = await Promise.all([
-    sanityClient.fetch<HomePageData | null>(HOME_PAGE_QUERY),
-    sanityClient.fetch<PortfolioCardData[]>(RECENT_PORTFOLIO_QUERY),
+  const [homePageResult, recentWorkResult, phrases] = await Promise.all([
+    sanityFetch({query: HOME_PAGE_QUERY}),
+    sanityFetch({query: RECENT_PORTFOLIO_QUERY}),
     getPhraseRecord(),
   ]);
+  const homePage = homePageResult.data as HomePageData | null;
+  const recentWork = recentWorkResult.data as PortfolioCardData[];
 
   const slides: HeroSlideData[] = homePage?.heroSlides ?? [];
 
