@@ -18,14 +18,15 @@ import {
   buildPageMetadata,
   seoMetaTitle,
 } from '@/lib/metadata';
-import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
   homeBreadcrumb,
   staticPageUrl,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { VIETNAM_LOCATION_GUIDE_PAGE_QUERY } from '@/sanity/queries/pages';
+import type { VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -38,7 +39,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const page = await sanityClient.fetch(VIETNAM_LOCATION_GUIDE_PAGE_QUERY);
+  const {data} = await sanityFetch({
+    query: VIETNAM_LOCATION_GUIDE_PAGE_QUERY,
+    stega: false,
+  });
+  const page = data as VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT;
   if (!page) return { title: 'Not Found' };
 
   return buildPageMetadata({
@@ -61,7 +66,8 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const page = await sanityClient.fetch(VIETNAM_LOCATION_GUIDE_PAGE_QUERY);
+  const {data} = await sanityFetch({query: VIETNAM_LOCATION_GUIDE_PAGE_QUERY});
+  const page = data as VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT;
 
   if (!page) notFound();
 

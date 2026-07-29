@@ -13,7 +13,6 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { filterVietnamProductionServiceBody } from '@/lib/portable-text-filters';
 import { pageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
-import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
@@ -22,11 +21,13 @@ import {
   staticPageUrl,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY } from '@/sanity/queries/pages';
 import {
   MARKET_BY_SLUG_QUERY,
   PORTFOLIO_BY_MARKET_QUERY,
 } from '@/sanity/queries/portfolio';
+import type { VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { PortfolioCard as PortfolioCardData } from '@/types/sanity';
 
 type Props = {
@@ -40,7 +41,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const page = await sanityClient.fetch(VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY);
+  const {data} = await sanityFetch({
+    query: VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY,
+    stega: false,
+  });
+  const page = data as VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT;
   if (!page) return { title: 'Not Found' };
 
   const title = typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
@@ -65,7 +70,8 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const page = await sanityClient.fetch(VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY);
+  const {data} = await sanityFetch({query: VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY});
+  const page = data as VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT;
 
   if (!page) notFound();
 
@@ -74,15 +80,22 @@ export default async function VietnamProductionServicePage({ params }: Props) {
     page.featuredWork ?? [];
 
   if (!vietnamPortfolio.length) {
-    const vietnamMarket = await sanityClient.fetch<{ _id: string } | null>(
-      MARKET_BY_SLUG_QUERY,
-      { slug: 'vietnam' },
-    );
-    vietnamPortfolio = vietnamMarket
-      ? await sanityClient.fetch<PortfolioCardData[]>(PORTFOLIO_BY_MARKET_QUERY, {
-          termId: vietnamMarket._id,
-        })
-      : [];
+    const marketResult = await sanityFetch({
+      query: MARKET_BY_SLUG_QUERY,
+      params: {slug: 'vietnam'},
+      stega: false,
+    });
+    const vietnamMarket = marketResult.data as {_id: string} | null;
+    if (vietnamMarket) {
+      const portfolioResult = await sanityFetch({
+        query: PORTFOLIO_BY_MARKET_QUERY,
+        params: {termId: vietnamMarket._id},
+        stega: false,
+      });
+      vietnamPortfolio = portfolioResult.data as PortfolioCardData[];
+    } else {
+      vietnamPortfolio = [];
+    }
   }
 
   const phrases = await getPhraseRecord();

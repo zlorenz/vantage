@@ -2,13 +2,19 @@
  * Portable Text block filters — strip migration artifacts superseded by structured fields.
  */
 
+import { stegaClean } from '@sanity/client/stega';
 import { getPortableTextBlockPlainText } from '@/lib/video-url';
 import type { PortableTextBlock } from '@/types/sanity';
+
+/** Plain text for filter compares only — stegaClean so draft equality/regex still match. */
+function blockPlainTextForFilter(block: PortableTextBlock): string {
+  return stegaClean(getPortableTextBlockPlainText(block));
+}
 
 /** wp:file blocks collapsed to "filename.pdfDownload" plain-text paragraphs. */
 export function isPdfDownloadArtifactBlock(block: PortableTextBlock): boolean {
   if (block._type !== 'block') return false;
-  const compact = getPortableTextBlockPlainText(block).replace(/\s+/g, '');
+  const compact = blockPlainTextForFilter(block).replace(/\s+/g, '');
   return /\.pdfdownload$/i.test(compact);
 }
 
@@ -25,7 +31,7 @@ export function filterPdfDownloadArtifactBlocks<T>(
 /** Gallery captions collapsed into one paragraph during failed migration. */
 function isGalleryCaptionArtifact(block: PortableTextBlock): boolean {
   if (block._type !== 'block' || block.style !== 'normal') return false;
-  const text = getPortableTextBlockPlainText(block).trim();
+  const text = blockPlainTextForFilter(block).trim();
   if (!text) return false;
 
   // Collapsed caption dumps are usually English place/studio names glued together
@@ -56,14 +62,14 @@ export function filterVietnamProductionServiceBody<T>(
     const block = blocks[i] as PortableTextBlock;
 
     if (block._type === 'block') {
-      const text = getPortableTextBlockPlainText(block).trim();
+      const text = blockPlainTextForFilter(block).trim();
       if (!text) continue;
     }
 
     if (isGalleryCaptionArtifact(block)) continue;
 
     if (block._type === 'block' && block.style === 'h1') {
-      const text = getPortableTextBlockPlainText(block).trim();
+      const text = blockPlainTextForFilter(block).trim();
       if (/^shot\s+in\s+vietnam$/i.test(text)) continue;
       if (/^在越南拍摄$/.test(text.replace(/\s+/g, ''))) continue;
 
