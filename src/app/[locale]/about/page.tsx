@@ -126,7 +126,7 @@ export default async function AboutPage({ params }: Props) {
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {page.founders.map((founder, index) => (
                 <FounderCard
-                  key={founder.name ?? `founder-${index}`}
+                  key={`founder-${index}`}
                   founder={founder}
                   locale={typedLocale}
                   phrases={phrases}

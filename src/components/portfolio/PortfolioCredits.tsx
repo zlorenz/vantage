@@ -47,7 +47,7 @@ function CreditNames({
       {people.map((person, index) => {
         const displayName = creditDisplayName(person, locale, phrases);
         return (
-          <span key={`${person.name}-${index}`}>
+          <span key={person._key ?? `person-${index}`}>
             {index > 0 ? ', ' : null}
             {person.url ? (
               <a
@@ -85,7 +85,7 @@ export function PortfolioCredits({
           <div className="vp-credits__dept">{row.label}</div>
           <div className="vp-credits__content">
             {row.pairs.map((pair, index) => (
-              <span key={`${pair.role}-${index}`} className="vp-credit-pair">
+              <span key={index} className="vp-credit-pair">
                 <span className="vp-credit-role">{pair.role} </span>
                 <span className="vp-credit-names">
                   <CreditNames

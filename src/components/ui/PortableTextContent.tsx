@@ -66,8 +66,8 @@ function createComponents(relaxed = false): PortableTextComponents {
         const urls = extractVideoUrls(text);
         return (
           <div className="vp-pt-videos my-6 space-y-6">
-            {urls.map((url) => (
-              <PortableTextVideoEmbed key={url} url={url} />
+            {urls.map((url, index) => (
+              <PortableTextVideoEmbed key={index} url={url} />
             ))}
           </div>
         );

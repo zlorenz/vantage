@@ -214,7 +214,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
 
         return (
           <SectionWrapper
-            key={video.vimeoUrl || video.xinpianchangUrl || index}
+            key={index}
             borderTop
           >
             <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">

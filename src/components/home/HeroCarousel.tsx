@@ -67,7 +67,7 @@ export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
             .url();
           return (
             <div
-              key={slide.slug}
+              key={index}
               className="absolute inset-0 transition-opacity duration-700 ease-in-out"
               style={{ opacity: index === activeIndex ? 1 : 0 }}
               aria-hidden={index !== activeIndex}
@@ -103,7 +103,7 @@ export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
 
           return (
             <div
-              key={slide.slug}
+              key={index}
               className="container absolute flex w-full flex-col items-center justify-center px-4 text-center text-white transition-opacity duration-700 ease-in-out min-[1400px]:max-w-[1320px]"
               style={{ opacity: index === activeIndex ? 1 : 0 }}
               aria-hidden={index !== activeIndex}
