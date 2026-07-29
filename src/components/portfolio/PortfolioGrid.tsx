@@ -190,6 +190,39 @@ function buildPublicQuery(filters: PublicFilters): Record<string, string> {
   return query;
 }
 
+function publicFiltersMatchPresets(
+  filters: PublicFilters,
+  preset: PublicFilters,
+): boolean {
+  return (
+    filters.format === preset.format &&
+    filters.industry === preset.industry &&
+    filters.market === preset.market
+  );
+}
+
+/**
+ * Mirror public filter state into the query string without App Router navigation.
+ * When filters equal archive presets (or are empty on /work), write no query —
+ * matching clearPublicFilters / initial archive URLs.
+ */
+function replacePublicFiltersUrl(
+  filters: PublicFilters,
+  preset: PublicFilters,
+): void {
+  const query = publicFiltersMatchPresets(filters, preset)
+    ? {}
+    : buildPublicQuery(filters);
+  const params = new URLSearchParams(query);
+  const qs = params.toString();
+  const next = qs
+    ? `${window.location.pathname}?${qs}`
+    : window.location.pathname;
+  const current = `${window.location.pathname}${window.location.search}`;
+  if (next === current) return;
+  window.history.replaceState(window.history.state, '', next);
+}
+
 function buildInternalQuery(filters: InternalFilters): Record<string, string> {
   const query: Record<string, string> = {};
   if (filters.client) query.client = filters.client;
@@ -224,16 +257,49 @@ export function PortfolioGrid({
   const presetFormat = presetFilters?.format ?? '';
   const presetIndustry = presetFilters?.industry ?? '';
   const presetMarket = presetFilters?.market ?? '';
+  const publicPresets: PublicFilters = {
+    format: presetFormat,
+    industry: presetIndustry,
+    market: presetMarket,
+  };
 
-  const publicFilters = useMemo(
-    () =>
-      readPublicFilters(searchParams, {
-        format: presetFormat || undefined,
-        industry: presetIndustry || undefined,
-        market: presetMarket || undefined,
-      }),
-    [searchParams, presetFormat, presetIndustry, presetMarket],
+  // Local state + history.replaceState (not router.replace) so filter changes
+  // stay shareable without triggering an App Router RSC refetch.
+  const [publicFilters, setPublicFilters] = useState(() =>
+    readPublicFilters(searchParams, {
+      format: presetFormat || undefined,
+      industry: presetIndustry || undefined,
+      market: presetMarket || undefined,
+    }),
   );
+
+  useEffect(() => {
+    if (filterMode !== 'public') return;
+    replacePublicFiltersUrl(publicFilters, publicPresets);
+  }, [
+    filterMode,
+    publicFilters,
+    presetFormat,
+    presetIndustry,
+    presetMarket,
+  ]);
+
+  useEffect(() => {
+    if (filterMode !== 'public') return;
+    function onPopState() {
+      const params = new URLSearchParams(window.location.search);
+      setPublicFilters(
+        readPublicFilters(params, {
+          format: presetFormat || undefined,
+          industry: presetIndustry || undefined,
+          market: presetMarket || undefined,
+        }),
+      );
+    }
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [filterMode, presetFormat, presetIndustry, presetMarket]);
+
   const internalFilters = useMemo(
     () => readInternalFilters(searchParams),
     [searchParams],
@@ -369,27 +435,16 @@ export function PortfolioGrid({
     publicFilters.market !== presetMarket;
 
   const updatePublicFilter = (key: keyof PublicFilters, value: string) => {
-    const next = { ...publicFilters, [key]: value };
-    router.replace(
-      {
-        pathname,
-        params: routeParams,
-        query: buildPublicQuery(next),
-      } as Parameters<typeof router.replace>[0],
-      { scroll: false },
-    );
+    setPublicFilters((prev) => ({ ...prev, [key]: value }));
     keepFiltersInView();
   };
 
   const clearPublicFilters = () => {
-    router.replace(
-      {
-        pathname,
-        params: routeParams,
-        query: {},
-      } as Parameters<typeof router.replace>[0],
-      { scroll: false },
-    );
+    setPublicFilters({
+      format: presetFormat,
+      industry: presetIndustry,
+      market: presetMarket,
+    });
     keepFiltersInView();
   };
 
