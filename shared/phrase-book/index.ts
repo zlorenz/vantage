@@ -2,6 +2,8 @@
  * Exact-string EN→ZH phrase book (whole-field match only).
  */
 
+import {stegaClean} from '@sanity/client/stega'
+
 import {canonicalCrewRoleLabel} from '../crew-credits'
 
 export {
@@ -47,8 +49,13 @@ export type PhraseRow = {
 
 export type PhraseMap = ReadonlyMap<string, string>
 
+/**
+ * Normalize a phrase KEY / comparison input.
+ * stegaClean first so draft-mode U+FEFF is not treated as whitespace by `\s+`
+ * (which would shred stega before Map lookup). No-op on published (non-stega) strings.
+ */
 export function normalizePhraseKey(en: string | null | undefined): string {
-  return (en ?? '').replace(/\s+/g, ' ').trim()
+  return stegaClean(en ?? '').replace(/\s+/g, ' ').trim()
 }
 
 /** Deterministic Sanity document id for a phrase key. */
@@ -119,6 +126,13 @@ export type ResolveLocalizedArgs = {
 /**
  * Resolve a bilingual string for the active locale.
  * ZH order: phrase book → document Zh → English.
+ *
+ * Display returns keep stega for click-to-edit overlays:
+ * - EN locale → raw `en`
+ * - phrase-book hit → map value (built from non-stega phrase docs)
+ * - document Zh → raw `zh` (emptiness checked via normalizePhraseKey only)
+ * - fallback → raw `en`
+ * Lookup keys go through normalizePhraseKey (stegaClean + collapse).
  */
 export function resolveLocalizedString(args: ResolveLocalizedArgs): string {
   const en = args.en ?? ''
@@ -127,8 +141,9 @@ export function resolveLocalizedString(args: ResolveLocalizedArgs): string {
   const fromBook = lookupPhrase(args.phrases, en)
   if (fromBook) return fromBook
 
-  const fromDoc = normalizePhraseKey(args.zh)
-  if (fromDoc) return fromDoc
+  // Presence/emptiness via cleaned key; return RAW zh so draft overlays survive.
+  // (normalizePhraseKey output must not be used as display — it strips stega.)
+  if (normalizePhraseKey(args.zh)) return args.zh ?? ''
 
   return en
 }

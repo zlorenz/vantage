@@ -2,6 +2,8 @@
  * Shared Vimeo/YouTube URL helpers for Studio + Next.js.
  */
 
+import {stegaClean} from '@sanity/client/stega'
+
 export type VideoProvider = 'vimeo' | 'youtube'
 
 export interface ParsedVideoUrl {
@@ -13,14 +15,19 @@ export interface ParsedVideoUrl {
 const VIDEO_URL_PATTERN =
   /https?:\/\/(?:www\.)?(?:vimeo\.com\/(?:video\/)?\d+(?:[?#][^\s]*)?|youtube\.com\/watch\?v=[\w-]+(?:[&?#][^\s]*)?|youtu\.be\/[\w-]+(?:[?#][^\s]*)?|youtube\.com\/embed\/[\w-]+(?:[?#][^\s]*)?)/gi
 
+/** Strip draft-mode stega before URL parse/regex. No-op on published strings. */
+function cleanUrlInput(url: string): string {
+  return stegaClean(url)
+}
+
 export function extractVimeoId(url: string): string | null {
-  const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+  const match = cleanUrlInput(url).match(/vimeo\.com\/(?:video\/)?(\d+)/)
   return match?.[1] ?? null
 }
 
 export function extractYouTubeId(url: string): string | null {
   try {
-    const parsed = new URL(url)
+    const parsed = new URL(cleanUrlInput(url))
     const host = parsed.hostname.replace(/^www\./, '')
 
     if (host === 'youtu.be') {
@@ -43,11 +50,11 @@ export function extractYouTubeId(url: string): string | null {
 }
 
 export function extractVideoUrls(text: string): string[] {
-  return [...text.matchAll(VIDEO_URL_PATTERN)].map((match) => match[0])
+  return [...cleanUrlInput(text).matchAll(VIDEO_URL_PATTERN)].map((match) => match[0])
 }
 
 export function isVideoUrlOnlyText(text: string): boolean {
-  const trimmed = text.trim()
+  const trimmed = cleanUrlInput(text).trim()
   if (!trimmed) return false
 
   const urls = extractVideoUrls(trimmed)
@@ -63,7 +70,7 @@ export function isVideoUrlOnlyText(text: string): boolean {
 
 /** Decode WP/JSON artifacts like literal `\u0026` in stored Vimeo query strings. */
 export function normalizeStoredVideoUrl(url: string): string {
-  return url
+  return cleanUrlInput(url)
     .replace(/\\u0026/gi, '&')
     .replace(/\\\\u0026/gi, '&')
     .trim()
