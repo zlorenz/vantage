@@ -16,7 +16,8 @@ type LocalePairStackProps = {
   zhValue: string
   onEnChange: (value: string) => void
   onZhChange: (value: string) => void
-  readOnly?: boolean
+  enReadOnly?: boolean
+  zhReadOnly?: boolean
   /** When set, renders textareas instead of single-line inputs. */
   rows?: number
   /** Match Sanity default FormFieldHeader size (1) for schema field pairs. */
@@ -40,7 +41,8 @@ export function LocalePairStack(props: LocalePairStackProps) {
     enValue: props.enValue,
     zhValue: props.zhValue,
     onZhChange: props.onZhChange,
-    readOnly: props.readOnly,
+    // Mutates ZH (autofill + blur upsert) — gate on the ZH lock.
+    readOnly: props.zhReadOnly,
     enabled: props.phraseBook !== false,
   })
 
@@ -65,7 +67,7 @@ export function LocalePairStack(props: LocalePairStackProps) {
           {isText ? (
             <TextArea
               value={props.enValue}
-              readOnly={props.readOnly}
+              readOnly={props.enReadOnly}
               rows={props.rows}
               onChange={handleEn}
               placeholder={props.enPlaceholder}
@@ -74,7 +76,7 @@ export function LocalePairStack(props: LocalePairStackProps) {
           ) : (
             <TextInput
               value={props.enValue}
-              readOnly={props.readOnly}
+              readOnly={props.enReadOnly}
               onChange={handleEn}
               placeholder={props.enPlaceholder}
               style={INPUT_PAD}
@@ -88,7 +90,7 @@ export function LocalePairStack(props: LocalePairStackProps) {
               {isText ? (
                 <TextArea
                   value={props.zhValue}
-                  readOnly={props.readOnly}
+                  readOnly={props.zhReadOnly}
                   rows={props.rows}
                   onChange={handleZh}
                   onBlur={onZhBlur}
@@ -98,7 +100,7 @@ export function LocalePairStack(props: LocalePairStackProps) {
               ) : (
                 <TextInput
                   value={props.zhValue}
-                  readOnly={props.readOnly}
+                  readOnly={props.zhReadOnly}
                   onChange={handleZh}
                   onBlur={onZhBlur}
                   placeholder={props.zhPlaceholder}

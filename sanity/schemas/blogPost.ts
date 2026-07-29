@@ -13,6 +13,7 @@ import {defineField, defineType} from 'sanity'
 import {BodyPortableTextInput} from '../components/body/BodyPortableTextInput'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
 import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
+import {getStudioRole} from '../lib/studio-roles'
 
 export const blogPost = defineType({
   name: 'blogPost',
@@ -75,6 +76,7 @@ export const blogPost = defineType({
       type: 'portableTextBody',
       components: {input: BodyPortableTextInput},
       validation: (rule) => rule.required(),
+      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
     }),
 
     defineField({
@@ -83,6 +85,7 @@ export const blogPost = defineType({
       type: 'portableTextBody',
       components: {input: BodyPortableTextInput},
       hidden: hideZhPortableText('body'),
+      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
     }),
 
     defineField({

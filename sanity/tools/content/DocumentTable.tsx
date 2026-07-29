@@ -35,6 +35,7 @@ import {
   type InboundReferenceImpact,
   type TrashPreflightItem,
 } from './document-lifecycle'
+import {getStudioRole} from '../../lib/studio-roles'
 
 type DisplayTitlePartsDoc = {
   brandName?: string
@@ -584,7 +585,12 @@ export function DocumentTable({
   )
   const toast = useToast()
   const currentUser = useCurrentUser()
+  const role = getStudioRole(currentUser)
+  const isAdmin = role === 'admin'
+  const isTranslator = role === 'translator'
   const supportsTrash = Boolean(section.supportsTrash)
+  const canMoveToTrash = supportsTrash && !isTranslator
+  const canPermanentlyDelete = supportsTrash && isAdmin
   const supportsStatusFilter = section.columns.some((col) => col.id === 'status')
   const statusFilterTabs = useMemo(() => {
     if (!supportsStatusFilter) return []
@@ -941,6 +947,7 @@ export function DocumentTable({
   )
 
   const openTrashConfirm = useCallback(async () => {
+    if (isTranslator) return
     const ids = [...selected]
     if (ids.length === 0) return
     const hints = hintsForIds(ids)
@@ -954,6 +961,14 @@ export function DocumentTable({
       // Fallback for rare release-locked ghosts inventory still can't see:
       // permanent delete using any release/version ids from the table row.
       if (/document not found/i.test(message)) {
+        if (!isAdmin) {
+          toast.push({
+            status: 'error',
+            title: 'Could not prepare Move to Trash',
+            description: message,
+          })
+          return
+        }
         setConfirm({kind: 'delete', ids, hints})
       } else {
         toast.push({
@@ -965,10 +980,12 @@ export function DocumentTable({
     } finally {
       setBusy(false)
     }
-  }, [client, hintsForIds, selected, toast])
+  }, [client, hintsForIds, isAdmin, isTranslator, selected, toast])
 
   const runConfirm = useCallback(async () => {
     if (!confirm) return
+    if (confirm.kind === 'trash' && isTranslator) return
+    if ((confirm.kind === 'delete' || confirm.kind === 'empty') && !isAdmin) return
     setBusy(true)
     try {
       if (confirm.kind === 'trash') {
@@ -1008,7 +1025,7 @@ export function DocumentTable({
     } finally {
       setBusy(false)
     }
-  }, [actorLabel, client, confirm, hintsForIds, loadRows, toast])
+  }, [actorLabel, client, confirm, hintsForIds, isAdmin, isTranslator, loadRows, toast])
 
   const runRestore = useCallback(async () => {
     const ids = [...selected]
@@ -1191,7 +1208,7 @@ export function DocumentTable({
           ) : null}
         </Stack>
         <Flex gap={2} align="center" wrap="wrap">
-          {supportsTrash && selected.size > 0 ? (
+          {canMoveToTrash && selected.size > 0 ? (
             !inTrash ? (
               <MenuButton
                 id={`${section.id}-bulk-actions`}
@@ -1215,7 +1232,7 @@ export function DocumentTable({
                   </Menu>
                 }
               />
-            ) : (
+            ) : canPermanentlyDelete ? (
               <Flex gap={2}>
                 <Button
                   text="Restore"
@@ -1233,9 +1250,16 @@ export function DocumentTable({
                   }
                 />
               </Flex>
+            ) : (
+              <Button
+                text="Restore"
+                mode="ghost"
+                disabled={busy}
+                onClick={runRestore}
+              />
             )
           ) : null}
-          {supportsTrash && inTrash ? (
+          {canPermanentlyDelete && inTrash ? (
             <Button
               text="Empty Trash"
               tone="critical"

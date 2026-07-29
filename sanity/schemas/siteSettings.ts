@@ -8,6 +8,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
+import {getStudioRole} from '../lib/studio-roles'
 
 export const siteSettings = defineType({
   name: 'siteSettings',
@@ -85,6 +86,7 @@ export const siteSettings = defineType({
       of: [{type: 'block'}],
       group: 'contact',
       description: 'Rich text body content for the contact modal (Portable Text).',
+      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
     }),
 
     defineField({
@@ -94,6 +96,7 @@ export const siteSettings = defineType({
       of: [{type: 'block'}],
       group: 'contact',
       hidden: hideZhPortableText('contactModalContent'),
+      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
     }),
 
     ...defineLocalePair({

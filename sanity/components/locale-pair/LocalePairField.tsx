@@ -4,12 +4,14 @@ import {
   getPublishedId,
   set,
   unset,
+  useCurrentUser,
   useDocumentOperation,
   useFormValue,
   type FieldProps,
   type Path,
 } from 'sanity'
 
+import {getStudioRole} from '../../lib/studio-roles'
 import {LocalePairStack} from './LocalePairStack'
 import {getLocalePairOptions} from './types'
 import {shouldShowZh} from './shouldShowZh'
@@ -79,7 +81,10 @@ export function LocalePairField(props: FieldProps) {
   const enValue = isSlugType(typeName) ? slugCurrent(props.value) : stringValue(props.value)
   const zhValue = isSlugType(typeName) ? slugCurrent(zhRaw) : stringValue(zhRaw)
 
-  const readOnly = Boolean(props.inputProps?.readOnly)
+  const formReadOnly = Boolean(props.inputProps?.readOnly)
+  const role = getStudioRole(useCurrentUser())
+  const enReadOnly = formReadOnly || role === 'translator'
+  const zhReadOnly = formReadOnly || role === 'editor'
 
   const patchZh = useCallback(
     (nextRaw: string) => {
@@ -138,7 +143,8 @@ export function LocalePairField(props: FieldProps) {
           zhValue={zhValue}
           onEnChange={patchEn}
           onZhChange={patchZh}
-          readOnly={readOnly}
+          enReadOnly={enReadOnly}
+          zhReadOnly={zhReadOnly}
           rows={useTextarea ? (typeof rows === 'number' ? rows : 3) : undefined}
           showZh={shouldShowZh(enValue, zhValue)}
           phraseBook={!isSlugType(typeName)}

@@ -7,6 +7,7 @@ import {VantageLogoIcon} from './components/VantageLogoIcon'
 import {schemaTypes} from './schemas'
 import {structure} from './structure'
 import {resolve} from './presentation/resolve'
+import {getStudioRole} from './lib/studio-roles'
 import {contentTool} from './tools/content'
 import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './tools/content/front-end-url'
 import './studio.css'
@@ -38,7 +39,17 @@ export default defineConfig({
     visionTool(),
   ],
 
-  tools: (prev) => [contentTool, ...prev.filter((tool) => tool.name !== 'content')],
+  tools: (prev, context) => {
+    const role = getStudioRole(context.currentUser)
+    const withoutDuplicateContent = prev.filter((tool) => tool.name !== 'content')
+    const visible =
+      role === 'admin'
+        ? withoutDuplicateContent
+        : withoutDuplicateContent.filter(
+            (tool) => tool.name !== 'structure' && tool.name !== 'vision',
+          )
+    return [contentTool, ...visible]
+  },
 
   schema: {
     types: schemaTypes,

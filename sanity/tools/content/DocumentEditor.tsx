@@ -64,6 +64,7 @@ import {
   type TrashableType,
 } from './document-lifecycle'
 import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './front-end-url'
+import {getStudioRole} from '../../lib/studio-roles'
 
 type DisplayTitlePartsDoc = {
   brandName?: string
@@ -274,6 +275,9 @@ export function DocumentEditor({
   const editState = useEditState(publishedId, documentType)
   const ops = useDocumentOperation(publishedId, documentType)
   const supportsTrash = TRASHABLE_TYPES.includes(documentType as TrashableType)
+  const role = getStudioRole(currentUser)
+  const isAdmin = role === 'admin'
+  const isTranslator = role === 'translator'
 
   // Prefer live compile from displayTitleParts so chrome matches Portfolio Details.
   const headerTitle = resolveChromeTitle(
@@ -284,9 +288,12 @@ export function DocumentEditor({
 
   const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)
   const canDiscard = Boolean(ops.discardChanges?.disabled) === false
-  const canDelete = supportsTrash
-    ? Boolean(editState.draft || editState.published)
-    : Boolean(ops.delete?.disabled) === false
+  // Translator: no Move to Trash. Permanent delete (non-trash types): admin only.
+  const canDelete = isTranslator
+    ? false
+    : supportsTrash
+      ? Boolean(editState.draft || editState.published)
+      : isAdmin && Boolean(ops.delete?.disabled) === false
 
   const frontEndUrl = useMemo(
     () =>
@@ -315,7 +322,7 @@ export function DocumentEditor({
   }, [ops.discardChanges, toast])
 
   const openTrashConfirm = useCallback(async () => {
-    if (!supportsTrash) return
+    if (!supportsTrash || isTranslator) return
     setBusy('delete')
     try {
       const [item] = await preflightTrash(client, [publishedId])
@@ -334,9 +341,10 @@ export function DocumentEditor({
     } finally {
       setBusy(null)
     }
-  }, [client, publishedId, supportsTrash, toast])
+  }, [client, isTranslator, publishedId, supportsTrash, toast])
 
   const handleMoveToTrash = useCallback(async () => {
+    if (isTranslator) return
     setBusy('delete')
     try {
       const actor =
@@ -357,20 +365,30 @@ export function DocumentEditor({
     } finally {
       setBusy(null)
     }
-  }, [client, currentUser, onBack, publishedId, toast])
+  }, [client, currentUser, isTranslator, onBack, publishedId, toast])
 
   const handleDelete = useCallback(() => {
     if (supportsTrash) {
+      if (isTranslator) return
       void openTrashConfirm()
       return
     }
+    if (!isAdmin) return
     if (!window.confirm('Delete this document permanently?')) return
     setBusy('delete')
     ops.delete.execute()
     toast.push({status: 'success', title: 'Deleted'})
     setBusy(null)
     onBack()
-  }, [onBack, openTrashConfirm, ops.delete, supportsTrash, toast])
+  }, [
+    isAdmin,
+    isTranslator,
+    onBack,
+    openTrashConfirm,
+    ops.delete,
+    supportsTrash,
+    toast,
+  ])
 
   const handleSchedule = useCallback(async () => {
     const publishAt = new Date(scheduleAt)

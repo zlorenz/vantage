@@ -5,6 +5,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair} from '../../lib/define-locale-pair'
+import {getStudioRole} from '../../lib/studio-roles'
 
 export const campaignCta = defineType({
   name: 'campaignCta',
@@ -29,6 +30,7 @@ export const campaignCta = defineType({
       of: [{type: 'text', rows: 3}],
       description: 'Body paragraphs under the heading.',
       validation: (rule) => rule.required().min(1),
+      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
     }),
 
     defineField({
@@ -36,6 +38,7 @@ export const campaignCta = defineType({
       title: 'Paragraphs (Chinese)',
       type: 'array',
       of: [{type: 'text', rows: 3}],
+      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
     }),
 
     ...defineLocalePair({

@@ -422,7 +422,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               label="Brand Name"
               enValue={draft.brandName ?? ''}
               zhValue={draft.brandNameZh ?? ''}
-              readOnly={readOnly}
+              enReadOnly={readOnly}
+              zhReadOnly={readOnly}
               onEnChange={(v) => setPart('brandName', v)}
               onZhChange={(v) => setPart('brandNameZh', v)}
             />
@@ -431,7 +432,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               optional
               enValue={draft.productName ?? ''}
               zhValue={draft.productNameZh ?? ''}
-              readOnly={readOnly}
+              enReadOnly={readOnly}
+              zhReadOnly={readOnly}
               onEnChange={(v) => setPart('productName', v)}
               onZhChange={(v) => setPart('productNameZh', v)}
             />
@@ -442,7 +444,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
           optional
           enValue={draft.campaignTitle ?? ''}
           zhValue={draft.campaignTitleZh ?? ''}
-          readOnly={readOnly}
+          enReadOnly={readOnly}
+          zhReadOnly={readOnly}
           onEnChange={(v) => setPart('campaignTitle', v)}
           onZhChange={(v) => setPart('campaignTitleZh', v)}
         />
