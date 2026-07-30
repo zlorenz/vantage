@@ -308,8 +308,10 @@ export function DocumentEditor({
           editState.published as FrontEndDocument | undefined,
           editState.draft as FrontEndDocument | undefined,
         ),
+        // Translators verify ZH copy — open the Chinese front-end URL.
+        {locale: isTranslator ? 'zh' : 'en'},
       ),
-    [documentType, editState.draft, editState.published],
+    [documentType, editState.draft, editState.published, isTranslator],
   )
 
   const handlePublish = useCallback(() => {
