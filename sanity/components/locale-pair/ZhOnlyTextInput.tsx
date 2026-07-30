@@ -20,7 +20,7 @@ export function ZhOnlyTextInput(props: StringInputProps) {
   }
 
   return (
-    <FlagDecoratedControl locale="zh" align="start">
+    <FlagDecoratedControl locale="zh" align="start" readOnly={readOnly}>
       <TextArea
         {...elementProps}
         value={value ?? ''}

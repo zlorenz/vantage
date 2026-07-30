@@ -4,7 +4,9 @@
  * Source: content-schema.md §2.2 File Block
  */
 
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
+
+import {readOnlyForTranslator} from '../../lib/studio-roles'
 
 export const pdfDownload = defineType({
   name: 'pdfDownload',
@@ -16,8 +18,9 @@ export const pdfDownload = defineType({
       name: 'file',
       title: 'PDF File',
       type: 'file',
-      options: { accept: 'application/pdf' },
+      options: {accept: 'application/pdf'},
       validation: (rule) => rule.required(),
+      readOnly: readOnlyForTranslator,
     }),
 
     defineField({
@@ -26,10 +29,11 @@ export const pdfDownload = defineType({
       type: 'string',
       description: 'Display filename shown beside the download button.',
       validation: (rule) => rule.required(),
+      readOnly: readOnlyForTranslator,
     }),
   ],
 
   preview: {
-    select: { title: 'label' },
+    select: {title: 'label'},
   },
-});
+})

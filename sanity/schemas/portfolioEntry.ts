@@ -14,7 +14,9 @@ import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInpu
 import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
 import {NullField} from '../components/locale-pair/NullField'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
-import {defineLocalePair} from '../lib/define-locale-pair'
+import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
+import {defineLocalePair, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
+import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const portfolioEntry = defineType({
   name: 'portfolioEntry',
@@ -127,6 +129,7 @@ export const portfolioEntry = defineType({
       description: "Client's original release day.",
       options: {dateFormat: 'YYYY-MM-DD'},
       validation: (rule) => rule.required(),
+      hidden: hiddenForTranslator,
     }),
 
     // Display title HTML overrides — edited via Live preview pencil popovers (DisplayTitlesInput).
@@ -209,6 +212,7 @@ export const portfolioEntry = defineType({
       fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'videoFormat' }] }],
       components: { input: TaxonomyCheckboxInput },
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -219,6 +223,7 @@ export const portfolioEntry = defineType({
       fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'industry' }] }],
       components: { input: TaxonomyCheckboxInput },
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -229,6 +234,7 @@ export const portfolioEntry = defineType({
       fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'market' }] }],
       components: { input: TaxonomyCheckboxInput },
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -238,6 +244,7 @@ export const portfolioEntry = defineType({
       group: 'content',
       description: 'Excluded from public /work/ and market archives when true.',
       initialValue: false,
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -247,6 +254,7 @@ export const portfolioEntry = defineType({
       group: 'media',
       options: {hotspot: true},
       validation: (rule) => rule.required(),
+      hidden: hiddenForTranslator,
     }),
 
     ...defineLocalePair({
@@ -276,8 +284,10 @@ export const portfolioEntry = defineType({
       title: 'Additional Videos',
       type: 'array',
       group: 'media',
-      of: [{ type: 'additionalVideo' }],
+      of: [{type: 'additionalVideo'}],
       description: 'Supplementary videos below the main player.',
+      hidden: hiddenForTranslatorWhenEmpty,
+      components: {input: TranslatorLockedArrayInput},
     }),
 
     defineField({
@@ -324,6 +334,7 @@ export const portfolioEntry = defineType({
       description:
         'Download the CSV template, add crew credits via Claude, then upload and preview the import for confirming. All names must be comma-separated. Click a tag to edit the name or attach a link. Brand / Director / DOP / Art Director / Editor names link to stable Credit Identities for Work Library filters.',
       components: { input: CrewCreditsInput },
+      hidden: hiddenForTranslator,
     }),
 
     defineField({

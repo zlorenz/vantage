@@ -50,6 +50,7 @@ import {
   useEditState,
   useGlobalCopyPasteElementHandler,
   VirtualizerScrollInstanceProvider,
+  useSchema,
   type ObjectSchemaType,
   type PatchEvent,
   type Path,
@@ -274,16 +275,20 @@ export function DocumentEditor({
 
   const editState = useEditState(publishedId, documentType)
   const ops = useDocumentOperation(publishedId, documentType)
+  const schema = useSchema()
   const supportsTrash = TRASHABLE_TYPES.includes(documentType as TrashableType)
   const role = getStudioRole(currentUser)
   const isAdmin = role === 'admin'
   const isTranslator = role === 'translator'
 
   // Prefer live compile from displayTitleParts so chrome matches Portfolio Details.
+  // Fall back to nav title, then schema type title (singletons like siteSettings
+  // have neither a title field nor a list-row cache on deep link / reload).
+  const schemaTypeTitle = schema.get(documentType)?.title
   const headerTitle = resolveChromeTitle(
     (editState.draft as SanityDocumentLike | null) ??
       (editState.published as SanityDocumentLike | null),
-    title,
+    title || (typeof schemaTypeTitle === 'string' ? schemaTypeTitle : undefined),
   )
 
   const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)

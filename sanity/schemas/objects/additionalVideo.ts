@@ -7,12 +7,17 @@
 
 import {defineType} from 'sanity'
 
+import {TranslatorLockedArrayItem} from '../../components/TranslatorLockedArrayInput'
 import {defineLocalePair} from '../../lib/define-locale-pair'
 
 export const additionalVideo = defineType({
   name: 'additionalVideo',
   title: 'Additional Video',
   type: 'object',
+
+  components: {
+    item: TranslatorLockedArrayItem,
+  },
 
   fields: [
     ...defineLocalePair({

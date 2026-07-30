@@ -10,6 +10,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair} from '../lib/define-locale-pair'
+import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const market = defineType({
   name: 'market',
@@ -55,6 +56,7 @@ export const market = defineType({
       type: 'reference',
       to: [{type: 'market'}],
       description: 'Optional parent category for nested filter dropdowns.',
+      hidden: hiddenForTranslator,
     }),
   ],
 

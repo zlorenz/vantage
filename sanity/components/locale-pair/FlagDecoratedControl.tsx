@@ -9,27 +9,30 @@ type FlagDecoratedControlProps = {
   /** Vertical alignment of the flag chip. Use `start` for textareas. */
   align?: 'center' | 'start'
   style?: CSSProperties
+  /** When true, softens the control so the editable side reads as primary. */
+  readOnly?: boolean
 }
 
-/** Soften Chinese controls so EN reads as primary in a stacked pair. */
-export const ZH_FIELD_MUTE: CSSProperties = {
+/** Soften read-only controls so the editable side reads as primary. */
+export const READONLY_FIELD_MUTE: CSSProperties = {
   opacity: 0.72,
 }
 
 /**
  * Positions a circular locale flag on the inner-right of a control.
  * Child should be a full-width Sanity UI TextInput / TextArea (with its own paddingRight).
- * Chinese locale controls are slightly transparent for EN/ZH contrast.
+ * Read-only controls are slightly transparent so the editable side stands out.
  */
 export function FlagDecoratedControl(props: FlagDecoratedControlProps) {
   const align = props.align ?? 'center'
-  const muteZh = props.locale === 'zh'
+  const mute = Boolean(props.readOnly)
 
   return (
     <Box
+      className={mute ? 'vp-locale-readonly' : undefined}
       style={{
         position: 'relative',
-        ...(muteZh ? ZH_FIELD_MUTE : null),
+        ...(mute ? READONLY_FIELD_MUTE : null),
         ...props.style,
       }}
     >

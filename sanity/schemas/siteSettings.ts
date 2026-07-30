@@ -7,8 +7,8 @@
 
 import {defineField, defineType} from 'sanity'
 
-import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
-import {getStudioRole} from '../lib/studio-roles'
+import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
+import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
 
 export const siteSettings = defineType({
   name: 'siteSettings',
@@ -22,6 +22,12 @@ export const siteSettings = defineType({
     {name: 'seo', title: 'SEO'},
   ],
 
+  fieldsets: [
+    // Untitled layout rows (legend hidden via studio.css — Sanity auto-titles from name).
+    {name: 'contactPhoneWhatsapp', options: {columns: 2}},
+    {name: 'contactModalTitleCta', options: {columns: 2}},
+  ],
+
   fields: [
     defineField({
       name: 'contactEmail',
@@ -32,6 +38,7 @@ export const siteSettings = defineType({
         'Primary contact email displayed in the footer and contact modal. ' +
         'WordPress default: info@vantage.pictures',
       validation: (rule) => rule.required().email(),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -39,7 +46,9 @@ export const siteSettings = defineType({
       title: 'Contact Phone',
       type: 'string',
       group: 'contact',
+      fieldset: 'contactPhoneWhatsapp',
       description: 'Optional phone number shown in the contact modal.',
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -47,7 +56,9 @@ export const siteSettings = defineType({
       title: 'Contact WhatsApp',
       type: 'string',
       group: 'contact',
+      fieldset: 'contactPhoneWhatsapp',
       description: 'Optional WhatsApp number or link for the contact modal.',
+      hidden: hiddenForTranslator,
     }),
 
     ...defineLocalePair({
@@ -65,8 +76,21 @@ export const siteSettings = defineType({
       title: 'Contact Modal Title',
       type: 'string',
       group: 'contact',
+      fieldset: 'contactModalTitleCta',
       description: 'Heading displayed inside the contact modal.',
       optional: true,
+    }),
+
+    defineField({
+      name: 'contactCtaUrl',
+      title: 'Contact CTA URL',
+      type: 'url',
+      group: 'contact',
+      fieldset: 'contactModalTitleCta',
+      description: 'Optional call-to-action button link in the contact modal.',
+      validation: (rule) =>
+        rule.uri({allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel']}),
+      hidden: hiddenForTranslator,
     }),
 
     ...defineLocalePair({
@@ -87,6 +111,7 @@ export const siteSettings = defineType({
       group: 'contact',
       description: 'Rich text body content for the contact modal (Portable Text).',
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
+      hidden: hiddenForTranslatorWhenEmpty,
     }),
 
     defineField({
@@ -109,16 +134,6 @@ export const siteSettings = defineType({
     }),
 
     defineField({
-      name: 'contactCtaUrl',
-      title: 'Contact CTA URL',
-      type: 'url',
-      group: 'contact',
-      description: 'Optional call-to-action button link in the contact modal.',
-      validation: (rule) =>
-        rule.uri({allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel']}),
-    }),
-
-    defineField({
       name: 'campaignCta',
       title: 'Campaign Brief CTA',
       type: 'campaignCta',
@@ -133,6 +148,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -141,6 +157,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -149,6 +166,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -157,6 +175,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -165,6 +184,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -173,6 +193,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -181,6 +202,7 @@ export const siteSettings = defineType({
       type: 'url',
       group: 'social',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -189,6 +211,7 @@ export const siteSettings = defineType({
       type: 'image',
       group: 'seo',
       options: {hotspot: true},
+      hidden: hiddenForTranslator,
     }),
   ],
 

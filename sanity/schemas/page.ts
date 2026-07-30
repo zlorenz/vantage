@@ -11,9 +11,10 @@
 import {defineField, defineType} from 'sanity'
 
 import {ClearableArrayInput} from '../components/ClearableArrayInput'
-import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
+import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
+import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {hideUnlessPageSlug} from '../lib/page-visibility'
-import {getStudioRole} from '../lib/studio-roles'
+import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
 
 export const page = defineType({
   name: 'page',
@@ -47,6 +48,7 @@ export const page = defineType({
       group: 'details',
       fieldset: 'card',
       options: {hotspot: true},
+      hidden: hiddenForTranslator,
     }),
 
     ...defineLocalePair({
@@ -79,6 +81,7 @@ export const page = defineType({
       group: 'details',
       description: 'Off for Home and Campaign Brief pages.',
       initialValue: true,
+      hidden: hiddenForTranslator,
     }),
 
     ...defineLocalePair({
@@ -99,6 +102,7 @@ export const page = defineType({
       group: 'details',
       description: 'Exclude from search indexing and sitemap (typically work-internal).',
       initialValue: false,
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -117,7 +121,7 @@ export const page = defineType({
       of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
       description:
         'Full-viewport carousel at the top of the home page (display order). Button label is always “Watch”.',
-      hidden: hideUnlessPageSlug('home'),
+      hidden: (ctx) => hideUnlessPageSlug('home')(ctx) || hiddenForTranslator(ctx),
       components: {input: ClearableArrayInput},
       options: {
         clearAll: {
@@ -136,10 +140,9 @@ export const page = defineType({
       of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
       description:
         'Curated portfolio grid (display order). Home: “A Bit of Our Work” (falls back to nine most recent). Vietnam Production Service: “Shot in Vietnam” (falls back to all Vietnam-tagged projects).',
-      hidden: hideUnlessPageSlug([
-        'home',
-        'vietnam-production-service',
-      ]),
+      hidden: (ctx) =>
+        hideUnlessPageSlug(['home', 'vietnam-production-service'])(ctx) ||
+        hiddenForTranslator(ctx),
       components: {input: ClearableArrayInput},
       options: {
         clearAll: {
@@ -159,6 +162,7 @@ export const page = defineType({
       description: 'Main page copy. On Home: company description under Featured Work.',
       validation: (rule) => rule.required(),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
+      hidden: hiddenForTranslatorWhenEmpty,
     }),
 
     defineField({
@@ -179,7 +183,7 @@ export const page = defineType({
       of: [{type: 'brandLogoItem'}],
       description:
         '“Brands We Work With” grid on the home page. Drag to reorder or swap among curated registry logos. Falls back to the default logo set if empty. Adding a new brand mark is a design/code change (SVG + shared/client-logos entry + redeploy), not a Studio upload.',
-      hidden: hideUnlessPageSlug('home'),
+      hidden: (ctx) => hideUnlessPageSlug('home')(ctx) || hiddenForTranslator(ctx),
       components: {input: ClearableArrayInput},
       options: {
         clearAll: {
@@ -197,7 +201,9 @@ export const page = defineType({
       group: 'content',
       of: [{type: 'founder'}],
       description: 'Team cards on the About page (name, title, photo).',
-      hidden: hideUnlessPageSlug('about'),
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslatorWhenEmpty(ctx),
+      components: {input: TranslatorLockedArrayInput},
     }),
 
     defineField({

@@ -497,12 +497,13 @@ export function TranslationsTool() {
                             fontSize={1}
                             value={edits[row.id] ?? row.zh}
                             placeholder="Add Chinese…"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = e.currentTarget.value
                               setEdits((prev) => ({
                                 ...prev,
-                                [row.id]: e.currentTarget.value,
+                                [row.id]: value,
                               }))
-                            }
+                            }}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
                                 e.preventDefault()

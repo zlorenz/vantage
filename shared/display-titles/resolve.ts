@@ -38,13 +38,15 @@ function partsForLocale(
     const productEn = trimPart(input.productName)
     const campaignEn = trimPart(input.campaignTitle)
     const heroEn = trimPart(input.heroFilmTitle)
+    // Symmetric EN fallback: any empty ZH part uses the English value.
     const brand =
       lookupZh(phrases, brandEn, input.brandNameZh) || brandEn
-    const product = lookupZh(phrases, productEn, input.productNameZh) || undefined
+    const product =
+      lookupZh(phrases, productEn, input.productNameZh) || productEn
     const campaign =
-      lookupZh(phrases, campaignEn, input.campaignTitleZh) || undefined
+      lookupZh(phrases, campaignEn, input.campaignTitleZh) || campaignEn
     const heroFilmTitle =
-      lookupZh(phrases, heroEn, input.heroFilmTitleZh) || undefined
+      lookupZh(phrases, heroEn, input.heroFilmTitleZh) || heroEn
     return {
       brandName: brand,
       productName: product || undefined,

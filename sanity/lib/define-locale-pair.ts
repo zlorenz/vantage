@@ -2,7 +2,9 @@ import {defineField, type FieldDefinition} from 'sanity'
 
 import {LocalePairField} from '../components/locale-pair/LocalePairField'
 import {NullField} from '../components/locale-pair/NullField'
+import {hasLocaleText} from '../components/locale-pair/shouldShowZh'
 import type {LocalePairOptions} from '../components/locale-pair/types'
+import {getStudioRole} from './studio-roles'
 
 type LocalePairType = 'string' | 'text' | 'url' | 'slug'
 
@@ -29,6 +31,44 @@ type DefineLocalePairConfig = {
   optional?: boolean
 }
 
+type HiddenContext = {
+  document?: unknown
+  parent?: unknown
+  value?: unknown
+  currentUser?: {email?: string} | null
+  path?: unknown
+}
+
+/**
+ * Hide EN (or EN-side of a pair) for Translators when the field value is empty.
+ * Reuses hasLocaleText for strings / slugs / Portable Text arrays.
+ */
+export function hiddenForTranslatorWhenEmpty({
+  currentUser,
+  value,
+}: HiddenContext): boolean {
+  return getStudioRole(currentUser) === 'translator' && !hasLocaleText(value)
+}
+
+/**
+ * OR-compose ConditionalProperty values (boolean | callback | undefined).
+ * - `true` short-circuits to always hidden
+ * - `false` / `undefined` contribute nothing (still evaluate `extra`)
+ * - callbacks are evaluated with the same Sanity hidden context
+ */
+function composeHidden(
+  existing: FieldDefinition['hidden'],
+  extra: (ctx: HiddenContext) => boolean,
+): FieldDefinition['hidden'] {
+  if (existing === true) return true
+
+  return (ctx) => {
+    const fromConfig =
+      typeof existing === 'function' ? Boolean(existing(ctx as never)) : Boolean(existing)
+    return fromConfig || extra(ctx)
+  }
+}
+
 /**
  * Returns [enField, zhField] with shared LocalePairField UI on EN and an invisible ZH sibling
  * (NullField keeps the member in the form tree so sibling patches work).
@@ -50,7 +90,7 @@ export function defineLocalePair(config: DefineLocalePairConfig): [FieldDefiniti
     group: config.group,
     fieldset: config.fieldset,
     description: config.description,
-    hidden: config.hidden,
+    hidden: composeHidden(config.hidden, hiddenForTranslatorWhenEmpty),
     ...(config.type === 'text' && config.rows != null ? {rows: config.rows} : {}),
     validation: config.validation,
     initialValue: config.initialValue as never,

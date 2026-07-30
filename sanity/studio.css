@@ -8,18 +8,22 @@ fieldset[data-level] > [data-ui='Box'] {
 }
 
 /**
- * Layout-only fieldset chrome (slug|date, Card):
+ * Layout-only fieldset chrome (slug|date, Card, Site Settings contact rows):
  * Sanity nests fieldset content with paddingLeft for the accent rail and
  * always renders a legend (from title or name). Hide the header row and
  * strip the rail padding so the grid aligns with sibling document fields.
  * Keep fieldset titles in schema — display:none only; don’t fight FormBuilder.
  */
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Flex']:has(legend),
-fieldset[data-testid='fieldset-card'] > [data-ui='Flex']:has(legend) {
+fieldset[data-testid='fieldset-card'] > [data-ui='Flex']:has(legend),
+fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Flex']:has(legend),
+fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Flex']:has(legend) {
   display: none !important;
 }
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'],
-fieldset[data-testid='fieldset-card'] > [data-ui='Box'] {
+fieldset[data-testid='fieldset-card'] > [data-ui='Box'],
+fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'],
+fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] {
   padding-left: 0 !important;
 }
 
@@ -39,10 +43,13 @@ fieldset[data-testid='fieldset-copy'] {
 /**
  * Blog + Page: Card (image | excerpt) stays equal halves.
  * Portfolio Publishing/slug|date uses fieldset-slugAndDate (same 50/50 intent).
+ * Site Settings Contact: phone|whatsapp and modal title|CTA URL.
  * minmax(0, 1fr) prevents the image input from blowing past 50%.
  */
 fieldset[data-testid='fieldset-card'] > [data-ui='Box'] > [data-ui='Grid'],
-fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'] {
+fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'],
+fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'] > [data-ui='Grid'],
+fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] > [data-ui='Grid'] {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 
@@ -178,6 +185,33 @@ fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'
   box-shadow: none !important;
   --input-box-shadow: none !important;
   --card-focus-box-shadow: none !important;
+}
+
+/*
+ * Locked locale-pair inputs (FlagDecoratedControl readOnly): Sanity UI still
+ * paints a focus ring on :focus via the [data-border] presentation sibling
+ * (--input-box-shadow). Suppress it so idle and clicked look identical.
+ * Also clear the idle enabled border (readOnly only changes bg/fg in Sanity UI).
+ * Editable fields are untouched (no .vp-locale-readonly class).
+ */
+.vp-locale-readonly [data-border] {
+  --input-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.vp-locale-readonly input:focus,
+.vp-locale-readonly input:focus-visible,
+.vp-locale-readonly textarea:focus,
+.vp-locale-readonly textarea:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vp-locale-readonly input:focus + [data-border],
+.vp-locale-readonly textarea:focus + [data-border],
+.vp-locale-readonly:focus-within [data-border] {
+  --input-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 /* Quote blocks: clearer left-border preview in the editor */

@@ -11,6 +11,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair} from '../lib/define-locale-pair'
+import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const videoFormat = defineType({
   name: 'videoFormat',
@@ -56,6 +57,7 @@ export const videoFormat = defineType({
       type: 'reference',
       to: [{type: 'videoFormat'}],
       description: 'Optional parent category for nested filter dropdowns.',
+      hidden: hiddenForTranslator,
     }),
   ],
 

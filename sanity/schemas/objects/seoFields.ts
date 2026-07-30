@@ -11,6 +11,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair} from '../../lib/define-locale-pair'
+import {hiddenForTranslator} from '../../lib/studio-roles'
 
 export const seoFields = defineType({
   name: 'seoFields',
@@ -44,6 +45,7 @@ export const seoFields = defineType({
       options: {hotspot: true},
       description:
         'Optional override for the Open Graph / Twitter image. When set, replaces the per-route featured-image / default OG fallback.',
+      hidden: hiddenForTranslator,
     }),
   ],
 })

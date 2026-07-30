@@ -14,6 +14,8 @@ import {
   TranslateIcon,
 } from '@sanity/icons'
 
+import type {StudioRole} from '../../lib/studio-roles'
+
 export type ColumnId =
   | 'title'
   | 'status'
@@ -274,6 +276,12 @@ export function findLeaf(id: string): ContentLeaf | undefined {
     }
   }
   return undefined
+}
+
+/** Sidebar items visible for a Studio role (Platforms is admin-only). */
+export function navItemsForRole(role: StudioRole): ContentNavItem[] {
+  if (role === 'admin') return NAV_ITEMS
+  return NAV_ITEMS.filter((item) => !(item.kind === 'leaf' && item.id === 'platforms'))
 }
 
 export function defaultLeafId(): string {

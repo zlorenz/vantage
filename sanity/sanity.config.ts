@@ -45,9 +45,12 @@ export default defineConfig({
     const visible =
       role === 'admin'
         ? withoutDuplicateContent
-        : withoutDuplicateContent.filter(
-            (tool) => tool.name !== 'structure' && tool.name !== 'vision',
-          )
+        : withoutDuplicateContent.filter((tool) => {
+            if (tool.name === 'structure' || tool.name === 'vision') return false
+            // Media library: editors keep it; translators do not.
+            if (role === 'translator' && tool.name === 'media') return false
+            return true
+          })
     return [contentTool, ...visible]
   },
 

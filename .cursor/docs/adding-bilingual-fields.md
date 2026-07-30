@@ -182,3 +182,21 @@ defineField({
 After adding fields, the ZH field name is always `${name}Zh` unless you set
 `zhName`. The GROQ/query layer reads both by name, so keep the `Zh` suffix
 consistent.
+
+ADDITION
+
+When adding a hand-rolled EN/ZH pair (i.e. NOT going through
+defineLocalePair — required for Portable Text or anything outside
+string/text/url/slug), you must wire THREE things by hand on the EN field,
+not just one:
+1. readOnly — locks EN for Translator, ZH for Editor
+   (({currentUser}) => getStudioRole(currentUser) === 'translator' / 'editor')
+2. hidden — hides the field entirely for Translator when EN is empty
+   (use hiddenForTranslatorWhenEmpty, exported from define-locale-pair.ts —
+   do not re-derive this logic)
+3. On the ZH sibling: hideZhPortableText(enFieldName) for progressive
+   reveal (only show ZH once EN or ZH has content) — already the existing
+   pattern for bodyZh/contactModalContentZh, apply to any new PT pair too
+
+defineLocalePair() fields get all of this automatically. Hand-rolled pairs
+do not — each one built outside that helper is a fresh manual checklist.

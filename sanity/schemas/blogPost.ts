@@ -12,8 +12,8 @@ import {defineField, defineType} from 'sanity'
 
 import {BodyPortableTextInput} from '../components/body/BodyPortableTextInput'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
-import {defineLocalePair, hideZhPortableText} from '../lib/define-locale-pair'
-import {getStudioRole} from '../lib/studio-roles'
+import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
+import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
 
 export const blogPost = defineType({
   name: 'blogPost',
@@ -39,6 +39,7 @@ export const blogPost = defineType({
       type: 'image',
       fieldset: 'card',
       options: {hotspot: true},
+      hidden: hiddenForTranslator,
     }),
 
     ...defineLocalePair({
@@ -68,6 +69,7 @@ export const blogPost = defineType({
       type: 'array',
       of: [{type: 'reference', to: [{type: 'category'}]}],
       components: {input: TaxonomyCheckboxInput},
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -77,6 +79,7 @@ export const blogPost = defineType({
       components: {input: BodyPortableTextInput},
       validation: (rule) => rule.required(),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
+      hidden: hiddenForTranslatorWhenEmpty,
     }),
 
     defineField({
@@ -94,6 +97,7 @@ export const blogPost = defineType({
       type: 'boolean',
       description: 'Exclude from search indexing and sitemap (typically work-internal).',
       initialValue: false,
+      hidden: hiddenForTranslator,
     }),
 
     defineField({

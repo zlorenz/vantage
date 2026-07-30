@@ -6,12 +6,18 @@
 
 import {defineField, defineType} from 'sanity'
 
+import {TranslatorLockedArrayItem} from '../../components/TranslatorLockedArrayInput'
 import {defineLocalePair} from '../../lib/define-locale-pair'
+import {readOnlyForTranslator} from '../../lib/studio-roles'
 
 export const founder = defineType({
   name: 'founder',
   title: 'Founder',
   type: 'object',
+
+  components: {
+    item: TranslatorLockedArrayItem,
+  },
 
   fields: [
     defineField({
@@ -19,6 +25,7 @@ export const founder = defineType({
       title: 'Name',
       type: 'string',
       validation: (rule) => rule.required(),
+      readOnly: readOnlyForTranslator,
     }),
 
     ...defineLocalePair({
@@ -35,6 +42,7 @@ export const founder = defineType({
       type: 'image',
       options: {hotspot: true},
       validation: (rule) => rule.required(),
+      readOnly: readOnlyForTranslator,
     }),
   ],
 

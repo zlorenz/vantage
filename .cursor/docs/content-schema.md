@@ -252,21 +252,12 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
   crewMembers: array<ref>          // legacy → crewMember; prefer creditIdentity on Director/DOP/AD
   platforms: array<ref>           // ref → platform
   isHidden: boolean                // see §4.8 — migration: true for WP ID 3187 only
-  crewCredits?: array<crewCredit>  // preferred structured credits; filter roles link identity refs
-  credits: {                       // legacy dual-read fallback until backfill
-    production: creditsDepartment
-    camera: creditsDepartment
-    ge: creditsDepartment
-    art: creditsDepartment
-    casting: creditsDepartment
-    stills: creditsDepartment
-    post: creditsDepartment
-  }
+  crewCredits?: array<crewCredit>  // sole live credits source; filter roles link identity refs
   seo: seoFields
 }
 ```
 
-**Preferred structured credit shape** (`crewCredits`):
+**Structured credit shape** (`crewCredits` — sole source for Studio + frontend):
 
 ```typescript
 {
@@ -281,47 +272,20 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 }
 ```
 
-Editors import CSV credits via the custom Crew Credits input in Studio. Existing
-documents keep legacy `credits` until `scripts/migration/patch/migrate-crew-credits.ts`
-is reviewed and run with `--apply`. The frontend dual-reads: non-empty
-`crewCredits` wins; otherwise legacy department fields render as before.
+Editors import CSV credits via the custom Crew Credits input in Studio.
+`crewCredits` is the only field read for display and Work Library filters. The
+legacy document-level `credits` object (WP ACF department shape) was migrated
+into `crewCredits` and then unset from all portfolio documents (2026-07-31);
+it is no longer in the schema or live data.
 
-**Legacy credits department shape** (repeated per department):
+**Crew taxonomy sync (from `crewCredits` roleKeys → Sanity refs):**
 
-```typescript
-{
-  // Production example — each department has its own role fields (all text, comma-separated)
-  prod_brand?: string
-  prod_agency?: string
-  prod_production_company?: string   // default in WP: Vantage Pictures link
-  prod_production_service?: string
-  prod_executive_producer?: string
-  prod_director?: string             // syncs → director taxonomy
-  prod_producer?: string
-  prod_line_producer?: string
-  prod_production_manager?: string
-  prod_production_coordinator?: string
-  prod_1st_ad?: string
-  prod_2nd_ad?: string
-  prod_production_assistant?: string
-  prod_product_technician?: string
-  prod_account_manager?: string
-  prod_transport?: string
-  prod_chaperone?: string
-  prod_bts?: string
-  additional?: array<{ role: string; names: string }>
-  // Camera, G&E, Art, Casting, Stills, Post — see ACF group Portfolio Credits
-}
-```
-
-**Crew taxonomy sync (from credits → Sanity refs):**
-
-| Credit field / roleKey | Sanity document type |
+| roleKey | Sanity document type |
 |---|---|
-| `prod_brand` / `brand` | `client` |
-| `prod_director` / `director` | `crewMember` (`role: director`) |
-| `cam_dop` / `dop` | `crewMember` (`role: dop`) |
-| `art_art_director` / `art_director` | `crewMember` (`role: art-director`) |
+| `brand` | `client` (legacy) / prefer `creditIdentity` |
+| `director` | `crewMember` (`role: director`) / prefer `creditIdentity` |
+| `dop` | `crewMember` (`role: dop`) / prefer `creditIdentity` |
+| `art_director` | `crewMember` (`role: art-director`) / prefer `creditIdentity` |
 
 The canonical role catalog lives in `shared/crew-credits/` and is shared by Studio,
 CSV import, frontend rendering, and migration.

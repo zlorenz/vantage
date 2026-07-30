@@ -10,6 +10,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair} from '../lib/define-locale-pair'
+import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const industry = defineType({
   name: 'industry',
@@ -56,6 +57,7 @@ export const industry = defineType({
       to: [{type: 'industry'}],
       description:
         'Optional parent category (e.g. Tech groups AI & Robotics, Drones, Electronics).',
+      hidden: hiddenForTranslator,
     }),
   ],
 

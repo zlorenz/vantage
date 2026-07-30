@@ -3226,6 +3226,13 @@
         },
         "optional": true
       },
+      "contactCtaUrl": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "contactModalIntro": {
         "type": "objectAttribute",
         "value": {
@@ -3606,13 +3613,6 @@
         "optional": true
       },
       "contactCtaTextZh": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "contactCtaUrl": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

@@ -572,6 +572,7 @@ export type SiteSettings = {
   contactAddressZh?: string;
   contactModalTitle?: string;
   contactModalTitleZh?: string;
+  contactCtaUrl?: string;
   contactModalIntro?: string;
   contactModalIntroZh?: string;
   contactModalContent?: Array<{
@@ -612,7 +613,6 @@ export type SiteSettings = {
   }>;
   contactCtaText?: string;
   contactCtaTextZh?: string;
-  contactCtaUrl?: string;
   campaignCta?: CampaignCta;
   socialVimeo?: string;
   socialInstagram?: string;

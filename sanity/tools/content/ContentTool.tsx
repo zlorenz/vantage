@@ -19,16 +19,18 @@ import {
 } from '@sanity/ui'
 import {ChevronDownIcon, ChevronRightIcon} from '@sanity/icons'
 import {useRouter} from 'sanity/router'
+import {useCurrentUser} from 'sanity'
 import {DocumentTable} from './DocumentTable'
 import {DocumentEditor} from './DocumentEditor'
 import {TranslationsTool} from './translations/TranslationsTool'
 import {
-  NAV_ITEMS,
   defaultLeafId,
   findLeaf,
+  navItemsForRole,
   type ContentGroup,
   type ContentLeaf,
 } from './sections'
+import {getStudioRole} from '../../lib/studio-roles'
 
 /**
  * Match Sanity Studio’s 900px theme breakpoint (`studioTheme.media[2]`).
@@ -280,6 +282,8 @@ function ContentNav({
   compactCapable: boolean
   onSelect: (id: string) => void
 }) {
+  const role = getStudioRole(useCurrentUser())
+  const navItems = navItemsForRole(role)
   const canHoverExpand = useMediaQuery(HOVER_EXPAND_MQ)
   const [hoverExpanded, setHoverExpanded] = useState(false)
   const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -354,7 +358,7 @@ function ContentNav({
 
   const navBody = (
     <Stack space={2}>
-      {NAV_ITEMS.map((item) =>
+      {navItems.map((item) =>
         item.kind === 'group' ? (
           <NavGroup
             key={item.id}
@@ -487,10 +491,18 @@ export function ContentTool() {
 
   // Singletons have no list pane — open the document as soon as the section is
   // active (sidebar click, deep link, or Back from a stale URL without doc id).
+  // Always seed the chrome title: deep links / reloads already have documentId
+  // and would otherwise fall through to "Untitled" (siteSettings has no title field).
   useEffect(() => {
-    if (!section.singletonId || routerState.documentId) return
-    setTitleCache((prev) => ({...prev, [section.singletonId!]: section.title}))
-    router.navigate({section: section.id, documentId: section.singletonId})
+    if (!section.singletonId) return
+    setTitleCache((prev) =>
+      prev[section.singletonId!] === section.title
+        ? prev
+        : {...prev, [section.singletonId!]: section.title},
+    )
+    if (!routerState.documentId) {
+      router.navigate({section: section.id, documentId: section.singletonId})
+    }
   }, [router, routerState.documentId, section])
 
   const selectSection = useCallback(

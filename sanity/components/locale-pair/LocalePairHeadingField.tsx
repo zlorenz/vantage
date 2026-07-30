@@ -1,9 +1,10 @@
 import {Box, Stack, Text} from '@sanity/ui'
 import {useMemo} from 'react'
-import {useFormValue, type FieldProps} from 'sanity'
+import {useCurrentUser, useFormValue, type FieldProps} from 'sanity'
 
-import {compileDisplayTitles, trimPart} from '@display-titles'
+import {resolveDisplayTitles, trimPart} from '@display-titles'
 
+import {getStudioRole} from '../../lib/studio-roles'
 import {LocaleFlag, localeAriaLabel} from './LocaleFlag'
 import {getLocalePairOptions} from './types'
 import {shouldShowZh} from './shouldShowZh'
@@ -24,6 +25,7 @@ function HeadingLine(props: {
   locale: 'en' | 'zh'
   value: string
   placeholder: string
+  muted?: boolean
 }) {
   const hasValue = Boolean(props.value)
   return (
@@ -31,8 +33,7 @@ function HeadingLine(props: {
       style={{
         position: 'relative',
         paddingRight: 28,
-        // Match locale-pair inputs: ZH secondary to EN.
-        ...(props.locale === 'zh' ? {opacity: 0.72} : null),
+        ...(props.muted ? {opacity: 0.72} : null),
       }}
     >
       <Text
@@ -72,13 +73,20 @@ export function LocalePairHeadingField(props: FieldProps) {
   const zhName = pair?.zhName ?? 'titleZh'
   const parts = (useFormValue(['displayTitleParts']) ?? {}) as PartsValue
   const titleZhStored = useFormValue([zhName]) as string | undefined
+  const role = getStudioRole(useCurrentUser())
+  // Match LocalePairField: translator locks EN, editor locks ZH, admin locks neither.
+  const enMuted = role === 'translator'
+  const zhMuted = role === 'editor'
 
   const enTitle = useMemo(() => {
-    const compiled = compileDisplayTitles({
-      brandName: parts.brandName,
-      productName: parts.productName,
-      campaignTitle: parts.campaignTitle,
-    }).documentTitle
+    const compiled = resolveDisplayTitles(
+      {
+        brandName: parts.brandName,
+        productName: parts.productName,
+        campaignTitle: parts.campaignTitle,
+      },
+      'en',
+    ).documentTitle
     return (compiled || (typeof props.value === 'string' ? props.value : '') || '')
       .replace(/\s+/g, ' ')
       .trim()
@@ -93,11 +101,18 @@ export function LocalePairHeadingField(props: FieldProps) {
     if (!hasZhParts) {
       return (titleZhStored || '').replace(/\s+/g, ' ').trim()
     }
-    return compileDisplayTitles({
-      brandName: parts.brandNameZh || parts.brandName,
-      productName: parts.productNameZh,
-      campaignTitle: parts.campaignTitleZh,
-    }).documentTitle.replace(/\s+/g, ' ').trim()
+    // Shared resolver owns ZH→EN part fallback (do not re-implement here).
+    return resolveDisplayTitles(
+      {
+        brandName: parts.brandName,
+        productName: parts.productName,
+        campaignTitle: parts.campaignTitle,
+        brandNameZh: parts.brandNameZh,
+        productNameZh: parts.productNameZh,
+        campaignTitleZh: parts.campaignTitleZh,
+      },
+      'zh',
+    ).documentTitle.replace(/\s+/g, ' ').trim()
   }, [parts, titleZhStored])
 
   const showZh = shouldShowZh(enTitle, zhTitle)
@@ -110,9 +125,19 @@ export function LocalePairHeadingField(props: FieldProps) {
   return (
     <Box paddingY={2}>
       <Stack space={4}>
-        <HeadingLine locale="en" value={enTitle} placeholder={PLACEHOLDER_EN} />
+        <HeadingLine
+          locale="en"
+          value={enTitle}
+          placeholder={PLACEHOLDER_EN}
+          muted={enMuted}
+        />
         {showZh ? (
-          <HeadingLine locale="zh" value={zhTitle} placeholder={PLACEHOLDER_ZH} />
+          <HeadingLine
+            locale="zh"
+            value={zhTitle}
+            placeholder={PLACEHOLDER_ZH}
+            muted={zhMuted}
+          />
         ) : null}
         {errors.length > 0 ? (
           <Text size={0} style={{color: 'var(--card-badge-critical-fg-color)'}}>

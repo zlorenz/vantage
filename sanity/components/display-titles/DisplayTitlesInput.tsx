@@ -21,6 +21,7 @@ import {
   getPublishedId,
   set,
   unset,
+  useCurrentUser,
   useDocumentOperation,
   useFormValue,
   type ObjectInputProps,
@@ -28,13 +29,13 @@ import {
 } from 'sanity'
 
 import {
-  compileDisplayTitles,
   hasDisplayTitleParts,
   resolveDisplayTitles,
   trimPart,
   type DisplayTitleParts,
 } from '@display-titles'
 
+import {getStudioRole} from '../../lib/studio-roles'
 import {FlagDecoratedControl} from '../locale-pair/FlagDecoratedControl'
 import {LocalePairStack} from '../locale-pair/LocalePairStack'
 
@@ -105,7 +106,7 @@ function PreviewPane(props: {
   )
 
   return (
-    <FlagDecoratedControl locale={props.locale} align="start">
+    <FlagDecoratedControl locale={props.locale} align="start" readOnly={props.readOnly}>
       <div style={{position: 'relative'}}>
         <Card padding={3} radius={2} tone="transparent" border>
           <Text size={1} weight="bold" style={PREVIEW_TEXT}>
@@ -187,7 +188,8 @@ function PreviewPair(props: {
   zhOverride: string
   enField: OverrideField
   zhField: OverrideField
-  readOnly?: boolean
+  enReadOnly?: boolean
+  zhReadOnly?: boolean
   onSaveOverride: (field: OverrideField, value: string) => void
 }) {
   return (
@@ -201,7 +203,7 @@ function PreviewPair(props: {
           html={props.enHtml}
           overrideValue={props.enOverride}
           overrideField={props.enField}
-          readOnly={props.readOnly}
+          readOnly={props.enReadOnly}
           onSaveOverride={props.onSaveOverride}
         />
         {props.showZh ? (
@@ -210,7 +212,7 @@ function PreviewPair(props: {
             html={props.zhHtml}
             overrideValue={props.zhOverride}
             overrideField={props.zhField}
-            readOnly={props.readOnly}
+            readOnly={props.zhReadOnly}
             onSaveOverride={props.onSaveOverride}
           />
         ) : null}
@@ -235,6 +237,11 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
   const {value, readOnly, onChange} = props
   const stored = (value ?? {}) as PartsValue
   const [draft, setDraft] = useState<PartsValue>(stored)
+
+  const formReadOnly = Boolean(readOnly)
+  const role = getStudioRole(useCurrentUser())
+  const enReadOnly = formReadOnly || role === 'translator'
+  const zhReadOnly = formReadOnly || role === 'editor'
 
   const documentId = useFormValue(['_id']) as string | undefined
   const documentType = useFormValue(['_type']) as string | undefined
@@ -311,24 +318,35 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
       // Relative form patch — nested FormCallbacks already scopes to displayTitleParts.
       onChange(hasDisplayTitleParts(next as DisplayTitleParts) ? set(next) : unset())
 
-      const en = compileDisplayTitles({
-        brandName: next.brandName,
-        productName: next.productName,
-        campaignTitle: next.campaignTitle,
-        heroFilmTitle,
-      })
+      const en = resolveDisplayTitles(
+        {
+          brandName: next.brandName,
+          productName: next.productName,
+          campaignTitle: next.campaignTitle,
+          heroFilmTitle,
+        },
+        'en',
+      )
       const hasZh = Boolean(
         trimPart(next.brandNameZh) ||
           trimPart(next.productNameZh) ||
           trimPart(next.campaignTitleZh) ||
           trimPart(heroFilmTitleZh),
       )
-      const zh = compileDisplayTitles({
-        brandName: next.brandNameZh || next.brandName,
-        productName: next.productNameZh,
-        campaignTitle: next.campaignTitleZh,
-        heroFilmTitle: heroFilmTitleZh || undefined,
-      })
+      // Shared resolver owns ZH→EN part fallback (do not re-implement here).
+      const zh = resolveDisplayTitles(
+        {
+          brandName: next.brandName,
+          productName: next.productName,
+          campaignTitle: next.campaignTitle,
+          heroFilmTitle,
+          brandNameZh: next.brandNameZh,
+          productNameZh: next.productNameZh,
+          campaignTitleZh: next.campaignTitleZh,
+          heroFilmTitleZh,
+        },
+        'zh',
+      )
 
       // Root-level title sync — must bypass nested FormCallbacks path prefixing.
       if (!publishedId || !documentType) return
@@ -422,8 +440,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               label="Brand Name"
               enValue={draft.brandName ?? ''}
               zhValue={draft.brandNameZh ?? ''}
-              enReadOnly={readOnly}
-              zhReadOnly={readOnly}
+              enReadOnly={enReadOnly}
+              zhReadOnly={zhReadOnly}
               onEnChange={(v) => setPart('brandName', v)}
               onZhChange={(v) => setPart('brandNameZh', v)}
             />
@@ -432,8 +450,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               optional
               enValue={draft.productName ?? ''}
               zhValue={draft.productNameZh ?? ''}
-              enReadOnly={readOnly}
-              zhReadOnly={readOnly}
+              enReadOnly={enReadOnly}
+              zhReadOnly={zhReadOnly}
               onEnChange={(v) => setPart('productName', v)}
               onZhChange={(v) => setPart('productNameZh', v)}
             />
@@ -444,8 +462,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
           optional
           enValue={draft.campaignTitle ?? ''}
           zhValue={draft.campaignTitleZh ?? ''}
-          enReadOnly={readOnly}
-          zhReadOnly={readOnly}
+          enReadOnly={enReadOnly}
+          zhReadOnly={zhReadOnly}
           onEnChange={(v) => setPart('campaignTitle', v)}
           onZhChange={(v) => setPart('campaignTitleZh', v)}
         />
@@ -469,7 +487,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               zhOverride={thumbTitleOverrideZh}
               enField="thumbTitleOverride"
               zhField="thumbTitleOverrideZh"
-              readOnly={readOnly}
+              enReadOnly={enReadOnly}
+              zhReadOnly={zhReadOnly}
               onSaveOverride={saveOverride}
             />
             <PreviewPair
@@ -481,7 +500,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               zhOverride={headerTitleOverrideZh}
               enField="headerTitleOverride"
               zhField="headerTitleOverrideZh"
-              readOnly={readOnly}
+              enReadOnly={enReadOnly}
+              zhReadOnly={zhReadOnly}
               onSaveOverride={saveOverride}
             />
             <PreviewPair
@@ -493,7 +513,8 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
               zhOverride={longTitleOverrideZh}
               enField="longTitleOverride"
               zhField="longTitleOverrideZh"
-              readOnly={readOnly}
+              enReadOnly={enReadOnly}
+              zhReadOnly={zhReadOnly}
               onSaveOverride={saveOverride}
             />
           </Grid>

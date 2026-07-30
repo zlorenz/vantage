@@ -8,6 +8,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {defineLocalePair} from '../lib/define-locale-pair'
+import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const creditIdentity = defineType({
   name: 'creditIdentity',
@@ -33,6 +34,7 @@ export const creditIdentity = defineType({
       description:
         'Canonical profile or company link. Credits inherit this automatically — edit once here or from any credit chip.',
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+      hidden: hiddenForTranslator,
     }),
   ],
 

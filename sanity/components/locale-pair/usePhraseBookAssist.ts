@@ -2,7 +2,7 @@
  * Debounced phrase-book autofill for LocalePair EN/ZH stacks.
  */
 
-import {useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {useToast} from '@sanity/ui'
 import {useClient} from 'sanity'
 
@@ -23,6 +23,9 @@ type Options = {
 
 export function usePhraseBookAssist(options: Options): {
   fromPhraseBook: boolean
+  /** Phrase hit exists for current EN and ZH is empty (and assist is writable). */
+  canFillFromPhraseBook: boolean
+  fillFromPhraseBook: () => void
   onZhBlur: () => void
 } {
   const enabled = options.enabled !== false && !options.readOnly
@@ -34,9 +37,16 @@ export function usePhraseBookAssist(options: Options): {
   const prevEnKey = useRef<string | null>(null)
   const enRef = useRef(options.enValue)
   const zhRef = useRef(options.zhValue)
+  const onZhChangeRef = useRef(options.onZhChange)
 
   enRef.current = options.enValue
   zhRef.current = options.zhValue
+  onZhChangeRef.current = options.onZhChange
+
+  const writeZhFromBook = useCallback((zh: string) => {
+    lastAutoFilled.current = zh
+    onZhChangeRef.current(zh)
+  }, [])
 
   useEffect(() => {
     if (!enabled) {
@@ -73,8 +83,7 @@ export function usePhraseBookAssist(options: Options): {
         const canAutofill =
           !currentZh || currentZh === lastAutoFilled.current || currentZh === hit.zh
         if (canAutofill && currentZh !== hit.zh) {
-          lastAutoFilled.current = hit.zh
-          options.onZhChange(hit.zh)
+          writeZhFromBook(hit.zh)
         }
       })
     }, LOOKUP_DEBOUNCE_MS)
@@ -83,13 +92,21 @@ export function usePhraseBookAssist(options: Options): {
       cancelled = true
       window.clearTimeout(timer)
     }
-    // Only re-run when EN changes (or enablement); onZhChange identity ignored.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client, enabled, options.enValue])
+  }, [client, enabled, options.enValue, writeZhFromBook])
 
   const fromPhraseBook = Boolean(
     bookZh && normalizePhraseKey(options.zhValue) === bookZh,
   )
+
+  const canFillFromPhraseBook = Boolean(
+    enabled && bookZh && !normalizePhraseKey(options.zhValue),
+  )
+
+  const fillFromPhraseBook = useCallback(() => {
+    if (!enabled || !bookZh) return
+    if (normalizePhraseKey(zhRef.current)) return
+    writeZhFromBook(bookZh)
+  }, [bookZh, enabled, writeZhFromBook])
 
   const onZhBlur = () => {
     if (!enabled) return
@@ -117,5 +134,5 @@ export function usePhraseBookAssist(options: Options): {
     })
   }
 
-  return {fromPhraseBook, onZhBlur}
+  return {fromPhraseBook, canFillFromPhraseBook, fillFromPhraseBook, onZhBlur}
 }

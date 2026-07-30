@@ -4,8 +4,9 @@
 
 import {defineField, defineType} from 'sanity'
 
-import {defineLocalePair} from '../../lib/define-locale-pair'
-import {getStudioRole} from '../../lib/studio-roles'
+import {MutedReadonlyArrayInput} from '../../components/MutedReadonlyArrayInput'
+import {defineLocalePair, hiddenForTranslatorWhenEmpty} from '../../lib/define-locale-pair'
+import {getStudioRole, hiddenForTranslator} from '../../lib/studio-roles'
 
 export const campaignCta = defineType({
   name: 'campaignCta',
@@ -31,6 +32,8 @@ export const campaignCta = defineType({
       description: 'Body paragraphs under the heading.',
       validation: (rule) => rule.required().min(1),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
+      hidden: hiddenForTranslatorWhenEmpty,
+      components: {input: MutedReadonlyArrayInput},
     }),
 
     defineField({
@@ -39,6 +42,7 @@ export const campaignCta = defineType({
       type: 'array',
       of: [{type: 'text', rows: 3}],
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
+      components: {input: MutedReadonlyArrayInput},
     }),
 
     ...defineLocalePair({
@@ -55,6 +59,7 @@ export const campaignCta = defineType({
       type: 'string',
       description: 'Internal path or absolute URL. Default: /video-campaign-brief',
       initialValue: '/video-campaign-brief',
+      hidden: hiddenForTranslator,
     }),
   ],
 })

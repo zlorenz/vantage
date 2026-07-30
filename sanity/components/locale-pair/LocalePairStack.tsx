@@ -1,4 +1,4 @@
-import {Stack, Text, TextArea, TextInput} from '@sanity/ui'
+import {Button, Stack, Text, TextArea, TextInput} from '@sanity/ui'
 import type {ChangeEvent, ReactNode} from 'react'
 
 import {FieldLabel} from '../FieldLabel'
@@ -37,14 +37,15 @@ type LocalePairStackProps = {
 export function LocalePairStack(props: LocalePairStackProps) {
   const showZh = props.showZh ?? shouldShowZh(props.enValue, props.zhValue)
   const isText = typeof props.rows === 'number' && props.rows > 0
-  const {fromPhraseBook, onZhBlur} = usePhraseBookAssist({
-    enValue: props.enValue,
-    zhValue: props.zhValue,
-    onZhChange: props.onZhChange,
-    // Mutates ZH (autofill + blur upsert) — gate on the ZH lock.
-    readOnly: props.zhReadOnly,
-    enabled: props.phraseBook !== false,
-  })
+  const {fromPhraseBook, canFillFromPhraseBook, fillFromPhraseBook, onZhBlur} =
+    usePhraseBookAssist({
+      enValue: props.enValue,
+      zhValue: props.zhValue,
+      onZhChange: props.onZhChange,
+      // Mutates ZH (autofill + blur upsert + fill button) — gate on the ZH lock.
+      readOnly: props.zhReadOnly,
+      enabled: props.phraseBook !== false,
+    })
 
   const handleEn = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     props.onEnChange(event.currentTarget.value)
@@ -63,7 +64,11 @@ export function LocalePairStack(props: LocalePairStackProps) {
       ) : null}
 
       <Stack space={2}>
-        <FlagDecoratedControl locale="en" align={isText ? 'start' : 'center'}>
+        <FlagDecoratedControl
+          locale="en"
+          align={isText ? 'start' : 'center'}
+          readOnly={props.enReadOnly}
+        >
           {isText ? (
             <TextArea
               value={props.enValue}
@@ -86,7 +91,11 @@ export function LocalePairStack(props: LocalePairStackProps) {
 
         {showZh ? (
           <Stack space={1}>
-            <FlagDecoratedControl locale="zh" align={isText ? 'start' : 'center'}>
+            <FlagDecoratedControl
+              locale="zh"
+              align={isText ? 'start' : 'center'}
+              readOnly={props.zhReadOnly}
+            >
               {isText ? (
                 <TextArea
                   value={props.zhValue}
@@ -108,7 +117,16 @@ export function LocalePairStack(props: LocalePairStackProps) {
                 />
               )}
             </FlagDecoratedControl>
-            {fromPhraseBook ? (
+            {canFillFromPhraseBook ? (
+              <Button
+                text="Fill from phrase book"
+                mode="bleed"
+                fontSize={1}
+                padding={2}
+                tone="primary"
+                onClick={fillFromPhraseBook}
+              />
+            ) : fromPhraseBook ? (
               <Text size={0} muted>
                 From phrase book
               </Text>
