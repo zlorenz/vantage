@@ -4,6 +4,7 @@ import {presentationTool} from 'sanity/presentation'
 import {visionTool} from '@sanity/vision'
 import {media} from 'sanity-plugin-media'
 import {VantageLogoIcon} from './components/VantageLogoIcon'
+import {StudioRoleLayout} from './components/StudioRoleLayout'
 import {schemaTypes} from './schemas'
 import {structure} from './structure'
 import {resolve} from './presentation/resolve'
@@ -24,6 +25,12 @@ export default defineConfig({
   // Scheduled Publishing plugin. It is backed by single-document releases.
   scheduledDrafts: {
     enabled: true,
+  },
+
+  studio: {
+    components: {
+      layout: StudioRoleLayout,
+    },
   },
 
   plugins: [

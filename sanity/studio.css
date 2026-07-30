@@ -221,3 +221,11 @@ fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] > [data-
   font-style: italic;
   opacity: 0.95;
 }
+
+/**
+ * Presentation “Used on N pages” locations banner (LocationStack).
+ * Translators don’t need inbound location chrome — keep for admin/editor only.
+ */
+html[data-studio-role='translator'] *:has(> [class*='LocationStack']) {
+  display: none !important;
+}
