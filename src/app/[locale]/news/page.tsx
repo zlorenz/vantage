@@ -13,11 +13,12 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { newsPageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
-import { sanityClient } from '@/lib/sanity';
 import { buildBreadcrumbs, homeBreadcrumb, newsBreadcrumb } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { sanityFetch } from '@/sanity/lib/live';
 import { ALL_CATEGORIES_QUERY, ALL_POSTS_QUERY } from '@/sanity/queries/blog';
 import { NEWS_PAGE_QUERY } from '@/sanity/queries/pages';
+import type { NEWS_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { BlogPostCard as BlogPostCardData, CategoryTerm } from '@/types/sanity';
 
 type Props = {
@@ -31,7 +32,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const page = await sanityClient.fetch(NEWS_PAGE_QUERY);
+  const {data} = await sanityFetch({query: NEWS_PAGE_QUERY, stega: false});
+  const page = data as NEWS_PAGE_QUERY_RESULT;
 
   return buildPageMetadata({
     locale: typedLocale,
@@ -51,12 +53,15 @@ export default async function NewsPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [page, posts, categories, phrases] = await Promise.all([
-    sanityClient.fetch(NEWS_PAGE_QUERY),
-    sanityClient.fetch<BlogPostCardData[]>(ALL_POSTS_QUERY),
-    sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
+  const [pageResult, postsResult, categoriesResult, phrases] = await Promise.all([
+    sanityFetch({query: NEWS_PAGE_QUERY}),
+    sanityFetch({query: ALL_POSTS_QUERY, stega: false}),
+    sanityFetch({query: ALL_CATEGORIES_QUERY, stega: false}),
     getPhraseRecord(),
   ]);
+  const page = pageResult.data as NEWS_PAGE_QUERY_RESULT;
+  const posts = postsResult.data as BlogPostCardData[];
+  const categories = categoriesResult.data as CategoryTerm[];
 
   if (!page) notFound();
 
