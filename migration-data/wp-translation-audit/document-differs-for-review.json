@@ -1,0 +1,251 @@
+{
+  "generated_at": "2026-07-31T02:44:02.993Z",
+  "notes": "Real wording differences only. Mechanical trailing-period TRP artifacts excluded — not written.",
+  "counts": {
+    "differs_input": 243,
+    "mechanical_only_skipped": 213,
+    "real_differs_for_review": 30
+  },
+  "rows": [
+    {
+      "en": "Bambu Lab – Vortek Hotend Change System",
+      "zh_wp": "拓竹 - Vortek 热端更换系统",
+      "zh_sanity_current": "拓竹 – Vortek 热端更换系统",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-3518",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI FlightHub",
+      "zh_wp": "大疆创新 FlightHub",
+      "zh_sanity_current": "大疆 飞旅网",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2714",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Master Wheels",
+      "zh_wp": "大疆 Master Wheels",
+      "zh_sanity_current": "大疆 车轮大师",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2725",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Matrice 200 Series – Search & Rescue in Extreme Environments",
+      "zh_wp": "大疆 悟 200 系列 – 严酷环境下的搜救",
+      "zh_sanity_current": "大疆Matrice 200 Series – 极限环境下的搜救",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2758",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Matrice 600",
+      "zh_wp": "大疆灵眸Matrice 600",
+      "zh_sanity_current": "大疆 六旋翼无人机",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2723",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Mavic 2 – A Cosmic Voyage",
+      "zh_wp": "DJI Mavic 2 – 一次宇宙航行",
+      "zh_sanity_current": "DJI大疆创新 Mavic 2 – 宇宙之旅",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2767",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Mavic Pro – Wall-to-Wall Art",
+      "zh_wp": "大疆 Mavic Pro – 墙到墙的艺术",
+      "zh_sanity_current": "大疆Mavic Pro – 墙到墙艺术",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2784",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI My Mavic",
+      "zh_wp": "大疆 我的Mavic",
+      "zh_sanity_current": "大疆 我的 Mavic",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2748",
+      "fieldName": "portfolioEntry.additionalVideos[0].videoTitle"
+    },
+    {
+      "en": "DJI My Mavic",
+      "zh_wp": "大疆 我的Mavic",
+      "zh_sanity_current": "大疆 我的 Mavic",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2748",
+      "fieldName": "portfolioEntry.additionalVideos[1].videoTitle"
+    },
+    {
+      "en": "DJI Phantom 4 Pro – Hawaiian Lava",
+      "zh_wp": "大疆精灵4 Pro – 夏威夷熔岩",
+      "zh_sanity_current": "大疆 精灵 4 Pro – 夏威夷熔岩",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2791",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Profiles – Time is Fluid",
+      "zh_wp": "大疆档案 – 时间是流动的",
+      "zh_sanity_current": "大疆人物 – 时间是流动的",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2789",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI RoboMaster S1",
+      "zh_wp": "DJI RoboMaster S1",
+      "zh_sanity_current": "大疆 Robomaster S1",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2747",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Spark – Capture Your Passion",
+      "zh_wp": "大疆 Spark – 捕捉你的激情",
+      "zh_sanity_current": "大疆 晓SPARK – 捕捉你的热情",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2070",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Australian Coastline Watch",
+      "zh_wp": "大疆故事——澳大利亚海岸卫士",
+      "zh_sanity_current": "大疆故事 – 澳大利亚海岸瞭望",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2890",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Building Our Future",
+      "zh_wp": "大疆故事——构筑我们的未来",
+      "zh_sanity_current": "大疆故事 – 建立人类未来",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2888",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Feeding the World",
+      "zh_wp": "大疆故事——喂养世界",
+      "zh_sanity_current": "大疆故事 – 养活世界",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2891",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Humpback Whales of Rarotonga",
+      "zh_wp": "大疆故事 - 拉罗汤加的座头鲸",
+      "zh_sanity_current": "大疆故事 – 拉罗汤加岛的座头鲸",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2887",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Linkin Park",
+      "zh_wp": "DJI的故事 – 林肯公园",
+      "zh_sanity_current": "大疆故事 – 林肯公园",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2893",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Mapping the Maldives",
+      "zh_wp": "大疆故事 – 马尔代夫地图绘制",
+      "zh_sanity_current": "大疆故事 – 马尔代夫地图集",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2892",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – Polo",
+      "zh_wp": "大疆故事 – Polo",
+      "zh_sanity_current": "大疆故事 – 马球",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2894",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Stories – The Lost City of Chernobyl",
+      "zh_wp": "大疆故事",
+      "zh_sanity_current": "大疆故事 – 切尔诺贝利失落之城",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2886",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI World – The Story of Aisholpan",
+      "zh_wp": "大疆世界 — 艾莎·奥丽的传奇",
+      "zh_sanity_current": "大疆世界 – 阿依夏的传说",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2903",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Zenmuse XT2",
+      "zh_wp": "DJI Zenmuse XT2",
+      "zh_sanity_current": "大疆 禅思XT2",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2738",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "DJI Zenmuse Z30",
+      "zh_wp": "大疆Zenmuse Z30",
+      "zh_sanity_current": "大疆 悟X30",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2737",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "Mammotion – Let LUBA 2 Do It",
+      "zh_wp": "库犸科技 – 让 LUBA 2 来完成",
+      "zh_sanity_current": "库犸科技 – 让 LUBA 2 来做",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-3228",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "Realme X7 – Fast & Powerful",
+      "zh_wp": "Realme X7 - 快速而强大",
+      "zh_sanity_current": "真我 X7 – 快速强大",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2061",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "Roborock S8 Series",
+      "zh_wp": "石头 S8 系列",
+      "zh_sanity_current": "石头科技 S8系列",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-3127",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "Samsung Galaxy S8 – The Endless Beauty of Vietnam",
+      "zh_wp": "三星 Galaxy S8 - 越南的无尽之美",
+      "zh_sanity_current": "三星 Galaxy S8 – 越南无尽的美",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2065",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "Snapmaker – Make Something Wonderful",
+      "zh_wp": "Snapmaker——创造奇迹",
+      "zh_sanity_current": "骁将 – 创造非凡",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-2666",
+      "fieldName": "portfolioEntry.title"
+    },
+    {
+      "en": "Westin Hotels & Resorts – Busy Resting",
+      "zh_wp": "威斯汀酒店及度假村 – 繁忙休憩",
+      "zh_sanity_current": "威斯汀酒店及度假村 – 忙碌的休息",
+      "documentType": "portfolioEntry",
+      "documentId": "portfolio-3464",
+      "fieldName": "portfolioEntry.title"
+    }
+  ]
+}

@@ -1,0 +1,2976 @@
+{
+  "generated_at": "2026-07-31T02:35:32.874Z",
+  "notes": {
+    "phrase_book_domains": [
+      "default",
+      "vantagepictures",
+      "contact-form-7"
+    ],
+    "zh_naming": "defineLocalePair → `${enName}Zh`; seo.metaDescriptionZh under seo object",
+    "document_match": "exact EN field equality only (substring harvest hits without exact field match → unrouted)",
+    "people_names_excluded": true
+  },
+  "phrase_book_candidate": [
+    {
+      "en": "Add",
+      "zh_wp": "添加"
+    },
+    {
+      "en": "Audio",
+      "zh_wp": "音频"
+    },
+    {
+      "en": "Aug",
+      "zh_wp": "8月"
+    },
+    {
+      "en": "August",
+      "zh_wp": "8月"
+    },
+    {
+      "en": "Black",
+      "zh_wp": "黑色"
+    },
+    {
+      "en": "Blue",
+      "zh_wp": "蓝色"
+    },
+    {
+      "en": "Categories",
+      "zh_wp": "分类"
+    },
+    {
+      "en": "Category",
+      "zh_wp": "分类"
+    },
+    {
+      "en": "Chat",
+      "zh_wp": "聊天"
+    },
+    {
+      "en": "Completed",
+      "zh_wp": "完成"
+    },
+    {
+      "en": "Crisp",
+      "zh_wp": "明晰"
+    },
+    {
+      "en": "date",
+      "zh_wp": "日期"
+    },
+    {
+      "en": "Dec",
+      "zh_wp": "12月"
+    },
+    {
+      "en": "December",
+      "zh_wp": "12月"
+    },
+    {
+      "en": "Deep",
+      "zh_wp": "加深"
+    },
+    {
+      "en": "Draft",
+      "zh_wp": "草稿"
+    },
+    {
+      "en": "F Y",
+      "zh_wp": "Y年n月"
+    },
+    {
+      "en": "file",
+      "zh_wp": "文件"
+    },
+    {
+      "en": "Format",
+      "zh_wp": "形式"
+    },
+    {
+      "en": "Formats",
+      "zh_wp": "形式"
+    },
+    {
+      "en": "Fresh",
+      "zh_wp": "新鲜"
+    },
+    {
+      "en": "Fri",
+      "zh_wp": "周五"
+    },
+    {
+      "en": "Image",
+      "zh_wp": "图片"
+    },
+    {
+      "en": "January",
+      "zh_wp": "1月"
+    },
+    {
+      "en": "Jul",
+      "zh_wp": "7月"
+    },
+    {
+      "en": "Language",
+      "zh_wp": "语言"
+    },
+    {
+      "en": "Large",
+      "zh_wp": "大"
+    },
+    {
+      "en": "Light",
+      "zh_wp": "灯光"
+    },
+    {
+      "en": "Mar",
+      "zh_wp": "3月"
+    },
+    {
+      "en": "May",
+      "zh_wp": "5月"
+    },
+    {
+      "en": "Media",
+      "zh_wp": "媒体"
+    },
+    {
+      "en": "Medium",
+      "zh_wp": "中等"
+    },
+    {
+      "en": "Meta",
+      "zh_wp": "其他操作"
+    },
+    {
+      "en": "Modern",
+      "zh_wp": "现代"
+    },
+    {
+      "en": "Name",
+      "zh_wp": "显示名称"
+    },
+    {
+      "en": "Natural",
+      "zh_wp": "自然"
+    },
+    {
+      "en": "New",
+      "zh_wp": "新建"
+    },
+    {
+      "en": "Next",
+      "zh_wp": "下一页"
+    },
+    {
+      "en": "Nov",
+      "zh_wp": "11月"
+    },
+    {
+      "en": "number",
+      "zh_wp": "数值"
+    },
+    {
+      "en": "Ocean",
+      "zh_wp": "海洋"
+    },
+    {
+      "en": "Oct",
+      "zh_wp": "10月"
+    },
+    {
+      "en": "off",
+      "zh_wp": "关 / 关闭"
+    },
+    {
+      "en": "Outlined",
+      "zh_wp": "轮廓"
+    },
+    {
+      "en": "Page",
+      "zh_wp": "页面"
+    },
+    {
+      "en": "Pages",
+      "zh_wp": "页面"
+    },
+    {
+      "en": "Pending",
+      "zh_wp": "待发布"
+    },
+    {
+      "en": "Posts",
+      "zh_wp": "文章"
+    },
+    {
+      "en": "Previous",
+      "zh_wp": "上一页"
+    },
+    {
+      "en": "Private",
+      "zh_wp": "私密"
+    },
+    {
+      "en": "Quote",
+      "zh_wp": "引语"
+    },
+    {
+      "en": "Sat",
+      "zh_wp": "周六"
+    },
+    {
+      "en": "Sep",
+      "zh_wp": "9月"
+    },
+    {
+      "en": "Sharp",
+      "zh_wp": "锐利"
+    },
+    {
+      "en": "Small",
+      "zh_wp": "小"
+    },
+    {
+      "en": "Standard",
+      "zh_wp": "标准"
+    },
+    {
+      "en": "submit",
+      "zh_wp": "提交"
+    },
+    {
+      "en": "Sun",
+      "zh_wp": "周日"
+    },
+    {
+      "en": "Support",
+      "zh_wp": "支持"
+    },
+    {
+      "en": "Tag",
+      "zh_wp": "标签"
+    },
+    {
+      "en": "tel",
+      "zh_wp": "电话"
+    },
+    {
+      "en": "text",
+      "zh_wp": "文本"
+    },
+    {
+      "en": "Theme",
+      "zh_wp": "主题"
+    },
+    {
+      "en": "Themes",
+      "zh_wp": "主题"
+    },
+    {
+      "en": "Thu",
+      "zh_wp": "周四"
+    },
+    {
+      "en": "User",
+      "zh_wp": "用户"
+    },
+    {
+      "en": "Video",
+      "zh_wp": "视频"
+    },
+    {
+      "en": "Wed",
+      "zh_wp": "周三"
+    },
+    {
+      "en": "White",
+      "zh_wp": "白色"
+    },
+    {
+      "en": "Who we are",
+      "zh_wp": "我们是谁"
+    },
+    {
+      "en": "words",
+      "zh_wp": "characters_excluding_spaces"
+    }
+  ],
+  "document_field_candidate": {
+    "empty_safe_to_fill": [
+      {
+        "en": "Osmo Pocket",
+        "zh_wp": "Osmo Pocket",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2739",
+        "fieldName": "portfolioEntry.displayTitleParts.productName"
+      },
+      {
+        "en": "Qrevo-S",
+        "zh_wp": "Qrevo-S",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3257",
+        "fieldName": "portfolioEntry.displayTitleParts.productName"
+      },
+      {
+        "en": "S7 MaxV Ultra",
+        "zh_wp": "S7 MaxV Ultra",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2806",
+        "fieldName": "portfolioEntry.displayTitleParts.productName"
+      },
+      {
+        "en": "VisionMaster Max",
+        "zh_wp": "VisionMaster Max",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3275",
+        "fieldName": "portfolioEntry.displayTitleParts.productName"
+      }
+    ],
+    "already_has_value_matches": [
+      {
+        "en": "DJI Profiles explores creative storytelling and visual artistry in the cinematic short film “Time is Fluid.”",
+        "zh_wp": "DJI Profiles 探索了电影短片《时间如流》中的创意叙事和视觉艺术。“",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2789",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Mammotion Luba – Automated Robot Lawn Mower",
+        "zh_wp": "库犸科技 LUBA – 自动化机器人割草机",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2977",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Product introduction video for Luba, the new automated robot lawn mower from Mammotion.",
+        "zh_wp": "Mammotion新推出的自动化机器人割草机Luba产品介绍视频。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2977",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product introduction video for the Roborock S7 MaxV Ultra intelligent vacuum, released in January 2022.",
+        "zh_wp": "2022年1月发布的石头科技自清洁扫拖机器人G20智能吸尘器产品介绍视频。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2806",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product introduction video for the Zhiyun Smooth 5 professional smartphone gimbal.",
+        "zh_wp": "智云 SMOOTH 5专业智能手机云台产品介绍视频。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2678",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Sensoro – The Story of Pema",
+        "zh_wp": "Sensoro – 佩玛的故事",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2904",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Vantage Pictures is a global commercial film production company creating cinematic brand films and product launches for technology and international brands.",
+        "zh_wp": "Vantage Pictures 是一家全球商业影像制作公司，为科技企业和国际品牌制作品牌影片、商业广告和产品发布影片。",
+        "documentType": "page",
+        "documentId": "page-home",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Water Purification System",
+        "zh_wp": "净水系统",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3027",
+        "fieldName": "portfolioEntry.displayTitleParts.productName"
+      }
+    ],
+    "already_has_value_differs": [
+      {
+        "en": "Aquafina promotes sustainable living and environmental awareness in this community-focused campaign film.",
+        "zh_wp": "在这个以社区为中心的宣传片中，Aquafina 倡导可持续生活和环保意识。.",
+        "zh_sanity_current": "在这个以社区为中心的宣传片中，Aquafina 倡导可持续生活和环保意识。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3147",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "ASICS launches the Dynablast running shoe with dynamic motion and energetic storytelling in this athletic campaign film.",
+        "zh_wp": "亚瑟士推出 Dynablast 跑鞋，在这部运动宣传片中展现了动感的活力和充满激情的叙事。.",
+        "zh_sanity_current": "亚瑟士推出 Dynablast 跑鞋，在这部运动宣传片中展现了动感的活力和充满激情的叙事。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2059",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "ASMOKE’s Essential portable grill empowers outdoor cooking anywhere in this energetic product launch campaign.",
+        "zh_wp": "ASMOKE 的 Essential 便携式烤架助力活力四射的户外烹饪，让您随时随地享受美食。.",
+        "zh_sanity_current": "ASMOKE 的 Essential 便携式烤架助力活力四射的户外烹饪，让您随时随地享受美食。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3256",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "ASUS Business promotes smarter productivity with the “Upgrade to Incredible” campaign directed by Byron McKenzie.",
+        "zh_wp": "华硕商用部通过拜伦·麦肯齐执导的“升级非凡”活动，推动更智能的生产力。.",
+        "zh_sanity_current": "华硕商用部通过拜伦·麦肯齐执导的“升级非凡”活动，推动更智能的生产力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3101",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "ASUS Education highlights modern classrooms and digital learning environments in this cinematic brand campaign produced by Vantage Pictures.",
+        "zh_wp": "华硕教育在Vantage Pictures制作的这部电影级品牌宣传片中，着重展示了现代教室和数字化学习环境。.",
+        "zh_sanity_current": "华硕教育在Vantage Pictures制作的这部电影级品牌宣传片中，着重展示了现代教室和数字化学习环境。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3495",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Bambu Lab – Vortek Hotend Change System",
+        "zh_wp": "拓竹 - Vortek 热端更换系统",
+        "zh_sanity_current": "拓竹 – Vortek 热端更换系统",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3518",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Bambu Lab introduces the H2D, a powerful personal manufacturing hub designed to transform desktop fabrication.",
+        "zh_wp": "Bambu Lab 推出了 H2D，一个强大的个人制造中心，旨在革新桌面制造。.",
+        "zh_sanity_current": "Bambu Lab 推出了 H2D，一个强大的个人制造中心，旨在革新桌面制造。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3453",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Bambu Lab introduces the Vortek hotend change system, redefining rapid hardware upgrades for professional 3D printing.",
+        "zh_wp": "Bambu Lab 推出了 Vortek 热端更换系统，重新定义了专业 3D 打印的快速硬件升级。.",
+        "zh_sanity_current": "Bambu Lab 推出了 Vortek 热端更换系统，重新定义了专业 3D 打印的快速硬件升级。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3518",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Bambu Lab introduces the X1 3D printer, redefining high-speed desktop manufacturing in this cinematic product campaign.",
+        "zh_wp": "Bambu Lab 推出 X1 3D 打印机，在这部电影般的宣传片中重新定义了高速桌面制造。.",
+        "zh_sanity_current": "Bambu Lab 推出 X1 3D 打印机，在这部电影般的宣传片中重新定义了高速桌面制造。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3003",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Banyan Tree invites travelers to explore deeper cultural experiences in this cinematic hospitality campaign.",
+        "zh_wp": "悦榕庄（Banyan Tree）在此部电影式酒店营销活动中，邀请旅行者探索更深层次的文化体验。.",
+        "zh_sanity_current": "悦榕庄（Banyan Tree）在此部电影式酒店营销活动中，邀请旅行者探索更深层次的文化体验。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3239",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Based in Ho Chi Minh City, Vantage Pictures produces high-end commercial campaigns and branded films for leading Vietnamese companies across finance, FMCG, and consumer brands. We combine international production standards with local insight, delivering cinematic storytelling and disciplined execution tailored to Vietnam’s rapidly evolving market.",
+        "zh_wp": "Vantage Pictures 总部位于胡志明市，为越南领先的金融、快速消费品和消费品牌公司制作高端商业广告和品牌宣传片。我们将国际制作标准与本土洞察相结合，提供电影般的叙事和严谨的执行，以适应越南快速发展的市场。.",
+        "zh_sanity_current": "Vantage Pictures 总部位于胡志明市，为越南领先的金融、快速消费品和消费品牌公司制作高端商业广告和品牌宣传片。我们将国际制作标准与本土洞察相结合，提供电影般的叙事和严谨的执行，以适应越南快速发展的市场。",
+        "documentType": "market",
+        "documentId": "market-vietnam",
+        "fieldName": "market.description"
+      },
+      {
+        "en": "Behind the scenes of Govee's \"For Every Mood of Home\" — a smart lighting campaign shot in Ho Chi Minh City and produced by Vantage Pictures.",
+        "zh_wp": "Govee\"为家的每种心情\"幕后花絮——这是一场在胡志明市拍摄、由Vantage Pictures制作的智能照明宣传活动。.",
+        "zh_sanity_current": "Govee\"为家的每种心情\"幕后花絮——这是一场在胡志明市拍摄、由Vantage Pictures制作的智能照明宣传活动。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-4507",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Bitget highlights top performing traders and the future of crypto markets in this bold global campaign film.",
+        "zh_wp": "Bitget 在此次大胆的全球宣传片中聚焦表现最佳的交易者以及加密货币市场的未来。.",
+        "zh_sanity_current": "Bitget 在此次大胆的全球宣传片中聚焦表现最佳的交易者以及加密货币市场的未来。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3187",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Bitget promotes smarter crypto trading with advanced tools and market insights in this energetic campaign produced by Vantage Pictures.",
+        "zh_wp": "Bitget 以 Vantage Pictures制作的这一充满活力的宣传活动，通过先进的工具和市场洞察，推广更智能的加密货币交易。.",
+        "zh_sanity_current": "Bitget 以 Vantage Pictures制作的这一充满活力的宣传活动，通过先进的工具和市场洞察，推广更智能的加密货币交易。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3277",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Brand anthem campaign for Govee home LED lights manufacturer, highlighting its global community.",
+        "zh_wp": "为 Govee 家庭 LED 灯制造商制作品牌广告，突出其全球社区。.",
+        "zh_sanity_current": "为 Govee 家庭 LED 灯制造商制作品牌广告，突出其全球社区。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3510",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary for Coca-Cola and The Ocean Cleanup, highlighting their sustainability efforts in the Mekong Delta.",
+        "zh_wp": "为可口可乐和海洋清洁组织制作品牌纪录片，重点介绍他们在湄公河三角洲所做的可持续发展努力。.",
+        "zh_sanity_current": "为可口可乐和海洋清洁组织制作品牌纪录片，重点介绍他们在湄公河三角洲所做的可持续发展努力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3142",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary for drone manufacturer DJI, a behind the scenes look at the filming of Linkin Park's Hunting Party tour diary video in China.",
+        "zh_wp": "为无人机制造商大疆创新（DJI）制作的品牌纪录片，讲述林肯公园在中国拍摄 \"Hunting Party \"巡演日记视频的幕后故事。.",
+        "zh_sanity_current": "为无人机制造商大疆创新（DJI）制作的品牌纪录片，讲述林肯公园在中国拍摄 \"Hunting Party \"巡演日记视频的幕后故事。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2893",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary for drone manufacturer DJI, featuring a world-famous Mongolian eagle huntress.",
+        "zh_wp": "为无人机制造商大疆创新拍摄的品牌纪录片，以世界闻名的蒙古女猎鹰为主角。.",
+        "zh_sanity_current": "为无人机制造商大疆创新拍摄的品牌纪录片，以世界闻名的蒙古女猎鹰为主角。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2903",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary for drone manufacturer DJI, featuring renowned drone operator Ferdinand Wolf.",
+        "zh_wp": "无人机制造商大疆创新（DJI）的品牌纪录片，讲述著名无人机操作员费迪南德-沃尔夫（Ferdinand Wolf）的故事。.",
+        "zh_sanity_current": "无人机制造商大疆创新（DJI）的品牌纪录片，讲述著名无人机操作员费迪南德-沃尔夫（Ferdinand Wolf）的故事。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2790",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary for drone manufacturer DJI, featuring renowned wedding photographer Helene Havard.",
+        "zh_wp": "无人机制造商大疆创新的品牌纪录片，由著名婚礼摄影师 Helene Havard 拍摄。.",
+        "zh_sanity_current": "无人机制造商大疆创新的品牌纪录片，由著名婚礼摄影师 Helene Havard 拍摄。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2788",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary for drone manufacturer DJI, featuring VFX artist Rufus Blackwell.",
+        "zh_wp": "为无人机制造商大疆创新拍摄的品牌纪录片，特效艺术家 Rufus Blackwell 担任主角。.",
+        "zh_sanity_current": "为无人机制造商大疆创新拍摄的品牌纪录片，特效艺术家 Rufus Blackwell 担任主角。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2789",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Branded documentary production at Vantage Pictures blends authentic human storytelling with high-end commercial craft. We create character-driven films that explore innovation, enterprise technology, and consumer electronics through real people and real environments. Designed for brands seeking credibility and emotional depth, our documentary work combines immersive cinematography, natural performances, and disciplined production to deliver powerful long-form and mid-form films for digital, broadcast, and corporate platforms.",
+        "zh_wp": "Vantage Pictures 的品牌纪录片制作融合了真实的人物故事和高端的商业工艺。我们通过真实的人物和真实的环境，制作以人物为驱动力的影片，探索创新、企业技术和消费电子产品。我们的纪录片作品专为追求可信度和情感深度的品牌而设计，将身临其境的电影摄影、自然的表演和严谨的制作相结合，为数字、广播和企业平台提供强有力的长篇和中篇影片。.",
+        "zh_sanity_current": "Vantage Pictures 的品牌纪录片制作融合了真实的人物故事和高端的商业工艺。我们通过真实的人物和真实的环境，制作以人物为驱动力的影片，探索创新、企业技术和消费电子产品。我们的纪录片作品专为追求可信度和情感深度的品牌而设计，将身临其境的电影摄影、自然的表演和严谨的制作相结合，为数字、广播和企业平台提供强有力的长篇和中篇影片。",
+        "documentType": "videoFormat",
+        "documentId": "videoFormat-branded-documentary",
+        "fieldName": "videoFormat.description"
+      },
+      {
+        "en": "Braun and DJI collaborate in this creative campaign exploring innovation, design and bold individuality.",
+        "zh_wp": "博朗与大疆在本次创意宣传活动中合作，探索创新、设计和大胆的个性。.",
+        "zh_sanity_current": "博朗与大疆在本次创意宣传活动中合作，探索创新、设计和大胆的个性。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2062",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "BRINC Guardian is a next-generation Drone as First Responder (DFR) platform designed for modern public safety operations. Produced by Vantage Pictures, this launch film uses a grounded, real-time narrative to showcase how autonomous drones integrate with law enforcement workflows—from dispatch and pursuit to containment and rescue.\r\n\r\nFilmed across California and Vietnam, the production combines real police collaboration, a custom-built Real-Time Crime Center (RTCC), and advanced drone technology to highlight key capabilities including thermal imaging, autonomous deployment, and Starlink connectivity. The result is an authentic, scenario-driven portrayal of how drone systems are transforming emergency response.",
+        "zh_wp": "BRINC Guardian 是专为现代公共安全行动设计的下一代 \"无人机第一响应者\"（DFR）平台。这部发布影片由 Vantage Pictures 制作，采用接地气的实时叙事方式，展示了自主无人机如何与执法工作流程相结合--从调度和追捕到围堵和救援。\r\n\r\n影片在加利福尼亚州和越南拍摄，结合了真实的警务合作、定制的实时犯罪中心（RTCC）和先进的无人机技术，突出了热成像、自主部署和星链连接等关键功能。该片以真实的场景为导向，描述了无人机系统如何改变应急响应。.",
+        "zh_sanity_current": "BRINC Guardian 是专为现代公共安全行动设计的下一代 \"无人机第一响应者\"（DFR）平台。这部发布影片由 Vantage Pictures 制作，采用接地气的实时叙事方式，展示了自主无人机如何与执法工作流程相结合--从调度和追捕到围堵和救援。\r\n\r\n影片在加利福尼亚州和越南拍摄，结合了真实的警务合作、定制的实时犯罪中心（RTCC）和先进的无人机技术，突出了热成像、自主部署和星链连接等关键功能。该片以真实的场景为导向，描述了无人机系统如何改变应急响应。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-4453",
+        "fieldName": "portfolioEntry.description"
+      },
+      {
+        "en": "BRINC unveils a new era of emergency response technology with advanced drones designed to support first responders.",
+        "zh_wp": "BRINC 推出专为支持急救人员而设计的先进无人机，开启了应急响应技术的新时代。.",
+        "zh_sanity_current": "BRINC 推出专为支持急救人员而设计的先进无人机，开启了应急响应技术的新时代。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3227",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Cinematic brand films by Vantage Pictures are built around story, strategy, and high-end commercial craft. We create brand films that move beyond product features to express identity, vision, and long-term ambition through emotionally resonant storytelling and refined visual direction. Combining strategic messaging, cinematic cinematography, authentic performances, and disciplined production execution, Vantage Pictures delivers powerful brand films for global companies seeking meaningful connection and lasting impact across digital, broadcast, and corporate platforms.",
+        "zh_wp": "Vantage Pictures 的电影品牌宣传片围绕故事、战略和高端商业工艺展开。我们制作的品牌影片超越了产品功能，通过情感共鸣的故事讲述和精致的视觉指导来表达身份、愿景和长期雄心。Vantage Pictures 将战略信息、电影摄影、真实表演和严谨的制作执行结合在一起，为那些在数字、广播和企业平台上寻求有意义的联系和持久影响的全球公司提供强大的品牌影片。.",
+        "zh_sanity_current": "Vantage Pictures 的电影品牌宣传片围绕故事、战略和高端商业工艺展开。我们制作的品牌影片超越了产品功能，通过情感共鸣的故事讲述和精致的视觉指导来表达身份、愿景和长期雄心。Vantage Pictures 将战略信息、电影摄影、真实表演和严谨的制作执行结合在一起，为那些在数字、广播和企业平台上寻求有意义的联系和持久影响的全球公司提供强大的品牌影片。",
+        "documentType": "videoFormat",
+        "documentId": "videoFormat-brand-film",
+        "fieldName": "videoFormat.description"
+      },
+      {
+        "en": "Cinematic commercial for Mammotion LUBA 3 AWD robot lawn mower, shot in Cape Town by Vantage Pictures—blending advanced robotics with natural landscapes through premium product storytelling.",
+        "zh_wp": "Mammotion LUBA 3 AWD 机器人割草机的电影广告，由 Vantage Pictures 在开普敦拍摄，通过讲述优质产品故事，将先进的机器人技术与自然景观融为一体。.",
+        "zh_sanity_current": "Mammotion LUBA 3 AWD 机器人割草机的电影广告，由 Vantage Pictures 在开普敦拍摄，通过讲述优质产品故事，将先进的机器人技术与自然景观融为一体。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-4449",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Coca-Cola partners with The Ocean Cleanup to spotlight global efforts to reduce plastic pollution in this powerful campaign film.",
+        "zh_wp": "可口可乐与 The Ocean Cleanup 合作，在其强有力的宣传片中聚焦全球减少塑料污染的努力。.",
+        "zh_sanity_current": "可口可乐与 The Ocean Cleanup 合作，在其强有力的宣传片中聚焦全球减少塑料污染的努力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3142",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Comfort teams up with Vietnamese pop star Tóc Tiên in this colorful campaign celebrating vibrant spring fashion.",
+        "zh_wp": "Comfort携手越南流行歌星Tóc Tiên，在这个绚丽多彩的活动中颂扬充满活力的春季时尚。.",
+        "zh_sanity_current": "Comfort携手越南流行歌星Tóc Tiên，在这个绚丽多彩的活动中颂扬充满活力的春季时尚。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3052",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Commercial spot for HONOR, Huawei's smartphone brand featuring Magic 2 voice control technology.",
+        "zh_wp": "华为智能手机品牌 HONOR 的广告片，采用 Magic 2 语音控制技术。.",
+        "zh_sanity_current": "华为智能手机品牌 HONOR 的广告片，采用 Magic 2 语音控制技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2063",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Commercial spot for the DJI Mavic 2 lightweight drone for filmmaking and photography.",
+        "zh_wp": "大疆创新 Mavic 2 轻型无人机的广告片，用于电影制作和摄影。.",
+        "zh_sanity_current": "大疆创新 Mavic 2 轻型无人机的广告片，用于电影制作和摄影。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2064",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Commercial spot production at Vantage Pictures focuses on high-impact, short-form campaigns designed for entertainment, engagement, and brand recall. From 30 to 90-second television and digital commercials, we create visually compelling spots that prioritize storytelling, tone, and audience connection over product-heavy messaging. With a commercial film production approach grounded in strong concepts, precise pacing, and cinematic execution, our team delivers memorable campaigns that perform across broadcast, online, and social platforms.",
+        "zh_wp": "Vantage Pictures 的商业广告制作专注于高影响力、短篇幅的广告活动，旨在吸引娱乐、互动和品牌记忆。从 30 到 90 秒的电视和数字广告，我们创造具有视觉吸引力的广告，重视故事叙述、情感基调和观众连接，而非产品信息堆砌。我们的团队以实实在在的创意、精准的节奏和电影般的执行力作为商业影片制作的基础，交付在广播、线上和社交平台上表现出色的难忘广告活动。.",
+        "zh_sanity_current": "Vantage Pictures 的商业广告制作专注于高影响力、短篇幅的广告活动，旨在吸引娱乐、互动和品牌记忆。从 30 到 90 秒的电视和数字广告，我们创造具有视觉吸引力的广告，重视故事叙述、情感基调和观众连接，而非产品信息堆砌。我们的团队以实实在在的创意、精准的节奏和电影般的执行力作为商业影片制作的基础，交付在广播、线上和社交平台上表现出色的难忘广告活动。",
+        "documentType": "videoFormat",
+        "documentId": "videoFormat-commercial-spot",
+        "fieldName": "videoFormat.description"
+      },
+      {
+        "en": "Contact Vantage Pictures for commercial film production inquiries, brand campaigns, and Vietnam production services worldwide.",
+        "zh_wp": "请联系 Vantage Pictures，咨询全球商业影片制作、品牌宣传和越南制作服务。.",
+        "zh_sanity_current": "请联系 Vantage Pictures，咨询全球商业影片制作、品牌宣传和越南制作服务。",
+        "documentType": "page",
+        "documentId": "page-contact",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Creators around the world showcase vibrant lighting environments in Govee’s global “Lit By Govee” smart lighting campaign.",
+        "zh_wp": "全球创作者在 Govee 的“Lit By Govee”智能照明全球活动中展示了充满活力的灯光环境。.",
+        "zh_sanity_current": "全球创作者在 Govee 的“Lit By Govee”智能照明全球活动中展示了充满活力的灯光环境。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3510",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Director’s Brief: 12 Questions is a new Q&A series from Campaign Brief Asia that shines a spotlight on the broad mix of talent shaping Asia’s commercial directing scene. Kicking off the series is Alexis Odiowei of Vantage Pictures.",
+        "zh_wp": "导演简报：12 个问题》是 Campaign Brief Asia 新推出的问答系列，聚焦于塑造亚洲商业导演舞台的各类人才。Vantage Pictures 的 Alexis Odiowei 是该系列的开篇人物。.",
+        "zh_sanity_current": "导演简报：12 个问题》是 Campaign Brief Asia 新推出的问答系列，聚焦于塑造亚洲商业导演舞台的各类人才。Vantage Pictures 的 Alexis Odiowei 是该系列的开篇人物。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3542",
+        "fieldName": "blogPost.excerpt"
+      },
+      {
+        "en": "Director’s Brief: 12 Questions is a new Q&A series from Campaign Brief Asia that shines a spotlight on the broad mix of talent shaping Asia’s commercial directing scene. The latest installment features Vantage Pictures director Zacharia Lorenz.",
+        "zh_wp": "导演简报：12 个问题》是 Campaign Brief Asia 推出的一个新的问答系列，聚焦于塑造亚洲商业导演舞台的各类人才。最新一期的嘉宾是 Vantage Pictures 的导演 Zacharia Lorenz。.",
+        "zh_sanity_current": "导演简报：12 个问题》是 Campaign Brief Asia 推出的一个新的问答系列，聚焦于塑造亚洲商业导演舞台的各类人才。最新一期的嘉宾是 Vantage Pictures 的导演 Zacharia Lorenz。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3579",
+        "fieldName": "blogPost.excerpt"
+      },
+      {
+        "en": "Discover the creative process behind the Govee horror commercial campaign, featuring stunning art direction and storytelling.",
+        "zh_wp": "探索 Govee 恐怖广告活动的创作过程，其中包含令人惊叹的艺术指导和故事情节。.",
+        "zh_sanity_current": "探索 Govee 恐怖广告活动的创作过程，其中包含令人惊叹的艺术指导和故事情节。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3559",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Discover the Ulike beauty campaign production by Vantage Pictures, designed to empower women through authentic storytelling.",
+        "zh_wp": "发现由Vantage Pictures制作的Ulike美妆宣传活动，旨在通过真实的故事讲述赋权女性。.",
+        "zh_sanity_current": "发现由Vantage Pictures制作的Ulike美妆宣传活动，旨在通过真实的故事讲述赋权女性。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3537",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Dive into the Bitget crypto campaign production where Álvarez's skills redefine modern trading in dynamic new films.",
+        "zh_wp": "深入了解 Bitget 的加密货币活动制作，阿尔瓦雷斯的技能在动态新影片中重新定义了现代交易。.",
+        "zh_sanity_current": "深入了解 Bitget 的加密货币活动制作，阿尔瓦雷斯的技能在动态新影片中重新定义了现代交易。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3688",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "DJI creators around the world share their aerial stories in the inspiring “My Mavic” campaign.",
+        "zh_wp": "全球的 DJI 创作者们通过鼓舞人心的“我的 Mavic”活动分享他们的航拍故事。.",
+        "zh_sanity_current": "全球的 DJI 创作者们通过鼓舞人心的“我的 Mavic”活动分享他们的航拍故事。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2748",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI creators explore the vibrant energy of Hong Kong through cinematic aerial storytelling.",
+        "zh_wp": "大疆创作者通过电影般的航拍故事，探索香港充满活力的能量。.",
+        "zh_sanity_current": "大疆创作者通过电影般的航拍故事，探索香港充满活力的能量。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2759",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI FlightHub",
+        "zh_wp": "大疆创新 FlightHub",
+        "zh_sanity_current": "大疆 飞旅网",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2714",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI introduces FlightHub, a powerful drone fleet management platform for enterprise aerial operations.",
+        "zh_wp": "大疆推出 FlightHub，一款强大的无人机机队管理平台，用于企业空中作业。.",
+        "zh_sanity_current": "大疆推出 FlightHub，一款强大的无人机机队管理平台，用于企业空中作业。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2714",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces Master Wheels, a professional motion control system designed for cinematic camera movement.",
+        "zh_wp": "大疆推出专业电影级摄像运动控制系统——掌上稳控。.",
+        "zh_sanity_current": "大疆推出专业电影级摄像运动控制系统——掌上稳控。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2725",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces the Matrice 600 heavy-lift drone platform built for professional filmmaking and industrial use.",
+        "zh_wp": "大疆推出 Matrice 600 重型无人机平台，专为专业电影制作和工业应用而设计。.",
+        "zh_sanity_current": "大疆推出 Matrice 600 重型无人机平台，专为专业电影制作和工业应用而设计。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2723",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces the Osmo Pocket camera delivering stabilized cinematic video in an ultra-compact handheld device.",
+        "zh_wp": "大疆发布Osmo Pocket相机，这款超便携手持设备可提供稳定的电影级视频。.",
+        "zh_sanity_current": "大疆发布Osmo Pocket相机，这款超便携手持设备可提供稳定的电影级视频。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2739",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces the RoboMaster S1 educational robotics platform designed to inspire the next generation of engineers.",
+        "zh_wp": "大疆推出 RoboMaster S1 教育机器人平台，旨在启发下一代工程师。.",
+        "zh_sanity_current": "大疆推出 RoboMaster S1 教育机器人平台，旨在启发下一代工程师。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2747",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces the Spark drone, making aerial photography accessible to a new generation of creators.",
+        "zh_wp": "大疆推出 Spark 航拍无人机，让新一代创作者也能轻松体验空中摄影。.",
+        "zh_sanity_current": "大疆推出 Spark 航拍无人机，让新一代创作者也能轻松体验空中摄影。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2746",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces the ultra-light Mavic Mini drone with powerful aerial imaging in this cinematic product campaign.",
+        "zh_wp": "DJI 在这部电影般的广告宣传片中推出了超轻便的 Mavic Mini 无人机，其强大航拍能力令人瞩目。.",
+        "zh_sanity_current": "DJI 在这部电影般的广告宣传片中推出了超轻便的 Mavic Mini 无人机，其强大航拍能力令人瞩目。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2072",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI introduces the Zenmuse Z30 aerial zoom camera designed for industrial inspections and enterprise missions.",
+        "zh_wp": "大疆推出为工业检测和企业任务设计的禅思 Z30 航拍摄影机。.",
+        "zh_sanity_current": "大疆推出为工业检测和企业任务设计的禅思 Z30 航拍摄影机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2737",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI launches the Tello Iron Man Edition drone inspired by Marvel’s iconic superhero in this playful campaign.",
+        "zh_wp": "在本次玩味十足的宣传活动中，大疆推出了灵感源自漫威标志性超级英雄的 Tello 铁甲奇侠特别版无人机。.",
+        "zh_sanity_current": "在本次玩味十足的宣传活动中，大疆推出了灵感源自漫威标志性超级英雄的 Tello 铁甲奇侠特别版无人机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2068",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI launches the Zenmuse X5 camera system delivering professional micro four thirds aerial cinematography.",
+        "zh_wp": "大疆发布禅思X5航拍相机云台系统，为专业级微4/3规格的航拍电影制作提供解决方案。.",
+        "zh_sanity_current": "大疆发布禅思X5航拍相机云台系统，为专业级微4/3规格的航拍电影制作提供解决方案。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2736",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Master Wheels",
+        "zh_wp": "大疆 Master Wheels",
+        "zh_sanity_current": "大疆 车轮大师",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2725",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Matrice 200 Series – Search & Rescue in Extreme Environments",
+        "zh_wp": "大疆 悟 200 系列 – 严酷环境下的搜救",
+        "zh_sanity_current": "大疆Matrice 200 Series – 极限环境下的搜救",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2758",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Matrice 600",
+        "zh_wp": "大疆灵眸Matrice 600",
+        "zh_sanity_current": "大疆 六旋翼无人机",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2723",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Mavic 2 – A Cosmic Voyage",
+        "zh_wp": "DJI Mavic 2 – 一次宇宙航行",
+        "zh_sanity_current": "DJI大疆创新 Mavic 2 – 宇宙之旅",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2767",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Mavic Pro – Wall-to-Wall Art",
+        "zh_wp": "大疆 Mavic Pro – 墙到墙的艺术",
+        "zh_sanity_current": "大疆Mavic Pro – 墙到墙艺术",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2784",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI My Mavic",
+        "zh_wp": "大疆 我的Mavic",
+        "zh_sanity_current": "大疆 我的 Mavic",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2748",
+        "fieldName": "portfolioEntry.additionalVideos[0].videoTitle"
+      },
+      {
+        "en": "DJI My Mavic",
+        "zh_wp": "大疆 我的Mavic",
+        "zh_sanity_current": "大疆 我的 Mavic",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2748",
+        "fieldName": "portfolioEntry.additionalVideos[1].videoTitle"
+      },
+      {
+        "en": "DJI Phantom 4 Pro – Hawaiian Lava",
+        "zh_wp": "大疆精灵4 Pro – 夏威夷熔岩",
+        "zh_sanity_current": "大疆 精灵 4 Pro – 夏威夷熔岩",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2791",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Profiles – Time is Fluid",
+        "zh_wp": "大疆档案 – 时间是流动的",
+        "zh_sanity_current": "大疆人物 – 时间是流动的",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2789",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Profiles celebrates creators who pursue their passions through aerial storytelling.",
+        "zh_wp": "DJI Profiles 旨在表彰那些通过航拍叙事来实现其热情的创作者。.",
+        "zh_sanity_current": "DJI Profiles 旨在表彰那些通过航拍叙事来实现其热情的创作者。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2790",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Profiles explores how aerial technology is transforming modern wedding photography.",
+        "zh_wp": "DJI Profiles 探讨了航空技术如何革新现代婚礼摄影。.",
+        "zh_sanity_current": "DJI Profiles 探讨了航空技术如何革新现代婚礼摄影。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2788",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI RoboMaster S1",
+        "zh_wp": "DJI RoboMaster S1",
+        "zh_sanity_current": "大疆 Robomaster S1",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2747",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI showcases the Osmo Mobile gimbal with intelligent filming tools in this cinematic campaign.",
+        "zh_wp": "大疆在这部电影式宣传片中展示了配备智能拍摄工具的Osmo Mobile智能手机稳定器。.",
+        "zh_sanity_current": "大疆在这部电影式宣传片中展示了配备智能拍摄工具的Osmo Mobile智能手机稳定器。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2783",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI showcases the powerful Mavic 2 drone with breathtaking aerial visuals in this dynamic campaign recap film.",
+        "zh_wp": "大疆在该款极具动感的宣传片中，通过令人惊叹的航拍画面，展示了强大的 Mavic 2 无人机。.",
+        "zh_sanity_current": "大疆在该款极具动感的宣传片中，通过令人惊叹的航拍画面，展示了强大的 Mavic 2 无人机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2064",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Spark – Capture Your Passion",
+        "zh_wp": "大疆 Spark – 捕捉你的激情",
+        "zh_sanity_current": "大疆 晓SPARK – 捕捉你的热情",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2070",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Spark empowers creators to capture their passion from the sky in this vibrant drone campaign film.",
+        "zh_wp": "大疆晓 Spark 凭借这款充满活力的无人机宣传片，助力创作者从天空捕捉他们的激情。.",
+        "zh_sanity_current": "大疆晓 Spark 凭借这款充满活力的无人机宣传片，助力创作者从天空捕捉他们的激情。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2070",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories – Australian Coastline Watch",
+        "zh_wp": "大疆故事——澳大利亚海岸卫士",
+        "zh_sanity_current": "大疆故事 – 澳大利亚海岸瞭望",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2890",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – Building Our Future",
+        "zh_wp": "大疆故事——构筑我们的未来",
+        "zh_sanity_current": "大疆故事 – 建立人类未来",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2888",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – Feeding the World",
+        "zh_wp": "大疆故事——喂养世界",
+        "zh_sanity_current": "大疆故事 – 养活世界",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2891",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – Humpback Whales of Rarotonga",
+        "zh_wp": "大疆故事 - 拉罗汤加的座头鲸",
+        "zh_sanity_current": "大疆故事 – 拉罗汤加岛的座头鲸",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2887",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – Linkin Park",
+        "zh_wp": "DJI的故事 – 林肯公园",
+        "zh_sanity_current": "大疆故事 – 林肯公园",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2893",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – Mapping the Maldives",
+        "zh_wp": "大疆故事 – 马尔代夫地图绘制",
+        "zh_sanity_current": "大疆故事 – 马尔代夫地图集",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2892",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – Polo",
+        "zh_wp": "大疆故事 – Polo",
+        "zh_sanity_current": "大疆故事 – 马球",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2894",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories – The Lost City of Chernobyl",
+        "zh_wp": "大疆故事",
+        "zh_sanity_current": "大疆故事 – 切尔诺贝利失落之城",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2886",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Stories captures Linkin Park’s powerful live performance using cinematic aerial visuals.",
+        "zh_wp": "DJI Stories 运用富有电影感的航拍视角，捕捉了林肯公园震撼的现场演出。.",
+        "zh_sanity_current": "DJI Stories 运用富有电影感的航拍视角，捕捉了林肯公园震撼的现场演出。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2893",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories captures the Maldives from above while exploring drone mapping technology.",
+        "zh_wp": "DJI Stories 从空中捕捉马尔代夫，并探索无人机测绘技术。.",
+        "zh_sanity_current": "DJI Stories 从空中捕捉马尔代夫，并探索无人机测绘技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2892",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories captures the speed and elegance of polo through breathtaking aerial cinematography.",
+        "zh_wp": "DJI Stories 通过令人惊叹的空中摄影捕捉了马球的速度和优雅。.",
+        "zh_sanity_current": "DJI Stories 通过令人惊叹的空中摄影捕捉了马球的速度和优雅。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2894",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories documents majestic humpback whales of Rarotonga through breathtaking aerial cinematography.",
+        "zh_wp": "DJI Stories 通过令人惊叹的航拍影像，记录了拉罗汤加岛上雄伟的座头鲸。.",
+        "zh_sanity_current": "DJI Stories 通过令人惊叹的航拍影像，记录了拉罗汤加岛上雄伟的座头鲸。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2887",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories explores Australia’s dramatic coastline through stunning aerial cinematography.",
+        "zh_wp": "DJI Stories 通过令人惊叹的航拍电影探索了澳大利亚崎岖的海岸线。.",
+        "zh_sanity_current": "DJI Stories 通过令人惊叹的航拍电影探索了澳大利亚崎岖的海岸线。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2890",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories explores how aerial technology is helping shape the future of infrastructure and cities.",
+        "zh_wp": "DJI故事探讨了航空技术如何帮助塑造基础设施和城市的未来。.",
+        "zh_sanity_current": "DJI故事探讨了航空技术如何帮助塑造基础设施和城市的未来。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2888",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories explores the haunting abandoned city of Chernobyl through cinematic drone storytelling.",
+        "zh_wp": "DJI Stories》通过无人机电影故事，探索了切尔诺贝利这座令人魂牵梦萦的废弃城市。.",
+        "zh_sanity_current": "DJI Stories》通过无人机电影故事，探索了切尔诺贝利这座令人魂牵梦萦的废弃城市。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2886",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Stories highlights how drone technology supports agriculture and global food production.",
+        "zh_wp": "DJI故事着重介绍了无人机技术如何支持农业和全球粮食生产。.",
+        "zh_sanity_current": "DJI故事着重介绍了无人机技术如何支持农业和全球粮食生产。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2891",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI unveils the Matrice 200 Series enterprise drone platform designed for industrial missions.",
+        "zh_wp": "大疆发布专为工业任务设计的 Matrice 200 系列企业无人机平台。.",
+        "zh_sanity_current": "大疆发布专为工业任务设计的 Matrice 200 系列企业无人机平台。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2724",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI unveils the Phantom 4 Pro drone featuring advanced imaging and intelligent flight technology.",
+        "zh_wp": "大疆发布了配备先进影像和智能飞行技术的 Phantom 4 Pro 无人机。.",
+        "zh_sanity_current": "大疆发布了配备先进影像和智能飞行技术的 Phantom 4 Pro 无人机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2735",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI unveils the revolutionary Mavic 2 Series drone lineup in this cinematic product launch film.",
+        "zh_wp": "大疆在本部电影级产品发布片中，发布了革命性的Mavic 2系列无人机。.",
+        "zh_sanity_current": "大疆在本部电影级产品发布片中，发布了革命性的Mavic 2系列无人机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2722",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI unveils the revolutionary Mavic 2 Series drone lineup in this cinematic product launch film.",
+        "zh_wp": "大疆在本部电影级产品发布片中，发布了革命性的Mavic 2系列无人机。.",
+        "zh_sanity_current": "大疆在本部电影级产品发布片中，发布了革命性的Mavic 2系列无人机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2767",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI unveils the Zenmuse XT2 thermal imaging camera for advanced aerial inspection and public safety missions.",
+        "zh_wp": "大疆发布禅思XT2热成像相机，用于高级航空检查和公共安全任务。.",
+        "zh_sanity_current": "大疆发布禅思XT2热成像相机，用于高级航空检查和公共安全任务。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2738",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI World – The Story of Aisholpan",
+        "zh_wp": "大疆世界 — 艾莎·奥丽的传奇",
+        "zh_sanity_current": "大疆世界 – 阿依夏的传说",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2903",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI World presents the inspiring story of Aisholpan, a young eagle hunter in Mongolia.",
+        "zh_wp": "大疆世界呈现了蒙古年轻猎鹰者艾斯霍尔潘（Aisholpan）的励志故事。.",
+        "zh_sanity_current": "大疆世界呈现了蒙古年轻猎鹰者艾斯霍尔潘（Aisholpan）的励志故事。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2903",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI Zenmuse XT2",
+        "zh_wp": "DJI Zenmuse XT2",
+        "zh_sanity_current": "大疆 禅思XT2",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2738",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI Zenmuse Z30",
+        "zh_wp": "大疆Zenmuse Z30",
+        "zh_sanity_current": "大疆 悟X30",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2737",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "DJI’s Matrice 200 drone supports search and rescue missions in extreme environments in this enterprise campaign film.",
+        "zh_wp": "在这部企业宣传片中，大疆的Matrice 200无人机支持在极端环境下执行搜救任务。.",
+        "zh_sanity_current": "在这部企业宣传片中，大疆的Matrice 200无人机支持在极端环境下执行搜救任务。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2758",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI’s Mavic Air drone explores one of the last wild places on Earth in this breathtaking cinematic campaign.",
+        "zh_wp": "大疆 Mavic Air 航拍无人机在这场令人惊叹的电影式宣传活动中，探索了地球上最后的荒野之地之一。.",
+        "zh_sanity_current": "大疆 Mavic Air 航拍无人机在这场令人惊叹的电影式宣传活动中，探索了地球上最后的荒野之地之一。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2769",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI’s Osmo Mobile gimbal empowers smartphone filmmakers with professional stabilization tools.",
+        "zh_wp": "大疆 Osmo Mobile 云台为智能手机电影制作人提供了专业的稳定工具。.",
+        "zh_sanity_current": "大疆 Osmo Mobile 云台为智能手机电影制作人提供了专业的稳定工具。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2782",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI’s Osmo Pocket camera delivers powerful stabilization and cinematic storytelling in this product campaign.",
+        "zh_wp": "DJI 的 Osmo Pocket 相机在此产品宣传片中提供强大的稳定性和电影级叙事体验。.",
+        "zh_sanity_current": "DJI 的 Osmo Pocket 相机在此产品宣传片中提供强大的稳定性和电影级叙事体验。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2066",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "DJI’s Phantom 4 Pro drone captures breathtaking Hawaiian lava flows in this cinematic aerial campaign.",
+        "zh_wp": "大疆的精灵 4 Pro 无人机在此次电影般的航拍宣传片中捕捉了令人惊叹的夏威夷熔岩流。.",
+        "zh_sanity_current": "大疆的精灵 4 Pro 无人机在此次电影般的航拍宣传片中捕捉了令人惊叹的夏威夷熔岩流。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2791",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Download our Vietnam filming location guide featuring diverse commercial shoot locations and production insights for international crews.",
+        "zh_wp": "下载我们的越南拍摄地点指南，为国际摄制组提供各种商业拍摄地点和制作见解。.",
+        "zh_sanity_current": "下载我们的越南拍摄地点指南，为国际摄制组提供各种商业拍摄地点和制作见解。",
+        "documentType": "page",
+        "documentId": "page-vietnam-location-guide",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "EcoFlow introduces the RIVER Mini portable power station, delivering compact energy solutions for life on the go.",
+        "zh_wp": "EcoFlow 推出了 RIVER Mini 便携式储能电源，为移动生活提供紧凑的能源解决方案。.",
+        "zh_sanity_current": "EcoFlow 推出了 RIVER Mini 便携式储能电源，为移动生活提供紧凑的能源解决方案。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2667",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "EcoFlow’s Delta battery generator provides powerful portable energy for home and outdoor use in this product campaign.",
+        "zh_wp": "EcoFlow 的 Delta 电池发电机在本产品宣传活动中，为家庭和户外使用提供强大的便携式能源。.",
+        "zh_sanity_current": "EcoFlow 的 Delta 电池发电机在本产品宣传活动中，为家庭和户外使用提供强大的便携式能源。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2914",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "EcoFlow’s DELTA Series portable power stations deliver reliable off-grid energy in this cinematic product campaign.",
+        "zh_wp": "EcoFlow 的 DELTA 系列便携式储能电源在此部电影式产品宣传片中提供可靠的离网能源。.",
+        "zh_sanity_current": "EcoFlow 的 DELTA 系列便携式储能电源在此部电影式产品宣传片中提供可靠的离网能源。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2909",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "EcoFlow’s River 600 portable power station delivers customizable backup energy solutions in this sleek campaign film.",
+        "zh_wp": "在这部时尚的宣传片中，EcoFlow 的 River 600 便携式电源为您提供可定制的备用电源解决方案。.",
+        "zh_sanity_current": "在这部时尚的宣传片中，EcoFlow 的 River 600 便携式电源为您提供可定制的备用电源解决方案。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2908",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "EcoFlow’s River mobile power station delivers reliable portable energy for outdoor adventures and emergencies.",
+        "zh_wp": "EcoFlow 的 River 移动电源站为户外探险和紧急情况提供可靠的便携式能源。.",
+        "zh_sanity_current": "EcoFlow 的 River 移动电源站为户外探险和紧急情况提供可靠的便携式能源。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2910",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "EcoFlow’s Wave portable air conditioner delivers cooling power anywhere in this energetic product campaign.",
+        "zh_wp": "EcoFlow 的 Wave 便携式空调在这款充满活力的产品宣传片中，在任何地方都能提供制冷能力。.",
+        "zh_sanity_current": "EcoFlow 的 Wave 便携式空调在这款充满活力的产品宣传片中，在任何地方都能提供制冷能力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2944",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Elewana Collection showcases breathtaking safari experiences in Kenya’s Loisaba Conservancy in this cinematic travel campaign.",
+        "zh_wp": "Elewana Collection 在此部电影般的旅行宣传片中展示了肯尼亚洛伊斯巴保护区令人惊叹的野生动物园体验。.",
+        "zh_sanity_current": "Elewana Collection 在此部电影般的旅行宣传片中展示了肯尼亚洛伊斯巴保护区令人惊叹的野生动物园体验。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2848",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Explore behind-the-scenes insights, creative direction, and industry press from Vantage Pictures’ global commercial film productions.",
+        "zh_wp": "了解 Vantage Pictures 全球商业电影制作的幕后花絮、创意方向和行业新闻。.",
+        "zh_sanity_current": "了解 Vantage Pictures 全球商业电影制作的幕后花絮、创意方向和行业新闻。",
+        "documentType": "page",
+        "documentId": "page-news",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Explore the Bitget crypto trading commercial that highlights trading smarter with humor and creativity in financial advertising.",
+        "zh_wp": "探索 Bitget 加密货币交易的商业广告，该广告以幽默和创意的方式突出智能交易，为金融广告注入活力。.",
+        "zh_sanity_current": "探索 Bitget 加密货币交易的商业广告，该广告以幽默和创意的方式突出智能交易，为金融广告注入活力。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3407",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the captivating MSI global B2B brand film that showcases innovation and reliability in key enterprise sectors.",
+        "zh_wp": "探索引人入胜的MSI全球B2B品牌影片，它展示了在关键企业领域的创新和可靠性。.",
+        "zh_sanity_current": "探索引人入胜的MSI全球B2B品牌影片，它展示了在关键企业领域的创新和可靠性。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3468",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the challenges of the OnePlus 12 commercial campaign in the era of generative AI and visual authenticity.",
+        "zh_wp": "探索生成式人工智能和视觉真实性时代 OnePlus 12 广告宣传所面临的挑战。.",
+        "zh_sanity_current": "探索生成式人工智能和视觉真实性时代 OnePlus 12 广告宣传所面临的挑战。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3374",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the commercial film production portfolio of Vantage Pictures, featuring cinematic brand films and product launch campaigns for global and technology brands.",
+        "zh_wp": "了解 Vantage Pictures 的商业电影制作组合，为全球品牌和技术品牌拍摄电影品牌宣传片和产品发布活动。.",
+        "zh_sanity_current": "了解 Vantage Pictures 的商业电影制作组合，为全球品牌和技术品牌拍摄电影品牌宣传片和产品发布活动。",
+        "documentType": "page",
+        "documentId": "page-work",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Explore the excitement of the OnePlus Pad 3 launch campaign and discover what makes this device a must-have.",
+        "zh_wp": "探索一加平板 3 发布活动的精彩之处，了解是什么让这款设备成为必买之选。.",
+        "zh_sanity_current": "探索一加平板 3 发布活动的精彩之处，了解是什么让这款设备成为必买之选。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3528",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the exciting world of the realme 13+ 5G gaming commercial, showcasing immersive gameplay in a New York setting.",
+        "zh_wp": "探索 realme 13+ 5G 游戏广告的精彩世界，在纽约的环境中展示身临其境的游戏体验。.",
+        "zh_sanity_current": "探索 realme 13+ 5G 游戏广告的精彩世界，在纽约的环境中展示身临其境的游戏体验。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3394",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the narrative behind the OnePlus Y Series TV commercial, showcasing a couple's journey through real-life moments.",
+        "zh_wp": "探索 OnePlus Y 系列电视广告背后的故事，通过真实的生活瞬间展示一对情侣的心路历程。.",
+        "zh_sanity_current": "探索 OnePlus Y 系列电视广告背后的故事，通过真实的生活瞬间展示一对情侣的心路历程。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3334",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the realme C75 commercial campaign showcasing its rugged features through hilarious and chaotic mishaps.",
+        "zh_wp": "探索 realme C75 商业宣传活动，通过搞笑而混乱的意外展示其坚固的特性。.",
+        "zh_sanity_current": "探索 realme C75 商业宣传活动，通过搞笑而混乱的意外展示其坚固的特性。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3423",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the realme Live For Real campaign, showcasing how AI transforms everyday moments into stunning cinematic experiences.",
+        "zh_wp": "探索 realme “Live For Real” 营销活动，展示人工智能如何将日常生活瞬间转化为令人惊叹的电影级体验。.",
+        "zh_sanity_current": "探索 realme “Live For Real” 营销活动，展示人工智能如何将日常生活瞬间转化为令人惊叹的电影级体验。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3570",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Explore the Roborock vacuum commercial campaign that blends humor with technology to showcase the H7 cordless vacuum.",
+        "zh_wp": "探索 Roborock 真空吸尘器广告，该广告将幽默与技术相结合，展示了 H7 无绳真空吸尘器。.",
+        "zh_sanity_current": "探索 Roborock 真空吸尘器广告，该广告将幽默与技术相结合，展示了 H7 无绳真空吸尘器。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3339",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Fujifilm highlights its mission to expand access to advanced healthcare technology in this inspiring campaign film.",
+        "zh_wp": "富士胶片在此鼓舞人心的宣传片中，着重强调其扩大先进医疗技术普及范围的使命。.",
+        "zh_sanity_current": "富士胶片在此鼓舞人心的宣传片中，着重强调其扩大先进医疗技术普及范围的使命。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2842",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Gendome introduces the Home 3000 portable power station designed for reliable home energy backup in this product campaign.",
+        "zh_wp": "Gendome 在此次产品宣传中推出了 Home 3000 便携式储能电源，旨在为家庭提供可靠的备用电源。.",
+        "zh_sanity_current": "Gendome 在此次产品宣传中推出了 Home 3000 便携式储能电源，旨在为家庭提供可靠的备用电源。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3062",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Global crypto exchange MEXC celebrates its seventh anniversary with a bold campaign film produced by Vantage Pictures.",
+        "zh_wp": "全球加密货币交易所MEXC正在举办其七周年庆祝活动，并推出了一部由Vantage Pictures制作的Bold宣传片。.",
+        "zh_sanity_current": "全球加密货币交易所MEXC正在举办其七周年庆祝活动，并推出了一部由Vantage Pictures制作的Bold宣传片。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3497",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Govee transforms a quiet neighborhood into a Halloween horror spectacle with immersive smart lighting in this playful campaign film.",
+        "zh_wp": "在这部俏皮的宣传片中，Govee 通过身临其境的智能照明，将一个宁静的社区变成了万圣节恐怖奇观。.",
+        "zh_sanity_current": "在这部俏皮的宣传片中，Govee 通过身临其境的智能照明，将一个宁静的社区变成了万圣节恐怖奇观。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3519",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Govee’s permanent outdoor lighting system turns any home into a dynamic display in this cinematic smart lighting campaign.",
+        "zh_wp": "Govee 的永久性户外照明系统让任何家庭都成为本次电影感智能照明活动中的动态展示。.",
+        "zh_sanity_current": "Govee 的永久性户外照明系统让任何家庭都成为本次电影感智能照明活动中的动态展示。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3523",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Hasselblad unveils the 907X Special Edition camera celebrating heritage design and cutting-edge imaging technology.",
+        "zh_wp": "哈苏发布907X特别版相机，致敬经典设计和尖端影像技术。.",
+        "zh_sanity_current": "哈苏发布907X特别版相机，致敬经典设计和尖端影像技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3298",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Hasselblad’s X1D II 50C medium format camera captures breathtaking travel photography in this cinematic campaign.",
+        "zh_wp": "哈苏 X1D II 50C 中画幅相机在这部电影般的宣传片中捕捉了令人惊叹的旅行摄影作品。.",
+        "zh_sanity_current": "哈苏 X1D II 50C 中画幅相机在这部电影般的宣传片中捕捉了令人惊叹的旅行摄影作品。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2067",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Herbalife Nutrition promotes healthy lifestyle choices in this vibrant Vietnamese brand campaign.",
+        "zh_wp": "康宝莱营养公司在此充满活力的越南品牌宣传活动中，推广健康的生活方式选择。.",
+        "zh_sanity_current": "康宝莱营养公司在此充满活力的越南品牌宣传活动中，推广健康的生活方式选择。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2990",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "HiDock combines ChatGPT integration with powerful audio hardware in this innovative productivity device campaign.",
+        "zh_wp": "HiDock将ChatGPT集成与强大的音频硬件相结合，打造这款创新的生产力设备。.",
+        "zh_sanity_current": "HiDock将ChatGPT集成与强大的音频硬件相结合，打造这款创新的生产力设备。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3152",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "High-end commercial film for BRINC Guardian drone, directed by Vantage Pictures—showcasing next-generation DFR technology, real-time response capabilities, and cinematic product storytelling.",
+        "zh_wp": "BRINC Guardian 无人机的高端广告片，由 Vantage Pictures 执导--展示下一代 DFR 技术、实时响应能力和电影化的产品故事。.",
+        "zh_sanity_current": "BRINC Guardian 无人机的高端广告片，由 Vantage Pictures 执导--展示下一代 DFR 技术、实时响应能力和电影化的产品故事。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-4453",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Hòa Phát showcases durable freezers built for reliable food storage in this Vietnamese product campaign.",
+        "zh_wp": "hoa phát 展示了为可靠食品储存而制造的耐用冰柜，在此越南产品宣传活动中。.",
+        "zh_sanity_current": "hoa phát 展示了为可靠食品储存而制造的耐用冰柜，在此越南产品宣传活动中。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3024",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "HONOR introduces the Magic 2 AI smartphone with cutting-edge artificial intelligence features in this cinematic campaign.",
+        "zh_wp": "荣耀在这次电影般的宣传活动中推出了搭载尖端人工智能功能的 Magic 2 智能手机。.",
+        "zh_sanity_current": "荣耀在这次电影般的宣传活动中推出了搭载尖端人工智能功能的 Magic 2 智能手机。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2063",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Hospitality campaign for Westin Resorts & Hotels in the Himalayas, India and Yokohama, Japan.",
+        "zh_wp": "在印度喜马拉雅山和日本横滨为威斯汀度假村和酒店开展酒店宣传活动。.",
+        "zh_sanity_current": "在印度喜马拉雅山和日本横滨为威斯汀度假村和酒店开展酒店宣传活动。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3464",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Hyundai explores innovation and the future of mobility in the inspiring “Progress for Humanity” brand campaign.",
+        "zh_wp": "现代汽车在鼓舞人心的 “人类进步 ”品牌活动中探索创新和未来的移动性。.",
+        "zh_sanity_current": "现代汽车在鼓舞人心的 “人类进步 ”品牌活动中探索创新和未来的移动性。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2024",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "IndelB’s ICECO Go20 portable refrigerator keeps adventures cool in this energetic lifestyle campaign.",
+        "zh_wp": "IndelB 的 ICECO Go20 便携式冰箱在此充满活力的生活方式活动中，让冒险之旅保持凉爽。.",
+        "zh_sanity_current": "IndelB 的 ICECO Go20 便携式冰箱在此充满活力的生活方式活动中，让冒险之旅保持凉爽。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2069",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Indwell unveils an innovative 2-in-1 refrigerator and air conditioning solution in this product launch campaign.",
+        "zh_wp": "Indwell 在此次产品发布活动中推出了创新性的二合一冰箱与空调解决方案。.",
+        "zh_sanity_current": "Indwell 在此次产品发布活动中推出了创新性的二合一冰箱与空调解决方案。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2998",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Insta360 introduces the Link AI-powered 4K webcam designed to elevate professional video communication.",
+        "zh_wp": "Insta360 推出了 Link 4K AI 摄像头，旨在提升专业视频通讯体验。.",
+        "zh_sanity_current": "Insta360 推出了 Link 4K AI 摄像头，旨在提升专业视频通讯体验。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3011",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Introducing the world's first AI-powered litter box that monitors your cats' toilet routines, analyzes stool & automatically handles every step of the cleaning process from packing to bagging.",
+        "zh_wp": "隆重推出全球首款人工智能猫砂盆，它可以监测您猫咪的上厕所习惯，分析粪便，并自动处理从打包到装袋的整个清洁过程。.",
+        "zh_sanity_current": "隆重推出全球首款人工智能猫砂盆，它可以监测您猫咪的上厕所习惯，分析粪便，并自动处理从打包到装袋的整个清洁过程。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3259",
+        "fieldName": "portfolioEntry.description"
+      },
+      {
+        "en": "Jackery introduces the Explorer 5000 Plus, a powerful whole-home backup power solution showcased in this cinematic campaign by Vantage Pictures.",
+        "zh_wp": "Jackery 隆重推出 Explorer 5000 Plus，一款强大的全屋备用电源解决方案，Vantage Pictures在此部的影院级宣传片中进行了展示。.",
+        "zh_sanity_current": "Jackery 隆重推出 Explorer 5000 Plus，一款强大的全屋备用电源解决方案，Vantage Pictures在此部的影院级宣传片中进行了展示。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3282",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Join Zacharia Lorenz as he shares insights from his commercial director interview, exploring creative filming techniques.",
+        "zh_wp": "加入Zacharia Lorenz，他将分享他的商业总监访谈见解，探索创意拍摄技巧。.",
+        "zh_sanity_current": "加入Zacharia Lorenz，他将分享他的商业总监访谈见解，探索创意拍摄技巧。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3579",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Lay’s Max launches a bold snack campaign in Vietnam celebrating extreme crunch and playful energy in this vibrant commercial.",
+        "zh_wp": "乐事极致系列在越南推出大胆零食宣传活动，在这部充满活力的广告中庆祝极致酥脆和趣味活力。.",
+        "zh_sanity_current": "乐事极致系列在越南推出大胆零食宣传活动，在这部充满活力的广告中庆祝极致酥脆和趣味活力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3154",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Learn about Alexis Odiowei's directing approach in this exclusive interview, highlighting memorable ad campaigns and visual artistry.",
+        "zh_wp": "在这次独家专访中，我们将了解 Alexis Odiowei 的导演方法，重点介绍令人难忘的广告活动和视觉艺术。.",
+        "zh_sanity_current": "在这次独家专访中，我们将了解 Alexis Odiowei 的导演方法，重点介绍令人难忘的广告活动和视觉艺术。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3542",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Learn about the making of the OPPO Mother's Day commercial, where childhood memories meet innovative technology for a fun twist.",
+        "zh_wp": "了解 OPPO 母亲节广告的制作过程，让童年记忆与创新科技相映成趣。.",
+        "zh_sanity_current": "了解 OPPO 母亲节广告的制作过程，让童年记忆与创新科技相映成趣。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3355",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Learn how this realme C85 commercial campaign blends cinematic storytelling with the spirit of young outdoor workers.",
+        "zh_wp": "了解这款 realme C85 商业广告活动如何将电影叙事与年轻户外工作者的精神融为一体。.",
+        "zh_sanity_current": "了解这款 realme C85 商业广告活动如何将电影叙事与年轻户外工作者的精神融为一体。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3678",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Legendary climber Jimmy Chin captures breathtaking ski mountaineering using the DJI Mavic 2 drone in this cinematic campaign.",
+        "zh_wp": "传奇登山家吉米·陈在这部电影般的宣传片中，使用大疆 Mavic 2 无人机捕捉了令人惊叹的滑雪登山景象。.",
+        "zh_sanity_current": "传奇登山家吉米·陈在这部电影般的宣传片中，使用大疆 Mavic 2 无人机捕捉了令人惊叹的滑雪登山景象。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2768",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Mammotion – Let LUBA 2 Do It",
+        "zh_wp": "库犸科技 – 让 LUBA 2 来完成",
+        "zh_sanity_current": "库犸科技 – 让 LUBA 2 来做",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3228",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Mammotion introduces the Luba robot mower, transforming automated lawn care with powerful smart technology.",
+        "zh_wp": "Mammotion推出Luba智能割草机器人，以强大的智能技术革新自动化草坪护理。.",
+        "zh_sanity_current": "Mammotion推出Luba智能割草机器人，以强大的智能技术革新自动化草坪护理。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2977",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Mammotion introduces the YUKA robot mower, redefining effortless automated lawn maintenance in this product campaign.",
+        "zh_wp": "Mammotion 推出 YUKA 机器人割草机，在本次产品宣传活动中重新定义了轻松自动化的草坪维护。.",
+        "zh_sanity_current": "Mammotion 推出 YUKA 机器人割草机，在本次产品宣传活动中重新定义了轻松自动化的草坪维护。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3178",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Mammotion redefines automated lawn care with the YUKA Mini robot mower in this playful product campaign.",
+        "zh_wp": "Mammotion 在本次俏皮的产品宣传活动中，用 YUKA Mini 机器人割草机重新定义了自动化草坪护理。.",
+        "zh_sanity_current": "Mammotion 在本次俏皮的产品宣传活动中，用 YUKA Mini 机器人割草机重新定义了自动化草坪护理。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3452",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Mammotion’s LUBA 2 robot mower takes over lawn care duties in this playful product campaign produced by Vantage Pictures.",
+        "zh_wp": "Mammotion 的 LUBA 2 机器人割草机在此由 Vantage Pictures制作的趣味产品宣传片中接管了草坪护理工作。.",
+        "zh_sanity_current": "Mammotion 的 LUBA 2 机器人割草机在此由 Vantage Pictures制作的趣味产品宣传片中接管了草坪护理工作。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3228",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "MSI Business highlights modern workplace productivity with sleek devices in this cinematic global campaign produced by Vantage Pictures.",
+        "zh_wp": "MSI商业通过Vantage Pictures制作的这部具有电影质感的全球宣传片， showcasing 现代职场设备的生产力。.",
+        "zh_sanity_current": "MSI商业通过Vantage Pictures制作的这部具有电影质感的全球宣传片， showcasing 现代职场设备的生产力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3467",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "MSI’s PerfectEdge monitor delivers ultra-smooth 120Hz performance in this sleek product commercial produced by Vantage Pictures.",
+        "zh_wp": "MSI 的 PerfectEdge 显示器在这款由 Vantage Pictures制作的时尚产品广告中提供了超流畅的 120Hz 性能。.",
+        "zh_sanity_current": "MSI 的 PerfectEdge 显示器在这款由 Vantage Pictures制作的时尚产品广告中提供了超流畅的 120Hz 性能。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3280",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Mutosi promotes Japanese-standard water purification technology in this sleek Vietnamese commercial campaign.",
+        "zh_wp": "Mutosi 在这个时尚的越南商业广告活动中推广日标净水技术。.",
+        "zh_sanity_current": "Mutosi 在这个时尚的越南商业广告活动中推广日标净水技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3027",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Old Spice highlights bold masculine fragrance with sandalwood notes in this energetic commercial campaign.",
+        "zh_wp": "Old Spice 在这个充满活力的商业广告系列中，以带有檀香木香调的粗犷男性香水为亮点。.",
+        "zh_sanity_current": "Old Spice 在这个充满活力的商业广告系列中，以带有檀香木香调的粗犷男性香水为亮点。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3040",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OnePlus celebrates iconic cricket moments with Mohan Dravid in this cinematic smartphone campaign.",
+        "zh_wp": "OnePlus 在这一电影级智能手机广告中与 Mohan Dravid 一起庆祝板球的经典时刻。.",
+        "zh_sanity_current": "OnePlus 在这一电影级智能手机广告中与 Mohan Dravid 一起庆祝板球的经典时刻。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3310",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OnePlus explores night photography and cinematic storytelling in the atmospheric “Chasing Luna” smartphone campaign.",
+        "zh_wp": "OnePlus 在其富有氛围感的“Chasing Luna”智能手机宣传活动中探索夜间摄影和电影故事讲述。.",
+        "zh_sanity_current": "OnePlus 在其富有氛围感的“Chasing Luna”智能手机宣传活动中探索夜间摄影和电影故事讲述。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3173",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OnePlus introduces the 8T smartphone with powerful performance and refined design in this cinematic launch campaign.",
+        "zh_wp": "OnePlus 在此次电影级发布宣传片中推出了 8T 智能手机，该手机拥有强劲的性能和精致的设计。.",
+        "zh_sanity_current": "OnePlus 在此次电影级发布宣传片中推出了 8T 智能手机，该手机拥有强劲的性能和精致的设计。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2056",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OnePlus introduces the Y-Series smart TV lineup with sleek design and immersive entertainment in this product campaign.",
+        "zh_wp": "OnePlus 在本次产品宣传活动中推出了 Y 系列智能电视系列，兼具时尚设计和沉浸式娱乐体验。.",
+        "zh_sanity_current": "OnePlus 在本次产品宣传活动中推出了 Y 系列智能电视系列，兼具时尚设计和沉浸式娱乐体验。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2821",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OnePlus launches the 10T smartphone with ultra-fast performance and smooth design in this cinematic campaign.",
+        "zh_wp": "OnePlus 在此电影般的广告宣传中发布了 10T 智能手机，该手机拥有超快的性能和流畅的设计。.",
+        "zh_sanity_current": "OnePlus 在此电影般的广告宣传中发布了 10T 智能手机，该手机拥有超快的性能和流畅的设计。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2981",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OnePlus launches the Pad 3 tablet with a cinematic campaign celebrating creativity, productivity, and premium design.",
+        "zh_wp": "一加推出 Pad 3 平板电脑，以一场致敬创意、效率和高端设计的电影级宣传活动。.",
+        "zh_sanity_current": "一加推出 Pad 3 平板电脑，以一场致敬创意、效率和高端设计的电影级宣传活动。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3504",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OPPO celebrates motherhood through cinematic portrait photography in the Reno7 Pro smartphone campaign.",
+        "zh_wp": "OPPO通过Reno7 Pro智能手机的摄影活动，用电影肖像摄影礼赞母爱。.",
+        "zh_sanity_current": "OPPO通过Reno7 Pro智能手机的摄影活动，用电影肖像摄影礼赞母爱。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2841",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OPPO collaborates with photographer Ben Thomas to showcase the Find X5 Pro camera capabilities in this cinematic campaign.",
+        "zh_wp": "OPPO与摄影师Ben Thomas合作，在此次电影式营销活动中展示Find X5 Pro的相机功能。.",
+        "zh_sanity_current": "OPPO与摄影师Ben Thomas合作，在此次电影式营销活动中展示Find X5 Pro的相机功能。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2994",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OPPO introduces the Reno6 Pro 5G with stunning portrait photography and stylish design in this vibrant smartphone campaign.",
+        "zh_wp": "OPPO 在这项充满活力的智能手机宣传活动中推出了 Reno6 Pro 5G，该手机拥有令人惊叹的人像摄影功能和时尚的设计。.",
+        "zh_sanity_current": "OPPO 在这项充满活力的智能手机宣传活动中推出了 Reno6 Pro 5G，该手机拥有令人惊叹的人像摄影功能和时尚的设计。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2643",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "OPPO showcases the Reno10 Pro+ 5G smartphone with cinematic visuals highlighting advanced camera technology.",
+        "zh_wp": "OPPO 展示了 Reno10 Pro+ 5G 智能手机，其影院级视觉效果突显了先进的相机技术。.",
+        "zh_sanity_current": "OPPO 展示了 Reno10 Pro+ 5G 智能手机，其影院级视觉效果突显了先进的相机技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3162",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "P/S Vietnam promotes dental health and confident smiles in this uplifting public awareness campaign.",
+        "zh_wp": "越南在这次鼓舞人心的公益宣传活动中，推广口腔健康，传递自信笑容。.",
+        "zh_sanity_current": "越南在这次鼓舞人心的公益宣传活动中，推广口腔健康，传递自信笑容。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2060",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Petkit introduces the Purobot Ultra, an intelligent pet care robot designed to simplify daily life for modern pet owners.",
+        "zh_wp": "Petkit 推出 Purobot Ultra，这是一款智能宠物护理机器人，旨在简化现代宠物主人养宠的日常生活。.",
+        "zh_sanity_current": "Petkit 推出 Purobot Ultra，这是一款智能宠物护理机器人，旨在简化现代宠物主人养宠的日常生活。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3259",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Product introduction campaign for EcoFlow's DELTA Series line of portable power stations.",
+        "zh_wp": "EcoFlow DELTA 系列便携式发电站的产品介绍活动。.",
+        "zh_sanity_current": "EcoFlow DELTA 系列便携式发电站的产品介绍活动。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2909",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product introduction film for Bambu Lab's Vortek Hotend Change System 3D printer accessory.",
+        "zh_wp": "Bambu Lab 的 Vortek 热端更换系统 3D 打印机附件的产品介绍影片。.",
+        "zh_sanity_current": "Bambu Lab 的 Vortek 热端更换系统 3D 打印机附件的产品介绍影片。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3518",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product introduction for the Roborock S8 Series of automated robot vacuum cleaners.",
+        "zh_wp": "Roborock S8系列全自动扫地机器人产品介绍。.",
+        "zh_sanity_current": "Roborock S8系列全自动扫地机器人产品介绍。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3127",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product launch film for BRINC Guardian, the next era of drone as first responder for public safety.",
+        "zh_wp": "为 BRINC Guardian 制作产品发布宣传片，这是无人机作为公共安全第一响应者的下一个时代。.",
+        "zh_sanity_current": "为 BRINC Guardian 制作产品发布宣传片，这是无人机作为公共安全第一响应者的下一个时代。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-4453",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product launch film for the Mammotion LUBA 2 AWD fully-automated lawn mower for large and uneven lawns.",
+        "zh_wp": "Mammotion LUBA 2 AWD 全自动割草机大型不平整草坪产品发布影片。.",
+        "zh_sanity_current": "Mammotion LUBA 2 AWD 全自动割草机大型不平整草坪产品发布影片。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3184",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product launch film for the Mammotion YUKA Mini automated robot lawn mower and leaf sweeper.",
+        "zh_wp": "Mammotion YUKA Mini 自动割草机器人和扫叶机产品发布宣传片。.",
+        "zh_sanity_current": "Mammotion YUKA Mini 自动割草机器人和扫叶机产品发布宣传片。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3452",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product launch film for Zhiyun's WEEBILL 3S & CRANE-M 3S gimbals and their new line of lighting products for filmmakers.",
+        "zh_wp": "为智云公司的 WEEBILL 3S 和 CRANE-M 3S 云台及其面向电影制片人的新照明产品系列拍摄产品发布影片。.",
+        "zh_sanity_current": "为智云公司的 WEEBILL 3S 和 CRANE-M 3S 云台及其面向电影制片人的新照明产品系列拍摄产品发布影片。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3138",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product launch video for Petkit's Purobot Ultra automated cat litter box with an AI-powered camera.",
+        "zh_wp": "Petkit 的 Purobot Ultra 自动化猫砂盒配人工智能摄像头的产品发布视频。.",
+        "zh_sanity_current": "Petkit 的 Purobot Ultra 自动化猫砂盒配人工智能摄像头的产品发布视频。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3259",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Product video production for tech brands is a specialty of Vantage Pictures, focused on translating advanced features into clear, cinematic storytelling. From smartphones and consumer electronics to robotics and smart hardware, we craft product-focused films that balance technical precision with visual impact. Our approach combines strategic messaging, refined cinematography, and commercial-level production execution to create launch videos and product campaigns that elevate positioning while clearly communicating performance and innovation.",
+        "zh_wp": "Vantage Pictures专注于为科技品牌制作产品视频，将先进的功能转化为清晰、电影化的叙事。从智能手机、消费电子产品到机器人和智能硬件，我们精心打造以产品为中心、兼具技术精准度和视觉冲击力的影片。我们的方法结合了战略信息传递、精湛的摄影和商业级别的制作执行，以创作上市视频和产品宣传活动，提升品牌定位，同时清晰地传达性能和创新。.",
+        "zh_sanity_current": "Vantage Pictures专注于为科技品牌制作产品视频，将先进的功能转化为清晰、电影化的叙事。从智能手机、消费电子产品到机器人和智能硬件，我们精心打造以产品为中心、兼具技术精准度和视觉冲击力的影片。我们的方法结合了战略信息传递、精湛的摄影和商业级别的制作执行，以创作上市视频和产品宣传活动，提升品牌定位，同时清晰地传达性能和创新。",
+        "documentType": "videoFormat",
+        "documentId": "videoFormat-product-video",
+        "fieldName": "videoFormat.description"
+      },
+      {
+        "en": "realme celebrates the spirit of Ramadan through heartfelt storytelling in this culturally inspired campaign film.",
+        "zh_wp": "realme 通过充满温情的感人故事，在这个充满文化气息的宣传片中庆祝斋月精神。.",
+        "zh_sanity_current": "realme 通过充满温情的感人故事，在这个充满文化气息的宣传片中庆祝斋月精神。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3182",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "realme introduces the X7 smartphone with powerful performance and sleek design in this vibrant global campaign.",
+        "zh_wp": "realme 在此次充满活力的全球宣传活动中推出了 X7 智能手机，该手机拥有强大的性能和时尚的设计。.",
+        "zh_sanity_current": "realme 在此次充满活力的全球宣传活动中推出了 X7 智能手机，该手机拥有强大的性能和时尚的设计。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2061",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Realme X7 – Fast & Powerful",
+        "zh_wp": "Realme X7 - 快速而强大",
+        "zh_sanity_current": "真我 X7 – 快速强大",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2061",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "realme’s 13+ 5G smartphone blurs the line between gaming and reality in this immersive campaign film produced by Vantage Pictures.",
+        "zh_wp": "realme 的 13+ 5G 智能手机在 Vantage Pictures制作的沉浸式广告短片中模糊了游戏与现实的界限。.",
+        "zh_sanity_current": "realme 的 13+ 5G 智能手机在 Vantage Pictures制作的沉浸式广告短片中模糊了游戏与现实的界限。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3276",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "realme’s 15 Series 5G captures authentic moments in this vibrant campaign film celebrating creativity and smartphone photography.",
+        "zh_wp": "realme 15 系列 5G 在这部生动的宣传片中捕捉真实瞬间，颂扬创造力和智能手机摄影。.",
+        "zh_sanity_current": "realme 15 系列 5G 在这部生动的宣传片中捕捉真实瞬间，颂扬创造力和智能手机摄影。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3524",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "realme’s C85 smartphone proves it can handle anything in this chaotic waterproof adventure campaign produced by Vantage Pictures.",
+        "zh_wp": "realme C85 智能手机在 Vantage Pictures制作的混乱防水冒险宣传活动中证明了它可以应对一切。.",
+        "zh_sanity_current": "realme C85 智能手机在 Vantage Pictures制作的混乱防水冒险宣传活动中证明了它可以应对一切。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3612",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "realme’s rugged C75 smartphone survives outrageous everyday mishaps in this humorous global campaign produced by Vantage Pictures.",
+        "zh_wp": "realme 坚固耐用的 C75 智能手机在 Vantage Pictures制作的这个幽默的全球宣传活动中，经受住了日常的各种意外。.",
+        "zh_sanity_current": "realme 坚固耐用的 C75 智能手机在 Vantage Pictures制作的这个幽默的全球宣传活动中，经受住了日常的各种意外。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3283",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Roborock S8 Series",
+        "zh_wp": "石头 S8 系列",
+        "zh_sanity_current": "石头科技 S8系列",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3127",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Roborock’s H7 cordless vacuum delivers powerful lightweight cleaning performance in this sleek product campaign.",
+        "zh_wp": "Roborock H7 无绳吸尘器在这款时尚的产品宣传片中，提供了强劲轻便的清洁性能。.",
+        "zh_sanity_current": "Roborock H7 无绳吸尘器在这款时尚的产品宣传片中，提供了强劲轻便的清洁性能。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2652",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Roborock’s Qrevo-S robot vacuum delivers powerful cleaning automation in this sleek product campaign film.",
+        "zh_wp": "Roborock Qrevo-S 扫地机器人在这款时尚的产品宣传片中，为您带来强大的清洁自动化体验。.",
+        "zh_sanity_current": "Roborock Qrevo-S 扫地机器人在这款时尚的产品宣传片中，为您带来强大的清洁自动化体验。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3257",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Roborock’s S7 MaxV Ultra robot vacuum automates every cleaning task in this sleek product campaign film.",
+        "zh_wp": "Roborock 的 S7 MaxV Ultra 扫地机器人在此款时尚的产品宣传片中实现了所有清洁任务的自动化。.",
+        "zh_sanity_current": "Roborock 的 S7 MaxV Ultra 扫地机器人在此款时尚的产品宣传片中实现了所有清洁任务的自动化。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2806",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Roborock’s S8 Series robot vacuum showcases powerful automated cleaning technology in this sleek global product campaign.",
+        "zh_wp": "石头科技S8系列扫地机器人在此款时尚的全球产品宣传片中展示了强大的自动化清洁技术。.",
+        "zh_sanity_current": "石头科技S8系列扫地机器人在此款时尚的全球产品宣传片中展示了强大的自动化清洁技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3127",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Samsung captures the endless beauty of Vietnam using the Galaxy S8 smartphone in this cinematic travel campaign.",
+        "zh_wp": "三星利用 Galaxy S8 智能手机，在这部电影般的旅行广告系列中捕捉了越南的无尽之美。.",
+        "zh_sanity_current": "三星利用 Galaxy S8 智能手机，在这部电影般的旅行广告系列中捕捉了越南的无尽之美。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2065",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Samsung Galaxy S8 – The Endless Beauty of Vietnam",
+        "zh_wp": "三星 Galaxy S8 - 越南的无尽之美",
+        "zh_sanity_current": "三星 Galaxy S8 – 越南无尽的美",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2065",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Samsung partners with Discovery to showcase the Galaxy S21’s photography capabilities in this cinematic exploration campaign.",
+        "zh_wp": "三星与探索频道（Discovery）合作，在本次电影般的探索活动中展示 Galaxy S21 的摄影能力。.",
+        "zh_sanity_current": "三星与探索频道（Discovery）合作，在本次电影般的探索活动中展示 Galaxy S21 的摄影能力。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2054",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Samsung Vietnam celebrates the Galaxy S21 Ultra 5G with breathtaking visuals and powerful mobile photography.",
+        "zh_wp": "三星越南通过令人惊叹的视觉效果和强大的移动摄影技术，为Galaxy S21 Ultra 5G的发布增添了光彩。.",
+        "zh_sanity_current": "三星越南通过令人惊叹的视觉效果和强大的移动摄影技术，为Galaxy S21 Ultra 5G的发布增添了光彩。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2057",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Samsung’s Galaxy S21 smartphone takes center stage in this cinematic campaign highlighting next-generation mobile photography.",
+        "zh_wp": "三星的 Galaxy S21 智能手机在这场聚焦下一代移动摄影的电影式宣传活动中成为焦点。.",
+        "zh_sanity_current": "三星的 Galaxy S21 智能手机在这场聚焦下一代移动摄影的电影式宣传活动中成为焦点。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2645",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "See how the Bitget crypto campaign production invites viewers to rethink trading through humor and clever storytelling.",
+        "zh_wp": "看看 Bitget 的加密货币宣传片是如何通过幽默和巧妙的故事吸引观众重新思考交易的。.",
+        "zh_sanity_current": "看看 Bitget 的加密货币宣传片是如何通过幽默和巧妙的故事吸引观众重新思考交易的。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3402",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "See how Vantage Pictures produced ASUS Business’s “Upgrade to Incredible” campaign, a dynamic commercial directed by Byron McKenzie.",
+        "zh_wp": "了解 Vantage Pictures 如何制作华硕商用的 “升级到不可思议 ”广告，这是一部由 Byron McKenzie 执导的动态广告片。.",
+        "zh_sanity_current": "了解 Vantage Pictures 如何制作华硕商用的 “升级到不可思议 ”广告，这是一部由 Byron McKenzie 执导的动态广告片。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-3370",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Short commercial spot campaign for the Mammotion LUBA 2 AWD perimiter-wire-free robot lawn mower.",
+        "zh_wp": "Mammotion LUBA 2 AWD 无边界割草机器人短播广告系列。.",
+        "zh_sanity_current": "Mammotion LUBA 2 AWD 无边界割草机器人短播广告系列。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3228",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Shot on location in Cape Town, this project for Mammotion explores a more cinematic approach to product storytelling—grounding advanced robotics in real-world environments that feel expansive, natural, and lived-in. Directed by Alexis Odiowei, the film leans into contrast: precision technology operating seamlessly within rugged terrain, shifting light conditions, and organic landscapes.\r\n\r\nOur focus was on balancing clean, product-driven visuals with a sense of atmosphere and scale. Rather than over-explaining functionality, we let movement, composition, and environment do the heavy lifting—building a visual language that feels intuitive and confident. The result is a piece that positions the product through tone and context, not just features, while maintaining a strong, premium aesthetic throughout.",
+        "zh_wp": "Mammotion 的这一项目在开普敦取景拍摄，探索了一种更加电影化的产品叙事方法--将先进的机器人技术融入到真实世界的环境中，让人感受到广阔、自然和生活气息。本片由 Alexis Odiowei 执导，影片采用对比手法：精密技术在崎岖的地形、多变的光线条件和有机景观中无缝运行。\r\n\r\n我们的重点是在简洁、产品驱动的视觉效果与氛围和规模感之间取得平衡。我们没有过多地解释功能，而是让运动、构图和环境来完成这些繁重的工作，从而建立起一种让人感觉直观而自信的视觉语言。最终，作品通过基调和背景，而不仅仅是功能，对产品进行了定位，同时始终保持了强烈、优质的美感。.",
+        "zh_sanity_current": "Mammotion 的这一项目在开普敦取景拍摄，探索了一种更加电影化的产品叙事方法--将先进的机器人技术融入到真实世界的环境中，让人感受到广阔、自然和生活气息。本片由 Alexis Odiowei 执导，影片采用对比手法：精密技术在崎岖的地形、多变的光线条件和有机景观中无缝运行。\r\n\r\n我们的重点是在简洁、产品驱动的视觉效果与氛围和规模感之间取得平衡。我们没有过多地解释功能，而是让运动、构图和环境来完成这些繁重的工作，从而建立起一种让人感觉直观而自信的视觉语言。最终，作品通过基调和背景，而不仅仅是功能，对产品进行了定位，同时始终保持了强烈、优质的美感。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-4449",
+        "fieldName": "portfolioEntry.description"
+      },
+      {
+        "en": "Snapmaker – Make Something Wonderful",
+        "zh_wp": "Snapmaker——创造奇迹",
+        "zh_sanity_current": "骁将 – 创造非凡",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2666",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Snapmaker empowers creators with multi-function 3D printing, laser engraving and CNC machining in this inspiring campaign film.",
+        "zh_wp": "Snapmaker 在这部鼓舞人心的宣传片中，通过多功能 3D 打印、激光雕刻和 CNC 加工，赋能创作者。.",
+        "zh_sanity_current": "Snapmaker 在这部鼓舞人心的宣传片中，通过多功能 3D 打印、激光雕刻和 CNC 加工，赋能创作者。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2666",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Submit your commercial film production brief to Vantage Pictures and connect with our team to discuss your brand film or product launch campaign.",
+        "zh_wp": "向 Vantage Pictures 提交您的商业影片制作简介，并与我们的团队联系，讨论您的品牌影片或产品发布活动。.",
+        "zh_sanity_current": "向 Vantage Pictures 提交您的商业影片制作简介，并与我们的团队联系，讨论您的品牌影片或产品发布活动。",
+        "documentType": "page",
+        "documentId": "page-video-campaign-brief",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Taiwan Excellence celebrates cutting-edge innovation and design through this global technology showcase campaign.",
+        "zh_wp": "台湾精品奖通过此次全球科技展销活动，颂扬尖端创新与设计。.",
+        "zh_sanity_current": "台湾精品奖通过此次全球科技展销活动，颂扬尖端创新与设计。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2840",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Techcombank highlights the power of modern mobile banking in this energetic financial services campaign.",
+        "zh_wp": "Techcombank 在此次充满活力的金融服务宣传活动中，强调了现代移动银行的力量。.",
+        "zh_sanity_current": "Techcombank 在此次充满活力的金融服务宣传活动中，强调了现代移动银行的力量。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3000",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Techcombank inspires Vietnam’s younger generation with this vibrant campaign featuring Miss Grand International Thùy Tiên.",
+        "zh_wp": "Techcombank 携手国际选美皇后 Thùy Tiên，以充满活力的宣传活动激励越南年轻一代。.",
+        "zh_sanity_current": "Techcombank 携手国际选美皇后 Thùy Tiên，以充满活力的宣传活动激励越南年轻一代。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3170",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The DJI Mavic Pro drone transforms urban spaces into canvases of aerial art in this creative campaign.",
+        "zh_wp": "在这场创意宣传活动中，大疆 Mavic Pro 无人机将城市空间变成了空中艺术的画布。.",
+        "zh_sanity_current": "在这场创意宣传活动中，大疆 Mavic Pro 无人机将城市空间变成了空中艺术的画布。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2784",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The Mammotion LUBA 2 AWD robot mower eliminates perimeter wires while delivering powerful automated lawn care.",
+        "zh_wp": "Mammotion LUBA 2 AWD 机器人割草机无需边界线，即可提供强大的自动化草坪养护。.",
+        "zh_sanity_current": "Mammotion LUBA 2 AWD 机器人割草机无需边界线，即可提供强大的自动化草坪养护。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3184",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The Mammotion LUBA Mini AWD robot mower conquers challenging lawns with powerful all-wheel drive automation.",
+        "zh_wp": "Mammotion LUBA Mini AWD 机器人割草机凭借强大的全轮驱动自动化功能，征服各种挑战性草坪。.",
+        "zh_sanity_current": "Mammotion LUBA Mini AWD 机器人割草机凭借强大的全轮驱动自动化功能，征服各种挑战性草坪。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3451",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The Mammotion YUKA Mini 2 robot mower delivers effortless automated lawn care in this cinematic product campaign produced by Vantage Pictures.",
+        "zh_wp": "Mammotion YUKA Mini 2 机器人割草机在这部由 Vantage Pictures 制作的电影产品宣传片中实现了毫不费力的自动草坪护理。.",
+        "zh_sanity_current": "Mammotion YUKA Mini 2 机器人割草机在这部由 Vantage Pictures 制作的电影产品宣传片中实现了毫不费力的自动草坪护理。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3619",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The Moprobo One-Go cleaning system reimagines home maintenance with smart automation in this playful product commercial.",
+        "zh_wp": "Moprobo One-Go 清洁系统在此趣味产品广告中，通过智能自动化重新构想家居维护。.",
+        "zh_sanity_current": "Moprobo One-Go 清洁系统在此趣味产品广告中，通过智能自动化重新构想家居维护。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3258",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The Story of Pema is a cinematic documentary exploring Tibetan culture and technology’s role in preserving tradition.",
+        "zh_wp": "《佩玛的故事》是一部电影纪录片，探索了藏族文化以及科技在传承传统中所起的作用。.",
+        "zh_sanity_current": "《佩玛的故事》是一部电影纪录片，探索了藏族文化以及科技在传承传统中所起的作用。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2904",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "The Zenmuse X7 camera delivers breathtaking cinematic imagery in this professional DJI showreel.",
+        "zh_wp": "DJI 的这部专业宣传片展示了 Zenmuse X7 相机呈现的令人惊叹的电影级画面。.",
+        "zh_sanity_current": "DJI 的这部专业宣传片展示了 Zenmuse X7 相机呈现的令人惊叹的电影级画面。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2756",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Toyota showcases the Camry 2022 sedan with bold design and premium performance in this cinematic automotive campaign.",
+        "zh_wp": "丰田在这部电影感的汽车宣传片中展示了凯美瑞 2022 款轿车，其外观大胆，性能卓越。.",
+        "zh_sanity_current": "丰田在这部电影感的汽车宣传片中展示了凯美瑞 2022 款轿车，其外观大胆，性能卓越。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2805",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "TPBank introduces its mobile banking platform in this energetic campaign showcasing the future of digital financial services.",
+        "zh_wp": "TPBank 在本次充满活力的宣传活动中推出了其移动银行平台，展示了数字金融服务的未来。.",
+        "zh_sanity_current": "TPBank 在本次充满活力的宣传活动中推出了其移动银行平台，展示了数字金融服务的未来。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3499",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Travel creators share aerial filmmaking tips and creative inspiration using the DJI Mavic drone in this global campaign film.",
+        "zh_wp": "旅行创作者们在这次全球宣传片中，使用大疆 Mavic 无人机分享了航拍技巧和创意灵感。.",
+        "zh_sanity_current": "旅行创作者们在这次全球宣传片中，使用大疆 Mavic 无人机分享了航拍技巧和创意灵感。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2071",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Ulike promotes the Air 10 beauty device in a playful global campaign blending humor, lifestyle storytelling, and modern aesthetics.",
+        "zh_wp": "Ulike 在一项融合幽默、生活故事和现代美学的有趣全球营销活动中推广 Air 10 美容仪。.",
+        "zh_sanity_current": "Ulike 在一项融合幽默、生活故事和现代美学的有趣全球营销活动中推广 Air 10 美容仪。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3502",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Valerion’s VisionMaster Max projector brings cinematic home theater experiences to life in this premium product campaign.",
+        "zh_wp": "Valerion的VisionMaster Max投影仪在此高端产品宣传活动中，将影院级家庭影院体验变为现实。.",
+        "zh_sanity_current": "Valerion的VisionMaster Max投影仪在此高端产品宣传活动中，将影院级家庭影院体验变为现实。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3275",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Vantage Pictures brings Mammotion’s LUBA 3 AWD to life through a cinematic, product-first campaign highlighting autonomous lawn care, obstacle avoidance, and precision engineering.",
+        "zh_wp": "Vantage Pictures 使 Mammotion 的 LUBA 3 AWD 焕发生机，通过以产品为中心的电影式宣传活动，重点展示了自动化的草坪护理、避障和精密工程。.",
+        "zh_sanity_current": "Vantage Pictures 使 Mammotion 的 LUBA 3 AWD 焕发生机，通过以产品为中心的电影式宣传活动，重点展示了自动化的草坪护理、避障和精密工程。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-4467",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Vantage Pictures crafts hospitality and tourism films that capture atmosphere, experience, and destination identity. From luxury resorts to boutique hotels and travel campaigns, we translate physical spaces into emotionally engaging visual narratives. Our hospitality productions combine cinematic landscapes, refined interior cinematography, and lifestyle storytelling to help brands inspire travel and build lasting perception.",
+        "zh_wp": "Vantage Pictures 精心制作酒店和旅游宣传片，捕捉氛围、体验和目的地特征。从豪华度假村到精品酒店和旅游宣传活动，我们将实体空间转化为富有情感的视觉叙事。我们的酒店产品将电影景观、精致的室内摄影和生活方式故事相结合，帮助品牌激发旅游灵感并建立持久的印象。.",
+        "zh_sanity_current": "Vantage Pictures 精心制作酒店和旅游宣传片，捕捉氛围、体验和目的地特征。从豪华度假村到精品酒店和旅游宣传活动，我们将实体空间转化为富有情感的视觉叙事。我们的酒店产品将电影景观、精致的室内摄影和生活方式故事相结合，帮助品牌激发旅游灵感并建立持久的印象。",
+        "documentType": "industry",
+        "documentId": "industry-hospitality",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures creates beauty and cosmetics commercials that elevate product storytelling through refined lighting, tactile macro cinematography, and emotionally resonant performance direction. We translate formulation, texture, and brand identity into visually striking campaigns designed for digital, broadcast, and retail platforms. Our beauty production work balances aesthetic sophistication with strategic messaging to help brands stand out in competitive global markets.",
+        "zh_wp": "Vantage Pictures 制作美容和化妆品广告，通过精致的灯光、触感微距摄影和情感共鸣的表演指导，提升产品故事性。我们将配方、质地和品牌形象转化为视觉冲击力极强的广告，专为数字、广播和零售平台而设计。我们的美容制作作品兼顾美学精致和战略信息，帮助品牌在竞争激烈的全球市场中脱颖而出。.",
+        "zh_sanity_current": "Vantage Pictures 制作美容和化妆品广告，通过精致的灯光、触感微距摄影和情感共鸣的表演指导，提升产品故事性。我们将配方、质地和品牌形象转化为视觉冲击力极强的广告，专为数字、广播和零售平台而设计。我们的美容制作作品兼顾美学精致和战略信息，帮助品牌在竞争激烈的全球市场中脱颖而出。",
+        "documentType": "industry",
+        "documentId": "industry-beauty-cosmetics",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures creates drone product videos and commercial campaigns that showcase performance, reliability, and real-world application. Combining aerial expertise with high-end cinematography, we produce films that demonstrate flight capability, engineering precision, and use-case storytelling. Our drone productions balance technical detail with cinematic energy to position brands as leaders in aerial innovation.",
+        "zh_wp": "Vantage Pictures 制作无人机产品视频和商业宣传片，展示其性能、可靠性和实际应用。我们将航空专业技术与高端电影摄影相结合，制作出能够展示飞行能力、工程精度和使用案例故事的影片。我们的无人机制作兼顾技术细节和电影能量，将品牌定位为空中创新的领导者。.",
+        "zh_sanity_current": "Vantage Pictures 制作无人机产品视频和商业宣传片，展示其性能、可靠性和实际应用。我们将航空专业技术与高端电影摄影相结合，制作出能够展示飞行能力、工程精度和使用案例故事的影片。我们的无人机制作兼顾技术细节和电影能量，将品牌定位为空中创新的领导者。",
+        "documentType": "industry",
+        "documentId": "industry-drones",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures delivers high-end commercial and branded content production for Chinese brands expanding domestically and internationally. With extensive experience working with leading consumer tech and electronics companies, we combine global production standards with a deep understanding of regional market expectations. Our China productions focus on precision execution, cinematic storytelling, and scalable campaigns designed for digital and broadcast platforms.",
+        "zh_wp": "Vantage Pictures 为拓展国内和国际市场的中国品牌提供高端商业和品牌内容制作服务。凭借与领先消费科技和电子产品公司合作的丰富经验，我们将全球制作标准与对区域市场期望的深刻理解相结合。我们在中国的制作注重精准执行、电影化故事讲述，以及为数字和广播平台设计的可扩展活动。.",
+        "zh_sanity_current": "Vantage Pictures 为拓展国内和国际市场的中国品牌提供高端商业和品牌内容制作服务。凭借与领先消费科技和电子产品公司合作的丰富经验，我们将全球制作标准与对区域市场期望的深刻理解相结合。我们在中国的制作注重精准执行、电影化故事讲述，以及为数字和广播平台设计的可扩展活动。",
+        "documentType": "market",
+        "documentId": "market-china",
+        "fieldName": "market.description"
+      },
+      {
+        "en": "Vantage Pictures develops financial services campaigns that communicate trust, innovation, and accessibility through clear and compelling storytelling. We produce commercial spots, brand films, and product explainers for banks, fintech companies, and digital payment platforms, translating complex services into confident, human-centered narratives. Our finance video production combines strategic clarity with polished cinematic execution to build credibility and engagement.",
+        "zh_wp": "Vantage Pictures 开发金融服务活动，通过清晰、引人入胜的故事讲述，传达信任、创新和可及性。我们为银行、金融科技公司和数字支付平台制作商业广告、品牌宣传片和产品说明，将复杂的服务转化为自信的、以人为本的叙述。我们的金融视频制作将清晰的战略与精良的电影执行相结合，以建立可信度和参与度。.",
+        "zh_sanity_current": "Vantage Pictures 开发金融服务活动，通过清晰、引人入胜的故事讲述，传达信任、创新和可及性。我们为银行、金融科技公司和数字支付平台制作商业广告、品牌宣传片和产品说明，将复杂的服务转化为自信的、以人为本的叙述。我们的金融视频制作将清晰的战略与精良的电影执行相结合，以建立可信度和参与度。",
+        "documentType": "industry",
+        "documentId": "industry-finance",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures is a global commercial film production company specializing in cinematic brand films and cross-border campaigns for technology and international brands.",
+        "zh_wp": "Vantage Pictures 是一家全球性商业电影制作公司，专门为技术和国际品牌制作电影品牌宣传片和跨境宣传活动。.",
+        "zh_sanity_current": "Vantage Pictures 是一家全球性商业电影制作公司，专门为技术和国际品牌制作电影品牌宣传片和跨境宣传活动。",
+        "documentType": "page",
+        "documentId": "page-about",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Vantage Pictures produces AI and robotics films that communicate advanced engineering with clarity and cinematic impact. We craft product launches, branded documentaries, and commercial campaigns that make intelligent systems accessible and visually engaging. Our AI and robotics productions combine technical precision, motion design, and narrative structure to translate innovation into powerful visual storytelling.",
+        "zh_wp": "Vantage Pictures 制作人工智能和机器人影片，以清晰的画面和电影效果传达先进的工程技术。我们精心制作产品发布、品牌纪录片和商业宣传片，使智能系统易于理解并具有视觉吸引力。我们的人工智能和机器人作品结合了技术精度、动作设计和叙事结构，将创新转化为强大的视觉故事。.",
+        "zh_sanity_current": "Vantage Pictures 制作人工智能和机器人影片，以清晰的画面和电影效果传达先进的工程技术。我们精心制作产品发布、品牌纪录片和商业宣传片，使智能系统易于理解并具有视觉吸引力。我们的人工智能和机器人作品结合了技术精度、动作设计和叙事结构，将创新转化为强大的视觉故事。",
+        "documentType": "industry",
+        "documentId": "industry-ai-robotics",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures produces cinematic fashion films that merge visual artistry with commercial precision. From editorial-style campaigns to brand-driven launch films, we create fashion content that captures movement, texture, and identity with clarity and impact. Our fashion productions combine elevated lighting, dynamic camera language, and intentional creative direction to deliver bold visual statements for modern fashion brands.",
+        "zh_wp": "Vantage Pictures 制作的电影式时尚影片将视觉艺术与商业精确性融为一体。从社论风格的宣传片到以品牌为导向的发布影片，我们制作的时尚内容能清晰地捕捉运动、质感和身份。我们的时尚作品结合了高光照明、动态镜头语言和有意的创意指导，为现代时尚品牌提供大胆的视觉陈述。.",
+        "zh_sanity_current": "Vantage Pictures 制作的电影式时尚影片将视觉艺术与商业精确性融为一体。从社论风格的宣传片到以品牌为导向的发布影片，我们制作的时尚内容能清晰地捕捉运动、质感和身份。我们的时尚作品结合了高光照明、动态镜头语言和有意的创意指导，为现代时尚品牌提供大胆的视觉陈述。",
+        "documentType": "industry",
+        "documentId": "industry-fashion",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures produces commercial campaigns and branded films for companies operating in Singapore’s innovation-driven market. We combine strategic clarity with cinematic craft to deliver polished campaigns tailored to regional and international audiences. Our Singapore productions emphasize efficiency, refined visual language, and disciplined execution across technology, finance, and lifestyle sectors.",
+        "zh_wp": "Vantage Pictures 为在新加坡创新驱动型市场运营的公司制作商业广告系列和品牌影片。我们将战略清晰度与电影制作工艺相结合，为区域和国际受众量身打造精美的广告系列。我们在新加坡的制作在科技、金融和生活方式领域注重效率、精致的视觉语言和严谨的执行。.",
+        "zh_sanity_current": "Vantage Pictures 为在新加坡创新驱动型市场运营的公司制作商业广告系列和品牌影片。我们将战略清晰度与电影制作工艺相结合，为区域和国际受众量身打造精美的广告系列。我们在新加坡的制作在科技、金融和生活方式领域注重效率、精致的视觉语言和严谨的执行。",
+        "documentType": "market",
+        "documentId": "market-singapore",
+        "fieldName": "market.description"
+      },
+      {
+        "en": "Vantage Pictures produces commercial campaigns and branded films for US-based companies and international brands targeting the American market. Our productions balance cinematic storytelling with disciplined commercial strategy, delivering impactful product launches, technology films, and brand-driven campaigns designed for digital and broadcast distribution.",
+        "zh_wp": "Vantage Pictures 为美国公司和面向美国市场的国际品牌制作商业广告活动和品牌宣传片。我们的制作在电影叙事和严谨的商业策略之间取得平衡，交付具有影响力的产品发布、技术宣传片以及为数字和广播渠道设计的品牌驱动型广告活动。.",
+        "zh_sanity_current": "Vantage Pictures 为美国公司和面向美国市场的国际品牌制作商业广告活动和品牌宣传片。我们的制作在电影叙事和严谨的商业策略之间取得平衡，交付具有影响力的产品发布、技术宣传片以及为数字和广播渠道设计的品牌驱动型广告活动。",
+        "documentType": "market",
+        "documentId": "market-usa",
+        "fieldName": "market.description"
+      },
+      {
+        "en": "Vantage Pictures produces consumer electronics commercials that highlight design, functionality, and user experience through clean, modern visual storytelling. From smartphones and laptops to smart devices and accessories, we craft product-focused campaigns that combine macro detail, lifestyle integration, and polished motion graphics. Our electronics production work delivers clarity, sophistication, and measurable commercial impact.",
+        "zh_wp": "Vantage Pictures 制作消费类电子产品广告，通过简洁、现代的视觉故事突出设计、功能和用户体验。从智能手机和笔记本电脑到智能设备和配件，我们精心制作以产品为中心的宣传片，将宏观细节、生活方式整合和精良的动态图形结合在一起。我们的电子产品制作作品清晰、精致，具有可衡量的商业影响力。.",
+        "zh_sanity_current": "Vantage Pictures 制作消费类电子产品广告，通过简洁、现代的视觉故事突出设计、功能和用户体验。从智能手机和笔记本电脑到智能设备和配件，我们精心制作以产品为中心的宣传片，将宏观细节、生活方式整合和精良的动态图形结合在一起。我们的电子产品制作作品清晰、精致，具有可衡量的商业影响力。",
+        "documentType": "industry",
+        "documentId": "industry-electronics",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures produces FMCG (fast-moving consumer goods) commercials designed for speed, clarity, and visual impact. From food and beverage campaigns to household and lifestyle products, we create engaging short-form and brand-driven films that highlight product benefits while reinforcing long-term brand positioning. Our FMCG production process prioritizes efficiency, strong visual hooks, and disciplined execution across regional and global markets.",
+        "zh_wp": "Vantage Pictures 制作快速消费品（FMCG）广告片，旨在提高速度、清晰度和视觉冲击力。从食品和饮料广告到家居和生活用品，我们制作引人入胜的短片和以品牌为导向的影片，在突出产品优势的同时强化长期的品牌定位。我们的快速消费品制作流程将效率、强烈的视觉冲击力和跨区域及全球市场的严格执行放在首位。.",
+        "zh_sanity_current": "Vantage Pictures 制作快速消费品（FMCG）广告片，旨在提高速度、清晰度和视觉冲击力。从食品和饮料广告到家居和生活用品，我们制作引人入胜的短片和以品牌为导向的影片，在突出产品优势的同时强化长期的品牌定位。我们的快速消费品制作流程将效率、强烈的视觉冲击力和跨区域及全球市场的严格执行放在首位。",
+        "documentType": "industry",
+        "documentId": "industry-fmcg",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures produces high-performance automotive commercials that combine cinematic storytelling with precision engineering visuals. From dynamic driving sequences to studio-based product reveals, we craft automotive films that highlight innovation, performance, and brand identity. Our automotive production work blends technical accuracy, controlled lighting, motion design, and disciplined execution to deliver powerful campaigns for manufacturers, mobility brands, and next-generation transportation companies.",
+        "zh_wp": "Vantage Pictures 制作高性能的汽车广告片，将电影故事与精密工程视觉效果相结合。从动态驾驶片段到演播室产品展示，我们精心制作的汽车宣传片突出创新、性能和品牌形象。我们的汽车制作工作融合了技术精度、灯光控制、动作设计和严谨的执行，为制造商、移动品牌和新一代运输公司提供强大的宣传活动。.",
+        "zh_sanity_current": "Vantage Pictures 制作高性能的汽车广告片，将电影故事与精密工程视觉效果相结合。从动态驾驶片段到演播室产品展示，我们精心制作的汽车宣传片突出创新、性能和品牌形象。我们的汽车制作工作融合了技术精度、灯光控制、动作设计和严谨的执行，为制造商、移动品牌和新一代运输公司提供强大的宣传活动。",
+        "documentType": "industry",
+        "documentId": "industry-automotive",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures provides commercial and branded video production services for Taiwanese technology and manufacturing brands seeking global reach. We transform product innovation into clear, cinematic narratives that resonate across international markets. Our Taiwan productions combine strategic messaging, product-focused storytelling, and high-end commercial craft.",
+        "zh_wp": "Vantage Pictures 为寻求全球影响力的台湾技术和制造品牌提供商业和品牌视频制作服务。我们将产品创新转化为清晰的电影叙事，在国际市场上引起共鸣。我们在台湾制作的作品结合了战略信息传递、以产品为中心的故事讲述和高端商业工艺。.",
+        "zh_sanity_current": "Vantage Pictures 为寻求全球影响力的台湾技术和制造品牌提供商业和品牌视频制作服务。我们将产品创新转化为清晰的电影叙事，在国际市场上引起共鸣。我们在台湾制作的作品结合了战略信息传递、以产品为中心的故事讲述和高端商业工艺。",
+        "documentType": "market",
+        "documentId": "market-taiwan",
+        "fieldName": "market.description"
+      },
+      {
+        "en": "Vantage Pictures reveals how one of the most successful crowdfunding campaign videos in history was produced, from concept development to global launch.",
+        "zh_wp": "Vantage Pictures 揭示了历史上最成功的众筹活动视频之一是如何从概念开发到全球发布的。.",
+        "zh_sanity_current": "Vantage Pictures 揭示了历史上最成功的众筹活动视频之一是如何从概念开发到全球发布的。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-2952",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Vantage Pictures specializes in technology commercial production for consumer electronics, AI, robotics, software, and advanced hardware brands. We transform complex innovation into visually compelling narratives that balance technical clarity with emotional impact. From product launches to branded documentaries and commercial spots, our tech productions combine strategic messaging, cinematic craft, and disciplined execution to help forward-thinking companies communicate with confidence.",
+        "zh_wp": "Vantage Pictures 专注于消费电子、人工智能、机器人、软件和先进硬件品牌的技术商业制作。我们将复杂的创新转化为引人入胜的视觉叙事，在技术清晰度和情感冲击力之间取得平衡。从产品发布到品牌纪录片和商业广告，我们的科技产品结合了战略信息、电影制作工艺和严谨的执行力，帮助具有前瞻性思维的公司自信地进行沟通。.",
+        "zh_sanity_current": "Vantage Pictures 专注于消费电子、人工智能、机器人、软件和先进硬件品牌的技术商业制作。我们将复杂的创新转化为引人入胜的视觉叙事，在技术清晰度和情感冲击力之间取得平衡。从产品发布到品牌纪录片和商业广告，我们的科技产品结合了战略信息、电影制作工艺和严谨的执行力，帮助具有前瞻性思维的公司自信地进行沟通。",
+        "documentType": "industry",
+        "documentId": "industry-tech",
+        "fieldName": "industry.description"
+      },
+      {
+        "en": "Vantage Pictures transforms BRINC’s Guardian drone into a gritty, narrative-driven campaign showcasing real-time response, RTCC integration, and next-generation public safety technology.",
+        "zh_wp": "Vantage Pictures 将 BRINC 的 Guardian 无人机打造成一款硬核、叙事驱动的战役，展示了实时响应、RTCC 集成和下一代公共安全技术。.",
+        "zh_sanity_current": "Vantage Pictures 将 BRINC 的 Guardian 无人机打造成一款硬核、叙事驱动的战役，展示了实时响应、RTCC 集成和下一代公共安全技术。",
+        "documentType": "blogPost",
+        "documentId": "blogPost-4468",
+        "fieldName": "blogPost.seo.metaDescription"
+      },
+      {
+        "en": "Vietnam production service company supporting international commercials, brand films, and documentaries with full local production support nationwide.",
+        "zh_wp": "越南制作服务公司，为国际广告、品牌电影和纪录片提供支持，并在全国范围内提供全面的本地制作支持。.",
+        "zh_sanity_current": "越南制作服务公司，为国际广告、品牌电影和纪录片提供支持，并在全国范围内提供全面的本地制作支持。",
+        "documentType": "page",
+        "documentId": "page-vietnam-production-service",
+        "fieldName": "page.seo.metaDescription"
+      },
+      {
+        "en": "Vietnam’s BIDV SmartBanking platform simplifies digital finance in this energetic campaign highlighting smart modern living.",
+        "zh_wp": "越南BIDV SmartBanking平台通过这项充满活力的活动，突出智能现代生活，简化了数字金融。.",
+        "zh_sanity_current": "越南BIDV SmartBanking平台通过这项充满活力的活动，突出智能现代生活，简化了数字金融。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3501",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Vietnamese TV commercial in music video style for Comfort, Unilever's fabric softener brand.",
+        "zh_wp": "联合利华织物柔顺剂品牌 Comfort 的越南音乐视频风格电视广告。.",
+        "zh_sanity_current": "联合利华织物柔顺剂品牌 Comfort 的越南音乐视频风格电视广告。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3052",
+        "fieldName": "portfolioEntry.excerpt"
+      },
+      {
+        "en": "Vinamilk’s Probi probiotic yogurt drink takes center stage in this vibrant Vietnamese commercial celebrating digestive health.",
+        "zh_wp": "Vinamilk 的 Probi 益生菌酸奶饮品是这个充满活力的越南商业广告的焦点，该广告庆祝消化健康。.",
+        "zh_sanity_current": "Vinamilk 的 Probi 益生菌酸奶饮品是这个充满活力的越南商业广告的焦点，该广告庆祝消化健康。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3287",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Westin Hotels & Resorts – Busy Resting",
+        "zh_wp": "威斯汀酒店及度假村 – 繁忙休憩",
+        "zh_sanity_current": "威斯汀酒店及度假村 – 忙碌的休息",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3464",
+        "fieldName": "portfolioEntry.title"
+      },
+      {
+        "en": "Westin Hotels & Resorts celebrates the art of relaxation in this elegant hospitality campaign produced by Vantage Pictures.",
+        "zh_wp": "威斯汀酒店及度假村通过 Vantage Pictures制作的这一优雅的酒店宣传活动，颂扬放松的艺术。.",
+        "zh_sanity_current": "威斯汀酒店及度假村通过 Vantage Pictures制作的这一优雅的酒店宣传活动，颂扬放松的艺术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3464",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "World Cup champion Julián Álvarez stars in Bitget’s GetAgent campaign, a high-energy global crypto trading commercial produced by Vantage Pictures.",
+        "zh_wp": "世界杯冠军胡利安-阿尔瓦雷斯（Julián Álvarez）出演了 Bitget 的 GetAgent 广告，这是由 Vantage Pictures 制作的全球加密货币交易广告。.",
+        "zh_sanity_current": "世界杯冠军胡利安-阿尔瓦雷斯（Julián Álvarez）出演了 Bitget 的 GetAgent 广告，这是由 Vantage Pictures 制作的全球加密货币交易广告。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3618",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "XGIMI introduces the Horizon Pro 4K projector, transforming home entertainment with stunning cinematic visuals.",
+        "zh_wp": "极米推出 Horizon Pro 4K 投影仪，以令人惊叹的影院级视觉效果彻底改变家庭娱乐。.",
+        "zh_sanity_current": "极米推出 Horizon Pro 4K 投影仪，以令人惊叹的影院级视觉效果彻底改变家庭娱乐。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2055",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Zhiyun introduces the compact Crane M2 gimbal, empowering creators with portable stabilization technology.",
+        "zh_wp": "智云推出紧凑型稳定器 Crane M2，赋予创作者便携式稳定技术。.",
+        "zh_sanity_current": "智云推出紧凑型稳定器 Crane M2，赋予创作者便携式稳定技术。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2141",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Zhiyun introduces the Crane 2S gimbal with powerful stabilization for professional filmmakers in this product launch campaign.",
+        "zh_wp": "智云在本次新品发布活动中推出具有强大稳定功能的专业电影制作人摄像稳定器Crane 2S。.",
+        "zh_sanity_current": "智云在本次新品发布活动中推出具有强大稳定功能的专业电影制作人摄像稳定器Crane 2S。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2872",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Zhiyun launches the Crane 3S professional gimbal built for demanding cinematic productions in this product campaign.",
+        "zh_wp": "智云在此次产品宣传中推出了Crane 3S 专业稳定器，专为要求严苛的电影制作而打造。.",
+        "zh_sanity_current": "智云在此次产品宣传中推出了Crane 3S 专业稳定器，专为要求严苛的电影制作而打造。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2871",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Zhiyun’s Smooth 5 smartphone gimbal empowers creators to film like professionals in this product campaign.",
+        "zh_wp": "智云Smooth 5智能手机稳定器，让创作者在这个产品宣传片中如同专业人士般拍摄。.",
+        "zh_sanity_current": "智云Smooth 5智能手机稳定器，让创作者在这个产品宣传片中如同专业人士般拍摄。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2678",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Zhiyun’s Smooth Q3 smartphone gimbal empowers creators with professional stabilization and lighting tools.",
+        "zh_wp": "智云Smooth Q3智能手机三轴稳定器为创作者提供了专业的稳定和打光工具。.",
+        "zh_sanity_current": "智云Smooth Q3智能手机三轴稳定器为创作者提供了专业的稳定和打光工具。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-2053",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      },
+      {
+        "en": "Zhiyun’s Weebill 3S and Crane-M 3S gimbals empower filmmakers with advanced stabilization technology in this product campaign.",
+        "zh_wp": "智云的Weebill 3S和Crane-M 3S稳定器在这场产品宣传活动中，以先进的稳定技术赋能电影制作人。.",
+        "zh_sanity_current": "智云的Weebill 3S和Crane-M 3S稳定器在这场产品宣传活动中，以先进的稳定技术赋能电影制作人。",
+        "documentType": "portfolioEntry",
+        "documentId": "portfolio-3138",
+        "fieldName": "portfolioEntry.seo.metaDescription"
+      }
+    ]
+  },
+  "unrouted": [
+    {
+      "en": "Content",
+      "zh_wp": "内容",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Currency",
+      "zh_wp": "货币",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Edit",
+      "zh_wp": "编辑",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Euro",
+      "zh_wp": "欧元",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "First",
+      "zh_wp": "第一页",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Form",
+      "zh_wp": "形式",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Forms",
+      "zh_wp": "表单",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Formula",
+      "zh_wp": "公式",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "International",
+      "zh_wp": "国际的",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Last",
+      "zh_wp": "后一页",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Middle",
+      "zh_wp": "居中",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Recent",
+      "zh_wp": "最近的",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Rounding",
+      "zh_wp": "保留几位小数：",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "Visible",
+      "zh_wp": "可见",
+      "source": "gettext:gravityforms",
+      "reason": "gettext domain not in phrase-book allowlist (gravityforms)"
+    },
+    {
+      "en": "(Internal)",
+      "zh_wp": "内部",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=page.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "& CRANE-M 3S",
+      "zh_wp": "&amp; CRANE-M 3S",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "All",
+      "zh_wp": "全部",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "bambu",
+      "zh_wp": "竹子",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Bambu Lab – Vortek",
+      "zh_wp": "拓竹 - Vortek",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Bambu Lab X1 Series",
+      "zh_wp": "Bambu Lab X1 系列",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Braun",
+      "zh_wp": "博朗",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "BRINC Guardian",
+      "zh_wp": "BRINC 卫报",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Campaign",
+      "zh_wp": "视频推广",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Chernobyl",
+      "zh_wp": "切尔诺贝利",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Chinese Brands",
+      "zh_wp": "国內品牌",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=market.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Chuản Phải Là Tủ Đông Hoà Phát",
+      "zh_wp": "应该是一个华体会冰箱",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Client Briefing",
+      "zh_wp": "客户需求",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=siteSettings.campaignCta.paragraphs[]"
+    },
+    {
+      "en": "Coastline Watch",
+      "zh_wp": "海岸线观察",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Coca-Cola",
+      "zh_wp": "可口可乐",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=client.name"
+    },
+    {
+      "en": "Commercial Film Production Company",
+      "zh_wp": "商业影像制作公司",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=page.seo.metaDescription but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Commercial Spots",
+      "zh_wp": "商业广告片",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=industry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "creative",
+      "zh_wp": "有创意",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Directors",
+      "zh_wp": "董事",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Discovery",
+      "zh_wp": "探索频道",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "DJI Zenmuse X5",
+      "zh_wp": "大疆Zenmuse X5",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "DJI Zenmuse X7",
+      "zh_wp": "大疆创新禅思 X7",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Drone Ops",
+      "zh_wp": "无人机操作员",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Eagle Huntress",
+      "zh_wp": "鹰猎女孩",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Editors",
+      "zh_wp": "剪辑师",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=portfolioEntry.crewCredits[].role"
+    },
+    {
+      "en": "English",
+      "zh_wp": "英语",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "EPs",
+      "zh_wp": "执行制片人",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Explore Life Refocused",
+      "zh_wp": "重塑人生",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Freezer",
+      "zh_wp": "冰冻库",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "GetAgent",
+      "zh_wp": "获取代理",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Grill Like a Pro",
+      "zh_wp": "像专业人士一样烧烤",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Hasselblad 907X",
+      "zh_wp": "哈苏 907X",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Hasselblad X1D",
+      "zh_wp": "哈苏 X1D",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Ho Chi Minh City",
+      "zh_wp": "胡志明市",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Industry",
+      "zh_wp": "行业",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Iron Man",
+      "zh_wp": "钢铁侠",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Launch Campaign",
+      "zh_wp": "启动活动",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.seo.metaDescription but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Lawn Mower",
+      "zh_wp": "割草机",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Location Guidebook",
+      "zh_wp": "地点指南",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=page.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Magic 2",
+      "zh_wp": "魔法 2",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Make the Moment",
+      "zh_wp": "把握时机",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Maldives",
+      "zh_wp": "马尔代夫",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Market",
+      "zh_wp": "市场",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Master Workshop",
+      "zh_wp": "大师工坊",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "MEXC Cryptocurrency Exchange",
+      "zh_wp": "抹茶加密货币交易所",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Mới",
+      "zh_wp": "新",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.heroFilmTitle but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Mother's Day",
+      "zh_wp": "母亲节",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.seo.metaDescription but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "mova",
+      "zh_wp": "去",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "PAs",
+      "zh_wp": "制片助理",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Patagonia",
+      "zh_wp": "巴塔哥尼亚",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Photographers",
+      "zh_wp": "摄影师",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "portfolio",
+      "zh_wp": "投资组合",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=page.body"
+    },
+    {
+      "en": "press",
+      "zh_wp": "按",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Producers",
+      "zh_wp": "制片人",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Product Videos",
+      "zh_wp": "产品视频",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=industry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Production Companies",
+      "zh_wp": "制作公司",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Ramadan",
+      "zh_wp": "斋月",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Reno 6 Pro",
+      "zh_wp": "雷诺 6 Pro",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Roborock S8",
+      "zh_wp": "石头扫地机器人S8系列",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Safari",
+      "zh_wp": "野生动物园",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Samsung Galaxy S21",
+      "zh_wp": "三星Galaxy S21",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Samsung x",
+      "zh_wp": "三星 x",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Search & Rescue",
+      "zh_wp": "搜救行动",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Ski-Mountaineering",
+      "zh_wp": "滑雪登山",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Story of Pema",
+      "zh_wp": "佩玛的故事",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Subscribe",
+      "zh_wp": "订阅",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.additionalVideos[].description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "The Last Wild Place",
+      "zh_wp": "最后的野境",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "The Westin",
+      "zh_wp": "威斯汀",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "to Incredible",
+      "zh_wp": "升级至不可思议",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=blogPost.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Unlimited Mom",
+      "zh_wp": "无限妈",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Vietnam Location",
+      "zh_wp": "越南地点",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=page.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "vietnam location guide",
+      "zh_wp": "越南旅游指南",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=page.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Vietnam Production Services",
+      "zh_wp": "越南生产服务",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=page.seo.metaDescription but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Wall Art",
+      "zh_wp": "墙艺",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Water Purifier",
+      "zh_wp": "净水系统",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.excerpt but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Wedding Photography",
+      "zh_wp": "婚礼摄影",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "x DJI",
+      "zh_wp": "大疆",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "ASMOKE",
+      "zh_wp": "ASMOKE",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=client.name"
+    },
+    {
+      "en": "BRINC Guardian is a next-generation Drone as First Responder (DFR) platform designed for modern public safety operations. Produced by Vantage Pictures, this launch film uses a grounded, real-time narrative to showcase how autonomous drones integrate with law enforcement workflows—from dispatch and pursuit to containment and rescue.",
+      "zh_wp": "BRINC Guardian 是专为现代公共安全行动设计的下一代 \"无人机第一响应者\"（DFR）平台。这部发布影片由 Vantage Pictures 制作，采用接地气的实时叙事方式，展示了自主无人机如何与执法工作流程相结合--从调度和追捕到围堵和救援。.",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Filmed across California and Vietnam, the production combines real police collaboration, a custom-built Real-Time Crime Center (RTCC), and advanced drone technology to highlight key capabilities including thermal imaging, autonomous deployment, and Starlink connectivity. The result is an authentic, scenario-driven portrayal of how drone systems are transforming emergency response.",
+      "zh_wp": "该片在加利福尼亚州和越南拍摄，结合了真实的警务合作、定制的实时犯罪中心（RTCC）和先进的无人机技术，突出了热成像、自主部署和星链连接等关键功能。该片以真实的场景为导向，描述了无人机系统如何改变应急响应。.",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Hòa Phát",
+      "zh_wp": "Hòa Phát",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=client.name"
+    },
+    {
+      "en": "Jimmy Chin",
+      "zh_wp": "Jimmy Chin",
+      "source": "dictionary",
+      "reason": "no Zh backfill field for found_in=blogPost.body"
+    },
+    {
+      "en": "Oppo Reno 6 Pro",
+      "zh_wp": "Oppo Reno 6 Pro",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Oppo Reno 7",
+      "zh_wp": "Oppo Reno 7",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "OPPO Reno10 Pro+",
+      "zh_wp": "OPPO Reno10 Pro+",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Our focus was on balancing clean, product-driven visuals with a sense of atmosphere and scale. Rather than over-explaining functionality, we let movement, composition, and environment do the heavy lifting—building a visual language that feels intuitive and confident. The result is a piece that positions the product through tone and context, not just features, while maintaining a strong, premium aesthetic throughout.",
+      "zh_wp": "我们的重点是在简洁、以产品为导向的视觉效果与氛围和规模感之间取得平衡。我们没有过多地解释功能，而是让运动、构图和环境来完成繁重的工作，建立一种直观而自信的视觉语言。最终，作品通过基调和背景，而不仅仅是功能，对产品进行了定位，同时始终保持了强烈、优质的美感。.",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Shot on location in Cape Town, this project for Mammotion explores a more cinematic approach to product storytelling—grounding advanced robotics in real-world environments that feel expansive, natural, and lived-in. Directed by Alexis Odiowei, the film leans into contrast: precision technology operating seamlessly within rugged terrain, shifting light conditions, and organic landscapes.",
+      "zh_wp": "Mammotion 的这一项目在开普敦取景拍摄，探索了一种更加电影化的产品叙事方法--将先进的机器人技术融入到真实世界的环境中，让人感受到广阔、自然和生活气息。本片由 Alexis Odiowei 执导，影片采用对比手法：精密技术在崎岖的地形、不断变化的光线条件和有机景观中无缝运行。.",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Thor Argnrimsson, member of a search and rescue team in Iceland, believes the DJI M200 Series has revolutionized the way in which his team can work. He takes us through the challenges of a typical mission and the ways in which the DJI M200 Series overcomes these obstacles by adding efficiency and reliability to each mission.",
+      "zh_wp": "冰岛搜救队成员Thor Argnrimsson认为，DJI M200系列彻底改变了他所在团队的工作方式。他将带我们了解一次典型任务面临的挑战，以及DJI M200系列如何通过提高任务效率和可靠性来克服这些障碍。.",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "When it comes to search and rescue missions, time is scarce and mistakes cannot be afforded. Especially in countries like Iceland where weather conditions are harsh and daylight is limited.",
+      "zh_wp": "在搜救任务中，时间紧迫，不容有失。尤其是在冰岛这样的国家，天气恶劣，日照时间有限。.",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "YouTube",
+      "zh_wp": "YouTube",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.additionalVideos[].description but no live doc field exactly equals EN (likely substring-only / stale)"
+    },
+    {
+      "en": "Zhiyun WEEBILL",
+      "zh_wp": "Zhiyun WEEBILL",
+      "source": "dictionary",
+      "reason": "dictionary harvest found_in=portfolioEntry.title but no live doc field exactly equals EN (likely substring-only / stale)"
+    }
+  ],
+  "counts": {
+    "non_people_harvest_input": 429,
+    "phrase_book_candidate": 71,
+    "document_field_empty_safe_to_fill": 4,
+    "document_field_already_has_value_matches": 8,
+    "document_field_already_has_value_differs": 243,
+    "document_field_total": 255,
+    "unrouted": 105
+  }
+}
