@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+import { legacyZhRedirects } from './src/lib/legacy-zh-redirects';
+
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
@@ -43,6 +45,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/portfolio/dji-meet-the-robomaster-s1',
+        destination: '/portfolio/dji-robomaster-s1',
+        permanent: true,
+      },
+      {
         source: '/zh/投资组合/大疆故事',
         destination: '/zh/投资组合/大疆故事-切尔诺贝利失落之城',
         permanent: true,
@@ -63,6 +70,8 @@ const nextConfig: NextConfig = {
         destination: '/zh/工作/',
         permanent: true,
       },
+      // Live WP ZH slug → current Sanity slugZh (see src/lib/legacy-zh-redirects.ts)
+      ...legacyZhRedirects,
     ];
   },
   images: {
