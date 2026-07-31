@@ -335,6 +335,32 @@ function testBuildTableRows() {
   assert.equal(halloween.useCount, 1)
   const director = rows.find((r) => r.en === 'Director')!
   assert.equal(director.useCount, 0, 'catalog-only roles have 0 uses')
+
+  // document_field: filled Zh sibling → present without phrase-book entry
+  const withDoc = buildPhraseTableRows({
+    hits: [
+      {
+        en: 'Halloween',
+        source: 'd',
+        category: 'campaigns',
+        documentId: 'p1',
+        documentType: 'portfolioEntry',
+        enPath: 'displayTitleParts.campaignTitle',
+      },
+    ],
+    phrases: [],
+    docs: [
+      {
+        _id: 'p1',
+        _type: 'portfolioEntry',
+        displayTitleParts: {
+          campaignTitle: 'Halloween',
+          campaignTitleZh: '万圣节',
+        },
+      },
+    ],
+  })
+  assert.equal(withDoc.find((r) => r.en === 'Halloween')!.status, 'present')
 }
 
 function testSpanDetect() {

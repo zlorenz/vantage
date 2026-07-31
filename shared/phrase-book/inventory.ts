@@ -104,26 +104,127 @@ const PLAIN_DOC_TYPES = [
   'siteSettings',
 ] as const
 
-/** GROQ projection for docs scanned when building the live EN set. */
+/** GROQ projection for docs scanned when building the live EN set (+ Zh siblings for status). */
 export const PHRASE_INVENTORY_DOCS_QUERY = `*[_type in [
   "portfolioEntry","blogPost","page","industry","market","videoFormat","category","siteSettings"
 ] && !defined(trash.trashedAt) && !(_id in path("versions.**"))]{
-  _id, _type, title, name,
+  _id, _type, title, titleZh, name,
   displayTitleParts,
-  heroFilmTitle,
-  excerpt, description,
-  heroTitle,
-  additionalVideos[]{videoTitle, description},
-  founders[]{jobTitle},
+  heroFilmTitle, heroFilmTitleZh,
+  excerpt, excerptZh, description, descriptionZh,
+  heroTitle, heroTitleZh,
+  additionalVideos[]{videoTitle, videoTitleZh, description, descriptionZh},
+  founders[]{jobTitle, jobTitleZh},
   crewCredits[]{
     role, roleKey, isCustomRole, department,
     people[]{name, "identityName": identity->name}
   },
   seo,
-  contactAddress, contactModalTitle, contactModalIntro, contactCtaText
+  contactAddress, contactAddressZh,
+  contactModalTitle, contactModalTitleZh,
+  contactModalIntro, contactModalIntroZh,
+  contactCtaText, contactCtaTextZh
 }`
 
 export const PHRASE_INVENTORY_PHRASES_QUERY = `*[_type == "translatedPhrase" && !(_id in path("versions.**"))]{_id, en, zh}`
+
+/**
+ * Paths whose Translations-panel status is phrase-book presence (reuse-driven).
+ * Everything else with a CMS usage uses the dedicated Zh sibling on the document.
+ */
+export function isPhraseBookStatusPath(enPath: string | undefined | null): boolean {
+  if (!enPath) return true // catalog stubs / no path → phrase book
+  if (enPath === 'displayTitleParts.brandName') return true
+  if (enPath === 'displayTitleParts.productName') return true
+  if (enPath === 'crewCredits[].role' || enPath.endsWith('.role')) return true
+  if (
+    enPath === 'crewCredits[].people.name' ||
+    enPath.endsWith('.people.name')
+  ) {
+    return true
+  }
+  if (
+    enPath === 'contactAddress' ||
+    enPath === 'contactModalTitle' ||
+    enPath === 'contactModalIntro' ||
+    enPath === 'contactCtaText' ||
+    enPath === 'campaignCta.buttonLabel' ||
+    enPath.endsWith('.buttonLabel')
+  ) {
+    return true
+  }
+  return false
+}
+
+/** EN path → Zh sibling path (verified against schema / FIELD_MAPS). */
+export function zhSiblingPathFor(enPath: string): string | null {
+  const map: Record<string, string> = {
+    title: 'titleZh',
+    excerpt: 'excerptZh',
+    description: 'descriptionZh',
+    'displayTitleParts.brandName': 'displayTitleParts.brandNameZh',
+    'displayTitleParts.productName': 'displayTitleParts.productNameZh',
+    'displayTitleParts.campaignTitle': 'displayTitleParts.campaignTitleZh',
+    heroFilmTitle: 'heroFilmTitleZh',
+    heroTitle: 'heroTitleZh',
+    'additionalVideos[].videoTitle': 'additionalVideos[].videoTitleZh',
+    'additionalVideos[].description': 'additionalVideos[].descriptionZh',
+    'founders[].jobTitle': 'founders[].jobTitleZh',
+    contactAddress: 'contactAddressZh',
+    contactModalTitle: 'contactModalTitleZh',
+    contactModalIntro: 'contactModalIntroZh',
+    contactCtaText: 'contactCtaTextZh',
+  }
+  return map[enPath] ?? null
+}
+
+/**
+ * Status check mode for a table row: phrase-book presence vs document Zh siblings.
+ * Mixed usages → phrase_book (conservative; same EN shared across check types).
+ * Catalog / no usages → phrase_book.
+ */
+export function statusCheckModeForUsages(
+  usages: Array<{enPath: string}>,
+): 'phrase_book' | 'document_field' {
+  if (!usages.length) return 'phrase_book'
+  return usages.every((u) => !isPhraseBookStatusPath(u.enPath))
+    ? 'document_field'
+    : 'phrase_book'
+}
+
+/**
+ * Read the Zh sibling for one usage. Array paths match the element whose EN
+ * equals `enValue` (usages do not store array indices).
+ */
+export function readZhSibling(
+  doc: Record<string, unknown> | undefined,
+  enPath: string,
+  enValue: string,
+): string {
+  if (!doc) return ''
+  const zhPath = zhSiblingPathFor(enPath)
+  if (!zhPath) return ''
+
+  if (!zhPath.includes('[]')) {
+    return normalizePhraseKey(asPlainString(getAtPath(doc, zhPath)))
+  }
+
+  const match = zhPath.match(/^(.+)\[\]\.(.+)$/)
+  const enMatch = enPath.match(/^(.+)\[\]\.(.+)$/)
+  if (!match || !enMatch) return ''
+  const arr = getAtPath(doc, match[1]!)
+  if (!Array.isArray(arr)) return ''
+  const zhField = match[2]!
+  const enField = enMatch[2]!
+  const needle = normalizePhraseKey(enValue)
+  for (const item of arr) {
+    if (!item || typeof item !== 'object') continue
+    const row = item as Record<string, unknown>
+    if (normalizePhraseKey(asPlainString(row[enField])) !== needle) continue
+    return normalizePhraseKey(asPlainString(row[zhField]))
+  }
+  return ''
+}
 
 export function phraseContainsSpan(en: string): boolean {
   return /<span[\s>]/i.test(en)
@@ -385,10 +486,16 @@ type Acc = {
 /**
  * Build deduped master-table rows from live hits + phrase book (+ optional code rows).
  * Uses = unique published CMS documents containing the string (catalog stubs = 0).
+ *
+ * Status is field-aware when `docs` is provided:
+ * - phrase_book paths → phrase `zh` present (unchanged)
+ * - document_field paths → all usages’ Zh siblings filled
  */
 export function buildPhraseTableRows(args: {
   hits: LiveEnHit[]
   phrases: PhraseDocRow[]
+  /** Inventory docs (with Zh siblings) — required for accurate document_field status. */
+  docs?: Array<Record<string, unknown>>
   codeRows?: Array<{
     en: string
     zh: string
@@ -404,6 +511,18 @@ export function buildPhraseTableRows(args: {
     const existing = phraseByEn.get(en)
     if (!existing || String(row._id).startsWith('drafts.')) {
       phraseByEn.set(en, {...row, _id: id})
+    }
+  }
+
+  const docsById = new Map<string, Record<string, unknown>>()
+  for (const doc of args.docs ?? []) {
+    if (!doc || typeof doc !== 'object') continue
+    const id = String(doc._id ?? '').replace(/^drafts\./, '')
+    if (!id) continue
+    // Prefer draft over published when both exist (more complete in Studio).
+    const existing = docsById.get(id)
+    if (!existing || String(doc._id).startsWith('drafts.')) {
+      docsById.set(id, doc)
     }
   }
 
@@ -453,6 +572,21 @@ export function buildPhraseTableRows(args: {
     let useCount = acc.docKeys.size
     let usages = acc.usages
 
+    const check = statusCheckModeForUsages(usages)
+    let status: 'missing' | 'present'
+    if (check === 'phrase_book') {
+      status = zh ? 'present' : 'missing'
+    } else {
+      const allFilled =
+        usages.length > 0 &&
+        usages.every((u) =>
+          Boolean(
+            readZhSibling(docsById.get(u.documentId), u.enPath, acc.en),
+          ),
+        )
+      status = allFilled ? 'present' : 'missing'
+    }
+
     rows.push({
       id: `phrase:${acc.en}`,
       en: acc.en,
@@ -460,7 +594,7 @@ export function buildPhraseTableRows(args: {
       phraseId: phrase?._id,
       useCount,
       category: acc.category,
-      status: zh ? 'present' : 'missing',
+      status,
       editable: true,
       source: useCount === 0 && acc.category === 'crew-roles' ? 'catalog' : 'cms',
       usages,

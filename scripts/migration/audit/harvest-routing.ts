@@ -13,6 +13,7 @@ import {config as loadEnv} from 'dotenv'
 
 import {asPlainString, getAtPath} from '../../../shared/ai-translation/paths'
 import {PATHS, SANITY} from '../config'
+import {isPhraseHarvestExcluded} from '../lib/phrase-harvest-exclusions'
 import {normalizeWhitespace} from '../lib/translation-text'
 
 loadEnv({path: path.resolve(process.cwd(), '.env.local')})
@@ -190,6 +191,16 @@ async function main() {
     []
 
   for (const row of nonPeople) {
+    if (isPhraseHarvestExcluded(row.en)) {
+      unrouted.push({
+        en: row.en,
+        zh_wp: row.zh_wp,
+        source: row.source,
+        reason:
+          'permanent homonym exclusion (Loader/Post — never phrase-book harvest)',
+      })
+      continue
+    }
     if (row.source.startsWith('gettext:')) {
       const domain = row.source.slice('gettext:'.length)
       if (PHRASE_BOOK_DOMAINS.has(domain)) {

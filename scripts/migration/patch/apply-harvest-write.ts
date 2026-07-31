@@ -11,6 +11,7 @@ import {createClient} from '@sanity/client'
 
 import {normalizePhraseKey, phraseDocumentId} from '../../../shared/phrase-book'
 import {PATHS, SANITY} from '../config'
+import {isPhraseHarvestExcluded} from '../lib/phrase-harvest-exclusions'
 import {normalizeWhitespace} from '../lib/translation-text'
 
 loadEnv({path: path.resolve(process.cwd(), '.env.local')})
@@ -77,11 +78,20 @@ async function main() {
     []
   const errors: Array<{en: string; error: string}> = []
 
+  const skipped_excluded: Array<{en: string; reason: string}> = []
+
   for (const row of candidates) {
     const en = normalizePhraseKey(row.en)
     const zh = normalizePhraseKey(row.zh_wp)
     if (!en || !zh) {
       errors.push({en: row.en, error: 'empty en or zh after normalize'})
+      continue
+    }
+    if (isPhraseHarvestExcluded(en)) {
+      skipped_excluded.push({
+        en,
+        reason: 'homonym exclusion (Loader/Post — never auto-harvest)',
+      })
       continue
     }
     const id = phraseDocumentId(en)
@@ -198,9 +208,11 @@ async function main() {
       {
         phrase_created_count: created.length,
         phrase_skipped_existing: skipped_existing.length,
+        phrase_skipped_excluded: skipped_excluded.length,
         phrase_errors: errors,
         created,
         skipped_existing,
+        skipped_excluded,
         filled,
         differs: differsOut.counts,
         differs_out: DIFFERS_OUT,

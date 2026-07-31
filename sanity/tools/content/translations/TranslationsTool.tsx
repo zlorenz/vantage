@@ -86,6 +86,7 @@ export function TranslationsTool() {
         buildPhraseTableRows({
           hits,
           phrases,
+          docs,
           codeRows: interfaceCodeRows(),
         }),
       )
