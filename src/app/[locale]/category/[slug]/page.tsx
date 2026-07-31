@@ -19,8 +19,11 @@ import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
+  buildCollectionPage,
+  buildOrganization,
   categoryPageUrl,
   homeBreadcrumb,
+  loadOrganizationSchemaInput,
   newsBreadcrumb,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -101,11 +104,12 @@ export default async function CategoryArchivePage({ params }: Props) {
     });
   }
 
-  const [posts, categories, heroImage, phrases] = await Promise.all([
+  const [posts, categories, heroImage, phrases, organization] = await Promise.all([
     sanityClient.fetch<BlogPostCardData[]>(POSTS_BY_CATEGORY_QUERY, { slug }),
     sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
     sanityClient.fetch<SanityImage | null>(CATEGORY_HERO_IMAGE_QUERY, { slug }),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
 
   const heroTitle = decodeHtmlEntities(
@@ -120,15 +124,27 @@ export default async function CategoryArchivePage({ params }: Props) {
   const activeSlug =
     typedLocale === 'zh' ? category.slugZh || category.slug : category.slug;
 
+  const pageUrl = categoryPageUrl(typedLocale, category.slug, category.slugZh);
+
   return (
     <>
+      <JsonLd data={buildOrganization(organization)} />
+      <JsonLd
+        data={buildCollectionPage({
+          name: heroTitle,
+          description: blogCategoryDescription(heroTitle, typedLocale),
+          image: heroImage ?? undefined,
+          url: pageUrl,
+          locale: typedLocale,
+        })}
+      />
       <JsonLd
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),
           newsBreadcrumb(typedLocale),
           {
             name: heroTitle,
-            url: categoryPageUrl(typedLocale, category.slug, category.slugZh),
+            url: pageUrl,
           },
         ])}
       />

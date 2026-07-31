@@ -22,8 +22,10 @@ import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/p
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
+  buildOrganization,
   buildVideoObject,
   homeBreadcrumb,
+  loadOrganizationSchemaInput,
   portfolioPageUrl,
   workBreadcrumb,
 } from '@/lib/structured-data';
@@ -80,10 +82,11 @@ export default async function PortfolioEntryPage({ params }: Props) {
   const slug = decodePathSlug(rawSlug);
 
   const typedLocale = locale as Locale;
-  const [entryResult, phrases, phraseRecord] = await Promise.all([
+  const [entryResult, phrases, phraseRecord, organization] = await Promise.all([
     sanityFetch({query: PORTFOLIO_ENTRY_QUERY, params: {slug}}),
     getPhraseMap(),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
   const entry = entryResult.data as PortfolioEntry | null;
 
@@ -145,6 +148,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={buildOrganization(organization)} />
       {entry.vimeoUrl?.trim() ? (
         <JsonLd
           data={buildVideoObject({
@@ -153,6 +157,8 @@ export default async function PortfolioEntryPage({ params }: Props) {
             featuredImage: entry.featuredImage,
             publishedAt: entry.publishedAt,
             vimeoUrl: entry.vimeoUrl,
+            locale: typedLocale,
+            crewCredits: entry.crewCredits,
           })}
         />
       ) : null}

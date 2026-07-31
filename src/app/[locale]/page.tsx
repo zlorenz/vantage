@@ -14,7 +14,12 @@ import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import { SITE_DESCRIPTION, homePageTitle, buildPageMetadata, resolveMetadataImage, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
-import { buildBreadcrumbs, buildOrganization, homeBreadcrumb } from '@/lib/structured-data';
+import {
+  buildBreadcrumbs,
+  buildOrganization,
+  homeBreadcrumb,
+  loadOrganizationSchemaInput,
+} from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
 import { HOME_PAGE_QUERY } from '@/sanity/queries/pages';
@@ -74,10 +79,11 @@ export default async function HomePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [homePageResult, recentWorkResult, phrases] = await Promise.all([
+  const [homePageResult, recentWorkResult, phrases, organization] = await Promise.all([
     sanityFetch({query: HOME_PAGE_QUERY}),
     sanityFetch({query: RECENT_PORTFOLIO_QUERY}),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
   const homePage = homePageResult.data as HomePageData | null;
   const recentWork = recentWorkResult.data as PortfolioCardData[];
@@ -101,7 +107,7 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <>
-      <JsonLd data={buildOrganization()} />
+      <JsonLd data={buildOrganization(organization)} />
       <JsonLd data={buildBreadcrumbs([homeBreadcrumb(typedLocale)])} />
       <HeroCarousel slides={slides} locale={typedLocale} phrases={phrases} />
 

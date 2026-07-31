@@ -45,5 +45,5 @@ export const sanityImageBuilder = createImageUrlBuilder(sanityClient);
  * @returns Configured image URL builder for chaining
  */
 export function urlForImage(source: SanityImageSource) {
-  return sanityImageBuilder.image(source);
+  return sanityImageBuilder.image(source).auto('format');
 }

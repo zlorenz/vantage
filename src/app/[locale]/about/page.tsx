@@ -25,8 +25,10 @@ import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   aboutBreadcrumb,
   buildBreadcrumbs,
+  buildOrganization,
   buildProfessionalService,
   homeBreadcrumb,
+  loadOrganizationSchemaInput,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
@@ -71,9 +73,10 @@ export default async function AboutPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageResult, phrases] = await Promise.all([
+  const [pageResult, phrases, organization] = await Promise.all([
     sanityFetch({query: ABOUT_PAGE_QUERY}),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
   const page = pageResult.data as ABOUT_PAGE_QUERY_RESULT;
 
@@ -102,7 +105,13 @@ export default async function AboutPage({ params }: Props) {
 
   return (
     <>
-      <JsonLd data={buildProfessionalService()} />
+      <JsonLd
+        data={buildOrganization({
+          ...organization,
+          founders: page.founders,
+        })}
+      />
+      <JsonLd data={buildProfessionalService(organization)} />
       <JsonLd
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),

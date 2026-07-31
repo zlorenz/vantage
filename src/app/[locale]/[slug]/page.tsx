@@ -24,8 +24,10 @@ import { sanityClient } from '@/lib/sanity';
 import {
   buildArticle,
   buildBreadcrumbs,
+  buildOrganization,
   blogPostPageUrl,
   homeBreadcrumb,
+  loadOrganizationSchemaInput,
   newsBreadcrumb,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -87,9 +89,10 @@ export default async function BlogPostPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [postResult, phrases] = await Promise.all([
+  const [postResult, phrases, organization] = await Promise.all([
     sanityFetch({query: POST_BY_SLUG_QUERY, params: {slug}}),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
   const post = postResult.data as BlogPost | null;
 
@@ -124,6 +127,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={buildOrganization(organization)} />
       <JsonLd
         data={buildArticle({
           title,

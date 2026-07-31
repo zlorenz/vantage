@@ -44,6 +44,24 @@ export const founder = defineType({
       validation: (rule) => rule.required(),
       readOnly: readOnlyForTranslator,
     }),
+
+    ...defineLocalePair({
+      name: 'bio',
+      title: 'Bio',
+      type: 'text',
+      rows: 4,
+      description: 'Short plain-text bio for structured data / Person description.',
+      optional: true,
+    }),
+
+    defineField({
+      name: 'sameAs',
+      title: 'Social / Profile Links',
+      type: 'array',
+      of: [{type: 'url'}],
+      description: 'Website and social profile URLs (schema.org sameAs).',
+      readOnly: readOnlyForTranslator,
+    }),
   ],
 
   preview: {

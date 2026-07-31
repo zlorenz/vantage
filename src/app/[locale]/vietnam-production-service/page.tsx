@@ -16,8 +16,10 @@ import { pageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seo
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
+  buildOrganization,
   buildProfessionalService,
   homeBreadcrumb,
+  loadOrganizationSchemaInput,
   staticPageUrl,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -70,7 +72,11 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const {data} = await sanityFetch({query: VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY});
+  const [{data}, organization, phrases] = await Promise.all([
+    sanityFetch({query: VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY}),
+    loadOrganizationSchemaInput(typedLocale),
+    getPhraseRecord(),
+  ]);
   const page = data as VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT;
 
   if (!page) notFound();
@@ -98,8 +104,6 @@ export default async function VietnamProductionServicePage({ params }: Props) {
     }
   }
 
-  const phrases = await getPhraseRecord();
-
   const heroTitle =
     typedLocale === 'zh' && page.heroTitleZh
       ? page.heroTitleZh
@@ -116,7 +120,8 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   return (
     <>
-      <JsonLd data={buildProfessionalService()} />
+      <JsonLd data={buildOrganization(organization)} />
+      <JsonLd data={buildProfessionalService(organization)} />
       <JsonLd
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),

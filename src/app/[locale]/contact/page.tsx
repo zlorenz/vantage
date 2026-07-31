@@ -12,6 +12,12 @@ import {
   seoDescription,
   seoMetaTitle,
 } from '@/lib/metadata';
+import {
+  buildBreadcrumbs,
+  contactBreadcrumb,
+  homeBreadcrumb,
+} from '@/lib/structured-data';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityClient } from '@/lib/sanity';
 import { CONTACT_PAGE_QUERY } from '@/sanity/queries/pages';
 import { ContactPageClient } from './ContactPageClient';
@@ -57,5 +63,17 @@ export default async function ContactPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <ContactPageClient />;
+  const typedLocale = locale as Locale;
+
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbs(
+          [homeBreadcrumb(typedLocale), contactBreadcrumb(typedLocale)],
+          typedLocale,
+        )}
+      />
+      <ContactPageClient />
+    </>
+  );
 }

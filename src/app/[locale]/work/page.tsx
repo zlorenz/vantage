@@ -12,7 +12,14 @@ import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { routing, type Locale } from '@/i18n/routing';
 import { workPageTitle, resolveMetadataImage, buildPageMetadata, seoDescription, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
-import { buildBreadcrumbs, homeBreadcrumb, workBreadcrumb } from '@/lib/structured-data';
+import {
+  buildBreadcrumbs,
+  buildCollectionPage,
+  buildOrganization,
+  homeBreadcrumb,
+  loadOrganizationSchemaInput,
+  workBreadcrumb,
+} from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
 import { WORK_PAGE_META_QUERY } from '@/sanity/queries/pages';
@@ -69,20 +76,25 @@ export default async function WorkPage({ params }: Props) {
 
   const [
     workPageResult,
+    workMetaResult,
     entriesResult,
     videoFormatsResult,
     industriesResult,
     marketsResult,
     phrases,
+    organization,
   ] = await Promise.all([
     sanityFetch({query: WORK_PAGE_QUERY}),
+    sanityFetch({query: WORK_PAGE_META_QUERY, stega: false}),
     sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
     sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
     sanityFetch({query: INDUSTRIES_QUERY, stega: false}),
     sanityFetch({query: MARKETS_QUERY, stega: false}),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
   const workPage = workPageResult.data as WORK_PAGE_QUERY_RESULT;
+  const workPageMeta = workMetaResult.data as WORK_PAGE_META_QUERY_RESULT;
   const entries = entriesResult.data as PortfolioGridEntry[];
   const videoFormats = videoFormatsResult.data as TaxonomyTerm[];
   const industries = industriesResult.data as TaxonomyTerm[];
@@ -98,8 +110,20 @@ export default async function WorkPage({ params }: Props) {
       ? workPage.bodyZh
       : workPage?.body;
 
+  const workUrl = workBreadcrumb(typedLocale).url;
+
   return (
     <>
+      <JsonLd data={buildOrganization(organization)} />
+      <JsonLd
+        data={buildCollectionPage({
+          name: heroTitle,
+          description: seoDescription(workPageMeta?.seo ?? undefined, typedLocale),
+          image: workPage?.featuredImage ?? undefined,
+          url: workUrl,
+          locale: typedLocale,
+        })}
+      />
       <JsonLd
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), workBreadcrumb(typedLocale)])}
       />

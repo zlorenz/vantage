@@ -19,7 +19,10 @@ import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
+  buildCollectionPage,
+  buildOrganization,
   homeBreadcrumb,
+  loadOrganizationSchemaInput,
   marketPageUrl,
   workBreadcrumb,
 } from '@/lib/structured-data';
@@ -105,18 +108,20 @@ export default async function MarketArchivePage({ params }: Props) {
     });
   }
 
-  const [entries, videoFormats, industries, markets, heroImage, phrases] = await Promise.all([
-    sanityClient.fetch<PortfolioGridEntry[]>(PORTFOLIO_BY_MARKET_QUERY, {
-      termId: term._id,
-    }),
-    sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
-    sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
-    sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
-    sanityClient.fetch<SanityImage | null>(TAXONOMY_HERO_IMAGE_QUERY, {
-      termId: term._id,
-    }),
-    getPhraseRecord(),
-  ]);
+  const [entries, videoFormats, industries, markets, heroImage, phrases, organization] =
+    await Promise.all([
+      sanityClient.fetch<PortfolioGridEntry[]>(PORTFOLIO_BY_MARKET_QUERY, {
+        termId: term._id,
+      }),
+      sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
+      sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
+      sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
+      sanityClient.fetch<SanityImage | null>(TAXONOMY_HERO_IMAGE_QUERY, {
+        termId: term._id,
+      }),
+      getPhraseRecord(),
+      loadOrganizationSchemaInput(typedLocale),
+    ]);
 
   const heroTitle = decodeHtmlEntities(
     pickLocaleFieldWithPhrases(typedLocale, term.title, term.titleZh, phrases),
@@ -132,15 +137,27 @@ export default async function MarketArchivePage({ params }: Props) {
   const activeSlug =
     typedLocale === 'zh' ? term.slugZh || term.slug : term.slug;
 
+  const pageUrl = marketPageUrl(typedLocale, term.slug, term.slugZh);
+
   return (
     <>
+      <JsonLd data={buildOrganization(organization)} />
+      <JsonLd
+        data={buildCollectionPage({
+          name: heroTitle,
+          description: portfolioTaxonomyDescription(heroTitle, typedLocale),
+          image: heroImage ?? undefined,
+          url: pageUrl,
+          locale: typedLocale,
+        })}
+      />
       <JsonLd
         data={buildBreadcrumbs([
           homeBreadcrumb(typedLocale),
           workBreadcrumb(typedLocale),
           {
             name: heroTitle,
-            url: marketPageUrl(typedLocale, term.slug, term.slugZh),
+            url: pageUrl,
           },
         ])}
       />

@@ -3,8 +3,11 @@
  * Returns plain objects — callers render via <JsonLd />.
  */
 
+import { stegaClean } from '@sanity/client/stega';
+import type { SanityImageSource } from '@sanity/image-url';
 import type { Locale } from '@/i18n/routing';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
+import { sanityClient, urlForImage } from '@/lib/sanity';
 import {
   absoluteUrl,
   blogPostPaths,
@@ -13,12 +16,18 @@ import {
   portfolioPaths,
   videoFormatPaths,
 } from '@/lib/sitemap-urls';
-import { urlForImage } from '@/lib/sanity';
 import { parseVideoUrl } from '@/lib/video-url';
-import type { SanityImage, SeoFields } from '@/types/sanity';
+import { ORGANIZATION_SCHEMA_DATA_QUERY } from '@/sanity/queries/global';
+import type { CrewCredit, SanityImage, SeoFields } from '@/types/sanity';
 
 const ORGANIZATION_ID = 'https://vantage.pictures/#organization';
 const WEBSITE_ID = 'https://vantage.pictures/#website';
+const ORGANIZATION_LOGO = {
+  '@type': 'ImageObject' as const,
+  url: 'https://vantage.pictures/brand/vantage-logo-512.png',
+  width: 512,
+  height: 512,
+};
 
 const OFFICE_ADDRESS = {
   '@type': 'PostalAddress' as const,
@@ -38,6 +47,8 @@ export interface VideoObjectInput {
   featuredImage?: SanityImage;
   publishedAt?: string;
   vimeoUrl: string;
+  locale?: Locale;
+  crewCredits?: CrewCredit[];
 }
 
 export interface ArticleInput {
@@ -51,9 +62,84 @@ export interface ArticleInput {
   locale?: Locale;
 }
 
+export interface OrganizationFounderInput {
+  name?: string | null;
+  jobTitle?: string | null;
+  jobTitleZh?: string | null;
+  image?: SanityImageSource | null;
+  bio?: string | null;
+  bioZh?: string | null;
+  sameAs?: Array<string | null> | null;
+}
+
+export interface OrganizationSchemaInput {
+  locale: Locale;
+  legalName?: string | null;
+  foundingDate?: string | null;
+  numberOfEmployees?: {
+    minValue?: number | null;
+    maxValue?: number | null;
+  } | null;
+  telephone?: string | null;
+  areaServed?: string[];
+  knowsAbout?: string[];
+  /** About page only — omit on other routes. */
+  founders?: OrganizationFounderInput[] | null;
+}
+
+type OrganizationSchemaDataQueryResult = {
+  settings?: {
+    legalName?: string | null;
+    foundingDate?: string | null;
+    numberOfEmployees?: {
+      minValue?: number | null;
+      maxValue?: number | null;
+    } | null;
+    contactPhone?: string | null;
+  } | null;
+  markets?: Array<{ title?: string | null }>;
+  industries?: Array<{ title?: string | null }>;
+  videoFormats?: Array<{ title?: string | null }>;
+};
+
+function schemaLanguage(locale: Locale): 'zh' | 'en' {
+  return locale === 'zh' ? 'zh' : 'en';
+}
+
+function nonEmptyStrings(values: Array<string | null | undefined> | undefined): string[] {
+  if (!values?.length) return [];
+  return values
+    .map((value) => (value == null ? '' : stegaClean(value).trim()))
+    .filter(Boolean);
+}
+
+/** Fetch siteSettings org fields + taxonomy titles for JSON-LD (non-stega client). */
+export async function loadOrganizationSchemaInput(
+  locale: Locale,
+): Promise<OrganizationSchemaInput> {
+  const data = await sanityClient.fetch<OrganizationSchemaDataQueryResult>(
+    ORGANIZATION_SCHEMA_DATA_QUERY,
+  );
+  const industryTitles = nonEmptyStrings(data.industries?.map((item) => item.title));
+  const formatTitles = nonEmptyStrings(data.videoFormats?.map((item) => item.title));
+
+  return {
+    locale,
+    legalName: data.settings?.legalName,
+    foundingDate: data.settings?.foundingDate,
+    numberOfEmployees: data.settings?.numberOfEmployees,
+    telephone: data.settings?.contactPhone,
+    areaServed: nonEmptyStrings(data.markets?.map((item) => item.title)),
+    knowsAbout: [...industryTitles, ...formatTitles],
+  };
+}
+
+/** Strip draft-mode stega, then HTML → plain text for JSON-LD string fields. */
 function plainTextDescription(value?: string): string | undefined {
-  if (!value?.trim()) return undefined;
-  return decodeHtmlEntities(value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim());
+  if (value == null) return undefined;
+  const cleaned = stegaClean(value);
+  if (!cleaned.trim()) return undefined;
+  return decodeHtmlEntities(cleaned.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim());
 }
 
 function articleSchemaDescription(post: ArticleInput): string | undefined {
@@ -114,6 +200,13 @@ export function aboutBreadcrumb(locale: Locale): BreadcrumbItem {
   };
 }
 
+export function contactBreadcrumb(locale: Locale): BreadcrumbItem {
+  return {
+    name: locale === 'zh' ? '联系' : 'Contact',
+    url: locale === 'zh' ? '/zh/联系' : '/contact',
+  };
+}
+
 export function searchBreadcrumb(locale: Locale): BreadcrumbItem {
   return {
     name: locale === 'zh' ? '搜索' : 'Search',
@@ -159,7 +252,75 @@ export function staticPageUrl(
   return locale === 'zh' ? zhPath : enPath;
 }
 
-export function buildOrganization() {
+function organizationFounderPersons(
+  founders: OrganizationFounderInput[] | null | undefined,
+  locale: Locale,
+) {
+  if (!founders?.length) return undefined;
+
+  const people = founders.flatMap((founder) => {
+    const name = founder.name == null ? '' : stegaClean(founder.name).trim();
+    if (!name) return [];
+
+    const jobTitleRaw =
+      locale === 'zh' && founder.jobTitleZh?.trim()
+        ? founder.jobTitleZh
+        : founder.jobTitle;
+    const jobTitle =
+      jobTitleRaw == null ? undefined : stegaClean(jobTitleRaw).trim() || undefined;
+
+    const bioRaw =
+      locale === 'zh' && founder.bioZh?.trim() ? founder.bioZh : founder.bio;
+    const description =
+      bioRaw == null ? undefined : stegaClean(bioRaw).trim() || undefined;
+
+    const image = founder.image
+      ? urlForImage(founder.image).width(600).height(750).fit('crop').url()
+      : undefined;
+
+    const sameAs = nonEmptyStrings(founder.sameAs ?? undefined);
+
+    return [
+      {
+        '@type': 'Person' as const,
+        name,
+        ...(jobTitle ? { jobTitle } : {}),
+        ...(image ? { image } : {}),
+        ...(description ? { description } : {}),
+        ...(sameAs.length ? { sameAs } : {}),
+      },
+    ];
+  });
+
+  return people.length ? people : undefined;
+}
+
+export function buildOrganization(input: OrganizationSchemaInput) {
+  const legalName = input.legalName?.trim()
+    ? stegaClean(input.legalName).trim()
+    : undefined;
+  const foundingDate = input.foundingDate?.trim()
+    ? stegaClean(input.foundingDate).trim()
+    : undefined;
+  const telephone = input.telephone?.trim()
+    ? stegaClean(input.telephone).trim()
+    : undefined;
+
+  const minValue = input.numberOfEmployees?.minValue;
+  const maxValue = input.numberOfEmployees?.maxValue;
+  const numberOfEmployees =
+    typeof minValue === 'number' || typeof maxValue === 'number'
+      ? {
+          '@type': 'QuantitativeValue' as const,
+          ...(typeof minValue === 'number' ? { minValue } : {}),
+          ...(typeof maxValue === 'number' ? { maxValue } : {}),
+        }
+      : undefined;
+
+  const areaServed = input.areaServed?.length ? input.areaServed : undefined;
+  const knowsAbout = input.knowsAbout?.length ? input.knowsAbout : undefined;
+  const founder = organizationFounderPersons(input.founders, input.locale);
+
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -168,11 +329,17 @@ export function buildOrganization() {
         '@id': ORGANIZATION_ID,
         name: 'Vantage Pictures',
         url: 'https://vantage.pictures',
-        logo: 'https://vantage.pictures/brand/vantage-logo.svg',
+        logo: ORGANIZATION_LOGO,
         description:
           'Vietnam-based commercial video production company specialising in brand films, product commercials, and social media campaigns for global brands.',
         email: 'info@vantage.pictures',
-        areaServed: 'Worldwide',
+        ...(legalName ? { legalName } : {}),
+        ...(foundingDate ? { foundingDate } : {}),
+        ...(numberOfEmployees ? { numberOfEmployees } : {}),
+        ...(telephone ? { telephone } : {}),
+        ...(areaServed ? { areaServed } : {}),
+        ...(knowsAbout ? { knowsAbout } : {}),
+        ...(founder ? { founder } : {}),
         address: OFFICE_ADDRESS,
         sameAs: [
           'https://www.facebook.com/vantagepictures',
@@ -190,9 +357,123 @@ export function buildOrganization() {
         '@id': WEBSITE_ID,
         url: 'https://vantage.pictures',
         name: 'Vantage Pictures',
+        inLanguage: schemaLanguage(input.locale),
         publisher: { '@id': ORGANIZATION_ID },
       },
     ],
+  };
+}
+
+type SchemaPerson = {
+  '@type': 'Person';
+  name: string;
+  jobTitle?: string;
+};
+
+type SchemaOrganization = {
+  '@type': 'Organization';
+  name: string;
+  jobTitle?: string;
+};
+
+type SchemaContributor = SchemaPerson | SchemaOrganization;
+
+const VIDEO_OBJECT_NAMED_ROLE_KEYS = new Set(['director', 'producer', 'editor']);
+
+/**
+ * Catalog roleKeys that credit companies/vendors, not individuals.
+ * No company/person flag exists on CrewRoleDefinition — this set is explicit.
+ * Excludes mixed roles (e.g. catering, transport) where live names are often people.
+ */
+const VIDEO_OBJECT_ORGANIZATION_ROLE_KEYS = new Set([
+  'brand',
+  'agency',
+  'production_company',
+  'production_service',
+  'post_house',
+  'rental_house',
+]);
+
+/** identityName ?? name — matches PORTFOLIO_CREDITS_FIELDS resolved display name. */
+function crewPersonSchemaName(person: {
+  name?: string;
+  identityName?: string;
+}): string | undefined {
+  const raw = person.identityName ?? person.name;
+  if (raw == null) return undefined;
+  const cleaned = stegaClean(raw).trim();
+  return cleaned || undefined;
+}
+
+function peopleFromRoleRows(
+  credits: CrewCredit[],
+  roleKey: string,
+): SchemaPerson[] {
+  const people: SchemaPerson[] = [];
+  for (const row of credits) {
+    if (row.roleKey !== roleKey) continue;
+    for (const person of row.people ?? []) {
+      const name = crewPersonSchemaName(person);
+      if (!name) continue;
+      people.push({ '@type': 'Person', name });
+    }
+  }
+  return people;
+}
+
+/** Single Person when one; array when multiple; undefined when empty. */
+function personOrPeople(people: SchemaPerson[]): SchemaPerson | SchemaPerson[] | undefined {
+  if (people.length === 0) return undefined;
+  if (people.length === 1) return people[0];
+  return people;
+}
+
+function videoObjectCrewFields(credits: CrewCredit[] | undefined): {
+  director?: SchemaPerson | SchemaPerson[];
+  creator?: SchemaPerson | SchemaPerson[];
+  producer?: SchemaPerson[];
+  editor?: SchemaPerson | SchemaPerson[];
+  contributor?: SchemaContributor[];
+} {
+  if (!credits?.length) return {};
+
+  const directorPeople = peopleFromRoleRows(credits, 'director');
+  const director = personOrPeople(directorPeople);
+  const producerPeople = peopleFromRoleRows(credits, 'producer');
+  const editor = personOrPeople(peopleFromRoleRows(credits, 'editor'));
+
+  const contributor: SchemaContributor[] = [];
+  for (const row of credits) {
+    if (row.roleKey && VIDEO_OBJECT_NAMED_ROLE_KEYS.has(row.roleKey)) continue;
+    const jobTitleRaw = row.role == null ? '' : stegaClean(row.role).trim();
+    const jobTitle = jobTitleRaw || undefined;
+    const asOrganization = Boolean(
+      row.roleKey && VIDEO_OBJECT_ORGANIZATION_ROLE_KEYS.has(row.roleKey),
+    );
+    for (const person of row.people ?? []) {
+      const name = crewPersonSchemaName(person);
+      if (!name) continue;
+      contributor.push(
+        asOrganization
+          ? {
+              '@type': 'Organization',
+              name,
+              ...(jobTitle ? { jobTitle } : {}),
+            }
+          : {
+              '@type': 'Person',
+              name,
+              ...(jobTitle ? { jobTitle } : {}),
+            },
+      );
+    }
+  }
+
+  return {
+    ...(director ? { director, creator: director } : {}),
+    ...(producerPeople.length ? { producer: producerPeople } : {}),
+    ...(editor ? { editor } : {}),
+    ...(contributor.length ? { contributor } : {}),
   };
 }
 
@@ -201,16 +482,20 @@ export function buildVideoObject(entry: VideoObjectInput) {
   const thumbnailUrl = entry.featuredImage
     ? urlForImage(entry.featuredImage).width(1280).height(720).fit('crop').url()
     : undefined;
+  const locale = entry.locale ?? 'en';
+  const crew = videoObjectCrewFields(entry.crewCredits);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
-    name: entry.title,
+    name: stegaClean(entry.title),
     description: plainTextDescription(entry.description),
     thumbnailUrl,
     uploadDate: entry.publishedAt,
     embedUrl,
+    inLanguage: schemaLanguage(locale),
     publisher: { '@id': ORGANIZATION_ID },
+    ...crew,
   };
 }
 
@@ -219,41 +504,76 @@ export function buildArticle(post: ArticleInput) {
   const image = post.featuredImage
     ? urlForImage(post.featuredImage).width(1200).height(630).fit('crop').url()
     : undefined;
+  const locale = post.locale ?? 'en';
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: post.title,
+    headline: stegaClean(post.title),
     description,
     image,
     datePublished: post.publishedAt,
     dateModified: post._updatedAt ?? post.publishedAt,
+    inLanguage: schemaLanguage(locale),
     author: { '@id': ORGANIZATION_ID },
     publisher: { '@id': ORGANIZATION_ID },
   };
 }
 
-export function buildBreadcrumbs(items: BreadcrumbItem[]) {
+export function buildBreadcrumbs(items: BreadcrumbItem[], locale?: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    ...(locale ? { inLanguage: schemaLanguage(locale) } : {}),
     itemListElement: items.map((item, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: item.name,
+      // stegaClean is a no-op on hardcoded labels; required for CMS-sourced titles.
+      name: stegaClean(item.name),
       item: absoluteUrl(item.url),
     })),
   };
 }
 
-export function buildProfessionalService() {
+export interface CollectionPageInput {
+  name: string;
+  description?: string;
+  image?: SanityImageSource | null;
+  url: string;
+  locale?: Locale;
+}
+
+export function buildCollectionPage(input: CollectionPageInput) {
+  const name = plainTextDescription(input.name) ?? stegaClean(input.name).trim();
+  const description = plainTextDescription(input.description);
+  const image = input.image
+    ? urlForImage(input.image).width(1200).height(630).fit('crop').url()
+    : undefined;
+  const locale = input.locale ?? 'en';
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    ...(description ? { description } : {}),
+    ...(image ? { image } : {}),
+    url: absoluteUrl(input.url),
+    inLanguage: schemaLanguage(locale),
+    isPartOf: { '@id': WEBSITE_ID },
+  };
+}
+
+export function buildProfessionalService(input: OrganizationSchemaInput) {
+  const areaServed = input.areaServed?.length ? input.areaServed : undefined;
+
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     name: 'Vantage Pictures',
     url: 'https://vantage.pictures',
     serviceType: 'Commercial Video Production',
-    areaServed: 'Worldwide',
+    ...(areaServed ? { areaServed } : {}),
+    inLanguage: schemaLanguage(input.locale),
     address: OFFICE_ADDRESS,
   };
 }

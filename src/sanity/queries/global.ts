@@ -29,6 +29,9 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   contactCtaText,
   contactCtaTextZh,
   contactCtaUrl,
+  legalName,
+  foundingDate,
+  numberOfEmployees{minValue, maxValue},
   socialVimeo,
   socialInstagram,
   socialFacebook,
@@ -46,6 +49,23 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
     buttonLabelZh,
     buttonHref
   }
+}`;
+
+/**
+ * One-shot fetch for Organization / ProfessionalService JSON-LD:
+ * siteSettings org fields + market / industry / videoFormat titles.
+ * Uses the non-stega read client at call sites (JSON-LD must stay clean).
+ */
+export const ORGANIZATION_SCHEMA_DATA_QUERY = `{
+  "settings": *[_type == "siteSettings"][0]{
+    legalName,
+    foundingDate,
+    numberOfEmployees{minValue, maxValue},
+    contactPhone
+  },
+  "markets": *[_type == "market" && defined(title)] | order(title asc) { title },
+  "industries": *[_type == "industry" && defined(title)] | order(title asc) { title },
+  "videoFormats": *[_type == "videoFormat" && defined(title)] | order(title asc) { title }
 }`;
 
 /**

@@ -48,6 +48,12 @@ export interface SiteSettings {
   contactCtaText?: string;
   contactCtaTextZh?: string;
   contactCtaUrl?: string;
+  legalName?: string;
+  foundingDate?: string;
+  numberOfEmployees?: {
+    minValue?: number;
+    maxValue?: number;
+  };
   socialVimeo?: string;
   socialInstagram?: string;
   socialFacebook?: string;
@@ -344,6 +350,9 @@ export interface Founder {
   jobTitle: string;
   jobTitleZh?: string;
   image: SanityImage;
+  bio?: string;
+  bioZh?: string;
+  sameAs?: string[];
 }
 
 export interface PdfDownload {

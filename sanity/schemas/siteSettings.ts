@@ -17,6 +17,7 @@ export const siteSettings = defineType({
 
   groups: [
     {name: 'contact', title: 'Contact', default: true},
+    {name: 'organization', title: 'Organization'},
     {name: 'cta', title: 'Campaign CTA'},
     {name: 'social', title: 'Social'},
     {name: 'seo', title: 'SEO'},
@@ -131,6 +132,49 @@ export const siteSettings = defineType({
       group: 'contact',
       description: 'Optional call-to-action button label in the contact modal.',
       optional: true,
+    }),
+
+    defineField({
+      name: 'legalName',
+      title: 'Legal Name',
+      type: 'string',
+      group: 'organization',
+      description:
+        'Registered company name for Organization structured data (e.g. Top Boy Limited).',
+      hidden: hiddenForTranslator,
+    }),
+
+    defineField({
+      name: 'foundingDate',
+      title: 'Founding Date',
+      type: 'date',
+      group: 'organization',
+      description: 'Company founding date for Organization structured data.',
+      hidden: hiddenForTranslator,
+    }),
+
+    defineField({
+      name: 'numberOfEmployees',
+      title: 'Number of Employees',
+      type: 'object',
+      group: 'organization',
+      description:
+        'Employee range for Organization structured data (schema.org QuantitativeValue).',
+      fields: [
+        defineField({
+          name: 'minValue',
+          title: 'Minimum',
+          type: 'number',
+          validation: (rule) => rule.min(0).integer(),
+        }),
+        defineField({
+          name: 'maxValue',
+          title: 'Maximum',
+          type: 'number',
+          validation: (rule) => rule.min(0).integer(),
+        }),
+      ],
+      hidden: hiddenForTranslator,
     }),
 
     defineField({

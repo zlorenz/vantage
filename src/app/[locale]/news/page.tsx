@@ -13,7 +13,14 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { newsPageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
-import { buildBreadcrumbs, homeBreadcrumb, newsBreadcrumb } from '@/lib/structured-data';
+import {
+  buildBreadcrumbs,
+  buildCollectionPage,
+  buildOrganization,
+  homeBreadcrumb,
+  loadOrganizationSchemaInput,
+  newsBreadcrumb,
+} from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
 import { ALL_CATEGORIES_QUERY, ALL_POSTS_QUERY } from '@/sanity/queries/blog';
@@ -53,11 +60,12 @@ export default async function NewsPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageResult, postsResult, categoriesResult, phrases] = await Promise.all([
+  const [pageResult, postsResult, categoriesResult, phrases, organization] = await Promise.all([
     sanityFetch({query: NEWS_PAGE_QUERY}),
     sanityFetch({query: ALL_POSTS_QUERY, stega: false}),
     sanityFetch({query: ALL_CATEGORIES_QUERY, stega: false}),
     getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
   ]);
   const page = pageResult.data as NEWS_PAGE_QUERY_RESULT;
   const posts = postsResult.data as BlogPostCardData[];
@@ -75,6 +83,16 @@ export default async function NewsPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={buildOrganization(organization)} />
+      <JsonLd
+        data={buildCollectionPage({
+          name: heroTitle,
+          description: seoDescription(page.seo ?? undefined, typedLocale),
+          image: page.featuredImage ?? undefined,
+          url: newsBreadcrumb(typedLocale).url,
+          locale: typedLocale,
+        })}
+      />
       <JsonLd
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), newsBreadcrumb(typedLocale)])}
       />
