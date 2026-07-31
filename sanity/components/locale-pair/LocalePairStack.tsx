@@ -37,15 +37,22 @@ type LocalePairStackProps = {
 export function LocalePairStack(props: LocalePairStackProps) {
   const showZh = props.showZh ?? shouldShowZh(props.enValue, props.zhValue)
   const isText = typeof props.rows === 'number' && props.rows > 0
-  const {fromPhraseBook, canFillFromPhraseBook, fillFromPhraseBook, onZhBlur} =
-    usePhraseBookAssist({
-      enValue: props.enValue,
-      zhValue: props.zhValue,
-      onZhChange: props.onZhChange,
-      // Mutates ZH (autofill + blur upsert + fill button) — gate on the ZH lock.
-      readOnly: props.zhReadOnly,
-      enabled: props.phraseBook !== false,
-    })
+  const {
+    fromPhraseBook,
+    phraseBookZh,
+    canFillFromPhraseBook,
+    canOverwriteFromPhraseBook,
+    fillFromPhraseBook,
+    overwriteFromPhraseBook,
+    onZhBlur,
+  } = usePhraseBookAssist({
+    enValue: props.enValue,
+    zhValue: props.zhValue,
+    onZhChange: props.onZhChange,
+    // Mutates ZH (autofill + blur upsert + fill/overwrite) — gate on the ZH lock.
+    readOnly: props.zhReadOnly,
+    enabled: props.phraseBook !== false,
+  })
 
   const handleEn = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     props.onEnChange(event.currentTarget.value)
@@ -126,6 +133,22 @@ export function LocalePairStack(props: LocalePairStackProps) {
                 tone="primary"
                 onClick={fillFromPhraseBook}
               />
+            ) : canOverwriteFromPhraseBook ? (
+              <Stack space={1}>
+                {phraseBookZh ? (
+                  <Text size={0} muted>
+                    Phrase book: {phraseBookZh}
+                  </Text>
+                ) : null}
+                <Button
+                  text="Overwrite from phrase book"
+                  mode="bleed"
+                  fontSize={1}
+                  padding={2}
+                  tone="caution"
+                  onClick={overwriteFromPhraseBook}
+                />
+              </Stack>
             ) : fromPhraseBook ? (
               <Text size={0} muted>
                 From phrase book

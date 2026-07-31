@@ -39,6 +39,27 @@ export {
 
 export {interfaceCodeRows, type InterfaceCodeRow} from './interface-messages'
 
+export {
+  PHRASE_PROPAGATION_PATHS,
+  PROPAGATION_DOC_TYPES,
+  buildCandidateQuery,
+  buildOldZhMatchClause,
+  splitArrayPath,
+  DISPLAY_TITLE_ZH_PATHS,
+  type PhrasePropagationPath,
+} from './propagation-paths'
+
+export {
+  planPhrasePropagation,
+  computeTitleZhAfterPatches,
+  groupPatchesByDoc,
+  PROPAGATION_CHUNK_SIZE,
+  type PropagationInput,
+  type PropagationPatch,
+  type PropagationSkip,
+  type PropagationPlan,
+} from './propagate'
+
 /** Max EN length for Studio auto-upsert into the phrase book. */
 export const PHRASE_UPSERT_MAX_EN_LENGTH = 80
 

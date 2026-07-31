@@ -96,3 +96,11 @@ wp-config.php
 
 # Sanity dataset exports
 *.tar.gz
+
+# Sanity Functions
+functions/**/.env*
+functions/**/.build/
+functions/**/node_modules/
+
+# Local scratch (dataset exports, function fixtures)
+tmp/

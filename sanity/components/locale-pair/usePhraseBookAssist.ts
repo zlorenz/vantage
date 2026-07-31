@@ -23,9 +23,17 @@ type Options = {
 
 export function usePhraseBookAssist(options: Options): {
   fromPhraseBook: boolean
+  /** Normalized phrase-book ZH for the current EN (null when no hit / assist off). */
+  phraseBookZh: string | null
   /** Phrase hit exists for current EN and ZH is empty (and assist is writable). */
   canFillFromPhraseBook: boolean
+  /**
+   * Phrase hit exists, ZH is non-empty, and ZH differs from the book
+   * (and assist is writable). Mutually exclusive with canFillFromPhraseBook.
+   */
+  canOverwriteFromPhraseBook: boolean
   fillFromPhraseBook: () => void
+  overwriteFromPhraseBook: () => void
   onZhBlur: () => void
 } {
   const enabled = options.enabled !== false && !options.readOnly
@@ -94,17 +102,25 @@ export function usePhraseBookAssist(options: Options): {
     }
   }, [client, enabled, options.enValue, writeZhFromBook])
 
-  const fromPhraseBook = Boolean(
-    bookZh && normalizePhraseKey(options.zhValue) === bookZh,
-  )
+  const currentZh = normalizePhraseKey(options.zhValue)
+  const fromPhraseBook = Boolean(bookZh && currentZh === bookZh)
 
-  const canFillFromPhraseBook = Boolean(
-    enabled && bookZh && !normalizePhraseKey(options.zhValue),
+  const canFillFromPhraseBook = Boolean(enabled && bookZh && !currentZh)
+
+  const canOverwriteFromPhraseBook = Boolean(
+    enabled && bookZh && currentZh && currentZh !== bookZh,
   )
 
   const fillFromPhraseBook = useCallback(() => {
     if (!enabled || !bookZh) return
     if (normalizePhraseKey(zhRef.current)) return
+    writeZhFromBook(bookZh)
+  }, [bookZh, enabled, writeZhFromBook])
+
+  const overwriteFromPhraseBook = useCallback(() => {
+    if (!enabled || !bookZh) return
+    const zh = normalizePhraseKey(zhRef.current)
+    if (!zh || zh === bookZh) return
     writeZhFromBook(bookZh)
   }, [bookZh, enabled, writeZhFromBook])
 
@@ -134,5 +150,13 @@ export function usePhraseBookAssist(options: Options): {
     })
   }
 
-  return {fromPhraseBook, canFillFromPhraseBook, fillFromPhraseBook, onZhBlur}
+  return {
+    fromPhraseBook,
+    phraseBookZh: bookZh,
+    canFillFromPhraseBook,
+    canOverwriteFromPhraseBook,
+    fillFromPhraseBook,
+    overwriteFromPhraseBook,
+    onZhBlur,
+  }
 }
