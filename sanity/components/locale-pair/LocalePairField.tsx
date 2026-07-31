@@ -84,7 +84,10 @@ export function LocalePairField(props: FieldProps) {
   const formReadOnly = Boolean(props.inputProps?.readOnly)
   const role = getStudioRole(useCurrentUser())
   const enReadOnly = formReadOnly || role === 'translator'
-  const zhReadOnly = formReadOnly || role === 'editor'
+  // Editors normally lock ZH translation fields; opt out via editorCanEditZh
+  // for non-copy pairs (e.g. Xinpianchang embed URLs).
+  const zhReadOnly =
+    formReadOnly || (role === 'editor' && !pair?.editorCanEditZh)
 
   const patchZh = useCallback(
     (nextRaw: string) => {

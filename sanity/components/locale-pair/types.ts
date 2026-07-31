@@ -5,6 +5,11 @@ export type LocalePairOptions = {
   rows?: number
   /** When true, the shared field label is muted (optional). */
   optional?: boolean
+  /**
+   * When true, editors may edit the ZH sibling (normally editor-locked).
+   * Use for non-translation pairs like Vimeo / Xinpianchang embed URLs.
+   */
+  editorCanEditZh?: boolean
 }
 
 export function getLocalePairOptions(

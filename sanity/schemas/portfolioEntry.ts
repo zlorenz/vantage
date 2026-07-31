@@ -268,6 +268,8 @@ export const portfolioEntry = defineType({
       validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
       zhValidation: (rule) => rule.uri({scheme: ['http', 'https']}),
       optional: false,
+      // Embed host URLs, not translation — editors upload to Xinpianchang.
+      editorCanEditZh: true,
     }),
 
     ...defineLocalePair({

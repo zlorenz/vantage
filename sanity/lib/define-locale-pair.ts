@@ -29,6 +29,11 @@ type DefineLocalePairConfig = {
   hidden?: FieldDefinition['hidden']
   /** When true, FieldLabel is muted (optional). Defaults to true when no EN validation. */
   optional?: boolean
+  /**
+   * When true, editors may edit ZH (normally editor-locked). For pairs that are
+   * not translation copy — e.g. Vimeo / Xinpianchang embed URLs.
+   */
+  editorCanEditZh?: boolean
 }
 
 type HiddenContext = {
@@ -81,6 +86,7 @@ export function defineLocalePair(config: DefineLocalePairConfig): [FieldDefiniti
     zhName,
     rows: config.rows,
     optional,
+    ...(config.editorCanEditZh ? {editorCanEditZh: true} : {}),
   }
 
   const en = defineField({
