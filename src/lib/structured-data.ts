@@ -66,6 +66,8 @@ export interface OrganizationFounderInput {
   name?: string | null;
   jobTitle?: string | null;
   jobTitleZh?: string | null;
+  professionalTitle?: string | null;
+  professionalTitleZh?: string | null;
   image?: SanityImageSource | null;
   bio?: string | null;
   bioZh?: string | null;
@@ -262,12 +264,25 @@ function organizationFounderPersons(
     const name = founder.name == null ? '' : stegaClean(founder.name).trim();
     if (!name) return [];
 
-    const jobTitleRaw =
+    const professionalTitleRaw =
+      locale === 'zh' && founder.professionalTitleZh?.trim()
+        ? founder.professionalTitleZh
+        : founder.professionalTitle;
+    const professionalTitle =
+      professionalTitleRaw == null
+        ? undefined
+        : stegaClean(professionalTitleRaw).trim() || undefined;
+
+    const internalTitleRaw =
       locale === 'zh' && founder.jobTitleZh?.trim()
         ? founder.jobTitleZh
         : founder.jobTitle;
-    const jobTitle =
-      jobTitleRaw == null ? undefined : stegaClean(jobTitleRaw).trim() || undefined;
+    const internalTitle =
+      internalTitleRaw == null
+        ? undefined
+        : stegaClean(internalTitleRaw).trim() || undefined;
+
+    const jobTitle = professionalTitle || internalTitle;
 
     const bioRaw =
       locale === 'zh' && founder.bioZh?.trim() ? founder.bioZh : founder.bio;

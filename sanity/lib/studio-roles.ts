@@ -4,8 +4,8 @@
  */
 
 export const TRANSLATOR_EMAILS: string[] = [
-  // 'karen@vantage.pictures', 'hien@vantage.pictures'
-  'zglorenz@gmail.com'
+  'karen@vantage.pictures', 'hien@vantage.pictures'
+  // 'zglorenz@gmail.com'
 ]
 
 /** Super-admin (full Studio tools + permanent delete). */

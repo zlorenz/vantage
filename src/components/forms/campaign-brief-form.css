@@ -38,6 +38,11 @@
   min-width: 0;
 }
 
+/* Radio/checkbox groups are denser than boxed inputs — extra separation. */
+.vp-form-field:has(.vp-form-option-list) {
+  padding-block: 1rem;
+}
+
 .vp-form-name-block {
   display: flex;
   flex-direction: column;
@@ -86,7 +91,7 @@
 }
 
 .vp-form-control::placeholder {
-  color: var(--vp-text-muted);
+  color: var(--vp-form-helper-muted);
   opacity: 1;
 }
 
@@ -106,6 +111,16 @@
   border-color: var(--vp-form-error-border);
 }
 
+.vp-form-control--date {
+  color-scheme: dark;
+}
+
+.vp-form-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .vp-form-textarea {
   min-height: var(--vp-form-textarea-min-height);
   resize: vertical;
@@ -113,9 +128,14 @@
 
 .vp-field-hint {
   margin-top: 0.25rem;
-  color: var(--vp-text-muted);
+  color: var(--vp-form-helper-muted);
   font-size: 0.75rem;
   line-height: 1.4;
+}
+
+.vp-field-hint--before {
+  margin-top: 0.25rem;
+  margin-bottom: 0.65rem;
 }
 
 .vp-form-select-wrap {
@@ -139,11 +159,9 @@
   appearance: none;
   cursor: pointer;
   padding-right: 2.25rem;
-  text-transform: uppercase;
 }
 
 .vp-form-select option {
-  text-transform: uppercase;
   background: #111;
   color: var(--vp-text);
 }
@@ -177,6 +195,23 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+}
+
+.vp-form-checkbox-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.vp-form-checkbox-extra {
+  /* Align under option label, past the checkbox box + gap */
+  padding-left: calc(1.125rem + 0.65rem);
+}
+
+.vp-form-control--compact {
+  min-height: 2.25rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9em;
 }
 
 .vp-form-radio,
@@ -252,8 +287,59 @@
   grid-column: 1 / -1;
 }
 
+.vp-form-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 11rem;
+  padding: 1.75rem 1.25rem;
+  border: 1px dashed var(--vp-input-border);
+  background: var(--vp-input-bg);
+  text-align: center;
+  transition:
+    background-color var(--vp-transition-fast),
+    border-color var(--vp-transition-fast);
+}
+
+.vp-form-dropzone--active {
+  border-color: var(--vp-input-border-focus);
+  background: var(--vp-input-bg-focus);
+}
+
+.vp-form-dropzone--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.vp-form-dropzone-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--vp-form-helper-muted);
+  margin-bottom: 0.25rem;
+}
+
+.vp-form-dropzone--active .vp-form-dropzone-icon {
+  color: var(--vp-text);
+}
+
+.vp-form-dropzone-title {
+  margin: 0;
+  color: var(--vp-text);
+  font-size: var(--vp-form-input-size);
+  font-weight: 600;
+}
+
+.vp-form-dropzone-or {
+  margin: 0;
+  color: var(--vp-form-helper-muted);
+  font-size: 0.8rem;
+}
+
 .vp-form-attach-btn {
   display: inline-block;
+  margin-top: 0.35rem;
   padding: var(--vp-btn-padding);
   border: 1px solid var(--vp-btn-ghost-border);
   border-radius: 0;
@@ -366,23 +452,108 @@
   letter-spacing: var(--vp-btn-letter-spacing);
 }
 
-/* Numbered-circle step progress */
+/* Full-width timeline step progress — first/last align to container edges */
 .vp-form-step-progress {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 0.5rem;
+  width: 100%;
+  align-items: flex-start;
   margin: 0 0 2rem;
   padding: 0;
   list-style: none;
-  overflow-x: auto;
 }
 
 .vp-form-step-progress-item {
+  position: relative;
   display: flex;
-  flex-shrink: 0;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.vp-form-step-progress-item:first-child {
+  align-items: flex-start;
+}
+
+.vp-form-step-progress-item:last-child {
+  align-items: flex-end;
+}
+
+.vp-form-step-progress-item:not(:first-child):not(:last-child) {
   align-items: center;
-  gap: 0.5rem;
+}
+
+/* Connector segments — start outside each circle so lines don't overlap nodes */
+.vp-form-step-progress-item:first-child:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--vp-form-step-circle-size) / 2);
+  left: calc(var(--vp-form-step-circle-size) + 0.5rem);
+  right: 0;
+  height: 1px;
+  background: var(--vp-form-step-border);
+}
+
+.vp-form-step-progress-item:not(:first-child):not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--vp-form-step-circle-size) / 2);
+  left: 0;
+  width: calc(50% - var(--vp-form-step-circle-size) / 2 - 0.5rem);
+  height: 1px;
+  background: var(--vp-form-step-border);
+}
+
+.vp-form-step-progress-item:not(:first-child):not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--vp-form-step-circle-size) / 2);
+  left: calc(50% + var(--vp-form-step-circle-size) / 2 + 0.5rem);
+  right: 0;
+  height: 1px;
+  background: var(--vp-form-step-border);
+}
+
+.vp-form-step-progress-item:last-child:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--vp-form-step-circle-size) / 2);
+  left: 0;
+  right: calc(var(--vp-form-step-circle-size) + 0.5rem);
+  height: 1px;
+  background: var(--vp-form-step-border);
+}
+
+.vp-form-step-progress-item--completed:first-child:not(:last-child)::after,
+.vp-form-step-progress-item--completed:not(:first-child):not(:last-child)::before,
+.vp-form-step-progress-item--completed:not(:first-child):not(:last-child)::after,
+.vp-form-step-progress-item--completed:last-child:not(:first-child)::before,
+.vp-form-step-progress-item--active:not(:first-child):not(:last-child)::before,
+.vp-form-step-progress-item--active:last-child:not(:first-child)::before {
+  background: var(--vp-text);
+}
+
+.vp-form-step-progress-node {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-width: 100%;
+}
+
+.vp-form-step-progress-item:first-child .vp-form-step-progress-node {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.vp-form-step-progress-item:last-child .vp-form-step-progress-node {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.vp-form-step-progress-item:not(:first-child):not(:last-child) .vp-form-step-progress-node {
+  align-items: center;
+  text-align: center;
 }
 
 .vp-form-step-progress-circle {
@@ -393,7 +564,7 @@
   height: var(--vp-form-step-circle-size);
   border: 1px solid var(--vp-form-step-border);
   border-radius: 50%;
-  background: transparent;
+  background: var(--vp-bg, #000);
   color: var(--vp-form-step-pending-text);
   font-size: 0.85rem;
   font-weight: 700;
@@ -420,31 +591,57 @@
   pointer-events: none;
 }
 
-.vp-form-step-progress-item:hover .vp-form-step-progress-circle[title] {
+.vp-form-step-progress-item--completed .vp-form-step-progress-circle:hover {
   border-color: var(--vp-text);
 }
 
 .vp-form-step-progress-label {
-  max-width: 12rem;
-  overflow: hidden;
-  color: var(--vp-text);
-  font-size: 0.8rem;
+  color: var(--vp-form-helper-muted);
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: var(--vp-uppercase-spacing);
-  text-overflow: ellipsis;
+  line-height: 1.25;
   text-transform: uppercase;
-  white-space: nowrap;
+}
+
+.vp-form-step-progress-item--active .vp-form-step-progress-label,
+.vp-form-step-progress-item--completed .vp-form-step-progress-label {
+  color: var(--vp-text);
 }
 
 @media (max-width: 767px) {
   .vp-form-step-progress-circle {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
     font-size: 0.75rem;
   }
 
+  .vp-form-step-progress-item:first-child:not(:last-child)::after,
+  .vp-form-step-progress-item:not(:first-child):not(:last-child)::before,
+  .vp-form-step-progress-item:not(:first-child):not(:last-child)::after,
+  .vp-form-step-progress-item:last-child:not(:first-child)::before {
+    top: calc(1.75rem / 2);
+  }
+
+  .vp-form-step-progress-item:first-child:not(:last-child)::after {
+    left: calc(1.75rem + 0.35rem);
+  }
+
+  .vp-form-step-progress-item:not(:first-child):not(:last-child)::before {
+    width: calc(50% - 1.75rem / 2 - 0.35rem);
+  }
+
+  .vp-form-step-progress-item:not(:first-child):not(:last-child)::after {
+    left: calc(50% + 1.75rem / 2 + 0.35rem);
+  }
+
+  .vp-form-step-progress-item:last-child:not(:first-child)::before {
+    right: calc(1.75rem + 0.35rem);
+  }
+
   .vp-form-step-progress-label {
-    display: none;
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
   }
 }
 

@@ -1,9 +1,7 @@
 'use client';
 
 /**
- * useCampaignBriefForm — state management for the 7-step Campaign Brief form.
- * Handles field values, step navigation, conditional visibility, file uploads,
- * validation (on next/submit only), and multipart submission to the API route.
+ * useCampaignBriefForm — state for the 3-step branching Campaign Brief form.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -12,83 +10,58 @@ import {
   CAMPAIGN_BRIEF_MAX_FILES,
   CAMPAIGN_BRIEF_REQUIRED_FIELDS,
   CAMPAIGN_BRIEF_STEPS,
-  REFERRAL_DISCOVERY_SOURCES,
+  budgetOptionsForCampaignType,
+  type CampaignBriefArrayFieldKey,
   type CampaignBriefFieldKey,
   type CampaignBriefStepConfig,
 } from '@/lib/campaign-brief-fields';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import type { Locale } from '@/i18n/routing';
 
-/** Submission lifecycle — drives loading spinner, success screen, error message. */
 export type CampaignBriefSubmissionState = 'idle' | 'submitting' | 'success' | 'error';
 
-/** Per-field validation errors — keys match form fields plus optional files key. */
 export type CampaignBriefFieldErrors = Partial<Record<CampaignBriefFieldKey | 'files', string>>;
 
-/**
- * All 42 field values.
- * Text/select/radio/textarea fields are strings; deliverables is a checkbox array.
- */
 export interface CampaignBriefFormValues {
-  project_title: string;
-  company_name: string;
-  project_type: string;
-  discovery_source: string;
-  referral_source_other: string;
-  referrer_name: string;
   contact_name_first: string;
   contact_name_last: string;
-  contact_job_title: string;
+  company_name: string;
   contact_email: string;
-  contact_phone: string;
-  campaign_goals: string;
-  key_message: string;
-  target_audience: string;
-  desired_runtime: string;
-  video_tone_style: string;
-  reference_videos: string;
-  campaign_keywords_or_avoidances: string;
-  budget_range: string;
-  distribution_channels: string;
-  target_regions: string;
-  usage_rights_term: string;
-  delivery_deadline: string;
-  delivery_flexibility: string;
-  launch_timing: string;
+  discovery_source: string;
+  campaign_title: string;
+  campaign_type: string;
   brand_description: string;
-  brand_mission: string;
-  campaign_focus: string;
-  product_name: string;
-  product_key_features: string;
-  market_pain_points: string;
-  product_differentiators: string;
-  deliverables: string[];
-  cutdown_durations: string;
-  cutdown_distribution: string;
-  social_channels: string;
-  social_aspect_ratios: string;
-  social_platform_requirements: string;
-  stills_type: string;
-  photography_requirements: string;
-  stills_quantity: string;
+  product_description: string;
+  campaign_description: string;
+  target_audience: string;
+  reference_videos: string;
+  delivery_deadline: string;
+  delivery_deadline_unknown: boolean;
+  delivery_deadline_note: string;
+  extra_deliverables: string[];
+  extra_deliverables_other_note: string;
+  budget_range: string;
+  project_description: string;
+  shoot_event_date: string;
+  shoot_event_date_unknown: boolean;
+  shoot_event_date_note: string;
+  production_scope: string;
+  social_channels: string[];
+  aspect_ratios: string[];
   additional_notes: string;
 }
 
-/**
- * Computed visibility flags for conditional fields/sections.
- * Derived from current values — step components receive these as props.
- */
 export interface CampaignBriefVisibility {
-  showReferralSourceOther: boolean;
-  showReferrerName: boolean;
-  showLaunchTiming: boolean;
-  showProductDetails: boolean;
-  showCutdownsSection: boolean;
-  showSocialSection: boolean;
-  showStillsSection: boolean;
+  showProductBranch: boolean;
+  showBrandingBranch: boolean;
+  showDocumentaryBranch: boolean;
+  showSocialBranch: boolean;
+  showOtherBranch: boolean;
+  showExtraDeliverables: boolean;
+  showExtraDeliverablesOtherNote: boolean;
+  showPostProdDeadline: boolean;
 }
 
-/** Return type of useCampaignBriefForm — consumed by CampaignBriefForm + step components. */
 export interface UseCampaignBriefFormReturn {
   currentStep: number;
   currentStepConfig: CampaignBriefStepConfig;
@@ -97,8 +70,8 @@ export interface UseCampaignBriefFormReturn {
   prevStep: () => void;
   goToStep: (step: number) => void;
   values: CampaignBriefFormValues;
-  setFieldValue: (key: CampaignBriefFieldKey, value: string | string[]) => void;
-  toggleDeliverable: (option: string) => void;
+  setFieldValue: (key: CampaignBriefFieldKey, value: string | string[] | boolean) => void;
+  toggleArrayValue: (key: CampaignBriefArrayFieldKey, option: string) => void;
   errors: CampaignBriefFieldErrors;
   hasError: (key: CampaignBriefFieldKey | 'files') => boolean;
   clearStepErrors: () => void;
@@ -117,96 +90,82 @@ export interface UseCampaignBriefFormReturn {
   setHoneypot: (value: string) => void;
 }
 
-/** Required fields validated when leaving each step via nextStep(). */
 const STEP_REQUIRED_FIELDS: Record<number, CampaignBriefFieldKey[]> = {
-  1: ['project_title', 'company_name'],
-  2: ['contact_name_first', 'contact_name_last', 'contact_email'],
-  3: ['budget_range'],
-  5: ['campaign_focus'],
+  1: ['contact_name_first', 'contact_name_last', 'company_name', 'contact_email'],
+  2: ['campaign_title', 'campaign_type', 'budget_range'],
 };
+
+/**
+ * TEMP DEV ONLY — set to `false` before shipping.
+ * When true, Next skips required-field checks so empty steps can be skimmed.
+ */
+const SKIP_STEP_REQUIRED_VALIDATION = false;
 
 const ALLOWED_EXTENSIONS = new Set<string>(CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS);
 
-/** Empty initial state for all 42 fields. */
 function createInitialValues(): CampaignBriefFormValues {
   return {
-    project_title: '',
-    company_name: '',
-    project_type: '',
-    discovery_source: '',
-    referral_source_other: '',
-    referrer_name: '',
     contact_name_first: '',
     contact_name_last: '',
-    contact_job_title: '',
+    company_name: '',
     contact_email: '',
-    contact_phone: '',
-    campaign_goals: '',
-    key_message: '',
-    target_audience: '',
-    desired_runtime: '',
-    video_tone_style: '',
-    reference_videos: '',
-    campaign_keywords_or_avoidances: '',
-    budget_range: '',
-    distribution_channels: '',
-    target_regions: '',
-    usage_rights_term: '',
-    delivery_deadline: '',
-    delivery_flexibility: '',
-    launch_timing: '',
+    discovery_source: '',
+    campaign_title: '',
+    campaign_type: '',
     brand_description: '',
-    brand_mission: '',
-    campaign_focus: '',
-    product_name: '',
-    product_key_features: '',
-    market_pain_points: '',
-    product_differentiators: '',
-    deliverables: [],
-    cutdown_durations: '',
-    cutdown_distribution: '',
-    social_channels: '',
-    social_aspect_ratios: '',
-    social_platform_requirements: '',
-    stills_type: '',
-    photography_requirements: '',
-    stills_quantity: '',
+    product_description: '',
+    campaign_description: '',
+    target_audience: '',
+    reference_videos: '',
+    delivery_deadline: '',
+    delivery_deadline_unknown: false,
+    delivery_deadline_note: '',
+    extra_deliverables: [],
+    extra_deliverables_other_note: '',
+    budget_range: '',
+    project_description: '',
+    shoot_event_date: '',
+    shoot_event_date_unknown: false,
+    shoot_event_date_note: '',
+    production_scope: '',
+    social_channels: [],
+    aspect_ratios: [],
     additional_notes: '',
   };
 }
 
-/**
- * Compute conditional field/section visibility from current values.
- * Hidden fields retain their values when toggled off (Gravity Forms behaviour).
- */
 function computeVisibility(values: CampaignBriefFormValues): CampaignBriefVisibility {
+  const type = values.campaign_type;
+  const showProductBranch = type === 'Product Campaign';
+  const showBrandingBranch = type === 'Branding Campaign';
+  const showDocumentaryBranch = type === 'Documentary / Live Event';
+  const showSocialBranch = type === 'Social Media';
+  const showOtherBranch = type === 'Other';
+  const showExtraDeliverables = showProductBranch || showBrandingBranch;
+
   return {
-    showReferralSourceOther: values.discovery_source === 'Other',
-    showReferrerName: REFERRAL_DISCOVERY_SOURCES.has(values.discovery_source),
-    showLaunchTiming:
-      values.delivery_flexibility === 'Fixed' || values.delivery_flexibility === 'Not sure yet',
-    showProductDetails: values.campaign_focus === 'Yes',
-    showCutdownsSection: values.deliverables.includes('Cutdowns'),
-    showSocialSection: values.deliverables.includes('Social versions'),
-    showStillsSection: values.deliverables.includes('Key visuals'),
+    showProductBranch,
+    showBrandingBranch,
+    showDocumentaryBranch,
+    showSocialBranch,
+    showOtherBranch,
+    showExtraDeliverables,
+    showExtraDeliverablesOtherNote:
+      showExtraDeliverables && values.extra_deliverables.includes('Other'),
+    showPostProdDeadline:
+      showDocumentaryBranch && values.production_scope === 'Filming + post-production',
   };
 }
 
-/** Basic email format check — matches API route validation. */
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/** Lowercase file extension from filename. */
 function getExtension(filename: string): string {
   const parts = filename.split('.');
   return parts.length > 1 ? (parts.pop()?.toLowerCase() ?? '') : '';
 }
 
-/**
- * Validate a set of fields — returns errors object (empty object = valid).
- * Validation only runs on nextStep() or submit(), never on blur.
- */
 function validateFields(
   values: CampaignBriefFormValues,
   keys: CampaignBriefFieldKey[],
@@ -215,8 +174,12 @@ function validateFields(
   const errors: CampaignBriefFieldErrors = {};
 
   for (const key of keys) {
-    const value = values[key];
-    const empty = Array.isArray(value) ? value.length === 0 : !String(value).trim();
+    const value = values[key as keyof CampaignBriefFormValues];
+    const empty = Array.isArray(value)
+      ? value.length === 0
+      : typeof value === 'boolean'
+        ? false
+        : !String(value).trim();
     if (empty) {
       errors[key] = messages.fieldRequired;
     }
@@ -229,9 +192,6 @@ function validateFields(
   return errors;
 }
 
-/**
- * Validate file list — count and extension checks mirror the API route.
- */
 function validateFiles(
   files: File[],
   messages: {
@@ -253,10 +213,6 @@ function validateFiles(
   return null;
 }
 
-/**
- * Build multipart FormData for POST /api/campaign-brief.
- * Includes spam-protection fields consumed by the API route.
- */
 function buildFormData(
   values: CampaignBriefFormValues,
   files: File[],
@@ -264,13 +220,20 @@ function buildFormData(
   formStartTime: number,
 ): FormData {
   const formData = new FormData();
+  const arrayKeys = new Set<CampaignBriefArrayFieldKey>([
+    'extra_deliverables',
+    'social_channels',
+    'aspect_ratios',
+  ]);
 
-  for (const key of Object.keys(values) as CampaignBriefFieldKey[]) {
+  for (const key of Object.keys(values) as Array<keyof CampaignBriefFormValues>) {
     const value = values[key];
-    if (key === 'deliverables' && Array.isArray(value)) {
+    if (arrayKeys.has(key as CampaignBriefArrayFieldKey) && Array.isArray(value)) {
       for (const item of value) {
-        formData.append('deliverables', item);
+        formData.append(key, item);
       }
+    } else if (typeof value === 'boolean') {
+      if (value) formData.append(key, 'true');
     } else if (typeof value === 'string') {
       formData.append(key, value);
     }
@@ -286,10 +249,6 @@ function buildFormData(
   return formData;
 }
 
-/**
- * Push GTM data layer event on successful submission — deduped per page load.
- * Matches legacy gf-brief-datalayer.js behaviour.
- */
 function pushBriefSubmitEvent(): void {
   if (typeof window === 'undefined') return;
 
@@ -309,13 +268,7 @@ function pushBriefSubmitEvent(): void {
   w._vp_brief_pushed = true;
 }
 
-/**
- * Manages complete Campaign Brief form state: 7 steps, 42 fields,
- * conditional visibility, file uploads, validation, and submission.
- */
-export function useCampaignBriefForm(
-  locale: Locale = 'en',
-): UseCampaignBriefFormReturn {
+export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFormReturn {
   const formStartTimeRef = useRef(Date.now());
   const ui = useMemo(() => getCampaignBriefUi(locale), [locale]);
   const validationMessages = useMemo(
@@ -340,18 +293,33 @@ export function useCampaignBriefForm(
   );
 
   const isDisabled = submissionState === 'submitting';
+  const totalSteps = CAMPAIGN_BRIEF_STEPS.length;
 
-  const setFieldValue = useCallback((key: CampaignBriefFieldKey, value: string | string[]) => {
-    setValues((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const setFieldValue = useCallback(
+    (key: CampaignBriefFieldKey, value: string | string[] | boolean) => {
+      setValues((prev) => {
+        const next = { ...prev, [key]: value } as CampaignBriefFormValues;
 
-  const toggleDeliverable = useCallback((option: string) => {
+        if (key === 'campaign_type' && typeof value === 'string') {
+          const allowed = budgetOptionsForCampaignType(value);
+          if (next.budget_range && !allowed.includes(next.budget_range)) {
+            next.budget_range = '';
+          }
+        }
+
+        return next;
+      });
+    },
+    [],
+  );
+
+  const toggleArrayValue = useCallback((key: CampaignBriefArrayFieldKey, option: string) => {
     setValues((prev) => {
-      const current = prev.deliverables;
+      const current = prev[key];
       const next = current.includes(option)
-        ? current.filter((d) => d !== option)
+        ? current.filter((item) => item !== option)
         : [...current, option];
-      return { ...prev, deliverables: next };
+      return { ...prev, [key]: next };
     });
   }, []);
 
@@ -373,11 +341,14 @@ export function useCampaignBriefForm(
 
   const nextStep = useCallback((): boolean => {
     const stepFields = STEP_REQUIRED_FIELDS[currentStep] ?? [];
-    const stepErrors = validateFields(values, stepFields, validationMessages);
 
-    if (Object.keys(stepErrors).length > 0) {
-      setErrors((prev) => ({ ...prev, ...stepErrors }));
-      return false;
+    if (!SKIP_STEP_REQUIRED_VALIDATION) {
+      const stepErrors = validateFields(values, stepFields, validationMessages);
+
+      if (Object.keys(stepErrors).length > 0) {
+        setErrors((prev) => ({ ...prev, ...stepErrors }));
+        return false;
+      }
     }
 
     setErrors((prev) => {
@@ -388,12 +359,12 @@ export function useCampaignBriefForm(
       return next;
     });
 
-    if (currentStep < CAMPAIGN_BRIEF_STEPS.length) {
+    if (currentStep < totalSteps) {
       setCurrentStep((s) => s + 1);
     }
 
     return true;
-  }, [currentStep, values, validationMessages]);
+  }, [currentStep, values, validationMessages, totalSteps]);
 
   const prevStep = useCallback(() => {
     if (currentStep <= 1) return;
@@ -401,7 +372,6 @@ export function useCampaignBriefForm(
     setCurrentStep((s) => s - 1);
   }, [currentStep, clearStepErrors]);
 
-  /** Jump backward to a completed step — used by step indicator clicks. */
   const goToStep = useCallback(
     (step: number) => {
       if (step < 1 || step >= currentStep) return;
@@ -508,7 +478,6 @@ export function useCampaignBriefForm(
     }
   }, [values, files, honeypot, validationMessages, ui, locale]);
 
-  /** Reset all form state — returns to step 1 for "Submit another brief". */
   const resetForm = useCallback(() => {
     formStartTimeRef.current = Date.now();
     setCurrentStep(1);
@@ -535,7 +504,7 @@ export function useCampaignBriefForm(
     goToStep,
     values,
     setFieldValue,
-    toggleDeliverable,
+    toggleArrayValue,
     errors,
     hasError,
     clearStepErrors,

@@ -1,9 +1,12 @@
 /**
  * Campaign Brief form submission handler.
- * Accepts multipart/form-data, validates, then fires Resend email + Lark webhook in parallel.
+ * Accepts multipart/form-data, validates, then fires Resend (team) + Lark in parallel,
+ * plus a best-effort branded confirmation email to the submitter.
  * No submission data is stored — fire-and-forward only.
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import {
@@ -11,7 +14,7 @@ import {
   CAMPAIGN_BRIEF_FIELD_LABELS,
   CAMPAIGN_BRIEF_MAX_FILES,
   CAMPAIGN_BRIEF_REQUIRED_FIELDS,
-  CAMPAIGN_BRIEF_STEPS,
+  emailFieldsForCampaignType,
   type CampaignBriefFieldKey,
 } from '@/lib/campaign-brief-fields';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
@@ -29,28 +32,20 @@ function resolveLocale(formData: FormData): Locale {
   return getString(formData, 'locale') === 'zh' ? 'zh' : 'en';
 }
 
-/** Parsed file held in memory for the request lifetime only. */
 interface ParsedUpload {
   filename: string;
   contentType: string;
   buffer: Buffer;
 }
 
-/** Structured validation errors keyed by field name. */
 type FieldErrors = Partial<Record<CampaignBriefFieldKey | 'files', string>>;
 
-/**
- * Extract a trimmed string from FormData for a given key.
- */
 function getString(formData: FormData, key: string): string {
   const value = formData.get(key);
   if (typeof value === 'string') return value.trim();
   return '';
 }
 
-/**
- * Extract checkbox values — deliverables submitted as repeated keys.
- */
 function getStringArray(formData: FormData, key: string): string[] {
   return formData
     .getAll(key)
@@ -59,24 +54,20 @@ function getStringArray(formData: FormData, key: string): string[] {
     .filter(Boolean);
 }
 
-/**
- * Basic email format check for lead form validation.
- */
+function getBoolFlag(formData: FormData, key: string): string {
+  const value = getString(formData, key).toLowerCase();
+  return value === 'true' || value === '1' || value === 'on' ? 'true' : '';
+}
+
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/**
- * Lowercase file extension from filename.
- */
 function getExtension(filename: string): string {
   const parts = filename.split('.');
   return parts.length > 1 ? (parts.pop()?.toLowerCase() ?? '') : '';
 }
 
-/**
- * Parse uploaded files from FormData — memory only, never written to disk.
- */
 async function parseUploads(
   formData: FormData,
   locale: Locale,
@@ -111,59 +102,42 @@ async function parseUploads(
   return { files };
 }
 
-/**
- * Build flat record of all 42 field values from FormData.
- */
 function parseFields(formData: FormData): Record<CampaignBriefFieldKey, string | string[]> {
+  const deliveryUnknown = getBoolFlag(formData, 'delivery_deadline_unknown');
+  const shootUnknown = getBoolFlag(formData, 'shoot_event_date_unknown');
+
   return {
-    project_title: getString(formData, 'project_title'),
-    company_name: getString(formData, 'company_name'),
-    project_type: getString(formData, 'project_type'),
-    discovery_source: getString(formData, 'discovery_source'),
-    referral_source_other: getString(formData, 'referral_source_other'),
-    referrer_name: getString(formData, 'referrer_name'),
     contact_name_first: getString(formData, 'contact_name_first'),
     contact_name_last: getString(formData, 'contact_name_last'),
-    contact_job_title: getString(formData, 'contact_job_title'),
+    company_name: getString(formData, 'company_name'),
     contact_email: getString(formData, 'contact_email'),
-    contact_phone: getString(formData, 'contact_phone'),
-    campaign_goals: getString(formData, 'campaign_goals'),
-    key_message: getString(formData, 'key_message'),
-    target_audience: getString(formData, 'target_audience'),
-    desired_runtime: getString(formData, 'desired_runtime'),
-    video_tone_style: getString(formData, 'video_tone_style'),
-    reference_videos: getString(formData, 'reference_videos'),
-    campaign_keywords_or_avoidances: getString(formData, 'campaign_keywords_or_avoidances'),
-    budget_range: getString(formData, 'budget_range'),
-    distribution_channels: getString(formData, 'distribution_channels'),
-    target_regions: getString(formData, 'target_regions'),
-    usage_rights_term: getString(formData, 'usage_rights_term'),
-    delivery_deadline: getString(formData, 'delivery_deadline'),
-    delivery_flexibility: getString(formData, 'delivery_flexibility'),
-    launch_timing: getString(formData, 'launch_timing'),
+    discovery_source: getString(formData, 'discovery_source'),
+    campaign_title: getString(formData, 'campaign_title'),
+    campaign_type: getString(formData, 'campaign_type'),
     brand_description: getString(formData, 'brand_description'),
-    brand_mission: getString(formData, 'brand_mission'),
-    campaign_focus: getString(formData, 'campaign_focus'),
-    product_name: getString(formData, 'product_name'),
-    product_key_features: getString(formData, 'product_key_features'),
-    market_pain_points: getString(formData, 'market_pain_points'),
-    product_differentiators: getString(formData, 'product_differentiators'),
-    deliverables: getStringArray(formData, 'deliverables'),
-    cutdown_durations: getString(formData, 'cutdown_durations'),
-    cutdown_distribution: getString(formData, 'cutdown_distribution'),
-    social_channels: getString(formData, 'social_channels'),
-    social_aspect_ratios: getString(formData, 'social_aspect_ratios'),
-    social_platform_requirements: getString(formData, 'social_platform_requirements'),
-    stills_type: getString(formData, 'stills_type'),
-    photography_requirements: getString(formData, 'photography_requirements'),
-    stills_quantity: getString(formData, 'stills_quantity'),
+    product_description: getString(formData, 'product_description'),
+    campaign_description: getString(formData, 'campaign_description'),
+    target_audience: getString(formData, 'target_audience'),
+    reference_videos: getString(formData, 'reference_videos'),
+    delivery_deadline: deliveryUnknown ? '' : getString(formData, 'delivery_deadline'),
+    delivery_deadline_unknown: deliveryUnknown,
+    delivery_deadline_note: deliveryUnknown
+      ? getString(formData, 'delivery_deadline_note')
+      : '',
+    extra_deliverables: getStringArray(formData, 'extra_deliverables'),
+    extra_deliverables_other_note: getString(formData, 'extra_deliverables_other_note'),
+    budget_range: getString(formData, 'budget_range'),
+    project_description: getString(formData, 'project_description'),
+    shoot_event_date: shootUnknown ? '' : getString(formData, 'shoot_event_date'),
+    shoot_event_date_unknown: shootUnknown,
+    shoot_event_date_note: shootUnknown ? getString(formData, 'shoot_event_date_note') : '',
+    production_scope: getString(formData, 'production_scope'),
+    social_channels: getStringArray(formData, 'social_channels'),
+    aspect_ratios: getStringArray(formData, 'aspect_ratios'),
     additional_notes: getString(formData, 'additional_notes'),
   };
 }
 
-/**
- * Validate required fields and email format.
- */
 function validateFields(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
   locale: Locale,
@@ -186,9 +160,6 @@ function validateFields(
   return errors;
 }
 
-/**
- * Escape HTML entities for safe inclusion in email body.
- */
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -197,9 +168,6 @@ function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;');
 }
 
-/**
- * Format a field value for display — empty values shown as em dash.
- */
 function formatValue(value: string | string[] | undefined): string {
   if (!value || (Array.isArray(value) && value.length === 0)) return '—';
   if (Array.isArray(value)) return escapeHtml(value.join(', '));
@@ -207,38 +175,111 @@ function formatValue(value: string | string[] | undefined): string {
   return trimmed ? escapeHtml(trimmed).replace(/\n/g, '<br>') : '—';
 }
 
+function formatDateFieldDisplay(
+  fields: Record<CampaignBriefFieldKey, string | string[]>,
+  dateKey: 'delivery_deadline' | 'shoot_event_date',
+): string {
+  const unknownKey =
+    dateKey === 'delivery_deadline'
+      ? 'delivery_deadline_unknown'
+      : 'shoot_event_date_unknown';
+  const noteKey =
+    dateKey === 'delivery_deadline' ? 'delivery_deadline_note' : 'shoot_event_date_note';
+
+  if (String(fields[unknownKey]) === 'true') {
+    const note = String(fields[noteKey] ?? '').trim();
+    return note
+      ? `No specific date yet — ${escapeHtml(note)}`
+      : 'No specific date yet';
+  }
+
+  return formatValue(fields[dateKey]);
+}
+
+function emailRow(label: string, valueHtml: string): string {
+  return `<tr><td style="padding:8px 16px 8px 0;font-weight:600;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td><td style="padding:8px 0;vertical-align:top;">${valueHtml}</td></tr>`;
+}
+
+function buildSection(title: string, rows: string): string {
+  return `
+      <h2 style="margin:24px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #ddd;padding-bottom:4px;">${escapeHtml(title)}</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">${rows}</table>
+    `;
+}
+
 /**
- * Build grouped HTML email body from all submitted fields.
+ * Build grouped HTML email — Contact, branch-relevant Campaign Details, Final Notes.
  */
 function buildEmailHtml(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
   files: ParsedUpload[],
 ): string {
-  const sections = CAMPAIGN_BRIEF_STEPS.map((step) => {
-    const rows = step.fields
-      .map((key) => {
-        const label = CAMPAIGN_BRIEF_FIELD_LABELS[key];
-        return `<tr><td style="padding:8px 16px 8px 0;font-weight:600;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td><td style="padding:8px 0;vertical-align:top;">${formatValue(fields[key])}</td></tr>`;
-      })
-      .join('');
+  const contactKeys: CampaignBriefFieldKey[] = [
+    'contact_name_first',
+    'contact_name_last',
+    'company_name',
+    'contact_email',
+    'discovery_source',
+  ];
 
-    const fileRow =
-      step.step === 7
-        ? `<tr><td style="padding:8px 16px 8px 0;font-weight:600;vertical-align:top;white-space:nowrap;">Briefing materials upload</td><td style="padding:8px 0;vertical-align:top;">${files.length === 0 ? '—' : escapeHtml(files.map((f) => f.filename).join(', '))}</td></tr>`
-        : '';
+  const contactRows = contactKeys
+    .map((key) => emailRow(CAMPAIGN_BRIEF_FIELD_LABELS[key], formatValue(fields[key])))
+    .join('');
 
-    return `
-      <h2 style="margin:24px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #ddd;padding-bottom:4px;">${escapeHtml(step.title)}</h2>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">${rows}${fileRow}</table>
-    `;
-  }).join('');
+  const campaignType = String(fields.campaign_type);
+  let campaignKeys = emailFieldsForCampaignType(campaignType);
+
+  // Documentary: delivery deadline only when post-production is included.
+  if (
+    campaignType === 'Documentary / Live Event' &&
+    String(fields.production_scope) !== 'Filming + post-production'
+  ) {
+    campaignKeys = campaignKeys.filter((key) => key !== 'delivery_deadline');
+  }
+
+  const campaignRows = campaignKeys
+    .map((key) => {
+      if (key === 'delivery_deadline') {
+        return emailRow(
+          CAMPAIGN_BRIEF_FIELD_LABELS.delivery_deadline,
+          formatDateFieldDisplay(fields, 'delivery_deadline'),
+        );
+      }
+      if (key === 'shoot_event_date') {
+        return emailRow(
+          CAMPAIGN_BRIEF_FIELD_LABELS.shoot_event_date,
+          formatDateFieldDisplay(fields, 'shoot_event_date'),
+        );
+      }
+      if (
+        key === 'extra_deliverables_other_note' &&
+        !(Array.isArray(fields.extra_deliverables) && fields.extra_deliverables.includes('Other'))
+      ) {
+        return '';
+      }
+      return emailRow(CAMPAIGN_BRIEF_FIELD_LABELS[key], formatValue(fields[key]));
+    })
+    .join('');
+
+  const fileRow = emailRow(
+    'Upload Files',
+    files.length === 0 ? '—' : escapeHtml(files.map((f) => f.filename).join(', ')),
+  );
+  const finalRows =
+    emailRow(
+      CAMPAIGN_BRIEF_FIELD_LABELS.additional_notes,
+      formatValue(fields.additional_notes),
+    ) + fileRow;
+
+  const sections = [
+    buildSection('Contact', contactRows),
+    buildSection('Campaign Details', campaignRows),
+    buildSection('Final Notes', finalRows),
+  ].join('');
 
   return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;color:#111;max-width:720px;">${sections}</body></html>`;
 }
 
-/**
- * Send notification email via Resend with file attachments.
- */
 async function sendResendEmail(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
   files: ParsedUpload[],
@@ -250,14 +291,14 @@ async function sendResendEmail(
   }
 
   const resend = new Resend(apiKey);
-  const projectTitle = String(fields.project_title);
+  const campaignTitle = String(fields.campaign_title);
   const companyName = String(fields.company_name);
 
   // TODO: verify domain in Resend before production — sender must use verified vantage.pictures domain.
   const { error } = await resend.emails.send({
     from,
     to: BRIEF_RECIPIENT,
-    subject: `New Campaign Brief: ${projectTitle} — ${companyName}`,
+    subject: `New Campaign Brief: ${campaignTitle} — ${companyName}`,
     html: buildEmailHtml(fields, files),
     attachments: files.map((f) => ({
       filename: f.filename,
@@ -268,9 +309,253 @@ async function sendResendEmail(
   if (error) throw new Error(error.message);
 }
 
+const CONFIRMATION_REPLY_TO = 'info@vantage.pictures';
+/** Embedded logo — avoids relying on production /brand/* URLs pre-cutover. */
+const CONFIRMATION_LOGO_DATA_URI = `data:image/png;base64,${readFileSync(
+  join(process.cwd(), 'public/brand/vantage-logo-192.png'),
+).toString('base64')}`;
+
+type ConfirmationCopy = {
+  subject: string;
+  thankYou: string;
+  summaryHeading: string;
+  filesReceived: (filenames: string) => string;
+  noSpecificDate: string;
+  noSpecificDateWithNote: (note: string) => string;
+  signOff: string;
+  contactPrefix: string;
+  visitSite: string;
+};
+
+const CONFIRMATION_COPY: Record<Locale, ConfirmationCopy> = {
+  en: {
+    subject: "We've received your campaign brief — Vantage Pictures",
+    thankYou:
+      "Thanks for sending over your campaign brief. We've received it and will be in touch soon.",
+    summaryHeading: "Here's a copy of what you submitted:",
+    filesReceived: (filenames) => `Files received: ${filenames}`,
+    noSpecificDate: 'No specific date yet',
+    noSpecificDateWithNote: (note) => `No specific date yet — ${note}`,
+    signOff: 'The Vantage Pictures Team',
+    contactPrefix: 'Questions? Email us at',
+    visitSite: 'vantage.pictures',
+  },
+  zh: {
+    subject: '我们已收到您的项目简报 — Vantage Pictures',
+    thankYou: '感谢您提交项目简报。我们已收到，并将尽快与您联系。',
+    summaryHeading: '以下是您提交内容的副本：',
+    filesReceived: (filenames) => `已收到的文件：${filenames}`,
+    noSpecificDate: '暂无具体日期',
+    noSpecificDateWithNote: (note) => `暂无具体日期 — ${note}`,
+    signOff: 'Vantage Pictures 团队',
+    contactPrefix: '如有疑问，请发送邮件至',
+    visitSite: 'vantage.pictures',
+  },
+};
+
+function optionLabelLookup(locale: Locale, campaignType: string): Map<string, string> {
+  const ui = getCampaignBriefUi(locale);
+  const map = new Map<string, string>();
+  const groups = [
+    ui.discoverySources,
+    ui.campaignTypes,
+    ui.productionScopes,
+    ui.extraDeliverables,
+    ui.socialChannels,
+    ui.aspectRatios,
+    ui.budgetOptionsForType(campaignType),
+  ];
+  for (const group of groups) {
+    for (const opt of group) {
+      map.set(opt.value, opt.label);
+    }
+  }
+  return map;
+}
+
+function formatConfirmationValue(
+  value: string | string[] | undefined,
+  labels: Map<string, string>,
+): string {
+  if (!value || (Array.isArray(value) && value.length === 0)) return '—';
+  if (Array.isArray(value)) {
+    return escapeHtml(value.map((v) => labels.get(v) ?? v).join(', '));
+  }
+  const trimmed = value.trim();
+  if (!trimmed) return '—';
+  const labeled = labels.get(trimmed) ?? trimmed;
+  return escapeHtml(labeled).replace(/\n/g, '<br>');
+}
+
+function formatConfirmationDateDisplay(
+  fields: Record<CampaignBriefFieldKey, string | string[]>,
+  dateKey: 'delivery_deadline' | 'shoot_event_date',
+  copy: ConfirmationCopy,
+): string {
+  const unknownKey =
+    dateKey === 'delivery_deadline'
+      ? 'delivery_deadline_unknown'
+      : 'shoot_event_date_unknown';
+  const noteKey =
+    dateKey === 'delivery_deadline' ? 'delivery_deadline_note' : 'shoot_event_date_note';
+
+  if (String(fields[unknownKey]) === 'true') {
+    const note = String(fields[noteKey] ?? '').trim();
+    return note
+      ? escapeHtml(copy.noSpecificDateWithNote(note))
+      : escapeHtml(copy.noSpecificDate);
+  }
+
+  return formatValue(fields[dateKey]);
+}
+
+function confirmationFieldLabel(
+  key: CampaignBriefFieldKey,
+  campaignType: string,
+  locale: Locale,
+): string {
+  const ui = getCampaignBriefUi(locale);
+  if (key === 'campaign_description' && campaignType === 'Social Media') {
+    return ui.campaignDescriptionSocialLabel;
+  }
+  return ui.fieldLabels[key];
+}
+
 /**
- * Send Lark Interactive Card notification — filenames only, no file payloads.
+ * Branded submitter confirmation — table layout, locale-aware copy.
+ * Field list mirrors the team email via emailFieldsForCampaignType().
  */
+function buildConfirmationEmailHtml(
+  locale: Locale,
+  fields: Record<CampaignBriefFieldKey, string | string[]>,
+  uploadedFilenames: string[],
+): string {
+  const copy = CONFIRMATION_COPY[locale];
+  const campaignType = String(fields.campaign_type);
+  const labels = optionLabelLookup(locale, campaignType);
+  const firstName = String(fields.contact_name_first).trim();
+  const greetingText =
+    locale === 'zh'
+      ? firstName
+        ? `${firstName}，您好：`
+        : '您好：'
+      : firstName
+        ? `Hi ${firstName},`
+        : 'Hi,';
+
+  let campaignKeys = emailFieldsForCampaignType(campaignType);
+  if (
+    campaignType === 'Documentary / Live Event' &&
+    String(fields.production_scope) !== 'Filming + post-production'
+  ) {
+    campaignKeys = campaignKeys.filter((key) => key !== 'delivery_deadline');
+  }
+
+  const rows = campaignKeys
+    .map((key) => {
+      if (
+        key === 'extra_deliverables_other_note' &&
+        !(Array.isArray(fields.extra_deliverables) && fields.extra_deliverables.includes('Other'))
+      ) {
+        return '';
+      }
+
+      let valueHtml: string;
+      if (key === 'delivery_deadline') {
+        valueHtml = formatConfirmationDateDisplay(fields, 'delivery_deadline', copy);
+      } else if (key === 'shoot_event_date') {
+        valueHtml = formatConfirmationDateDisplay(fields, 'shoot_event_date', copy);
+      } else {
+        valueHtml = formatConfirmationValue(fields[key], labels);
+      }
+
+      const label = confirmationFieldLabel(key, campaignType, locale);
+      return `<tr>
+        <td style="padding:10px 16px 10px 0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;font-weight:600;color:#111;vertical-align:top;width:40%;">${escapeHtml(label)}</td>
+        <td style="padding:10px 0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;color:#333;vertical-align:top;">${valueHtml}</td>
+      </tr>`;
+    })
+    .join('');
+
+  const filesBlock =
+    uploadedFilenames.length > 0
+      ? `<p style="margin:24px 0 0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;color:#333;line-height:1.5;">${escapeHtml(copy.filesReceived(uploadedFilenames.join(', ')))}</p>`
+      : '';
+
+  return `<!DOCTYPE html>
+<html lang="${locale === 'zh' ? 'zh-CN' : 'en'}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-collapse:collapse;">
+          <tr>
+            <td align="center" style="background:#000000;padding:28px 24px;">
+              <img src="${CONFIRMATION_LOGO_DATA_URI}" alt="Vantage Pictures" width="96" height="96" style="display:block;margin:0 auto;border:0;outline:none;width:96px;height:auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px 28px 8px;font-family:system-ui,-apple-system,sans-serif;font-size:16px;color:#111;line-height:1.5;">
+              <p style="margin:0 0 16px;">${escapeHtml(greetingText)}</p>
+              <p style="margin:0 0 24px;">${escapeHtml(copy.thankYou)}</p>
+              <p style="margin:0 0 12px;font-weight:600;">${escapeHtml(copy.summaryHeading)}</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-top:2px solid #f9db24;padding-top:4px;">
+                ${rows}
+              </table>
+              ${filesBlock}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 28px 36px;font-family:system-ui,-apple-system,sans-serif;font-size:14px;color:#555;line-height:1.6;">
+              <div style="border-top:1px solid #eee;padding-top:24px;">
+                <p style="margin:0 0 8px;color:#111;font-weight:600;">${escapeHtml(copy.signOff)}</p>
+                <p style="margin:0 0 4px;">${escapeHtml(copy.contactPrefix)} <a href="mailto:info@vantage.pictures" style="color:#f9db24;text-decoration:none;">info@vantage.pictures</a></p>
+                <p style="margin:0;"><a href="https://vantage.pictures" style="color:#f9db24;text-decoration:none;">${escapeHtml(copy.visitSite)}</a></p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+async function sendConfirmationEmail(
+  locale: Locale,
+  fields: Record<CampaignBriefFieldKey, string | string[]>,
+  files: ParsedUpload[],
+): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!apiKey || !from) {
+    throw new Error('Email service is not configured.');
+  }
+
+  const toEmail = String(fields.contact_email).trim();
+  if (!toEmail || !isValidEmail(toEmail)) {
+    throw new Error(`Invalid confirmation recipient: ${toEmail || '(empty)'}`);
+  }
+
+  const resend = new Resend(apiKey);
+  const copy = CONFIRMATION_COPY[locale];
+  const { error } = await resend.emails.send({
+    from,
+    to: toEmail,
+    replyTo: CONFIRMATION_REPLY_TO,
+    subject: copy.subject,
+    html: buildConfirmationEmailHtml(
+      locale,
+      fields,
+      files.map((f) => f.filename),
+    ),
+  });
+
+  if (error) throw new Error(error.message);
+}
+
 async function sendLarkNotification(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
   files: ParsedUpload[],
@@ -279,7 +564,7 @@ async function sendLarkNotification(
   if (!webhookUrl) throw new Error('Lark webhook is not configured.');
 
   const contactName = `${fields.contact_name_first} ${fields.contact_name_last}`.trim();
-  const projectType = String(fields.project_type).trim() || '—';
+  const campaignType = String(fields.campaign_type).trim() || '—';
   const fileNote =
     files.length === 0
       ? 'No files attached'
@@ -297,7 +582,7 @@ async function sendLarkNotification(
         fields: [
           {
             is_short: true,
-            text: { tag: 'lark_md', content: `**Project**\n${fields.project_title}` },
+            text: { tag: 'lark_md', content: `**Campaign**\n${fields.campaign_title}` },
           },
           {
             is_short: true,
@@ -317,7 +602,7 @@ async function sendLarkNotification(
           },
           {
             is_short: true,
-            text: { tag: 'lark_md', content: `**Project type**\n${projectType}` },
+            text: { tag: 'lark_md', content: `**Campaign type**\n${campaignType}` },
           },
         ],
       },
@@ -379,6 +664,16 @@ export async function POST(request: Request) {
     }
 
     await Promise.all([sendResendEmail(fields, files), sendLarkNotification(fields, files)]);
+
+    // Best-effort submitter confirmation — failures are logged only; response stays success.
+    try {
+      await sendConfirmationEmail(locale, fields, files);
+    } catch (err) {
+      console.error(
+        `Confirmation email failed for ${String(fields.contact_email)}:`,
+        err,
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {

@@ -349,6 +349,8 @@ export interface Founder {
   name: string;
   jobTitle: string;
   jobTitleZh?: string;
+  professionalTitle?: string;
+  professionalTitleZh?: string;
   image: SanityImage;
   bio?: string;
   bioZh?: string;

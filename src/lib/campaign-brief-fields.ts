@@ -1,267 +1,290 @@
 /**
  * Campaign Brief form field definitions — shared by the API route and form hook.
- * Keys and labels match content-schema.md §5.3 (Gravity Forms audit).
+ * Three-step branching brief: Contact → Campaign Details → Final Notes.
  */
 
-/** All 42 campaign brief field keys (admin label keys). */
+/** String / array field keys submitted with the brief. */
 export type CampaignBriefFieldKey =
-  | 'project_title'
-  | 'company_name'
-  | 'project_type'
-  | 'discovery_source'
-  | 'referral_source_other'
-  | 'referrer_name'
   | 'contact_name_first'
   | 'contact_name_last'
-  | 'contact_job_title'
+  | 'company_name'
   | 'contact_email'
-  | 'contact_phone'
-  | 'campaign_goals'
-  | 'key_message'
-  | 'target_audience'
-  | 'desired_runtime'
-  | 'video_tone_style'
-  | 'reference_videos'
-  | 'campaign_keywords_or_avoidances'
-  | 'budget_range'
-  | 'distribution_channels'
-  | 'target_regions'
-  | 'usage_rights_term'
-  | 'delivery_deadline'
-  | 'delivery_flexibility'
-  | 'launch_timing'
+  | 'discovery_source'
+  | 'campaign_title'
+  | 'campaign_type'
   | 'brand_description'
-  | 'brand_mission'
-  | 'campaign_focus'
-  | 'product_name'
-  | 'product_key_features'
-  | 'market_pain_points'
-  | 'product_differentiators'
-  | 'deliverables'
-  | 'cutdown_durations'
-  | 'cutdown_distribution'
+  | 'product_description'
+  | 'campaign_description'
+  | 'target_audience'
+  | 'reference_videos'
+  | 'delivery_deadline'
+  | 'delivery_deadline_unknown'
+  | 'delivery_deadline_note'
+  | 'extra_deliverables'
+  | 'extra_deliverables_other_note'
+  | 'budget_range'
+  | 'project_description'
+  | 'shoot_event_date'
+  | 'shoot_event_date_unknown'
+  | 'shoot_event_date_note'
+  | 'production_scope'
   | 'social_channels'
-  | 'social_aspect_ratios'
-  | 'social_platform_requirements'
-  | 'stills_type'
-  | 'photography_requirements'
-  | 'stills_quantity'
+  | 'aspect_ratios'
   | 'additional_notes';
 
-/** Human-readable labels for email rendering and form display. */
+/** Checkbox-group field keys. */
+export type CampaignBriefArrayFieldKey =
+  | 'extra_deliverables'
+  | 'social_channels'
+  | 'aspect_ratios';
+
+/** Human-readable EN labels for email rendering and default form display. */
 export const CAMPAIGN_BRIEF_FIELD_LABELS: Record<CampaignBriefFieldKey, string> = {
-  project_title: 'Project title',
-  company_name: 'Company name',
-  project_type: 'What type of project is this?',
-  discovery_source: 'How did you hear about us?',
-  referral_source_other: 'Please tell us how you found us',
-  referrer_name: 'Who referred you?',
-  contact_name_first: 'First name',
-  contact_name_last: 'Last name',
-  contact_job_title: 'Job title',
+  contact_name_first: 'First Name',
+  contact_name_last: 'Last Name',
+  company_name: 'Company',
   contact_email: 'Email',
-  contact_phone: 'Phone',
-  campaign_goals: 'Primary goals',
-  key_message: 'Key message',
-  target_audience: 'Target audience',
-  desired_runtime: 'Desired runtime',
-  video_tone_style: 'Mood and style',
-  reference_videos: 'Reference videos',
-  campaign_keywords_or_avoidances: 'Themes / buzzwords / slogans',
-  budget_range: 'Budget range',
-  distribution_channels: 'Distribution channels',
-  target_regions: 'Target regions',
-  usage_rights_term: 'Usage rights term',
-  delivery_deadline: 'Final delivery deadline',
-  delivery_flexibility: 'Deadline flexibility',
-  launch_timing: 'Launch timing',
-  brand_description: 'Brand description',
-  brand_mission: 'Company mission',
-  campaign_focus: 'Campaign focused on product?',
-  product_name: 'Product name',
-  product_key_features: 'Key selling points',
-  market_pain_points: 'Market pain points',
-  product_differentiators: 'Product differentiators',
-  deliverables: 'Deliverables needed',
-  cutdown_durations: 'Cutdown durations',
-  cutdown_distribution: 'Cutdown distribution',
-  social_channels: 'Social channels',
-  social_aspect_ratios: 'Aspect ratios',
-  social_platform_requirements: 'Platform requirements',
-  stills_type: 'Stills type',
-  photography_requirements: 'Photography requirements',
-  stills_quantity: 'Stills quantity',
-  additional_notes: 'Additional notes',
+  discovery_source: 'How did you hear about us?',
+  campaign_title: 'Campaign Title',
+  campaign_type: 'What type of project is this?',
+  brand_description: 'Brand Info',
+  product_description: 'Product Details',
+  campaign_description: 'Campaign Goals & Style',
+  target_audience: 'Target Audience',
+  reference_videos: 'Reference Videos',
+  delivery_deadline: 'Delivery Deadline',
+  delivery_deadline_unknown: "I'm not sure yet",
+  delivery_deadline_note: 'Rough timeframe (optional)',
+  extra_deliverables: 'Extra Deliverables',
+  extra_deliverables_other_note: 'Tell us more',
+  budget_range: 'Budget Range',
+  project_description: 'Project Description',
+  shoot_event_date: 'Shoot / Event Date',
+  shoot_event_date_unknown: "I'm not sure yet",
+  shoot_event_date_note: 'Rough timeframe (optional)',
+  production_scope: 'What do you need from us?',
+  social_channels: 'Platforms',
+  aspect_ratios: 'Aspect Ratios',
+  additional_notes: 'Anything else we should know?',
 };
 
-/** Step metadata for the multi-step form and email grouping. */
+/** Step metadata for the multi-step form shell. */
 export interface CampaignBriefStepConfig {
   step: number;
   title: string;
   fields: CampaignBriefFieldKey[];
 }
 
-/** Seven form steps — field order matches content-schema.md §5.2. */
 export const CAMPAIGN_BRIEF_STEPS: CampaignBriefStepConfig[] = [
   {
     step: 1,
-    title: 'Basics',
-    fields: [
-      'project_title',
-      'company_name',
-      'project_type',
-      'discovery_source',
-      'referral_source_other',
-      'referrer_name',
-    ],
-  },
-  {
-    step: 2,
     title: 'Contact',
     fields: [
       'contact_name_first',
       'contact_name_last',
-      'contact_job_title',
+      'company_name',
       'contact_email',
-      'contact_phone',
+      'discovery_source',
+    ],
+  },
+  {
+    step: 2,
+    title: 'Campaign Details',
+    fields: [
+      'campaign_title',
+      'campaign_type',
+      'brand_description',
+      'product_description',
+      'campaign_description',
+      'target_audience',
+      'reference_videos',
+      'delivery_deadline',
+      'extra_deliverables',
+      'budget_range',
+      'project_description',
+      'shoot_event_date',
+      'production_scope',
+      'social_channels',
+      'aspect_ratios',
     ],
   },
   {
     step: 3,
-    title: 'Campaign Goals',
-    fields: [
-      'campaign_goals',
-      'key_message',
-      'target_audience',
-      'desired_runtime',
-      'video_tone_style',
-      'reference_videos',
-      'campaign_keywords_or_avoidances',
-      'budget_range',
-    ],
-  },
-  {
-    step: 4,
-    title: 'Timeline & Release',
-    fields: [
-      'distribution_channels',
-      'target_regions',
-      'usage_rights_term',
-      'delivery_deadline',
-      'delivery_flexibility',
-      'launch_timing',
-    ],
-  },
-  {
-    step: 5,
-    title: 'Brand / Product',
-    fields: [
-      'brand_description',
-      'brand_mission',
-      'campaign_focus',
-      'product_name',
-      'product_key_features',
-      'market_pain_points',
-      'product_differentiators',
-    ],
-  },
-  {
-    step: 6,
-    title: 'Deliverables',
-    fields: [
-      'deliverables',
-      'cutdown_durations',
-      'cutdown_distribution',
-      'social_channels',
-      'social_aspect_ratios',
-      'social_platform_requirements',
-      'stills_type',
-      'photography_requirements',
-      'stills_quantity',
-    ],
-  },
-  {
-    step: 7,
     title: 'Final Notes',
     fields: ['additional_notes'],
   },
 ];
 
-/** Required fields — validated on step navigation and final submit. */
+/** Required on step navigation and final submit. */
 export const CAMPAIGN_BRIEF_REQUIRED_FIELDS: CampaignBriefFieldKey[] = [
-  'project_title',
+  'campaign_title',
   'company_name',
   'contact_name_first',
   'contact_name_last',
   'contact_email',
+  'campaign_type',
   'budget_range',
-  'campaign_focus',
 ];
 
-/** Form description shown above the fields (content-schema.md §5.1). */
 export const CAMPAIGN_BRIEF_FORM_DESCRIPTION =
   'This briefing form helps us understand your brand, product, and upcoming video campaign. The more you can provide, the more effectively we can shape the creative direction and production approach. If you\'re unsure about anything, feel free to leave them blank — our team will guide you through next steps.';
 
-/** Success message after submission. */
 export const CAMPAIGN_BRIEF_SUCCESS_MESSAGE =
   "Thanks for your brief — we'll be in touch shortly.";
 
-/** Select/radio option values — exact Gravity Forms audit labels. */
-export const PROJECT_TYPE_OPTIONS = [
-  'Product video',
-  'Commercial spot',
-  'Brand film',
-  'Corporate video',
-  'Social media campaign',
+export const CAMPAIGN_TYPE_OPTIONS = [
+  'Product Campaign',
+  'Branding Campaign',
+  'Documentary / Live Event',
+  'Social Media',
   'Other',
 ] as const;
+
+export type CampaignTypeOption = (typeof CAMPAIGN_TYPE_OPTIONS)[number];
 
 export const DISCOVERY_SOURCE_OPTIONS = [
-  'Google',
-  'Vimeo / YouTube',
+  'Search engine',
+  'Facebook / Instagram',
+  'YouTube / Vimeo',
+  'Xinpianchang / rednote',
+  'Referral from a colleague',
+] as const;
+
+export const BUDGET_OPTIONS_PRODUCT_BRANDING = [
+  'Under $75K',
+  '$75K–$100K',
+  '$100K–$150K',
+  '$150K–$250K',
+  '$250K+',
+] as const;
+
+export const BUDGET_OPTIONS_DOC_SOCIAL = [
+  'Under $15K',
+  '$15K–$30K',
+  '$30K–$50K',
+  '$50K–$100K',
+  '$100K+',
+] as const;
+
+export const BUDGET_OPTIONS_OTHER = [
+  'Under $20K',
+  '$20K–$50K',
+  '$50K–$100K',
+  '$100K–$200K',
+  '$200K+',
+] as const;
+
+/** Dynamic budget options for the selected campaign type. */
+export function budgetOptionsForCampaignType(
+  campaignType: string,
+): readonly string[] {
+  if (campaignType === 'Product Campaign' || campaignType === 'Branding Campaign') {
+    return BUDGET_OPTIONS_PRODUCT_BRANDING;
+  }
+  if (campaignType === 'Documentary / Live Event' || campaignType === 'Social Media') {
+    return BUDGET_OPTIONS_DOC_SOCIAL;
+  }
+  if (campaignType === 'Other') {
+    return BUDGET_OPTIONS_OTHER;
+  }
+  return [];
+}
+
+export const EXTRA_DELIVERABLES_OPTIONS = [
+  'Social cutdowns',
+  'Still photos',
+  'Other',
+] as const;
+
+export const PRODUCTION_SCOPE_OPTIONS = [
+  'Filming only',
+  'Filming + post-production',
+] as const;
+
+export const SOCIAL_CHANNEL_OPTIONS = [
   'Instagram',
-  'LinkedIn',
+  'TikTok',
+  'YouTube',
   'Facebook',
-  'Colleague referral',
-  'Agency referral',
-  'Partner referral',
-  'Industry event',
-  'Previous client',
-  'Other',
+  'LinkedIn',
+  'Xiaohongshu / rednote',
 ] as const;
 
-/** Discovery sources that reveal the referrer_name field. */
-export const REFERRAL_DISCOVERY_SOURCES: ReadonlySet<string> = new Set([
-  'Colleague referral',
-  'Agency referral',
-  'Partner referral',
-]);
-
-export const BUDGET_RANGE_OPTIONS = [
-  'Under $80K',
-  '$80K–$150K',
-  '$150K–$200K',
-  '$200K–$250K',
-  '$250K+ USD',
+export const ASPECT_RATIO_OPTIONS = [
+  '9:16 (Vertical)',
+  '1:1 (Square)',
+  '16:9 (Horizontal)',
+  '4:5 (Portrait)',
 ] as const;
 
-export const DELIVERY_FLEXIBILITY_OPTIONS = ['Fixed', 'Flexible', 'Not sure yet'] as const;
+/** Branch-relevant field keys for the team notification email. */
+export function emailFieldsForCampaignType(
+  campaignType: string,
+): CampaignBriefFieldKey[] {
+  const shared: CampaignBriefFieldKey[] = ['campaign_title', 'campaign_type'];
 
-export const CAMPAIGN_FOCUS_OPTIONS = ['Yes', 'No'] as const;
+  switch (campaignType) {
+    case 'Product Campaign':
+      return [
+        ...shared,
+        'brand_description',
+        'product_description',
+        'campaign_description',
+        'target_audience',
+        'reference_videos',
+        'delivery_deadline',
+        'extra_deliverables',
+        'extra_deliverables_other_note',
+        'budget_range',
+      ];
+    case 'Branding Campaign':
+      return [
+        ...shared,
+        'brand_description',
+        'campaign_description',
+        'target_audience',
+        'reference_videos',
+        'delivery_deadline',
+        'extra_deliverables',
+        'extra_deliverables_other_note',
+        'budget_range',
+      ];
+    case 'Documentary / Live Event':
+      return [
+        ...shared,
+        'project_description',
+        'reference_videos',
+        'shoot_event_date',
+        'production_scope',
+        'delivery_deadline',
+        'budget_range',
+      ];
+    case 'Social Media':
+      return [
+        ...shared,
+        'brand_description',
+        'campaign_description',
+        'target_audience',
+        'social_channels',
+        'aspect_ratios',
+        'delivery_deadline',
+        'budget_range',
+      ];
+    case 'Other':
+      return [
+        ...shared,
+        'project_description',
+        'reference_videos',
+        'delivery_deadline',
+        'budget_range',
+      ];
+    default:
+      return [...shared, 'budget_range'];
+  }
+}
 
-export const DELIVERABLES_OPTIONS = [
-  'Main hero film',
-  'Cutdowns',
-  'Social versions',
-  'Key visuals',
-  'Motion graphics',
-  'Other',
-] as const;
-
-/** Max briefing materials uploads per submission. */
 export const CAMPAIGN_BRIEF_MAX_FILES = 10;
 
-/** Allowed file extensions for briefing materials upload. */
 export const CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS = [
   'pdf',
   'ppt',

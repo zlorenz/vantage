@@ -1,5 +1,5 @@
 /**
- * FormSelect — native select with custom chevron and uppercase options.
+ * FormSelect — native select with custom chevron.
  */
 
 export type FormSelectOption = string | { value: string; label: string };

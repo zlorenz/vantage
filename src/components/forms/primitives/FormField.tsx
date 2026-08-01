@@ -11,6 +11,8 @@ export interface FormFieldProps {
   error?: string;
   helper?: string;
   hint?: string;
+  /** Place hint directly under the label (used for radio/checkbox groups). */
+  hintBeforeControls?: boolean;
   fullWidth?: boolean;
   className?: string;
   children: ReactNode;
@@ -23,11 +25,18 @@ export function FormField({
   error,
   helper,
   hint,
+  hintBeforeControls = false,
   fullWidth = false,
   className = '',
   children,
 }: FormFieldProps) {
   const spanClass = fullWidth ? 'vp-form-col-span-2' : '';
+  const hintEl =
+    hint && !error ? (
+      <p className={`vp-field-hint${hintBeforeControls ? ' vp-field-hint--before' : ''}`}>
+        {hint}
+      </p>
+    ) : null;
 
   return (
     <div className={`vp-form-field ${spanClass} ${className}`.trim()}>
@@ -35,8 +44,9 @@ export function FormField({
         {label}
         {required && <span className="vp-form-label-required"> *</span>}
       </label>
+      {hintBeforeControls && hintEl}
       {children}
-      {hint && !error && <p className="vp-field-hint">{hint}</p>}
+      {!hintBeforeControls && hintEl}
       {helper && !error && <p className="vp-form-helper">{helper}</p>}
       {error && <p className="vp-form-error-msg">{error}</p>}
     </div>

@@ -36,6 +36,15 @@ export const founder = defineType({
       optional: false,
     }),
 
+    ...defineLocalePair({
+      name: 'professionalTitle',
+      title: 'Professional Title',
+      type: 'string',
+      description:
+        "Public-facing professional title for SEO/structured data (e.g. 'Commercial Film Director'). Leave blank to reuse the internal Job Title above. Does not affect what's displayed on the About page team cards.",
+      optional: true,
+    }),
+
     defineField({
       name: 'image',
       title: 'Photo',

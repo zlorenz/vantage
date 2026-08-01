@@ -1,5 +1,5 @@
 /**
- * FormStepIndicator — compact numbered-circle progress row matching the live site.
+ * FormStepIndicator — full-width timeline with connectors and always-visible labels.
  */
 
 import type { CampaignBriefStepConfig } from '@/lib/campaign-brief-fields';
@@ -37,30 +37,28 @@ export function FormStepIndicator({
             key={step.step}
             className={`vp-form-step-progress-item vp-form-step-progress-item--${state}`}
           >
-            {state === 'completed' ? (
-              <button
-                type="button"
-                className="vp-form-step-progress-circle"
-                title={title}
-                onClick={() => onGoToStep(step.step)}
-                aria-label={`Go to step ${step.step}: ${step.title}`}
-              >
-                ✓
-              </button>
-            ) : (
-              <span
-                className="vp-form-step-progress-circle"
-                title={title}
-                aria-current={state === 'active' ? 'step' : undefined}
-                aria-label={`Step ${step.step}: ${step.title}`}
-              >
-                {state === 'active' ? step.step : ''}
-              </span>
-            )}
+            <div className="vp-form-step-progress-node">
+              {state === 'completed' ? (
+                <button
+                  type="button"
+                  className="vp-form-step-progress-circle"
+                  onClick={() => onGoToStep(step.step)}
+                  aria-label={`Go to step ${step.step}: ${step.title}`}
+                >
+                  ✓
+                </button>
+              ) : (
+                <span
+                  className="vp-form-step-progress-circle"
+                  aria-current={state === 'active' ? 'step' : undefined}
+                  aria-label={`Step ${step.step}: ${step.title}`}
+                >
+                  {step.step}
+                </span>
+              )}
 
-            {state === 'active' && (
               <span className="vp-form-step-progress-label">{title}</span>
-            )}
+            </div>
           </li>
         );
       })}

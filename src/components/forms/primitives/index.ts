@@ -10,4 +10,5 @@ export { FormTextarea, type FormTextareaProps } from './FormTextarea';
 export { FormSelect, type FormSelectProps } from './FormSelect';
 export { FormRadioGroup, type FormRadioGroupProps } from './FormRadioGroup';
 export { FormCheckboxGroup, type FormCheckboxGroupProps } from './FormCheckboxGroup';
+export { FormDateField, type FormDateFieldProps } from './FormDateField';
 export { FormSectionHeader, type FormSectionHeaderProps } from './FormSectionHeader';

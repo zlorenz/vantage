@@ -717,6 +717,8 @@ export type Founder = {
   name?: string;
   jobTitle?: string;
   jobTitleZh?: string;
+  professionalTitle?: string;
+  professionalTitleZh?: string;
   image?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -1266,7 +1268,7 @@ export type HOME_PAGE_QUERY_RESULT = {
 
 // Source: ../src/sanity/queries/pages.ts
 // Variable: ABOUT_PAGE_QUERY
-// Query: *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{      title,  titleZh,  "slugZh": slugZh.current,  featuredImage,  seo{    metaDescription,    metaDescriptionZh,    metaTitle,    metaTitleZh,    ogImage  },  noIndex,      heroTitle,  heroTitleZh,  body,  bodyZh,    founders[]{      name,      jobTitle,      jobTitleZh,      image,      bio,      bioZh,      sameAs    }  }
+// Query: *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{      title,  titleZh,  "slugZh": slugZh.current,  featuredImage,  seo{    metaDescription,    metaDescriptionZh,    metaTitle,    metaTitleZh,    ogImage  },  noIndex,      heroTitle,  heroTitleZh,  body,  bodyZh,    founders[]{      name,      jobTitle,      jobTitleZh,      professionalTitle,      professionalTitleZh,      image,      bio,      bioZh,      sameAs    }  }
 export type ABOUT_PAGE_QUERY_RESULT = {
   title: string | null;
   titleZh: string | null;
@@ -1382,6 +1384,8 @@ export type ABOUT_PAGE_QUERY_RESULT = {
     name: string | null;
     jobTitle: string | null;
     jobTitleZh: string | null;
+    professionalTitle: string | null;
+    professionalTitleZh: string | null;
     image: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -2130,7 +2134,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "blogPost" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    _createdAt,\n    _updatedAt,\n    featuredImage,\n    excerpt,\n    excerptZh,\n    body,\n    bodyZh,\n    "categories": categories[]->{\n      _id,\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    noIndex,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': POST_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{\n    \n  _id,\n  title,\n  titleZh,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  showHeroHeader,\n  heroTitle,\n  heroTitleZh,\n  featuredImage,\n  body,\n  bodyZh,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    "heroSlides": heroSlides[\n      !defined(@->trash.trashedAt)\n    ]->{\n      \n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  "description": coalesce(excerpt, seo.metaDescription),\n  "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),\n  featuredImage\n\n    },\n    "featuredWork": featuredWork[\n      !defined(@->trash.trashedAt) && @->isHidden != true\n    ]->{\n      \n  _id,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  featuredImage,\n  isHidden\n\n    },\n    brandLogos[]{\n      logoId\n    }\n  }\n': HOME_PAGE_QUERY_RESULT;
-    '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      image,\n      bio,\n      bioZh,\n      sameAs\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
+    '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      professionalTitle,\n      professionalTitleZh,\n      image,\n      bio,\n      bioZh,\n      sameAs\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "news" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n\n  }\n': NEWS_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n,\n    pdfDownload{\n      label,\n      file{\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT;

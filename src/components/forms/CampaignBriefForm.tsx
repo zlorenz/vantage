@@ -1,9 +1,8 @@
 'use client';
 
 /**
- * CampaignBriefForm — 7-step client form shell with step indicator, navigation,
+ * CampaignBriefForm — 3-step client form shell with branching Campaign Details,
  * honeypot, submission states, and GTM event on success.
- * Copy is locale-aware via getCampaignBriefUi (EN option values preserved for API).
  */
 
 import { useLocale } from 'next-intl';
@@ -13,15 +12,13 @@ import { VpButton } from '@/components/ui/VpButton';
 import { FormStepIndicator } from '@/components/forms/FormStepIndicator';
 import { useCampaignBriefForm } from '@/components/forms/useCampaignBriefForm';
 import {
-  StepBasics,
-  StepBrand,
+  StepCampaignDetails,
   StepContact,
-  StepDeliverables,
   StepFinalNotes,
-  StepGoals,
-  StepTimeline,
 } from '@/components/forms/steps';
 import '@/components/forms/campaign-brief-form.css';
+
+const TOTAL_STEPS = 3;
 
 export function CampaignBriefForm() {
   const locale = useLocale() as Locale;
@@ -36,7 +33,7 @@ export function CampaignBriefForm() {
     goToStep,
     values,
     setFieldValue,
-    toggleDeliverable,
+    toggleArrayValue,
     visibility,
     errors,
     hasError,
@@ -72,67 +69,50 @@ export function CampaignBriefForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (currentStep === 7) {
+    if (currentStep === TOTAL_STEPS) {
       void submit();
     }
   };
 
   const renderStep = () => {
-    const shared = {
-      ui,
-      onChange: setFieldValue,
-      hasError,
-      errors,
-      disabled: isDisabled,
-    };
-
     switch (currentStep) {
       case 1:
         return (
-          <StepBasics
+          <StepContact
+            ui={ui}
             values={values}
-            visibility={visibility}
-            {...shared}
+            onChange={setFieldValue}
+            hasError={hasError}
+            errors={errors}
+            disabled={isDisabled}
           />
         );
       case 2:
-        return <StepContact values={values} {...shared} />;
+        return (
+          <StepCampaignDetails
+            ui={ui}
+            values={values}
+            visibility={visibility}
+            onChange={setFieldValue}
+            onToggleArray={toggleArrayValue}
+            hasError={hasError}
+            errors={errors}
+            disabled={isDisabled}
+          />
+        );
       case 3:
-        return <StepGoals values={values} {...shared} />;
-      case 4:
-        return (
-          <StepTimeline
-            values={values}
-            visibility={visibility}
-            {...shared}
-          />
-        );
-      case 5:
-        return (
-          <StepBrand
-            values={values}
-            visibility={visibility}
-            {...shared}
-          />
-        );
-      case 6:
-        return (
-          <StepDeliverables
-            values={values}
-            visibility={visibility}
-            onToggleDeliverable={toggleDeliverable}
-            {...shared}
-          />
-        );
-      case 7:
         return (
           <StepFinalNotes
+            ui={ui}
             values={values}
+            onChange={setFieldValue}
             files={files}
             onAddFiles={addFiles}
             onRemoveFile={removeFile}
             fileError={fileError}
-            {...shared}
+            hasError={hasError}
+            errors={errors}
+            disabled={isDisabled}
           />
         );
       default:
@@ -196,7 +176,7 @@ export function CampaignBriefForm() {
             </VpButton>
           )}
 
-          {currentStep < 7 && (
+          {currentStep < TOTAL_STEPS && (
             <VpButton
               type="button"
               variant="primary"
@@ -208,7 +188,7 @@ export function CampaignBriefForm() {
             </VpButton>
           )}
 
-          {currentStep === 7 && (
+          {currentStep === TOTAL_STEPS && (
             <VpButton
               type="submit"
               variant="primary"

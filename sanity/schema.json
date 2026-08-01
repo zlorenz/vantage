@@ -4171,6 +4171,20 @@
           },
           "optional": true
         },
+        "professionalTitle": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "professionalTitleZh": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
         "image": {
           "type": "objectAttribute",
           "value": {
