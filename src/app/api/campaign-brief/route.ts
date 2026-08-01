@@ -2,9 +2,12 @@
  * Campaign Brief form submission handler.
  * Accepts multipart/form-data, validates, then fires Resend (team) + Lark in parallel,
  * plus a best-effort branded confirmation email to the submitter.
- * No submission data is stored — fire-and-forward only.
+ * No submission form-field data is stored. Uploaded files are stored as Sanity assets
+ * (campaignBriefAttachment) solely to provide download links in the Lark notification —
+ * best-effort, non-blocking.
  */
 
+import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { NextResponse } from 'next/server';
@@ -18,6 +21,7 @@ import {
   type CampaignBriefFieldKey,
 } from '@/lib/campaign-brief-fields';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import { getSanityWriteClient } from '@/lib/sanity-write-client';
 import type { Locale } from '@/i18n/routing';
 
 /** Notification recipient for campaign brief submissions. */
@@ -37,6 +41,18 @@ interface ParsedUpload {
   contentType: string;
   buffer: Buffer;
 }
+
+/** Sanity CDN link for a brief attachment — only present when upload succeeded. */
+interface AttachmentLink {
+  filename: string;
+  url: string;
+}
+
+type SanityFileAsset = {
+  _id: string;
+  url?: string;
+  originalFilename?: string;
+};
 
 type FieldErrors = Partial<Record<CampaignBriefFieldKey | 'files', string>>;
 
@@ -556,19 +572,81 @@ async function sendConfirmationEmail(
   if (error) throw new Error(error.message);
 }
 
+function formatLarkAttachments(
+  files: ParsedUpload[],
+  links: AttachmentLink[],
+): string {
+  if (files.length === 0) return 'No files attached';
+
+  const byName = new Map(links.map((l) => [l.filename, l.url]));
+  const lines = files.map((f) => {
+    const url = byName.get(f.filename);
+    return url ? `• [${f.filename}](${url})` : `• ${f.filename}`;
+  });
+
+  return `${files.length} file${files.length === 1 ? '' : 's'} attached — see email for downloads:\n${lines.join('\n')}`;
+}
+
+/**
+ * Best-effort: upload buffers to Sanity + create one campaignBriefAttachment doc.
+ * Returns CDN links for Lark. Throws on failure (caller catches).
+ */
+async function storeCampaignBriefAttachments(
+  fields: Record<CampaignBriefFieldKey, string | string[]>,
+  files: ParsedUpload[],
+): Promise<AttachmentLink[]> {
+  if (files.length === 0) return [];
+
+  const client = getSanityWriteClient();
+  const uploaded: Array<{ filename: string; asset: SanityFileAsset }> = [];
+
+  for (const file of files) {
+    const asset = (await client.assets.upload('file', file.buffer, {
+      filename: file.filename,
+      contentType: file.contentType,
+    })) as SanityFileAsset;
+    uploaded.push({ filename: file.filename, asset });
+  }
+
+  await client.create({
+    _type: 'campaignBriefAttachment',
+    companyName: String(fields.company_name),
+    campaignTitle: String(fields.campaign_title),
+    contactEmail: String(fields.contact_email),
+    campaignType: String(fields.campaign_type),
+    files: uploaded.map(({ filename, asset }) => ({
+      _key: randomUUID().replace(/-/g, '').slice(0, 12),
+      _type: 'briefFile',
+      originalFilename: asset.originalFilename || filename,
+      file: {
+        _type: 'file',
+        asset: {
+          _type: 'reference',
+          _ref: asset._id,
+        },
+      },
+    })),
+  });
+
+  return uploaded.map(({ filename, asset }) => {
+    if (!asset.url) {
+      throw new Error(`Sanity file asset missing url for ${filename}`);
+    }
+    return { filename, url: asset.url };
+  });
+}
+
 async function sendLarkNotification(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
   files: ParsedUpload[],
+  attachmentLinks: AttachmentLink[] = [],
 ): Promise<void> {
   const webhookUrl = process.env.LARK_WEBHOOK_URL;
   if (!webhookUrl) throw new Error('Lark webhook is not configured.');
 
   const contactName = `${fields.contact_name_first} ${fields.contact_name_last}`.trim();
   const campaignType = String(fields.campaign_type).trim() || '—';
-  const fileNote =
-    files.length === 0
-      ? 'No files attached'
-      : `${files.length} file${files.length === 1 ? '' : 's'} attached — see email for downloads:\n${files.map((f) => `• ${f.filename}`).join('\n')}`;
+  const fileNote = formatLarkAttachments(files, attachmentLinks);
 
   const card = {
     config: { wide_screen_mode: true },
@@ -663,7 +741,24 @@ export async function POST(request: Request) {
       );
     }
 
-    await Promise.all([sendResendEmail(fields, files), sendLarkNotification(fields, files)]);
+    // Best-effort Sanity upload before Lark so the card can include CDN links.
+    // Must not fail the request; on failure Lark falls back to filename-only.
+    let attachmentLinks: AttachmentLink[] = [];
+    if (files.length > 0) {
+      try {
+        attachmentLinks = await storeCampaignBriefAttachments(fields, files);
+      } catch (err) {
+        console.error(
+          `Campaign brief Sanity upload failed for ${String(fields.contact_email)}:`,
+          err,
+        );
+      }
+    }
+
+    await Promise.all([
+      sendResendEmail(fields, files),
+      sendLarkNotification(fields, files, attachmentLinks),
+    ]);
 
     // Best-effort submitter confirmation — failures are logged only; response stays success.
     try {

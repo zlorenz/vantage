@@ -4,7 +4,8 @@
  * Mirrors permanent-delete semantics used by the Studio Content tool.
  */
 
-import {createClient, type SanityClient} from '@sanity/client'
+import type {SanityClient} from '@sanity/client'
+import {getSanityWriteClient} from '@/lib/sanity-write-client'
 
 export const TRASH_RETENTION_DAYS = 30
 
@@ -65,20 +66,9 @@ async function discardVariant(client: SanityClient, versionId: string): Promise<
   }
 }
 
+/** Alias used by the purge cron — same client as getSanityWriteClient(). */
 export function getTrashWriteClient(): SanityClient {
-  const token =
-    process.env.SANITY_API_WRITE_TOKEN ?? process.env.SANITY_API_TOKEN ?? ''
-  if (!token) {
-    throw new Error('SANITY_API_WRITE_TOKEN is required for trash purge')
-  }
-  return createClient({
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-    apiVersion: '2025-02-19',
-    token,
-    useCdn: false,
-    perspective: 'raw',
-  })
+  return getSanityWriteClient()
 }
 
 type PurgeResult = {

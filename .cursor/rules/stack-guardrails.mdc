@@ -107,8 +107,8 @@ It must be stored in `process.env.NEXT_PUBLIC_GTM_ID`.
 
 ## Forms & Data
 
-**Never store form submission data in a database or filesystem.**
-Campaign brief and contact form submissions are fire-and-forward: email via Resend + Lark webhook. No persistence layer.
+**Do not store campaign brief form-field data in a database.**
+Campaign brief submissions are fire-and-forward for field values (Resend + Lark). Uploaded files may be stored as Sanity assets (`campaignBriefAttachment`) solely to provide download links in the Lark notification — best-effort and non-blocking. Contact form stays fire-and-forward with no persistence.
 
 **Never expose the Lark webhook URL or Resend API key on the client side.**
 Form submissions must be processed via a Next.js API route (`/app/api/`) so that credentials remain server-side only.

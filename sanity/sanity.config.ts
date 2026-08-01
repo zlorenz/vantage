@@ -73,7 +73,9 @@ export default defineConfig({
         (t) =>
           t.templateId !== 'client' &&
           t.templateId !== 'crewMember' &&
-          t.templateId !== 'siteSettings',
+          t.templateId !== 'siteSettings' &&
+          t.templateId !== 'trashRecord' &&
+          t.templateId !== 'campaignBriefAttachment',
       ),
     productionUrl: async (prev, {document}) => {
       const url = getFrontEndUrl(
