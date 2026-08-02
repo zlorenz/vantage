@@ -1,10 +1,14 @@
 /**
  * Campaign Brief form submission handler.
- * Accepts multipart/form-data, validates, then fires Resend (team) + Lark in parallel,
- * plus a best-effort branded confirmation email to the submitter.
- * No submission form-field data is stored. Uploaded files are stored as Sanity assets
- * (campaignBriefAttachment) solely to provide download links in the Lark notification —
- * best-effort, non-blocking.
+ * Accepts JSON (fields + pre-uploaded Sanity asset metadata — no raw file bytes).
+ * Fires Resend (team) + Lark in parallel, plus a best-effort branded confirmation
+ * email to the submitter. Form-field data is not stored. A campaignBriefAttachment
+ * document is created best-effort from already-uploaded asset refs so Lark/emails
+ * can link CDN URLs.
+ *
+ * Token split:
+ * - Browser uploads use NEXT_PUBLIC_SANITY_UPLOAD_TOKEN (client-only).
+ * - This route uses SANITY_API_WRITE_TOKEN via getSanityWriteClient() (server-only).
  */
 
 import { randomUUID } from 'node:crypto';
@@ -13,7 +17,6 @@ import { join } from 'node:path';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import {
-  CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS,
   CAMPAIGN_BRIEF_FIELD_LABELS,
   CAMPAIGN_BRIEF_MAX_FILES,
   CAMPAIGN_BRIEF_REQUIRED_FIELDS,
@@ -21,6 +24,11 @@ import {
   type CampaignBriefFieldKey,
 } from '@/lib/campaign-brief-fields';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import {
+  formatFileSizeMb,
+  partitionResendAttachments,
+  type BriefAttachmentMeta,
+} from '@/lib/campaign-brief-attachments';
 import { getSanityWriteClient } from '@/lib/sanity-write-client';
 import type { Locale } from '@/i18n/routing';
 
@@ -30,127 +38,128 @@ const BRIEF_RECIPIENT = 'zacharia@vantage.pictures';
 /** Minimum form fill time (ms) — matches Gravity Forms speed check. */
 const MIN_SUBMIT_MS = 3000;
 
-const ALLOWED_EXTENSIONS = new Set<string>(CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS);
-
-function resolveLocale(formData: FormData): Locale {
-  return getString(formData, 'locale') === 'zh' ? 'zh' : 'en';
-}
-
-interface ParsedUpload {
-  filename: string;
-  contentType: string;
-  buffer: Buffer;
-}
-
-/** Sanity CDN link for a brief attachment — only present when upload succeeded. */
-interface AttachmentLink {
-  filename: string;
-  url: string;
-}
-
-type SanityFileAsset = {
-  _id: string;
-  url?: string;
-  originalFilename?: string;
-};
-
 type FieldErrors = Partial<Record<CampaignBriefFieldKey | 'files', string>>;
 
-function getString(formData: FormData, key: string): string {
-  const value = formData.get(key);
+type BriefSubmitPayload = {
+  locale?: string;
+  website?: string;
+  _form_elapsed_ms?: number | string;
+  attachments?: unknown;
+} & Partial<Record<CampaignBriefFieldKey, unknown>>;
+
+function resolveLocale(payload: BriefSubmitPayload): Locale {
+  return payload.locale === 'zh' ? 'zh' : 'en';
+}
+
+function asString(value: unknown): string {
   if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
   return '';
 }
 
-function getStringArray(formData: FormData, key: string): string[] {
-  return formData
-    .getAll(key)
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
     .filter((v): v is string => typeof v === 'string')
     .map((v) => v.trim())
     .filter(Boolean);
 }
 
-function getBoolFlag(formData: FormData, key: string): string {
-  const value = getString(formData, key).toLowerCase();
-  return value === 'true' || value === '1' || value === 'on' ? 'true' : '';
+function asBoolFlag(value: unknown): string {
+  if (value === true || value === 1) return 'true';
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase();
+    if (v === 'true' || v === '1' || v === 'on') return 'true';
+  }
+  return '';
 }
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function getExtension(filename: string): string {
-  const parts = filename.split('.');
-  return parts.length > 1 ? (parts.pop()?.toLowerCase() ?? '') : '';
+function isSanityCdnUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && parsed.hostname === 'cdn.sanity.io';
+  } catch {
+    return false;
+  }
 }
 
-async function parseUploads(
-  formData: FormData,
+function parseAttachments(
+  raw: unknown,
   locale: Locale,
-): Promise<{ files: ParsedUpload[]; error?: string }> {
+): { files: BriefAttachmentMeta[]; error?: string } {
   const ui = getCampaignBriefUi(locale);
-  const entries = formData.getAll('briefing_materials_upload');
-  const fileEntries = entries.filter((e): e is File => e instanceof File && e.size > 0);
-
-  if (fileEntries.length > CAMPAIGN_BRIEF_MAX_FILES) {
+  if (raw == null) return { files: [] };
+  if (!Array.isArray(raw)) {
+    return { files: [], error: ui.fieldRequired };
+  }
+  if (raw.length > CAMPAIGN_BRIEF_MAX_FILES) {
     return { files: [], error: ui.maxFilesAllowed(CAMPAIGN_BRIEF_MAX_FILES) };
   }
 
-  const files: ParsedUpload[] = [];
+  const files: BriefAttachmentMeta[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') {
+      return { files: [], error: ui.fieldRequired };
+    }
+    const row = item as Record<string, unknown>;
+    const filename = asString(row.filename);
+    const assetId = asString(row.assetId);
+    const cdnUrl = asString(row.cdnUrl);
+    const size = typeof row.size === 'number' ? row.size : Number(row.size);
 
-  for (const file of fileEntries) {
-    const ext = getExtension(file.name);
-    if (!ALLOWED_EXTENSIONS.has(ext)) {
-      return {
-        files: [],
-        error: ui.fileTypeNotAllowed(file.name),
-      };
+    if (
+      !filename ||
+      !assetId.startsWith('file-') ||
+      !isSanityCdnUrl(cdnUrl) ||
+      !Number.isFinite(size) ||
+      size < 0
+    ) {
+      return { files: [], error: ui.fileTypeNotAllowed(filename || 'attachment') };
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    files.push({
-      filename: file.name,
-      contentType: file.type || 'application/octet-stream',
-      buffer,
-    });
+    files.push({ filename, assetId, cdnUrl, size });
   }
 
   return { files };
 }
 
-function parseFields(formData: FormData): Record<CampaignBriefFieldKey, string | string[]> {
-  const deliveryUnknown = getBoolFlag(formData, 'delivery_deadline_unknown');
-  const shootUnknown = getBoolFlag(formData, 'shoot_event_date_unknown');
+function parseFields(
+  payload: BriefSubmitPayload,
+): Record<CampaignBriefFieldKey, string | string[]> {
+  const deliveryUnknown = asBoolFlag(payload.delivery_deadline_unknown);
+  const shootUnknown = asBoolFlag(payload.shoot_event_date_unknown);
 
   return {
-    contact_name_first: getString(formData, 'contact_name_first'),
-    contact_name_last: getString(formData, 'contact_name_last'),
-    company_name: getString(formData, 'company_name'),
-    contact_email: getString(formData, 'contact_email'),
-    discovery_source: getString(formData, 'discovery_source'),
-    campaign_title: getString(formData, 'campaign_title'),
-    campaign_type: getString(formData, 'campaign_type'),
-    brand_description: getString(formData, 'brand_description'),
-    product_description: getString(formData, 'product_description'),
-    campaign_description: getString(formData, 'campaign_description'),
-    target_audience: getString(formData, 'target_audience'),
-    reference_videos: getString(formData, 'reference_videos'),
-    delivery_deadline: deliveryUnknown ? '' : getString(formData, 'delivery_deadline'),
+    contact_name_first: asString(payload.contact_name_first),
+    contact_name_last: asString(payload.contact_name_last),
+    company_name: asString(payload.company_name),
+    contact_email: asString(payload.contact_email),
+    discovery_source: asString(payload.discovery_source),
+    campaign_title: asString(payload.campaign_title),
+    campaign_type: asString(payload.campaign_type),
+    brand_description: asString(payload.brand_description),
+    product_description: asString(payload.product_description),
+    campaign_description: asString(payload.campaign_description),
+    target_audience: asString(payload.target_audience),
+    reference_videos: asString(payload.reference_videos),
+    delivery_deadline: deliveryUnknown ? '' : asString(payload.delivery_deadline),
     delivery_deadline_unknown: deliveryUnknown,
-    delivery_deadline_note: deliveryUnknown
-      ? getString(formData, 'delivery_deadline_note')
-      : '',
-    extra_deliverables: getStringArray(formData, 'extra_deliverables'),
-    extra_deliverables_other_note: getString(formData, 'extra_deliverables_other_note'),
-    budget_range: getString(formData, 'budget_range'),
-    project_description: getString(formData, 'project_description'),
-    shoot_event_date: shootUnknown ? '' : getString(formData, 'shoot_event_date'),
+    delivery_deadline_note: deliveryUnknown ? asString(payload.delivery_deadline_note) : '',
+    extra_deliverables: asStringArray(payload.extra_deliverables),
+    extra_deliverables_other_note: asString(payload.extra_deliverables_other_note),
+    budget_range: asString(payload.budget_range),
+    project_description: asString(payload.project_description),
+    shoot_event_date: shootUnknown ? '' : asString(payload.shoot_event_date),
     shoot_event_date_unknown: shootUnknown,
-    shoot_event_date_note: shootUnknown ? getString(formData, 'shoot_event_date_note') : '',
-    production_scope: getString(formData, 'production_scope'),
-    social_channels: getStringArray(formData, 'social_channels'),
-    aspect_ratios: getStringArray(formData, 'aspect_ratios'),
-    additional_notes: getString(formData, 'additional_notes'),
+    shoot_event_date_note: shootUnknown ? asString(payload.shoot_event_date_note) : '',
+    production_scope: asString(payload.production_scope),
+    social_channels: asStringArray(payload.social_channels),
+    aspect_ratios: asStringArray(payload.aspect_ratios),
+    additional_notes: asString(payload.additional_notes),
   };
 }
 
@@ -225,10 +234,12 @@ function buildSection(title: string, rows: string): string {
 
 /**
  * Build grouped HTML email — Contact, branch-relevant Campaign Details, Final Notes.
+ * Large files become download links; smaller ones are listed (and attached via Resend path).
  */
 function buildEmailHtml(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
-  files: ParsedUpload[],
+  files: BriefAttachmentMeta[],
+  linkedOnly: BriefAttachmentMeta[],
 ): string {
   const contactKeys: CampaignBriefFieldKey[] = [
     'contact_name_first',
@@ -277,10 +288,25 @@ function buildEmailHtml(
     })
     .join('');
 
-  const fileRow = emailRow(
-    'Upload Files',
-    files.length === 0 ? '—' : escapeHtml(files.map((f) => f.filename).join(', ')),
-  );
+  const linkedIds = new Set(linkedOnly.map((f) => f.assetId));
+  let filesHtml: string;
+  if (files.length === 0) {
+    filesHtml = '—';
+  } else {
+    filesHtml = files
+      .map((f) => {
+        const safeName = escapeHtml(f.filename);
+        const href = escapeHtml(f.cdnUrl);
+        if (linkedIds.has(f.assetId)) {
+          const sizeLabel = formatFileSizeMb(f.size);
+          return `<a href="${href}">${safeName}</a> (${sizeLabel} — too large to attach, download here)`;
+        }
+        return escapeHtml(f.filename);
+      })
+      .join('<br>');
+  }
+
+  const fileRow = emailRow('Upload Files', filesHtml);
   const finalRows =
     emailRow(
       CAMPAIGN_BRIEF_FIELD_LABELS.additional_notes,
@@ -298,7 +324,7 @@ function buildEmailHtml(
 
 async function sendResendEmail(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
-  files: ParsedUpload[],
+  files: BriefAttachmentMeta[],
 ): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
@@ -306,19 +332,21 @@ async function sendResendEmail(
     throw new Error('Email service is not configured.');
   }
 
+  const { toAttach, toLink } = partitionResendAttachments(files);
   const resend = new Resend(apiKey);
   const campaignTitle = String(fields.campaign_title);
   const companyName = String(fields.company_name);
 
   // TODO: verify domain in Resend before production — sender must use verified vantage.pictures domain.
+  // Attach via remote `path` (CDN URL) — supported by resend@6.x Attachment.path.
   const { error } = await resend.emails.send({
     from,
     to: BRIEF_RECIPIENT,
     subject: `New Campaign Brief: ${campaignTitle} — ${companyName}`,
-    html: buildEmailHtml(fields, files),
-    attachments: files.map((f) => ({
+    html: buildEmailHtml(fields, files, toLink),
+    attachments: toAttach.map((f) => ({
       filename: f.filename,
-      content: f.buffer,
+      path: f.cdnUrl,
     })),
   });
 
@@ -335,7 +363,7 @@ type ConfirmationCopy = {
   subject: string;
   thankYou: string;
   summaryHeading: string;
-  filesReceived: (filenames: string) => string;
+  filesReceivedLabel: string;
   noSpecificDate: string;
   noSpecificDateWithNote: (note: string) => string;
   signOff: string;
@@ -349,7 +377,7 @@ const CONFIRMATION_COPY: Record<Locale, ConfirmationCopy> = {
     thankYou:
       "Thanks for sending over your campaign brief. We've received it and will be in touch soon.",
     summaryHeading: "Here's a copy of what you submitted:",
-    filesReceived: (filenames) => `Files received: ${filenames}`,
+    filesReceivedLabel: 'Files received:',
     noSpecificDate: 'No specific date yet',
     noSpecificDateWithNote: (note) => `No specific date yet — ${note}`,
     signOff: 'The Vantage Pictures Team',
@@ -360,7 +388,7 @@ const CONFIRMATION_COPY: Record<Locale, ConfirmationCopy> = {
     subject: '我们已收到您的项目简报 — Vantage Pictures',
     thankYou: '感谢您提交项目简报。我们已收到，并将尽快与您联系。',
     summaryHeading: '以下是您提交内容的副本：',
-    filesReceived: (filenames) => `已收到的文件：${filenames}`,
+    filesReceivedLabel: '已收到的文件：',
     noSpecificDate: '暂无具体日期',
     noSpecificDateWithNote: (note) => `暂无具体日期 — ${note}`,
     signOff: 'Vantage Pictures 团队',
@@ -444,7 +472,7 @@ function confirmationFieldLabel(
 function buildConfirmationEmailHtml(
   locale: Locale,
   fields: Record<CampaignBriefFieldKey, string | string[]>,
-  uploadedFilenames: string[],
+  files: BriefAttachmentMeta[],
 ): string {
   const copy = CONFIRMATION_COPY[locale];
   const campaignType = String(fields.campaign_type);
@@ -494,8 +522,13 @@ function buildConfirmationEmailHtml(
     .join('');
 
   const filesBlock =
-    uploadedFilenames.length > 0
-      ? `<p style="margin:24px 0 0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;color:#333;line-height:1.5;">${escapeHtml(copy.filesReceived(uploadedFilenames.join(', ')))}</p>`
+    files.length > 0
+      ? `<p style="margin:24px 0 0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;color:#333;line-height:1.5;">${escapeHtml(copy.filesReceivedLabel)} ${files
+          .map(
+            (f) =>
+              `<a href="${escapeHtml(f.cdnUrl)}" style="color:#111;text-decoration:underline;">${escapeHtml(f.filename)}</a>`,
+          )
+          .join(', ')}</p>`
       : '';
 
   return `<!DOCTYPE html>
@@ -542,7 +575,7 @@ function buildConfirmationEmailHtml(
 async function sendConfirmationEmail(
   locale: Locale,
   fields: Record<CampaignBriefFieldKey, string | string[]>,
-  files: ParsedUpload[],
+  files: BriefAttachmentMeta[],
 ): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
@@ -562,91 +595,192 @@ async function sendConfirmationEmail(
     to: toEmail,
     replyTo: CONFIRMATION_REPLY_TO,
     subject: copy.subject,
-    html: buildConfirmationEmailHtml(
-      locale,
-      fields,
-      files.map((f) => f.filename),
-    ),
+    html: buildConfirmationEmailHtml(locale, fields, files),
   });
 
   if (error) throw new Error(error.message);
 }
 
-function formatLarkAttachments(
-  files: ParsedUpload[],
-  links: AttachmentLink[],
-): string {
+function formatLarkAttachments(files: BriefAttachmentMeta[]): string {
   if (files.length === 0) return 'No files attached';
 
-  const byName = new Map(links.map((l) => [l.filename, l.url]));
-  const lines = files.map((f) => {
-    const url = byName.get(f.filename);
-    return url ? `• [${f.filename}](${url})` : `• ${f.filename}`;
-  });
+  const lines = files.map((f) => `• [${f.filename}](${f.cdnUrl})`);
 
   return `${files.length} file${files.length === 1 ? '' : 's'} attached — see email for downloads:\n${lines.join('\n')}`;
 }
 
 /**
- * Best-effort: upload buffers to Sanity + create one campaignBriefAttachment doc.
- * Returns CDN links for Lark. Throws on failure (caller catches).
+ * Best-effort: create one campaignBriefAttachment doc referencing already-uploaded assets.
+ * Uses SANITY_API_WRITE_TOKEN (server-only) — files were uploaded via the browser token.
  */
-async function storeCampaignBriefAttachments(
+async function createCampaignBriefAttachmentDoc(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
-  files: ParsedUpload[],
-): Promise<AttachmentLink[]> {
-  if (files.length === 0) return [];
+  files: BriefAttachmentMeta[],
+): Promise<void> {
+  if (files.length === 0) return;
 
   const client = getSanityWriteClient();
-  const uploaded: Array<{ filename: string; asset: SanityFileAsset }> = [];
-
-  for (const file of files) {
-    const asset = (await client.assets.upload('file', file.buffer, {
-      filename: file.filename,
-      contentType: file.contentType,
-    })) as SanityFileAsset;
-    uploaded.push({ filename: file.filename, asset });
-  }
-
   await client.create({
     _type: 'campaignBriefAttachment',
     companyName: String(fields.company_name),
     campaignTitle: String(fields.campaign_title),
     contactEmail: String(fields.contact_email),
     campaignType: String(fields.campaign_type),
-    files: uploaded.map(({ filename, asset }) => ({
+    files: files.map((file) => ({
       _key: randomUUID().replace(/-/g, '').slice(0, 12),
       _type: 'briefFile',
-      originalFilename: asset.originalFilename || filename,
+      originalFilename: file.filename,
       file: {
         _type: 'file',
         asset: {
           _type: 'reference',
-          _ref: asset._id,
+          _ref: file.assetId,
         },
       },
     })),
   });
-
-  return uploaded.map(({ filename, asset }) => {
-    if (!asset.url) {
-      throw new Error(`Sanity file asset missing url for ${filename}`);
-    }
-    return { filename, url: asset.url };
-  });
 }
+
+/** Free-text fields rendered as full-width Lark blocks (not the 2-col grid). */
+const LARK_LONG_TEXT_FIELDS = new Set<CampaignBriefFieldKey>([
+  'brand_description',
+  'product_description',
+  'campaign_description',
+  'project_description',
+]);
+
+/** Already shown in the Lark header — omit from Campaign Details. */
+const LARK_HEADER_FIELD_KEYS = new Set<CampaignBriefFieldKey>([
+  'campaign_title',
+  'campaign_type',
+  'budget_range',
+]);
 
 async function sendLarkNotification(
   fields: Record<CampaignBriefFieldKey, string | string[]>,
-  files: ParsedUpload[],
-  attachmentLinks: AttachmentLink[] = [],
+  files: BriefAttachmentMeta[],
 ): Promise<void> {
   const webhookUrl = process.env.LARK_WEBHOOK_URL;
   if (!webhookUrl) throw new Error('Lark webhook is not configured.');
 
   const contactName = `${fields.contact_name_first} ${fields.contact_name_last}`.trim();
   const campaignType = String(fields.campaign_type).trim() || '—';
-  const fileNote = formatLarkAttachments(files, attachmentLinks);
+  const fileNote = formatLarkAttachments(files);
+
+  const isEmptyFieldValue = (value: string | string[] | undefined): boolean => {
+    if (value == null) return true;
+    if (Array.isArray(value)) return value.length === 0;
+    return !String(value).trim();
+  };
+
+  /** Plain-text value for Lark (no HTML escaping). */
+  const larkPlainValue = (value: string | string[]): string => {
+    if (Array.isArray(value)) return value.join(', ');
+    return String(value).trim();
+  };
+
+  const larkDateDisplay = (
+    dateKey: 'delivery_deadline' | 'shoot_event_date',
+  ): string => {
+    const unknownKey =
+      dateKey === 'delivery_deadline'
+        ? 'delivery_deadline_unknown'
+        : 'shoot_event_date_unknown';
+    const noteKey =
+      dateKey === 'delivery_deadline' ? 'delivery_deadline_note' : 'shoot_event_date_note';
+
+    if (String(fields[unknownKey]) === 'true') {
+      const note = String(fields[noteKey] ?? '').trim();
+      return note ? `No specific date yet — ${note}` : 'No specific date yet';
+    }
+
+    const dateVal = fields[dateKey];
+    if (isEmptyFieldValue(dateVal)) return '';
+    return larkPlainValue(dateVal as string | string[]);
+  };
+
+  let campaignKeys = emailFieldsForCampaignType(String(fields.campaign_type));
+  if (
+    String(fields.campaign_type) === 'Documentary / Live Event' &&
+    String(fields.production_scope) !== 'Filming + post-production'
+  ) {
+    campaignKeys = campaignKeys.filter((key) => key !== 'delivery_deadline');
+  }
+
+  const shortFieldElements: Array<{
+    is_short: true;
+    text: { tag: 'lark_md'; content: string };
+  }> = [];
+  const longFieldElements: Array<{
+    tag: 'div';
+    text: { tag: 'lark_md'; content: string };
+  }> = [];
+
+  for (const key of campaignKeys) {
+    if (LARK_HEADER_FIELD_KEYS.has(key)) continue;
+
+    if (
+      key === 'extra_deliverables_other_note' &&
+      !(Array.isArray(fields.extra_deliverables) && fields.extra_deliverables.includes('Other'))
+    ) {
+      continue;
+    }
+
+    let display = '';
+    if (key === 'delivery_deadline' || key === 'shoot_event_date') {
+      display = larkDateDisplay(key);
+    } else if (isEmptyFieldValue(fields[key])) {
+      continue;
+    } else {
+      display = larkPlainValue(fields[key] as string | string[]);
+    }
+
+    if (!display) continue;
+
+    const label = CAMPAIGN_BRIEF_FIELD_LABELS[key];
+    const content = `**${label}**\n${display}`;
+
+    if (LARK_LONG_TEXT_FIELDS.has(key)) {
+      longFieldElements.push({
+        tag: 'div',
+        text: { tag: 'lark_md', content },
+      });
+    } else {
+      shortFieldElements.push({
+        is_short: true,
+        text: { tag: 'lark_md', content },
+      });
+    }
+  }
+
+  const campaignDetailsElements: unknown[] = [];
+  if (shortFieldElements.length > 0 || longFieldElements.length > 0) {
+    campaignDetailsElements.push({
+      tag: 'div',
+      text: { tag: 'lark_md', content: '**Campaign Details**' },
+    });
+    if (shortFieldElements.length > 0) {
+      campaignDetailsElements.push({
+        tag: 'div',
+        fields: shortFieldElements,
+      });
+    }
+    campaignDetailsElements.push(...longFieldElements);
+  }
+
+  const additionalNotes = String(fields.additional_notes ?? '').trim();
+  const additionalNotesElements =
+    additionalNotes.length > 0
+      ? [
+          {
+            tag: 'div' as const,
+            text: {
+              tag: 'lark_md' as const,
+              content: `**Additional Notes**\n${additionalNotes}`,
+            },
+          },
+        ]
+      : [];
 
   const card = {
     config: { wide_screen_mode: true },
@@ -685,6 +819,9 @@ async function sendLarkNotification(
         ],
       },
       { tag: 'hr' },
+      ...campaignDetailsElements,
+      ...additionalNotesElements,
+      { tag: 'hr' },
       {
         tag: 'div',
         text: { tag: 'lark_md', content: `**Attachments**\n${fileNote}` },
@@ -713,27 +850,27 @@ export async function POST(request: Request) {
   let locale: Locale = 'en';
 
   try {
-    const formData = await request.formData();
-    locale = resolveLocale(formData);
+    const payload = (await request.json()) as BriefSubmitPayload;
+    locale = resolveLocale(payload);
 
     // Honeypot — silently accept but discard if populated.
-    if (getString(formData, 'website')) {
+    if (asString(payload.website)) {
       return NextResponse.json({ success: true });
     }
 
     // Speed check — silently accept if submitted too fast.
-    const elapsed = Number(getString(formData, '_form_elapsed_ms'));
+    const elapsed = Number(payload._form_elapsed_ms);
     if (!Number.isNaN(elapsed) && elapsed < MIN_SUBMIT_MS) {
       return NextResponse.json({ success: true });
     }
 
-    const fields = parseFields(formData);
+    const fields = parseFields(payload);
     const fieldErrors = validateFields(fields, locale);
     if (Object.keys(fieldErrors).length > 0) {
       return NextResponse.json({ success: false, errors: fieldErrors }, { status: 400 });
     }
 
-    const { files, error: fileError } = await parseUploads(formData, locale);
+    const { files, error: fileError } = parseAttachments(payload.attachments, locale);
     if (fileError) {
       return NextResponse.json(
         { success: false, errors: { files: fileError } },
@@ -741,15 +878,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Best-effort Sanity upload before Lark so the card can include CDN links.
-    // Must not fail the request; on failure Lark falls back to filename-only.
-    let attachmentLinks: AttachmentLink[] = [];
+    // Best-effort: create campaignBriefAttachment from client-uploaded asset refs.
+    // Assets already exist in Sanity; doc creation failure must not block notifications.
     if (files.length > 0) {
       try {
-        attachmentLinks = await storeCampaignBriefAttachments(fields, files);
+        await createCampaignBriefAttachmentDoc(fields, files);
       } catch (err) {
         console.error(
-          `Campaign brief Sanity upload failed for ${String(fields.contact_email)}:`,
+          `Campaign brief attachment doc failed for ${String(fields.contact_email)}:`,
           err,
         );
       }
@@ -757,7 +893,7 @@ export async function POST(request: Request) {
 
     await Promise.all([
       sendResendEmail(fields, files),
-      sendLarkNotification(fields, files, attachmentLinks),
+      sendLarkNotification(fields, files),
     ]);
 
     // Best-effort submitter confirmation — failures are logged only; response stays success.

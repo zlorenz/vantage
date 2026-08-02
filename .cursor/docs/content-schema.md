@@ -669,8 +669,8 @@ Both English and Chinese forms are required for v1 launch, but **must be built s
 | Email | Resend → `zacharia@vantage.pictures` (all field data) |
 | Team notification | Lark group webhook |
 | Analytics | GTM event `vp_brief_form_submit` |
-| Storage | Form fields: none (fire-and-forward). Uploaded files: Sanity `campaignBriefAttachment` assets for Lark download links (best-effort). |
-| File attachments | API route multipart → Lark attachments (no persistent storage) |
+| Storage | Form fields: none (fire-and-forward). Files: browser → Sanity assets; API creates `campaignBriefAttachment` refs best-effort for CDN links. |
+| File attachments | Client uploads to Sanity; JSON metadata to API (no multipart file bytes through Next.js) |
 
 **Confirmation message:** "Thanks for contacting us! We will get in touch with you shortly." — generic copy; update for campaign brief in rebuild.
 
@@ -863,7 +863,7 @@ All audit decisions confirmed 2026-06-21.
 |---|---|
 | Chinese slug patterns | Verify TranslatePress dictionary against `site-architecture.md` during migration (e.g. `/zh/关于/` vs `/zh/关于我们/`) |
 | Campaign Brief confirmation copy | Update generic "contact us" wording for brief context (EN and ZH) |
-| File upload strategy | Resend keeps direct email attachments; files also uploaded to Sanity (`campaignBriefAttachment`) best-effort for Lark CDN links |
+| File upload strategy | Browser → Sanity (`NEXT_PUBLIC_SANITY_UPLOAD_TOKEN`); API JSON metadata only. Resend attaches small files via CDN `path`, links large ones; confirmation/Lark use CDN links |
 | TranslatePress SQL error | Flagged in local DB options; dictionary data intact |
 | Portfolio slug `/portfolio/3612/` | Assign human-readable slug; redirect in `migration-data.md` |
 

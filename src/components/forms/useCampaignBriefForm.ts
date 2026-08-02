@@ -16,6 +16,8 @@ import {
   type CampaignBriefStepConfig,
 } from '@/lib/campaign-brief-fields';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import { uploadBriefFilesToSanity } from '@/lib/campaign-brief-client-upload';
+import type { BriefAttachmentMeta } from '@/lib/campaign-brief-attachments';
 import type { Locale } from '@/i18n/routing';
 
 export type CampaignBriefSubmissionState = 'idle' | 'submitting' | 'success' | 'error';
@@ -213,40 +215,20 @@ function validateFiles(
   return null;
 }
 
-function buildFormData(
+function buildSubmitPayload(
   values: CampaignBriefFormValues,
-  files: File[],
+  attachments: BriefAttachmentMeta[],
   honeypot: string,
   formStartTime: number,
-): FormData {
-  const formData = new FormData();
-  const arrayKeys = new Set<CampaignBriefArrayFieldKey>([
-    'extra_deliverables',
-    'social_channels',
-    'aspect_ratios',
-  ]);
-
-  for (const key of Object.keys(values) as Array<keyof CampaignBriefFormValues>) {
-    const value = values[key];
-    if (arrayKeys.has(key as CampaignBriefArrayFieldKey) && Array.isArray(value)) {
-      for (const item of value) {
-        formData.append(key, item);
-      }
-    } else if (typeof value === 'boolean') {
-      if (value) formData.append(key, 'true');
-    } else if (typeof value === 'string') {
-      formData.append(key, value);
-    }
-  }
-
-  for (const file of files) {
-    formData.append('briefing_materials_upload', file);
-  }
-
-  formData.append('website', honeypot);
-  formData.append('_form_elapsed_ms', String(Date.now() - formStartTime));
-
-  return formData;
+  locale: Locale,
+): Record<string, unknown> {
+  return {
+    ...values,
+    attachments,
+    website: honeypot,
+    _form_elapsed_ms: Date.now() - formStartTime,
+    locale,
+  };
 }
 
 function pushBriefSubmitEvent(): void {
@@ -445,11 +427,37 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
     setFileError(null);
 
     try {
-      const formData = buildFormData(values, files, honeypot, formStartTimeRef.current);
-      formData.append('locale', locale);
+      // Browser → Sanity first (fail loud). Raw bytes never hit /api/campaign-brief.
+      let attachments: BriefAttachmentMeta[] = [];
+      if (files.length > 0) {
+        try {
+          attachments = await uploadBriefFilesToSanity(files);
+        } catch (err) {
+          const raw = err instanceof Error ? err.message : '';
+          const tagged = raw.includes('::') ? raw.split('::')[0] : '';
+          const filename =
+            (tagged && files.some((f) => f.name === tagged) ? tagged : null) ??
+            files[0]?.name ??
+            'file';
+          const message = ui.fileUploadFailed(filename);
+          setFileError(message);
+          setErrors({ files: message });
+          setSubmissionState('error');
+          return;
+        }
+      }
+
+      const payload = buildSubmitPayload(
+        values,
+        attachments,
+        honeypot,
+        formStartTimeRef.current,
+        locale,
+      );
       const response = await fetch('/api/campaign-brief', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
       const result = (await response.json()) as {

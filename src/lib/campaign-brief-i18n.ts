@@ -50,6 +50,8 @@ export type CampaignBriefUi = {
   dropzoneOr: string;
   maxFilesAllowed: (max: number) => string;
   fileTypeNotAllowed: (filename: string) => string;
+  /** Shown when browser→Sanity upload fails before JSON submit. */
+  fileUploadFailed: (filename: string) => string;
   fieldLabels: Record<CampaignBriefFieldKey, string>;
   /** Social Media branch uses a shortened campaign_description label. */
   campaignDescriptionSocialLabel: string;
@@ -249,6 +251,8 @@ const UI_EN: CampaignBriefUi = {
   dropzoneOr: DROPZONE_OR_EN,
   maxFilesAllowed: (max) => `Maximum ${max} files allowed.`,
   fileTypeNotAllowed: (filename) => `File type not allowed: ${filename}`,
+  fileUploadFailed: (filename) =>
+    `Couldn't upload ${filename} — please try again or remove it and continue without it.`,
   fieldLabels: FIELD_LABELS_EN,
   campaignDescriptionSocialLabel: CAMPAIGN_DESCRIPTION_SOCIAL_LABEL_EN,
   campaignDescriptionSocialHint: CAMPAIGN_DESCRIPTION_SOCIAL_HINT_EN,
@@ -287,6 +291,8 @@ const UI_ZH: CampaignBriefUi = {
   dropzoneOr: DROPZONE_OR_ZH,
   maxFilesAllowed: (max) => `最多允许 ${max} 个文件。`,
   fileTypeNotAllowed: (filename) => `不支持的文件类型：${filename}`,
+  fileUploadFailed: (filename) =>
+    `无法上传 ${filename} — 请重试，或移除该文件后继续。`,
   fieldLabels: FIELD_LABELS_ZH,
   campaignDescriptionSocialLabel: CAMPAIGN_DESCRIPTION_SOCIAL_LABEL_ZH,
   campaignDescriptionSocialHint: CAMPAIGN_DESCRIPTION_SOCIAL_HINT_ZH,
@@ -378,6 +384,11 @@ export function listCampaignBriefPhrasePairs(): CampaignBriefPhrasePair[] {
     UI_EN.fileTypeNotAllowed('example.pdf'),
     UI_ZH.fileTypeNotAllowed('example.pdf'),
     'fileTypeNotAllowed',
+  )
+  push(
+    UI_EN.fileUploadFailed('example.pdf'),
+    UI_ZH.fileUploadFailed('example.pdf'),
+    'fileUploadFailed',
   )
   push(PROJECT_DESCRIPTION_OTHER_HINT_EN, PROJECT_DESCRIPTION_OTHER_HINT_ZH, 'projectDescriptionOtherHint')
   push(TARGET_AUDIENCE_SOCIAL_HINT_EN, TARGET_AUDIENCE_SOCIAL_HINT_ZH, 'targetAudienceSocialHint')

@@ -108,7 +108,7 @@ It must be stored in `process.env.NEXT_PUBLIC_GTM_ID`.
 ## Forms & Data
 
 **Do not store campaign brief form-field data in a database.**
-Campaign brief submissions are fire-and-forward for field values (Resend + Lark). Uploaded files may be stored as Sanity assets (`campaignBriefAttachment`) solely to provide download links in the Lark notification — best-effort and non-blocking. Contact form stays fire-and-forward with no persistence.
+Campaign brief submissions are fire-and-forward for field values (Resend + Lark). Briefing files upload browser → Sanity via `NEXT_PUBLIC_SANITY_UPLOAD_TOKEN` (Editor-scoped, CORS-restricted); the API route receives only asset metadata JSON and may create a `campaignBriefAttachment` doc with `SANITY_API_WRITE_TOKEN` (server-only) best-effort for Lark/email CDN links. Never put `SANITY_API_WRITE_TOKEN` in `NEXT_PUBLIC_*`. Contact form stays fire-and-forward with no persistence.
 
 **Never expose the Lark webhook URL or Resend API key on the client side.**
 Form submissions must be processed via a Next.js API route (`/app/api/`) so that credentials remain server-side only.

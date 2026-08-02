@@ -1,6 +1,8 @@
 /**
- * Shared Sanity write client for server-side mutations (trash purge, brief uploads, etc.).
- * Requires SANITY_API_WRITE_TOKEN (or SANITY_API_TOKEN) — never import from client components.
+ * Shared Sanity write client for server-side mutations (trash purge, brief attachment
+ * docs, etc.). Requires SANITY_API_WRITE_TOKEN (or SANITY_API_TOKEN) — never import
+ * from client components. Browser brief uploads use NEXT_PUBLIC_SANITY_UPLOAD_TOKEN
+ * instead (see campaign-brief-client-upload.ts).
  */
 
 import {createClient, type SanityClient} from '@sanity/client'
