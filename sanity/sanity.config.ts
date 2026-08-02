@@ -1,8 +1,9 @@
-import {defineConfig} from 'sanity'
+import {defineConfig, type AssetSource} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {presentationTool} from 'sanity/presentation'
 import {visionTool} from '@sanity/vision'
 import {media} from 'sanity-plugin-media'
+import {elevatedMediaAssetSource} from './components/ElevatedMediaAssetSource'
 import {VantageLogoIcon} from './components/VantageLogoIcon'
 import {StudioRoleLayout} from './components/StudioRoleLayout'
 import {schemaTypes} from './schemas'
@@ -12,6 +13,19 @@ import {getStudioRole} from './lib/studio-roles'
 import {contentTool} from './tools/content'
 import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './tools/content/front-end-url'
 import './studio.css'
+
+/**
+ * Field asset-source menu tweaks:
+ * - Raise Media overlay above Content tool form (ElevatedMediaAssetSource).
+ * - Relabel native dataset source — default title is the Studio title and reads poorly in this menu.
+ */
+function customizeAssetSources(prev: AssetSource[]): AssetSource[] {
+  return prev.map((source) => {
+    if (source.name === elevatedMediaAssetSource.name) return elevatedMediaAssetSource
+    if (source.name === 'sanity-default') return {...source, title: 'Browse Dataset'}
+    return source
+  })
+}
 
 export default defineConfig({
   name: 'default',
@@ -45,6 +59,11 @@ export default defineConfig({
     media(),
     visionTool(),
   ],
+
+  form: {
+    image: {assetSources: customizeAssetSources},
+    file: {assetSources: customizeAssetSources},
+  },
 
   tools: (prev, context) => {
     const role = getStudioRole(context.currentUser)
