@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       { source: '/feed', destination: '/', permanent: true },
       { source: '/feed/', destination: '/', permanent: true },
       { source: '/wp-json/:path*', destination: '/', permanent: true },
+      { source: '/author/:path*', destination: '/', permanent: true },
       {
         source: '/portfolio/3612',
         destination: '/portfolio/realme-c85-your-ultimate-outdoor-sidekick',
