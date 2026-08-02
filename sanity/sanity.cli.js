@@ -9,7 +9,7 @@ const sharedPhraseBook = path.resolve(rootDir, '../shared/phrase-book')
 const sharedAiTranslation = path.resolve(rootDir, '../shared/ai-translation')
 const sharedVideoUrl = path.resolve(rootDir, '../shared/video-url')
 const sharedClientLogos = path.resolve(rootDir, '../shared/client-logos/index.ts')
-const sharedTrashRetention = path.resolve(rootDir, '../shared/trash-retention.ts')
+const sharedTrashRetention = path.resolve(rootDir, '../shared/trash-retention')
 
 function mergeViteAliases(existing, extra) {
   const asArray = Array.isArray(existing)

@@ -81,6 +81,7 @@ const blogColumns: TableColumn[] = [
   {id: 'thumbnail', header: '', width: '56px'},
   {id: 'title', header: 'Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
+  {id: 'publishedAt', header: 'Published', width: '140px', sortable: true},
   {id: 'categories', header: 'Categories', width: '160px'},
   {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
 ]
@@ -195,7 +196,7 @@ export const NAV_ITEMS: ContentNavItem[] = [
         createLabel: 'New Post',
         supportsTrash: true,
         columns: blogColumns,
-        defaultSort: {field: 'updatedAt', direction: 'desc'},
+        defaultSort: {field: 'publishedAt', direction: 'desc'},
         searchFields: ['title', 'titleZh', 'slug', 'metaDescription', 'categories'],
       },
       {

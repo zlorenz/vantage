@@ -4,7 +4,7 @@
  */
 
 import assert from 'node:assert/strict'
-import {TRASH_RETENTION_DAYS} from '@trash-retention'
+import {TRASH_RETENTION_DAYS} from '../../../shared/trash-retention'
 import {
   formatImpactSummary,
   purgeAfterFrom,

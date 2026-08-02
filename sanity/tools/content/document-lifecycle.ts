@@ -6,7 +6,7 @@
  */
 
 import type {SanityClient} from '@sanity/client'
-import {TRASH_RETENTION_DAYS} from '@trash-retention'
+import {TRASH_RETENTION_DAYS} from '../../../shared/trash-retention'
 
 export const TRASHABLE_TYPES = ['portfolioEntry', 'blogPost', 'page'] as const
 export type TrashableType = (typeof TRASHABLE_TYPES)[number]

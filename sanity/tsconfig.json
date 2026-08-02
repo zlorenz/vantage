@@ -37,7 +37,7 @@
     "../shared/ai-translation/**/*.ts",
     "../shared/video-url/**/*.ts",
     "../shared/client-logos/**/*.ts",
-    "../shared/trash-retention.ts",
+    "../shared/trash-retention/**/*.ts",
     "../messages/**/*.json",
     "../src/lib/campaign-brief-fields.ts",
     "../src/lib/campaign-brief-i18n.ts"

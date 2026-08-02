@@ -189,12 +189,14 @@ function buildQuery(documentType: string): string {
         "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop"
       }`
     case 'blogPost':
-      return `*[_type == "blogPost" && !(_id in path("versions.**"))] | order(_updatedAt desc) {
+      // Match the public news index: newest first by created/published date.
+      return `*[_type == "blogPost" && !(_id in path("versions.**"))] | order(_createdAt desc) {
         _id,
         _type,
         title,
         titleZh,
         "slug": slug.current,
+        "_createdAt": _createdAt,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,
         trash,
@@ -344,7 +346,11 @@ function normalizeRows(
       title: titleFromDoc(doc),
       titleZh: doc.titleZh ? String(doc.titleZh) : undefined,
       slug: doc.slug ? String(doc.slug) : undefined,
-      publishedAt: doc.publishedAt ? String(doc.publishedAt) : undefined,
+      publishedAt: doc.publishedAt
+        ? String(doc.publishedAt)
+        : doc._createdAt
+          ? String(doc._createdAt)
+          : undefined,
       updatedAt: doc._updatedAt ? String(doc._updatedAt) : undefined,
       metaDescription: doc.metaDescription ? String(doc.metaDescription) : undefined,
       isHidden: Boolean(doc.isHidden),
@@ -521,7 +527,7 @@ function CellContent({
         <Text size={1}>
           {row.isScheduled
             ? formatDateTime(row.scheduledFor)
-            : row._type === 'portfolioEntry'
+            : row._type === 'portfolioEntry' || row._type === 'blogPost'
               ? formatDate(row.publishedAt)
               : formatDateTime(row.publishedAt)}
         </Text>
