@@ -30,6 +30,35 @@ export type GalleryImageImage = {
   _type: "image";
 };
 
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
+export type CampaignBriefAttachment = {
+  _id: string;
+  _type: "campaignBriefAttachment";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  companyName?: string;
+  campaignTitle?: string;
+  contactEmail?: string;
+  campaignType?: string;
+  files?: Array<{
+    file?: {
+      asset?: SanityFileAssetReference;
+      media?: unknown;
+      _type: "file";
+    };
+    originalFilename?: string;
+    _type: "briefFile";
+    _key: string;
+  }>;
+};
+
 export type TrashRecord = {
   _id: string;
   _type: "trashRecord";
@@ -205,13 +234,6 @@ export type TrashMetadata = {
   trashedBy?: string;
   purgeAfter?: string;
   batchId?: string;
-};
-
-export type SanityFileAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
 };
 
 export type PdfDownload = {
@@ -966,11 +988,12 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | GalleryImageImage
+  | SanityFileAssetReference
+  | CampaignBriefAttachment
   | TrashRecord
   | PortfolioEntryReference
   | Page
   | TrashMetadata
-  | SanityFileAssetReference
   | PdfDownload
   | SanityImageCrop
   | SanityImageHotspot
@@ -2128,6 +2151,15 @@ export type WORK_PAGE_QUERY_RESULT = {
   > | null;
 } | null;
 
+// Source: ../src/sanity/queries/sitemap.ts
+// Variable: SITEMAP_PAGES_QUERY
+// Query: *[_type == "page"    && slug.current in ["home", "work", "about", "news",        "vietnam-production-service", "vietnam-location-guide",        "video-campaign-brief"]    && noIndex != true    && !defined(trash.trashedAt)] {    "slug": slug.current,    "slugZh": slugZh.current,    "_updatedAt": _updatedAt  }
+export type SITEMAP_PAGES_QUERY_RESULT = Array<{
+  slug: string | null;
+  slugZh: string | null;
+  _updatedAt: string;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -2143,5 +2175,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "page" && slug.current == "video-campaign-brief" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    \n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  heroFilmTitle,\n  heroFilmTitleZh,\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  longTitleOverride,\n  longTitleOverrideZh\n,\n    excerpt,\n    excerptZh,\n    description,\n    descriptionZh,\n    featuredImage,\n    vimeoUrl,\n    xinpianchangUrl,\n    publishedAt,\n    isHidden,\n    additionalVideos[]{\n      vimeoUrl,\n      xinpianchangUrl,\n      videoTitle,\n      videoTitleZh,\n      description,\n      descriptionZh\n    },\n    \n  crewCredits[]{\n    _key,\n    department,\n    roleKey,\n    role,\n    isCustomRole,\n    people[]{\n      _key,\n      name,\n      "url": coalesce(identity->url, url),\n      linkTitle,\n      "identityId": identity._ref,\n      "identityName": identity->name,\n      "identityNameZh": identity->nameZh\n    }\n  }\n,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': PORTFOLIO_ENTRY_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{\n    title,\n    titleZh,\n    heroTitle,\n    heroTitleZh,\n    featuredImage,\n    body,\n    bodyZh\n  }\n': WORK_PAGE_QUERY_RESULT;
+    '\n  *[_type == "page"\n    && slug.current in ["home", "work", "about", "news",\n        "vietnam-production-service", "vietnam-location-guide",\n        "video-campaign-brief"]\n    && noIndex != true\n    && !defined(trash.trashedAt)] {\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    "_updatedAt": _updatedAt\n  }\n': SITEMAP_PAGES_QUERY_RESULT;
   }
 }

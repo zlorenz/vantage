@@ -31,7 +31,9 @@
       "@video-url": ["./shared/video-url"],
       "@video-url/*": ["./shared/video-url/*"],
       "@client-logos": ["./shared/client-logos"],
-      "@client-logos/*": ["./shared/client-logos/*"]
+      "@client-logos/*": ["./shared/client-logos/*"],
+      "@trash-retention": ["./shared/trash-retention"],
+      "@trash-retention/*": ["./shared/trash-retention/*"]
     }
   },
   "include": [

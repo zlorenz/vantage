@@ -3,8 +3,25 @@
  */
 
 import type { MetadataRoute } from 'next';
+import { PAGE_ROUTES } from '../../sanity/tools/content/front-end-url';
 
 export const SITE_URL = 'https://vantage.pictures';
+
+/** Sitemap historically omits trailing slashes except home (`/` / `/zh/`). */
+function forSitemapPath(path: string): string {
+  if (path === '/' || path === '/zh/') return path;
+  return path.replace(/\/$/, '');
+}
+
+/** Paths for a CMS `page` slug via shared PAGE_ROUTES (home → `/` + `/zh/`). */
+export function pagePaths(slug: string): { en: string; zh: string } | undefined {
+  const routes = PAGE_ROUTES[slug];
+  if (!routes) return undefined;
+  return {
+    en: forSitemapPath(routes.en),
+    zh: forSitemapPath(routes.zh),
+  };
+}
 
 export function absoluteUrl(path: string): string {
   if (!path || path === '/') {

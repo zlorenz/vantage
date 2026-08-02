@@ -4,12 +4,12 @@
  */
 
 import assert from 'node:assert/strict'
+import {TRASH_RETENTION_DAYS} from '@trash-retention'
 import {
   formatImpactSummary,
   purgeAfterFrom,
   summarizeImpacts,
   trashRecordId,
-  TRASH_RETENTION_DAYS,
   type RemovedReferenceBackup,
 } from './document-lifecycle'
 

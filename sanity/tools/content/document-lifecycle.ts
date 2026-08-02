@@ -6,11 +6,12 @@
  */
 
 import type {SanityClient} from '@sanity/client'
+import {TRASH_RETENTION_DAYS} from '@trash-retention'
 
 export const TRASHABLE_TYPES = ['portfolioEntry', 'blogPost', 'page'] as const
 export type TrashableType = (typeof TRASHABLE_TYPES)[number]
 
-export const TRASH_RETENTION_DAYS = 30
+export {TRASH_RETENTION_DAYS}
 
 export type RemovedReferenceBackup = {
   referrerId: string

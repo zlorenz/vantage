@@ -26,7 +26,8 @@ export const FRONT_END_DOCUMENT_TYPES = new Set([
   'category',
 ])
 
-const PAGE_ROUTES: Record<string, {en: string; zh: string}> = {
+/** EN/ZH paths for CMS `page` slugs — single source of truth for Studio + sitemap. */
+export const PAGE_ROUTES: Record<string, {en: string; zh: string}> = {
   home: {en: '/', zh: '/zh/'},
   work: {en: '/work/', zh: '/zh/工作/'},
   'work-internal': {en: '/work-internal/', zh: '/zh/work-internal/'},

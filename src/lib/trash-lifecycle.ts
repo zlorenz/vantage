@@ -5,9 +5,10 @@
  */
 
 import type {SanityClient} from '@sanity/client'
+import {TRASH_RETENTION_DAYS} from '@trash-retention'
 import {getSanityWriteClient} from '@/lib/sanity-write-client'
 
-export const TRASH_RETENTION_DAYS = 30
+export {TRASH_RETENTION_DAYS}
 
 function releaseIdOfVersion(id: string): string | null {
   if (!id.startsWith('versions.')) return null
