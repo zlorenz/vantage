@@ -374,10 +374,14 @@ export interface BlogPostCard {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  publishedAt?: string;
   _createdAt?: string;
   featuredImage?: SanityImage;
   excerpt?: string;
   excerptZh?: string;
+  /** Plain-text body projection for excerpt fallback when excerpt is empty. */
+  bodyText?: string;
+  bodyTextZh?: string;
   categories?: CategoryTerm[];
 }
 
@@ -405,13 +409,16 @@ export interface SearchResultItem {
   titleZh?: string;
   slug: string;
   slugZh?: string;
-  /** Portfolio original release date; blogs use `_createdAt` via query alias. */
+  /** Portfolio original release date, or blog post publish date. */
   publishedAt?: string;
   featuredImage?: SanityImage;
   description?: string;
   descriptionZh?: string;
   excerpt?: string;
   excerptZh?: string;
+  /** Plain-text body projection for blog excerpt fallback. */
+  bodyText?: string;
+  bodyTextZh?: string;
 }
 
 /** Blog post slug pair for generateStaticParams. */

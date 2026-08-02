@@ -23,6 +23,7 @@ export async function importBlogPosts(): Promise<number> {
       _type: 'blogPost',
       title: item.title,
       slug: slugField(item.slug),
+      publishedAt: new Date(item.publishedAt).toISOString(),
       body: htmlToPortableText(item.bodyHtml, idMap),
       categories: item.categories.map((s) => docRef(categoryId(s))),
     };

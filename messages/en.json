@@ -63,7 +63,8 @@
     "crewAria": "Portfolio crew filters"
   },
   "Blog": {
-    "categories": "BLOG CATEGORIES"
+    "categories": "BLOG CATEGORIES",
+    "postedOn": "Posted on "
   },
   "Contact": {
     "modalTitle": "Contact",

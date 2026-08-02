@@ -3,8 +3,9 @@
  */
 
 import Image from 'next/image';
+import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
 import { Link } from '@/i18n/navigation';
-import { blogCardExcerpt } from '@/lib/blog-excerpt';
+import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 import type { BlogPostCard as BlogPostCardData } from '@/types/sanity';
@@ -19,8 +20,9 @@ interface BlogPostCardProps {
 export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
   const slugParam = locale === 'zh' ? post.slugZh || post.slug : post.slug;
   const title = pickLocaleFieldWithPhrases(locale, post.title, post.titleZh, phrases);
-  const excerpt = blogCardExcerpt(
+  const excerpt = resolveBlogCardExcerpt(
     pickLocaleFieldWithPhrases(locale, post.excerpt, post.excerptZh, phrases),
+    pickLocaleFieldWithPhrases(locale, post.bodyText, post.bodyTextZh, phrases),
   );
 
   const imageUrl = post.featuredImage
@@ -55,9 +57,15 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
           </Link>
         </h2>
 
+        {post.publishedAt ? (
+          <div className="vp-post-card__meta mb-2 text-sm text-vp-text-soft">
+            <BlogPostedOn publishedAt={post.publishedAt} locale={locale} />
+          </div>
+        ) : null}
+
         {excerpt ? (
           <div className="vp-post-card__excerpt font-light text-vp-text-muted">
-            <p className="m-0 line-clamp-3">{excerpt}</p>
+            <p className="m-0">{excerpt}</p>
           </div>
         ) : null}
       </div>

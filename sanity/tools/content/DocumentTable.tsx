@@ -189,13 +189,14 @@ function buildQuery(documentType: string): string {
         "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop"
       }`
     case 'blogPost':
-      // Match the public news index: newest first by created/published date.
-      return `*[_type == "blogPost" && !(_id in path("versions.**"))] | order(_createdAt desc) {
+      // Match the public news index: newest first by published date.
+      return `*[_type == "blogPost" && !(_id in path("versions.**"))] | order(publishedAt desc) {
         _id,
         _type,
         title,
         titleZh,
         "slug": slug.current,
+        publishedAt,
         "_createdAt": _createdAt,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,

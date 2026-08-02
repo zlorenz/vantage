@@ -309,6 +309,7 @@ export type BlogPost = {
   excerptZh?: string;
   slug?: Slug;
   slugZh?: Slug;
+  publishedAt?: string;
   categories?: Array<
     {
       _key: string;
@@ -1041,13 +1042,14 @@ export type AllSanitySchemaTypes =
 
 // Source: ../src/sanity/queries/blog.ts
 // Variable: POST_BY_SLUG_QUERY
-// Query: *[_type == "blogPost" && !defined(trash.trashedAt) && (    slug.current == $slug || slugZh.current == $slug  )][0]{    _id,    title,    titleZh,    "slug": slug.current,    "slugZh": slugZh.current,    _createdAt,    _updatedAt,    featuredImage,    excerpt,    excerptZh,    body,    bodyZh,    "categories": categories[]->{      _id,      title,      titleZh,      "slug": slug.current,      "slugZh": slugZh.current    },    noIndex,    seo{      metaDescription,      metaDescriptionZh,      metaTitle,      metaTitleZh,      ogImage    }  }
+// Query: *[_type == "blogPost" && !defined(trash.trashedAt) && (    slug.current == $slug || slugZh.current == $slug  )][0]{    _id,    title,    titleZh,    "slug": slug.current,    "slugZh": slugZh.current,    publishedAt,    _createdAt,    _updatedAt,    featuredImage,    excerpt,    excerptZh,    body,    bodyZh,    "categories": categories[]->{      _id,      title,      titleZh,      "slug": slug.current,      "slugZh": slugZh.current    },    noIndex,    seo{      metaDescription,      metaDescriptionZh,      metaTitle,      metaTitleZh,      ogImage    }  }
 export type POST_BY_SLUG_QUERY_RESULT = {
   _id: string;
   title: string | null;
   titleZh: string | null;
   slug: string | null;
   slugZh: string | null;
+  publishedAt: string | null;
   _createdAt: string;
   _updatedAt: string;
   featuredImage: {
@@ -2164,7 +2166,7 @@ export type SITEMAP_PAGES_QUERY_RESULT = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "blogPost" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    _createdAt,\n    _updatedAt,\n    featuredImage,\n    excerpt,\n    excerptZh,\n    body,\n    bodyZh,\n    "categories": categories[]->{\n      _id,\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    noIndex,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': POST_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "blogPost" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    publishedAt,\n    _createdAt,\n    _updatedAt,\n    featuredImage,\n    excerpt,\n    excerptZh,\n    body,\n    bodyZh,\n    "categories": categories[]->{\n      _id,\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    noIndex,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': POST_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{\n    \n  _id,\n  title,\n  titleZh,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  showHeroHeader,\n  heroTitle,\n  heroTitleZh,\n  featuredImage,\n  body,\n  bodyZh,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    "heroSlides": heroSlides[\n      !defined(@->trash.trashedAt)\n    ]->{\n      \n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  "description": coalesce(excerpt, seo.metaDescription),\n  "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),\n  featuredImage\n\n    },\n    "featuredWork": featuredWork[\n      !defined(@->trash.trashedAt) && @->isHidden != true\n    ]->{\n      \n  _id,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  featuredImage,\n  isHidden\n\n    },\n    brandLogos[]{\n      logoId\n    }\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  body,\n  bodyZh\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      professionalTitle,\n      professionalTitleZh,\n      image,\n      bio,\n      bioZh,\n      sameAs\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;

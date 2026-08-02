@@ -21,6 +21,7 @@ import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
+import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
 import {
   buildArticle,
   buildBreadcrumbs,
@@ -134,7 +135,7 @@ export default async function BlogPostPage({ params }: Props) {
           excerpt: post.excerpt,
           excerptZh: post.excerptZh,
           featuredImage: post.featuredImage,
-          publishedAt: post._createdAt,
+          publishedAt: post.publishedAt,
           _updatedAt: post._updatedAt,
           seo: post.seo,
           locale: typedLocale,
@@ -157,9 +158,15 @@ export default async function BlogPostPage({ params }: Props) {
             <h1 className="entry-title mb-4 text-[clamp(2rem,3vw,2.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {title}
             </h1>
-            {post.categories?.length ? (
+            {post.publishedAt || post.categories?.length ? (
               <div className="entry-meta flex flex-wrap items-center gap-2 text-sm text-vp-text-soft">
-                {post.categories.map((category) => {
+                {post.publishedAt ? (
+                  <BlogPostedOn publishedAt={post.publishedAt} locale={typedLocale} />
+                ) : null}
+                {post.publishedAt && post.categories?.length ? (
+                  <span aria-hidden>·</span>
+                ) : null}
+                {post.categories?.map((category) => {
                     const catSlug =
                       typedLocale === 'zh'
                         ? category.slugZh || category.slug

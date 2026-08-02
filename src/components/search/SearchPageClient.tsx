@@ -8,8 +8,9 @@ import { useDeferredValue, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
 import { Link } from '@/i18n/navigation';
-import { blogCardExcerpt } from '@/lib/blog-excerpt';
+import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { Locale } from '@/i18n/routing';
 
@@ -19,8 +20,11 @@ interface SearchResultWithImage {
   titleZh?: string;
   slug: string;
   slugZh?: string;
+  publishedAt?: string;
   excerpt?: string;
   excerptZh?: string;
+  bodyText?: string;
+  bodyTextZh?: string;
   imageUrl?: string | null;
 }
 
@@ -167,8 +171,9 @@ function SearchNewsCard({
 }) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
   const title = pickLocaleFieldWithPhrases(locale, item.title, item.titleZh, phrases);
-  const excerpt = blogCardExcerpt(
+  const excerpt = resolveBlogCardExcerpt(
     pickLocaleFieldWithPhrases(locale, item.excerpt, item.excerptZh, phrases),
+    pickLocaleFieldWithPhrases(locale, item.bodyText, item.bodyTextZh, phrases),
   );
 
   return (
@@ -190,8 +195,13 @@ function SearchNewsCard({
             {title}
           </Link>
         </h2>
+        {item.publishedAt ? (
+          <div className="vp-post-card__meta mb-2 text-sm text-vp-text-soft">
+            <BlogPostedOn publishedAt={item.publishedAt} locale={locale} />
+          </div>
+        ) : null}
         {excerpt ? (
-          <p className="m-0 line-clamp-3 font-light text-vp-text-muted">{excerpt}</p>
+          <p className="m-0 font-light text-vp-text-muted">{excerpt}</p>
         ) : null}
       </div>
     </article>

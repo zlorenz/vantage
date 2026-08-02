@@ -16,8 +16,8 @@ export function stripExcerptUrls(text: string): string {
 }
 
 /**
- * Prefer the first meaningful paragraph(s) of body plain-text for cards,
- * omitting lines that were only embed URLs.
+ * Truncate body plain-text for cards when no dedicated excerpt exists.
+ * Prefer the first meaningful paragraph(s), omitting embed-only lines.
  */
 export function blogCardExcerpt(raw: string | undefined | null): string {
   if (!raw) return '';
@@ -29,6 +29,18 @@ export function blogCardExcerpt(raw: string | undefined | null): string {
 
   if (!paragraphs.length) return '';
 
-  // Lead + optional following sentence block, enough for line-clamp-3
+  // Lead + optional following sentence block — ~2–3 card lines
   return paragraphs.slice(0, 2).join(' ');
+}
+
+/**
+ * Prefer a stored excerpt verbatim; fall back to truncated body plain-text.
+ */
+export function resolveBlogCardExcerpt(
+  excerpt: string | undefined | null,
+  bodyPlainText?: string | null,
+): string {
+  const trimmed = excerpt?.trim();
+  if (trimmed) return trimmed;
+  return blogCardExcerpt(bodyPlainText);
 }

@@ -14,7 +14,7 @@ export const SEARCH_QUERY = `
     )]
   | order(
       _type asc,
-      select(_type == "portfolioEntry" => publishedAt, _createdAt) desc
+      select(_type == "portfolioEntry" || _type == "blogPost" => publishedAt, _createdAt) desc
     ) {
     _type,
     title,
@@ -22,7 +22,7 @@ export const SEARCH_QUERY = `
     "slug": slug.current,
     "slugZh": slugZh.current,
     "publishedAt": select(
-      _type == "portfolioEntry" => publishedAt,
+      _type == "portfolioEntry" || _type == "blogPost" => publishedAt,
       _createdAt
     ),
     featuredImage,
@@ -32,6 +32,8 @@ export const SEARCH_QUERY = `
     "excerptZh": select(
       _type == "blogPost" => excerptZh,
       coalesce(descriptionZh, description)
-    )
+    ),
+    "bodyText": select(_type == "blogPost" => pt::text(body), null),
+    "bodyTextZh": select(_type == "blogPost" => pt::text(bodyZh), null)
   }
 `;

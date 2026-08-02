@@ -1,6 +1,10 @@
 /**
- * Unset publishedAt on page and blogPost documents.
- * Original Release Date (publishedAt) is portfolio-only.
+ * Unset publishedAt on page documents only.
+ *
+ * Historically this also unset blogPost.publishedAt when that field was
+ * treated as portfolio-only. Blog posts now use publishedAt again (WP
+ * post_date) — do NOT include blogPost here or a re-run will wipe the
+ * backfill from blog-published-at-from-export.ts.
  *
  * Usage: npx tsx scripts/migration/patch/unset-published-at-non-portfolio.ts
  *
@@ -14,11 +18,11 @@ async function main() {
   const client = getWriteClient();
 
   const docs = await client.fetch<{ _id: string; _type: string }[]>(
-    `*[_type in ["page", "blogPost"] && defined(publishedAt)]{_id, _type}`,
+    `*[_type == "page" && defined(publishedAt)]{_id, _type}`,
   );
 
   if (!docs.length) {
-    console.log('No page/blogPost documents with publishedAt — nothing to do.');
+    console.log('No page documents with publishedAt — nothing to do.');
     return;
   }
 

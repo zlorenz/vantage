@@ -10,15 +10,18 @@ const BLOG_CARD_FIELDS = `
   titleZh,
   "slug": slug.current,
   "slugZh": slugZh.current,
+  publishedAt,
   _createdAt,
   featuredImage,
   excerpt,
-  excerptZh
+  excerptZh,
+  "bodyText": pt::text(body),
+  "bodyTextZh": pt::text(bodyZh)
 `;
 
 /** All published blog posts for the news index. */
 export const ALL_POSTS_QUERY = `
-  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(_createdAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
       title,
@@ -39,6 +42,7 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
     titleZh,
     "slug": slug.current,
     "slugZh": slugZh.current,
+    publishedAt,
     _createdAt,
     _updatedAt,
     featuredImage,
@@ -66,7 +70,7 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
 
 /** All blog post slugs for generateStaticParams. */
 export const POST_SLUGS_QUERY = `
-  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(_createdAt desc) {
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     "slug": slug.current,
     "slugZh": slugZh.current
   }
@@ -78,7 +82,7 @@ export const POSTS_BY_CATEGORY_QUERY = `
     _type == "category" && (
       slug.current == $slug || slugZh.current == $slug
     )
-  ][0]._id)] | order(_createdAt desc) {
+  ][0]._id)] | order(publishedAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
       title,
@@ -116,7 +120,7 @@ export const CATEGORY_HERO_IMAGE_QUERY = `
     _type == "category" && (
       slug.current == $slug || slugZh.current == $slug
     )
-  ][0]._id)] | order(_createdAt desc)[0].featuredImage
+  ][0]._id)] | order(publishedAt desc)[0].featuredImage
 `;
 
 /** All categories for sidebar navigation. */

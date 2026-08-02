@@ -63,7 +63,8 @@
     "crewAria": "制作团队筛选"
   },
   "Blog": {
-    "categories": "博客分类"
+    "categories": "博客分类",
+    "postedOn": "发布于 "
   },
   "Contact": {
     "modalTitle": "联系",
