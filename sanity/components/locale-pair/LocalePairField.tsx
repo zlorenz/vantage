@@ -13,6 +13,7 @@ import {
 
 import {getStudioRole} from '../../lib/studio-roles'
 import {LocalePairStack} from './LocalePairStack'
+import {slugifyEn, slugifyZh} from './slugify'
 import {getLocalePairOptions} from './types'
 import {shouldShowZh} from './shouldShowZh'
 
@@ -54,6 +55,10 @@ function pathToSetKey(path: Path): string {
   return key
 }
 
+function sourceToPath(source: string): Path {
+  return source.split('.').filter(Boolean)
+}
+
 /**
  * Custom field that renders one label + stacked EN/ZH controls with flag chips.
  * EN patches via form onChange; ZH via document operations (sibling / NullField).
@@ -88,6 +93,21 @@ export function LocalePairField(props: FieldProps) {
   // for non-copy pairs (e.g. Xinpianchang embed URLs).
   const zhReadOnly =
     formReadOnly || (role === 'editor' && !pair?.editorCanEditZh)
+
+  const slugSourcePath = useMemo(
+    () => (pair?.slugSource ? sourceToPath(pair.slugSource) : null),
+    [pair?.slugSource],
+  )
+  const slugZhSourcePath = useMemo(
+    () => (pair?.slugZhSource ? sourceToPath(pair.slugZhSource) : null),
+    [pair?.slugZhSource],
+  )
+  // Hooks must run unconditionally; empty path is ignored when source is unset.
+  const enSourceRaw = useFormValue(slugSourcePath ?? [])
+  const zhSourceRaw = useFormValue(slugZhSourcePath ?? [])
+  const enSourceText = slugSourcePath ? stringValue(enSourceRaw) : ''
+  const zhSourceText = slugZhSourcePath ? stringValue(zhSourceRaw) : ''
+  const slugMaxLength = pair?.slugMaxLength ?? 96
 
   const patchZh = useCallback(
     (nextRaw: string) => {
@@ -125,6 +145,16 @@ export function LocalePairField(props: FieldProps) {
     [props.inputProps, typeName],
   )
 
+  const generateEn = useCallback(() => {
+    if (!enSourceText.trim()) return
+    patchEn(slugifyEn(enSourceText, slugMaxLength))
+  }, [enSourceText, patchEn, slugMaxLength])
+
+  const generateZh = useCallback(() => {
+    if (!zhSourceText.trim()) return
+    patchZh(slugifyZh(zhSourceText, slugMaxLength))
+  }, [patchZh, slugMaxLength, zhSourceText])
+
   const errors = (props.validation ?? [])
     .filter((marker) => marker.level === 'error')
     .map((marker) => marker.message)
@@ -151,6 +181,10 @@ export function LocalePairField(props: FieldProps) {
           rows={useTextarea ? (typeof rows === 'number' ? rows : 3) : undefined}
           showZh={shouldShowZh(enValue, zhValue)}
           phraseBook={!isSlugType(typeName)}
+          onGenerateEn={pair?.slugSource ? generateEn : undefined}
+          onGenerateZh={pair?.slugZhSource ? generateZh : undefined}
+          generateEnDisabled={!enSourceText.trim()}
+          generateZhDisabled={!zhSourceText.trim()}
         />
         {errors.length > 0 ? (
           <Text size={0} style={{color: 'var(--card-badge-critical-fg-color)'}}>

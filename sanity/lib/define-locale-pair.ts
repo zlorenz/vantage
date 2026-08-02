@@ -82,11 +82,27 @@ export function defineLocalePair(config: DefineLocalePairConfig): [FieldDefiniti
   const zhName = config.zhName ?? `${config.name}Zh`
   const optional = config.optional ?? config.validation == null
 
+  const slugSource =
+    config.type === 'slug' && typeof config.options?.source === 'string'
+      ? config.options.source
+      : undefined
+  const slugZhSource =
+    config.type === 'slug' && typeof config.zhOptions?.source === 'string'
+      ? config.zhOptions.source
+      : undefined
+  const slugMaxLength =
+    config.type === 'slug' && typeof config.options?.maxLength === 'number'
+      ? config.options.maxLength
+      : undefined
+
   const localePair: LocalePairOptions = {
     zhName,
     rows: config.rows,
     optional,
     ...(config.editorCanEditZh ? {editorCanEditZh: true} : {}),
+    ...(slugSource ? {slugSource} : {}),
+    ...(slugZhSource ? {slugZhSource} : {}),
+    ...(slugMaxLength != null ? {slugMaxLength} : {}),
   }
 
   const en = defineField({

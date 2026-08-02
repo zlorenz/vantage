@@ -8,7 +8,8 @@ fieldset[data-level] > [data-ui='Box'] {
 }
 
 /**
- * Layout-only fieldset chrome (slug|date, Card, Site Settings contact rows):
+ * Layout-only fieldset chrome (slug|date, Card, Site Settings contact rows,
+ * SEO meta title|OG image):
  * Sanity nests fieldset content with paddingLeft for the accent rail and
  * always renders a legend (from title or name). Hide the header row and
  * strip the rail padding so the grid aligns with sibling document fields.
@@ -17,13 +18,15 @@ fieldset[data-level] > [data-ui='Box'] {
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Flex']:has(legend),
 fieldset[data-testid='fieldset-card'] > [data-ui='Flex']:has(legend),
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Flex']:has(legend),
-fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Flex']:has(legend) {
+fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Flex']:has(legend),
+fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Flex']:has(legend) {
   display: none !important;
 }
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'],
 fieldset[data-testid='fieldset-card'] > [data-ui='Box'],
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'],
-fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] {
+fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'],
+fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Box'] {
   padding-left: 0 !important;
 }
 
@@ -42,14 +45,16 @@ fieldset[data-testid='fieldset-copy'] {
 
 /**
  * Blog + Page: Card (image | excerpt) stays equal halves.
- * Portfolio Publishing/slug|date uses fieldset-slugAndDate (same 50/50 intent).
+ * Portfolio / Blog Publishing: slug|date uses fieldset-slugAndDate (same 50/50 intent).
  * Site Settings Contact: phone|whatsapp and modal title|CTA URL.
+ * SEO: meta title|OG image.
  * minmax(0, 1fr) prevents the image input from blowing past 50%.
  */
 fieldset[data-testid='fieldset-card'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'] > [data-ui='Grid'],
-fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] > [data-ui='Grid'] {
+fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] > [data-ui='Grid'],
+fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Box'] > [data-ui='Grid'] {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 

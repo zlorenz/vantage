@@ -22,6 +22,8 @@ export const blogPost = defineType({
 
   fieldsets: [
     {name: 'card', title: 'Card', options: {columns: 2}},
+    // Untitled layout row (legend hidden via studio.css — Sanity auto-titles from name).
+    {name: 'slugAndDate', options: {columns: 2}},
   ],
 
   fields: [
@@ -56,11 +58,21 @@ export const blogPost = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      fieldset: 'slugAndDate',
       description: 'Root-level URL: /[slug]/ — not /news/[slug]/. ZH: /zh/[slug]/',
       options: {source: 'title', maxLength: 96},
       zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
       optional: false,
+    }),
+
+    defineField({
+      name: 'publishedAt',
+      title: 'Published At',
+      type: 'datetime',
+      fieldset: 'slugAndDate',
+      validation: (rule) => rule.required(),
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -116,9 +128,9 @@ export const blogPost = defineType({
 
   orderings: [
     {
-      title: 'Created, Newest',
-      name: 'createdAtDesc',
-      by: [{field: '_createdAt', direction: 'desc'}],
+      title: 'Published Date, Newest',
+      name: 'publishedAtDesc',
+      by: [{field: 'publishedAt', direction: 'desc'}],
     },
   ],
 
@@ -127,11 +139,12 @@ export const blogPost = defineType({
       title: 'title',
       subtitle: 'titleZh',
       media: 'featuredImage',
+      date: 'publishedAt',
     },
-    prepare({title, subtitle, media}) {
+    prepare({title, subtitle, media, date}) {
       return {
         title,
-        subtitle,
+        subtitle: subtitle || (date ? new Date(date).toLocaleDateString() : undefined),
         media,
       }
     },

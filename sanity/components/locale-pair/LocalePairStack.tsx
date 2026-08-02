@@ -1,4 +1,4 @@
-import {Button, Stack, Text, TextArea, TextInput} from '@sanity/ui'
+import {Button, Flex, Stack, Text, TextArea, TextInput} from '@sanity/ui'
 import type {ChangeEvent, ReactNode} from 'react'
 
 import {FieldLabel} from '../FieldLabel'
@@ -31,6 +31,12 @@ type LocalePairStackProps = {
    * Disable for slugs or fields that must not seed the book.
    */
   phraseBook?: boolean
+  /** When set, shows Sanity-style Generate next to the EN control. */
+  onGenerateEn?: () => void
+  /** When set, shows Sanity-style Generate next to the ZH control. */
+  onGenerateZh?: () => void
+  generateEnDisabled?: boolean
+  generateZhDisabled?: boolean
 }
 
 /** Presentational EN/ZH stacked pair with one label and in-field flags. */
@@ -61,6 +67,62 @@ export function LocalePairStack(props: LocalePairStackProps) {
     props.onZhChange(event.currentTarget.value)
   }
 
+  const enControl = (
+    <FlagDecoratedControl
+      locale="en"
+      align={isText ? 'start' : 'center'}
+      readOnly={props.enReadOnly}
+    >
+      {isText ? (
+        <TextArea
+          value={props.enValue}
+          readOnly={props.enReadOnly}
+          rows={props.rows}
+          onChange={handleEn}
+          placeholder={props.enPlaceholder}
+          style={INPUT_PAD}
+        />
+      ) : (
+        <TextInput
+          value={props.enValue}
+          readOnly={props.enReadOnly}
+          onChange={handleEn}
+          placeholder={props.enPlaceholder}
+          style={INPUT_PAD}
+        />
+      )}
+    </FlagDecoratedControl>
+  )
+
+  const zhControl = (
+    <FlagDecoratedControl
+      locale="zh"
+      align={isText ? 'start' : 'center'}
+      readOnly={props.zhReadOnly}
+    >
+      {isText ? (
+        <TextArea
+          value={props.zhValue}
+          readOnly={props.zhReadOnly}
+          rows={props.rows}
+          onChange={handleZh}
+          onBlur={onZhBlur}
+          placeholder={props.zhPlaceholder}
+          style={INPUT_PAD}
+        />
+      ) : (
+        <TextInput
+          value={props.zhValue}
+          readOnly={props.zhReadOnly}
+          onChange={handleZh}
+          onBlur={onZhBlur}
+          placeholder={props.zhPlaceholder}
+          style={INPUT_PAD}
+        />
+      )}
+    </FlagDecoratedControl>
+  )
+
   return (
     <Stack space={2}>
       <FieldLabel optional={props.optional} size={props.labelSize}>
@@ -71,59 +133,37 @@ export function LocalePairStack(props: LocalePairStackProps) {
       ) : null}
 
       <Stack space={2}>
-        <FlagDecoratedControl
-          locale="en"
-          align={isText ? 'start' : 'center'}
-          readOnly={props.enReadOnly}
-        >
-          {isText ? (
-            <TextArea
-              value={props.enValue}
-              readOnly={props.enReadOnly}
-              rows={props.rows}
-              onChange={handleEn}
-              placeholder={props.enPlaceholder}
-              style={INPUT_PAD}
+        {props.onGenerateEn ? (
+          <Flex gap={1} align="flex-start">
+            <div style={{flex: 1, minWidth: 0}}>{enControl}</div>
+            <Button
+              mode="ghost"
+              type="button"
+              text="Generate"
+              disabled={props.enReadOnly || props.generateEnDisabled}
+              onClick={props.onGenerateEn}
             />
-          ) : (
-            <TextInput
-              value={props.enValue}
-              readOnly={props.enReadOnly}
-              onChange={handleEn}
-              placeholder={props.enPlaceholder}
-              style={INPUT_PAD}
-            />
-          )}
-        </FlagDecoratedControl>
+          </Flex>
+        ) : (
+          enControl
+        )}
 
         {showZh ? (
           <Stack space={1}>
-            <FlagDecoratedControl
-              locale="zh"
-              align={isText ? 'start' : 'center'}
-              readOnly={props.zhReadOnly}
-            >
-              {isText ? (
-                <TextArea
-                  value={props.zhValue}
-                  readOnly={props.zhReadOnly}
-                  rows={props.rows}
-                  onChange={handleZh}
-                  onBlur={onZhBlur}
-                  placeholder={props.zhPlaceholder}
-                  style={INPUT_PAD}
+            {props.onGenerateZh ? (
+              <Flex gap={1} align="flex-start">
+                <div style={{flex: 1, minWidth: 0}}>{zhControl}</div>
+                <Button
+                  mode="ghost"
+                  type="button"
+                  text="Generate"
+                  disabled={props.zhReadOnly || props.generateZhDisabled}
+                  onClick={props.onGenerateZh}
                 />
-              ) : (
-                <TextInput
-                  value={props.zhValue}
-                  readOnly={props.zhReadOnly}
-                  onChange={handleZh}
-                  onBlur={onZhBlur}
-                  placeholder={props.zhPlaceholder}
-                  style={INPUT_PAD}
-                />
-              )}
-            </FlagDecoratedControl>
+              </Flex>
+            ) : (
+              zhControl
+            )}
             {canFillFromPhraseBook ? (
               <Button
                 text="Fill from phrase book"

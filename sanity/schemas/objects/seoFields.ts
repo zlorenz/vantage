@@ -18,6 +18,11 @@ export const seoFields = defineType({
   title: 'SEO',
   type: 'object',
 
+  fieldsets: [
+    // Untitled layout row (legend hidden via studio.css — Sanity auto-titles from name).
+    {name: 'metaTitleOgImage', options: {columns: 2}},
+  ],
+
   fields: [
     ...defineLocalePair({
       name: 'metaDescription',
@@ -33,6 +38,7 @@ export const seoFields = defineType({
       name: 'metaTitle',
       title: 'Meta Title',
       type: 'string',
+      fieldset: 'metaTitleOgImage',
       description:
         'Optional override for the page <title>. When set, replaces the route’s default title template.',
       optional: true,
@@ -42,6 +48,7 @@ export const seoFields = defineType({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',
+      fieldset: 'metaTitleOgImage',
       options: {hotspot: true},
       description:
         'Optional override for the Open Graph / Twitter image. When set, replaces the per-route featured-image / default OG fallback.',

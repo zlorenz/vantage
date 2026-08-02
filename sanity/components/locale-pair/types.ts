@@ -10,6 +10,12 @@ export type LocalePairOptions = {
    * Use for non-translation pairs like Vimeo / Xinpianchang embed URLs.
    */
   editorCanEditZh?: boolean
+  /** Document field path used by the EN slug Generate button (e.g. `title`). */
+  slugSource?: string
+  /** Document field path used by the ZH slug Generate button (e.g. `titleZh`). */
+  slugZhSource?: string
+  /** Max slug length when generating (defaults to 96). */
+  slugMaxLength?: number
 }
 
 export function getLocalePairOptions(
