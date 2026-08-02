@@ -139,15 +139,28 @@ function createComponents(relaxed = false): PortableTextComponents {
       );
     },
     image: ({ value }) => {
-      const image = value as SanityImage & { alt?: string; caption?: string };
+      const image = value as SanityImage & {
+        alt?: string;
+        caption?: string;
+        asset?: {
+          _ref?: string;
+          _id?: string;
+          altText?: string | null;
+          description?: string | null;
+        };
+      };
       if (!image?.asset) return null;
       const imageUrl = urlForImage(image).width(1200).url();
-      const caption = image.caption?.trim();
+      // Block fields are optional per-instance overrides; Media metadata is the default.
+      const alt =
+        image.alt?.trim() || image.asset.altText?.trim() || '';
+      const caption =
+        image.caption?.trim() || image.asset.description?.trim() || '';
       return (
         <figure className="vp-pt-image my-6">
           <Image
             src={imageUrl}
-            alt={image.alt ?? ''}
+            alt={alt}
             width={1200}
             height={675}
             className="h-auto w-full"

@@ -17,6 +17,7 @@ import {
 import {useEffect, useMemo, useState} from 'react'
 import {useClient} from 'sanity'
 import {compileDisplayTitles, trimPart} from '@display-titles'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 type PortfolioVideoRow = {
   _id: string
@@ -143,7 +144,7 @@ export function PortfolioVideoPicker({onSelect, onClose}: PortfolioVideoPickerPr
       header="Insert from portfolio"
       width={1}
       onClose={onClose}
-      zOffset={1300}
+      zOffset={STUDIO_OVERLAY_Z + 100}
     >
       <Stack space={3} padding={4}>
         <Flex gap={2} align="center">

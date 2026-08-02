@@ -6,6 +6,7 @@ import {EditIcon, PlayIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Dialog, Flex, Stack, Text} from '@sanity/ui'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {useClient, type BlockProps} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 import {parseVideoUrl, vimeoThumbnailUrl, youTubePosterUrl} from '@video-url'
 
 import {resolveVideoTitle} from './resolveVideoTitle'
@@ -183,7 +184,7 @@ export function VideoEmbedBlock(props: BlockProps) {
           header="Remove video?"
           width={0}
           onClose={closeDelete}
-          zOffset={1200}
+          zOffset={STUDIO_OVERLAY_Z}
           __unstable_autoFocus={false}
           footer={
             <Box padding={3}>

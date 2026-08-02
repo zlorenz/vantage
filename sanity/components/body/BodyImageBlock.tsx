@@ -1,11 +1,17 @@
 /**
  * BodyImageBlock — PT image preview with hover edit/delete (Media-aligned metadata).
+ *
+ * Empty blocks open Sanity's native image form (`children`) in an elevated dialog
+ * so upload / Browse Dataset / Media work inside the Content tool. Populated blocks
+ * keep custom chrome + BodyImageEditDialog for Media metadata (site falls back to
+ * asset altText / description when block alt / caption are empty).
  */
 
-import {EditIcon, TrashIcon} from '@sanity/icons'
+import {EditIcon, ImageIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Card, Dialog, Flex, Spinner, Stack, Text} from '@sanity/ui'
 import {useCallback, useEffect, useState} from 'react'
 import {useClient, type BlockProps} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 import {BodyImageEditDialog} from './BodyImageEditDialog'
 import {preserveBodyFocusScroll, preventFocusSteal} from './preserveBodyScroll'
@@ -32,7 +38,7 @@ function assetIdFromValue(value: unknown): string | null {
 }
 
 export function BodyImageBlock(props: BlockProps) {
-  const {value, focused, selected, readOnly} = props
+  const {value, focused, selected, readOnly, open, onOpen, onClose, children} = props
   const client = useClient({apiVersion: '2025-01-01'})
   const assetId = assetIdFromValue(value)
   const block = (value ?? {}) as ImageBlockValue
@@ -69,10 +75,26 @@ export function BodyImageBlock(props: BlockProps) {
     }
   }, [assetId, client])
 
+  // After an asset attaches, close the native select dialog member-open state.
+  useEffect(() => {
+    if (assetId && open) {
+      onClose()
+    }
+  }, [assetId, open, onClose])
+
+  const openNativePicker = useCallback(() => {
+    if (readOnly) return
+    preserveBodyFocusScroll(() => onOpen())
+  }, [onOpen, readOnly])
+
   const openEdit = useCallback(() => {
-    if (readOnly || !assetId) return
+    if (readOnly) return
+    if (!assetId) {
+      openNativePicker()
+      return
+    }
     preserveBodyFocusScroll(() => setEditOpen(true))
-  }, [assetId, readOnly])
+  }, [assetId, openNativePicker, readOnly])
 
   const closeEdit = useCallback(() => {
     preserveBodyFocusScroll(() => setEditOpen(false))
@@ -108,6 +130,10 @@ export function BodyImageBlock(props: BlockProps) {
     })
   }, [props])
 
+  const closeNativePicker = useCallback(() => {
+    preserveBodyFocusScroll(() => onClose())
+  }, [onClose])
+
   return (
     <>
       <div
@@ -123,7 +149,29 @@ export function BodyImageBlock(props: BlockProps) {
           <img src={asset.url} alt={block.alt || asset.altText || ''} />
         ) : (
           <Card padding={4} tone="caution" radius={0}>
-            <Text size={1}>Missing image asset</Text>
+            <Stack space={3}>
+              <Stack space={2}>
+                <Text size={1} weight="semibold">
+                  No image selected
+                </Text>
+                <Text size={1} muted>
+                  Upload a file or choose from Media / Browse Dataset.
+                </Text>
+              </Stack>
+              {!readOnly ? (
+                <Button
+                  icon={ImageIcon}
+                  text="Select image"
+                  tone="primary"
+                  mode="ghost"
+                  fontSize={1}
+                  padding={2}
+                  style={{alignSelf: 'flex-start'}}
+                  onMouseDown={preventFocusSteal}
+                  onClick={openNativePicker}
+                />
+              ) : null}
+            </Stack>
           </Card>
         )}
 
@@ -136,7 +184,7 @@ export function BodyImageBlock(props: BlockProps) {
               fontSize={1}
               padding={2}
               style={{background: 'var(--card-bg-color)'}}
-              aria-label="Edit image details"
+              aria-label={assetId ? 'Edit image details' : 'Select image'}
               onMouseDown={preventFocusSteal}
               onClick={openEdit}
             />
@@ -155,10 +203,23 @@ export function BodyImageBlock(props: BlockProps) {
         ) : null}
       </div>
 
+      {/* Empty + member open: native image form, elevated for Content tool stacking */}
+      {!assetId && open ? (
+        <Dialog
+          id="vp-body-image-select"
+          header="Select image"
+          width={1}
+          onClose={closeNativePicker}
+          zOffset={STUDIO_OVERLAY_Z}
+          __unstable_autoFocus={false}
+        >
+          <Box padding={4}>{children}</Box>
+        </Dialog>
+      ) : null}
+
       {editOpen && assetId ? (
         <BodyImageEditDialog
           assetId={assetId}
-          blockPath={props.path}
           blockAlt={block.alt}
           blockCaption={block.caption}
           initialAsset={asset}
@@ -173,7 +234,7 @@ export function BodyImageBlock(props: BlockProps) {
           header="Remove image?"
           width={0}
           onClose={closeDelete}
-          zOffset={1200}
+          zOffset={STUDIO_OVERLAY_Z}
           __unstable_autoFocus={false}
           footer={
             <Box padding={3}>

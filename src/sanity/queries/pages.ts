@@ -4,6 +4,8 @@
 
 import {defineQuery} from 'groq'
 
+import {PORTABLE_TEXT_WITH_IMAGE_ASSETS} from './portable-text'
+
 /** Fat base used only by HOME_PAGE_QUERY (unchanged). */
 const PAGE_BASE_FIELDS = `
   _id,
@@ -15,8 +17,8 @@ const PAGE_BASE_FIELDS = `
   heroTitle,
   heroTitleZh,
   featuredImage,
-  body,
-  bodyZh,
+  "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
+  "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
   seo{
     metaDescription,
     metaDescriptionZh,
@@ -84,8 +86,8 @@ const PAGE_META_FIELDS = `
 const PAGE_CONTENT_FIELDS = `
   heroTitle,
   heroTitleZh,
-  body,
-  bodyZh
+  "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
+  "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS}
 `
 
 /** Homepage — hero carousel slides, featured work grid, body copy, brand logos. */

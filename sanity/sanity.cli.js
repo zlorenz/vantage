@@ -10,6 +10,7 @@ const sharedAiTranslation = path.resolve(rootDir, '../shared/ai-translation')
 const sharedVideoUrl = path.resolve(rootDir, '../shared/video-url')
 const sharedClientLogos = path.resolve(rootDir, '../shared/client-logos/index.ts')
 const sharedTrashRetention = path.resolve(rootDir, '../shared/trash-retention')
+const sharedStudioOverlayZ = path.resolve(rootDir, '../shared/studio-overlay-z')
 
 function mergeViteAliases(existing, extra) {
   const asArray = Array.isArray(existing)
@@ -62,6 +63,7 @@ export default defineCliConfig({
         '@video-url': sharedVideoUrl,
         '@client-logos': sharedClientLogos,
         '@trash-retention': sharedTrashRetention,
+        '@studio-overlay-z': sharedStudioOverlayZ,
       }),
     },
     server: {

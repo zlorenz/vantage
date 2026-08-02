@@ -15,6 +15,7 @@ import {CloseIcon, ExpandIcon} from '@sanity/icons'
 import {Button, Card, Flex, Layer, Portal, Stack, Text} from '@sanity/ui'
 import {useCallback, useEffect, useState} from 'react'
 import type {PortableTextInputProps} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 export function BodyPortableTextInput(props: PortableTextInputProps) {
   const [focusOpen, setFocusOpen] = useState(false)
@@ -81,7 +82,7 @@ export function BodyPortableTextInput(props: PortableTextInputProps) {
 
       {focusOpen ? (
         <Portal>
-          <Layer zOffset={6000}>
+          <Layer zOffset={STUDIO_OVERLAY_Z}>
             <Card
               className="vp-body-focus-overlay"
               tone="default"
@@ -90,7 +91,7 @@ export function BodyPortableTextInput(props: PortableTextInputProps) {
                 inset: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                zIndex: 6000,
+                zIndex: STUDIO_OVERLAY_Z,
               }}
             >
               <Flex

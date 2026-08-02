@@ -25,7 +25,9 @@
       "@client-logos": ["../shared/client-logos"],
       "@client-logos/*": ["../shared/client-logos/*"],
       "@trash-retention": ["../shared/trash-retention"],
-      "@trash-retention/*": ["../shared/trash-retention/*"]
+      "@trash-retention/*": ["../shared/trash-retention/*"],
+      "@studio-overlay-z": ["../shared/studio-overlay-z"],
+      "@studio-overlay-z/*": ["../shared/studio-overlay-z/*"]
     }
   },
   "include": [
@@ -38,6 +40,7 @@
     "../shared/video-url/**/*.ts",
     "../shared/client-logos/**/*.ts",
     "../shared/trash-retention/**/*.ts",
+    "../shared/studio-overlay-z/**/*.ts",
     "../messages/**/*.json",
     "../src/lib/campaign-brief-fields.ts",
     "../src/lib/campaign-brief-i18n.ts"

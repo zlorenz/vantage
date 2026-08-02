@@ -6,6 +6,7 @@ import {SearchIcon} from '@sanity/icons'
 import {Box, Button, Dialog, Flex, Stack, Text, TextInput} from '@sanity/ui'
 import {useCallback, useEffect, useState} from 'react'
 import {PatchEvent, set, unset, useClient, useFormCallbacks, type Path} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 import {parseVideoUrl} from '@video-url'
 
 import {PortfolioVideoPicker, type PortfolioVideoSelection} from './PortfolioVideoPicker'
@@ -89,13 +90,17 @@ export function VideoEmbedEditDialog({
       return
     }
     const trimmedTitle = title.trim()
+    // blockPath is document-absolute (e.g. ['body', {_key}]), but useFormCallbacks
+    // is scoped under the PT field and already prefixAll(s) the field name — so
+    // patches must be relative to that array ([{_key}, 'url']), not absolute.
+    const relativeBlockPath = blockPath.slice(1)
     preserveBodyFocusScroll(() => {
       onChange(
         PatchEvent.from([
-          set(trimmedUrl, [...blockPath, 'url']),
+          set(trimmedUrl, [...relativeBlockPath, 'url']),
           trimmedTitle
-            ? set(trimmedTitle, [...blockPath, 'title'])
-            : unset([...blockPath, 'title']),
+            ? set(trimmedTitle, [...relativeBlockPath, 'title'])
+            : unset([...relativeBlockPath, 'title']),
         ]),
       )
       onClose()
@@ -109,7 +114,7 @@ export function VideoEmbedEditDialog({
         header="Video embed"
         width={1}
         onClose={handleClose}
-        zOffset={1200}
+        zOffset={STUDIO_OVERLAY_Z}
         __unstable_autoFocus={false}
         footer={
           <Box padding={3}>

@@ -1,20 +1,15 @@
 /**
  * BodyImageEditDialog — Title / Alt text / Description aligned with Media library.
  *
- * Writes asset metadata (title, altText, description) and mirrors alt + caption
- * onto the Portable Text image block for the frontend.
+ * Edits asset metadata only. The site uses asset altText / description as the
+ * default for body images; optional per-block `alt` / `caption` overrides are
+ * schema fields (not edited here) that win when set.
  */
 
 import {Box, Button, Dialog, Flex, Stack, Text, TextArea, TextInput} from '@sanity/ui'
 import {useCallback, useEffect, useState} from 'react'
-import {
-  PatchEvent,
-  set,
-  unset,
-  useClient,
-  useFormCallbacks,
-  type Path,
-} from 'sanity'
+import {useClient} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 type AssetFields = {
   url?: string
@@ -26,8 +21,9 @@ type AssetFields = {
 
 type Props = {
   assetId: string
-  blockPath: Path
+  /** Fallback when the asset has no altText yet (legacy block override). */
   blockAlt?: string
+  /** Fallback when the asset has no description yet (legacy block override). */
   blockCaption?: string
   initialAsset?: AssetFields | null
   onClose: () => void
@@ -41,7 +37,6 @@ function emptyToUndef(value: string): string | undefined {
 
 export function BodyImageEditDialog({
   assetId,
-  blockPath,
   blockAlt,
   blockCaption,
   initialAsset,
@@ -49,7 +44,6 @@ export function BodyImageEditDialog({
   onSaved,
 }: Props) {
   const client = useClient({apiVersion: '2025-01-01'})
-  const {onChange} = useFormCallbacks()
 
   const [title, setTitle] = useState('')
   const [altText, setAltText] = useState('')
@@ -107,20 +101,12 @@ export function BodyImageEditDialog({
       if (nextDescription) assetPatch.set({description: nextDescription})
       else assetPatch.unset(['description'])
       await assetPatch.commit()
-
-      const patches = [
-        nextAlt ? set(nextAlt, [...blockPath, 'alt']) : unset([...blockPath, 'alt']),
-        nextDescription
-          ? set(nextDescription, [...blockPath, 'caption'])
-          : unset([...blockPath, 'caption']),
-      ]
-      onChange(PatchEvent.from(patches))
       onSaved()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to save image details')
       setSaving(false)
     }
-  }, [altText, assetId, blockPath, client, description, onChange, onSaved, title])
+  }, [altText, assetId, client, description, onSaved, title])
 
   return (
     <Dialog
@@ -128,7 +114,7 @@ export function BodyImageEditDialog({
       header="Image details"
       width={1}
       onClose={onClose}
-      zOffset={1200}
+      zOffset={STUDIO_OVERLAY_Z}
       // Keep focus compose scroll stable when dialog takes focus
       __unstable_autoFocus={false}
       footer={
@@ -182,6 +168,9 @@ export function BodyImageEditDialog({
                 <Text size={1} weight="semibold">
                   Alt text
                 </Text>
+                <Text size={0} muted>
+                  Default accessibility text wherever this image appears.
+                </Text>
                 <TextInput
                   value={altText}
                   onChange={(e) => setAltText(e.currentTarget.value)}
@@ -194,7 +183,8 @@ export function BodyImageEditDialog({
                   Description
                 </Text>
                 <Text size={0} muted>
-                  Used as the on-site caption when present.
+                  Used as the on-site caption wherever this image appears (Media library
+                  Description).
                 </Text>
                 <TextArea
                   value={description}

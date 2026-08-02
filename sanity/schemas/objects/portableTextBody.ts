@@ -63,15 +63,16 @@ const imageBlock = defineArrayMember({
     {
       name: 'alt',
       type: 'string',
-      title: 'Alt text',
-      description: 'Describe the image for accessibility and SEO. Synced with Media library Alt Text.',
+      title: 'Alt text override',
+      description:
+        'Optional. Overrides Media library Alt Text for this block only. Leave empty to use the asset default.',
     },
     {
       name: 'caption',
       type: 'string',
-      title: 'Caption',
+      title: 'Caption override',
       description:
-        'Optional caption under the image on the site. Synced with Media library Description.',
+        'Optional. Overrides Media library Description as the on-site caption for this block only.',
     },
   ],
 })

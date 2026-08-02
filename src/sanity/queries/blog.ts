@@ -4,6 +4,8 @@
 
 import {defineQuery} from 'groq'
 
+import {PORTABLE_TEXT_WITH_IMAGE_ASSETS} from './portable-text'
+
 const BLOG_CARD_FIELDS = `
   _id,
   title,
@@ -48,8 +50,8 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
     featuredImage,
     excerpt,
     excerptZh,
-    body,
-    bodyZh,
+    "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
+    "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
     "categories": categories[]->{
       _id,
       title,

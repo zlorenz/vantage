@@ -13,16 +13,14 @@
 import {Layer, Portal} from '@sanity/ui'
 import {mediaAssetSource} from 'sanity-plugin-media'
 import type {AssetSourceComponentProps} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 const MediaBrowser = mediaAssetSource.component
-
-/** Match BodyPortableTextInput focus overlay elevation. */
-const MEDIA_ASSET_SOURCE_Z = 6000
 
 export function ElevatedMediaAssetSource(props: AssetSourceComponentProps) {
   return (
     <Portal>
-      <Layer zOffset={MEDIA_ASSET_SOURCE_Z}>
+      <Layer zOffset={STUDIO_OVERLAY_Z}>
         <MediaBrowser {...props} />
       </Layer>
     </Portal>
