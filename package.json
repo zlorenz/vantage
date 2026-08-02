@@ -31,6 +31,8 @@
     "migrate:patch:retire-legacy-taxonomies": "tsx scripts/migration/patch/retire-legacy-taxonomies.ts",
     "migrate:patch:harvest-phrase-book": "tsx scripts/migration/patch/harvest-phrase-book.ts",
     "migrate:patch:phrase-book-from-trp": "tsx scripts/migration/patch/phrase-book-from-trp.ts",
+    "migrate:patch:seed-campaign-cta": "tsx scripts/migration/patch/seed-campaign-cta.ts",
+    "migrate:patch:tag-campaign-brief-external-uploads": "tsx scripts/migration/patch/tag-campaign-brief-external-uploads.ts",
     "test:display-titles": "tsx shared/display-titles/display-titles.test.ts",
     "test:phrase-book": "tsx shared/phrase-book/phrase-book.test.ts",
     "test:client-logos": "tsx shared/client-logos/client-logos.test.ts",

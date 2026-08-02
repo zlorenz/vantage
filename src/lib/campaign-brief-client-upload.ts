@@ -3,8 +3,16 @@
  *
  * Uses NEXT_PUBLIC_SANITY_UPLOAD_TOKEN (Editor-role, CORS-restricted).
  * Never import SANITY_API_WRITE_TOKEN here — that token is server-only.
+ *
+ * After each successful assets POST, the file is tagged `external-upload`
+ * (opt.media.tags) and labeled via creditLine for recognition in Media.
  */
 
+import {createClient, type SanityClient} from '@sanity/client'
+import {
+  setExternalUploadCreditLine,
+  tagAssetAsExternalUpload,
+} from '@media-tags'
 import type {BriefAttachmentMeta} from '@/lib/campaign-brief-attachments'
 
 /** Same apiVersion as getSanityWriteClient() for asset API consistency. */
@@ -33,9 +41,21 @@ function getUploadConfig(): {projectId: string; dataset: string; token: string} 
   return {projectId, dataset, token}
 }
 
+function getBrowserSanityClient(): SanityClient {
+  const {projectId, dataset, token} = getUploadConfig()
+  return createClient({
+    projectId,
+    dataset,
+    apiVersion: SANITY_ASSETS_API_VERSION,
+    token,
+    useCdn: false,
+  })
+}
+
 /**
- * Upload one File directly to Sanity's assets API.
- * Throws on HTTP / missing-field failures (caller surfaces inline error).
+ * Upload one File directly to Sanity's assets API, then tag + credit-label
+ * it as an external (campaign-brief) upload for Media-library recognition.
+ * Throws on HTTP / missing-field / tag failures (caller surfaces inline error).
  */
 export async function uploadBriefFileToSanity(file: File): Promise<BriefAttachmentMeta> {
   const {projectId, dataset, token} = getUploadConfig()
@@ -66,6 +86,12 @@ export async function uploadBriefFileToSanity(file: File): Promise<BriefAttachme
   if (!assetId || !cdnUrl) {
     throw new Error('Sanity upload response missing asset id or CDN URL.')
   }
+
+  // Tag + creditLine at upload time so recognition works even if the
+  // subsequent /api/campaign-brief submit fails after assets already exist.
+  const client = getBrowserSanityClient()
+  await tagAssetAsExternalUpload(client, assetId)
+  await setExternalUploadCreditLine(client, assetId)
 
   return {
     filename: doc.originalFilename || file.name,

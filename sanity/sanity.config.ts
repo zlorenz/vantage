@@ -56,7 +56,14 @@ export default defineConfig({
         previewMode: {enable: '/api/draft-mode/enable'},
       },
     }),
-    media(),
+    // Shared Media library for editors + admins. creditLine.enabled surfaces the
+    // Credit field so campaign-brief uploads can show their auto-label.
+    // No excludeSources — browser uploads do not set asset.source.name.
+    media({
+      creditLine: {
+        enabled: true,
+      },
+    }),
     visionTool(),
   ],
 

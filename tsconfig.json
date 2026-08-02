@@ -34,8 +34,12 @@
       "@client-logos/*": ["./shared/client-logos/*"],
       "@trash-retention": ["./shared/trash-retention"],
       "@trash-retention/*": ["./shared/trash-retention/*"],
+      "@campaign-brief-retention": ["./shared/campaign-brief-retention"],
+      "@campaign-brief-retention/*": ["./shared/campaign-brief-retention/*"],
       "@studio-overlay-z": ["./shared/studio-overlay-z"],
-      "@studio-overlay-z/*": ["./shared/studio-overlay-z/*"]
+      "@studio-overlay-z/*": ["./shared/studio-overlay-z/*"],
+      "@media-tags": ["./shared/media-tags"],
+      "@media-tags/*": ["./shared/media-tags/*"]
     }
   },
   "include": [

@@ -27,7 +27,9 @@
       "@trash-retention": ["../shared/trash-retention"],
       "@trash-retention/*": ["../shared/trash-retention/*"],
       "@studio-overlay-z": ["../shared/studio-overlay-z"],
-      "@studio-overlay-z/*": ["../shared/studio-overlay-z/*"]
+      "@studio-overlay-z/*": ["../shared/studio-overlay-z/*"],
+      "@media-tags": ["../shared/media-tags"],
+      "@media-tags/*": ["../shared/media-tags/*"]
     }
   },
   "include": [
@@ -41,6 +43,7 @@
     "../shared/client-logos/**/*.ts",
     "../shared/trash-retention/**/*.ts",
     "../shared/studio-overlay-z/**/*.ts",
+    "../shared/media-tags/**/*.ts",
     "../messages/**/*.json",
     "../src/lib/campaign-brief-fields.ts",
     "../src/lib/campaign-brief-i18n.ts"
