@@ -4,7 +4,7 @@
  * Source: content-schema.md §4.2
  * WordPress origin: `portfolio` CPT (141 entries)
  *
- * URL pattern: /portfolio/[slug]/ (EN), /zh/投资组合/[slugZh]/ (ZH)
+ * URL pattern: /portfolio/[slug]/ (EN), /zh/案例/[slugZh]/ (ZH)
  */
 
 import {defineField, defineType} from 'sanity'
@@ -113,7 +113,7 @@ export const portfolioEntry = defineType({
       type: 'slug',
       group: 'content',
       fieldset: 'slugAndDate',
-      description: 'EN: /portfolio/[slug]/ · ZH: /zh/投资组合/[slug]/',
+      description: 'EN: /portfolio/[slug]/ · ZH: /zh/案例/[slug]/',
       options: {source: 'title', maxLength: 96},
       zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),

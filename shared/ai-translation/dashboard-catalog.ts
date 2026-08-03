@@ -75,7 +75,7 @@ export const CODE_STRING_CATALOG: CodeEntry[] = [
     id: 'code:routing.portfolio',
     tab: 'slugs',
     english: '/portfolio/[slug]',
-    chinese: '/投资组合/[slug]',
+    chinese: '/案例/[slug]',
     where: 'Hardcoded route prefix',
     codePath: 'src/i18n/routing.ts',
   },

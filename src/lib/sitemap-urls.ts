@@ -76,7 +76,7 @@ export function portfolioPaths(slug: string, slugZh?: string) {
   const zhSlug = slugZh || slug;
   return {
     en: `/portfolio/${slug}`,
-    zh: `/zh/投资组合/${zhSlug}`,
+    zh: `/zh/案例/${zhSlug}`,
   };
 }
 

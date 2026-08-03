@@ -103,7 +103,7 @@ function pathForDocument(
   switch (documentType) {
     case 'portfolioEntry':
       return locale === 'zh'
-        ? `/zh/投资组合/${localizedSlug}/`
+        ? `/zh/案例/${localizedSlug}/`
         : `/portfolio/${localizedSlug}/`
 
     case 'blogPost':

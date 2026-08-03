@@ -192,7 +192,7 @@ export function portfolioEntryMetadata(
   return buildPageMetadata({
     locale,
     enPath: `/portfolio/${entry.slug}`,
-    zhPath: `/zh/投资组合/${entry.slugZh || entry.slug}`,
+    zhPath: `/zh/案例/${entry.slugZh || entry.slug}`,
     title: metaTitle,
     description,
     image,

@@ -26,7 +26,7 @@ export const routing = defineRouting({
     },
     '/portfolio/[slug]': {
       en: '/portfolio/[slug]',
-      zh: '/投资组合/[slug]',
+      zh: '/案例/[slug]',
     },
     '/video-format/[slug]': {
       en: '/video-format/[slug]',

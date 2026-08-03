@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+import { encodeRedirectRule } from './shared/redirect-encoding';
 import { legacyZhRedirects } from './src/lib/legacy-zh-redirects';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
@@ -22,6 +23,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       // Portfolio slug QC — 2026-07-19
+      // Pre-encoded NFC combining-mark sources — do NOT run through
+      // encodeRedirectRule (would double-encode % → %25).
       {
         source:
           '/portfolio/bidv-smartbanking-hoa-nhi%cc%a3p-so%cc%82ng-tho%cc%82ng-minh',
@@ -50,27 +53,29 @@ const nextConfig: NextConfig = {
         destination: '/portfolio/dji-robomaster-s1',
         permanent: true,
       },
-      {
-        source: '/zh/投资组合/大疆故事',
-        destination: '/zh/投资组合/大疆故事-切尔诺贝利失落之城',
+      // Unicode sources/destinations — encode for Next redirects() matching
+      // (vercel/next.js#33470). Pass raw strings only; see encodeRedirectRule.
+      encodeRedirectRule({
+        source: '/zh/案例/大疆故事',
+        destination: '/zh/案例/大疆故事-切尔诺贝利失落之城',
         permanent: true,
-      },
-      {
-        source: '/zh/投资组合/智云-weebill-3s-amp-crane-m-3s-便携式视觉叙事-2.0',
+      }),
+      encodeRedirectRule({
+        source: '/zh/案例/智云-weebill-3s-amp-crane-m-3s-便携式视觉叙事-2.0',
         destination:
-          '/zh/投资组合/智云-weebill-3s-与-crane-m-3s-便携式视觉叙事-2.0',
+          '/zh/案例/智云-weebill-3s-与-crane-m-3s-便携式视觉叙事-2.0',
         permanent: true,
-      },
-      {
+      }),
+      encodeRedirectRule({
         source: '/zh/作品',
         destination: '/zh/工作',
         permanent: true,
-      },
-      {
+      }),
+      encodeRedirectRule({
         source: '/zh/作品/',
         destination: '/zh/工作/',
         permanent: true,
-      },
+      }),
       // Live WP ZH slug → current Sanity slugZh (see src/lib/legacy-zh-redirects.ts)
       ...legacyZhRedirects,
     ];

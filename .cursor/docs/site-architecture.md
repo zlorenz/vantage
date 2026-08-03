@@ -44,7 +44,7 @@ Shows all portfolio entries including hidden items. Used for pitch research, cre
 141 portfolio entries total (282 URLs including Chinese versions). Each entry is a single project page.
 
 **URL pattern:** `/portfolio/[slug]/`
-**Chinese pattern:** `/zh/投资组合/[slug]/`
+**Chinese pattern:** `/zh/案例/[slug]/`
 
 ### Sample entries (representative, not exhaustive)
 
