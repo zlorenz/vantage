@@ -1,0 +1,197 @@
+diff --git a/node_modules/sanity-plugin-media/dist/index.js b/node_modules/sanity-plugin-media/dist/index.js
+index 57ac6e5..9f0d25b 100644
+--- a/node_modules/sanity-plugin-media/dist/index.js
++++ b/node_modules/sanity-plugin-media/dist/index.js
+@@ -52,6 +52,25 @@ import { CheckmarkCircleIcon } from "@sanity/icons/CheckmarkCircle";
+ import { WarningFilledIcon } from "@sanity/icons/WarningFilled";
+ import { ChevronUpIcon } from "@sanity/icons/ChevronUp";
+ import { useDropzone } from "react-dropzone";
++
++/**
++ * Vantage patch — lock rename/delete of mediaTag-external-upload ("Client Upload (Campaign Brief)") to Admin only.
++ * Role signal: document.documentElement.dataset.studioRole ("admin"|"editor"|"translator"),
++ * stamped by sanity/components/StudioRoleLayout.tsx. If that attribute name/values change,
++ * this patch silently stops working and must be updated to match.
++ * sanity-plugin-media is archived (2026-06-17); this patch will not receive upstream updates.
++ */
++function isVantageStudioAdmin() {
++	return typeof document !== "undefined" && document.documentElement.dataset.studioRole === "admin";
++}
++function isVantageExternalUploadTagLocked(tagOrId) {
++	let id = typeof tagOrId === "string" ? tagOrId : tagOrId?._id;
++	return id === "mediaTag-external-upload" && !isVantageStudioAdmin();
++}
++function vantageFilterLockedTagActions(actions, tagItem) {
++	return isVantageExternalUploadTagLocked(tagItem?.tag) ? actions.filter((a) => a !== "edit" && a !== "delete") : actions;
++}
++
+ const useKeyPress = (hotkey, onPress) => {
+ 	let $ = c(7), keyPressed = useRef(!1), t0;
+ 	$[0] !== hotkey || $[1] !== onPress ? (t0 = (e) => {
+@@ -722,8 +741,17 @@ const useKeyPress = (hotkey, onPress) => {
+ 		},
+ 		name
+ 	}))));
++
+ })), tagsDeleteEpic = (action$, state$, { client }) => action$.pipe(filter(tagsSlice.actions.deleteRequest.match), withLatestFrom(state$), mergeMap(([action, state]) => {
+ 	let { tag } = action.payload;
++	// Vantage: block non-admin delete of mediaTag-external-upload (see isVantageExternalUploadTagLocked / StudioRoleLayout data-studio-role).
++	if (isVantageExternalUploadTagLocked(tag)) return of(tagsSlice.actions.deleteError({
++		error: {
++			message: "Only admins can delete the Client Upload (Campaign Brief) tag",
++			statusCode: 403
++		},
++		tag
++	}));
+ 	return of(action).pipe(debugThrottle(state.debug.badConnection), mergeMap(() => client.observable.fetch(groq`*[
+               _type in ["sanity.fileAsset", "sanity.imageAsset"]
+               && references(*[_type == "media.tag" && name.current == $tagName]._id)
+@@ -767,6 +795,14 @@ const useKeyPress = (hotkey, onPress) => {
+ 	return of(tagsSlice.actions.listenerUpdateQueueComplete({ tags }));
+ })), tagsSortEpic = (action$) => action$.pipe(ofType(tagsSlice.actions.listenerCreateQueueComplete.type, tagsSlice.actions.listenerUpdateQueueComplete.type), bufferTime(1e3), filter((actions) => actions.length > 0), mergeMap(() => of(tagsSlice.actions.sort()))), tagsUpdateEpic = (action$, state$, { client }) => action$.pipe(filter(tagsSlice.actions.updateRequest.match), withLatestFrom(state$), mergeMap(([action, state]) => {
+ 	let { closeDialogId, formData, tag } = action.payload;
++	// Vantage: block non-admin rename of mediaTag-external-upload (see isVantageExternalUploadTagLocked / StudioRoleLayout data-studio-role).
++	if (isVantageExternalUploadTagLocked(tag)) return of(tagsSlice.actions.updateError({
++		error: {
++			message: "Only admins can rename the Client Upload (Campaign Brief) tag",
++			statusCode: 403
++		},
++		tag
++	}));
+ 	return of(action).pipe(debugThrottle(state.debug.badConnection), checkTagName(client, formData?.name?.current), mergeMap(() => from(client.patch(tag._id).set({ name: {
+ 		_type: "slug",
+ 		current: formData?.name.current
+@@ -3857,6 +3893,8 @@ const DialogTagEdit = (props) => {
+ 	let $ = c(64), { children, dialog: t0 } = props, { id, tagId } = t0, client = useVersionedClient(), dispatch = useDispatch(), t1;
+ 	$[0] === tagId ? t1 = $[1] : (t1 = (state) => selectTagById(state, String(tagId)), $[0] = tagId, $[1] = t1);
+ 	let tagItem = useTypedSelector(t1), [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag), currentTag = tagItem ? tagItem?.tag : tagSnapshot, generateDefaultValues = _temp$16, t2 = tagItem?.tag, t3;
++	// Vantage: lock Edit Tag dialog for mediaTag-external-upload when role !== admin (StudioRoleLayout data-studio-role).
++	let vantageTagEditLocked = isVantageExternalUploadTagLocked(tagItem?.tag ?? tagId);
+ 	$[2] === t2 ? t3 = $[3] : (t3 = generateDefaultValues(t2), $[2] = t2, $[3] = t3);
+ 	let t4;
+ 	$[4] === Symbol.for("react.memo_cache_sentinel") ? (t4 = zodFormResolver(tagFormSchema), $[4] = t4) : t4 = $[4];
+@@ -3873,6 +3911,8 @@ const DialogTagEdit = (props) => {
+ 	let handleClose = t7, t8;
+ 	$[10] !== dispatch || $[11] !== tagItem?.tag ? (t8 = (formData) => {
+ 		if (!tagItem?.tag) return;
++		// Vantage: block rename dispatch for locked tag (StudioRoleLayout data-studio-role).
++		if (isVantageExternalUploadTagLocked(tagItem.tag)) return;
+ 		let sanitizedFormData = sanitizeFormData(formData);
+ 		dispatch(tagsActions.updateRequest({
+ 			closeDialogId: tagItem?.tag?._id,
+@@ -3885,6 +3925,8 @@ const DialogTagEdit = (props) => {
+ 	}, $[10] = dispatch, $[11] = tagItem?.tag, $[12] = t8) : t8 = $[12];
+ 	let onSubmit = t8, t9;
+ 	$[13] !== dispatch || $[14] !== tagItem?.tag ? (t9 = () => {
++		// Vantage: block delete dialog for locked tag (StudioRoleLayout data-studio-role).
++		if (isVantageExternalUploadTagLocked(tagItem?.tag)) return;
+ 		tagItem?.tag && dispatch(dialogActions.showConfirmDeleteTag({
+ 			closeDialogId: tagItem?.tag?._id,
+ 			tag: tagItem?.tag
+@@ -3916,11 +3958,11 @@ const DialogTagEdit = (props) => {
+ 		t15
+ 	], $[28] = client, $[29] = handleTagUpdate, $[30] = t15, $[31] = t16) : t16 = $[31], useEffect(t14, t16);
+ 	let t17;
+-	$[32] !== formUpdating || $[33] !== handleDelete || $[34] !== handleSubmit || $[35] !== isDirty || $[36] !== isValid || $[37] !== onSubmit || $[38] !== tagItem?.tag?._updatedAt ? (t17 = () => /* @__PURE__ */ jsx(Box, {
++	t17 = () => /* @__PURE__ */ jsx(Box, {
+ 		padding: 3,
+ 		children: /* @__PURE__ */ jsxs(Flex, {
+ 			justify: "space-between",
+-			children: [/* @__PURE__ */ jsx(Button, {
++			children: [!vantageTagEditLocked && /* @__PURE__ */ jsx(Button, {
+ 				disabled: formUpdating,
+ 				fontSize: 1,
+ 				mode: "bleed",
+@@ -3928,13 +3970,13 @@ const DialogTagEdit = (props) => {
+ 				text: "Delete",
+ 				tone: "critical"
+ 			}), /* @__PURE__ */ jsx(FormSubmitButton, {
+-				disabled: formUpdating || !isDirty || !isValid,
++				disabled: formUpdating || vantageTagEditLocked || !isDirty || !isValid,
+ 				isValid,
+ 				lastUpdated: tagItem?.tag?._updatedAt,
+ 				onClick: handleSubmit(onSubmit)
+ 			})]
+ 		})
+-	}), $[32] = formUpdating, $[33] = handleDelete, $[34] = handleSubmit, $[35] = isDirty, $[36] = isValid, $[37] = onSubmit, $[38] = tagItem?.tag?._updatedAt, $[39] = t17) : t17 = $[39];
++	});
+ 	let Footer = t17;
+ 	if (!currentTag) return null;
+ 	let t18;
+@@ -3962,13 +4004,13 @@ const DialogTagEdit = (props) => {
+ 	let t22;
+ 	$[48] === register ? t22 = $[49] : (t22 = register("name"), $[48] = register, $[49] = t22);
+ 	let t23 = errors?.name?.message, t24;
+-	$[50] !== formUpdating || $[51] !== t22 || $[52] !== t23 ? (t24 = /* @__PURE__ */ jsx(FormFieldInputText, {
++	t24 = /* @__PURE__ */ jsx(FormFieldInputText, {
+ 		...t22,
+-		disabled: formUpdating,
++		disabled: formUpdating || vantageTagEditLocked,
+ 		error: t23,
+ 		label: "Name",
+ 		name: "name"
+-	}), $[50] = formUpdating, $[51] = t22, $[52] = t23, $[53] = t24) : t24 = $[53];
++	});
+ 	let t25;
+ 	$[54] !== t19 || $[55] !== t20 || $[56] !== t24 ? (t25 = /* @__PURE__ */ jsxs(Box, {
+ 		as: "form",
+@@ -4231,47 +4273,51 @@ function _temp2$9(acc, val) {
+ 	return acc = acc.concat(assetTagIds), acc;
+ }
+ function _temp3$3(tagItem) {
++	// Vantage: omit edit/delete for mediaTag-external-upload when role !== admin (StudioRoleLayout data-studio-role).
+ 	return {
+ 		...tagItem,
+-		actions: [
++		actions: vantageFilterLockedTagActions([
+ 			"delete",
+ 			"edit",
+ 			"removeAll",
+ 			"search"
+-		]
++		], tagItem)
+ 	};
+ }
+ function _temp4$1(tagItem_0) {
++	// Vantage: omit edit/delete for mediaTag-external-upload when role !== admin (StudioRoleLayout data-studio-role).
+ 	return {
+ 		...tagItem_0,
+-		actions: [
++		actions: vantageFilterLockedTagActions([
+ 			"applyAll",
+ 			"delete",
+ 			"edit",
+ 			"removeAll",
+ 			"search"
+-		]
++		], tagItem_0)
+ 	};
+ }
+ function _temp5(tagItem_1) {
++	// Vantage: omit edit/delete for mediaTag-external-upload when role !== admin (StudioRoleLayout data-studio-role).
+ 	return {
+ 		...tagItem_1,
+-		actions: [
++		actions: vantageFilterLockedTagActions([
+ 			"applyAll",
+ 			"delete",
+ 			"edit",
+ 			"search"
+-		]
++		], tagItem_1)
+ 	};
+ }
+ function _temp6(tagItem_2) {
++	// Vantage: omit edit/delete for mediaTag-external-upload when role !== admin (StudioRoleLayout data-studio-role).
+ 	return {
+ 		...tagItem_2,
+-		actions: [
++		actions: vantageFilterLockedTagActions([
+ 			"delete",
+ 			"edit",
+ 			"search"
+-		]
++		], tagItem_2)
+ 	};
+ }
+ const TagViewHeader = (t0) => {

@@ -10,6 +10,7 @@
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
     "start": "sanity start",
+    "postinstall": "patch-package",
     "test:crew-credits": "tsx components/crew-credits/crew-credits-csv.test.ts",
     "test:display-titles": "tsx ../shared/display-titles/display-titles.test.ts"
   },
@@ -30,6 +31,7 @@
     "@sanity/eslint-config-studio": "^6.0.0",
     "@types/react": "^19.2.14",
     "eslint": "^9.28",
+    "patch-package": "^8.0.1",
     "prettier": "^3.5",
     "tsx": "^4.23.1",
     "typescript": "^5.8"
