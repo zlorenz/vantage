@@ -9,8 +9,7 @@ export const TRANSLATOR_EMAILS: string[] = [
 ]
 
 /** Super-admin (full Studio tools + permanent delete). */
-// export const ADMIN_EMAIL = 'zglorenz@gmail.com'
-export const ADMIN_EMAIL = 'noname@blah.com'
+export const ADMIN_EMAIL = 'zacharia@vantage.pictures'
 
 export type StudioRole = 'admin' | 'editor' | 'translator'
 
