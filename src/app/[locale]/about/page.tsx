@@ -129,7 +129,7 @@ export default async function AboutPage({ params }: Props) {
       {page.founders?.length ? (
         <SectionWrapper borderTop>
           <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-            <h2 className="mb-10 text-center text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
+            <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
               <span className="vp-outline">{t('teamOutline')}</span> {t('team')}
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

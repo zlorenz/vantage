@@ -1,37 +1,42 @@
 /**
  * Site typefaces via next/font (self-hosted at build time).
  *
- * Poppins is primary but has no Vietnamese glyphs (latin + latin-ext only).
- * Nunito is the Vietnamese fallback: geometric/rounded like Poppins, full
- * weight range, and a `vietnamese` subset.
+ * Mona Sans is the body/UI face (Light 300 / Regular 400 / Bold 700).
+ * It includes a `vietnamese` subset, so no separate Vietnamese fallback
+ * face is required.
  *
- * The site font stack in globals.css uses the face names `Poppins, Nunito, …`
- * directly. Do not compose from `var(--font-poppins)` — next/font’s size-
- * adjusted fallback is `local(Arial)` baked into that variable, and Arial
- * supplies Vietnamese glyphs before Nunito can (thin/tall under text-stroke).
+ * Special Gothic Expanded One is the display/heading face (Regular 400
+ * only — no Bold/Italic files exist).
+ *
+ * The site font stacks in globals.css use the face names
+ * `"Mona Sans"` / `"Special Gothic Expanded One"` directly. Do not
+ * compose from `var(--font-vp-body-raw)` / `var(--font-vp-heading)` —
+ * next/font’s size-adjusted fallback is `local(Arial)` baked into those
+ * variables, and Arial can supply glyphs before the intended face
+ * (and looks thin/tall under text-stroke).
  *
  * `adjustFontFallback: false` avoids emitting that Arial face when the
  * toolchain respects it; the CSS stack bypass is the reliable guard.
  *
  * Do not load these with a CSS @import: Tailwind/Lightning CSS strips
  * external @import urls from the compiled stylesheet, so the face never
- * loads and the browser falls back to system-ui (much thinner at weight 300).
+ * loads and the browser falls back to system-ui.
  */
 
-import { Nunito, Poppins } from 'next/font/google';
+import { Mona_Sans, Special_Gothic_Expanded_One } from 'next/font/google';
 
-export const poppins = Poppins({
+export const specialGothicExpandedOne = Special_Gothic_Expanded_One({
   subsets: ['latin', 'latin-ext'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-poppins',
+  weight: ['400'],
+  variable: '--font-vp-heading',
   display: 'swap',
   adjustFontFallback: false,
 });
 
-export const nunito = Nunito({
-  subsets: ['vietnamese'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-nunito',
+export const monaSans = Mona_Sans({
+  subsets: ['latin', 'latin-ext', 'vietnamese'],
+  weight: ['300', '400', '700'],
+  variable: '--font-vp-body-raw',
   display: 'swap',
   adjustFontFallback: false,
 });

@@ -155,7 +155,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
         <article>
           <header className="entry-header mb-8">
-            <h1 className="entry-title mb-4 text-[clamp(2rem,3vw,2.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
+            <h1 className="entry-title mb-4 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {title}
             </h1>
             {post.publishedAt || post.categories?.length ? (

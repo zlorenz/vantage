@@ -109,7 +109,7 @@ export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
               aria-hidden={index !== activeIndex}
             >
               <h1
-                className="vp-hero-carousel__title mb-4 text-[clamp(2.25rem,1.25rem+3vw,3.75rem)] font-extrabold uppercase leading-tight tracking-vp-heading"
+                className="vp-hero-carousel__title mb-4 font-vp-heading text-[clamp(2.375rem,1.25rem+2.7vw,3.4375rem)] font-extrabold uppercase leading-tight tracking-vp-heading"
                 dangerouslySetInnerHTML={{ __html: headerTitle }}
               />
               {description ? (

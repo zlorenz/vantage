@@ -92,7 +92,7 @@ export function SiteFooter({ siteSettings }: SiteFooterProps) {
             {email ? (
               <a
                 href={`mailto:${email}`}
-                className="text-xl font-medium text-vp-link hover:text-vp-link-hover"
+                className="text-xl font-bold text-vp-link hover:text-vp-link-hover"
               >
                 {email}
               </a>

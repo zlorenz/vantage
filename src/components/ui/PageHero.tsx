@@ -38,7 +38,7 @@ export function PageHero({ title, description, backgroundImage }: PageHeroProps)
       <div className="vp-page-hero__inner relative z-[1] flex items-center justify-center px-4 py-[clamp(6rem,9vw,10rem)] pt-[clamp(8rem,12vw,13rem)]">
         <div className="container flex w-full flex-col items-center justify-center text-center text-white min-[1400px]:max-w-[1320px]">
           <h1
-            className={`vp-page-hero__title m-0 text-[clamp(2.25rem,4vw,3.75rem)] font-bold uppercase leading-tight tracking-vp-heading${
+            className={`vp-page-hero__title m-0 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading${
               description ? ' mb-4' : ''
             }`}
             dangerouslySetInnerHTML={{ __html: title }}

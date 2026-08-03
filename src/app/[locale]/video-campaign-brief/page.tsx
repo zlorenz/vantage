@@ -84,7 +84,7 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
       />
       <CondensedPageHeader>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h1 className="text-[clamp(2rem,3vw,2.75rem)] font-bold uppercase tracking-vp-heading">
+          <h1 className="font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase tracking-vp-heading">
             {title}
           </h1>
         </div>

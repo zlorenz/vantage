@@ -53,7 +53,7 @@ export async function CtaSection({
     <SectionWrapper borderTop>
       <div className="container-fluid mx-auto max-w-[900px] px-3 text-center md:px-4 md:text-left">
         <h2
-          className="vp-cta__heading mb-6 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading"
+          className="vp-cta__heading mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading"
           dangerouslySetInnerHTML={{ __html: heading }}
         />
         <div className="vp-cta__body font-light text-vp-text-muted">

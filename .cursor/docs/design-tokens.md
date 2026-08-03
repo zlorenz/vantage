@@ -78,43 +78,46 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 
 ### Font Family
 
-| Token | Value |
-|---|---|
-| `vp-font-sans` | `"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif` |
+| Token | Value | Role |
+|---|---|---|
+| `vp-font-sans` / `--font-vp-sans` | `"Mona Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif` | Body / UI (`font-vp-sans`) |
+| `vp-font-heading` / `--font-vp-heading` | `"Special Gothic Expanded One", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif` | Display h1 only (`font-vp-heading`) |
 
-**Poppins must be loaded from Google Fonts.** It is the only external font. No other typefaces are used.
+Loaded via `next/font/google` in `src/lib/fonts.ts` (self-hosted at build time). Do not `@import` Google Fonts in CSS — the pipeline strips external `@import` urls. Face names are used directly in the stacks (do not compose from next/font’s size-adjusted CSS variables).
 
-### Font Weights in Use
+CJK (Chinese) has no separate font token: both faces are latin/latin-ext (Mona also loads `vietnamese`); CJK glyphs fall through to the system stack.
+
+### Font Weights Loaded (Mona Sans)
 
 | Weight | Usage |
 |---|---|
-| 300 | Body copy, nav links, general paragraphs |
-| 400 | Credit names |
-| 500 | Footer links |
-| 600 | Buttons, filter labels, uppercase UI elements |
-| 700 | Headings (default), section titles, card titles, bold UI |
-| 800 | Hero copy h1 |
-| 900 | Display headings on mobile touch devices (hero, page title, section title) |
+| 300 | Intro / quote / hero description copy (kept Light) |
+| 400 | Body copy, lists, nav links (default) |
+| 700 | Headings (h2–h4), footer email, bold UI |
+
+Special Gothic Expanded One ships **400 only**. Display h1s may still carry `font-bold` / `font-extrabold` classes — those are intentional no-ops against the single Regular face.
+
+Do **not** load Mona 500 / 600 / 800 / 900. Prefer remapping UI that needs emphasis to 700.
 
 ### Heading Scale
 
-All headings: uppercase, `font-weight: 700`, `letter-spacing: 0.01em`, `line-height: 1.1`
+Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px desktop / ~38px mobile.
 
-| Element | Size |
-|---|---|
-| `h1` | `clamp(2rem, 3vw, 2.75rem)` |
-| `h2` | `clamp(1.75rem, 2.5vw, 2.25rem)` |
-| `h3` | `clamp(1.5rem, 2vw, 1.75rem)` |
-| `h4` | `1.35rem` |
-| `h5` | `1.15rem` |
-| `h6` | `1rem` |
+| Element | Size | Face |
+|---|---|---|
+| Display / hero / entry h1 | `clamp(2.375rem, …, 3.4375rem)` (~38–55px) | `font-vp-heading` |
+| Section h2 | `clamp(1.75rem, 2.5vw, 2.25rem)` (~28–36px) | Mona Sans |
+| Portable Text h3 | `clamp(1.5rem, 2.2vw, 1.75rem)` (~24–28px) | Mona Sans, weight 700 |
+| Portable Text h4 | `clamp(1.15rem, 1.4vw, 1.25rem)` (~18–20px) | Mona Sans, weight 700 |
 
 ### Display / Hero Sizes
 
 | Context | Size |
 |---|---|
-| Hero copy h1 | `clamp(2.25rem, 1.25rem + 3vw, 3.75rem)` |
-| Page hero title | `clamp(2.25rem, 4vw, 3.75rem)` |
+| Hero carousel h1 | `clamp(2.375rem, 1.25rem + 2.7vw, 3.4375rem)` + `font-vp-heading` |
+| Page hero title | `clamp(2.375rem, 4.3vw, 3.4375rem)` + `font-vp-heading` |
+| Entry / campaign-brief h1 | `clamp(2.375rem, 4.3vw, 3.4375rem)` + `font-vp-heading` |
+| Intro / quote / hero desc | `clamp(1.25rem, 2.2vw, 1.75rem)` (~20–28px), weight 300 |
 | Search empty title | `clamp(2rem, 4vw, 3.5rem)` |
 | Search card title | `clamp(1.5rem, 1.9vw, 2.4rem)` — `line-height: 0.98`, `letter-spacing: -0.02em` |
 
@@ -122,10 +125,11 @@ All headings: uppercase, `font-weight: 700`, `letter-spacing: 0.01em`, `line-hei
 
 | Context | Size | Weight | Notes |
 |---|---|---|---|
-| Nav links | `0.875rem` | 300 | Uppercase |
+| Nav links | `1rem` | 400 | Uppercase |
 | Dropdown items | `0.875rem` | — | Uppercase |
-| Filter tab labels | `0.75rem` | 600 | Uppercase |
-| Filter bar labels | `0.9rem` | 600 | Uppercase |
+| Filter tab labels | `0.75rem` | 600→nearest 700 | Uppercase |
+| Filter bar labels | `0.9rem` | 600→nearest 700 | Uppercase |
+| Footer email | `1.25rem` (`text-xl`) | 700 | |
 | Credits body | `0.9rem` | — | |
 | Credits dept label | `1.125rem` | 700 | Uppercase |
 | Credits role label | `0.75rem` | 700 | Uppercase, `rgba(255,255,255,0.4)` |
@@ -293,7 +297,7 @@ Client logos displayed at 70% scale within their grid cells (`transform: scale(0
 When translating these tokens into `tailwind.config.js`:
 
 - Extend the `colors` key with all `vp-*` colour tokens using the exact names above
-- Extend `fontFamily` with `vp-sans` pointing to the Poppins stack
+- Extend `fontFamily` with `vp-sans` (Mona Sans stack) and `vp-heading` (Special Gothic Expanded One stack)
 - Extend `letterSpacing` with `vp-navbar`, `vp-uppercase`, and `vp-heading`
 - Extend `transitionDuration` and `transitionTimingFunction` for `vp-fast` and `vp-default`
 - Define custom `screens` matching the Bootstrap breakpoints above

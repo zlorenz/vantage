@@ -173,7 +173,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
             <div className="order-2 lg:order-1 lg:col-span-5">
               <h2
-                className="mb-3 text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
+                className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
                 dangerouslySetInnerHTML={{ __html: longTitle }}
               />
               {description ? (
@@ -228,7 +228,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 <div className="order-2 lg:order-1 lg:col-span-5">
                   {videoTitle ? (
                     <h2
-                      className="mb-3 text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
+                      className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
                       dangerouslySetInnerHTML={{ __html: videoTitle }}
                     />
                   ) : null}

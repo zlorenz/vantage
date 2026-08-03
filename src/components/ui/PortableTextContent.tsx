@@ -27,14 +27,14 @@ type LinkHref = ComponentProps<typeof Link>['href'];
 
 function createComponents(relaxed = false): PortableTextComponents {
   const h1Class = relaxed
-    ? 'mb-8 mt-10 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading first:mt-0'
-    : 'mb-6 text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading';
+    ? 'mb-8 mt-10 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading first:mt-0'
+    : 'mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading';
   const h2Class = relaxed
-    ? 'mb-6 mt-10 text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading'
-    : 'mb-5 mt-8 text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading';
+    ? 'mb-6 mt-10 font-vp-heading text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading'
+    : 'mb-5 mt-8 font-vp-heading text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading';
   const pClass = relaxed
-    ? 'mb-6 font-light leading-relaxed text-vp-text-muted last:mb-0'
-    : 'mb-4 font-light leading-relaxed text-vp-text-muted last:mb-0';
+    ? 'mb-6 font-normal leading-relaxed text-vp-text-muted last:mb-0'
+    : 'mb-4 font-normal leading-relaxed text-vp-text-muted last:mb-0';
   const ctaWrapClass = relaxed ? 'vp-pt-cta-button' : 'my-6';
 
   return {
@@ -50,12 +50,12 @@ function createComponents(relaxed = false): PortableTextComponents {
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mb-4 mt-6 text-[clamp(1.35rem,1.8vw,1.5rem)] font-bold leading-snug">
+      <h3 className="mb-4 mt-6 font-vp-heading text-[clamp(1.5rem,2.2vw,1.75rem)] font-bold uppercase leading-snug tracking-vp-heading">
         {children}
       </h3>
     ),
     h4: ({ children }) => (
-      <h4 className="mb-3 mt-5 text-[clamp(1.15rem,1.4vw,1.25rem)] font-semibold leading-snug">
+      <h4 className="mb-3 mt-5 font-vp-heading text-[clamp(1.15rem,1.4vw,1.25rem)] font-bold uppercase leading-snug tracking-vp-heading">
         {children}
       </h4>
     ),
@@ -80,19 +80,19 @@ function createComponents(relaxed = false): PortableTextComponents {
       );
     },
     blockquote: ({ children }) => (
-      <blockquote className="mb-4 border-l-2 border-vp-border pl-4 italic text-vp-text-soft">
+      <blockquote className="mb-4 border-l-2 border-vp-border pl-4 text-base font-light italic text-vp-text-soft">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="mb-4 list-disc space-y-2 pl-6 font-light text-vp-text-muted">
+      <ul className="mb-4 list-disc space-y-2 pl-6 font-normal text-vp-text-muted">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="mb-4 list-decimal space-y-2 pl-6 font-light text-vp-text-muted">
+      <ol className="mb-4 list-decimal space-y-2 pl-6 font-normal text-vp-text-muted">
         {children}
       </ol>
     ),

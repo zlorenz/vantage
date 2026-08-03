@@ -26,7 +26,7 @@ export async function BlogSidebar({
   return (
     <aside className="vp-blog-sidebar sticky top-28">
       <div className="vp-blog-widget vp-blog-categories">
-        <h3 className="vp-blog-widget__title mb-5 text-[clamp(1.75rem,2vw,3rem)] font-bold uppercase leading-tight">
+        <h3 className="vp-blog-widget__title mb-5 font-vp-heading text-[clamp(1.75rem,2vw,3rem)] font-bold uppercase leading-tight tracking-vp-heading">
           {t('categories')}
         </h3>
         <ul className="vp-blog-categories-list m-0 flex list-none flex-col gap-2 p-0">

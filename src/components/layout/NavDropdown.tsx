@@ -84,7 +84,7 @@ export function NavDropdown({ label, href, items }: NavDropdownProps) {
           <li key={item.label}>
             <Link
               href={item.href}
-              className="dropdown-item block whitespace-nowrap px-4 py-2 text-sm uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast hover:bg-vp-overlay-light"
+              className="dropdown-item block whitespace-nowrap px-4 py-2 uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast hover:bg-vp-overlay-light"
             >
               {item.label}
             </Link>
