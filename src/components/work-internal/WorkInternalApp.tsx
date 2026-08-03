@@ -162,11 +162,11 @@ export function WorkInternalApp({
   }, [entries, deferredFilters, filterCtx, deferredSort]);
 
   const visibilityTotal = useMemo(() => {
-    return entries.filter((entry) =>
-      deferredFilters.visibility === 'hidden'
-        ? entry.isHidden
-        : !entry.isHidden,
-    ).length;
+    if (deferredFilters.visibility === 'all') return entries.length;
+    if (deferredFilters.visibility === 'hidden') {
+      return entries.filter((entry) => entry.isHidden).length;
+    }
+    return entries.filter((entry) => !entry.isHidden).length;
   }, [entries, deferredFilters.visibility]);
 
   const clearFilters = useCallback(() => {

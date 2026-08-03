@@ -378,6 +378,7 @@ function matchesFilterKey(
     case 'q':
       return matchesSearch(entry, value, ctx);
     case 'visibility':
+      // 'all' — no exclusion
       if (value === 'public') return !entry.isHidden;
       if (value === 'hidden') return Boolean(entry.isHidden);
       return true;

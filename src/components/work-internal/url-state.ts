@@ -20,7 +20,7 @@ const SORT_VALUES: LibrarySort[] = [
 ];
 
 const VIEW_VALUES: LibraryViewMode[] = ['cards', 'list'];
-const VISIBILITY_VALUES: VisibilityFilter[] = ['public', 'hidden'];
+const VISIBILITY_VALUES: VisibilityFilter[] = ['all', 'public', 'hidden'];
 
 function parseVisibility(raw: string | null): VisibilityFilter {
   if (raw && VISIBILITY_VALUES.includes(raw as VisibilityFilter)) {
@@ -96,6 +96,7 @@ export function hasActiveFilters(filters: LibraryFilters): boolean {
     Boolean(filters.editor) ||
     Boolean(filters.format) ||
     Boolean(filters.industry) ||
-    Boolean(filters.market)
+    Boolean(filters.market) ||
+    filters.visibility !== DEFAULT_FILTERS.visibility
   );
 }

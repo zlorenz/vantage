@@ -288,6 +288,18 @@ export function WorkInternalToolbar({
             <button
               type="button"
               className={
+                filters.visibility === 'all'
+                  ? 'vp-internal-view-toggle__btn is-active'
+                  : 'vp-internal-view-toggle__btn'
+              }
+              aria-pressed={filters.visibility === 'all'}
+              onClick={() => patchFilter('visibility', 'all')}
+            >
+              All
+            </button>
+            <button
+              type="button"
+              className={
                 filters.visibility === 'public'
                   ? 'vp-internal-view-toggle__btn is-active'
                   : 'vp-internal-view-toggle__btn'

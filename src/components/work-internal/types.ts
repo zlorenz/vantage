@@ -10,7 +10,7 @@ export type LibrarySort =
   | 'title-asc'
   | 'client-asc';
 
-export type VisibilityFilter = 'public' | 'hidden';
+export type VisibilityFilter = 'all' | 'public' | 'hidden';
 
 export interface LibraryFilters {
   q: string;
@@ -35,7 +35,7 @@ export const DEFAULT_FILTERS: LibraryFilters = {
   format: '',
   industry: '',
   market: '',
-  visibility: 'public',
+  visibility: 'all',
 };
 
 export const DEFAULT_SORT: LibrarySort = 'publishedAt-desc';
