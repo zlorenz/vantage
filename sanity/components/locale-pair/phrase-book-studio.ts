@@ -10,6 +10,8 @@ import {
 } from '@phrase-book'
 import type {SanityClient} from 'sanity'
 
+import {getStudioRole} from '../../lib/studio-roles'
+
 export type PhraseLookupResult = {
   zh: string
   phraseId: string
@@ -87,12 +89,19 @@ export type SavePhraseResult =
 /**
  * Create or overwrite a phrase ZH (master Translations tool).
  * Empty ZH deletes the phrase document.
+ * Translator or Admin only — Editors are rejected even if the UI is bypassed.
  */
 export async function savePhraseZh(
   client: SanityClient,
   enRaw: string,
   zhRaw: string,
+  currentUser: {email?: string} | null | undefined,
 ): Promise<SavePhraseResult> {
+  const role = getStudioRole(currentUser)
+  if (role !== 'admin' && role !== 'translator') {
+    throw new Error('Only translators and admins can edit Chinese phrases')
+  }
+
   const en = normalizePhraseKey(enRaw)
   if (!en) return {status: 'skipped', reason: 'empty-en'}
   if (phraseContainsSpan(en)) return {status: 'skipped', reason: 'span'}

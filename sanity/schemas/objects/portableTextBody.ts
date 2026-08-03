@@ -93,3 +93,22 @@ export const portableTextBody = defineType({
   type: 'array',
   of: portableTextBodyMembers,
 })
+
+/**
+ * Page body PT — galleries + CTA (no videoEmbed / BodyImageBlock).
+ * Named type so `components.input` resolves PortableTextInputProps (same as blog).
+ */
+export const pagePortableText = defineType({
+  name: 'pagePortableText',
+  title: 'Page body',
+  type: 'array',
+  of: [{type: 'block'}, {type: 'image'}, {type: 'imageGallery'}, {type: 'ctaButton'}],
+})
+
+/** Contact modal / plain rich text — blocks only. */
+export const plainPortableText = defineType({
+  name: 'plainPortableText',
+  title: 'Rich text',
+  type: 'array',
+  of: [{type: 'block'}],
+})

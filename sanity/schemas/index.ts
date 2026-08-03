@@ -33,7 +33,7 @@ import { pdfDownload } from './objects/pdfDownload';
 import { imageGallery } from './objects/imageGallery';
 import { ctaButton } from './objects/ctaButton';
 import { videoEmbed } from './objects/videoEmbed';
-import { portableTextBody } from './objects/portableTextBody';
+import { portableTextBody, pagePortableText, plainPortableText } from './objects/portableTextBody';
 
 export const schemaTypes = [
   // Shared objects
@@ -50,6 +50,8 @@ export const schemaTypes = [
   ctaButton,
   videoEmbed,
   portableTextBody,
+  pagePortableText,
+  plainPortableText,
 
   // Documents
   siteSettings,

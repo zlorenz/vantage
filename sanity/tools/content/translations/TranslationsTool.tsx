@@ -17,7 +17,7 @@ import {
   TextInput,
   useToast,
 } from '@sanity/ui'
-import {useClient} from 'sanity'
+import {useClient, useCurrentUser} from 'sanity'
 import {
   PHRASE_CATEGORIES,
   PHRASE_INVENTORY_DOCS_QUERY,
@@ -35,11 +35,16 @@ import {
 } from '@phrase-book'
 
 import {savePhraseZh} from '../../../components/locale-pair/phrase-book-studio'
+import {getStudioRole} from '../../../lib/studio-roles'
 
 type StatusFilter = 'all' | 'missing' | 'present'
 
 export function TranslationsTool() {
   const toast = useToast()
+  const currentUser = useCurrentUser()
+  const role = getStudioRole(currentUser)
+  const canEditZh = role === 'admin' || role === 'translator'
+  const canPurgeUnused = role === 'admin'
   const studioClient = useClient({apiVersion: '2025-02-19'})
   const client = useMemo(
     () => studioClient.withConfig({perspective: 'previewDrafts'}),
@@ -192,11 +197,11 @@ export function TranslationsTool() {
 
   const saveRow = useCallback(
     async (row: PhraseTableRow) => {
-      if (!row.editable) return
+      if (!row.editable || !canEditZh) return
       const next = edits[row.id] ?? row.zh
       setSavingId(row.id)
       try {
-        const result = await savePhraseZh(client, row.en, next)
+        const result = await savePhraseZh(client, row.en, next, currentUser)
         if (result.status === 'skipped') {
           toast.push({
             status: 'warning',
@@ -236,13 +241,16 @@ export function TranslationsTool() {
         setSavingId(null)
       }
     },
-    [client, edits, toast],
+    [canEditZh, client, currentUser, edits, toast],
   )
 
   const purgeUnused = useCallback(async () => {
     if (unusedCount <= 0) return
     setPurging(true)
     try {
+      if (getStudioRole(currentUser) !== 'admin') {
+        throw new Error('Only admins can purge unused phrases')
+      }
       const [docs, phrasesRaw] = await Promise.all([
         client.fetch<Array<Record<string, unknown>>>(PHRASE_INVENTORY_DOCS_QUERY),
         client.fetch<PhraseDocRow[]>(PHRASE_INVENTORY_PHRASES_QUERY),
@@ -283,7 +291,7 @@ export function TranslationsTool() {
     } finally {
       setPurging(false)
     }
-  }, [client, load, toast, unusedCount])
+  }, [client, currentUser, load, toast, unusedCount])
 
   return (
     <Flex direction="column" style={{height: '100%', minHeight: 0}}>
@@ -318,7 +326,7 @@ export function TranslationsTool() {
                 onChange={(e) => setQuery(e.currentTarget.value)}
               />
             </Box>
-            {unusedCount > 0 ? (
+            {canPurgeUnused && unusedCount > 0 ? (
               <Button
                 mode="ghost"
                 tone="caution"
@@ -493,7 +501,7 @@ export function TranslationsTool() {
                         ) : null}
                       </Text>
                       <Box>
-                        {row.editable ? (
+                        {row.editable && canEditZh ? (
                           <TextInput
                             fontSize={1}
                             value={edits[row.id] ?? row.zh}
@@ -526,7 +534,7 @@ export function TranslationsTool() {
                         {catTitle}
                       </Text>
                       <Flex gap={1} justify="flex-end">
-                        {row.editable ? (
+                        {row.editable && canEditZh ? (
                           <Button
                             mode="bleed"
                             text="Save"

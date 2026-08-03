@@ -24,7 +24,7 @@ export type SanityImageAssetReference = {
 
 export type GalleryImageImage = {
   asset?: SanityImageAssetReference;
-  media?: unknown; // Unable to locate the referenced type "galleryImage.image.media" in schema
+  media?: unknown; // Unable to locate the referenced type "media" in schema
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   _type: "image";
@@ -130,90 +130,8 @@ export type Page = {
       _key: string;
     } & PortfolioEntryReference
   >;
-  body?: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?:
-          | "normal"
-          | "h1"
-          | "h2"
-          | "h3"
-          | "h4"
-          | "h5"
-          | "h6"
-          | "blockquote";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }
-    | {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-      }
-    | ({
-        _key: string;
-      } & ImageGallery)
-    | ({
-        _key: string;
-      } & CtaButton)
-  >;
-  bodyZh?: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?:
-          | "normal"
-          | "h1"
-          | "h2"
-          | "h3"
-          | "h4"
-          | "h5"
-          | "h6"
-          | "blockquote";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }
-    | {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-      }
-    | ({
-        _key: string;
-      } & ImageGallery)
-    | ({
-        _key: string;
-      } & CtaButton)
-  >;
+  body?: PagePortableText;
+  bodyZh?: PagePortableText;
   brandLogos?: Array<
     {
       _key: string;
@@ -246,21 +164,40 @@ export type PdfDownload = {
   label?: string;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
+export type PagePortableText = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }
+  | ({
+      _key: string;
+    } & ImageGallery)
+  | ({
+      _key: string;
+    } & CtaButton)
+>;
 
 export type SeoFields = {
   _type: "seoFields";
@@ -281,6 +218,22 @@ export type Slug = {
   _type: "slug";
   current?: string;
   source?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type CategoryReference = {
@@ -598,42 +551,8 @@ export type SiteSettings = {
   contactCtaUrl?: string;
   contactModalIntro?: string;
   contactModalIntroZh?: string;
-  contactModalContent?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  contactModalContentZh?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
+  contactModalContent?: PlainPortableText;
+  contactModalContentZh?: PlainPortableText;
   contactCtaText?: string;
   contactCtaTextZh?: string;
   legalName?: string;
@@ -669,6 +588,25 @@ export type CampaignCta = {
   buttonLabelZh?: string;
   buttonHref?: string;
 };
+
+export type PlainPortableText = Array<{
+  children?: Array<{
+    marks?: Array<string>;
+    text?: string;
+    _type: "span";
+    _key: string;
+  }>;
+  style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+  listItem?: "bullet" | "number";
+  markDefs?: Array<{
+    href?: string;
+    _type: "link";
+    _key: string;
+  }>;
+  level?: number;
+  _type: "block";
+  _key: string;
+}>;
 
 export type VideoEmbed = {
   _type: "videoEmbed";
@@ -996,10 +934,11 @@ export type AllSanitySchemaTypes =
   | Page
   | TrashMetadata
   | PdfDownload
-  | SanityImageCrop
-  | SanityImageHotspot
+  | PagePortableText
   | SeoFields
   | Slug
+  | SanityImageCrop
+  | SanityImageHotspot
   | CategoryReference
   | BlogPost
   | PortableTextBody
@@ -1020,6 +959,7 @@ export type AllSanitySchemaTypes =
   | Category
   | SiteSettings
   | CampaignCta
+  | PlainPortableText
   | VideoEmbed
   | CtaButton
   | ImageGallery

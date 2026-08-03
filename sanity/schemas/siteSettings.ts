@@ -7,6 +7,7 @@
 
 import {defineField, defineType} from 'sanity'
 
+import {BilingualPortableTextInput} from '../components/body/BilingualPortableTextInput'
 import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
 
@@ -107,22 +108,22 @@ export const siteSettings = defineType({
     defineField({
       name: 'contactModalContent',
       title: 'Contact Modal Content (English)',
-      type: 'array',
-      of: [{type: 'block'}],
+      type: 'plainPortableText',
       group: 'contact',
       description: 'Rich text body content for the contact modal (Portable Text).',
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
       hidden: hiddenForTranslatorWhenEmpty,
+      components: {input: BilingualPortableTextInput},
     }),
 
     defineField({
       name: 'contactModalContentZh',
       title: 'Contact Modal Content (Chinese)',
-      type: 'array',
-      of: [{type: 'block'}],
+      type: 'plainPortableText',
       group: 'contact',
       hidden: hideZhPortableText('contactModalContent'),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
+      components: {input: BilingualPortableTextInput},
     }),
 
     ...defineLocalePair({

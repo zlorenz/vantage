@@ -12,6 +12,7 @@ import {defineField, defineType} from 'sanity'
 
 import {ClearableArrayInput} from '../components/ClearableArrayInput'
 import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
+import {BilingualPortableTextInput} from '../components/body/BilingualPortableTextInput'
 import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {hideUnlessPageSlug} from '../lib/page-visibility'
 import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
@@ -156,23 +157,23 @@ export const page = defineType({
     defineField({
       name: 'body',
       title: 'Body (English)',
-      type: 'array',
+      type: 'pagePortableText',
       group: 'content',
-      of: [{type: 'block'}, {type: 'image'}, {type: 'imageGallery'}, {type: 'ctaButton'}],
       description: 'Main page copy. On Home: company description under Featured Work.',
       validation: (rule) => rule.required(),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
       hidden: hiddenForTranslatorWhenEmpty,
+      components: {input: BilingualPortableTextInput},
     }),
 
     defineField({
       name: 'bodyZh',
       title: 'Body (Chinese)',
-      type: 'array',
+      type: 'pagePortableText',
       group: 'content',
-      of: [{type: 'block'}, {type: 'image'}, {type: 'imageGallery'}, {type: 'ctaButton'}],
       hidden: hideZhPortableText('body'),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
+      components: {input: BilingualPortableTextInput},
     }),
 
     defineField({

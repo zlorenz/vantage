@@ -9,6 +9,8 @@
  *
  * Focus mode: our overlay scrolls (overflow-y:auto). We do NOT constrain
  * Sanity’s internal Scroller — that fight caused stuck/bobbing scroll.
+ *
+ * Translator ZH fields also get "Migrate from EN" (copies EN with fresh _keys).
  */
 
 import {CloseIcon, ExpandIcon} from '@sanity/icons'
@@ -16,6 +18,8 @@ import {Button, Card, Flex, Layer, Portal, Stack, Text} from '@sanity/ui'
 import {useCallback, useEffect, useState} from 'react'
 import type {PortableTextInputProps} from 'sanity'
 import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
+
+import {MigrateFromEnButton} from './MigrateFromEnButton'
 
 export function BodyPortableTextInput(props: PortableTextInputProps) {
   const [focusOpen, setFocusOpen] = useState(false)
@@ -50,23 +54,35 @@ export function BodyPortableTextInput(props: PortableTextInputProps) {
   const editorProps: PortableTextInputProps = {
     ...props,
     initialActive: true,
+    ...(props.readOnly ? {hideToolbar: true} : null),
   }
+
+  const migrate = (
+    <MigrateFromEnButton
+      path={props.path}
+      value={props.value}
+      onChange={props.onChange}
+      readOnly={props.readOnly}
+    />
+  )
 
   return (
     <Stack space={3} className="vp-body-pt">
       {!focusOpen ? (
         <>
-          <div>
-            <Button
-              mode="ghost"
-              icon={ExpandIcon}
-              text="Expand editor"
-              onClick={open}
-              disabled={props.readOnly}
-              fontSize={1}
-              padding={2}
-            />
-          </div>
+          {!props.readOnly ? (
+            <Flex gap={2} wrap="wrap" align="center">
+              {migrate}
+              <Button
+                mode="ghost"
+                icon={ExpandIcon}
+                text="Expand editor"
+                onClick={open}
+                fontSize={1}
+                padding={2}
+              />
+            </Flex>
+          ) : null}
           {props.renderDefault(editorProps)}
         </>
       ) : (
@@ -105,9 +121,12 @@ export function BodyPortableTextInput(props: PortableTextInputProps) {
                   borderBottom: '1px solid var(--card-border-color)',
                 }}
               >
-                <Text size={1} weight="semibold">
-                  Compose
-                </Text>
+                <Flex align="center" gap={2} wrap="wrap">
+                  <Text size={1} weight="semibold">
+                    Compose
+                  </Text>
+                  {migrate}
+                </Flex>
                 <Button
                   icon={CloseIcon}
                   text="Close"

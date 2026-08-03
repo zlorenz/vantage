@@ -1064,7 +1064,8 @@ export function DocumentTable({
     }
   }, [client, loadRows, selected, toast])
 
-  const canCreate = section.canCreate !== false && !inTrash
+  // Translators translate existing docs — never create. Admin/Editor unchanged.
+  const canCreate = section.canCreate !== false && !inTrash && !isTranslator
   const colSpan = section.columns.length + (supportsTrash ? 1 : 0)
 
   // Keep columns readable on narrow viewports: the table never shrinks below
