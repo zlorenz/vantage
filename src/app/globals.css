@@ -658,6 +658,7 @@
   width: 100%;
   padding: 1.25em 1em 0.75em;
   color: #fff;
+  font-family: var(--vp-font-heading);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.0625rem;

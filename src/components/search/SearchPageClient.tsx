@@ -83,7 +83,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
 
   if (!results.length) {
     return (
-      <h2 className="vp-search-empty__title text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight">
+      <h2 className="vp-search-empty__title font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading">
         {t('noResults', { query })}
       </h2>
     );
@@ -93,7 +93,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
     <div className="space-y-12">
       {portfolioResults.length > 0 ? (
         <section>
-          <h2 className="mb-6 text-xl font-bold uppercase tracking-vp-uppercase">
+          <h2 className="mb-6 font-vp-heading text-xl font-bold uppercase tracking-vp-heading">
             {t('portfolio')}
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -111,7 +111,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
 
       {newsResults.length > 0 ? (
         <section>
-          <h2 className="mb-6 text-xl font-bold uppercase tracking-vp-uppercase">
+          <h2 className="mb-6 font-vp-heading text-xl font-bold uppercase tracking-vp-heading">
             {t('news')}
           </h2>
           <div className="flex flex-col gap-12">

@@ -5,11 +5,10 @@
 
 export const TRANSLATOR_EMAILS: string[] = [
   'karen@vantage.pictures', 'hien@vantage.pictures'
-  // 'zglorenz@gmail.com'
 ]
 
 /** Super-admin (full Studio tools + permanent delete). */
-export const ADMIN_EMAIL = 'zacharia@vantage.pictures'
+export const ADMIN_EMAIL = 'zglorenz@gmail.com'
 
 export type StudioRole = 'admin' | 'editor' | 'translator'
 
