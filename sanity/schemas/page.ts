@@ -68,11 +68,13 @@ export const page = defineType({
       title: 'Slug',
       type: 'slug',
       group: 'details',
-      description: 'Must match live URLs (e.g. about, work, news). ZH: /zh/[slug]/',
+      description:
+        'Read-only — reflects the actual hardcoded route. Routing for this page is fixed in code and cannot be changed here.',
       options: {source: 'title', maxLength: 96},
       zhOptions: {source: 'titleZh', maxLength: 96},
       validation: (rule) => rule.required(),
       optional: false,
+      readOnly: true,
     }),
 
     defineField({

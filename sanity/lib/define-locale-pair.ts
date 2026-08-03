@@ -34,6 +34,8 @@ type DefineLocalePairConfig = {
    * not translation copy — e.g. Vimeo / Xinpianchang embed URLs.
    */
   editorCanEditZh?: boolean
+  /** When true, both EN and ZH fields are read-only in Studio. Opt-in per call site. */
+  readOnly?: FieldDefinition['readOnly']
 }
 
 type HiddenContext = {
@@ -113,6 +115,7 @@ export function defineLocalePair(config: DefineLocalePairConfig): [FieldDefiniti
     fieldset: config.fieldset,
     description: config.description,
     hidden: composeHidden(config.hidden, hiddenForTranslatorWhenEmpty),
+    ...(config.readOnly != null ? {readOnly: config.readOnly} : {}),
     ...(config.type === 'text' && config.rows != null ? {rows: config.rows} : {}),
     validation: config.validation,
     initialValue: config.initialValue as never,
@@ -130,6 +133,7 @@ export function defineLocalePair(config: DefineLocalePairConfig): [FieldDefiniti
     group: config.group,
     // Omit fieldset so NullField does not consume a column in columnar fieldsets.
     description: config.zhDescription,
+    ...(config.readOnly != null ? {readOnly: config.readOnly} : {}),
     ...(config.type === 'text' && config.rows != null ? {rows: config.rows} : {}),
     validation: config.zhValidation,
     initialValue: config.zhInitialValue as never,
