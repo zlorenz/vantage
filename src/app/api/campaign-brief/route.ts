@@ -33,7 +33,7 @@ import { getSanityWriteClient } from '@/lib/sanity-write-client';
 import type { Locale } from '@/i18n/routing';
 
 /** Notification recipient for campaign brief submissions. */
-const BRIEF_RECIPIENT = 'zacharia@vantage.pictures';
+const BRIEF_RECIPIENT = 'info@vantage.pictures';
 
 /** Minimum form fill time (ms) — matches Gravity Forms speed check. */
 const MIN_SUBMIT_MS = 3000;

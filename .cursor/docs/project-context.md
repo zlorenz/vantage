@@ -76,7 +76,7 @@ The site is fully bilingual: **English** (primary) and **Chinese Simplified** (s
 
 ### Campaign Brief Form (`/video-campaign-brief/`)
 The primary lead generation form on the site. On submission:
-1. A confirmation/notification email is sent to `zacharia@vantage.pictures` via Resend
+1. A confirmation/notification email is sent to `info@vantage.pictures` via Resend
 2. All form field data is posted to a **Lark group** via a Lark bot webhook
 3. No data is stored in a database — submissions are fire-and-forward only
 

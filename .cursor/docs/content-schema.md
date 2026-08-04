@@ -666,7 +666,7 @@ Both English and Chinese forms are required for v1 launch, but **must be built s
 
 | Channel | Destination |
 |---|---|
-| Email | Resend → `zacharia@vantage.pictures` (all field data) |
+| Email | Resend → `info@vantage.pictures` (all field data) |
 | Team notification | Lark group webhook |
 | Analytics | GTM event `vp_brief_form_submit` |
 | Storage | Form fields: none (fire-and-forward). Files: browser → Sanity assets; API creates `campaignBriefAttachment` refs best-effort for CDN links. |
