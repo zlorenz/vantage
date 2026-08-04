@@ -12,7 +12,7 @@ import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
-import { SITE_DESCRIPTION, homePageTitle, buildPageMetadata, resolveMetadataImage, seoMetaTitle } from '@/lib/metadata';
+import { SITE_DESCRIPTION_FALLBACK, homePageTitle, buildPageMetadata, resolveMetadataImage, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     typedLocale === 'zh' && homePage?.seo?.metaDescriptionZh
       ? homePage.seo.metaDescriptionZh
-      : homePage?.seo?.metaDescription || SITE_DESCRIPTION;
+      : homePage?.seo?.metaDescription || SITE_DESCRIPTION_FALLBACK;
 
   return buildPageMetadata({
     locale: typedLocale,

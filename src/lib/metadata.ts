@@ -20,7 +20,13 @@ import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 
 export const SITE_NAME = 'Vantage Pictures';
-export const SITE_DESCRIPTION =
+/** Yoast %%sitedesc%% — short tagline for <title> templates. */
+export const SITE_DESCRIPTION_TAGLINE = 'Commercial Film Production Company';
+/**
+ * Long-form English fallback when a page has no seo.metaDescription
+ * (homepage meta description only — not for <title>).
+ */
+export const SITE_DESCRIPTION_FALLBACK =
   'Commercial film production company specialising in cinematic brand films and product launch campaigns.';
 /** Live Yoast-style ZH site tagline (home document title). */
 export const SITE_DESCRIPTION_ZH = '商业影像制作公司';
@@ -37,7 +43,7 @@ export function workPageTitle(locale: Locale = 'en'): string {
 export function homePageTitle(locale: Locale = 'en'): string {
   return locale === 'zh'
     ? `${SITE_NAME} | ${SITE_DESCRIPTION_ZH}`
-    : `${SITE_NAME} | ${SITE_DESCRIPTION}`;
+    : `${SITE_NAME} | ${SITE_DESCRIPTION_TAGLINE}`;
 }
 
 export function portfolioEntryTitle(title: string): string {
@@ -221,7 +227,7 @@ export function pageTitle(title: string): string {
  * `%%title%% %%sitename%% %%sep%% %%sitedesc%%`
  */
 export function aboutContactPageTitle(title: string, locale: Locale = 'en'): string {
-  const description = locale === 'zh' ? SITE_DESCRIPTION_ZH : SITE_DESCRIPTION;
+  const description = locale === 'zh' ? SITE_DESCRIPTION_ZH : SITE_DESCRIPTION_TAGLINE;
   return `${title} ${SITE_NAME} | ${description}`;
 }
 
