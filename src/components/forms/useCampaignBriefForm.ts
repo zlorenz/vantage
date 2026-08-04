@@ -243,7 +243,7 @@ function pushBriefSubmitEvent(): void {
 
   w.dataLayer = w.dataLayer ?? [];
   w.dataLayer.push({
-    event: 'vp_brief_form_submit',
+    event: 'CE - Client brief form submit',
     formId: '1',
     formName: 'client_brief',
   });

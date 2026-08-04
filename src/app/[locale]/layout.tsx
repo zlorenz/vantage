@@ -13,6 +13,7 @@
 
 import '../globals.css';
 import type { Metadata } from 'next';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { draftMode } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -30,6 +31,8 @@ import { SanityLive } from '@/sanity/lib/live';
 import { NAV_PAGES_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
+
+const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
 type Props = {
   children: React.ReactNode;
@@ -72,6 +75,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-vp-bg font-vp-sans text-vp-text">
+        {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
         <NextIntlClientProvider locale={locale} messages={messages}>
           <LayoutShell
             locale={locale as Locale}

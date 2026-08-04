@@ -43,6 +43,7 @@
     "test:crew-credits": "tsx sanity/components/crew-credits/crew-credits-csv.test.ts"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.9",
     "@portabletext/block-tools": "^5.1.7",
     "@portabletext/react": "^6.2.0",
     "@sanity/client": "^7.23.0",
