@@ -2,6 +2,7 @@
  * Client-side sort for the internal work library.
  */
 
+import type { Locale } from '@/i18n/routing';
 import type { InternalLibraryEntry } from '@/types/sanity';
 import { getPrimaryClientName } from './filter-entries';
 import { getDisplayTitle } from './text';
@@ -14,6 +15,7 @@ function compareStrings(a: string, b: string): number {
 export function sortLibraryEntries(
   entries: InternalLibraryEntry[],
   sort: LibrarySort,
+  locale: Locale = 'en',
 ): InternalLibraryEntry[] {
   const copy = [...entries];
 
@@ -23,11 +25,17 @@ export function sortLibraryEntries(
         const at = a.publishedAt ? Date.parse(a.publishedAt) : 0;
         const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
         if (at !== bt) return at - bt;
-        return compareStrings(getDisplayTitle(a), getDisplayTitle(b));
+        return compareStrings(
+          getDisplayTitle(a, locale),
+          getDisplayTitle(b, locale),
+        );
       });
     case 'title-asc':
       return copy.sort((a, b) =>
-        compareStrings(getDisplayTitle(a), getDisplayTitle(b)),
+        compareStrings(
+          getDisplayTitle(a, locale),
+          getDisplayTitle(b, locale),
+        ),
       );
     case 'client-asc':
       return copy.sort((a, b) =>
@@ -39,7 +47,10 @@ export function sortLibraryEntries(
         const at = a.publishedAt ? Date.parse(a.publishedAt) : 0;
         const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
         if (at !== bt) return bt - at;
-        return compareStrings(getDisplayTitle(a), getDisplayTitle(b));
+        return compareStrings(
+          getDisplayTitle(a, locale),
+          getDisplayTitle(b, locale),
+        );
       });
   }
 }

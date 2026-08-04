@@ -158,8 +158,9 @@ export function WorkInternalApp({
     return sortLibraryEntries(
       filterLibraryEntries(entries, deferredFilters, filterCtx),
       deferredSort,
+      locale,
     );
-  }, [entries, deferredFilters, filterCtx, deferredSort]);
+  }, [entries, deferredFilters, filterCtx, deferredSort, locale]);
 
   const visibilityTotal = useMemo(() => {
     if (deferredFilters.visibility === 'all') return entries.length;

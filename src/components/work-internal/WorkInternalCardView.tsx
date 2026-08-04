@@ -29,7 +29,7 @@ export function WorkInternalCardView({
           .height(360)
           .fit('crop')
           .url();
-        const title = getDisplayTitle(entry);
+        const title = getDisplayTitle(entry, locale);
 
         return (
           <button

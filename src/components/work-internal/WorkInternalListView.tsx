@@ -39,7 +39,7 @@ export function WorkInternalListView({
           .height(90)
           .fit('crop')
           .url();
-        const title = getDisplayTitle(entry);
+        const title = getDisplayTitle(entry, locale);
 
         return (
           <button
