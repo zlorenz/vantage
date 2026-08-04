@@ -149,7 +149,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
             <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
               <span className="vp-outline">{t('shotInOutline')}</span> {t('shotIn')}
             </h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="vp-curated-gallery grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {vietnamPortfolio.map((entry, index) => (
                 <PortfolioCard
                   key={entry._id}

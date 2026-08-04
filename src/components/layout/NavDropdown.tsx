@@ -18,6 +18,8 @@ interface NavDropdownProps {
   /** When set, the parent label navigates here (desktop click / mobile when open). */
   href?: LinkHref;
   items: { label: string; href: LinkHref }[];
+  /** Mobile overlay variant — caret is absolutely positioned via CSS. */
+  mobile?: boolean;
 }
 
 function isMobileNav(): boolean {
@@ -27,7 +29,7 @@ function isMobileNav(): boolean {
   );
 }
 
-export function NavDropdown({ label, href, items }: NavDropdownProps) {
+export function NavDropdown({ label, href, items, mobile = false }: NavDropdownProps) {
   const [open, setOpen] = useState(false);
 
   function onParentClick(e: MouseEvent<HTMLAnchorElement>) {
@@ -39,12 +41,11 @@ export function NavDropdown({ label, href, items }: NavDropdownProps) {
     }
   }
 
-  const parentClassName =
-    'nav-link dropdown-toggle inline-flex w-full cursor-pointer items-center gap-1 bg-transparent px-4 py-[0.35rem] text-left uppercase md:w-auto';
+  const parentClassName = mobile
+    ? 'nav-link dropdown-toggle w-full cursor-pointer bg-transparent text-left uppercase'
+    : 'nav-link dropdown-toggle inline-flex w-full cursor-pointer items-center gap-1 bg-transparent px-4 py-[0.35rem] text-left uppercase md:w-auto';
 
-  const caret = (
-    <span className="vp-nav-caret" aria-hidden="true" />
-  );
+  const caret = <span className="vp-nav-caret" aria-hidden="true" />;
 
   return (
     <li
@@ -84,7 +85,7 @@ export function NavDropdown({ label, href, items }: NavDropdownProps) {
           <li key={item.label}>
             <Link
               href={item.href}
-              className="dropdown-item block whitespace-nowrap px-4 py-2 uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast hover:bg-vp-overlay-light"
+              className="dropdown-item block whitespace-nowrap uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast hover:bg-vp-overlay-light"
             >
               {item.label}
             </Link>

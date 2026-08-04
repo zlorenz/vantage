@@ -42,19 +42,18 @@ export function NavBar({ locale, items, toggleAria }: NavBarProps) {
           label={item.label}
           href={item.href}
           items={item.dropdown}
+          mobile={mobile}
         />
       );
     }
 
     if (item.isContact) {
       return (
-        <li key={item.label} className={`nav-item${mobile ? ' mb-1' : ''}`}>
+        <li key={item.label} className="nav-item">
           <button
             type="button"
-            className={`nav-link block cursor-pointer border-0 bg-transparent uppercase ${
-              mobile
-                ? 'w-full rounded-vp-nav-pill px-3 py-2 text-left hover:bg-white/8'
-                : 'px-4 py-[0.35rem]'
+            className={`nav-link cursor-pointer border-0 bg-transparent uppercase ${
+              mobile ? 'w-full text-left' : 'block px-4 py-[0.35rem]'
             }`}
             onClick={() => {
               openContact();
@@ -68,13 +67,11 @@ export function NavBar({ locale, items, toggleAria }: NavBarProps) {
     }
 
     return (
-      <li key={item.label} className={`nav-item${mobile ? ' mb-1' : ''}`}>
+      <li key={item.label} className="nav-item">
         <Link
           href={item.href!}
-          className={`nav-link block uppercase ${
-            mobile
-              ? 'rounded-vp-nav-pill px-3 py-2 hover:bg-white/8'
-              : 'px-4 py-[0.35rem]'
+          className={`nav-link uppercase ${
+            mobile ? '' : 'block px-4 py-[0.35rem]'
           }`}
           onClick={() => setMobileOpen(false)}
         >

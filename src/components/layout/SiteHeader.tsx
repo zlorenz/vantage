@@ -3,7 +3,8 @@
  *
  * Receives siteSettings and navPages from the locale layout (single fetch).
  * Logo is the Vantage wordmark SVG in /public/brand/. Interactive nav is
- * delegated to the NavBar client component.
+ * delegated to the NavBar client component; scroll hide/show lives in
+ * SiteHeaderNav (also client).
  */
 
 import type { ComponentProps } from 'react';
@@ -13,6 +14,7 @@ import type { Locale } from '@/i18n/routing';
 import { pagePath } from '@/lib/nav-paths';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import { NavBar, type NavItem } from './NavBar';
+import { SiteHeaderNav } from './SiteHeaderNav';
 
 type LinkHref = ComponentProps<typeof Link>['href'];
 
@@ -52,8 +54,7 @@ export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
 
   return (
     <header>
-      <nav
-        id="header"
+      <SiteHeaderNav
         className="navbar fixed top-0 z-50 w-full px-2.5 py-[1.1rem]"
         aria-label={t('primaryAria')}
       >
@@ -72,7 +73,7 @@ export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
 
           <NavBar locale={locale} items={navItems} toggleAria={t('toggleAria')} />
         </div>
-      </nav>
+      </SiteHeaderNav>
     </header>
   );
 }

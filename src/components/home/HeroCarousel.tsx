@@ -3,11 +3,12 @@
 /**
  * HeroCarousel — full-viewport homepage hero with crossfade slides.
  *
- * Client component: auto-advance (6s), pause on hover, dot indicators,
- * prev/next arrows. Slide data fetched server-side and passed as props.
+ * Client component: auto-advance (6s), pause on hover, swipe on touch,
+ * dot indicators, prev/next arrows (desktop). Slide data fetched
+ * server-side and passed as props.
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { VpButton } from '@/components/ui/VpButton';
@@ -24,11 +25,13 @@ interface HeroCarouselProps {
 }
 
 const INTERVAL_MS = 6000;
+const SWIPE_THRESHOLD_PX = 40;
 
 export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
   const t = useTranslations('Home');
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   const goTo = useCallback(
     (index: number) => {
@@ -41,20 +44,47 @@ export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
 
-  // Auto-advance every 6 seconds; pauses while hovered.
+  // Auto-advance every 6 seconds; pauses while hovered or mid-swipe.
   useEffect(() => {
     if (slides.length <= 1 || isPaused) return;
     const timer = window.setInterval(goNext, INTERVAL_MS);
     return () => window.clearInterval(timer);
   }, [slides.length, isPaused, goNext]);
 
+  function onTouchStart(e: TouchEvent) {
+    if (slides.length <= 1) return;
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+    setIsPaused(true);
+  }
+
+  function onTouchEnd(e: TouchEvent) {
+    const startX = touchStartX.current;
+    touchStartX.current = null;
+    setIsPaused(false);
+    if (startX == null || slides.length <= 1) return;
+    const endX = e.changedTouches[0]?.clientX;
+    if (endX == null) return;
+    const dx = endX - startX;
+    if (Math.abs(dx) < SWIPE_THRESHOLD_PX) return;
+    if (dx < 0) goNext();
+    else goPrev();
+  }
+
+  function onTouchCancel() {
+    touchStartX.current = null;
+    setIsPaused(false);
+  }
+
   if (!slides.length) return null;
 
   return (
     <section
-      className="vp-hero-carousel relative h-screen w-full overflow-hidden"
+      className="vp-hero-carousel relative h-screen w-full overflow-hidden touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchCancel}
       aria-label={t('heroCarouselAria')}
     >
       {/* Slide backgrounds — crossfade via opacity */}
@@ -149,7 +179,7 @@ export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
         ))}
       </div>
 
-      {/* Prev / next arrows */}
+      {/* Prev / next arrows — desktop only (CSS hides on mobile; swipe handles nav) */}
       {slides.length > 1 ? (
         <>
           <button

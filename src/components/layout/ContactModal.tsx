@@ -100,7 +100,10 @@ export function ContactModal({ siteSettings, phrases }: ContactModalProps) {
           ×
         </button>
 
-        <h2 id="vp-contact-modal-label" className="mb-4 text-xl font-bold uppercase">
+        <h2
+          id="vp-contact-modal-label"
+          className="mb-4 font-vp-heading text-xl font-bold uppercase tracking-vp-heading"
+        >
           {title}
         </h2>
 
@@ -111,7 +114,7 @@ export function ContactModal({ siteSettings, phrases }: ContactModalProps) {
         <ul className="mb-4 list-none p-0">
           {email ? (
             <li className="mb-2">
-              <h3 className="m-0 text-xl font-bold uppercase">
+              <h3 className="m-0 text-xl font-bold">
                 <a
                   href={`mailto:${email}`}
                   className="text-vp-link hover:text-vp-link-hover"
@@ -137,7 +140,7 @@ export function ContactModal({ siteSettings, phrases }: ContactModalProps) {
                   <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.855L0 24l6.335-1.662A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.78 9.78 0 01-4.988-1.375l-.357-.214-3.76.987 1.004-3.66-.233-.375A9.818 9.818 0 1112 21.818z" />
                 </svg>
               </span>
-              <h5 className="inline text-base font-bold uppercase">
+              <h5 className="inline text-base font-normal">
                 <a
                   href={waLink}
                   target="_blank"
@@ -152,7 +155,7 @@ export function ContactModal({ siteSettings, phrases }: ContactModalProps) {
         </ul>
 
         {address ? (
-          <address className="h5 m-0 mb-4 text-base font-bold uppercase not-italic leading-snug text-white">
+          <address className="m-0 mb-4 text-base font-normal not-italic leading-snug text-white">
             {address.split('\n').map((line, i) => (
               <span key={i}>
                 {line}

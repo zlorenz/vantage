@@ -96,7 +96,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
           <h2 className="mb-6 font-vp-heading text-xl font-bold uppercase tracking-vp-heading">
             {t('portfolio')}
           </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="vp-curated-gallery grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {portfolioResults.map((item) => (
               <SearchCard
                 key={`${item._type}-${item.slug}`}

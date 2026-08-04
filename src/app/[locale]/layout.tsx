@@ -22,6 +22,7 @@ import { notFound } from 'next/navigation';
 import { VisualEditing } from 'next-sanity/visual-editing';
 import { DisableDraftMode } from '@/components/visual-editing/DisableDraftMode';
 import { LayoutShell } from '@/components/layout/LayoutShell';
+import { CjkOutlineFilter } from '@/components/layout/CjkOutlineFilter';
 import { routing } from '@/i18n/routing';
 import { monaSans, specialGothicExpandedOne } from '@/lib/fonts';
 import { METADATA_BASE } from '@/lib/metadata';
@@ -75,6 +76,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-vp-bg font-vp-sans text-vp-text">
+        <CjkOutlineFilter />
         {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
         <NextIntlClientProvider locale={locale} messages={messages}>
           <LayoutShell

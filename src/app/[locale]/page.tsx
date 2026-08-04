@@ -117,7 +117,7 @@ export default async function HomePage({ params }: Props) {
           <h2 className="vp-section-heading mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
             <span className="vp-outline">{t('workSectionOutline')}</span> {t('workSection')}
           </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="vp-curated-gallery grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {featuredWork.map((entry, index) => (
               <PortfolioCard
                 key={entry._id}

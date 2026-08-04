@@ -323,10 +323,45 @@
     /* No forced font-smoothing — leave the browser default. */
   }
 
-  /* Outline text effect — hero and page titles */
+  /* Outline text effect — hero and page titles.
+   *
+   * Default: -webkit-text-stroke (hollow outline). Works for Latin
+   * (Special Gothic) on all viewports.
+   *
+   * Special Gothic has no CJK glyphs, so Chinese falls back to system
+   * faces (PingFang etc.). Those fonts expose overlapping contours;
+   * text-stroke draws each contour separately on iOS Safari — see
+   * :lang(zh) override below.
+   */
   .vp-outline {
     color: transparent;
     -webkit-text-stroke: 0.6px #fff;
+  }
+}
+
+/* CJK-only mobile/touch override — SVG feMorphology knockout ring.
+ *
+ * Opaque fill feeds SourceAlpha; the filter replaces painting with a
+ * white hollow ring (dilate − original). Scoped to :lang(zh) so English
+ * keeps -webkit-text-stroke.
+ *
+ * Fallback without CSS filter support: solid white (readable). Broken
+ * per-contour stroke is never re-enabled here.
+ */
+@media (max-width: 991.98px), (pointer: coarse) {
+  :lang(zh) .vp-outline,
+  :lang(zh) .vp-hero-carousel__title span {
+    color: #fff;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+  }
+
+  @supports (filter: blur(0px)) {
+    :lang(zh) .vp-outline,
+    :lang(zh) .vp-hero-carousel__title span {
+      /* Filter output is ring-only — fill itself is discarded */
+      filter: url(#vp-cjk-outline);
+    }
   }
 }
 
@@ -337,6 +372,13 @@
 
 #header.navbar {
   background: transparent;
+  transform: translateY(0);
+  transition: transform 0.28s ease;
+  will-change: transform;
+}
+
+#header.navbar.vp-header--hidden {
+  transform: translateY(-100%);
 }
 
 #header.navbar::before {
@@ -360,7 +402,7 @@
 .navbar a.nav-link {
   color: #fff;
   font-family: var(--vp-font-heading);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 400;
   letter-spacing: var(--vp-navbar-link-spacing);
   text-transform: uppercase;
@@ -372,10 +414,14 @@
 
 .navbar .dropdown-item {
   font-family: var(--vp-font-heading);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 400;
   letter-spacing: var(--vp-navbar-link-spacing);
   text-transform: uppercase;
+  /* Desktop submenu padding — restored after B3 rewrite dropped
+   * Tailwind py; sized for 0.875rem so items aren't cramped. */
+  padding: 0.65rem 1rem;
+  line-height: 1.35;
 }
 
 #header .vp-nav-caret {
@@ -387,6 +433,48 @@
   border-right: 3.5px solid transparent;
   border-top: 4px solid currentColor;
   opacity: 0.85;
+}
+
+/* Mobile overlay — even spacing, aligned labels, ~44px touch targets */
+#header .navbar-collapse .navbar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+#header .navbar-collapse .nav-item {
+  margin: 0;
+}
+
+#header .navbar-collapse .nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 2.25rem 0.75rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.25;
+  border-radius: var(--radius-vp-nav-pill);
+}
+
+#header .navbar-collapse .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+#header .navbar-collapse .vp-nav-caret {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  margin-left: 0;
+  transform: translateY(-35%);
+}
+
+#header .navbar-collapse .dropdown-item {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.9375rem;
 }
 
 .navbar .dropdown .dropdown-menu {
@@ -802,6 +890,21 @@
 .vp-hero-carousel__title span {
   color: transparent;
   -webkit-text-stroke: 0.6px #fff;
+}
+
+@media (max-width: 767.98px) {
+  .vp-hero-carousel__arrow {
+    display: none;
+  }
+}
+
+/* Curated featured-work grids (home, VPS, search) — match /work edge-to-edge on mobile */
+@media (max-width: 575.98px) {
+  .vp-curated-gallery {
+    gap: 0;
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+  }
 }
 
 .vp-hero-carousel__desc {
