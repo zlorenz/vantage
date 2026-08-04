@@ -11,7 +11,12 @@ import {structure} from './structure'
 import {resolve} from './presentation/resolve'
 import {getStudioRole} from './lib/studio-roles'
 import {contentTool} from './tools/content'
-import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './tools/content/front-end-url'
+import {
+  getFrontEndUrl,
+  getSiteBaseUrl,
+  mergeDocumentSnapshot,
+  type FrontEndDocument,
+} from './tools/content/front-end-url'
 import './studio.css'
 
 /**
@@ -52,7 +57,7 @@ export default defineConfig({
     presentationTool({
       resolve,
       previewUrl: {
-        origin: 'http://localhost:3000',
+        origin: getSiteBaseUrl(),
         previewMode: {enable: '/api/draft-mode/enable'},
       },
     }),
