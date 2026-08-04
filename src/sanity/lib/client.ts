@@ -7,7 +7,7 @@ if (!projectId) throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID')
 if (!dataset) throw new Error('Missing NEXT_PUBLIC_SANITY_DATASET')
 
 const studioUrl =
-  process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || 'https://vantage.sanity.studio'
+  process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || 'https://vantage-pictures.sanity.studio'
 
 /**
  * Visual-editing client (next-sanity). SEPARATE from the legacy read client in
