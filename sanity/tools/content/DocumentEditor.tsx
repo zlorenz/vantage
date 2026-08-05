@@ -281,7 +281,6 @@ export function DocumentEditor({
   const [trashConfirmOpen, setTrashConfirmOpen] = useState(false)
   const [trashImpactText, setTrashImpactText] = useState('')
   const [unpublishConfirmOpen, setUnpublishConfirmOpen] = useState(false)
-  const [discardEntireConfirmOpen, setDiscardEntireConfirmOpen] = useState(false)
   const [viewOnSiteLoading, setViewOnSiteLoading] = useState(false)
 
   const editState = useEditState(publishedId, documentType)
@@ -303,7 +302,11 @@ export function DocumentEditor({
   )
 
   const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)
-  const canDiscard = Boolean(ops.discardChanges?.disabled) === false
+  // Only when published exists to revert to — draft-only Discard would delete the doc.
+  const canDiscard =
+    Boolean(ops.discardChanges?.disabled) === false &&
+    Boolean(editState.published) &&
+    Boolean(editState.draft)
   // Admin + Editor only (not Translator); only when a published version exists to remove.
   const canUnpublish =
     !isTranslator &&
@@ -415,26 +418,11 @@ export function DocumentEditor({
   }, [client, currentUser?.id, frontEndUrl, toast, viewOnSiteLoading])
 
   const handleDiscard = useCallback(() => {
-    // Draft-only: discard deletes the sole remaining copy — confirm first.
-    // Published+draft: keep the existing silent revert (published remains).
-    if (Boolean(editState.draft) && !editState.published) {
-      setDiscardEntireConfirmOpen(true)
-      return
-    }
     setBusy('discard')
     ops.discardChanges.execute()
     toast.push({status: 'info', title: 'Discarded draft changes'})
     setBusy(null)
-  }, [editState.draft, editState.published, ops.discardChanges, toast])
-
-  const handleDiscardEntireConfirm = useCallback(() => {
-    setBusy('discard')
-    ops.discardChanges.execute()
-    toast.push({status: 'info', title: 'Document deleted'})
-    setDiscardEntireConfirmOpen(false)
-    setBusy(null)
-    onBack()
-  }, [onBack, ops.discardChanges, toast])
+  }, [ops.discardChanges, toast])
 
   const openTrashConfirm = useCallback(async () => {
     if (!supportsTrash || isTranslator) return
@@ -776,44 +764,6 @@ export function DocumentEditor({
                 text={busy === 'unpublish' ? 'Unpublishing…' : 'Unpublish'}
                 disabled={busy === 'unpublish'}
                 onClick={handleUnpublish}
-              />
-            </Flex>
-          </Stack>
-        </Dialog>
-      ) : null}
-
-      {discardEntireConfirmOpen ? (
-        <Dialog
-          id="discard-entire-document"
-          header="Delete entire document?"
-          width={1}
-          onClose={() => {
-            if (busy !== 'discard') setDiscardEntireConfirmOpen(false)
-          }}
-        >
-          <Stack space={4} padding={4}>
-            <Text size={1}>
-              “{headerTitle}” has no published version. Discarding changes
-              deletes the entire document — there is nothing to revert to.
-            </Text>
-            <Text size={1} muted>
-              This cannot be undone from the editor.
-              {supportsTrash
-                ? ' Prefer Move to Trash if you may need to recover it.'
-                : ''}
-            </Text>
-            <Flex justify="flex-end" gap={2}>
-              <Button
-                mode="bleed"
-                text="Cancel"
-                disabled={busy === 'discard'}
-                onClick={() => setDiscardEntireConfirmOpen(false)}
-              />
-              <Button
-                tone="critical"
-                text={busy === 'discard' ? 'Deleting…' : 'Delete document'}
-                disabled={busy === 'discard'}
-                onClick={handleDiscardEntireConfirm}
               />
             </Flex>
           </Stack>
