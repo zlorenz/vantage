@@ -17,6 +17,7 @@ import {
   EarthGlobeIcon,
   PublishIcon,
   TrashIcon,
+  UnpublishIcon,
 } from '@sanity/icons'
 import {
   Box,
@@ -272,13 +273,15 @@ export function DocumentEditor({
     [studioClient],
   )
   const [busy, setBusy] = useState<
-    'publish' | 'discard' | 'delete' | 'schedule' | null
+    'publish' | 'unpublish' | 'discard' | 'delete' | 'schedule' | null
   >(null)
   const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null)
   const [scheduleOpen, setScheduleOpen] = useState(false)
   const [scheduleAt, setScheduleAt] = useState('')
   const [trashConfirmOpen, setTrashConfirmOpen] = useState(false)
   const [trashImpactText, setTrashImpactText] = useState('')
+  const [unpublishConfirmOpen, setUnpublishConfirmOpen] = useState(false)
+  const [discardEntireConfirmOpen, setDiscardEntireConfirmOpen] = useState(false)
   const [viewOnSiteLoading, setViewOnSiteLoading] = useState(false)
 
   const editState = useEditState(publishedId, documentType)
@@ -301,6 +304,11 @@ export function DocumentEditor({
 
   const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)
   const canDiscard = Boolean(ops.discardChanges?.disabled) === false
+  // Admin + Editor only (not Translator); only when a published version exists to remove.
+  const canUnpublish =
+    !isTranslator &&
+    Boolean(editState.published) &&
+    Boolean(ops.unpublish?.disabled) === false
   // Translator: no Move to Trash. Permanent delete (non-trash types): admin only.
   const canDelete = isTranslator
     ? false
@@ -328,6 +336,15 @@ export function DocumentEditor({
     toast.push({status: 'success', title: 'Published'})
     setBusy(null)
   }, [ops.publish, toast])
+
+  const handleUnpublish = useCallback(() => {
+    if (isTranslator) return
+    setBusy('unpublish')
+    ops.unpublish.execute()
+    toast.push({status: 'success', title: 'Unpublished'})
+    setUnpublishConfirmOpen(false)
+    setBusy(null)
+  }, [isTranslator, ops.unpublish, toast])
 
   // createPreviewSecret / setSecretSearchParams are @internal / @alpha exports from
   // @sanity/preview-url-secret — the same surface Presentation depends on. A future
@@ -398,11 +415,26 @@ export function DocumentEditor({
   }, [client, currentUser?.id, frontEndUrl, toast, viewOnSiteLoading])
 
   const handleDiscard = useCallback(() => {
+    // Draft-only: discard deletes the sole remaining copy — confirm first.
+    // Published+draft: keep the existing silent revert (published remains).
+    if (Boolean(editState.draft) && !editState.published) {
+      setDiscardEntireConfirmOpen(true)
+      return
+    }
     setBusy('discard')
     ops.discardChanges.execute()
     toast.push({status: 'info', title: 'Discarded draft changes'})
     setBusy(null)
-  }, [ops.discardChanges, toast])
+  }, [editState.draft, editState.published, ops.discardChanges, toast])
+
+  const handleDiscardEntireConfirm = useCallback(() => {
+    setBusy('discard')
+    ops.discardChanges.execute()
+    toast.push({status: 'info', title: 'Document deleted'})
+    setDiscardEntireConfirmOpen(false)
+    setBusy(null)
+    onBack()
+  }, [onBack, ops.discardChanges, toast])
 
   const openTrashConfirm = useCallback(async () => {
     if (!supportsTrash || isTranslator) return
@@ -604,6 +636,16 @@ export function DocumentEditor({
               disabled={!editState.draft || busy !== null}
               onClick={() => setScheduleOpen(true)}
             />
+            {canUnpublish ? (
+              <Button
+                mode="ghost"
+                tone="critical"
+                icon={UnpublishIcon}
+                text="Unpublish"
+                disabled={busy !== null}
+                onClick={() => setUnpublishConfirmOpen(true)}
+              />
+            ) : null}
             <Button
               tone="positive"
               icon={PublishIcon}
@@ -698,6 +740,80 @@ export function DocumentEditor({
                 text={busy === 'delete' ? 'Moving…' : 'Move to Trash'}
                 disabled={busy === 'delete'}
                 onClick={handleMoveToTrash}
+              />
+            </Flex>
+          </Stack>
+        </Dialog>
+      ) : null}
+
+      {unpublishConfirmOpen ? (
+        <Dialog
+          id="unpublish-document"
+          header="Unpublish"
+          width={1}
+          onClose={() => {
+            if (busy !== 'unpublish') setUnpublishConfirmOpen(false)
+          }}
+        >
+          <Stack space={4} padding={4}>
+            <Text size={1}>
+              Unpublish “{headerTitle}”? This removes it from the public
+              website.
+            </Text>
+            <Text size={1} muted>
+              The draft — including your current edits — is kept. Nothing is
+              deleted. You can re-publish anytime.
+            </Text>
+            <Flex justify="flex-end" gap={2}>
+              <Button
+                mode="bleed"
+                text="Cancel"
+                disabled={busy === 'unpublish'}
+                onClick={() => setUnpublishConfirmOpen(false)}
+              />
+              <Button
+                tone="critical"
+                text={busy === 'unpublish' ? 'Unpublishing…' : 'Unpublish'}
+                disabled={busy === 'unpublish'}
+                onClick={handleUnpublish}
+              />
+            </Flex>
+          </Stack>
+        </Dialog>
+      ) : null}
+
+      {discardEntireConfirmOpen ? (
+        <Dialog
+          id="discard-entire-document"
+          header="Delete entire document?"
+          width={1}
+          onClose={() => {
+            if (busy !== 'discard') setDiscardEntireConfirmOpen(false)
+          }}
+        >
+          <Stack space={4} padding={4}>
+            <Text size={1}>
+              “{headerTitle}” has no published version. Discarding changes
+              deletes the entire document — there is nothing to revert to.
+            </Text>
+            <Text size={1} muted>
+              This cannot be undone from the editor.
+              {supportsTrash
+                ? ' Prefer Move to Trash if you may need to recover it.'
+                : ''}
+            </Text>
+            <Flex justify="flex-end" gap={2}>
+              <Button
+                mode="bleed"
+                text="Cancel"
+                disabled={busy === 'discard'}
+                onClick={() => setDiscardEntireConfirmOpen(false)}
+              />
+              <Button
+                tone="critical"
+                text={busy === 'discard' ? 'Deleting…' : 'Delete document'}
+                disabled={busy === 'discard'}
+                onClick={handleDiscardEntireConfirm}
               />
             </Flex>
           </Stack>
