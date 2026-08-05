@@ -3,9 +3,9 @@
 /**
  * NavDropdown — submenu with desktop hover and mobile accordion behaviour.
  *
- * Desktop: hover reveals children; a parent without `href` (e.g. About) is a
- * pure toggle. Mobile: tap toggles the submenu (or, with `href`, first tap
- * expands and the second follows the link).
+ * Desktop (hover-capable layout): mouse enter/leave reveals children.
+ * Mobile overlay: click/tap only — hover handlers are not attached, so
+ * resized desktop browsers and iOS sticky-hover don't auto-expand.
  */
 
 import { useState, type ComponentProps, type MouseEvent } from 'react';
@@ -20,6 +20,8 @@ interface NavDropdownProps {
   items: { label: string; href: LinkHref }[];
   /** Mobile overlay variant — caret is absolutely positioned via CSS. */
   mobile?: boolean;
+  /** Called when a submenu link is activated (e.g. close mobile panel). */
+  onNavigate?: () => void;
 }
 
 function isMobileNav(): boolean {
@@ -29,7 +31,13 @@ function isMobileNav(): boolean {
   );
 }
 
-export function NavDropdown({ label, href, items, mobile = false }: NavDropdownProps) {
+export function NavDropdown({
+  label,
+  href,
+  items,
+  mobile = false,
+  onNavigate,
+}: NavDropdownProps) {
   const [open, setOpen] = useState(false);
 
   function onParentClick(e: MouseEvent<HTMLAnchorElement>) {
@@ -47,11 +55,21 @@ export function NavDropdown({ label, href, items, mobile = false }: NavDropdownP
 
   const caret = <span className="vp-nav-caret" aria-hidden="true" />;
 
+  // Hover-to-open is desktop-only. On the mobile overlay (and any
+  // touch-first context using mobile=true), click/tap toggles instead —
+  // otherwise mouseenter fires in responsive-mode desktop browsers and
+  // sticky :hover consumes the first tap on iOS.
+  const hoverHandlers = mobile
+    ? undefined
+    : {
+        onMouseEnter: () => setOpen(true),
+        onMouseLeave: () => setOpen(false),
+      };
+
   return (
     <li
       className={`nav-item dropdown relative${open ? ' vp-dropdown-open show' : ''}`}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      {...hoverHandlers}
     >
       {href ? (
         <Link
@@ -85,7 +103,8 @@ export function NavDropdown({ label, href, items, mobile = false }: NavDropdownP
           <li key={item.label}>
             <Link
               href={item.href}
-              className="dropdown-item block whitespace-nowrap uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast hover:bg-vp-overlay-light"
+              className="dropdown-item block cursor-pointer whitespace-nowrap uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast"
+              onClick={() => onNavigate?.()}
             >
               {item.label}
             </Link>

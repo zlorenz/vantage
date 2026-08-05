@@ -7,7 +7,7 @@
  * contact modal trigger all require browser interactivity.
  */
 
-import { useState, type ComponentProps } from 'react';
+import { useEffect, useRef, useState, type ComponentProps } from 'react';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { NavDropdown } from './NavDropdown';
@@ -33,6 +33,29 @@ interface NavBarProps {
 export function NavBar({ locale, items, toggleAria }: NavBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openContact } = useContactModal();
+  const togglerRef = useRef<HTMLButtonElement>(null);
+
+  // Close mobile panel on outside tap/click (page content). Exclude the
+  // panel itself and the hamburger so the toggler can still open/close.
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    function onPointerDown(e: PointerEvent) {
+      const target = e.target as Node | null;
+      if (!target) return;
+      const panel = document.getElementById('vp-navbar');
+      if (panel?.contains(target)) return;
+      if (togglerRef.current?.contains(target)) return;
+      setMobileOpen(false);
+    }
+
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [mobileOpen]);
+
+  function closeMobile() {
+    setMobileOpen(false);
+  }
 
   function renderItem(item: NavItem, mobile = false) {
     if (item.dropdown) {
@@ -43,6 +66,7 @@ export function NavBar({ locale, items, toggleAria }: NavBarProps) {
           href={item.href}
           items={item.dropdown}
           mobile={mobile}
+          onNavigate={mobile ? closeMobile : undefined}
         />
       );
     }
@@ -57,7 +81,7 @@ export function NavBar({ locale, items, toggleAria }: NavBarProps) {
             }`}
             onClick={() => {
               openContact();
-              setMobileOpen(false);
+              closeMobile();
             }}
           >
             {item.label}
@@ -70,10 +94,10 @@ export function NavBar({ locale, items, toggleAria }: NavBarProps) {
       <li key={item.label} className="nav-item">
         <Link
           href={item.href!}
-          className={`nav-link uppercase ${
+          className={`nav-link cursor-pointer uppercase ${
             mobile ? '' : 'block px-4 py-[0.35rem]'
           }`}
-          onClick={() => setMobileOpen(false)}
+          onClick={closeMobile}
         >
           {item.label}
         </Link>
@@ -88,6 +112,7 @@ export function NavBar({ locale, items, toggleAria }: NavBarProps) {
       </div>
 
       <button
+        ref={togglerRef}
         type="button"
         className="navbar-toggler border-0 bg-transparent p-2 shadow-none md:hidden"
         aria-expanded={mobileOpen}

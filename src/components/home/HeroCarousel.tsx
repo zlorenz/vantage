@@ -153,7 +153,11 @@ export function HeroCarousel({ slides, locale, phrases }: HeroCarouselProps) {
                   params: { slug: slugParam },
                 }}
                 variant="ghost"
-                className="pointer-events-auto inline-flex items-center gap-2"
+                className={`inline-flex items-center gap-2 ${
+                  index === activeIndex
+                    ? 'pointer-events-auto'
+                    : 'pointer-events-none'
+                }`}
               >
                 <span aria-hidden>▶</span>
                 {t('watchButton')}

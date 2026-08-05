@@ -455,10 +455,19 @@
   font-size: 1rem;
   line-height: 1.25;
   border-radius: var(--radius-vp-nav-pill);
+  cursor: pointer;
 }
 
-#header .navbar-collapse .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+/* Hover highlight only on real hover devices — unconditional :hover on
+ * iOS WebKit makes the first tap apply :hover and the second fire click. */
+@media (hover: hover) and (pointer: fine) {
+  #header .navbar-collapse .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .navbar .dropdown-item:hover {
+    background-color: var(--vp-overlay-light);
+  }
 }
 
 #header .navbar-collapse .vp-nav-caret {
@@ -475,6 +484,7 @@
   min-height: 2.75rem;
   padding: 0.65rem 0.75rem;
   font-size: 0.9375rem;
+  cursor: pointer;
 }
 
 .navbar .dropdown .dropdown-menu {
@@ -488,7 +498,16 @@
 }
 
 @media (min-width: 992px) {
-  .navbar .dropdown:hover > .dropdown-menu,
+  /* Hover-open only when the pointer can hover — avoids iOS sticky-hover
+   * on the desktop nav layout when a touch device reports a wide viewport. */
+  @media (hover: hover) and (pointer: fine) {
+    .navbar .dropdown:hover > .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+  }
+
   .navbar .dropdown:focus-within > .dropdown-menu,
   .navbar .dropdown.show > .dropdown-menu {
     opacity: 1;
