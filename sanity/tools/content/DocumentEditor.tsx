@@ -64,7 +64,14 @@ import {
   TRASHABLE_TYPES,
   type TrashableType,
 } from './document-lifecycle'
-import {getFrontEndUrl, mergeDocumentSnapshot, type FrontEndDocument} from './front-end-url'
+import {createPreviewSecret} from '@sanity/preview-url-secret/create-secret'
+import {setSecretSearchParams} from '@sanity/preview-url-secret/without-secret-search-params'
+import {
+  getFrontEndUrl,
+  getSiteBaseUrl,
+  mergeDocumentSnapshot,
+  type FrontEndDocument,
+} from './front-end-url'
 import {getStudioRole} from '../../lib/studio-roles'
 
 type DisplayTitlePartsDoc = {
@@ -272,6 +279,7 @@ export function DocumentEditor({
   const [scheduleAt, setScheduleAt] = useState('')
   const [trashConfirmOpen, setTrashConfirmOpen] = useState(false)
   const [trashImpactText, setTrashImpactText] = useState('')
+  const [viewOnSiteLoading, setViewOnSiteLoading] = useState(false)
 
   const editState = useEditState(publishedId, documentType)
   const ops = useDocumentOperation(publishedId, documentType)
@@ -320,6 +328,74 @@ export function DocumentEditor({
     toast.push({status: 'success', title: 'Published'})
     setBusy(null)
   }, [ops.publish, toast])
+
+  // createPreviewSecret / setSecretSearchParams are @internal / @alpha exports from
+  // @sanity/preview-url-secret — the same surface Presentation depends on. A future
+  // sanity / next-sanity upgrade could change or remove them without a semver-major
+  // bump; check this handler first if "View on site" breaks after an upgrade.
+  //
+  // Open a blank tab synchronously in the click gesture, then navigate it after
+  // minting. `noopener`/`noreferrer` as window.open features make Chromium return
+  // null (no controllable reference), so we omit them and clear `opener` instead.
+  const handleViewOnSite = useCallback(async () => {
+    if (!frontEndUrl || viewOnSiteLoading) return
+
+    // Must run before any await — browsers only treat this as user-initiated then.
+    const previewName = `vp-site-preview-${Date.now()}`
+    const previewWindow = window.open('about:blank', previewName)
+    if (!previewWindow) {
+      toast.push({
+        status: 'warning',
+        title: 'Could not open preview',
+        description: 'Allow pop-ups for this site, then try again.',
+      })
+      return
+    }
+    try {
+      previewWindow.opener = null
+    } catch {
+      // Some WindowProxies disallow assigning opener; navigation still proceeds.
+    }
+
+    setViewOnSiteLoading(true)
+    try {
+      const {secret} = await createPreviewSecret(
+        client,
+        'vantage/content-tool',
+        typeof window !== 'undefined' ? window.location.href : '',
+        currentUser?.id,
+      )
+
+      const frontEnd = new URL(frontEndUrl)
+      const redirectTo = `${frontEnd.pathname}${frontEnd.search}${frontEnd.hash}`
+      const enableUrl = setSecretSearchParams(
+        new URL('/api/draft-mode/enable', `${getSiteBaseUrl()}/`),
+        secret,
+        redirectTo,
+        'drafts',
+      ).toString()
+
+      if (previewWindow.location) {
+        previewWindow.location.href = enableUrl
+      } else {
+        // Restricted WindowProxy (no writable location): reuse the named tab.
+        window.open(enableUrl, previewName)
+      }
+    } catch (error) {
+      try {
+        previewWindow.close()
+      } catch {
+        // Tab may already be gone.
+      }
+      toast.push({
+        status: 'error',
+        title: 'Could not open preview',
+        description: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setViewOnSiteLoading(false)
+    }
+  }, [client, currentUser?.id, frontEndUrl, toast, viewOnSiteLoading])
 
   const handleDiscard = useCallback(() => {
     setBusy('discard')
@@ -495,13 +571,12 @@ export function DocumentEditor({
 
             {frontEndUrl ? (
               <Button
-                as="a"
-                href={frontEndUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 mode="ghost"
                 icon={EarthGlobeIcon}
                 text="View on site"
+                loading={viewOnSiteLoading}
+                disabled={busy !== null || viewOnSiteLoading}
+                onClick={handleViewOnSite}
               />
             ) : null}
             {canDiscard ? (
