@@ -24,7 +24,7 @@ import { DisableDraftMode } from '@/components/visual-editing/DisableDraftMode';
 import { LayoutShell } from '@/components/layout/LayoutShell';
 import { CjkOutlineFilter } from '@/components/layout/CjkOutlineFilter';
 import { routing } from '@/i18n/routing';
-import { monaSans, specialGothicExpandedOne } from '@/lib/fonts';
+import { delaGothicOne, monaSans, specialGothicExpandedOne } from '@/lib/fonts';
 import { METADATA_BASE } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
@@ -72,7 +72,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={`h-full ${monaSans.variable} ${specialGothicExpandedOne.variable}`}
+      className={`h-full ${monaSans.variable} ${specialGothicExpandedOne.variable} ${delaGothicOne.variable}`}
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-vp-bg font-vp-sans text-vp-text">

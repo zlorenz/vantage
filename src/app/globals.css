@@ -84,8 +84,11 @@
 
   --font-vp-sans: "Mona Sans", system-ui, -apple-system, "Segoe UI", Roboto,
     Arial, sans-serif;
-  --font-vp-heading: "Special Gothic Expanded One", system-ui, -apple-system,
-    "Segoe UI", Roboto, Arial, sans-serif;
+  /* Dela Gothic One (--font-vp-heading-fallback) covers Vietnamese glyphs
+   * missing from Special Gothic Expanded One. */
+  --font-vp-heading: "Special Gothic Expanded One",
+    var(--font-vp-heading-fallback), system-ui, -apple-system, "Segoe UI",
+    Roboto, Arial, sans-serif;
 
   /* Typography — Letter Spacing */
 
@@ -230,8 +233,8 @@
 
   --vp-font-sans: "Mona Sans", system-ui, -apple-system, "Segoe UI", Roboto,
     Arial, sans-serif;
-  --vp-font-heading: "Special Gothic Expanded One", system-ui, -apple-system,
-    "Segoe UI", Roboto, Arial, sans-serif;
+  /* Alias of @theme --font-vp-heading — single source of truth for the stack. */
+  --vp-font-heading: var(--font-vp-heading);
 
   /* Typography — Letter Spacing */
 
