@@ -18,10 +18,12 @@ assert.deepEqual(
     '/en',
     '/en/portfolio/macbook-neo',
     '/en/work',
+    '/en/work-internal',
     '/sitemap.xml',
     '/zh',
     '/zh/portfolio/macbook-neo-zh',
     '/zh/work',
+    '/zh/work-internal',
   ].sort(),
 )
 

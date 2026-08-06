@@ -47,16 +47,21 @@ export function pathsForWebhookBody(body: RevalidateWebhookBody): string[] {
   const sitemap = '/sitemap.xml'
   const home = [localePath('en', '/'), localePath('zh', '/')]
   const work = [localePath('en', '/work'), localePath('zh', '/work')]
+  const workInternal = [
+    localePath('en', '/work-internal'),
+    localePath('zh', '/work-internal'),
+  ]
   const news = [localePath('en', '/news'), localePath('zh', '/news')]
 
   if (type === 'portfolioEntry') {
     if (!slug) {
-      return unique([...work, ...home, sitemap])
+      return unique([...work, ...workInternal, ...home, sitemap])
     }
     return unique([
       localePath('en', `/portfolio/${slug}`),
       localePath('zh', `/portfolio/${zhSlug}`),
       ...work,
+      ...workInternal,
       ...home,
       sitemap,
     ])
