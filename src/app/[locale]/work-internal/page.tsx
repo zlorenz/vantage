@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { WorkInternalApp } from '@/components/work-internal/WorkInternalApp';
 import { routing, type Locale } from '@/i18n/routing';
-import { sanityClient } from '@/lib/sanity';
+import { sanityFetch } from '@/sanity/lib/live';
 import {
   INDUSTRIES_QUERY,
   INTERNAL_LIBRARY_QUERY,
@@ -38,12 +38,17 @@ export default async function WorkInternalPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [entries, videoFormats, industries, markets] = await Promise.all([
-    sanityClient.fetch<InternalLibraryEntry[]>(INTERNAL_LIBRARY_QUERY),
-    sanityClient.fetch<TaxonomyTerm[]>(VIDEO_FORMATS_QUERY),
-    sanityClient.fetch<TaxonomyTerm[]>(INDUSTRIES_QUERY),
-    sanityClient.fetch<TaxonomyTerm[]>(MARKETS_QUERY),
-  ]);
+  const [entriesResult, videoFormatsResult, industriesResult, marketsResult] =
+    await Promise.all([
+      sanityFetch({query: INTERNAL_LIBRARY_QUERY, stega: false}),
+      sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
+      sanityFetch({query: INDUSTRIES_QUERY, stega: false}),
+      sanityFetch({query: MARKETS_QUERY, stega: false}),
+    ]);
+  const entries = entriesResult.data as InternalLibraryEntry[];
+  const videoFormats = videoFormatsResult.data as TaxonomyTerm[];
+  const industries = industriesResult.data as TaxonomyTerm[];
+  const markets = marketsResult.data as TaxonomyTerm[];
 
   return (
     <div className="vp-internal-page">
