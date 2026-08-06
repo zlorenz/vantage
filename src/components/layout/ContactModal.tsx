@@ -167,6 +167,7 @@ export function ContactModal({ siteSettings, phrases }: ContactModalProps) {
 
         {modalContent?.length ? (
           <div className="mb-4 font-light prose prose-invert max-w-none">
+            {/* Known NFC gap (future pass): raw PortableText, not PortableTextContent. */}
             <PortableText
               value={modalContent as unknown as Parameters<typeof PortableText>[0]['value']}
             />

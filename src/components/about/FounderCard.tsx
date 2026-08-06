@@ -33,7 +33,7 @@ export function FounderCard({ founder, locale = 'en', phrases }: FounderCardProp
     founder.jobTitleZh,
     phrases,
   );
-  const name = founder.name ?? '';
+  const name = founder.name ?? ''; // Known NFC gap (future pass): founder names.
 
   return (
     <article className="vp-founder-card relative aspect-[3/4] overflow-hidden">

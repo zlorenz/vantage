@@ -17,6 +17,7 @@ export function PortfolioDescription({
 }: PortfolioDescriptionProps) {
   // Display-only: strip draft stega before HTML→plain / paragraph split (same
   // class as titles — no click-to-edit on this field). No-op when published.
+  // Known NFC gap (future pass): stegaClean only — no Unicode NFC here.
   const plain = htmlDescriptionToPlain(
     text == null ? text : stegaClean(text),
   );

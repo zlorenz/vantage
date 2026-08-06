@@ -84,12 +84,14 @@ function overridesForLocale(
  * Strip Sanity stega from every raw input once, before any trimPart / whitespace
  * normalization. trimPart's /\s+/g would otherwise turn stega U+FEFF into literal
  * spaces and leave undecodable zero-width junk (Presentation title scatter).
+ * NFC runs after stegaClean so combining-mark Vietnamese (NFD in CMS) becomes
+ * precomposed glyphs the heading fallback face can render.
  */
 function cleanInput(
   input: ResolveDisplayTitlesInput,
 ): ResolveDisplayTitlesInput {
   const clean = (value: string | null | undefined) =>
-    value == null ? value : stegaClean(value)
+    value == null ? value : stegaClean(value).normalize('NFC')
 
   return {
     brandName: clean(input.brandName),

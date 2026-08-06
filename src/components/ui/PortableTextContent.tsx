@@ -25,6 +25,26 @@ import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '
 
 type LinkHref = ComponentProps<typeof Link>['href'];
 
+/** NFC span.text so NFD Vietnamese in CMS bodies hits precomposed font glyphs. */
+function normalizePortableTextSpans(
+  blocks: readonly unknown[],
+): unknown[] {
+  return blocks.map((block) => {
+    if (!block || typeof block !== 'object') return block;
+    const row = block as Record<string, unknown>;
+    if (!Array.isArray(row.children)) return block;
+    return {
+      ...row,
+      children: row.children.map((child) => {
+        if (!child || typeof child !== 'object') return child;
+        const span = child as Record<string, unknown>;
+        if (typeof span.text !== 'string') return child;
+        return { ...span, text: span.text.normalize('NFC') };
+      }),
+    };
+  });
+}
+
 function createComponents(relaxed = false): PortableTextComponents {
   const h1Class = relaxed
     ? 'mb-8 mt-10 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading first:mt-0'
@@ -237,10 +257,11 @@ export function PortableTextContent({
   if (!blocks?.length) return null;
 
   const components = createComponents(relaxed);
+  const normalizedBlocks = normalizePortableTextSpans(blocks);
 
   return (
     <div className={`vp-portable-text ${className}`.trim()}>
-      <PortableText value={blocks as never} components={components} />
+      <PortableText value={normalizedBlocks as never} components={components} />
     </div>
   );
 }

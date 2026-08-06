@@ -28,6 +28,7 @@ function creditDisplayName(
       phrases: map,
     });
   }
+  // Known NFC gap (future pass): EN credit person names bypass resolvers.
   return person.name;
 }
 

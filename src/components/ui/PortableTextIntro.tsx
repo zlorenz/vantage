@@ -20,6 +20,7 @@ export function PortableTextIntro({
           children?: { text?: string }[];
         };
         if (row._type !== 'block' || !Array.isArray(row.children)) return null;
+        // Known NFC gap (future pass): span text not normalized here.
         const text = row.children.map((child) => child.text ?? '').join('');
         if (!text.trim()) return null;
         return (

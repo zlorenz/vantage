@@ -1,6 +1,7 @@
 /**
  * JSON-LD structured data builders for schema.org.
  * Returns plain objects — callers render via <JsonLd />.
+ * Known NFC gap (future pass): raw stegaClean metadata fields, no Unicode NFC.
  */
 
 import { stegaClean } from '@sanity/client/stega';

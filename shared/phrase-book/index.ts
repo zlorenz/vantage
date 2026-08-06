@@ -77,10 +77,12 @@ export type PhraseMap = ReadonlyMap<string, string>
 /**
  * Normalize a phrase KEY / comparison input.
  * stegaClean first so draft-mode U+FEFF is not treated as whitespace by `\s+`
- * (which would shred stega before Map lookup). No-op on published (non-stega) strings.
+ * (which would shred stega before Map lookup). NFC after stegaClean so NFD and
+ * NFC forms of the same Vietnamese string share one Map key. No-op on published
+ * (non-stega) ASCII strings aside from NFC idempotence.
  */
 export function normalizePhraseKey(en: string | null | undefined): string {
-  return stegaClean(en ?? '').replace(/\s+/g, ' ').trim()
+  return stegaClean(en ?? '').normalize('NFC').replace(/\s+/g, ' ').trim()
 }
 
 /** Deterministic Sanity document id for a phrase key. */
@@ -157,18 +159,21 @@ export type ResolveLocalizedArgs = {
  * - phrase-book hit → map value (built from non-stega phrase docs)
  * - document Zh → raw `zh` (emptiness checked via normalizePhraseKey only)
  * - fallback → raw `en`
- * Lookup keys go through normalizePhraseKey (stegaClean + collapse).
+ * Lookup keys go through normalizePhraseKey (stegaClean + NFC + collapse).
+ * Display returns are NFC-normalized so Vietnamese diacritics render as
+ * precomposed glyphs (Dela Gothic One subsets lack standalone U+0302/U+031B).
  */
 export function resolveLocalizedString(args: ResolveLocalizedArgs): string {
   const en = args.en ?? ''
-  if (args.locale !== 'zh') return en
+  if (args.locale !== 'zh') return en.normalize('NFC')
 
   const fromBook = lookupPhrase(args.phrases, en)
-  if (fromBook) return fromBook
+  if (fromBook) return fromBook.normalize('NFC')
 
-  // Presence/emptiness via cleaned key; return RAW zh so draft overlays survive.
-  // (normalizePhraseKey output must not be used as display — it strips stega.)
-  if (normalizePhraseKey(args.zh)) return args.zh ?? ''
+  // Presence/emptiness via cleaned key; return RAW zh (then NFC) so draft
+  // overlays survive. (normalizePhraseKey output must not be used as display —
+  // it strips stega.)
+  if (normalizePhraseKey(args.zh)) return (args.zh ?? '').normalize('NFC')
 
-  return en
+  return en.normalize('NFC')
 }

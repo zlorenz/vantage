@@ -24,6 +24,9 @@ export function PageHero({ title, description, backgroundImage }: PageHeroProps)
   const imageUrl = backgroundImage
     ? urlForImage(backgroundImage).width(1920).height(1080).fit('crop').url()
     : null;
+  // NFC for page-local hero ternaries that bypass display-title / phrase resolvers.
+  const titleNfc = title.normalize('NFC');
+  const descriptionNfc = description?.normalize('NFC');
 
   return (
     <section
@@ -39,13 +42,13 @@ export function PageHero({ title, description, backgroundImage }: PageHeroProps)
         <div className="container flex w-full flex-col items-center justify-center text-center text-white min-[1400px]:max-w-[1320px]">
           <h1
             className={`vp-page-hero__title m-0 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading${
-              description ? ' mb-4' : ''
+              descriptionNfc ? ' mb-4' : ''
             }`}
-            dangerouslySetInnerHTML={{ __html: title }}
+            dangerouslySetInnerHTML={{ __html: titleNfc }}
           />
-          {description ? (
+          {descriptionNfc ? (
             <p className="vp-page-hero__desc mx-auto max-w-2xl text-base font-light leading-relaxed text-white/90">
-              {description}
+              {descriptionNfc}
             </p>
           ) : null}
         </div>
