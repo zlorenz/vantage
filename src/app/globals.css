@@ -75,10 +75,15 @@
 
   /* Typography — Font Family
    *
-   * Use face names directly — do NOT compose from var(--font-vp-body-raw)
-   * or var(--font-vp-heading). next/font bakes a size-adjusted
-   * local(Arial) fallback into those variables; composing from them can
-   * steal glyphs / look thin under text-stroke. @font-face rules still
+   * Body: use the face name directly — do NOT compose from
+   * var(--font-vp-body-raw). next/font can bake a size-adjusted
+   * local(Arial) into raw variables; composing from them can steal
+   * glyphs / look thin under text-stroke.
+   *
+   * Heading: compose from next/font raw + Vietnamese fallback vars
+   * (--font-vp-heading-raw / --font-vp-heading-fallback). Those use
+   * adjustFontFallback: false and must not share the @theme token name
+   * `--font-vp-heading` (cascade collision). @font-face rules still
    * come from next/font (src/lib/fonts.ts on <html>).
    */
 
@@ -86,7 +91,7 @@
     Arial, sans-serif;
   /* Dela Gothic One (--font-vp-heading-fallback) covers Vietnamese glyphs
    * missing from Special Gothic Expanded One. */
-  --font-vp-heading: "Special Gothic Expanded One",
+  --font-vp-heading: var(--font-vp-heading-raw),
     var(--font-vp-heading-fallback), system-ui, -apple-system, "Segoe UI",
     Roboto, Arial, sans-serif;
 

@@ -3,25 +3,21 @@
  *
  * Mona Sans is the body/UI face (Light 300 / Regular 400 / Bold 700).
  * It includes a `vietnamese` subset, so no separate Vietnamese fallback
- * face is required.
+ * face is required. next/font exposes it as `--font-vp-body-raw`; the
+ * @theme stack token is `--font-vp-sans` (face name, not the raw var).
  *
  * Special Gothic Expanded One is the display/heading face (Regular 400
- * only — no Bold/Italic files exist). It has no Vietnamese coverage, so
- * Dela Gothic One is loaded as `--font-vp-heading-fallback` and slotted
- * second in the heading stack (after Special Gothic, before system-ui)
- * for Vietnamese diacritic glyphs.
+ * only — no Bold/Italic files exist). next/font exposes it as
+ * `--font-vp-heading-raw` so it does not collide with the @theme stack
+ * token `--font-vp-heading`. It has no Vietnamese coverage, so Dela
+ * Gothic One is loaded as `--font-vp-heading-fallback` and slotted
+ * second in that stack (after the raw face, before system-ui).
  *
- * The site font stacks in globals.css use the face names
- * `"Mona Sans"` / `"Special Gothic Expanded One"` directly. Do not
- * compose from `var(--font-vp-body-raw)` / `var(--font-vp-heading)` —
- * next/font’s size-adjusted fallback is `local(Arial)` baked into those
- * variables, and Arial can supply glyphs before the intended face
- * (and looks thin/tall under text-stroke). The heading Vietnamese
- * fallback is the intentional exception: `var(--font-vp-heading-fallback)`
- * is composed into the stack with `adjustFontFallback: false`.
- *
- * `adjustFontFallback: false` avoids emitting that Arial face when the
- * toolchain respects it; the CSS stack bypass is the reliable guard.
+ * The heading @theme stack composes from the next/font CSS variables
+ * (`--font-vp-heading-raw`, `--font-vp-heading-fallback`) with
+ * `adjustFontFallback: false` so size-adjusted Arial is not baked in.
+ * Body still uses the face name `"Mona Sans"` directly in `--font-vp-sans`
+ * rather than `var(--font-vp-body-raw)`.
  *
  * Do not load these with a CSS @import: Tailwind/Lightning CSS strips
  * external @import urls from the compiled stylesheet, so the face never
@@ -37,7 +33,7 @@ import {
 export const specialGothicExpandedOne = Special_Gothic_Expanded_One({
   subsets: ['latin', 'latin-ext'],
   weight: ['400'],
-  variable: '--font-vp-heading',
+  variable: '--font-vp-heading-raw',
   display: 'swap',
   adjustFontFallback: false,
 });
