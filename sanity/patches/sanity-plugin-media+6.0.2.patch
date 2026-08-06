@@ -1,8 +1,6 @@
-diff --git a/node_modules/sanity-plugin-media/dist/index.js b/node_modules/sanity-plugin-media/dist/index.js
-index 57ac6e5..9f0d25b 100644
 --- a/node_modules/sanity-plugin-media/dist/index.js
 +++ b/node_modules/sanity-plugin-media/dist/index.js
-@@ -52,6 +52,25 @@ import { CheckmarkCircleIcon } from "@sanity/icons/CheckmarkCircle";
+@@ -52,6 +52,25 @@
  import { WarningFilledIcon } from "@sanity/icons/WarningFilled";
  import { ChevronUpIcon } from "@sanity/icons/ChevronUp";
  import { useDropzone } from "react-dropzone";
@@ -28,7 +26,7 @@ index 57ac6e5..9f0d25b 100644
  const useKeyPress = (hotkey, onPress) => {
  	let $ = c(7), keyPressed = useRef(!1), t0;
  	$[0] !== hotkey || $[1] !== onPress ? (t0 = (e) => {
-@@ -722,8 +741,17 @@ const useKeyPress = (hotkey, onPress) => {
+@@ -722,8 +741,17 @@
  		},
  		name
  	}))));
@@ -46,7 +44,7 @@ index 57ac6e5..9f0d25b 100644
  	return of(action).pipe(debugThrottle(state.debug.badConnection), mergeMap(() => client.observable.fetch(groq`*[
                _type in ["sanity.fileAsset", "sanity.imageAsset"]
                && references(*[_type == "media.tag" && name.current == $tagName]._id)
-@@ -767,6 +795,14 @@ const useKeyPress = (hotkey, onPress) => {
+@@ -767,6 +795,14 @@
  	return of(tagsSlice.actions.listenerUpdateQueueComplete({ tags }));
  })), tagsSortEpic = (action$) => action$.pipe(ofType(tagsSlice.actions.listenerCreateQueueComplete.type, tagsSlice.actions.listenerUpdateQueueComplete.type), bufferTime(1e3), filter((actions) => actions.length > 0), mergeMap(() => of(tagsSlice.actions.sort()))), tagsUpdateEpic = (action$, state$, { client }) => action$.pipe(filter(tagsSlice.actions.updateRequest.match), withLatestFrom(state$), mergeMap(([action, state]) => {
  	let { closeDialogId, formData, tag } = action.payload;
@@ -61,7 +59,223 @@ index 57ac6e5..9f0d25b 100644
  	return of(action).pipe(debugThrottle(state.debug.badConnection), checkTagName(client, formData?.name?.current), mergeMap(() => from(client.patch(tag._id).set({ name: {
  		_type: "slug",
  		current: formData?.name.current
-@@ -3857,6 +3893,8 @@ const DialogTagEdit = (props) => {
+@@ -3100,53 +3136,92 @@
+ 	return "No tags";
+ }
+ const FormFieldInputText = (props) => {
+-	let $ = c(25), description, disabled, error, label, name, placeholder, ref, rest, value;
+-	$[0] === props ? (description = $[1], disabled = $[2], error = $[3], label = $[4], name = $[5], placeholder = $[6], ref = $[7], rest = $[8], value = $[9]) : ({description, disabled, error, label, name, placeholder, value, ref, ...rest} = props, $[0] = props, $[1] = description, $[2] = disabled, $[3] = error, $[4] = label, $[5] = name, $[6] = placeholder, $[7] = ref, $[8] = rest, $[9] = value);
+-	let t0;
+-	$[10] !== description || $[11] !== error || $[12] !== label || $[13] !== name ? (t0 = /* @__PURE__ */ jsx(FormFieldInputLabel, {
++	// Vantage: when `control` is set, use RHF Controller (same pattern as FormFieldInputTags)
++	// so isDirty tracks edits. Legacy `...register()` path kept for locale-tab fields.
++	let { control, description, disabled, error, label, name, placeholder, value, ref, ...rest } = props;
++	let labelNode = /* @__PURE__ */ jsx(FormFieldInputLabel, {
+ 		description,
+ 		error,
+ 		label,
+ 		name
+-	}), $[10] = description, $[11] = error, $[12] = label, $[13] = name, $[14] = t0) : t0 = $[14];
+-	let t1;
+-	$[15] !== disabled || $[16] !== name || $[17] !== placeholder || $[18] !== ref || $[19] !== rest || $[20] !== value ? (t1 = /* @__PURE__ */ jsx(TextInput, {
+-		...rest,
+-		autoComplete: "off",
+-		autoFocus: !0,
+-		defaultValue: value,
+-		disabled,
+-		id: name,
+-		name,
+-		placeholder,
+-		ref
+-	}), $[15] = disabled, $[16] = name, $[17] = placeholder, $[18] = ref, $[19] = rest, $[20] = value, $[21] = t1) : t1 = $[21];
+-	let t2;
+-	return $[22] !== t0 || $[23] !== t1 ? (t2 = /* @__PURE__ */ jsxs(Box, { children: [t0, t1] }), $[22] = t0, $[23] = t1, $[24] = t2) : t2 = $[24], t2;
++	});
++	if (control) return /* @__PURE__ */ jsxs(Box, { children: [
++		labelNode,
++		/* @__PURE__ */ jsx(Controller, {
++			control,
++			defaultValue: value ?? "",
++			name,
++			render: ({ field }) => /* @__PURE__ */ jsx(TextInput, {
++				autoComplete: "off",
++				autoFocus: !0,
++				disabled,
++				id: name,
++				name: field.name,
++				onBlur: field.onBlur,
++				onChange: field.onChange,
++				placeholder,
++				ref: field.ref,
++				value: field.value ?? ""
++			})
++		})
++	] });
++	return /* @__PURE__ */ jsxs(Box, { children: [
++		labelNode,
++		/* @__PURE__ */ jsx(TextInput, {
++			...rest,
++			autoComplete: "off",
++			autoFocus: !0,
++			defaultValue: value,
++			disabled,
++			id: name,
++			name,
++			placeholder,
++			ref
++		})
++	] });
+ }, FormFieldInputTextarea = (props) => {
+-	let $ = c(27), description, disabled, error, label, name, placeholder, ref, rest, rows, value;
+-	$[0] === props ? (description = $[1], disabled = $[2], error = $[3], label = $[4], name = $[5], placeholder = $[6], ref = $[7], rest = $[8], rows = $[9], value = $[10]) : ({description, disabled, error, label, name, placeholder, rows, value, ref, ...rest} = props, $[0] = props, $[1] = description, $[2] = disabled, $[3] = error, $[4] = label, $[5] = name, $[6] = placeholder, $[7] = ref, $[8] = rest, $[9] = rows, $[10] = value);
+-	let t0;
+-	$[11] !== description || $[12] !== error || $[13] !== label || $[14] !== name ? (t0 = /* @__PURE__ */ jsx(FormFieldInputLabel, {
++	// Vantage: Controller path when `control` is set (isDirty); legacy register path otherwise.
++	let { control, description, disabled, error, label, name, placeholder, rows, value, ref, ...rest } = props;
++	let labelNode = /* @__PURE__ */ jsx(FormFieldInputLabel, {
+ 		description,
+ 		error,
+ 		label,
+ 		name
+-	}), $[11] = description, $[12] = error, $[13] = label, $[14] = name, $[15] = t0) : t0 = $[15];
+-	let t1;
+-	$[16] !== disabled || $[17] !== name || $[18] !== placeholder || $[19] !== ref || $[20] !== rest || $[21] !== rows || $[22] !== value ? (t1 = /* @__PURE__ */ jsx(TextArea, {
+-		...rest,
+-		autoComplete: "off",
+-		defaultValue: value,
+-		disabled,
+-		id: name,
+-		name,
+-		placeholder,
+-		ref,
+-		rows
+-	}), $[16] = disabled, $[17] = name, $[18] = placeholder, $[19] = ref, $[20] = rest, $[21] = rows, $[22] = value, $[23] = t1) : t1 = $[23];
+-	let t2;
+-	return $[24] !== t0 || $[25] !== t1 ? (t2 = /* @__PURE__ */ jsxs(Box, { children: [t0, t1] }), $[24] = t0, $[25] = t1, $[26] = t2) : t2 = $[26], t2;
++	});
++	if (control) return /* @__PURE__ */ jsxs(Box, { children: [
++		labelNode,
++		/* @__PURE__ */ jsx(Controller, {
++			control,
++			defaultValue: value ?? "",
++			name,
++			render: ({ field }) => /* @__PURE__ */ jsx(TextArea, {
++				autoComplete: "off",
++				disabled,
++				id: name,
++				name: field.name,
++				onBlur: field.onBlur,
++				onChange: field.onChange,
++				placeholder,
++				ref: field.ref,
++				rows,
++				value: field.value ?? ""
++			})
++		})
++	] });
++	return /* @__PURE__ */ jsxs(Box, { children: [
++		labelNode,
++		/* @__PURE__ */ jsx(TextArea, {
++			...rest,
++			autoComplete: "off",
++			defaultValue: value,
++			disabled,
++			id: name,
++			name,
++			placeholder,
++			ref,
++			rows
++		})
++	] });
+ };
+ function toStringField(value) {
+ 	if (typeof value == "string") return value;
+@@ -3165,19 +3240,17 @@
+ 		placeholder: "Select or create...",
+ 		value: assetTagOptions
+ 	}), $[0] = allTagOptions, $[1] = assetTagOptions, $[2] = control, $[3] = formUpdating, $[4] = handleCreateTag, $[5] = t1, $[6] = t2) : t2 = $[6];
+-	let t3;
+-	$[7] === register ? t3 = $[8] : (t3 = register("originalFilename"), $[7] = register, $[8] = t3);
+ 	let t4 = errors?.originalFilename?.message, t5 = currentAsset?.originalFilename, t6;
+-	$[9] !== formUpdating || $[10] !== t3 || $[11] !== t4 || $[12] !== t5 ? (t6 = /* @__PURE__ */ jsx(FormFieldInputText, {
+-		...t3,
++	$[7] !== control || $[8] !== formUpdating || $[9] !== t4 || $[10] !== t5 ? (t6 = /* @__PURE__ */ jsx(FormFieldInputText, {
++		control,
+ 		disabled: formUpdating,
+ 		error: t4,
+ 		label: "Filename",
+ 		name: "originalFilename",
+-		value: t5
+-	}), $[9] = formUpdating, $[10] = t3, $[11] = t4, $[12] = t5, $[13] = t6) : t6 = $[13];
++		value: t5 ?? ""
++	}), $[7] = control, $[8] = formUpdating, $[9] = t4, $[10] = t5, $[11] = t6) : t6 = $[11];
+ 	let t7;
+-	$[14] !== activeLocaleTab || $[15] !== creditLine?.enabled || $[16] !== creditLine?.excludeSources || $[17] !== currentAsset?.altText || $[18] !== currentAsset?.creditLine || $[19] !== currentAsset?.description || $[20] !== currentAsset?.source?.name || $[21] !== currentAsset?.title || $[22] !== errors?.altText || $[23] !== errors?.creditLine || $[24] !== errors?.description || $[25] !== errors?.title || $[26] !== formUpdating || $[27] !== hasLocales || $[28] !== locales || $[29] !== register ? (t7 = hasLocales ? /* @__PURE__ */ jsx(Card, {
++	$[12] !== activeLocaleTab || $[13] !== control || $[14] !== creditLine?.enabled || $[15] !== creditLine?.excludeSources || $[16] !== currentAsset?.altText || $[17] !== currentAsset?.creditLine || $[18] !== currentAsset?.description || $[19] !== currentAsset?.source?.name || $[20] !== currentAsset?.title || $[21] !== errors?.altText || $[22] !== errors?.creditLine || $[23] !== errors?.description || $[24] !== errors?.title || $[25] !== formUpdating || $[26] !== hasLocales || $[27] !== locales || $[28] !== register ? (t7 = hasLocales ? /* @__PURE__ */ jsx(Card, {
+ 		marginTop: 2,
+ 		shadow: 1,
+ 		padding: 3,
+@@ -3235,48 +3308,48 @@
+ 		})
+ 	}) : /* @__PURE__ */ jsxs(Fragment, { children: [
+ 		/* @__PURE__ */ jsx(FormFieldInputText, {
+-			...register("title"),
++			control,
+ 			disabled: formUpdating,
+ 			error: errors?.title?.message,
+ 			label: "Title",
+ 			name: "title",
+-			value: toStringField(currentAsset?.title)
++			value: toStringField(currentAsset?.title) ?? ""
+ 		}),
+ 		/* @__PURE__ */ jsx(FormFieldInputText, {
+-			...register("altText"),
++			control,
+ 			disabled: formUpdating,
+ 			error: errors?.altText?.message,
+ 			label: "Alt Text",
+ 			name: "altText",
+-			value: toStringField(currentAsset?.altText)
++			value: toStringField(currentAsset?.altText) ?? ""
+ 		}),
+ 		/* @__PURE__ */ jsx(FormFieldInputTextarea, {
+-			...register("description"),
++			control,
+ 			disabled: formUpdating,
+ 			error: errors?.description?.message,
+ 			label: "Description",
+ 			name: "description",
+ 			rows: 5,
+-			value: toStringField(currentAsset?.description)
++			value: toStringField(currentAsset?.description) ?? ""
+ 		}),
+ 		creditLine?.enabled && /* @__PURE__ */ jsx(FormFieldInputText, {
+-			...register("creditLine"),
++			control,
+ 			error: errors?.creditLine?.message,
+ 			label: "Credit",
+ 			name: "creditLine",
+-			value: toStringField(currentAsset?.creditLine),
++			value: toStringField(currentAsset?.creditLine) ?? "",
+ 			disabled: formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
+ 		})
+-	] }), $[14] = activeLocaleTab, $[15] = creditLine?.enabled, $[16] = creditLine?.excludeSources, $[17] = currentAsset?.altText, $[18] = currentAsset?.creditLine, $[19] = currentAsset?.description, $[20] = currentAsset?.source?.name, $[21] = currentAsset?.title, $[22] = errors?.altText, $[23] = errors?.creditLine, $[24] = errors?.description, $[25] = errors?.title, $[26] = formUpdating, $[27] = hasLocales, $[28] = locales, $[29] = register, $[30] = t7) : t7 = $[30];
++	] }), $[12] = activeLocaleTab, $[13] = control, $[14] = creditLine?.enabled, $[15] = creditLine?.excludeSources, $[16] = currentAsset?.altText, $[17] = currentAsset?.creditLine, $[18] = currentAsset?.description, $[19] = currentAsset?.source?.name, $[20] = currentAsset?.title, $[21] = errors?.altText, $[22] = errors?.creditLine, $[23] = errors?.description, $[24] = errors?.title, $[25] = formUpdating, $[26] = hasLocales, $[27] = locales, $[28] = register, $[29] = t7) : t7 = $[29];
+ 	let t8;
+-	return $[31] !== t2 || $[32] !== t6 || $[33] !== t7 ? (t8 = /* @__PURE__ */ jsxs(Stack, {
++	return $[30] !== t2 || $[31] !== t6 || $[32] !== t7 ? (t8 = /* @__PURE__ */ jsxs(Stack, {
+ 		space: 3,
+ 		children: [
+ 			t2,
+ 			t6,
+ 			t7
+ 		]
+-	}), $[31] = t2, $[32] = t6, $[33] = t7, $[34] = t8) : t8 = $[34], t8;
++	}), $[30] = t2, $[31] = t6, $[32] = t7, $[33] = t8) : t8 = $[33], t8;
+ }
+ function renderDefaultDetails(props) {
+ 	return /* @__PURE__ */ jsx(Details, { ...props });
+@@ -3857,6 +3930,8 @@
  	let $ = c(64), { children, dialog: t0 } = props, { id, tagId } = t0, client = useVersionedClient(), dispatch = useDispatch(), t1;
  	$[0] === tagId ? t1 = $[1] : (t1 = (state) => selectTagById(state, String(tagId)), $[0] = tagId, $[1] = t1);
  	let tagItem = useTypedSelector(t1), [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag), currentTag = tagItem ? tagItem?.tag : tagSnapshot, generateDefaultValues = _temp$16, t2 = tagItem?.tag, t3;
@@ -70,7 +284,7 @@ index 57ac6e5..9f0d25b 100644
  	$[2] === t2 ? t3 = $[3] : (t3 = generateDefaultValues(t2), $[2] = t2, $[3] = t3);
  	let t4;
  	$[4] === Symbol.for("react.memo_cache_sentinel") ? (t4 = zodFormResolver(tagFormSchema), $[4] = t4) : t4 = $[4];
-@@ -3873,6 +3911,8 @@ const DialogTagEdit = (props) => {
+@@ -3873,6 +3948,8 @@
  	let handleClose = t7, t8;
  	$[10] !== dispatch || $[11] !== tagItem?.tag ? (t8 = (formData) => {
  		if (!tagItem?.tag) return;
@@ -79,7 +293,7 @@ index 57ac6e5..9f0d25b 100644
  		let sanitizedFormData = sanitizeFormData(formData);
  		dispatch(tagsActions.updateRequest({
  			closeDialogId: tagItem?.tag?._id,
-@@ -3885,6 +3925,8 @@ const DialogTagEdit = (props) => {
+@@ -3885,6 +3962,8 @@
  	}, $[10] = dispatch, $[11] = tagItem?.tag, $[12] = t8) : t8 = $[12];
  	let onSubmit = t8, t9;
  	$[13] !== dispatch || $[14] !== tagItem?.tag ? (t9 = () => {
@@ -88,7 +302,7 @@ index 57ac6e5..9f0d25b 100644
  		tagItem?.tag && dispatch(dialogActions.showConfirmDeleteTag({
  			closeDialogId: tagItem?.tag?._id,
  			tag: tagItem?.tag
-@@ -3916,11 +3958,11 @@ const DialogTagEdit = (props) => {
+@@ -3916,11 +3995,11 @@
  		t15
  	], $[28] = client, $[29] = handleTagUpdate, $[30] = t15, $[31] = t16) : t16 = $[31], useEffect(t14, t16);
  	let t17;
@@ -102,7 +316,7 @@ index 57ac6e5..9f0d25b 100644
  				disabled: formUpdating,
  				fontSize: 1,
  				mode: "bleed",
-@@ -3928,13 +3970,13 @@ const DialogTagEdit = (props) => {
+@@ -3928,13 +4007,13 @@
  				text: "Delete",
  				tone: "critical"
  			}), /* @__PURE__ */ jsx(FormSubmitButton, {
@@ -118,7 +332,7 @@ index 57ac6e5..9f0d25b 100644
  	let Footer = t17;
  	if (!currentTag) return null;
  	let t18;
-@@ -3962,13 +4004,13 @@ const DialogTagEdit = (props) => {
+@@ -3962,13 +4041,13 @@
  	let t22;
  	$[48] === register ? t22 = $[49] : (t22 = register("name"), $[48] = register, $[49] = t22);
  	let t23 = errors?.name?.message, t24;
@@ -135,7 +349,7 @@ index 57ac6e5..9f0d25b 100644
  	let t25;
  	$[54] !== t19 || $[55] !== t20 || $[56] !== t24 ? (t25 = /* @__PURE__ */ jsxs(Box, {
  		as: "form",
-@@ -4231,47 +4273,51 @@ function _temp2$9(acc, val) {
+@@ -4231,47 +4310,51 @@
  	return acc = acc.concat(assetTagIds), acc;
  }
  function _temp3$3(tagItem) {

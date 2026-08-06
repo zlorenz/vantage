@@ -30,6 +30,7 @@ That attribute is stamped by `sanity/components/StudioRoleLayout.tsx` (`data-stu
 1. **`tagsDeleteEpic` / `tagsUpdateEpic`** — short-circuit with a 403-style epic error for non-admins on the locked tag id.
 2. **Tag sidebar action lists** — omit `edit` / `delete` for the locked tag when not admin.
 3. **`DialogTagEdit`** — hide Delete, disable Name + Save, and no-op submit/delete handlers when locked for non-admins.
+4. **`DialogAssetEdit` / `FormFieldInputText` / `FormFieldInputTextarea`** — wire Filename, Title, Alt Text, Description, and Credit through RHF `Controller` (same pattern as Tags) so `formState.isDirty` tracks typing. Upstream used `...register()` plus a `value` prop that became `defaultValue` on the uncontrolled input, so the DOM updated but Save stayed disabled.
 
 ### Maintenance notes
 
