@@ -103,7 +103,9 @@ export function NavDropdown({
           <li key={item.label}>
             <Link
               href={item.href}
-              className="dropdown-item block cursor-pointer whitespace-nowrap uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast"
+              className={`dropdown-item block cursor-pointer uppercase tracking-vp-navbar text-white transition-colors duration-vp-fast${
+                mobile ? ' leading-[1.2]' : ' whitespace-nowrap'
+              }`}
               onClick={() => onNavigate?.()}
             >
               {item.label}

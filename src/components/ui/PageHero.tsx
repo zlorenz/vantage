@@ -30,7 +30,7 @@ export function PageHero({ title, description, backgroundImage }: PageHeroProps)
 
   return (
     <section
-      className="vp-page-hero relative w-full overflow-hidden bg-cover bg-center bg-no-repeat"
+      className="vp-page-hero relative flex w-full flex-col overflow-hidden bg-cover bg-center bg-no-repeat"
       style={imageUrl ? { backgroundImage: `url("${imageUrl}")` } : undefined}
     >
       <div
@@ -38,7 +38,8 @@ export function PageHero({ title, description, backgroundImage }: PageHeroProps)
         style={{ background: 'var(--vp-overlay-dark)' }}
         aria-hidden
       />
-      <div className="vp-page-hero__inner relative z-[1] flex items-center justify-center px-4 py-[clamp(6rem,9vw,10rem)] pt-[clamp(8rem,12vw,13rem)]">
+      {/* flex-1 fills the min-height floor (h-full fails against min-height alone) */}
+      <div className="vp-page-hero__inner relative z-[1] flex w-full flex-1 items-center justify-center px-4 py-[clamp(6rem,9vw,10rem)] pt-[clamp(8rem,12vw,13rem)]">
         <div className="container flex w-full flex-col items-center justify-center text-center text-white min-[1400px]:max-w-[1320px]">
           <h1
             className={`vp-page-hero__title m-0 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading${

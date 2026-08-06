@@ -373,6 +373,40 @@
   }
 }
 
+/*
+ * Chinese heading stack — omit Dela Gothic One.
+ *
+ * Dela is the Vietnamese Latin fallback for Special Gothic, but it also
+ * ships CJK glyphs. On :lang(zh) it wins ahead of PingFang and, with only
+ * a 400 file, gets synthetically bolded at font-bold (700) → smeared
+ * Chinese headings. Keep the base --font-vp-heading stack for EN/VI.
+ */
+:lang(zh) {
+  --font-vp-heading: var(--font-vp-heading-raw), "PingFang SC", "Noto Sans SC",
+    "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    sans-serif;
+  --vp-font-heading: var(--font-vp-heading);
+}
+
+:lang(zh) .font-vp-heading,
+:lang(zh) .vp-page-hero__title,
+:lang(zh) .vp-hero-carousel__title,
+:lang(zh) .vp-section-heading,
+:lang(zh) .vp-cta__heading,
+:lang(zh) .vp-post-card__title,
+:lang(zh) .vp-blog-widget__title,
+:lang(zh) .vp-search-empty__title,
+:lang(zh) .vp-founder-card__name,
+:lang(zh) .entry-title,
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3,
+:lang(zh) h4,
+:lang(zh) .navbar .nav-link,
+:lang(zh) .navbar .dropdown-item {
+  font-synthesis: none;
+}
+
 /* ================================================================
  * Navbar — gradient backdrop, dropdowns, hamburger (design-tokens.md)
  * Tailwind cannot express pseudo-element gradient + mask; custom CSS required.
@@ -489,9 +523,14 @@
 #header .navbar-collapse .dropdown-item {
   display: flex;
   align-items: center;
+  /* Floor for touch target; wrapped two-line labels grow past this. */
   min-height: 2.75rem;
+  height: auto;
   padding: 0.65rem 0.75rem;
   font-size: 0.9375rem;
+  /* Override shared Tailwind whitespace-nowrap — desktop keeps nowrap. */
+  white-space: normal;
+  line-height: 1.2;
   cursor: pointer;
 }
 
