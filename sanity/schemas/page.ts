@@ -28,6 +28,8 @@ export const page = defineType({
   ],
 
   fieldsets: [
+    // Untitled layout row (legend hidden via studio.css — Sanity auto-titles from name).
+    {name: 'titleAndNav', options: {columns: 2}},
     {name: 'card', title: 'Card', options: {columns: 2}},
   ],
 
@@ -38,8 +40,18 @@ export const page = defineType({
       title: 'Title',
       type: 'string',
       group: 'details',
+      fieldset: 'titleAndNav',
       validation: (rule) => rule.required(),
       optional: false,
+    }),
+
+    ...defineLocalePair({
+      name: 'navLabel',
+      title: 'Nav Label',
+      type: 'string',
+      group: 'details',
+      fieldset: 'titleAndNav',
+      optional: true,
     }),
 
     defineField({

@@ -76,10 +76,14 @@ export interface CampaignCta {
   buttonHref?: string;
 }
 
-/** Minimal page shape for navigation slug resolution. */
+/** Minimal page shape for navigation labels and slug resolution. */
 export interface NavPage {
   slug: string;
   slugZh?: string;
+  title: string;
+  titleZh?: string;
+  navLabel?: string;
+  navLabelZh?: string;
 }
 
 /** SEO fields object on portfolioEntry (and pages/posts). */

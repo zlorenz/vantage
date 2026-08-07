@@ -104,6 +104,8 @@ export type Page = {
   _rev: string;
   title?: string;
   titleZh?: string;
+  navLabel?: string;
+  navLabelZh?: string;
   featuredImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;

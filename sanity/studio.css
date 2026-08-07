@@ -8,7 +8,7 @@ fieldset[data-level] > [data-ui='Box'] {
 }
 
 /**
- * Layout-only fieldset chrome (slug|date, Card, Site Settings contact rows,
+ * Layout-only fieldset chrome (slug|date, Card, title|nav, Site Settings contact rows,
  * SEO meta title|OG image):
  * Sanity nests fieldset content with paddingLeft for the accent rail and
  * always renders a legend (from title or name). Hide the header row and
@@ -17,6 +17,7 @@ fieldset[data-level] > [data-ui='Box'] {
  */
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Flex']:has(legend),
 fieldset[data-testid='fieldset-card'] > [data-ui='Flex']:has(legend),
+fieldset[data-testid='fieldset-titleAndNav'] > [data-ui='Flex']:has(legend),
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Flex']:has(legend),
 fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Flex']:has(legend),
 fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Flex']:has(legend) {
@@ -24,6 +25,7 @@ fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Flex']:has(legend)
 }
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'],
 fieldset[data-testid='fieldset-card'] > [data-ui='Box'],
+fieldset[data-testid='fieldset-titleAndNav'] > [data-ui='Box'],
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'],
 fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'],
 fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Box'] {
@@ -45,12 +47,14 @@ fieldset[data-testid='fieldset-copy'] {
 
 /**
  * Blog + Page: Card (image | excerpt) stays equal halves.
+ * Page: title | nav label.
  * Portfolio / Blog Publishing: slug|date uses fieldset-slugAndDate (same 50/50 intent).
  * Site Settings Contact: phone|whatsapp and modal title|CTA URL.
  * SEO: meta title|OG image.
  * minmax(0, 1fr) prevents the image input from blowing past 50%.
  */
 fieldset[data-testid='fieldset-card'] > [data-ui='Box'] > [data-ui='Grid'],
+fieldset[data-testid='fieldset-titleAndNav'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] > [data-ui='Grid'],

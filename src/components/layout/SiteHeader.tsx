@@ -11,6 +11,7 @@ import type { ComponentProps } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
+import { getNavLabel } from '@/lib/nav';
 import { pagePath } from '@/lib/nav-paths';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import { NavBar, type NavItem } from './NavBar';
@@ -24,21 +25,36 @@ interface SiteHeaderProps {
   navPages: NavPage[];
 }
 
+function pageBySlug(navPages: NavPage[], slug: string): NavPage | undefined {
+  return navPages.find((p) => p.slug === slug);
+}
+
 export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
   const t = await getTranslations('Nav');
   const homeHref = pagePath(locale, 'home', navPages) as LinkHref;
 
+  const home = pageBySlug(navPages, 'home');
+  const about = pageBySlug(navPages, 'about');
+  const vietnam = pageBySlug(navPages, 'vietnam-production-service');
+  const work = pageBySlug(navPages, 'work');
+  const news = pageBySlug(navPages, 'news');
+
   const navItems: NavItem[] = [
-    { label: t('home'), href: homeHref },
+    {
+      label: home ? getNavLabel(home, locale) : t('home'),
+      href: homeHref,
+    },
     {
       label: t('about'),
       dropdown: [
         {
-          label: t('about'),
+          label: about ? getNavLabel(about, locale) : t('about'),
           href: pagePath(locale, 'about', navPages) as LinkHref,
         },
         {
-          label: t('vietnamProductionService'),
+          label: vietnam
+            ? getNavLabel(vietnam, locale)
+            : t('vietnamProductionService'),
           href: pagePath(
             locale,
             'vietnam-production-service',
@@ -47,8 +63,14 @@ export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
         },
       ],
     },
-    { label: t('work'), href: pagePath(locale, 'work', navPages) as LinkHref },
-    { label: t('news'), href: pagePath(locale, 'news', navPages) as LinkHref },
+    {
+      label: work ? getNavLabel(work, locale) : t('work'),
+      href: pagePath(locale, 'work', navPages) as LinkHref,
+    },
+    {
+      label: news ? getNavLabel(news, locale) : t('news'),
+      href: pagePath(locale, 'news', navPages) as LinkHref,
+    },
     { label: t('contact'), isContact: true },
   ];
 

@@ -69,12 +69,16 @@ export const ORGANIZATION_SCHEMA_DATA_QUERY = `{
 }`;
 
 /**
- * Fetches published page documents for navigation link slugZh resolution.
+ * Fetches published page documents for navigation labels and slugZh resolution.
  *
- * Used by SiteHeader to build locale-aware Chinese URLs from CMS data
- * rather than hardcoded slug strings.
+ * Used by SiteHeader for locale-aware labels (title / optional navLabel) and
+ * Chinese URLs from CMS data rather than hardcoded strings.
  */
 export const NAV_PAGES_QUERY = `*[_type == "page" && !defined(trash.trashedAt) && slug.current in ["home","about","work","news","vietnam-production-service"]]{
   "slug": slug.current,
-  "slugZh": slugZh.current
+  "slugZh": slugZh.current,
+  title,
+  titleZh,
+  navLabel,
+  navLabelZh
 }`;

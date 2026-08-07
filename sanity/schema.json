@@ -521,6 +521,20 @@
         },
         "optional": true
       },
+      "navLabel": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "navLabelZh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "featuredImage": {
         "type": "objectAttribute",
         "value": {
