@@ -493,6 +493,13 @@ function videoObjectCrewFields(credits: CrewCredit[] | undefined): {
   };
 }
 
+/** Sanity `date` (YYYY-MM-DD) → ISO-8601 midnight UTC for VideoObject.uploadDate. */
+function videoObjectUploadDate(publishedAt?: string): string | undefined {
+  const date = publishedAt?.trim();
+  if (!date) return undefined;
+  return `${date}T00:00:00Z`;
+}
+
 export function buildVideoObject(entry: VideoObjectInput) {
   const embedUrl = videoEmbedUrl(entry.vimeoUrl);
   const thumbnailUrl = entry.featuredImage
@@ -507,7 +514,7 @@ export function buildVideoObject(entry: VideoObjectInput) {
     name: stegaClean(entry.title),
     description: plainTextDescription(entry.description),
     thumbnailUrl,
-    uploadDate: entry.publishedAt,
+    uploadDate: videoObjectUploadDate(entry.publishedAt),
     embedUrl,
     inLanguage: schemaLanguage(locale),
     publisher: { '@id': ORGANIZATION_ID },
