@@ -6,9 +6,10 @@
  * Client component: dropdowns, hamburger, search, language switcher, and
  * contact modal trigger all require browser interactivity.
  *
- * Mobile: full-viewport overlay below the header row (clip-path wipe +
- * staggered item reveal). About dropdown children are flattened into
- * top-level links; desktop keeps NavDropdown hover behaviour unchanged.
+ * Mobile: full-viewport black panel slides in via translateY behind the
+ * always-translucent header, with staggered item reveal. About dropdown
+ * children are flattened into top-level links; desktop keeps NavDropdown
+ * hover behaviour unchanged.
  */
 
 import {
@@ -57,7 +58,7 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const email = contactEmail?.trim();
 
-  // Mount / reveal / exit wipe for the mobile overlay.
+  // Mount / reveal / exit slide for the mobile overlay.
   useEffect(() => {
     // Detect reopen-while-closing before clearing the timer — cold opens
     // never have a pending close timer.
@@ -78,9 +79,9 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
         return;
       }
 
-      // Reopen mid-close: panel DOM is reused, so snap clip-path back to
+      // Reopen mid-close: panel DOM is reused, so snap transform back to
       // fully closed (with transitions off), force a paint, then run the
-      // normal open sequence so the wipe always travels the full distance.
+      // normal open sequence so the slide always travels the full distance.
       if (interruptingClose) {
         const el = panelRef.current;
         if (el) {
@@ -304,11 +305,11 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
         <NavSearch />
       </div>
 
-      {/* Mobile full-screen overlay — nested under header z-50; below header row */}
+      {/* Mobile full-viewport panel — slides behind header chrome (z-50) */}
       {panelMounted ? (
         <div
           ref={panelRef}
-          className={`navbar-collapse vp-mobile-nav-panel md:hidden${
+          className={`vp-mobile-nav-panel md:hidden${
             panelVisible ? ' is-open' : ''
           }`}
           id="vp-navbar"

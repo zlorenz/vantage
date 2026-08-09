@@ -440,19 +440,13 @@
   pointer-events: none;
 }
 
-/* Opaque header while the mobile full-screen nav panel is mounted.
- * :has(#vp-navbar) tracks panelMounted (including close wipe) — no JS class. */
-#header.navbar:has(.vp-mobile-nav-panel) {
-  background-color: #000;
-}
-
-#header.navbar:has(.vp-mobile-nav-panel)::before {
-  background-image: none;
-  background-color: #000;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  -webkit-mask-image: none;
-  mask-image: none;
+/* Header chrome above the sliding panel (panel is a descendant of
+ * .container-fluid, so its z-40 competes with siblings — not the wrapper). */
+#header .navbar-brand,
+#header .vp-mobile-lang-slot,
+#header .navbar-toggler {
+  position: relative;
+  z-index: 50;
 }
 
 .navbar .nav-link,
@@ -498,42 +492,44 @@
   opacity: 0.85;
 }
 
-/* Mobile full-screen overlay — opaque panel below header row.
- * Wipe via clip-path (top-down curtain); items stagger with fade + slide.
+/* Mobile full-screen overlay — full viewport behind header chrome.
+ * Reveal via translateY (compositor-friendly) + item stagger fade/slide.
  * About accordion styles removed — mobile flattens dropdown children. */
 #header .vp-mobile-nav-panel {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: 0;
   left: 50%;
   z-index: 40;
   display: block;
   width: 100vw;
   max-width: 100vw;
-  height: calc(100vh - 100%);
-  height: calc(100dvh - 100%);
+  height: 100vh;
+  height: 100dvh;
   padding: 0;
-  overflow: hidden;
   background-color: #000;
-  transform: translateX(-50%);
-  clip-path: inset(0 0 100% 0);
+  /* Off-screen above viewport; will-change only while mounted
+   * (panel unmounts after close — see NavBar panelMounted / CLOSE_MS).
+   * translateX(-50%) centers the 100vw breakout; translateY slides. */
+  transform: translate(-50%, -100%);
+  will-change: transform;
   pointer-events: none;
 }
 
 #header .vp-mobile-nav-panel.is-open {
-  clip-path: inset(0 0 0 0);
+  transform: translate(-50%, 0);
   pointer-events: auto;
-  transition: clip-path 0.28s ease-out;
+  transition: transform 0.28s ease-out;
 }
 
 #header .vp-mobile-nav-panel:not(.is-open) {
-  transition: clip-path 0.18s ease-in;
+  transition: transform 0.18s ease-in;
 }
 
-/* Snap to fully-clipped with no transition — used when reopening mid-close
- * so the open wipe always starts from inset(0 0 100% 0), not a reverse. */
+/* Snap to fully off-screen with no transition — used when reopening mid-close
+ * so the open slide always starts from translate(-50%, -100%), not a reverse. */
 #header .vp-mobile-nav-panel.is-resetting {
   transition: none !important;
-  clip-path: inset(0 0 100% 0) !important;
+  transform: translate(-50%, -100%) !important;
 }
 
 #header .vp-mobile-nav-panel__inner {
@@ -542,7 +538,9 @@
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  /* Reserve measured header chrome so the list centers below it. */
   padding: 1.25rem 1.5rem;
+  padding-top: var(--vp-header-height, 4.5rem);
   /* 3rem base clears Safari’s collapsible bottom chrome; safe-area covers the home indicator. */
   padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
 }
@@ -580,7 +578,7 @@
   margin-top: 1.5rem;
 }
 
-/* Staggered item reveal — starts mid-wipe so total feel stays under ~500ms */
+/* Staggered item reveal — delayed into the slide so total feel stays under ~500ms */
 #header .vp-mobile-nav-panel .vp-mobile-nav-item {
   opacity: 0;
   transform: translateX(-1.25rem);
@@ -606,7 +604,8 @@
   #header .vp-mobile-nav-panel,
   #header .vp-mobile-nav-panel.is-open,
   #header .vp-mobile-nav-panel:not(.is-open) {
-    clip-path: none;
+    /* Keep X centering; skip Y motion — visibility handles closed hide. */
+    transform: translate(-50%, 0);
     transition: none;
   }
 

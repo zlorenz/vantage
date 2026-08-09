@@ -6,6 +6,9 @@
  * Owns hide/show-on-scroll (translateY). The transparent gradient + blur
  * backdrop is pure CSS on #header::before — no scroll class for that —
  * so this only toggles visibility, leaving the backdrop untouched.
+ *
+ * Also publishes --vp-header-height from the real rendered header size so
+ * the mobile full-screen nav can pad its content below the chrome.
  */
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -26,6 +29,22 @@ export function SiteHeaderNav({
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
   const ticking = useRef(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    function publishHeight() {
+      if (!el) return;
+      el.style.setProperty('--vp-header-height', `${el.offsetHeight}px`);
+    }
+
+    publishHeight();
+    const ro = new ResizeObserver(publishHeight);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     lastY.current = window.scrollY;
@@ -69,6 +88,7 @@ export function SiteHeaderNav({
 
   return (
     <nav
+      ref={headerRef}
       id="header"
       className={`${className}${hidden ? ' vp-header--hidden' : ''}`}
       aria-label={ariaLabel}
