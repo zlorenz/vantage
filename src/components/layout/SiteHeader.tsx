@@ -29,7 +29,7 @@ function pageBySlug(navPages: NavPage[], slug: string): NavPage | undefined {
   return navPages.find((p) => p.slug === slug);
 }
 
-export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
+export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderProps) {
   const t = await getTranslations('Nav');
   const homeHref = pagePath(locale, 'home', navPages) as LinkHref;
 
@@ -93,7 +93,12 @@ export async function SiteHeader({ locale, navPages }: SiteHeaderProps) {
             />
           </Link>
 
-          <NavBar locale={locale} items={navItems} toggleAria={t('toggleAria')} />
+          <NavBar
+            locale={locale}
+            items={navItems}
+            toggleAria={t('toggleAria')}
+            contactEmail={siteSettings.contactEmail}
+          />
         </div>
       </SiteHeaderNav>
     </header>
