@@ -529,6 +529,13 @@
   transition: clip-path 0.18s ease-in;
 }
 
+/* Snap to fully-clipped with no transition — used when reopening mid-close
+ * so the open wipe always starts from inset(0 0 100% 0), not a reverse. */
+#header .vp-mobile-nav-panel.is-resetting {
+  transition: none !important;
+  clip-path: inset(0 0 100% 0) !important;
+}
+
 #header .vp-mobile-nav-panel__inner {
   display: flex;
   flex-direction: column;

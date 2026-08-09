@@ -53,11 +53,16 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
   const [panelVisible, setPanelVisible] = useState(false);
   const { openContact } = useContactModal();
   const togglerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const email = contactEmail?.trim();
 
   // Mount / reveal / exit wipe for the mobile overlay.
   useEffect(() => {
+    // Detect reopen-while-closing before clearing the timer — cold opens
+    // never have a pending close timer.
+    const interruptingClose = !!closeTimerRef.current;
+
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
@@ -72,6 +77,20 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
         setPanelVisible(true);
         return;
       }
+
+      // Reopen mid-close: panel DOM is reused, so snap clip-path back to
+      // fully closed (with transitions off), force a paint, then run the
+      // normal open sequence so the wipe always travels the full distance.
+      if (interruptingClose) {
+        const el = panelRef.current;
+        if (el) {
+          el.classList.add('is-resetting');
+          // Flush styles so the closed frame is committed before we animate.
+          void el.offsetHeight;
+          el.classList.remove('is-resetting');
+        }
+      }
+
       const id = requestAnimationFrame(() => {
         requestAnimationFrame(() => setPanelVisible(true));
       });
@@ -288,6 +307,7 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
       {/* Mobile full-screen overlay — nested under header z-50; below header row */}
       {panelMounted ? (
         <div
+          ref={panelRef}
           className={`navbar-collapse vp-mobile-nav-panel md:hidden${
             panelVisible ? ' is-open' : ''
           }`}
