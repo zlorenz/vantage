@@ -104,3 +104,5 @@ functions/**/node_modules/
 
 # Local scratch (dataset exports, function fixtures)
 tmp/
+.vercel
+.env*

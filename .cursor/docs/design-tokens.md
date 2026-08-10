@@ -247,17 +247,20 @@ In Tailwind config, these should be defined as custom breakpoints to match the e
 
 ## Border Radius
 
-The site is deliberately **sharp-edged**. Almost everything has `border-radius: 0`.
+The site is deliberately **sharp-edged** for most UI. Almost everything has `border-radius: 0`.
 
 | Exception | Value |
 |---|---|
+| Buttons (primary / ghost / form attach) | `9999px` (pill) |
 | Search result cards | `0.5rem` |
 | Mobile nav link hover pills | `4px` |
 | Load spinner | `50%` (circle) |
 | Language switcher flag images | `50%` (circle) |
 | Comment list items | `0.25rem` |
 
-All buttons, inputs, filter tabs, modals, dropdowns: `border-radius: 0`
+Inputs, filter tabs, modals, dropdowns: `border-radius: 0`
+
+**Button type:** Special Gothic Expanded One (`font-vp-heading` / `--vp-font-heading`), uppercase, pill corners.
 
 ---
 

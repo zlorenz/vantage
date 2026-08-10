@@ -25,7 +25,8 @@ import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '
 
 type LinkHref = ComponentProps<typeof Link>['href'];
 
-/** NFC span.text so NFD Vietnamese in CMS bodies hits precomposed font glyphs. */
+/** NFC + strip migration NBSP/ZW* so NFD Vietnamese hits precomposed glyphs
+ *  and leftover WordPress `&nbsp;` doesn't glue words into awkward wraps. */
 function normalizePortableTextSpans(
   blocks: readonly unknown[],
 ): unknown[] {
@@ -39,7 +40,13 @@ function normalizePortableTextSpans(
         if (!child || typeof child !== 'object') return child;
         const span = child as Record<string, unknown>;
         if (typeof span.text !== 'string') return child;
-        return { ...span, text: span.text.normalize('NFC') };
+        return {
+          ...span,
+          text: span.text
+            .normalize('NFC')
+            .replace(/[\u00a0\u202f\u2007]/g, ' ')
+            .replace(/[\u00ad\u200b\u200c\u200d\u2060\ufeff]/g, ''),
+        };
       }),
     };
   });
@@ -212,7 +219,7 @@ function createComponents(relaxed = false): PortableTextComponents {
 
       const path = normalizeInternalPath(button.url);
       const ctaClassName =
-        'inline-block bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
+        'inline-block rounded-full bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
 
       if (isAppExternalUrl(button.url)) {
         return (

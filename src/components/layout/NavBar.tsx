@@ -37,14 +37,29 @@ interface NavBarProps {
   items: NavItem[];
   toggleAria: string;
   contactEmail?: string;
+  briefLabel: string;
+  briefHref: LinkHref;
 }
 
 const MOBILE_LINK_CLASS =
   'vp-mobile-nav-link font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-[1] tracking-vp-heading text-white no-underline';
 
+/** Compact primary pill — matches desktop nav link type size/weight. */
+const DESKTOP_BRIEF_CLASS =
+  'mr-4 inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-4 py-[0.35rem] font-vp-heading text-[0.875rem] font-normal uppercase tracking-[var(--vp-navbar-link-spacing)] text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
+
+const MOBILE_BRIEF_CLASS =
+  'inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
+
 const CLOSE_MS = 180;
 
-export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
+export function NavBar({
+  items,
+  toggleAria,
+  contactEmail,
+  briefLabel,
+  briefHref,
+}: NavBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [panelMounted, setPanelMounted] = useState(false);
   const [panelVisible, setPanelVisible] = useState(false);
@@ -235,7 +250,8 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
   }
 
   const mobileItems = renderMobileItems();
-  const emailStaggerIndex = mobileItems.length;
+  const briefStaggerIndex = mobileItems.length;
+  const emailStaggerIndex = briefStaggerIndex + 1;
 
   return (
     <>
@@ -260,6 +276,11 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
         <ul className="navbar-nav ms-auto flex list-none flex-row items-center p-0">
           {items.map((item) => renderItem(item))}
           <li className="nav-item">
+            <Link href={briefHref} className={DESKTOP_BRIEF_CLASS}>
+              {briefLabel}
+            </Link>
+          </li>
+          <li className="nav-item">
             <LanguageSwitcher />
           </li>
         </ul>
@@ -280,15 +301,25 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
             <ul className="vp-mobile-nav-list navbar-nav m-0 w-full list-none p-0">
               {mobileItems}
             </ul>
-            {email ? (
-              <a
-                href={`mailto:${email}`}
-                className="vp-mobile-nav-email vp-mobile-nav-item text-xl font-bold text-vp-link no-underline hover:text-vp-link-hover"
-                style={staggerStyle(emailStaggerIndex)}
+            <div className="vp-mobile-nav-footer">
+              <Link
+                href={briefHref}
+                className={`${MOBILE_BRIEF_CLASS} vp-mobile-nav-item`}
+                style={staggerStyle(briefStaggerIndex)}
+                onClick={closeMobile}
               >
-                {email}
-              </a>
-            ) : null}
+                {briefLabel}
+              </Link>
+              {email ? (
+                <a
+                  href={`mailto:${email}`}
+                  className="vp-mobile-nav-email vp-mobile-nav-item text-xl font-bold text-vp-link no-underline hover:text-vp-link-hover"
+                  style={staggerStyle(emailStaggerIndex)}
+                >
+                  {email}
+                </a>
+              ) : null}
+            </div>
           </div>
         </div>
       ) : null}

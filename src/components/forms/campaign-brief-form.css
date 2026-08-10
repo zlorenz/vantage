@@ -342,9 +342,10 @@
   margin-top: 0.35rem;
   padding: var(--vp-btn-padding);
   border: 1px solid var(--vp-btn-ghost-border);
-  border-radius: 0;
+  border-radius: 9999px;
   background: var(--vp-btn-ghost-bg);
   color: var(--vp-btn-ghost-text);
+  font-family: var(--vp-font-heading);
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: var(--vp-btn-select-files-spacing);
@@ -387,9 +388,10 @@
   flex-shrink: 0;
   padding: 0.25rem 0.75rem;
   border: 1px solid var(--vp-btn-ghost-border);
-  border-radius: 0;
+  border-radius: 9999px;
   background: transparent;
   color: var(--vp-text);
+  font-family: var(--vp-font-heading);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: var(--vp-uppercase-spacing);

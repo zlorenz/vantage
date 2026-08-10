@@ -46,7 +46,7 @@ export function VpButton({
   disabled = false,
   ...props
 }: VpButtonProps) {
-  const classes = `inline-block px-8 py-3 text-sm font-semibold uppercase tracking-vp-btn transition-colors duration-vp-default ${VARIANT_CLASSES[variant]} ${className} ${disabled ? 'pointer-events-none opacity-55' : ''}`;
+  const classes = `inline-block rounded-full px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn transition-colors duration-vp-default ${VARIANT_CLASSES[variant]} ${className} ${disabled ? 'pointer-events-none opacity-55' : ''}`;
 
   if ('href' in props && props.href) {
     return (

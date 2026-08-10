@@ -24,7 +24,7 @@ export function FileDownloadBlock({
   // glyph onto its own line inside the padded button.
   const cjkLabel = hasCjk(downloadLabel);
   const buttonClass = [
-    'inline-block whitespace-nowrap bg-vp-btn-primary-bg px-8 py-3 text-sm font-semibold',
+    'inline-block whitespace-nowrap rounded-full bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold',
     'text-vp-btn-primary-text no-underline transition-colors duration-vp-default',
     'hover:bg-vp-btn-primary-hover-bg',
     cjkLabel ? 'tracking-normal normal-case' : 'uppercase tracking-vp-btn',

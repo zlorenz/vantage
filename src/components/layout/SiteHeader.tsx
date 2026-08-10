@@ -82,6 +82,10 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
             items={navItems}
             toggleAria={t('toggleAria')}
             contactEmail={siteSettings.contactEmail}
+            briefLabel={t('sendBrief')}
+            briefHref={
+              pagePath(locale, 'video-campaign-brief', navPages) as LinkHref
+            }
           />
         </div>
       </SiteHeaderNav>
