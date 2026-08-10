@@ -3,13 +3,11 @@
 /**
  * NavBar — primary navigation with desktop and mobile variants.
  *
- * Client component: dropdowns, hamburger, search, language switcher, and
- * contact modal trigger all require browser interactivity.
+ * Client component: hamburger, search, language switcher, and contact modal
+ * trigger all require browser interactivity.
  *
  * Mobile: full-viewport black panel slides in via translateY behind the
- * always-translucent header, with staggered item reveal. About dropdown
- * children are flattened into top-level links; desktop keeps NavDropdown
- * hover behaviour unchanged.
+ * always-translucent header, with staggered item reveal.
  */
 
 import {
@@ -22,7 +20,6 @@ import {
 } from 'react';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { NavDropdown } from './NavDropdown';
 import { NavSearch } from './NavSearch';
 import { useContactModal } from './ContactModalContext';
 import type { Locale } from '@/i18n/routing';
@@ -32,7 +29,6 @@ type LinkHref = ComponentProps<typeof Link>['href'];
 export interface NavItem {
   label: string;
   href?: LinkHref;
-  dropdown?: { label: string; href: LinkHref }[];
   isContact?: boolean;
 }
 
@@ -156,20 +152,7 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
     setMobileOpen(false);
   }
 
-  /** Desktop (and shared non-flat) item renderer — unchanged path. */
   function renderItem(item: NavItem) {
-    if (item.dropdown) {
-      return (
-        <NavDropdown
-          key={item.label}
-          label={item.label}
-          href={item.href}
-          items={item.dropdown}
-          mobile={false}
-        />
-      );
-    }
-
     if (item.isContact) {
       return (
         <li key={item.label} className="nav-item">
@@ -202,33 +185,11 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
     return { '--vp-nav-stagger': index } as CSSProperties;
   }
 
-  function renderMobileFlat(): ReactNode[] {
+  function renderMobileItems(): ReactNode[] {
     const nodes: ReactNode[] = [];
     let index = 0;
 
     for (const item of items) {
-      if (item.dropdown) {
-        for (const child of item.dropdown) {
-          const i = index++;
-          nodes.push(
-            <li
-              key={`${child.label}-${i}`}
-              className="vp-mobile-nav-item nav-item"
-              style={staggerStyle(i)}
-            >
-              <Link
-                href={child.href}
-                className={MOBILE_LINK_CLASS}
-                onClick={closeMobile}
-              >
-                {child.label}
-              </Link>
-            </li>,
-          );
-        }
-        continue;
-      }
-
       if (item.isContact) {
         const i = index++;
         nodes.push(
@@ -273,7 +234,7 @@ export function NavBar({ items, toggleAria, contactEmail }: NavBarProps) {
     return nodes;
   }
 
-  const mobileItems = renderMobileFlat();
+  const mobileItems = renderMobileItems();
   const emailStaggerIndex = mobileItems.length;
 
   return (

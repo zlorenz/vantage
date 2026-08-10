@@ -1,5 +1,5 @@
 /**
- * About page — hero, who we are, team grid, CTA.
+ * About page — hero, who we are, team grid, production services, CTA.
  */
 
 import type { Metadata } from 'next';
@@ -10,6 +10,7 @@ import { CtaSection } from '@/components/ui/CtaSection';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
+import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import {
   aboutContactPageTitle,
@@ -121,7 +122,7 @@ export default async function AboutPage({ params }: Props) {
       <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
       <SectionWrapper>
-        <div className="container-fluid mx-auto max-w-[800px] px-3 md:px-4">
+        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <PortableTextContent blocks={bodyBlocks} />
         </div>
       </SectionWrapper>
@@ -129,7 +130,7 @@ export default async function AboutPage({ params }: Props) {
       {page.founders?.length ? (
         <SectionWrapper borderTop>
           <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-            <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
+            <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               <span className="vp-outline">{t('teamOutline')}</span> {t('team')}
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -145,6 +146,26 @@ export default async function AboutPage({ params }: Props) {
           </div>
         </SectionWrapper>
       ) : null}
+
+      <SectionWrapper borderTop>
+        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
+          <h2 className="mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+            <span className="vp-outline">{t('productionServicesOutline')}</span>{' '}
+            {t('productionServices')}
+          </h2>
+          <div className="font-light text-vp-text-muted">
+            <p className="mb-4 leading-relaxed">{t('productionServicesBody')}</p>
+            <p className="mb-4 leading-relaxed last:mb-0">
+              {t('productionServicesBody2')}
+            </p>
+          </div>
+          <div className="mt-8">
+            <VpButton href="/vietnam-production-service">
+              {t('productionServicesCta')}
+            </VpButton>
+          </div>
+        </div>
+      </SectionWrapper>
 
       <CtaSection locale={typedLocale} />
     </>

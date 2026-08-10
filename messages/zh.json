@@ -41,7 +41,12 @@
   },
   "About": {
     "teamOutline": "我们的",
-    "team": "团队"
+    "team": "团队",
+    "productionServicesOutline": "制作",
+    "productionServices": "服务",
+    "productionServicesBody": "Vantage Pictures 为国际品牌、代理商和制作公司在越南全国各地拍摄广告、品牌影片、纪录片和产品宣传片提供全方位的制作支持服务。越南为国际商业拍摄提供了多样的景观、具有竞争力的制作成本、熟练的当地工作人员和简化的物流——从胡志明市和河内的现代城市景观，到热带海岸线、山脉和工业环境，地理位置近在咫尺，视觉上独具特色。",
+    "productionServicesBody2": "我们的服务涵盖电影制作过程的每一个阶段，包括勘景、许可、选角、寻找工作人员、设备租赁、制作管理、制片流程、预算编制和后期制作协调。我们经常与来自亚洲、欧洲和北美的国际创意团队合作，通过双语制作管理和透明的预算编制为跨境制作提供支持。",
+    "productionServicesCta": "了解更多"
   },
   "Vietnam": {
     "shotInOutline": "在越南",

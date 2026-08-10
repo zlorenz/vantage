@@ -41,7 +41,12 @@
   },
   "About": {
     "teamOutline": "OUR",
-    "team": "TEAM"
+    "team": "TEAM",
+    "productionServicesOutline": "PRODUCTION",
+    "productionServices": "SERVICES",
+    "productionServicesBody": "Vantage Pictures provides full-service Vietnam production support for international brands, agencies, and production companies shooting commercials, brand films, documentaries, and product campaigns across the country. Vietnam offers diverse landscapes, competitive production costs, skilled local crews, and streamlined logistics — from modern cityscapes in Ho Chi Minh City and Hanoi to tropical coastlines, mountain ranges, and industrial environments.",
+    "productionServicesBody2": "Our services cover every stage of the filmmaking process, including location scouting, permitting, casting, crew sourcing, equipment rental, production management, line producing, budgeting, and post-production coordination. We regularly collaborate with international creative teams from Asia, Europe, and North America, supporting cross-border productions with bilingual production management and transparent budgeting.",
+    "productionServicesCta": "LEARN MORE"
   },
   "Vietnam": {
     "shotInOutline": "SHOT IN",

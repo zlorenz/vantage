@@ -35,7 +35,6 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
 
   const home = pageBySlug(navPages, 'home');
   const about = pageBySlug(navPages, 'about');
-  const vietnam = pageBySlug(navPages, 'vietnam-production-service');
   const work = pageBySlug(navPages, 'work');
   const news = pageBySlug(navPages, 'news');
 
@@ -45,27 +44,12 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
       href: homeHref,
     },
     {
-      label: t('about'),
-      dropdown: [
-        {
-          label: about ? getNavLabel(about, locale) : t('about'),
-          href: pagePath(locale, 'about', navPages) as LinkHref,
-        },
-        {
-          label: vietnam
-            ? getNavLabel(vietnam, locale)
-            : t('vietnamProductionService'),
-          href: pagePath(
-            locale,
-            'vietnam-production-service',
-            navPages,
-          ) as LinkHref,
-        },
-      ],
-    },
-    {
       label: work ? getNavLabel(work, locale) : t('work'),
       href: pagePath(locale, 'work', navPages) as LinkHref,
+    },
+    {
+      label: about ? getNavLabel(about, locale) : t('about'),
+      href: pagePath(locale, 'about', navPages) as LinkHref,
     },
     {
       label: news ? getNavLabel(news, locale) : t('news'),
