@@ -130,9 +130,9 @@
 
   /* Spacing & Layout — Section vertical padding */
 
-  --spacing-vp-section-y: 4.5rem;
+  --spacing-vp-section-y: 5.5rem;
   --spacing-vp-section-y-tight: 3.5rem;
-  --spacing-vp-section-y-loose: 5.5rem;
+  --spacing-vp-section-y-loose: 6.5rem;
   --spacing-vp-section-y-header-condensed: 9.5rem;
 
   /* Form & File Block Tokens — Campaign Brief Form */
@@ -273,9 +273,9 @@
 
   /* Spacing & Layout — Section vertical padding */
 
-  --vp-section-y: 4.5rem;
+  --vp-section-y: 5.5rem;
   --vp-section-y-tight: 3.5rem;
-  --vp-section-y-loose: 5.5rem;
+  --vp-section-y-loose: 6.5rem;
   --vp-section-y-header-condensed: 9.5rem;
 
   /* Form & File Block Tokens — Campaign Brief Form */
@@ -698,9 +698,14 @@
 }
 
 @media (max-width: 575.98px) {
-  .vp-section {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+  /*
+   * SectionWrapper uses py-[var(--vp-section-y)], so mobile spacing must
+   * override the custom property — a .vp-section { padding } rule alone
+   * loses to the Tailwind utility.
+   */
+  :root {
+    --vp-section-y: 4rem;
+    --spacing-vp-section-y: 4rem;
   }
 }
 

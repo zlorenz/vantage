@@ -114,7 +114,7 @@ export default async function HomePage({ params }: Props) {
       {/* A Bit of Our Work */}
       <SectionWrapper>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-          <h2 className="vp-section-heading mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
+          <h2 className="vp-section-heading mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
             <span className="vp-outline">{t('workSectionOutline')}</span> {t('workSection')}
           </h2>
           <div className="vp-curated-gallery grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -136,7 +136,7 @@ export default async function HomePage({ params }: Props) {
 
       {/* Company description */}
       <SectionWrapper borderTop>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 text-left md:px-4">
+        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           {typedLocale === 'zh' ? (
             <h2 className="mb-8 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {t('aboutHeadingFull')}
@@ -144,9 +144,9 @@ export default async function HomePage({ params }: Props) {
           ) : (
             <h2 className="mb-8 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {t('aboutHeading')}{' '}
-              <span className="vp-outline">{t('aboutHeadingOutline')}</span>
-              <br />
-              <span className="vp-outline">{t('aboutHeadingBrands')}</span>
+              <span className="vp-outline">
+                {t('aboutHeadingOutline')} {t('aboutHeadingBrands')}
+              </span>
             </h2>
           )}
           <PortableTextContent blocks={bodyBlocks} />
@@ -159,7 +159,7 @@ export default async function HomePage({ params }: Props) {
       {/* Brand logos */}
       <SectionWrapper borderTop>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-          <h2 className="vp-section-heading mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase tracking-vp-heading">
+          <h2 className="vp-section-heading mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
             <span className="vp-outline">{t('brandsOutline')}</span> {t('brands')}
           </h2>
           <BrandLogoGrid logoIds={brandLogoIds} />

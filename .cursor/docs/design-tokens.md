@@ -152,12 +152,12 @@ Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-section-y` | `4.5rem` | Default section padding |
+| `vp-section-y` | `5.5rem` | Default section padding |
 | `vp-section-y-tight` | `3.5rem` | Tight sections |
-| `vp-section-y-loose` | `5.5rem` | Loose sections |
+| `vp-section-y-loose` | `6.5rem` | Loose sections |
 | `vp-section-y-header-condensed` | `9.5rem` | Page header (no hero) top padding |
 
-**Mobile override** (`max-width: 575.98px`): `vp-section` collapses to `padding: 2rem 0`
+**Mobile override** (`max-width: 575.98px`): `--vp-section-y` (and `--spacing-vp-section-y`) collapse to `4rem` so `SectionWrapper`’s `py-[var(--vp-section-y)]` picks it up
 
 ### Navbar
 

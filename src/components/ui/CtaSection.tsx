@@ -2,7 +2,6 @@
  * CtaSection — shared call-to-action block for Home, About, and Vietnam pages.
  *
  * Server component. Copy from Site Settings `campaignCta` (code fallback if empty).
- * Left-aligned on desktop, centred on mobile.
  */
 
 import { VpButton } from '@/components/ui/VpButton';
@@ -51,7 +50,7 @@ export async function CtaSection({
 
   return (
     <SectionWrapper borderTop>
-      <div className="container-fluid mx-auto max-w-[900px] px-3 text-center md:px-4 md:text-left">
+      <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
         <h2
           className="vp-cta__heading mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading"
           // Known NFC gap (future pass): CTA heading/paragraphs not NFC-normalized.
