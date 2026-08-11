@@ -364,6 +364,7 @@ type ConfirmationCopy = {
   noSpecificDateWithNote: (note: string) => string;
   signOff: string;
   contactPrefix: string;
+  visitSitePrefix: string;
   visitSite: string;
 };
 
@@ -378,6 +379,7 @@ const CONFIRMATION_COPY: Record<Locale, ConfirmationCopy> = {
     noSpecificDateWithNote: (note) => `No specific date yet — ${note}`,
     signOff: 'The Vantage Pictures Team',
     contactPrefix: 'Questions? Email us at',
+    visitSitePrefix: 'Visit our website:',
     visitSite: 'vantage.pictures',
   },
   zh: {
@@ -389,6 +391,7 @@ const CONFIRMATION_COPY: Record<Locale, ConfirmationCopy> = {
     noSpecificDateWithNote: (note) => `暂无具体日期 — ${note}`,
     signOff: 'Vantage Pictures 团队',
     contactPrefix: '如有疑问，请发送邮件至',
+    visitSitePrefix: '访问我们的网站：',
     visitSite: 'vantage.pictures',
   },
 };
@@ -556,7 +559,7 @@ function buildConfirmationEmailHtml(
               <div style="border-top:1px solid #eee;padding-top:24px;">
                 <p style="margin:0 0 8px;color:#111;font-weight:600;">${escapeHtml(copy.signOff)}</p>
                 <p style="margin:0 0 4px;">${escapeHtml(copy.contactPrefix)} <a href="mailto:info@vantage.pictures" style="color:#f9db24;text-decoration:none;">info@vantage.pictures</a></p>
-                <p style="margin:0;"><a href="https://vantage.pictures" style="color:#f9db24;text-decoration:none;">${escapeHtml(copy.visitSite)}</a></p>
+                <p style="margin:0;">${escapeHtml(copy.visitSitePrefix)} <a href="https://vantage.pictures" style="color:#f9db24;text-decoration:none;">${escapeHtml(copy.visitSite)}</a></p>
               </div>
             </td>
           </tr>
