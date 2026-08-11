@@ -12,8 +12,6 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import {
@@ -354,10 +352,8 @@ async function sendResendEmail(
 }
 
 const CONFIRMATION_REPLY_TO = 'info@vantage.pictures';
-/** Embedded logo — avoids relying on production /brand/* URLs pre-cutover. */
-const CONFIRMATION_LOGO_DATA_URI = `data:image/png;base64,${readFileSync(
-  join(process.cwd(), 'public/brand/vantage-logo-192.png'),
-).toString('base64')}`;
+/** Hosted wordmark PNG — Gmail strips data: URIs and does not render SVG images. */
+const CONFIRMATION_LOGO_URL = 'https://vantage.pictures/brand/vantage-wordmark.png';
 
 type ConfirmationCopy = {
   subject: string;
@@ -541,7 +537,7 @@ function buildConfirmationEmailHtml(
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-collapse:collapse;">
           <tr>
             <td align="center" style="background:#000000;padding:28px 24px;">
-              <img src="${CONFIRMATION_LOGO_DATA_URI}" alt="Vantage Pictures" width="96" height="96" style="display:block;margin:0 auto;border:0;outline:none;width:96px;height:auto;" />
+              <img src="${CONFIRMATION_LOGO_URL}" alt="Vantage Pictures" width="220" height="36" style="display:block;margin:0 auto;border:0;outline:none;width:220px;height:auto;" />
             </td>
           </tr>
           <tr>
