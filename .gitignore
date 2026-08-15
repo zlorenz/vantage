@@ -106,3 +106,4 @@ functions/**/node_modules/
 tmp/
 .vercel
 .env*
+design/assets/
