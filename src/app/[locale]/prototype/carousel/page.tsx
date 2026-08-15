@@ -8,10 +8,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { FeaturedWorkCarousel } from '@/components/prototype/carousel/FeaturedWorkCarousel';
 import { PROTOTYPE_CAROUSEL_ENTRIES_QUERY } from '@/components/prototype/carousel/query';
 import { PROTOTYPE_CAROUSEL_SLUGS } from '@/components/prototype/carousel/slugs';
-import {
-  isCarouselAxis,
-  type PrototypeCarouselSlide,
-} from '@/components/prototype/carousel/types';
+import type { PrototypeCarouselSlide } from '@/components/prototype/carousel/types';
 import { phraseRecordToMap } from '@phrase-book';
 import { routing, type Locale } from '@/i18n/routing';
 import { resolveEntryDisplayTitles } from '@/lib/display-titles';
@@ -33,7 +30,6 @@ type PrototypeEntry = {
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ axis?: string | string[] }>;
 };
 
 export function generateStaticParams() {
@@ -45,13 +41,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function PrototypeCarouselPage({ params, searchParams }: Props) {
+export default async function PrototypeCarouselPage({ params }: Props) {
   const { locale } = await params;
-  const { axis: axisParam } = await searchParams;
   setRequestLocale(locale);
   const typedLocale = locale as Locale;
-  const axisValue = Array.isArray(axisParam) ? axisParam[0] : axisParam;
-  const initialAxis = isCarouselAxis(axisValue) ? axisValue : 'vertical';
 
   const [entriesResult, phrases] = await Promise.all([
     sanityFetch({
@@ -89,5 +82,5 @@ export default async function PrototypeCarouselPage({ params, searchParams }: Pr
     ];
   });
 
-  return <FeaturedWorkCarousel slides={slides} initialAxis={initialAxis} />;
+  return <FeaturedWorkCarousel slides={slides} />;
 }

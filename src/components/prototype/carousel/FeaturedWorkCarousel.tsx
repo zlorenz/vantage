@@ -1,70 +1,121 @@
 'use client';
 
 /**
- * Full-viewport featured-work prototype.
- * Hard-stop at the ends. Swipe / page keys / wheel move one item.
- * No timer-based auto-advance. No wrap.
+ * Full-viewport featured-work prototype (vertical only).
+ * Touch: native CSS scroll-snap. Wheel / keys: one animated page at a time.
+ * Hard-stop at the ends. No wrap. No timer-based auto-advance.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
-import {
-  isInPlayerWindow,
-  type CarouselAxis,
-  type PrototypeCarouselSlide,
-} from './types';
+import { isInPlayerWindow, type PrototypeCarouselSlide } from './types';
 import './carousel.css';
 
 interface FeaturedWorkCarouselProps {
   slides: PrototypeCarouselSlide[];
-  initialAxis: CarouselAxis;
 }
 
-const WHEEL_LOCK_MS = 420;
+const SLIDE_DURATION_MS = 200;
+const WHEEL_THRESHOLD_PX = 30;
+const WHEEL_GESTURE_END_MS = 140;
 
-export function FeaturedWorkCarousel({
-  slides,
-  initialAxis,
-}: FeaturedWorkCarouselProps) {
+type AnimSignal = { cancelled: boolean };
+
+function prefersReducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function easeOutCubic(t: number): number {
+  return 1 - (1 - t) ** 3;
+}
+
+function normalizeWheelDelta(event: WheelEvent): number {
+  if (event.deltaMode === 1) return event.deltaY * 16;
+  if (event.deltaMode === 2) return event.deltaY * window.innerHeight;
+  return event.deltaY;
+}
+
+function animateScrollTop(
+  scroller: HTMLElement,
+  to: number,
+  duration: number,
+  signal: AnimSignal,
+): Promise<void> {
+  const from = scroller.scrollTop;
+  const delta = to - from;
+  if (Math.abs(delta) < 1 || duration <= 0) {
+    scroller.scrollTop = to;
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    const start = performance.now();
+    const step = (now: number) => {
+      if (signal.cancelled) {
+        resolve();
+        return;
+      }
+      const t = Math.min(1, (now - start) / duration);
+      scroller.scrollTop = from + delta * easeOutCubic(t);
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        scroller.scrollTop = to;
+        resolve();
+      }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLElement | null>>([]);
-  const wheelLockRef = useRef(false);
-  const [axis, setAxis] = useState<CarouselAxis>(initialAxis);
+  const activeIndexRef = useRef(0);
+  const animatingRef = useRef(false);
+  const animSignalRef = useRef<AnimSignal | null>(null);
+  const wheelLockedRef = useRef(false);
+  const wheelAccumRef = useRef(0);
+  const wheelIdleTimerRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const syncAxisParam = useCallback((next: CarouselAxis) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('axis', next);
-    window.history.replaceState(null, '', `${url.pathname}${url.search}`);
-  }, []);
-
-  const scrollToIndex = useCallback((index: number) => {
-    const slide = slideRefs.current[index];
-    if (!slide) return;
-    slide.scrollIntoView({
-      behavior: 'auto',
-      block: 'start',
-      inline: 'start',
-    });
-  }, []);
+  const lastIndex = Math.max(0, slides.length - 1);
 
   const goTo = useCallback(
-    (index: number) => {
-      if (!slides.length) return;
-      const next = Math.min(Math.max(index, 0), slides.length - 1);
-      setActiveIndex(next);
-      scrollToIndex(next);
-    },
-    [scrollToIndex, slides.length],
-  );
+    (index: number, animate: boolean) => {
+      const scroller = scrollerRef.current;
+      const next = Math.min(Math.max(index, 0), lastIndex);
+      if (next === activeIndexRef.current) return;
 
-  const setAxisAndKeepPage = useCallback(
-    (next: CarouselAxis) => {
-      if (next === axis) return;
-      setAxis(next);
-      syncAxisParam(next);
+      activeIndexRef.current = next;
+      setActiveIndex(next);
+
+      if (!scroller) return;
+      const top = next * scroller.clientHeight;
+
+      if (animSignalRef.current) animSignalRef.current.cancelled = true;
+      const signal: AnimSignal = { cancelled: false };
+      animSignalRef.current = signal;
+
+      if (!animate || prefersReducedMotion()) {
+        scroller.classList.remove('is-paging');
+        scroller.scrollTop = top;
+        animatingRef.current = false;
+        return;
+      }
+
+      animatingRef.current = true;
+      scroller.classList.add('is-paging');
+      void scroller.offsetHeight;
+
+      void animateScrollTop(scroller, top, SLIDE_DURATION_MS, signal).then(() => {
+        if (signal.cancelled) return;
+        scroller.scrollTop = top;
+        scroller.classList.remove('is-paging');
+        animatingRef.current = false;
+      });
     },
-    [axis, syncAxisParam],
+    [lastIndex],
   );
 
   useEffect(() => {
@@ -87,14 +138,10 @@ export function FeaturedWorkCarousel({
       body.style.overflow = prev.bodyOverflow;
       html.style.overscrollBehavior = prev.htmlOverscroll;
       body.style.overscrollBehavior = prev.bodyOverscroll;
+      if (animSignalRef.current) animSignalRef.current.cancelled = true;
+      window.clearTimeout(wheelIdleTimerRef.current);
     };
   }, []);
-
-  useEffect(() => {
-    scrollToIndex(activeIndex);
-    // Restore the current page after the scroller remounts for an axis swap.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- axis change only
-  }, [axis]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -102,12 +149,15 @@ export function FeaturedWorkCarousel({
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (animatingRef.current) return;
         const visible = entries
           .filter((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.6)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!visible) return;
         const index = Number((visible.target as HTMLElement).dataset.index);
-        if (Number.isFinite(index)) setActiveIndex(index);
+        if (!Number.isFinite(index) || index === activeIndexRef.current) return;
+        activeIndexRef.current = index;
+        setActiveIndex(index);
       },
       { root: scroller, threshold: [0.6, 0.9] },
     );
@@ -117,53 +167,81 @@ export function FeaturedWorkCarousel({
     }
 
     return () => observer.disconnect();
-  }, [axis, slides.length]);
+  }, [slides.length]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
+    const scheduleWheelUnlock = () => {
+      window.clearTimeout(wheelIdleTimerRef.current);
+      wheelIdleTimerRef.current = window.setTimeout(() => {
+        if (animatingRef.current) {
+          scheduleWheelUnlock();
+          return;
+        }
+        wheelLockedRef.current = false;
+        wheelAccumRef.current = 0;
+      }, WHEEL_GESTURE_END_MS);
+    };
+
     const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) return;
+
       event.preventDefault();
-      if (wheelLockRef.current) return;
 
-      const primary =
-        axis === 'horizontal' && Math.abs(event.deltaX) > Math.abs(event.deltaY)
-          ? event.deltaX
-          : event.deltaY;
-      if (Math.abs(primary) < 8) return;
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
 
-      wheelLockRef.current = true;
-      goTo(activeIndex + (primary > 0 ? 1 : -1));
-      window.setTimeout(() => {
-        wheelLockRef.current = false;
-      }, WHEEL_LOCK_MS);
+      if (wheelLockedRef.current || animatingRef.current) {
+        scheduleWheelUnlock();
+        return;
+      }
+
+      const delta = normalizeWheelDelta(event);
+      if (delta === 0) return;
+
+      wheelAccumRef.current += delta;
+      if (Math.abs(wheelAccumRef.current) < WHEEL_THRESHOLD_PX) {
+        scheduleWheelUnlock();
+        return;
+      }
+
+      const dir = wheelAccumRef.current > 0 ? 1 : -1;
+      wheelAccumRef.current = 0;
+      wheelLockedRef.current = true;
+      goTo(activeIndexRef.current + dir, true);
+      scheduleWheelUnlock();
     };
 
     scroller.addEventListener('wheel', onWheel, { passive: false });
-    return () => scroller.removeEventListener('wheel', onWheel);
-  }, [activeIndex, axis, goTo]);
+    return () => {
+      scroller.removeEventListener('wheel', onWheel);
+      window.clearTimeout(wheelIdleTimerRef.current);
+    };
+  }, [goTo]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'PageDown') {
+      if (event.repeat || animatingRef.current) return;
+
+      if (event.key === 'ArrowDown' || event.key === 'PageDown') {
         event.preventDefault();
-        goTo(activeIndex + 1);
-      } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        goTo(activeIndexRef.current + 1, true);
+      } else if (event.key === 'ArrowUp' || event.key === 'PageUp') {
         event.preventDefault();
-        goTo(activeIndex - 1);
+        goTo(activeIndexRef.current - 1, true);
       } else if (event.key === 'Home') {
         event.preventDefault();
-        goTo(0);
+        goTo(0, true);
       } else if (event.key === 'End') {
         event.preventDefault();
-        goTo(slides.length - 1);
+        goTo(lastIndex, true);
       }
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [activeIndex, goTo, slides.length]);
+  }, [goTo, lastIndex]);
 
   if (!slides.length) {
     return (
@@ -177,33 +255,14 @@ export function FeaturedWorkCarousel({
     <div className="vp-proto-carousel">
       <div className="vp-proto-carousel__chrome">
         <span className="vp-proto-carousel__badge">Prototype</span>
-        <div className="vp-proto-carousel__switch" role="group" aria-label="Carousel axis">
-          <button
-            type="button"
-            className="vp-proto-carousel__switch-btn"
-            aria-pressed={axis === 'vertical'}
-            onClick={() => setAxisAndKeepPage('vertical')}
-          >
-            Vertical
-          </button>
-          <button
-            type="button"
-            className="vp-proto-carousel__switch-btn"
-            aria-pressed={axis === 'horizontal'}
-            onClick={() => setAxisAndKeepPage('horizontal')}
-          >
-            Horizontal
-          </button>
-        </div>
         <span className="vp-proto-carousel__count">
           {activeIndex + 1} / {slides.length}
         </span>
       </div>
 
       <div
-        key={axis}
         ref={scrollerRef}
-        className={`vp-proto-carousel__scroller vp-proto-carousel__scroller--${axis}`}
+        className="vp-proto-carousel__scroller"
         aria-label="Featured work prototype carousel"
       >
         {slides.map((slide, index) => (

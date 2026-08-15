@@ -1,7 +1,9 @@
-/* Prototype featured-work carousel — native paging, not continuous scroll.
+/* Prototype featured-work carousel — vertical paging only.
  *
- * Feel target: iOS Home Screen / Photos. scroll-snap-stop: always keeps
- * a flick to one page; scroll-behavior: auto avoids eased interpolation.
+ * Touch: native CSS scroll-snap (mandatory + always). Do not replace
+ * with JS paging — the continuous swipe + snap glide is the locked feel.
+ * Wheel / keys: JS intercepts and animates (~200ms). Snap is disabled
+ * only for the duration of that programmatic page move.
  */
 
 .vp-proto-carousel {
@@ -16,9 +18,13 @@
 .vp-proto-carousel__scroller {
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   scroll-behavior: auto;
+  scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
   overscroll-behavior: none;
+  touch-action: pan-y;
   -webkit-overflow-scrolling: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -28,25 +34,12 @@
   display: none;
 }
 
-.vp-proto-carousel__scroller--vertical {
-  overflow-x: hidden;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  touch-action: pan-y;
-}
-
-.vp-proto-carousel__scroller--horizontal {
-  display: flex;
-  flex-flow: row nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  touch-action: pan-x;
+.vp-proto-carousel__scroller.is-paging {
+  scroll-snap-type: none;
 }
 
 .vp-proto-carousel__slide {
   position: relative;
-  flex: 0 0 100%;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -138,12 +131,6 @@
   pointer-events: none;
 }
 
-.vp-proto-carousel__badge,
-.vp-proto-carousel__switch,
-.vp-proto-carousel__count {
-  pointer-events: auto;
-}
-
 .vp-proto-carousel__badge {
   padding: 0.2rem 0.45rem;
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -151,31 +138,6 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.vp-proto-carousel__switch {
-  display: flex;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-}
-
-.vp-proto-carousel__switch-btn {
-  appearance: none;
-  margin: 0;
-  padding: 0.35rem 0.7rem;
-  border: 0;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.7);
-  font: inherit;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.vp-proto-carousel__switch-btn[aria-pressed='true'] {
-  background: #fff;
-  color: #000;
 }
 
 .vp-proto-carousel__count {

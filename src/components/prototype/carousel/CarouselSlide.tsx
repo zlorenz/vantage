@@ -44,7 +44,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
             dangerouslySetInnerHTML={{ __html: slide.titleHtml }}
           />
           <p className="vp-proto-carousel__stub">
-            Parallax text overlay — follow-up once axis is chosen
+            Parallax text overlay — follow-up
           </p>
         </div>
       </article>
