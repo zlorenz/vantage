@@ -141,6 +141,7 @@ export const RESERVED_PAGE_SLUGS = [
   'about',
   'work',
   'work-internal',
+  'prototype',
   'news',
   'contact',
   'vietnam-production-service',

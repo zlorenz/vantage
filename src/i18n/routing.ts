@@ -24,6 +24,10 @@ export const routing = defineRouting({
       en: '/work-internal',
       zh: '/work-internal',
     },
+    '/prototype/carousel': {
+      en: '/prototype/carousel',
+      zh: '/prototype/carousel',
+    },
     '/portfolio/[slug]': {
       en: '/portfolio/[slug]',
       zh: '/案例/[slug]',
