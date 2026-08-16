@@ -2333,6 +2333,20 @@
         },
         "optional": true
       },
+      "previewStartSeconds": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "previewEndSeconds": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
       "heroFilmTitle": {
         "type": "objectAttribute",
         "value": {

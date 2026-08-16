@@ -24,6 +24,8 @@ export const PROTOTYPE_CAROUSEL_ENTRIES_QUERY = `
       titleZh
     },
     featuredImage,
-    vimeoUrl
+    vimeoUrl,
+    previewStartSeconds,
+    previewEndSeconds
   }
 `;

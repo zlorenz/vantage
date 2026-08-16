@@ -13,6 +13,8 @@ import { normalizeStoredVideoUrl } from '@/lib/video-url';
 interface CarouselVimeoProps {
   vimeoUrl: string;
   active: boolean;
+  previewStartSeconds?: number | null;
+  previewEndSeconds?: number | null;
 }
 
 function prototypeVimeoSrc(url: string): string | null {
@@ -34,10 +36,17 @@ function prototypeVimeoSrc(url: string): string | null {
   return `https://player.vimeo.com/video/${id}?${params}`;
 }
 
-export function CarouselVimeo({ vimeoUrl, active }: CarouselVimeoProps) {
+export function CarouselVimeo({
+  vimeoUrl,
+  active,
+  previewStartSeconds,
+  previewEndSeconds,
+}: CarouselVimeoProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<Player | null>(null);
   const activeRef = useRef(active);
+  const startRef = useRef(previewStartSeconds);
+  const endRef = useRef(previewEndSeconds);
 
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
   const embedSrc = prototypeVimeoSrc(normalizedUrl);
@@ -45,6 +54,11 @@ export function CarouselVimeo({ vimeoUrl, active }: CarouselVimeoProps) {
   useEffect(() => {
     activeRef.current = active;
   }, [active]);
+
+  useEffect(() => {
+    startRef.current = previewStartSeconds;
+    endRef.current = previewEndSeconds;
+  }, [previewStartSeconds, previewEndSeconds]);
 
   useEffect(() => {
     if (!embedSrc) return;
@@ -61,11 +75,26 @@ export function CarouselVimeo({ vimeoUrl, active }: CarouselVimeoProps) {
       const player = new VimeoPlayer(iframeRef.current);
       playerRef.current = player;
 
+      const onTimeUpdate = (data: {seconds: number}) => {
+        const end = endRef.current;
+        if (end == null || !activeRef.current) return;
+        if (data.seconds >= end) {
+          void player.setCurrentTime(startRef.current ?? 0);
+        }
+      };
+
       try {
         await player.setVolume(0);
-        await player.setLoop(true);
+        const boundedLoop = endRef.current != null;
+        await player.setLoop(!boundedLoop);
+        if (boundedLoop) {
+          player.on('timeupdate', onTimeUpdate);
+        }
         if (cancelled) return;
         if (activeRef.current) {
+          if (startRef.current != null) {
+            await player.setCurrentTime(startRef.current);
+          }
           await player.play();
         } else {
           await player.pause();
@@ -88,8 +117,17 @@ export function CarouselVimeo({ vimeoUrl, active }: CarouselVimeoProps) {
     if (!player) return;
 
     if (active) {
-      void player.setVolume(0);
-      void player.play();
+      void (async () => {
+        try {
+          await player.setVolume(0);
+          if (startRef.current != null) {
+            await player.setCurrentTime(startRef.current);
+          }
+          await player.play();
+        } catch {
+          // Autoplay can be blocked until the first gesture.
+        }
+      })();
     } else {
       void player.pause();
     }

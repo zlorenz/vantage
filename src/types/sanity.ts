@@ -251,6 +251,8 @@ export interface PortfolioEntry {
   featuredImage: SanityImage;
   vimeoUrl: string;
   xinpianchangUrl?: string;
+  previewStartSeconds?: number;
+  previewEndSeconds?: number;
   publishedAt?: string;
   isHidden?: boolean;
   additionalVideos?: AdditionalVideo[];

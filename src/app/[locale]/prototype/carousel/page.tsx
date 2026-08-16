@@ -34,6 +34,8 @@ type PrototypeEntry = {
   videoFormats?: PrototypeFormat[] | null;
   featuredImage?: SanityImage | null;
   vimeoUrl?: string | null;
+  previewStartSeconds?: number | null;
+  previewEndSeconds?: number | null;
 };
 
 type Props = {
@@ -96,6 +98,8 @@ export default async function PrototypeCarouselPage({ params }: Props) {
         formatLine,
         posterUrl,
         vimeoUrl: entry.vimeoUrl ?? null,
+        previewStartSeconds: entry.previewStartSeconds ?? null,
+        previewEndSeconds: entry.previewEndSeconds ?? null,
       },
     ];
   });

@@ -34,7 +34,12 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
             />
           ) : null}
           {mountPlayer && slide.vimeoUrl ? (
-            <CarouselVimeo vimeoUrl={slide.vimeoUrl} active={active} />
+            <CarouselVimeo
+              vimeoUrl={slide.vimeoUrl}
+              active={active}
+              previewStartSeconds={slide.previewStartSeconds}
+              previewEndSeconds={slide.previewEndSeconds}
+            />
           ) : null}
         </div>
 

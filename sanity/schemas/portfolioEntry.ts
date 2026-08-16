@@ -272,6 +272,34 @@ export const portfolioEntry = defineType({
       editorCanEditZh: true,
     }),
 
+    defineField({
+      name: 'previewStartSeconds',
+      title: 'Preview Start (seconds)',
+      type: 'number',
+      group: 'media',
+      description:
+        'Optional carousel preview in-point. Leave empty to play from the start of the video.',
+      hidden: hiddenForTranslator,
+      validation: (rule) => rule.min(0),
+    }),
+
+    defineField({
+      name: 'previewEndSeconds',
+      title: 'Preview End (seconds)',
+      type: 'number',
+      group: 'media',
+      description:
+        'Optional carousel preview out-point. When set, playback loops back to Preview Start instead of the full video.',
+      hidden: hiddenForTranslator,
+      validation: (rule) =>
+        rule.min(0).custom((end, context) => {
+          const start = (context.parent as {previewStartSeconds?: number} | undefined)
+            ?.previewStartSeconds
+          if (end == null || start == null) return true
+          return end > start ? true : 'Preview End must be greater than Preview Start'
+        }),
+    }),
+
     ...defineLocalePair({
       name: 'heroFilmTitle',
       title: 'Hero Film Title',

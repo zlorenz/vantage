@@ -407,6 +407,8 @@ export type PortfolioEntry = {
   };
   vimeoUrl?: string;
   xinpianchangUrl?: string;
+  previewStartSeconds?: number;
+  previewEndSeconds?: number;
   heroFilmTitle?: string;
   heroFilmTitleZh?: string;
   additionalVideos?: Array<

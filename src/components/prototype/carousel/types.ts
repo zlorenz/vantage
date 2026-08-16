@@ -7,6 +7,8 @@ export type PrototypeCarouselSlide = {
   formatLine: string;
   posterUrl: string | null;
   vimeoUrl: string | null;
+  previewStartSeconds: number | null;
+  previewEndSeconds: number | null;
 };
 
 /** Current item plus one neighbor on each side (window of 3; 2 at the ends). */
