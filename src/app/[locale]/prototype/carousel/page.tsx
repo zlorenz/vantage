@@ -35,6 +35,7 @@ type PrototypeEntry = {
   vimeoUrl?: string | null;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
+  previewCleanVimeoUrl?: string | null;
 };
 
 type Props = {
@@ -99,7 +100,7 @@ export default async function PrototypeCarouselPage({ params }: Props) {
         dopNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'dop')),
         formatLine,
         posterUrl,
-        vimeoUrl: entry.vimeoUrl ?? null,
+        vimeoUrl: entry.previewCleanVimeoUrl?.trim() || entry.vimeoUrl?.trim() || null,
         previewStartSeconds: entry.previewStartSeconds ?? null,
         previewEndSeconds: entry.previewEndSeconds ?? null,
       },
