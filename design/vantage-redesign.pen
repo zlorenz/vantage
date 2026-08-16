@@ -6172,12 +6172,12 @@
           "type": "frame",
           "id": "dErLI",
           "x": 72,
-          "y": 472,
+          "y": 516,
           "name": "Overlay Stack",
           "width": 1296,
           "fill": "#00000000",
           "layout": "vertical",
-          "gap": 24,
+          "gap": 15,
           "children": [
             {
               "type": "text",
@@ -6185,8 +6185,8 @@
               "name": "Brand Label",
               "fill": "#FDB913",
               "content": "BANYAN TREE",
-              "fontFamily": "Mona Sans",
-              "fontSize": 12,
+              "fontFamily": "Special Gothic Expanded One",
+              "fontSize": 18,
               "fontWeight": "700",
               "letterSpacing": 1.6
             },
@@ -6246,8 +6246,9 @@
                       "name": "Role",
                       "fill": "#B7ADAD",
                       "content": "DIRECTOR",
+                      "lineHeight": 1,
                       "fontFamily": "Mona Sans",
-                      "fontSize": 10,
+                      "fontSize": 14,
                       "fontWeight": "700",
                       "letterSpacing": 1.4
                     },
@@ -6257,8 +6258,9 @@
                       "name": "Person",
                       "fill": "#FFFFFF",
                       "content": "Alex Trần",
+                      "lineHeight": 1,
                       "fontFamily": "Mona Sans",
-                      "fontSize": 14,
+                      "fontSize": 19,
                       "fontWeight": "500"
                     }
                   ]
@@ -6277,8 +6279,9 @@
                       "name": "Role",
                       "fill": "#B7ADAD",
                       "content": "DOP",
+                      "lineHeight": 1,
                       "fontFamily": "Mona Sans",
-                      "fontSize": 10,
+                      "fontSize": 14,
                       "fontWeight": "700",
                       "letterSpacing": 1.4
                     },
@@ -6288,8 +6291,9 @@
                       "name": "Person",
                       "fill": "#FFFFFF",
                       "content": "Minh Nguyễn",
+                      "lineHeight": 1,
                       "fontFamily": "Mona Sans",
-                      "fontSize": 14,
+                      "fontSize": 19,
                       "fontWeight": "500"
                     }
                   ]
@@ -6308,8 +6312,9 @@
                       "name": "Role",
                       "fill": "#B7ADAD",
                       "content": "FORMAT",
+                      "lineHeight": 1,
                       "fontFamily": "Mona Sans",
-                      "fontSize": 10,
+                      "fontSize": 14,
                       "fontWeight": "700",
                       "letterSpacing": 1.4
                     },
@@ -6319,43 +6324,14 @@
                       "name": "Person",
                       "fill": "#FFFFFF",
                       "content": "6K RAW · 2.40:1",
+                      "lineHeight": 1,
                       "fontFamily": "Mona Sans",
-                      "fontSize": 14,
+                      "fontSize": 19,
                       "fontWeight": "500"
                     }
                   ]
                 }
               ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "IrgnB",
-          "x": 1080,
-          "y": 36,
-          "name": "Annotations",
-          "width": 288,
-          "fill": "#00000000",
-          "layout": "vertical",
-          "gap": 8,
-          "alignItems": "end",
-          "children": [
-            {
-              "type": "note",
-              "id": "q6iIDP",
-              "name": "Parallax Note",
-              "width": 288,
-              "height": 0,
-              "content": "Real build: this text layer parallax-scrolls faster than the image beneath it. Cannot be shown in a static frame."
-            },
-            {
-              "type": "note",
-              "id": "WBAFa",
-              "name": "Grain Note",
-              "width": 288,
-              "height": 0,
-              "content": "Real build: film grain applied by WebGL fragment shader at runtime. Not represented in this static frame."
             }
           ]
         }
@@ -6420,9 +6396,10 @@
         {
           "type": "frame",
           "id": "rVCRG",
-          "x": 0,
-          "y": 0,
+          "x": 390,
+          "y": 140,
           "name": "Top Scrim",
+          "rotation": 180,
           "width": 390,
           "height": 140,
           "fill": {
@@ -6888,13 +6865,13 @@
         {
           "type": "frame",
           "id": "XVg6N",
-          "x": 32,
-          "y": 420,
+          "x": 34,
+          "y": 481,
           "name": "Overlay Stack",
-          "width": 326,
+          "width": 324,
           "fill": "#00000000",
           "layout": "vertical",
-          "gap": 20,
+          "gap": 8,
           "children": [
             {
               "type": "text",
@@ -6902,7 +6879,7 @@
               "name": "Brand",
               "fill": "#FDB913",
               "content": "BANYAN TREE",
-              "fontFamily": "Mona Sans",
+              "fontFamily": "Special Gothic Expanded One",
               "fontSize": 10,
               "fontWeight": "700",
               "letterSpacing": 1.6
@@ -6920,22 +6897,12 @@
                   "id": "DBpGw",
                   "name": "Solid",
                   "fill": "#FFFFFF",
-                  "content": "ESCALA",
+                  "textGrowth": "fixed-width",
+                  "width": 320,
+                  "content": "THERE'S MORE TO DISCOVERY",
                   "lineHeight": 1,
                   "fontFamily": "Special Gothic Expanded One",
-                  "fontSize": 38,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1
-                },
-                {
-                  "type": "text",
-                  "id": "rmRnP",
-                  "name": "Ghost",
-                  "fill": "#FFFFFF55",
-                  "content": "HOTEL FILM.",
-                  "lineHeight": 1,
-                  "fontFamily": "Special Gothic Expanded One",
-                  "fontSize": 38,
+                  "fontSize": 32,
                   "fontWeight": "normal",
                   "letterSpacing": 1
                 }
@@ -6947,7 +6914,7 @@
               "name": "Credits",
               "fill": "#00000000",
               "layout": "vertical",
-              "gap": 6,
+              "gap": 2,
               "children": [
                 {
                   "type": "frame",
@@ -6975,7 +6942,7 @@
                       "id": "XCTUF",
                       "name": "V",
                       "fill": "#FFFFFF",
-                      "content": "Alex Trần",
+                      "content": "Robin Maxieux",
                       "fontFamily": "Mona Sans",
                       "fontSize": 12,
                       "fontWeight": "500"
@@ -7008,7 +6975,7 @@
                       "id": "LCR7p",
                       "name": "V",
                       "fill": "#FFFFFF",
-                      "content": "Minh Nguyễn",
+                      "content": "Ray Lavers",
                       "fontFamily": "Mona Sans",
                       "fontSize": 12,
                       "fontWeight": "500"
@@ -7041,7 +7008,7 @@
                       "id": "xrBAa",
                       "name": "V",
                       "fill": "#FFFFFF",
-                      "content": "6K · 2.40:1",
+                      "content": "Brand Film",
                       "fontFamily": "Mona Sans",
                       "fontSize": 12,
                       "fontWeight": "500"
@@ -7049,36 +7016,6 @@
                   ]
                 }
               ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "KDOEc",
-          "x": 220,
-          "y": 28,
-          "name": "Annotations",
-          "width": 150,
-          "fill": "#00000000",
-          "layout": "vertical",
-          "gap": 6,
-          "alignItems": "end",
-          "children": [
-            {
-              "type": "note",
-              "id": "euLod",
-              "name": "Parallax",
-              "width": 150,
-              "height": 0,
-              "content": "Real build: text parallax faster than image."
-            },
-            {
-              "type": "note",
-              "id": "igZzV",
-              "name": "Grain",
-              "width": 150,
-              "height": 0,
-              "content": "Real build: WebGL shader film-grain."
             }
           ]
         }
@@ -7126,9 +7063,6 @@
             },
             "dErLI": {
               "enabled": false
-            },
-            "IrgnB": {
-              "enabled": false
             }
           }
         },
@@ -7140,29 +7074,57 @@
           "x": 40,
           "y": 160,
           "descendants": {
+            "dErLI": {
+              "gap": 15,
+              "justifyContent": "start",
+              "alignItems": "start"
+            },
+            "ddy3S": {
+              "fontFamily": "Special Gothic Expanded One",
+              "fontSize": 18
+            },
             "LJKmk": {
               "content": "THERE'S MORE TO DISCOVERY"
             },
             "LZjSZ": {
               "enabled": false
             },
+            "w58Eo": {
+              "padding": 0
+            },
             "zeffW": {
               "justifyContent": "start",
-              "alignItems": "center"
+              "alignItems": "end"
+            },
+            "MQvNx": {
+              "textAlignVertical": "top",
+              "lineHeight": 1
+            },
+            "BUEtA": {
+              "content": "Robin Mahieux",
+              "lineHeight": 1
             },
             "iWkBK": {
               "justifyContent": "start",
-              "alignItems": "center"
+              "alignItems": "end"
+            },
+            "uCOh4": {
+              "lineHeight": 1
+            },
+            "slRIZ": {
+              "content": "Ray Lavers",
+              "lineHeight": 1
             },
             "BbPo5": {
               "justifyContent": "start",
-              "alignItems": "center"
+              "alignItems": "end"
+            },
+            "RpghZ": {
+              "lineHeight": 1
             },
             "z23fUH": {
-              "content": "Brand Film"
-            },
-            "IrgnB": {
-              "enabled": false
+              "content": "Brand Film",
+              "lineHeight": 1
             }
           }
         },
@@ -7196,9 +7158,6 @@
               "enabled": false
             },
             "dErLI": {
-              "enabled": false
-            },
-            "IrgnB": {
               "enabled": false
             }
           }
