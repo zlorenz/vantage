@@ -84,6 +84,8 @@ export function CarouselVimeo({
     <CarouselNativeVideo
       src={mint.url}
       active={active}
+      previewStartSeconds={previewStartSeconds}
+      previewEndSeconds={previewEndSeconds}
       onPlaybackError={() => setUseIframe(true)}
     />
   );
