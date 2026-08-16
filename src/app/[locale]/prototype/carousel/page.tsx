@@ -46,6 +46,11 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+// Prototype-only ISR: refresh Sanity-backed slides at most every 60s.
+// This route is not in the production webhook path list, so without a
+// revalidate window it stayed frozen until the next deploy.
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Prototype Carousel | Vantage Pictures',
   robots: { index: false, follow: false },
