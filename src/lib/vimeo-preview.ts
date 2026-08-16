@@ -70,3 +70,84 @@ export function pickProgressiveRendition(
 export function isVimeoVideoId(id: string): boolean {
   return /^\d+$/.test(id);
 }
+
+export type VimeoPlayResponse = {
+  play?:
+    | {
+        progressive?: VimeoProgressiveFile[];
+        status?: string;
+      }
+    | VimeoProgressiveFile[];
+  error?: string;
+};
+
+export type ProgressiveLoadResult =
+  | {ok: true; picked: PickedProgressive}
+  | {ok: false; status: number; error: string; message: string};
+
+export function progressiveFiles(body: VimeoPlayResponse): VimeoProgressiveFile[] {
+  const play = body.play;
+  if (Array.isArray(play)) return play;
+  if (play && Array.isArray(play.progressive)) return play.progressive;
+  return [];
+}
+
+export async function fetchPlayProgressive(id: string, token: string): Promise<Response> {
+  return fetch(`https://api.vimeo.com/videos/${id}?fields=play.progressive`, {
+    headers: {
+      Authorization: `bearer ${token}`,
+      Accept: 'application/vnd.vimeo.*+json;version=3.4',
+    },
+    cache: 'no-store',
+  });
+}
+
+/**
+ * Mint a 720p-preferred progressive MP4. Retries once when Vimeo returns an
+ * empty progressive list (transient under concurrent carousel mints).
+ */
+export async function loadProgressiveRendition(
+  id: string,
+  token: string,
+): Promise<ProgressiveLoadResult> {
+  const first = await fetchPlayProgressive(id, token);
+  if (first.status === 404) {
+    return {ok: false, status: 404, error: 'not_found', message: 'That Vimeo video was not found.'};
+  }
+  if (first.status === 429) {
+    return {
+      ok: false,
+      status: 429,
+      error: 'rate_limited',
+      message: 'Vimeo rate limit reached. Try again shortly.',
+    };
+  }
+  if (!first.ok) {
+    return {
+      ok: false,
+      status: 502,
+      error: 'vimeo_error',
+      message: 'Vimeo did not return a playable file.',
+    };
+  }
+
+  let body = (await first.json()) as VimeoPlayResponse;
+  let picked = pickProgressiveRendition(progressiveFiles(body));
+  if (!picked) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const retry = await fetchPlayProgressive(id, token);
+    if (retry.ok) {
+      body = (await retry.json()) as VimeoPlayResponse;
+      picked = pickProgressiveRendition(progressiveFiles(body));
+    }
+  }
+  if (!picked) {
+    return {
+      ok: false,
+      status: 502,
+      error: 'no_progressive',
+      message: 'No progressive MP4 rendition is available.',
+    };
+  }
+  return {ok: true, picked};
+}
