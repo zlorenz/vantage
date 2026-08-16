@@ -81,6 +81,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
   const lastIndex = Math.max(0, slides.length - 1);
 
+  useEffect(() => {
+    void import('@vimeo/player');
+  }, []);
+
   const goTo = useCallback(
     (index: number, animate: boolean) => {
       const scroller = scrollerRef.current;
