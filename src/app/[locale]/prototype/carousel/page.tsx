@@ -16,8 +16,7 @@ import { getStructuredRoleNames } from '@/lib/credits-config';
 import { resolveEntryDisplayTitleParts } from '@/lib/display-titles';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { getPhraseRecord } from '@/lib/phrase-book';
-import { urlForImage } from '@/lib/sanity';
-import { sanityFetch } from '@/sanity/lib/live';
+import { sanityClient, urlForImage } from '@/lib/sanity';
 import type { CrewCredit, DisplayTitlePartsValue, SanityImage } from '@/types/sanity';
 
 type PrototypeFormat = {
@@ -46,9 +45,9 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-// Prototype-only ISR: refresh Sanity-backed slides at most every 60s.
-// This route is not in the production webhook path list, so without a
-// revalidate window it stayed frozen until the next deploy.
+// Prototype-only ISR. Use sanityClient.fetch (not sanityFetch) so the
+// 60s window re-queries Sanity instead of regenerating from defineLive's
+// infinite Next fetch cache.
 export const revalidate = 60;
 
 export const metadata: Metadata = {
@@ -62,15 +61,13 @@ export default async function PrototypeCarouselPage({ params }: Props) {
   const typedLocale = locale as Locale;
 
   const [entriesResult, phrases] = await Promise.all([
-    sanityFetch({
-      query: PROTOTYPE_CAROUSEL_ENTRIES_QUERY,
-      params: { slugs: [...PROTOTYPE_CAROUSEL_SLUGS] },
-      stega: false,
+    sanityClient.fetch<PrototypeEntry[]>(PROTOTYPE_CAROUSEL_ENTRIES_QUERY, {
+      slugs: [...PROTOTYPE_CAROUSEL_SLUGS],
     }),
     getPhraseRecord(),
   ]);
 
-  const entries = (entriesResult.data ?? []) as PrototypeEntry[];
+  const entries = entriesResult ?? [];
   const bySlug = new Map(
     entries
       .filter((entry): entry is PrototypeEntry & { slug: string } => Boolean(entry.slug))
