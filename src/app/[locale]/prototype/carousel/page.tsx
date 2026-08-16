@@ -6,24 +6,32 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { FeaturedWorkCarousel } from '@/components/prototype/carousel/FeaturedWorkCarousel';
+import { composeOverlayCopy, joinOverlayList } from '@/components/prototype/carousel/overlay';
 import { PROTOTYPE_CAROUSEL_ENTRIES_QUERY } from '@/components/prototype/carousel/query';
 import { PROTOTYPE_CAROUSEL_SLUGS } from '@/components/prototype/carousel/slugs';
 import type { PrototypeCarouselSlide } from '@/components/prototype/carousel/types';
 import { phraseRecordToMap } from '@phrase-book';
 import { routing, type Locale } from '@/i18n/routing';
-import { resolveEntryDisplayTitles } from '@/lib/display-titles';
+import { getStructuredRoleNames } from '@/lib/credits-config';
+import { resolveEntryDisplayTitleParts } from '@/lib/display-titles';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { urlForImage } from '@/lib/sanity';
 import { sanityFetch } from '@/sanity/lib/live';
-import type { DisplayTitlePartsValue, SanityImage } from '@/types/sanity';
+import type { CrewCredit, DisplayTitlePartsValue, SanityImage } from '@/types/sanity';
+
+type PrototypeFormat = {
+  title?: string | null;
+  titleZh?: string | null;
+};
 
 type PrototypeEntry = {
   _id: string;
   slug?: string | null;
   slugZh?: string | null;
   displayTitleParts?: DisplayTitlePartsValue | null;
-  headerTitleOverride?: string | null;
-  headerTitleOverrideZh?: string | null;
+  crewCredits?: CrewCredit[] | null;
+  videoFormats?: PrototypeFormat[] | null;
   featuredImage?: SanityImage | null;
   vimeoUrl?: string | null;
 };
@@ -70,12 +78,22 @@ export default async function PrototypeCarouselPage({ params }: Props) {
     const posterUrl = entry.featuredImage
       ? urlForImage(entry.featuredImage).width(1920).height(1080).fit('crop').url()
       : null;
-    const { headerTitle } = resolveEntryDisplayTitles(entry, typedLocale, phraseMap);
+    const parts = resolveEntryDisplayTitleParts(entry, typedLocale, phraseMap);
+    const { brandLine, campaignLine } = composeOverlayCopy(parts);
+    const formatLine = joinOverlayList(
+      (entry.videoFormats ?? []).map((format) =>
+        pickLocaleFieldWithPhrases(typedLocale, format.title, format.titleZh, phraseMap),
+      ),
+    );
 
     return [
       {
         slug,
-        titleHtml: headerTitle,
+        brandLine,
+        campaignLine,
+        directorNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'director')),
+        dopNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'dop')),
+        formatLine,
         posterUrl,
         vimeoUrl: entry.vimeoUrl ?? null,
       },

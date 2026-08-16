@@ -5,7 +5,11 @@
 
 import assert from 'node:assert/strict'
 
-import {compileDisplayTitles, resolveDisplayTitles} from './index'
+import {
+  compileDisplayTitles,
+  resolveDisplayTitleParts,
+  resolveDisplayTitles,
+} from './index'
 
 function testCompileMammotion() {
   const result = compileDisplayTitles({
@@ -215,6 +219,34 @@ function testResolveOverride() {
   assert.equal(noParts.longTitle, '')
 }
 
+function testResolveDisplayTitleParts() {
+  const en = resolveDisplayTitleParts(
+    {
+      brandName: 'TPBank',
+      productName: 'App',
+      campaignTitle: null,
+    },
+    'en',
+  )
+  assert.equal(en.brandName, 'TPBank')
+  assert.equal(en.productName, 'App')
+  assert.equal(en.campaignTitle, null)
+
+  const zh = resolveDisplayTitleParts(
+    {
+      brandName: 'Govee',
+      productName: 'Outdoor Lights',
+      campaignTitle: 'Shining with Govee',
+      brandNameZh: 'Govee',
+      productNameZh: '户外灯',
+    },
+    'zh',
+  )
+  assert.equal(zh.brandName, 'Govee')
+  assert.equal(zh.productName, '户外灯')
+  assert.equal(zh.campaignTitle, 'Shining with Govee')
+}
+
 function testResolveZhFallback() {
   const result = resolveDisplayTitles(
     {
@@ -241,6 +273,7 @@ const tests = [
   testCompileHeroFilmTitle,
   testResolveOverride,
   testResolveZhFallback,
+  testResolveDisplayTitleParts,
 ]
 
 for (const test of tests) {

@@ -15,8 +15,14 @@ export const PROTOTYPE_CAROUSEL_ENTRIES_QUERY = `
       productNameZh,
       campaignTitleZh
     },
-    headerTitleOverride,
-    headerTitleOverrideZh,
+    crewCredits[]{
+      roleKey,
+      people[]{ name }
+    },
+    videoFormats[]->{
+      title,
+      titleZh
+    },
     featuredImage,
     vimeoUrl
   }

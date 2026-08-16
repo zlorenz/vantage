@@ -1,6 +1,10 @@
 export type PrototypeCarouselSlide = {
   slug: string;
-  titleHtml: string;
+  brandLine: string;
+  campaignLine: string;
+  directorNames: string;
+  dopNames: string;
+  formatLine: string;
   posterUrl: string | null;
   vimeoUrl: string | null;
 };

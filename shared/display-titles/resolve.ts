@@ -112,6 +112,20 @@ function cleanInput(
 }
 
 /**
+ * Locale-resolved Brand / Product / Campaign / Hero parts, without compiling
+ * them into header/long/thumb HTML. Same clean + partsForLocale path as
+ * resolveDisplayTitles. When `phrases` is provided, ZH parts prefer
+ * phrase-book hits over doc Zh.
+ */
+export function resolveDisplayTitleParts(
+  input: ResolveDisplayTitlesInput,
+  locale: DisplayTitleLocale = 'en',
+  phrases?: PhraseLookup | null,
+): DisplayTitleParts {
+  return partsForLocale(cleanInput(input), locale, phrases)
+}
+
+/**
  * Resolve titles for a locale: override → compile(parts).
  * When `phrases` is provided, ZH parts prefer phrase-book hits over doc Zh.
  *

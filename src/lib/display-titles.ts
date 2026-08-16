@@ -3,7 +3,9 @@
  */
 
 import {
+  resolveDisplayTitleParts as resolveSharedParts,
   resolveDisplayTitles as resolveShared,
+  type DisplayTitleParts,
   type PhraseLookup,
   type ResolveDisplayTitlesInput,
 } from '@display-titles';
@@ -55,6 +57,19 @@ export function resolveEntryDisplayTitles(
   phrases?: PhraseLookup | null,
 ) {
   return resolveShared(
+    flatten(entry),
+    locale === 'zh' ? 'zh' : 'en',
+    phrases,
+  );
+}
+
+/** Locale-resolved title parts — not compiled header/long/thumb HTML. */
+export function resolveEntryDisplayTitleParts(
+  entry: DisplayTitleFields,
+  locale: Locale,
+  phrases?: PhraseLookup | null,
+): DisplayTitleParts {
+  return resolveSharedParts(
     flatten(entry),
     locale === 'zh' ? 'zh' : 'en',
     phrases,
