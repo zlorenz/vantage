@@ -11,6 +11,7 @@ import {defineField, defineType} from 'sanity'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
+import {PreviewBoundsInput} from '../components/PreviewBoundsInput'
 import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
 import {NullField} from '../components/locale-pair/NullField'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
@@ -278,8 +279,9 @@ export const portfolioEntry = defineType({
       type: 'number',
       group: 'media',
       description:
-        'Optional carousel preview in-point. Leave empty to play from the start of the video.',
+        'Optional carousel preview in-point. Leave empty to play from the start of the video. Options are real video keyframes when a Vimeo URL is set.',
       hidden: hiddenForTranslator,
+      components: {input: PreviewBoundsInput},
       validation: (rule) => rule.min(0),
     }),
 
@@ -289,8 +291,9 @@ export const portfolioEntry = defineType({
       type: 'number',
       group: 'media',
       description:
-        'Optional carousel preview out-point. When set, playback loops back to Preview Start instead of the full video.',
+        'Optional carousel preview out-point. When set, playback loops back to Preview Start instead of the full video. Options are keyframes after Preview Start.',
       hidden: hiddenForTranslator,
+      components: {input: PreviewBoundsInput},
       validation: (rule) =>
         rule.min(0).custom((end, context) => {
           const start = (context.parent as {previewStartSeconds?: number} | undefined)
@@ -298,6 +301,21 @@ export const portfolioEntry = defineType({
           if (end == null || start == null) return true
           return end > start ? true : 'Preview End must be greater than Preview Start'
         }),
+    }),
+
+    defineField({
+      name: 'previewCleanVimeoUrl',
+      title: 'Clean Preview Video URL (Vimeo)',
+      type: 'url',
+      group: 'media',
+      description:
+        'Optional. Vimeo URL for a clean export (no burned-in text/logos), ' +
+        'used only for the homepage carousel preview clip. When set, this ' +
+        'replaces the master Video URL above for carousel playback only — ' +
+        'single portfolio pages always use the master Video URL. Leave ' +
+        'empty to use the master video for the carousel too.',
+      hidden: hiddenForTranslator,
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     ...defineLocalePair({

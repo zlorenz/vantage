@@ -409,6 +409,7 @@ export type PortfolioEntry = {
   xinpianchangUrl?: string;
   previewStartSeconds?: number;
   previewEndSeconds?: number;
+  previewCleanVimeoUrl?: string;
   heroFilmTitle?: string;
   heroFilmTitleZh?: string;
   additionalVideos?: Array<
