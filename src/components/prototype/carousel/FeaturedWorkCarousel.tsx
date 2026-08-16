@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
-import { isInPlayerWindow, type PrototypeCarouselSlide } from './types';
+import { shouldMountCarouselPlayer, type PrototypeCarouselSlide } from './types';
 import './carousel.css';
 
 interface FeaturedWorkCarouselProps {
@@ -78,12 +78,21 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelAccumRef = useRef(0);
   const wheelIdleTimerRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [neighborMountIndex, setNeighborMountIndex] = useState(0);
 
   const lastIndex = Math.max(0, slides.length - 1);
 
   useEffect(() => {
     void import('@vimeo/player');
   }, []);
+
+  useEffect(() => {
+    if (neighborMountIndex === activeIndex) return;
+    const id = window.setTimeout(() => {
+      setNeighborMountIndex(activeIndex);
+    }, SLIDE_DURATION_MS);
+    return () => window.clearTimeout(id);
+  }, [activeIndex, neighborMountIndex]);
 
   const goTo = useCallback(
     (index: number, animate: boolean) => {
@@ -278,7 +287,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
             slide={slide}
             index={index}
             active={index === activeIndex}
-            mountPlayer={isInPlayerWindow(index, activeIndex)}
+            mountPlayer={shouldMountCarouselPlayer(index, activeIndex, neighborMountIndex)}
           />
         ))}
       </div>
