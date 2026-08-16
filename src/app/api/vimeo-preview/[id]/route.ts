@@ -70,6 +70,16 @@ function progressiveFiles(body: VimeoPlayResponse): VimeoProgressiveFile[] {
   return [];
 }
 
+async function fetchPlayProgressive(id: string, token: string) {
+  return fetch(`https://api.vimeo.com/videos/${id}?fields=play.progressive`, {
+    headers: {
+      Authorization: `bearer ${token}`,
+      Accept: 'application/vnd.vimeo.*+json;version=3.4',
+    },
+    cache: 'no-store',
+  });
+}
+
 export async function GET(_request: Request, context: RouteContext) {
   const {id} = await context.params;
   if (!isVimeoVideoId(id)) {
@@ -87,16 +97,7 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   try {
-    const vimeoRes = await fetch(
-      `https://api.vimeo.com/videos/${id}?fields=play.progressive`,
-      {
-        headers: {
-          Authorization: `bearer ${token}`,
-          Accept: 'application/vnd.vimeo.*+json;version=3.4',
-        },
-        cache: 'no-store',
-      },
-    );
+    const vimeoRes = await fetchPlayProgressive(id, token);
 
     if (vimeoRes.status === 404) {
       return errorJson(404, 'not_found', 'That Vimeo video was not found.');
@@ -108,8 +109,18 @@ export async function GET(_request: Request, context: RouteContext) {
       return errorJson(502, 'vimeo_error', 'Vimeo did not return a playable file.');
     }
 
-    const body = (await vimeoRes.json()) as VimeoPlayResponse;
-    const picked = pickProgressiveRendition(progressiveFiles(body));
+    let body = (await vimeoRes.json()) as VimeoPlayResponse;
+    let picked = pickProgressiveRendition(progressiveFiles(body));
+    // A burst of carousel mints can briefly return an empty progressive list
+    // even when the video is playable — retry once before falling back.
+    if (!picked) {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      const retryRes = await fetchPlayProgressive(id, token);
+      if (retryRes.ok) {
+        body = (await retryRes.json()) as VimeoPlayResponse;
+        picked = pickProgressiveRendition(progressiveFiles(body));
+      }
+    }
     if (!picked) {
       return errorJson(502, 'no_progressive', 'No progressive MP4 rendition is available.');
     }
