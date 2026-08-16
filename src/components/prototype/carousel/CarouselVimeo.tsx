@@ -1,14 +1,16 @@
 'use client';
 
 /**
- * Prototype Vimeo layer — mount only inside the 3-item window.
- * Outside the window the iframe is unmounted (torn down), not paused.
+ * Prototype player layer — mount only inside the 3-item window.
+ * Tries a server-minted native MP4 first; falls back to the Vimeo iframe
+ * for that slide if minting fails.
  */
 
-import { useEffect, useRef } from 'react';
-import type Player from '@vimeo/player';
-import { extractVimeoId, extractVimeoPrivacyHash } from '@/lib/vimeo';
-import { normalizeStoredVideoUrl } from '@/lib/video-url';
+import {useEffect, useState} from 'react';
+import {extractVimeoId} from '@/lib/vimeo';
+import {normalizeStoredVideoUrl} from '@/lib/video-url';
+import {CarouselNativeVideo} from './CarouselNativeVideo';
+import {CarouselVimeoEmbed} from './CarouselVimeoEmbed';
 
 interface CarouselVimeoProps {
   vimeoUrl: string;
@@ -17,24 +19,9 @@ interface CarouselVimeoProps {
   previewEndSeconds?: number | null;
 }
 
-function prototypeVimeoSrc(url: string): string | null {
-  const id = extractVimeoId(url);
-  if (!id) return null;
-
-  const params = new URLSearchParams({
-    muted: '1',
-    loop: '1',
-    background: '1',
-    autopause: '0',
-    playsinline: '1',
-    autoplay: '1',
-  });
-
-  const hash = extractVimeoPrivacyHash(url);
-  if (hash) params.set('h', hash);
-
-  return `https://player.vimeo.com/video/${id}?${params}`;
-}
+type MintResult = {
+  url: string;
+};
 
 export function CarouselVimeo({
   vimeoUrl,
@@ -42,110 +29,62 @@ export function CarouselVimeo({
   previewStartSeconds,
   previewEndSeconds,
 }: CarouselVimeoProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const playerRef = useRef<Player | null>(null);
-  const activeRef = useRef(active);
-  const startRef = useRef(previewStartSeconds);
-  const endRef = useRef(previewEndSeconds);
-
-  const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
-  const embedSrc = prototypeVimeoSrc(normalizedUrl);
+  const videoId = extractVimeoId(normalizeStoredVideoUrl(vimeoUrl));
+  const [mint, setMint] = useState<MintResult | null>(null);
+  const [useIframe, setUseIframe] = useState(!videoId);
 
   useEffect(() => {
-    activeRef.current = active;
-  }, [active]);
+    if (!videoId) {
+      setUseIframe(true);
+      return;
+    }
 
-  useEffect(() => {
-    startRef.current = previewStartSeconds;
-    endRef.current = previewEndSeconds;
-  }, [previewStartSeconds, previewEndSeconds]);
-
-  useEffect(() => {
-    if (!embedSrc) return;
-
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-
-    let cancelled = false;
+    const controller = new AbortController();
+    setMint(null);
+    setUseIframe(false);
 
     void (async () => {
-      const { default: VimeoPlayer } = await import('@vimeo/player');
-      if (cancelled || !iframeRef.current) return;
-
-      const player = new VimeoPlayer(iframeRef.current);
-      playerRef.current = player;
-
-      const onTimeUpdate = (data: {seconds: number}) => {
-        const end = endRef.current;
-        if (end == null || !activeRef.current) return;
-        if (data.seconds >= end) {
-          void player.setCurrentTime(startRef.current ?? 0);
-        }
-      };
-
       try {
-        await player.setVolume(0);
-        const boundedLoop = endRef.current != null;
-        await player.setLoop(!boundedLoop);
-        if (boundedLoop) {
-          player.on('timeupdate', onTimeUpdate);
+        const res = await fetch(`/api/vimeo-preview/${videoId}`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          setUseIframe(true);
+          return;
         }
-        if (cancelled) return;
-        if (activeRef.current) {
-          if (startRef.current != null) {
-            await player.setCurrentTime(startRef.current);
-          }
-          await player.play();
-        } else {
-          await player.pause();
+        const body = (await res.json()) as {url?: string};
+        if (!body.url) {
+          setUseIframe(true);
+          return;
         }
+        setMint({url: body.url});
       } catch {
-        // Autoplay can be blocked until the first gesture; swipe is enough.
+        if (controller.signal.aborted) return;
+        setUseIframe(true);
       }
     })();
 
-    return () => {
-      cancelled = true;
-      const player = playerRef.current;
-      playerRef.current = null;
-      if (player) void player.destroy();
-    };
-  }, [embedSrc]);
+    return () => controller.abort();
+  }, [videoId]);
 
-  useEffect(() => {
-    const player = playerRef.current;
-    if (!player) return;
+  if (useIframe) {
+    return (
+      <CarouselVimeoEmbed
+        vimeoUrl={vimeoUrl}
+        active={active}
+        previewStartSeconds={previewStartSeconds}
+        previewEndSeconds={previewEndSeconds}
+      />
+    );
+  }
 
-    if (active) {
-      void (async () => {
-        try {
-          await player.setVolume(0);
-          if (startRef.current != null) {
-            await player.setCurrentTime(startRef.current);
-          }
-          await player.play();
-        } catch {
-          // Autoplay can be blocked until the first gesture.
-        }
-      })();
-    } else {
-      void player.pause();
-    }
-  }, [active]);
-
-  if (!embedSrc) return null;
+  if (!mint) return null;
 
   return (
-    <div className="vp-proto-carousel__player" aria-hidden>
-      <iframe
-        ref={iframeRef}
-        src={embedSrc}
-        title="Featured work video"
-        className="vp-proto-carousel__iframe"
-        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-        referrerPolicy="strict-origin-when-cross-origin"
-        tabIndex={-1}
-      />
-    </div>
+    <CarouselNativeVideo
+      src={mint.url}
+      active={active}
+      onPlaybackError={() => setUseIframe(true)}
+    />
   );
 }
