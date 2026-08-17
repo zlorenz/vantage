@@ -10,6 +10,7 @@ import {NextResponse} from 'next/server';
 import {
   isVimeoVideoId,
   loadProgressiveRendition,
+  PREFERRED_CAROUSEL_HEIGHT,
   VIMEO_PREVIEW_CACHE_SECONDS,
   type PickedProgressive,
 } from '@/lib/vimeo-preview';
@@ -63,18 +64,19 @@ export async function GET(_request: Request, context: RouteContext) {
     return errorJson(503, 'unconfigured', 'Vimeo preview is not configured.');
   }
 
-  const cached = successCache.get(id);
+  const cacheKey = `${id}:${PREFERRED_CAROUSEL_HEIGHT}`;
+  const cached = successCache.get(cacheKey);
   if (cached && cached.until > Date.now()) {
     return successJson(cached.picked);
   }
 
   try {
-    const loaded = await loadProgressiveRendition(id, token);
+    const loaded = await loadProgressiveRendition(id, token, PREFERRED_CAROUSEL_HEIGHT);
     if (!loaded.ok) {
       return errorJson(loaded.status, loaded.error, loaded.message);
     }
 
-    successCache.set(id, {
+    successCache.set(cacheKey, {
       picked: loaded.picked,
       until: Date.now() + VIMEO_PREVIEW_CACHE_SECONDS * 1000,
     });

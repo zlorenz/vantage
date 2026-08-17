@@ -1,9 +1,14 @@
 /**
  * Pick a progressive MP4 from Vimeo's play.progressive list.
- * Used by /api/vimeo-preview/[id] so carousel slides can play a native <video>.
+ * Used by /api/vimeo-preview/[id] (carousel) and /api/vimeo-keyframes/[id]
+ * (Studio bounds picker) with different preferred heights.
  */
 
-export const PREFERRED_PREVIEW_HEIGHT = 720;
+/** Carousel muted autoplay — smaller file; display is full-bleed but brief. */
+export const PREFERRED_CAROUSEL_HEIGHT = 540;
+
+/** Studio keyframe picker needs a sharper source for timestamp selection. */
+export const PREFERRED_KEYFRAME_HEIGHT = 720;
 
 /** Cache minted playback URLs well under Vimeo's ~24h play-link expiry. */
 export const VIMEO_PREVIEW_CACHE_SECONDS = 3600;
@@ -38,12 +43,12 @@ function hasLink(file: VimeoProgressiveFile): file is VimeoProgressiveFile & {li
 }
 
 /**
- * Prefer 720p H264 MP4. If that rendition is missing, take the highest
- * remaining progressive file that still has a playback link.
+ * Prefer the requested height H264 MP4. If that rendition is missing, take
+ * the highest remaining progressive file that still has a playback link.
  */
 export function pickProgressiveRendition(
   files: VimeoProgressiveFile[] | null | undefined,
-  preferredHeight: number = PREFERRED_PREVIEW_HEIGHT,
+  preferredHeight: number = PREFERRED_KEYFRAME_HEIGHT,
 ): PickedProgressive | null {
   const linked = (files ?? []).filter(hasLink);
   if (!linked.length) return null;
@@ -103,12 +108,14 @@ export async function fetchPlayProgressive(id: string, token: string): Promise<R
 }
 
 /**
- * Mint a 720p-preferred progressive MP4. Retries once when Vimeo returns an
+ * Mint a progressive MP4 preferring `preferredHeight` (720p for Studio
+ * keyframes, 540p for the carousel). Retries once when Vimeo returns an
  * empty progressive list (transient under concurrent carousel mints).
  */
 export async function loadProgressiveRendition(
   id: string,
   token: string,
+  preferredHeight: number = PREFERRED_KEYFRAME_HEIGHT,
 ): Promise<ProgressiveLoadResult> {
   const first = await fetchPlayProgressive(id, token);
   if (first.status === 404) {
@@ -132,13 +139,13 @@ export async function loadProgressiveRendition(
   }
 
   let body = (await first.json()) as VimeoPlayResponse;
-  let picked = pickProgressiveRendition(progressiveFiles(body));
+  let picked = pickProgressiveRendition(progressiveFiles(body), preferredHeight);
   if (!picked) {
     await new Promise((resolve) => setTimeout(resolve, 250));
     const retry = await fetchPlayProgressive(id, token);
     if (retry.ok) {
       body = (await retry.json()) as VimeoPlayResponse;
-      picked = pickProgressiveRendition(progressiveFiles(body));
+      picked = pickProgressiveRendition(progressiveFiles(body), preferredHeight);
     }
   }
   if (!picked) {

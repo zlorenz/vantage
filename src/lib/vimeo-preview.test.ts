@@ -3,7 +3,11 @@
  */
 
 import assert from 'node:assert/strict';
-import {pickProgressiveRendition} from './vimeo-preview';
+import {
+  pickProgressiveRendition,
+  PREFERRED_CAROUSEL_HEIGHT,
+  PREFERRED_KEYFRAME_HEIGHT,
+} from './vimeo-preview';
 
 function files(heights: number[]) {
   return heights.map((height) => ({
@@ -18,21 +22,51 @@ function files(heights: number[]) {
 }
 
 function testPrefers720WhenPresent() {
-  const picked = pickProgressiveRendition(files([1080, 720, 540, 360, 240]));
+  const picked = pickProgressiveRendition(
+    files([1080, 720, 540, 360, 240]),
+    PREFERRED_KEYFRAME_HEIGHT,
+  );
   assert.equal(picked?.rendition, '720p');
   assert.equal(picked?.height, 720);
   assert.ok(picked?.url.endsWith('/720'));
 }
 
 function testFallsBackToHighestWhen720Missing() {
-  const picked = pickProgressiveRendition(files([1080, 540, 360]));
+  const picked = pickProgressiveRendition(files([1080, 540, 360]), PREFERRED_KEYFRAME_HEIGHT);
   assert.equal(picked?.rendition, '1080p');
   assert.equal(picked?.height, 1080);
 }
 
 function testFallsBackToHighestBelow720() {
-  const picked = pickProgressiveRendition(files([540, 360, 240]));
+  const picked = pickProgressiveRendition(files([540, 360, 240]), PREFERRED_KEYFRAME_HEIGHT);
   assert.equal(picked?.rendition, '540p');
+}
+
+function testKeyframeDefaultHeightIs720() {
+  const picked = pickProgressiveRendition(files([1080, 720, 540, 360, 240]));
+  assert.equal(picked?.rendition, '720p');
+  assert.equal(picked?.height, 720);
+}
+
+function testPrefers540ForCarouselWhenPresent() {
+  const picked = pickProgressiveRendition(
+    files([1080, 720, 540, 360, 240]),
+    PREFERRED_CAROUSEL_HEIGHT,
+  );
+  assert.equal(picked?.rendition, '540p');
+  assert.equal(picked?.height, 540);
+  assert.ok(picked?.url.endsWith('/540'));
+}
+
+function testCarouselFallsBackToHighestWhen540Missing() {
+  const picked = pickProgressiveRendition(files([1080, 720, 360]), PREFERRED_CAROUSEL_HEIGHT);
+  assert.equal(picked?.rendition, '1080p');
+  assert.equal(picked?.height, 1080);
+}
+
+function testCarouselFallsBackToHighestBelow540() {
+  const picked = pickProgressiveRendition(files([360, 240]), PREFERRED_CAROUSEL_HEIGHT);
+  assert.equal(picked?.rendition, '360p');
 }
 
 function testEmptyOrUnlinkedReturnsNull() {
@@ -48,6 +82,10 @@ const tests = [
   testPrefers720WhenPresent,
   testFallsBackToHighestWhen720Missing,
   testFallsBackToHighestBelow720,
+  testKeyframeDefaultHeightIs720,
+  testPrefers540ForCarouselWhenPresent,
+  testCarouselFallsBackToHighestWhen540Missing,
+  testCarouselFallsBackToHighestBelow540,
   testEmptyOrUnlinkedReturnsNull,
 ];
 
