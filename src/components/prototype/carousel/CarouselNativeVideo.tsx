@@ -6,10 +6,8 @@
  * otherwise the element uses the native loop attribute for the full clip.
  */
 
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef} from 'react';
 
-/** Independent of SLIDE_DURATION_MS — poster hold must not couple to paging/neighbor mount. */
-const POSTER_HOLD_MS = 800;
 /** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
 const SEEK_TOLERANCE_S = 0.05;
 
@@ -33,7 +31,6 @@ export function CarouselNativeVideo({
   const endRef = useRef(previewEndSeconds);
   const activeRef = useRef(active);
   const boundedLoop = previewEndSeconds != null;
-  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     startRef.current = previewStartSeconds;
@@ -51,40 +48,6 @@ export function CarouselNativeVideo({
     if (startRef.current != null) {
       video.currentTime = startRef.current;
     }
-  }, [src]);
-
-  useEffect(() => {
-    setVideoReady(false);
-    const video = videoRef.current;
-    if (!video) return;
-
-    const mountedAt = performance.now();
-    let holdTimer: number | null = null;
-    let hasPlaying = false;
-    let revealed = false;
-
-    const reveal = () => {
-      if (revealed) return;
-      revealed = true;
-      setVideoReady(true);
-    };
-
-    const onPlaying = () => {
-      if (hasPlaying) return;
-      hasPlaying = true;
-      const remaining = POSTER_HOLD_MS - (performance.now() - mountedAt);
-      if (remaining <= 0) {
-        reveal();
-      } else {
-        holdTimer = window.setTimeout(reveal, remaining);
-      }
-    };
-
-    video.addEventListener('playing', onPlaying);
-    return () => {
-      video.removeEventListener('playing', onPlaying);
-      if (holdTimer != null) window.clearTimeout(holdTimer);
-    };
   }, [src]);
 
   useEffect(() => {
@@ -141,11 +104,7 @@ export function CarouselNativeVideo({
     <div className="vp-proto-carousel__player" aria-hidden data-player="native">
       <video
         ref={videoRef}
-        className={
-          videoReady
-            ? 'vp-proto-carousel__video is-ready'
-            : 'vp-proto-carousel__video'
-        }
+        className="vp-proto-carousel__video"
         src={src}
         muted
         playsInline
