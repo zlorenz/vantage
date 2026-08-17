@@ -138,6 +138,30 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     const root = rootRef.current;
     if (!root) return;
 
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const syncVisualHeight = () => {
+      const height = viewport.height;
+      if (!Number.isFinite(height) || height <= 0) return;
+      root.style.setProperty('--vp-carousel-vh', `${Math.round(height)}px`);
+    };
+
+    viewport.addEventListener('resize', syncVisualHeight);
+    viewport.addEventListener('scroll', syncVisualHeight);
+    syncVisualHeight();
+
+    return () => {
+      viewport.removeEventListener('resize', syncVisualHeight);
+      viewport.removeEventListener('scroll', syncVisualHeight);
+      root.style.removeProperty('--vp-carousel-vh');
+    };
+  }, [slides.length]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
     const syncCarouselScrollActive = () => {
       const rect = root.getBoundingClientRect();
       const active = isCarouselScrollActive({

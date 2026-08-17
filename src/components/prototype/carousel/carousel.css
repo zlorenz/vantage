@@ -11,6 +11,8 @@
   width: 100%;
   height: 100vh;
   height: 100dvh;
+  /* visualViewport px when JS can read it — iOS dvh lags chrome collapse. */
+  height: var(--vp-carousel-vh, 100dvh);
   background: #000;
   color: #fff;
 }
