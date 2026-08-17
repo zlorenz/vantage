@@ -4,8 +4,10 @@
  * (Studio bounds picker) with different preferred heights.
  */
 
-/** Carousel muted autoplay — smaller file; display is full-bleed but brief. */
-export const PREFERRED_CAROUSEL_HEIGHT = 540;
+/** Carousel muted autoplay — 720p on all devices. Reverted from a 540p
+ *  reduction that traded sharpness for file size; Vimeo exposes one
+ *  encode per tier, so 540p had no less-compressed alternative. */
+export const PREFERRED_CAROUSEL_HEIGHT = 720;
 
 /** Studio keyframe picker needs a sharper source for timestamp selection. */
 export const PREFERRED_KEYFRAME_HEIGHT = 720;
@@ -109,7 +111,7 @@ export async function fetchPlayProgressive(id: string, token: string): Promise<R
 
 /**
  * Mint a progressive MP4 preferring `preferredHeight` (720p for Studio
- * keyframes, 540p for the carousel). Retries once when Vimeo returns an
+ * keyframes and the carousel). Retries once when Vimeo returns an
  * empty progressive list (transient under concurrent carousel mints).
  */
 export async function loadProgressiveRendition(
