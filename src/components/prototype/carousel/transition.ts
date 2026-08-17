@@ -1,17 +1,22 @@
 /**
- * Shared overlap/fade styles for the carousel media layer.
+ * Shared overlap/fade + overlay parallax styles.
  *
  * Native scroll already moves both slides at 100%. These transforms are
  * supplementary: outgoing media is counter-shifted so its *visual* speed is
  * OUTGOING_SPEED_FACTOR of the incoming slide, and it fades 1 → 0.
+ * Overlay copy travels OVERLAY_SPEED_FACTOR of native scroll so text
+ * outpaces its own background; opacity is not tied to progress.
  */
 
 export const OUTGOING_SPEED_FACTOR = 0.22;
+/** Visual overlay travel vs native scroll (1 = lockstep, >1 = leads media). */
+export const OVERLAY_SPEED_FACTOR = 1.22;
 export const SETTLE_EPSILON_PX = 1;
 
 export type TransitionLayerStyles = {
   transform: string;
   opacity: number;
+  overlayTransform: string;
 };
 
 export type ScrollTransitionState =
@@ -25,6 +30,7 @@ export type ScrollTransitionState =
     };
 
 const MEDIA_SELECTOR = '.vp-proto-carousel__media';
+const OVERLAY_SELECTOR = '.vp-proto-carousel__overlay';
 
 function clamp01(value: number): number {
   if (value <= 0) return 0;
@@ -44,14 +50,17 @@ export function getTransitionStyles(
 ): {outgoing: TransitionLayerStyles; incoming: TransitionLayerStyles} {
   const p = clamp01(progress);
   const outgoingShiftPct = p * (1 - OUTGOING_SPEED_FACTOR) * 100;
+  const overlayLeadPct = (OVERLAY_SPEED_FACTOR - 1) * 100;
   return {
     outgoing: {
       transform: `translateY(${direction * outgoingShiftPct}%)`,
       opacity: 1 - p,
+      overlayTransform: `translateY(${-direction * p * overlayLeadPct}%)`,
     },
     incoming: {
       transform: 'translateY(0%)',
       opacity: 1,
+      overlayTransform: `translateY(${direction * (1 - p) * overlayLeadPct}%)`,
     },
   };
 }
@@ -99,9 +108,12 @@ export function clearSlideOverlap(slide: HTMLElement | null): void {
   if (!slide) return;
   slide.style.zIndex = '';
   const media = slide.querySelector<HTMLElement>(MEDIA_SELECTOR);
-  if (!media) return;
-  media.style.transform = '';
-  media.style.opacity = '';
+  if (media) {
+    media.style.transform = '';
+    media.style.opacity = '';
+  }
+  const overlay = slide.querySelector<HTMLElement>(OVERLAY_SELECTOR);
+  if (overlay) overlay.style.transform = '';
 }
 
 function paintSlideOverlap(
@@ -112,9 +124,12 @@ function paintSlideOverlap(
   if (!slide) return;
   slide.style.zIndex = zIndex;
   const media = slide.querySelector<HTMLElement>(MEDIA_SELECTOR);
-  if (!media) return;
-  media.style.transform = styles.transform;
-  media.style.opacity = String(styles.opacity);
+  if (media) {
+    media.style.transform = styles.transform;
+    media.style.opacity = String(styles.opacity);
+  }
+  const overlay = slide.querySelector<HTMLElement>(OVERLAY_SELECTOR);
+  if (overlay) overlay.style.transform = styles.overlayTransform;
 }
 
 export type OverlapPair = {outgoing: number; incoming: number};

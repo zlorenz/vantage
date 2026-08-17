@@ -112,6 +112,26 @@
     rgba(0, 0, 0, 0.15) 42%,
     transparent 70%
   );
+  /* Feather text + scrim at the slide edges (~15% inset). Per-slide, not
+   * viewport-locked. -webkit- prefix: Safari < 15.4 / iOS < 15.4. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 15%,
+    #000 85%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 15%,
+    #000 85%,
+    transparent 100%
+  );
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   pointer-events: none;
 }
 

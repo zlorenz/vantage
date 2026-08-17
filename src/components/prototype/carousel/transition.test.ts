@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import {
   OUTGOING_SPEED_FACTOR,
+  OVERLAY_SPEED_FACTOR,
   getScrollTransitionState,
   getTransitionStyles,
 } from './transition';
@@ -13,12 +14,18 @@ function testRestHasIdentityStyles() {
   const down = getTransitionStyles(0, 1);
   assert.equal(down.outgoing.opacity, 1);
   assert.equal(down.outgoing.transform, 'translateY(0%)');
+  assert.equal(down.outgoing.overlayTransform, 'translateY(0%)');
   assert.equal(down.incoming.opacity, 1);
   assert.equal(down.incoming.transform, 'translateY(0%)');
+  assert.equal(
+    down.incoming.overlayTransform,
+    `translateY(${(OVERLAY_SPEED_FACTOR - 1) * 100}%)`,
+  );
 
   const up = getTransitionStyles(0, -1);
   assert.equal(up.outgoing.opacity, 1);
   assert.equal(up.outgoing.transform, 'translateY(0%)');
+  assert.equal(up.outgoing.overlayTransform, 'translateY(0%)');
 }
 
 function testCompleteFadesOutgoingAndParksIncoming() {
@@ -27,11 +34,13 @@ function testCompleteFadesOutgoingAndParksIncoming() {
   assert.equal(down.outgoing.transform, `translateY(${(1 - OUTGOING_SPEED_FACTOR) * 100}%)`);
   assert.equal(down.incoming.opacity, 1);
   assert.equal(down.incoming.transform, 'translateY(0%)');
+  assert.equal(down.incoming.overlayTransform, 'translateY(0%)');
 
   const up = getTransitionStyles(1, -1);
   assert.equal(up.outgoing.opacity, 0);
   assert.equal(up.outgoing.transform, `translateY(${-(1 - OUTGOING_SPEED_FACTOR) * 100}%)`);
   assert.equal(up.incoming.opacity, 1);
+  assert.equal(up.incoming.overlayTransform, 'translateY(0%)');
 }
 
 function testMidpointIsSymmetricByDirection() {
@@ -45,6 +54,12 @@ function testMidpointIsSymmetricByDirection() {
   const expectedPct = 0.5 * (1 - OUTGOING_SPEED_FACTOR) * 100;
   assert.equal(down.outgoing.transform, `translateY(${expectedPct}%)`);
   assert.equal(up.outgoing.transform, `translateY(${-expectedPct}%)`);
+
+  const overlayLead = 0.5 * (OVERLAY_SPEED_FACTOR - 1) * 100;
+  assert.equal(down.incoming.overlayTransform, `translateY(${overlayLead}%)`);
+  assert.equal(down.outgoing.overlayTransform, `translateY(${-overlayLead}%)`);
+  assert.equal(up.incoming.overlayTransform, `translateY(${-overlayLead}%)`);
+  assert.equal(up.outgoing.overlayTransform, `translateY(${overlayLead}%)`);
 }
 
 function testProgressIsClamped() {
@@ -54,6 +69,7 @@ function testProgressIsClamped() {
   assert.equal(under.outgoing.transform, 'translateY(0%)');
   assert.equal(over.outgoing.opacity, 0);
   assert.equal(over.incoming.transform, 'translateY(0%)');
+  assert.equal(over.incoming.overlayTransform, 'translateY(0%)');
 }
 
 function testScrollStateSettledAtSnapPoints() {
