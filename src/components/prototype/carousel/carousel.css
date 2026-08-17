@@ -85,6 +85,13 @@
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+  /* Hard hide so an unready <video> cannot paint opaque black over the poster.
+   * No transition — swap is immediate when .is-visible is toggled. */
+  opacity: 0;
+}
+
+.vp-proto-carousel__video.is-visible {
+  opacity: 1;
 }
 
 .vp-proto-carousel__overlay {

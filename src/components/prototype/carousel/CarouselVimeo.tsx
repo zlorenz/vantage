@@ -17,6 +17,8 @@ interface CarouselVimeoProps {
   active: boolean;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
+  onReadyChange?: (ready: boolean) => void;
+  onPlaying?: () => void;
 }
 
 type MintResult = {
@@ -28,10 +30,18 @@ export function CarouselVimeo({
   active,
   previewStartSeconds,
   previewEndSeconds,
+  onReadyChange,
+  onPlaying,
 }: CarouselVimeoProps) {
   const videoId = extractVimeoId(normalizeStoredVideoUrl(vimeoUrl));
   const [mint, setMint] = useState<MintResult | null>(null);
   const [useIframe, setUseIframe] = useState(!videoId);
+
+  useEffect(() => {
+    if (useIframe || !mint) {
+      onReadyChange?.(false);
+    }
+  }, [useIframe, mint, onReadyChange]);
 
   useEffect(() => {
     if (!videoId) {
@@ -87,6 +97,8 @@ export function CarouselVimeo({
       previewStartSeconds={previewStartSeconds}
       previewEndSeconds={previewEndSeconds}
       onPlaybackError={() => setUseIframe(true)}
+      onReadyChange={onReadyChange}
+      onPlaying={onPlaying}
     />
   );
 }

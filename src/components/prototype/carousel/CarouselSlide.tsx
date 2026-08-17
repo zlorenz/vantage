@@ -1,9 +1,9 @@
 'use client';
 
-import { forwardRef } from 'react';
+import {forwardRef, useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
-import { CarouselVimeo } from './CarouselVimeo';
-import type { PrototypeCarouselSlide } from './types';
+import {CarouselVimeo} from './CarouselVimeo';
+import type {PrototypeCarouselSlide} from './types';
 
 interface CarouselSlideProps {
   slide: PrototypeCarouselSlide;
@@ -13,7 +13,31 @@ interface CarouselSlideProps {
 }
 
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
-  function CarouselSlide({ slide, index, active, mountPlayer }, ref) {
+  function CarouselSlide({slide, index, active, mountPlayer}, ref) {
+    const [playerReady, setPlayerReady] = useState(false);
+    const [hasPlaying, setHasPlaying] = useState(false);
+    const wasActiveRef = useRef(active);
+    const skipPosterThisActivationRef = useRef(false);
+
+    if (active !== wasActiveRef.current) {
+      skipPosterThisActivationRef.current = active && playerReady;
+      wasActiveRef.current = active;
+    }
+
+    if (!active && hasPlaying) {
+      setHasPlaying(false);
+    }
+
+    useEffect(() => {
+      if (!mountPlayer) {
+        setPlayerReady(false);
+        setHasPlaying(false);
+      }
+    }, [mountPlayer]);
+
+    const hidePoster =
+      active && (skipPosterThisActivationRef.current || hasPlaying);
+
     return (
       <article
         ref={ref}
@@ -22,7 +46,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         data-index={index}
       >
         <div className="vp-proto-carousel__media">
-          {slide.posterUrl ? (
+          {slide.posterUrl && !hidePoster ? (
             <Image
               src={slide.posterUrl}
               alt=""
@@ -39,6 +63,8 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               active={active}
               previewStartSeconds={slide.previewStartSeconds}
               previewEndSeconds={slide.previewEndSeconds}
+              onReadyChange={setPlayerReady}
+              onPlaying={() => setHasPlaying(true)}
             />
           ) : null}
         </div>
