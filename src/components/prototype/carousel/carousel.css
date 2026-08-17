@@ -34,6 +34,12 @@
   -ms-overflow-style: none;
 }
 
+.vp-proto-carousel.is-scroll-passive .vp-proto-carousel__scroller {
+  overflow-y: hidden;
+  pointer-events: none;
+  touch-action: auto;
+}
+
 .vp-proto-carousel__scroller::-webkit-scrollbar {
   display: none;
 }

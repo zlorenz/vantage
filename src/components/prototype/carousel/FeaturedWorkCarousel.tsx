@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
 import {
+  isCarouselScrollActive,
   shouldReleaseKeyToPage,
   shouldReleaseWheelToPage,
 } from './scroll-chain';
@@ -84,6 +85,7 @@ function animateScrollTop(
 }
 
 export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLElement | null>>([]);
   const activeIndexRef = useRef(0);
@@ -94,8 +96,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelIdleTimerRef = useRef(0);
   const settledIndexRef = useRef(0);
   const overlapPairRef = useRef<OverlapPair | null>(null);
+  const carouselActiveRef = useRef(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
+  const [carouselScrollActive, setCarouselScrollActive] = useState(true);
 
   const lastIndex = Math.max(0, slides.length - 1);
 
@@ -129,6 +133,43 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   useEffect(() => {
     void import('@vimeo/player');
   }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const syncCarouselScrollActive = () => {
+      const rect = root.getBoundingClientRect();
+      const active = isCarouselScrollActive({
+        rootTop: rect.top,
+        intersectionRatio:
+          rect.height > 0
+            ? Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top)) /
+              rect.height
+            : 0,
+      });
+      carouselActiveRef.current = active;
+      setCarouselScrollActive(active);
+    };
+
+    const observer = new IntersectionObserver(
+      () => {
+        syncCarouselScrollActive();
+      },
+      {threshold: [0, 0.25, 0.5, 0.75, 0.85, 0.9, 1]},
+    );
+
+    observer.observe(root);
+    window.addEventListener('scroll', syncCarouselScrollActive, {passive: true});
+    window.addEventListener('resize', syncCarouselScrollActive, {passive: true});
+    syncCarouselScrollActive();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', syncCarouselScrollActive);
+      window.removeEventListener('resize', syncCarouselScrollActive);
+    };
+  }, [slides.length]);
 
   useEffect(() => {
     if (neighborMountIndex === activeIndex) return;
@@ -259,7 +300,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
       if (
         shouldReleaseWheelToPage({
-          pageScrollY: window.scrollY,
+          carouselActive: carouselActiveRef.current,
           activeIndex: activeIndexRef.current,
           lastIndex,
           deltaY: delta,
@@ -313,7 +354,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
       if (
         shouldReleaseKeyToPage({
-          pageScrollY: window.scrollY,
+          carouselActive: carouselActiveRef.current,
           activeIndex: activeIndexRef.current,
           lastIndex,
           key,
@@ -347,7 +388,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   }
 
   return (
-    <div className="vp-proto-carousel">
+    <div
+      ref={rootRef}
+      className={`vp-proto-carousel${carouselScrollActive ? '' : ' is-scroll-passive'}`}
+    >
       <div
         ref={scrollerRef}
         className="vp-proto-carousel__scroller"

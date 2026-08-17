@@ -1,36 +1,52 @@
 /**
- * When the carousel is an in-flow hero, wheel/keys at the first/last slide
- * must release to document scroll so the page can move into content below
- * (and back). Internal snap paging is unchanged.
+ * Scroll hand-off between the carousel's nested scroller and the page.
  *
- * If the document has already scrolled (contact section in view), the
- * carousel must not intercept — otherwise the user cannot scroll the page
- * back up through the hero.
+ * The nested scroller can always scroll to another slide internally, so native
+ * overscroll chaining never fires while it remains interactive. Use
+ * isCarouselScrollActive() (viewport visibility) as the single gate for wheel,
+ * keys, and touch — when inactive, the scroller must not capture input.
  */
 
-export const PAGE_SCROLL_RELEASE_PX = 1;
+/** Carousel top may sit slightly below the fixed header while still "active". */
+export const CAROUSEL_ACTIVE_TOP_MAX_PX = 96;
+/** Allow minor rubber-band / sub-pixel drift at the document top. */
+export const CAROUSEL_ACTIVE_TOP_MIN_PX = -8;
+/** Fraction of the carousel root that must be visible to count as primary. */
+export const CAROUSEL_ACTIVE_INTERSECTION_MIN = 0.85;
+
+export function isCarouselScrollActive(options: {
+  rootTop: number;
+  intersectionRatio: number;
+}): boolean {
+  const {rootTop, intersectionRatio} = options;
+  return (
+    rootTop >= CAROUSEL_ACTIVE_TOP_MIN_PX &&
+    rootTop <= CAROUSEL_ACTIVE_TOP_MAX_PX &&
+    intersectionRatio >= CAROUSEL_ACTIVE_INTERSECTION_MIN
+  );
+}
 
 export function shouldReleaseWheelToPage(options: {
-  pageScrollY: number;
+  carouselActive: boolean;
   activeIndex: number;
   lastIndex: number;
   deltaY: number;
 }): boolean {
-  const {pageScrollY, activeIndex, lastIndex, deltaY} = options;
-  if (pageScrollY > PAGE_SCROLL_RELEASE_PX) return true;
+  const {carouselActive, activeIndex, lastIndex, deltaY} = options;
+  if (!carouselActive) return true;
   if (deltaY < 0 && activeIndex <= 0) return true;
   if (deltaY > 0 && activeIndex >= lastIndex) return true;
   return false;
 }
 
 export function shouldReleaseKeyToPage(options: {
-  pageScrollY: number;
+  carouselActive: boolean;
   activeIndex: number;
   lastIndex: number;
   key: string;
 }): boolean {
-  const {pageScrollY, activeIndex, lastIndex, key} = options;
-  if (pageScrollY > PAGE_SCROLL_RELEASE_PX) return true;
+  const {carouselActive, activeIndex, lastIndex, key} = options;
+  if (!carouselActive) return true;
   if ((key === 'ArrowDown' || key === 'PageDown') && activeIndex >= lastIndex) {
     return true;
   }

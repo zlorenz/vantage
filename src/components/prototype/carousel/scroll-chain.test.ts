@@ -3,33 +3,50 @@
  */
 
 import assert from 'node:assert/strict';
-import {shouldReleaseKeyToPage, shouldReleaseWheelToPage} from './scroll-chain';
+import {
+  isCarouselScrollActive,
+  shouldReleaseKeyToPage,
+  shouldReleaseWheelToPage,
+} from './scroll-chain';
 
-function testWheelPagesInsideCarousel() {
+function testCarouselActiveWhenFlushInViewport() {
+  assert.equal(isCarouselScrollActive({rootTop: 0, intersectionRatio: 1}), true);
+  assert.equal(isCarouselScrollActive({rootTop: 64, intersectionRatio: 0.9}), true);
+}
+
+function testCarouselInactiveWhenPageHasScrolledPast() {
+  assert.equal(isCarouselScrollActive({rootTop: -120, intersectionRatio: 0.75}), false);
+  assert.equal(isCarouselScrollActive({rootTop: 0, intersectionRatio: 0.6}), false);
+}
+
+function testWheelPagesInsideActiveCarousel() {
   assert.equal(
     shouldReleaseWheelToPage({
-      pageScrollY: 0,
+      carouselActive: true,
       activeIndex: 2,
       lastIndex: 8,
       deltaY: 40,
     }),
     false,
   );
+}
+
+function testWheelReleasesWhenCarouselInactive() {
   assert.equal(
     shouldReleaseWheelToPage({
-      pageScrollY: 0,
-      activeIndex: 2,
+      carouselActive: false,
+      activeIndex: 8,
       lastIndex: 8,
       deltaY: -40,
     }),
-    false,
+    true,
   );
 }
 
-function testWheelChainsAtFirstAndLast() {
+function testWheelChainsAtFirstAndLastWhileActive() {
   assert.equal(
     shouldReleaseWheelToPage({
-      pageScrollY: 0,
+      carouselActive: true,
       activeIndex: 0,
       lastIndex: 8,
       deltaY: -40,
@@ -38,46 +55,7 @@ function testWheelChainsAtFirstAndLast() {
   );
   assert.equal(
     shouldReleaseWheelToPage({
-      pageScrollY: 0,
-      activeIndex: 0,
-      lastIndex: 8,
-      deltaY: 40,
-    }),
-    false,
-  );
-  assert.equal(
-    shouldReleaseWheelToPage({
-      pageScrollY: 0,
-      activeIndex: 8,
-      lastIndex: 8,
-      deltaY: 40,
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseWheelToPage({
-      pageScrollY: 0,
-      activeIndex: 8,
-      lastIndex: 8,
-      deltaY: -40,
-    }),
-    false,
-  );
-}
-
-function testWheelYieldsWhenPageHasScrolled() {
-  assert.equal(
-    shouldReleaseWheelToPage({
-      pageScrollY: 80,
-      activeIndex: 3,
-      lastIndex: 8,
-      deltaY: -40,
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseWheelToPage({
-      pageScrollY: 80,
+      carouselActive: true,
       activeIndex: 8,
       lastIndex: 8,
       deltaY: 40,
@@ -86,64 +64,10 @@ function testWheelYieldsWhenPageHasScrolled() {
   );
 }
 
-function testKeysMatchWheelAtBoundaries() {
+function testKeysReleaseWhenCarouselInactive() {
   assert.equal(
     shouldReleaseKeyToPage({
-      pageScrollY: 0,
-      activeIndex: 8,
-      lastIndex: 8,
-      key: 'ArrowDown',
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseKeyToPage({
-      pageScrollY: 0,
-      activeIndex: 8,
-      lastIndex: 8,
-      key: 'PageDown',
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseKeyToPage({
-      pageScrollY: 0,
-      activeIndex: 0,
-      lastIndex: 8,
-      key: 'ArrowUp',
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseKeyToPage({
-      pageScrollY: 0,
-      activeIndex: 8,
-      lastIndex: 8,
-      key: 'End',
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseKeyToPage({
-      pageScrollY: 0,
-      activeIndex: 0,
-      lastIndex: 8,
-      key: 'Home',
-    }),
-    true,
-  );
-  assert.equal(
-    shouldReleaseKeyToPage({
-      pageScrollY: 0,
-      activeIndex: 3,
-      lastIndex: 8,
-      key: 'ArrowDown',
-    }),
-    false,
-  );
-  assert.equal(
-    shouldReleaseKeyToPage({
-      pageScrollY: 40,
+      carouselActive: false,
       activeIndex: 3,
       lastIndex: 8,
       key: 'ArrowDown',
@@ -152,9 +76,33 @@ function testKeysMatchWheelAtBoundaries() {
   );
 }
 
-testWheelPagesInsideCarousel();
-testWheelChainsAtFirstAndLast();
-testWheelYieldsWhenPageHasScrolled();
-testKeysMatchWheelAtBoundaries();
+function testKeysMatchWheelAtBoundariesWhileActive() {
+  assert.equal(
+    shouldReleaseKeyToPage({
+      carouselActive: true,
+      activeIndex: 8,
+      lastIndex: 8,
+      key: 'ArrowDown',
+    }),
+    true,
+  );
+  assert.equal(
+    shouldReleaseKeyToPage({
+      carouselActive: true,
+      activeIndex: 3,
+      lastIndex: 8,
+      key: 'ArrowDown',
+    }),
+    false,
+  );
+}
+
+testCarouselActiveWhenFlushInViewport();
+testCarouselInactiveWhenPageHasScrolledPast();
+testWheelPagesInsideActiveCarousel();
+testWheelReleasesWhenCarouselInactive();
+testWheelChainsAtFirstAndLastWhileActive();
+testKeysReleaseWhenCarouselInactive();
+testKeysMatchWheelAtBoundariesWhileActive();
 
 console.log('scroll-chain.test.ts: ok');
