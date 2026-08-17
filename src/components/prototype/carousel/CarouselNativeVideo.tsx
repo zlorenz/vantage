@@ -58,6 +58,7 @@ export function CarouselNativeVideo({
   const activeRef = useRef(active);
   const onReadyChangeRef = useRef(onReadyChange);
   const lastReadyRef = useRef(false);
+  const hasBeenReadyRef = useRef(false);
   const [ready, setReady] = useState(false);
   const boundedLoop = previewEndSeconds != null;
 
@@ -73,7 +74,13 @@ export function CarouselNativeVideo({
   }, [active]);
 
   const reportReady = (video: HTMLVideoElement) => {
-    const next = isCarouselPreviewReady(video, startRef.current);
+    if (isCarouselPreviewReady(video, startRef.current)) {
+      hasBeenReadyRef.current = true;
+    }
+    // Latch once a real frame has shown. Seeking a paused slide back to
+    // its in-point fails isCarouselPreviewReady (paused + off-in-point),
+    // which used to reshow the poster over the last decoded frame.
+    const next = hasBeenReadyRef.current;
     if (next === lastReadyRef.current) return;
     lastReadyRef.current = next;
     setReady(next);
@@ -105,6 +112,7 @@ export function CarouselNativeVideo({
       for (const event of READY_EVENTS) {
         video.removeEventListener(event, onReadyEvent);
       }
+      hasBeenReadyRef.current = false;
       if (lastReadyRef.current) {
         lastReadyRef.current = false;
         setReady(false);

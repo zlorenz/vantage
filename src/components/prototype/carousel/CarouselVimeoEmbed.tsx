@@ -15,6 +15,7 @@ interface CarouselVimeoEmbedProps {
   active: boolean;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
+  onReadyChange?: (ready: boolean) => void;
 }
 
 function prototypeVimeoSrc(url: string): string | null {
@@ -41,12 +42,17 @@ export function CarouselVimeoEmbed({
   active,
   previewStartSeconds,
   previewEndSeconds,
+  onReadyChange,
 }: CarouselVimeoEmbedProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<Player | null>(null);
   const activeRef = useRef(active);
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
+  const onReadyChangeRef = useRef(onReadyChange);
+  const reportedReadyRef = useRef(false);
+
+  onReadyChangeRef.current = onReadyChange;
 
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
   const embedSrc = prototypeVimeoSrc(normalizedUrl);
@@ -74,6 +80,22 @@ export function CarouselVimeoEmbed({
 
       const player = new VimeoPlayer(iframeRef.current);
       playerRef.current = player;
+
+      const reportReady = () => {
+        if (cancelled || reportedReadyRef.current) return;
+        reportedReadyRef.current = true;
+        onReadyChangeRef.current?.(true);
+      };
+
+      // SDK `loaded` = video is in the player; `play` = a frame is showing.
+      // No timeout fallback — an invented delay would clear the poster early.
+      player.on('loaded', reportReady);
+      player.on('play', reportReady);
+      void player.ready().then(async () => {
+        if (cancelled) return;
+        const paused = await player.getPaused();
+        if (!paused) reportReady();
+      });
 
       const onTimeUpdate = (data: {seconds: number}) => {
         const end = endRef.current;
@@ -106,6 +128,7 @@ export function CarouselVimeoEmbed({
 
     return () => {
       cancelled = true;
+      reportedReadyRef.current = false;
       const player = playerRef.current;
       playerRef.current = null;
       if (player) void player.destroy();

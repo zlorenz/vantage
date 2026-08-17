@@ -36,7 +36,7 @@ export function CarouselVimeo({
   const [useIframe, setUseIframe] = useState(!videoId);
 
   useEffect(() => {
-    if (useIframe || !mint) {
+    if (!useIframe && !mint) {
       onReadyChange?.(false);
     }
   }, [useIframe, mint, onReadyChange]);
@@ -82,6 +82,7 @@ export function CarouselVimeo({
         active={active}
         previewStartSeconds={previewStartSeconds}
         previewEndSeconds={previewEndSeconds}
+        onReadyChange={onReadyChange}
       />
     );
   }
