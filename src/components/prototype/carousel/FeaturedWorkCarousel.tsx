@@ -20,7 +20,7 @@ interface FeaturedWorkCarouselProps {
   slides: PrototypeCarouselSlide[];
 }
 
-const SLIDE_DURATION_MS = 200;
+const SLIDE_DURATION_MS = 300;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
 

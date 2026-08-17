@@ -2,7 +2,7 @@
  *
  * Touch: native CSS scroll-snap (mandatory + always). Do not replace
  * with JS paging — the continuous swipe + snap glide is the locked feel.
- * Wheel / keys: JS intercepts and animates (~200ms). Snap is disabled
+ * Wheel / keys: JS intercepts and animates (~300ms). Snap is disabled
  * only for the duration of that programmatic page move.
  */
 
