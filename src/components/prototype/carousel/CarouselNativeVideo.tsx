@@ -28,6 +28,9 @@ function isCarouselPreviewReady(
   startSeconds: number | null | undefined,
 ): boolean {
   if (video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return false;
+  // Playing: currentTime leaving the in-point is expected. Keep the frame
+  // visible unless readyState itself drops (real stall / waiting).
+  if (!video.paused) return true;
   if (startSeconds == null) return true;
   return Math.abs(video.currentTime - startSeconds) <= SEEK_TOLERANCE_S;
 }
@@ -39,7 +42,6 @@ interface CarouselNativeVideoProps {
   previewEndSeconds?: number | null;
   onPlaybackError?: () => void;
   onReadyChange?: (ready: boolean) => void;
-  onPlaying?: () => void;
 }
 
 export function CarouselNativeVideo({
@@ -49,22 +51,17 @@ export function CarouselNativeVideo({
   previewEndSeconds,
   onPlaybackError,
   onReadyChange,
-  onPlaying,
 }: CarouselNativeVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
   const activeRef = useRef(active);
   const onReadyChangeRef = useRef(onReadyChange);
-  const onPlayingRef = useRef(onPlaying);
   const lastReadyRef = useRef(false);
-  const wasActiveRef = useRef(active);
-  const revealWithoutWaitRef = useRef(false);
-  const [revealedByPlaying, setRevealedByPlaying] = useState(false);
+  const [ready, setReady] = useState(false);
   const boundedLoop = previewEndSeconds != null;
 
   onReadyChangeRef.current = onReadyChange;
-  onPlayingRef.current = onPlaying;
 
   useEffect(() => {
     startRef.current = previewStartSeconds;
@@ -76,26 +73,14 @@ export function CarouselNativeVideo({
   }, [active]);
 
   const reportReady = (video: HTMLVideoElement) => {
-    const ready = isCarouselPreviewReady(video, startRef.current);
-    if (ready === lastReadyRef.current) return;
-    lastReadyRef.current = ready;
-    onReadyChangeRef.current?.(ready);
+    const next = isCarouselPreviewReady(video, startRef.current);
+    if (next === lastReadyRef.current) return;
+    lastReadyRef.current = next;
+    setReady(next);
+    onReadyChangeRef.current?.(next);
   };
 
-  // Snapshot live DOM on the render `active` flips — same paint as the poster skip.
-  if (active !== wasActiveRef.current) {
-    revealWithoutWaitRef.current =
-      active &&
-      videoRef.current != null &&
-      isCarouselPreviewReady(videoRef.current, previewStartSeconds);
-    wasActiveRef.current = active;
-  }
-
-  if (!active && revealedByPlaying) {
-    setRevealedByPlaying(false);
-  }
-
-  const showVideo = active && (revealWithoutWaitRef.current || revealedByPlaying);
+  const showVideo = ready;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -122,6 +107,7 @@ export function CarouselNativeVideo({
       }
       if (lastReadyRef.current) {
         lastReadyRef.current = false;
+        setReady(false);
         onReadyChangeRef.current?.(false);
       }
     };
@@ -144,12 +130,6 @@ export function CarouselNativeVideo({
       return;
     }
 
-    const onPlayingEvent = () => {
-      setRevealedByPlaying(true);
-      onPlayingRef.current?.();
-    };
-    video.addEventListener('playing', onPlayingEvent);
-
     const start = startRef.current;
     const needsSeek =
       start != null && Math.abs(video.currentTime - start) > SEEK_TOLERANCE_S;
@@ -163,14 +143,10 @@ export function CarouselNativeVideo({
       video.currentTime = start;
       reportReady(video);
       tryPlay();
-      return () => {
-        video.removeEventListener('seeked', onSeeked);
-        video.removeEventListener('playing', onPlayingEvent);
-      };
+      return () => video.removeEventListener('seeked', onSeeked);
     }
 
     tryPlay();
-    return () => video.removeEventListener('playing', onPlayingEvent);
   }, [active, src]);
 
   useEffect(() => {
