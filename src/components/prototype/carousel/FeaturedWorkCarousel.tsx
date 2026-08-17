@@ -8,6 +8,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
+import {
+  getScrollTransitionState,
+  syncOverlapToSlides,
+  type OverlapPair,
+} from './transition';
 import { shouldMountCarouselPlayer, type PrototypeCarouselSlide } from './types';
 import './carousel.css';
 
@@ -40,11 +45,13 @@ function animateScrollTop(
   to: number,
   duration: number,
   signal: AnimSignal,
+  onFrame?: (scrollTop: number) => void,
 ): Promise<void> {
   const from = scroller.scrollTop;
   const delta = to - from;
   if (Math.abs(delta) < 1 || duration <= 0) {
     scroller.scrollTop = to;
+    onFrame?.(to);
     return Promise.resolve();
   }
 
@@ -56,11 +63,14 @@ function animateScrollTop(
         return;
       }
       const t = Math.min(1, (now - start) / duration);
-      scroller.scrollTop = from + delta * easeOutCubic(t);
+      const nextTop = from + delta * easeOutCubic(t);
+      scroller.scrollTop = nextTop;
+      onFrame?.(nextTop);
       if (t < 1) {
         requestAnimationFrame(step);
       } else {
         scroller.scrollTop = to;
+        onFrame?.(to);
         resolve();
       }
     };
@@ -77,10 +87,39 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelLockedRef = useRef(false);
   const wheelAccumRef = useRef(0);
   const wheelIdleTimerRef = useRef(0);
+  const settledIndexRef = useRef(0);
+  const overlapPairRef = useRef<OverlapPair | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
 
   const lastIndex = Math.max(0, slides.length - 1);
+
+  const syncOverlap = useCallback(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    if (prefersReducedMotion()) {
+      overlapPairRef.current = syncOverlapToSlides(
+        slideRefs.current,
+        {settled: true, index: settledIndexRef.current},
+        overlapPairRef.current,
+      );
+      return;
+    }
+
+    const state = getScrollTransitionState(
+      scroller.scrollTop,
+      scroller.clientHeight,
+      settledIndexRef.current,
+      lastIndex,
+    );
+    if (state.settled) settledIndexRef.current = state.index;
+    overlapPairRef.current = syncOverlapToSlides(
+      slideRefs.current,
+      state,
+      overlapPairRef.current,
+    );
+  }, [lastIndex]);
 
   useEffect(() => {
     void import('@vimeo/player');
@@ -114,6 +153,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         scroller.classList.remove('is-paging');
         scroller.scrollTop = top;
         animatingRef.current = false;
+        syncOverlap();
         return;
       }
 
@@ -121,14 +161,15 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.classList.add('is-paging');
       void scroller.offsetHeight;
 
-      void animateScrollTop(scroller, top, SLIDE_DURATION_MS, signal).then(() => {
+      void animateScrollTop(scroller, top, SLIDE_DURATION_MS, signal, syncOverlap).then(() => {
         if (signal.cancelled) return;
         scroller.scrollTop = top;
         scroller.classList.remove('is-paging');
         animatingRef.current = false;
+        syncOverlap();
       });
     },
-    [lastIndex],
+    [lastIndex, syncOverlap],
   );
 
   useEffect(() => {
@@ -153,6 +194,11 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       body.style.overscrollBehavior = prev.bodyOverscroll;
       if (animSignalRef.current) animSignalRef.current.cancelled = true;
       window.clearTimeout(wheelIdleTimerRef.current);
+      overlapPairRef.current = syncOverlapToSlides(
+        slideRefs.current,
+        {settled: true, index: settledIndexRef.current},
+        overlapPairRef.current,
+      );
     };
   }, []);
 
@@ -181,6 +227,14 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
     return () => observer.disconnect();
   }, [slides.length]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    scroller.addEventListener('scroll', syncOverlap, {passive: true});
+    return () => scroller.removeEventListener('scroll', syncOverlap);
+  }, [syncOverlap]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;

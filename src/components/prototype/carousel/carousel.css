@@ -16,6 +16,8 @@
 }
 
 .vp-proto-carousel__scroller {
+  position: relative;
+  z-index: 0;
   height: 100%;
   width: 100%;
   overflow-x: hidden;
@@ -42,7 +44,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* Visible so lagging outgoing media can overlap the incoming slide. */
+  overflow: visible;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   background: #000;
