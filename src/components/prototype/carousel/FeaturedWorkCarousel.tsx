@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Full-viewport featured-work prototype (vertical only).
+ * Full-viewport featured-work carousel (vertical only).
  * Touch: native CSS scroll-snap. Wheel / keys: one animated page at a time.
  * Hard-stop at the ends. No wrap. No timer-based auto-advance.
  */
@@ -317,24 +317,17 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   if (!slides.length) {
     return (
       <div className="vp-proto-carousel">
-        <p className="vp-proto-carousel__overlay">No prototype slides resolved.</p>
+        <p className="vp-proto-carousel__overlay">No featured work slides resolved.</p>
       </div>
     );
   }
 
   return (
     <div className="vp-proto-carousel">
-      <div className="vp-proto-carousel__chrome">
-        <span className="vp-proto-carousel__badge">Prototype</span>
-        <span className="vp-proto-carousel__count">
-          {activeIndex + 1} / {slides.length}
-        </span>
-      </div>
-
       <div
         ref={scrollerRef}
         className="vp-proto-carousel__scroller"
-        aria-label="Featured work prototype carousel"
+        aria-label="Featured work carousel"
       >
         {slides.map((slide, index) => (
           <CarouselSlide
