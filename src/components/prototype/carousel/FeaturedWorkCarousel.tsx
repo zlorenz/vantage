@@ -31,6 +31,8 @@ const SLIDE_DURATION_MS = 300;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
 const TOUCH_BOUNDARY_PX = 10;
+/** Keep sampling visualViewport after the last nested-scroller input. */
+const HEIGHT_GESTURE_TAIL_MS = 400;
 
 type AnimSignal = { cancelled: boolean };
 
@@ -199,24 +201,69 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
   useEffect(() => {
     const root = rootRef.current;
+    const scroller = scrollerRef.current;
     if (!root) return;
 
     const viewport = window.visualViewport;
     if (!viewport) return;
 
+    let lastWrittenPx = 0;
+    let rafId = 0;
+    let looping = false;
+    let settleTimer = 0;
+
     const syncVisualHeight = () => {
       const height = viewport.height;
       if (!Number.isFinite(height) || height <= 0) return;
-      root.style.setProperty('--vp-carousel-vh', `${Math.round(height)}px`);
+      const rounded = Math.round(height);
+      if (rounded === lastWrittenPx) return;
+      lastWrittenPx = rounded;
+      root.style.setProperty('--vp-carousel-vh', `${rounded}px`);
+    };
+
+    const tick = () => {
+      syncVisualHeight();
+      if (looping) rafId = requestAnimationFrame(tick);
+    };
+
+    const startHeightLoop = () => {
+      window.clearTimeout(settleTimer);
+      if (looping) return;
+      looping = true;
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const scheduleHeightLoopStop = () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => {
+        looping = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = 0;
+        syncVisualHeight();
+      }, HEIGHT_GESTURE_TAIL_MS);
     };
 
     viewport.addEventListener('resize', syncVisualHeight);
     viewport.addEventListener('scroll', syncVisualHeight);
     syncVisualHeight();
 
+    scroller?.addEventListener('touchstart', startHeightLoop, {passive: true});
+    scroller?.addEventListener('touchend', scheduleHeightLoopStop, {passive: true});
+    scroller?.addEventListener('touchcancel', scheduleHeightLoopStop, {passive: true});
+    scroller?.addEventListener('scroll', startHeightLoop, {passive: true});
+    scroller?.addEventListener('scrollend', scheduleHeightLoopStop);
+
     return () => {
+      looping = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      window.clearTimeout(settleTimer);
       viewport.removeEventListener('resize', syncVisualHeight);
       viewport.removeEventListener('scroll', syncVisualHeight);
+      scroller?.removeEventListener('touchstart', startHeightLoop);
+      scroller?.removeEventListener('touchend', scheduleHeightLoopStop);
+      scroller?.removeEventListener('touchcancel', scheduleHeightLoopStop);
+      scroller?.removeEventListener('scroll', startHeightLoop);
+      scroller?.removeEventListener('scrollend', scheduleHeightLoopStop);
       root.style.removeProperty('--vp-carousel-vh');
     };
   }, [slides.length]);
