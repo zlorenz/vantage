@@ -121,14 +121,14 @@ export default async function AboutPage({ params }: Props) {
       />
       <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
-      <SectionWrapper>
+      <SectionWrapper fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <PortableTextContent blocks={bodyBlocks} />
         </div>
       </SectionWrapper>
 
       {page.founders?.length ? (
-        <SectionWrapper borderTop>
+        <SectionWrapper borderTop fullBleed={true}>
           <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
             <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               <span className="vp-outline">{t('teamOutline')}</span> {t('team')}
@@ -147,7 +147,7 @@ export default async function AboutPage({ params }: Props) {
         </SectionWrapper>
       ) : null}
 
-      <SectionWrapper borderTop>
+      <SectionWrapper borderTop fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <h2 className="mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
             <span className="vp-outline">{t('productionServicesOutline')}</span>{' '}

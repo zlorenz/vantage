@@ -10,6 +10,8 @@ interface SectionWrapperProps {
   variant?: 'default' | 'tight' | 'loose';
   borderTop?: boolean;
   className?: string;
+  /** Skip the inner .vp-container — content is full-bleed (grids, custom max-width). */
+  fullBleed?: boolean;
 }
 
 const PADDING = {
@@ -23,12 +25,13 @@ export function SectionWrapper({
   variant = 'default',
   borderTop = false,
   className = '',
+  fullBleed = false,
 }: SectionWrapperProps) {
   return (
     <section
       className={`vp-section ${PADDING[variant]}${borderTop ? ' border-t border-vp-border-soft' : ''} ${className}`.trim()}
     >
-      {children}
+      {fullBleed ? children : <div className="vp-container">{children}</div>}
     </section>
   );
 }

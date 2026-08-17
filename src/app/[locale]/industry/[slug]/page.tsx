@@ -162,7 +162,7 @@ export default async function IndustryArchivePage({ params }: Props) {
         ])}
       />
       <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
-      <SectionWrapper className="vp-portfolio-taxonomy">
+      <SectionWrapper className="vp-portfolio-taxonomy" fullBleed={true}>
         <div className="container-fluid px-3 md:px-4">
           {intro ? (
             <div className="vp-work-intro container mx-auto mb-8 text-center font-light text-vp-text-muted min-[1400px]:max-w-[1320px]">

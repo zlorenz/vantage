@@ -53,7 +53,7 @@ export default async function SearchPage({ params }: Props) {
       <JsonLd
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), searchBreadcrumb(typedLocale)])}
       />
-      <SectionWrapper className="vp-search-page">
+      <SectionWrapper className="vp-search-page" fullBleed={true}>
       <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
         <h1 className="mb-8 font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading">
           {t('title')}

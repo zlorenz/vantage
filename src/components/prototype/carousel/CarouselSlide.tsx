@@ -58,8 +58,24 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         <div className="vp-proto-carousel__overlay">
           <div className="vp-proto-carousel__overlay-scrim" aria-hidden />
           <div className="vp-proto-carousel__overlay-copy">
-            <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
-            <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
+            <div className="vp-proto-carousel__overlay-main">
+              <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
+              <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
+              {slide.hrefSlug ? (
+                <VpButton
+                  href={{
+                    pathname: '/portfolio/[slug]',
+                    params: {slug: slide.hrefSlug},
+                  }}
+                  variant="ghost"
+                  className={`vp-proto-carousel__explore mt-2 w-fit ${
+                    active ? 'pointer-events-auto' : 'pointer-events-none'
+                  }`}
+                >
+                  {t('exploreButton')}
+                </VpButton>
+              ) : null}
+            </div>
             <dl className="vp-proto-carousel__credits">
               <div className="vp-proto-carousel__credit">
                 <dt>Director</dt>
@@ -74,20 +90,6 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                 <dd>{slide.formatLine}</dd>
               </div>
             </dl>
-            {slide.hrefSlug ? (
-              <VpButton
-                href={{
-                  pathname: '/portfolio/[slug]',
-                  params: {slug: slide.hrefSlug},
-                }}
-                variant="ghost"
-                className={`vp-proto-carousel__explore mt-2 w-fit ${
-                  active ? 'pointer-events-auto' : 'pointer-events-none'
-                }`}
-              >
-                {t('exploreButton')}
-              </VpButton>
-            ) : null}
           </div>
         </div>
       </article>

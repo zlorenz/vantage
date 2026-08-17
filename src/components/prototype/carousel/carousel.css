@@ -134,7 +134,17 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
-  padding: 1.5rem 1.25rem 5.5rem;
+  padding: 1.5rem var(--spacing-vp-gutter) 5.5rem;
+}
+
+/* display:contents so the left-group wrapper does not change the mobile stack. */
+.vp-proto-carousel__overlay-main {
+  display: contents;
+}
+
+/* Keep Explore after credits in the mobile column (Explore lives in the left group in DOM). */
+.vp-proto-carousel__explore {
+  order: 1;
 }
 
 .vp-proto-carousel__brand {
@@ -194,6 +204,37 @@
 }
 
 @media (min-width: 768px) {
+  .vp-proto-carousel__overlay-copy {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+  }
+
+  .vp-proto-carousel__overlay-main {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .vp-proto-carousel__explore {
+    order: 0;
+  }
+
+  .vp-proto-carousel__credits {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2.5rem;
+  }
+
+  .vp-proto-carousel__credit {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
   .vp-proto-carousel__brand {
     font-size: 22px;
   }
@@ -203,9 +244,11 @@
   }
 
   .vp-proto-carousel__credit dt {
+    width: auto;
     font-size: 14px;
     letter-spacing: 1.4px;
     line-height: 1;
+    font-variant: small-caps;
   }
 
   .vp-proto-carousel__credit dd {

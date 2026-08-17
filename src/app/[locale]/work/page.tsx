@@ -128,7 +128,7 @@ export default async function WorkPage({ params }: Props) {
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), workBreadcrumb(typedLocale)])}
       />
       <PageHero title={heroTitle} backgroundImage={workPage?.featuredImage ?? undefined} />
-      <SectionWrapper>
+      <SectionWrapper fullBleed={true}>
         <div className="container-fluid px-3 md:px-4">
           {introBlocks?.length ? (
             <div className="vp-work-intro container mx-auto mb-8 text-center font-light text-vp-text-muted min-[1400px]:max-w-[1320px]">

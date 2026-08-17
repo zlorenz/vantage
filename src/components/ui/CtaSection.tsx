@@ -49,7 +49,7 @@ export async function CtaSection({
   const href = (cta.buttonHref || '/video-campaign-brief') as LinkHref;
 
   return (
-    <SectionWrapper borderTop>
+    <SectionWrapper borderTop fullBleed={true}>
       <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
         <h2
           className="vp-cta__heading mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading"

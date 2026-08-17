@@ -90,7 +90,7 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
         </div>
       </CondensedPageHeader>
 
-      <SectionWrapper>
+      <SectionWrapper fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <p className="mb-8 font-light text-vp-text-muted">{ui.formDescription}</p>
           <CampaignBriefForm />

@@ -98,7 +98,7 @@ export default async function NewsPage({ params }: Props) {
       />
       <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
-      <SectionWrapper className="vp-news-page">
+      <SectionWrapper className="vp-news-page" fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
             <div className="lg:col-span-8">

@@ -151,7 +151,7 @@ export default async function BlogPostPage({ params }: Props) {
           },
         ])}
       />
-      <SectionWrapper className="vp-single-post">
+      <SectionWrapper className="vp-single-post" fullBleed={true}>
       <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
         <article>
           <header className="entry-header mb-8">

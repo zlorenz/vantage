@@ -137,6 +137,11 @@
   --spacing-vp-section-y-loose: 6.5rem;
   --spacing-vp-section-y-header-condensed: 9.5rem;
 
+  /* Spacing & Layout — Shared content column */
+
+  --spacing-vp-gutter: 1.25rem;
+  --container-vp-content: 1320px;
+
   /* Form & File Block Tokens — Campaign Brief Form */
 
   --spacing-vp-form-gap: 1rem;
@@ -713,6 +718,14 @@
 .vp-page-hero {
   position: relative;
   min-height: 20rem;
+}
+
+/* Shared content column used by SectionWrapper (when not fullBleed). */
+.vp-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-vp-content);
+  padding-inline: var(--spacing-vp-gutter);
 }
 
 @media (max-width: 575.98px) {

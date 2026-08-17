@@ -61,10 +61,10 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
   return (
     <header>
       <SiteHeaderNav
-        className="navbar fixed top-0 z-50 w-full px-2.5 py-[1.1rem]"
+        className="navbar fixed top-0 z-50 w-full py-[1.1rem]"
         aria-label={t('primaryAria')}
       >
-        <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-2.5">
+        <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-[var(--spacing-vp-gutter)]">
           <Link className="navbar-brand shrink-0" href={homeHref} rel="home">
             {/* SVG via <img> — next/image does not optimize SVGs */}
             {/* eslint-disable-next-line @next/next/no-img-element */}

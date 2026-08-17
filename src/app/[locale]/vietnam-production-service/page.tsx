@@ -137,14 +137,14 @@ export default async function VietnamProductionServicePage({ params }: Props) {
       />
       <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
-      <SectionWrapper>
+      <SectionWrapper fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <PortableTextContent blocks={bodyBlocks} relaxed />
         </div>
       </SectionWrapper>
 
       {vietnamPortfolio.length > 0 ? (
-        <SectionWrapper borderTop>
+        <SectionWrapper borderTop fullBleed={true}>
           <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
             <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               <span className="vp-outline">{t('shotInOutline')}</span> {t('shotIn')}
