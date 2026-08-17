@@ -7808,6 +7808,2830 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "SLfxr",
+      "x": 5570,
+      "y": -900,
+      "name": "Vietnam Production Service · Redesign",
+      "width": 1440,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "i2jJku",
+          "name": "Nav",
+          "width": "fill_container",
+          "fill": "#FFFFFF",
+          "gap": 24,
+          "padding": [
+            20,
+            48
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "jQNB4",
+              "name": "Brand",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "WZRSj",
+                  "name": "Wordmark",
+                  "width": 150,
+                  "height": 28,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "assets/Logo/Wordmark/PNG/BlackOnWhite.png",
+                    "mode": "fit"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "P4ElZ",
+              "name": "Items",
+              "gap": 40,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "t5iBu4",
+                  "name": "HOME",
+                  "fill": "#000000",
+                  "content": "HOME",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 13,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "UMfGn",
+                  "name": "WORK",
+                  "fill": "#000000",
+                  "content": "WORK",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 13,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "g1xq0u",
+                  "name": "ABOUT",
+                  "fill": "#000000",
+                  "content": "ABOUT",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 13,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "qomx0",
+                  "name": "BLOG",
+                  "fill": "#000000",
+                  "content": "BLOG",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 13,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "hEZCR",
+                  "name": "CONTACT",
+                  "fill": "#000000",
+                  "content": "CONTACT",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 13,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fj4fF",
+              "name": "Right",
+              "gap": 20,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "J3vZue",
+                  "name": "Lang Toggle · CN Flag",
+                  "clip": true,
+                  "width": 22,
+                  "height": 22,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "assets/UI/china-flag.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 999
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "BzezZ",
+          "name": "Hero",
+          "width": "fill_container",
+          "fill": "#000000",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            96,
+            48,
+            88,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "zYBfY",
+              "name": "Eyebrow",
+              "fill": "#B4AAAA",
+              "content": "FULL-SERVICE FILM PRODUCTION",
+              "fontFamily": "Mona Sans",
+              "fontSize": 11,
+              "fontWeight": "700",
+              "letterSpacing": 1.6
+            },
+            {
+              "type": "frame",
+              "id": "v1D5jg",
+              "name": "Heading Line",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "BFxzS",
+                  "name": "Title Solid",
+                  "fill": "#FFFFFF",
+                  "content": "VIETNAM",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 76,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "d4PWs",
+                  "name": "Title Ghost",
+                  "fill": "#3A3535",
+                  "content": "PRODUCTION SERVICE.",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 76,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "EIZBj",
+              "name": "Intro",
+              "fill": "#B4AAAA",
+              "textGrowth": "fixed-width",
+              "width": 720,
+              "content": "Vantage Pictures provides full-service Vietnam production support for international brands, agencies, and production companies shooting commercials, brand films, documentaries, and product campaigns across the country. With extensive experience servicing global clients, we deliver reliable local execution with international production standards.",
+              "lineHeight": 1.6,
+              "fontFamily": "Mona Sans",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "Smn1w",
+              "name": "Btn Row",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "D7Vdl",
+                  "name": "Start a Brief",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 225,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#F04E23",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F04E23",
+                        "position": 0.7
+                      },
+                      {
+                        "color": "#FFD400",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "cornerRadius": 999,
+                  "padding": [
+                    14,
+                    28
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "v2pHLr",
+                      "name": "Label",
+                      "fill": "#000000",
+                      "content": "START A BRIEF",
+                      "fontFamily": "Special Gothic Expanded One",
+                      "fontSize": 13,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.5
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "q9085g",
+                  "name": "View Work",
+                  "cornerRadius": 999,
+                  "stroke": "#FFFFFF",
+                  "strokeWidth": 1.5,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    14,
+                    28
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cX3rr",
+                      "name": "Label",
+                      "fill": "#FFFFFF",
+                      "content": "VIEW WORK",
+                      "fontFamily": "Special Gothic Expanded One",
+                      "fontSize": 13,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "B1CYO6",
+          "name": "Why Film Section",
+          "width": "fill_container",
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 40,
+          "padding": [
+            88,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "DDr64",
+              "name": "Section Head",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "N0WwPJ",
+                  "name": "Eyebrow",
+                  "fill": "#645A5A",
+                  "content": "WHERE WE FILM",
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 11,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.6
+                },
+                {
+                  "type": "text",
+                  "id": "rt7K9",
+                  "name": "Title",
+                  "fill": "#000000",
+                  "content": "WHY FILM IN VIETNAM?",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 34,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "uqCu9",
+                  "name": "Sub",
+                  "fill": "#645A5A",
+                  "textGrowth": "fixed-width",
+                  "width": 760,
+                  "content": "Vietnam offers diverse landscapes, competitive production costs, skilled local crews, and streamlined logistics for international commercial shoots. From modern cityscapes in Ho Chi Minh City and Hanoi to tropical coastlines, mountain ranges, and industrial environments, Vietnam provides a wide range of visually distinctive locations within close geographic proximity.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qumwp",
+              "name": "Locations Rows",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "AbmSF",
+                  "name": "Row 1",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "t0FpzA",
+                      "name": "Son Doong Cave, Quang Binh",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "x9T62Q",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/son-doong-cave.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "tUr9O",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "SON DOONG CAVE, QUANG BINH",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aXzIV",
+                      "name": "Saigon Central Post Office",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "NsP3p",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/saigon-post-office.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "D9t8x",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "SAIGON CENTRAL POST OFFICE",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hLPCF",
+                      "name": "Hasfarm, Da Lat",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cOiiC",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/hasfarm-dalat.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "BdAPd",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "HASFARM, DA LAT",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T8REy",
+                      "name": "Hoi An, Quang Nam",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "uhL5y",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/hoi-an.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "CSl9x",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "HOI AN, QUANG NAM",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "a530f",
+                  "name": "Row 2",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "v1oWe",
+                      "name": "Golden Bridge, Da Nang",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ItizW",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/golden-bridge-danang.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "j7zFBh",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "GOLDEN BRIDGE, DA NANG",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "E0AVs",
+                      "name": "Bitexco Financial Tower",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Y2mh4Y",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/bitexco-tower.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "nHpLj",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "BITEXCO FINANCIAL TOWER",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y9HogT",
+                      "name": "Saigon River",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "At0Ca",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/saigon-river.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "P3DlLu",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "SAIGON RIVER",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "anKGA",
+                      "name": "Tay Ho Pagoda, Hanoi",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "SY3DX",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/tay-ho-pagoda.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "lVRub",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "TAY HO PAGODA, HANOI",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Baffn",
+                  "name": "Row 3",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FFuVd",
+                      "name": "Khau Pha Pass, Yen Bai",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "CyN7p",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/khau-pha-pass.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "F8tjd",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "KHAU PHA PASS, YEN BAI",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "I4ry0",
+                      "name": "Phu Quoc Island",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "PBpYF",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/phu-quoc-island.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZH1Oy",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "PHU QUOC ISLAND",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QhQfD",
+                      "name": "Tan Dinh Catholic Church",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "nNbjM",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/tan-dinh-church.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "O3VFg",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "TAN DINH CATHOLIC CHURCH",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "DkA9w",
+                      "name": "Thien Hau Temple",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "eqjZC",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/thien-hau-temple.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "HbSns",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "THIEN HAU TEMPLE",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LGYym",
+                  "name": "Row 4",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yd9V5",
+                      "name": "Ha Long Bay, Quang Ninh",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "b5g4F",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/ha-long-bay.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "r5OZh",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "HA LONG BAY, QUANG NINH",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lzxza",
+                      "name": "Hanoi Skyline",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "RE60X",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/hanoi-skyline.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "rqi6u",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "HANOI SKYLINE",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "B0gME",
+                      "name": "Long Bien Bridge, Hanoi",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "PidwH",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/long-bien-bridge.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "s1feIn",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "LONG BIEN BRIDGE, HANOI",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qC36e",
+                      "name": "Mekong Delta, Kien Giang",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "a9XZim",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/mekong-delta.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "kpGSe",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "MEKONG DELTA, KIEN GIANG",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LP7q5",
+                  "name": "Row 5",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "d8ZOW4",
+                      "name": "National Museum of Vietnamese History",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "g2jDZ",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/national-museum.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "l2hrP",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "NATIONAL MUSEUM OF VIETNAMESE HISTORY",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "V98Ui",
+                      "name": "Hang Mua Peak, Ninh Binh",
+                      "width": 324,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "z58Pda",
+                          "name": "Image",
+                          "width": 324,
+                          "height": 220,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/locations/hang-mua-peak.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "zUg0A",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "HANG MUA PEAK, NINH BINH",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M8iBS",
+          "name": "Buried Reference Panel",
+          "width": "fill_container",
+          "fill": "#FFFFFF",
+          "children": [
+            {
+              "type": "frame",
+              "id": "YVcAi",
+              "name": "Inner",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "padding": [
+                0,
+                48,
+                96,
+                48
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xrnXv",
+                  "name": "Eyebrow",
+                  "fill": "#645A5A",
+                  "content": "MORE ON VIETNAM PRODUCTION",
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 10,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.4
+                },
+                {
+                  "type": "text",
+                  "id": "IuwGK",
+                  "name": "H2",
+                  "fill": "#000000",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "FULL-SERVICE PRODUCTION SUPPORT IN VIETNAM",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "CGWwh",
+                  "name": "P1",
+                  "fill": "#645A5A",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Our Vietnam production services cover every stage of the filmmaking process, including location scouting, permitting, casting, crew sourcing, equipment rental, production management, line producing, budgeting, and post-production coordination. Whether servicing large-scale commercial productions or agile documentary crews, we ensure efficient execution, clear communication, and professional oversight throughout.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "i9ZUY",
+                  "name": "H3",
+                  "fill": "#000000",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "FILMING LOCATIONS ACROSS VIETNAM",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "YdRDZ",
+                  "name": "P2",
+                  "fill": "#645A5A",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "From Ho Chi Minh City and Hanoi to coastlines, mountains, and industrial sites, we help international crews scout and secure distinctive filming locations across Vietnam. Whether you need urban streets, natural landscapes, or controllable stages, we match locations to the creative brief and coordinate permits and logistics on the ground.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "NfWqP",
+                  "name": "Guidebook Btn",
+                  "cornerRadius": 999,
+                  "stroke": "#000000",
+                  "strokeWidth": 1.5,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    12,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "s6P80",
+                      "name": "Label",
+                      "fill": "#000000",
+                      "content": "VIETNAM LOCATION GUIDEBOOK",
+                      "fontFamily": "Special Gothic Expanded One",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.5
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "aDJ5j",
+                  "name": "H3b",
+                  "fill": "#000000",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "TRUSTED BY GLOBAL BRANDS AND AGENCIES",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "AlXCi",
+                  "name": "P3",
+                  "fill": "#645A5A",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "We regularly collaborate with international creative teams from Asia, Europe, and North America, supporting cross-border productions with bilingual production management and transparent budgeting. Our experience working with technology brands, consumer electronics companies, and global marketing agencies ensures smooth integration between local Vietnamese crews and international stakeholders.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "uMpMy",
+          "name": "Studios Section",
+          "width": "fill_container",
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            0,
+            48,
+            96,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Kbayk",
+              "name": "Eyebrow",
+              "fill": "#645A5A",
+              "content": "VANTAGE-VETTED STUDIOS & STAGES",
+              "fontFamily": "Mona Sans",
+              "fontSize": 11,
+              "fontWeight": "700",
+              "letterSpacing": 1.6
+            },
+            {
+              "type": "frame",
+              "id": "gObhz",
+              "name": "Studio Rows",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "M6MPWD",
+                  "name": "Row 1",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tmeG4",
+                      "name": "Long Island Film Studio",
+                      "width": 432,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "O4O3Y",
+                          "name": "Image",
+                          "width": 432,
+                          "height": 240,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/studios/long-island-studio.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "MwG5Z",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "LONG ISLAND FILM STUDIO",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QInPI",
+                      "name": "VAIB Ho Chi Minh City",
+                      "width": 432,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "tCpw3",
+                          "name": "Image",
+                          "width": 432,
+                          "height": 240,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/studios/vaib-studio.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "WnBFj",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "VAIB HO CHI MINH CITY",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "F769G",
+                      "name": "StarVN Ho Chi Minh City",
+                      "width": 432,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "NTXmY",
+                          "name": "Image",
+                          "width": 432,
+                          "height": 240,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/studios/starvn-studio.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "UpUqU",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "STARVN HO CHI MINH CITY",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QKBAZ",
+                  "name": "Row 2",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "jsbOo",
+                      "name": "Capital Studio, G-Floor",
+                      "width": 432,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "v5LFh",
+                          "name": "Image",
+                          "width": 432,
+                          "height": 240,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/studios/capital-studio.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "UtOw2",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "CAPITAL STUDIO, G-FLOOR",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nD3J7",
+                      "name": "PS Vietnam Rental House",
+                      "width": 432,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "E93lK",
+                          "name": "Image",
+                          "width": 432,
+                          "height": 240,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/studios/ps-vietnam.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "NkdX4",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "PS VIETNAM RENTAL HOUSE",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HJnRf",
+                      "name": "Tak17 Lighting Studio",
+                      "width": 432,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "YgVJp",
+                          "name": "Image",
+                          "width": 432,
+                          "height": 240,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "assets/vietnam-page/studios/tak17-studio.jpg",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "text",
+                          "id": "h5xM1v",
+                          "name": "Caption",
+                          "fill": "#645A5A",
+                          "content": "TAK17 LIGHTING STUDIO",
+                          "fontFamily": "Mona Sans",
+                          "fontSize": 10,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.6
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "MLDJn",
+          "name": "Shot In Vietnam Section",
+          "width": "fill_container",
+          "fill": "#000000",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            96,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Y7gp0",
+              "name": "Section Head",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tqD0M",
+                  "name": "Eyebrow",
+                  "fill": "#B4AAAA",
+                  "content": "SHOT IN",
+                  "fontFamily": "Mona Sans",
+                  "fontSize": 12,
+                  "fontWeight": "700",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "frame",
+                  "id": "cNGku",
+                  "name": "Split Heading",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xbMCF",
+                      "name": "Solid",
+                      "fill": "#FFFFFF",
+                      "content": "VIETNAM",
+                      "fontFamily": "Special Gothic Expanded One",
+                      "fontSize": 52,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vbDMc",
+              "name": "Portfolio Rows",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "F8RIR",
+                  "name": "Row 1",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Cf5Ze",
+                      "name": "TPBank App",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/tpbank.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "e4v5up",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pLvmh",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "TPBANK APP",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v3vV8",
+                      "name": "BIDV SmartBanking",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/bidv.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "PUIu9",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "odMKr",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "BIDV SMARTBANKING",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Xv5z1",
+                      "name": "Vinamilk Probi",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/vinamilk-probi.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "BmhfJ",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "L7Nq59",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "VINAMILK PROBI",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "X9uFxj",
+                  "name": "Row 2",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "L6qbQh",
+                      "name": "Techcombank",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/techcombank.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "vzeQH",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "hlJ0E",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "TECHCOMBANK",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PKa2z",
+                      "name": "Aquafina",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/aquafina.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QEWKR",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "m6clF",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "AQUAFINA",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "g07bR",
+                      "name": "Coca-Cola x The Ocean Cleanup",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/coca-cola-ocean.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MjYL9",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "TXMka",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "COCA-COLA X THE OCEAN CLEANUP",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "axIAG",
+                  "name": "Row 3",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tp53Q",
+                      "name": "Lay's Max",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/lays-max.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "UcqWw",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ks4nf",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "LAY'S MAX",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "w31Coe",
+                      "name": "Comfort x Toc Tien",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/comfort-toc-tien.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "NwafY",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "N1xc6X",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "COMFORT X TOC TIEN",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JoTQ9",
+                      "name": "Old Spice Sandalwood",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/old-spice.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QCUpl",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "EJdwI",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "OLD SPICE SANDALWOOD",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TJt2P",
+                  "name": "Row 4",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "c6wOa",
+                      "name": "Mutosi",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/mutosi.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "w3VQd",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "x9Sfn",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "MUTOSI",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XgphV",
+                      "name": "Hoa Phat",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/hoa-phat.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "W8gdsi",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vircY",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "HOA PHAT",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "F4ynUm",
+                      "name": "Herbalife",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/herbalife.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ISPwc",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "gN3nR",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "HERBALIFE",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lV7eK",
+                  "name": "Row 5",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ylIe7",
+                      "name": "Techcombank Mobile",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/techcombank-mobile.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mK1yl",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YP3dw",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "TECHCOMBANK MOBILE",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q0FKmP",
+                      "name": "Taiwan Excellence",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/taiwan-excellence.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "O0mokd",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "NJ9j6",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "TAIWAN EXCELLENCE",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dmftY",
+                      "name": "Toyota Camry 2022",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/toyota-camry.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "j04217",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Q6Y9ox",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "TOYOTA CAMRY 2022",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FNw48",
+                  "name": "Row 6",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "INud5",
+                      "name": "Samsung Galaxy S21",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/samsung-s21.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "n2iIqi",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JnqJa",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "SAMSUNG GALAXY S21",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CrKjA",
+                      "name": "Samsung x Discovery",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/samsung-discovery.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "f53RnX",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "PuvRi",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "SAMSUNG X DISCOVERY",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ms2zj",
+                      "name": "Samsung Vietnam",
+                      "clip": true,
+                      "width": 437,
+                      "height": 246,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "assets/vietnam-page/portfolio/samsung-vn-galaxy-s21.jpg",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "E01cIo",
+                          "name": "Label Bar",
+                          "width": "fill_container",
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 180,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#00000000",
+                                "position": 0
+                              },
+                              {
+                                "color": "#000000CC",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "padding": [
+                            32,
+                            16,
+                            14,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "iGSIc",
+                              "name": "Title",
+                              "fill": "#FFFFFF",
+                              "content": "SAMSUNG VIETNAM",
+                              "fontFamily": "Special Gothic Expanded One",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "b84zy0",
+          "name": "Final CTA",
+          "width": "fill_container",
+          "fill": "#F04E23",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            96,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "k2EqT",
+              "name": "Heading Line",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "vYmzP",
+                  "name": "Solid",
+                  "fill": "#000000",
+                  "content": "LET'S BRING",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 56,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "fhrEb",
+                  "name": "Ghost",
+                  "fill": "#F58657",
+                  "content": "YOUR VISION TO LIFE!",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 56,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "E0lLS",
+              "name": "Body",
+              "fill": "#000000",
+              "textGrowth": "fixed-width",
+              "width": 640,
+              "content": "Got a commercial, branded video, or product campaign in mind? Every great idea starts with a clear vision. Start the conversation by filling out our client briefing form, which helps us gather all the details we need to build an accurate quote and production plan tailored to your next project.",
+              "lineHeight": 1.6,
+              "fontFamily": "Mona Sans",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "zTjAF",
+              "name": "Send Us a Brief",
+              "fill": "#000000",
+              "cornerRadius": 999,
+              "padding": [
+                16,
+                32
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "AO4m4",
+                  "name": "Label",
+                  "fill": "#FFFFFF",
+                  "content": "SEND US A BRIEF",
+                  "fontFamily": "Special Gothic Expanded One",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "X3ZlIE",
+          "name": "Footer",
+          "width": "fill_container",
+          "fill": "#000000",
+          "padding": [
+            40,
+            48
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "UNNWL",
+              "name": "Email",
+              "fill": "#FDB913",
+              "content": "info@vantage.pictures",
+              "fontFamily": "Mona Sans",
+              "fontSize": 18,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "pViTs",
+              "name": "Social",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "GEn86",
+                  "name": "film",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "film",
+                  "library": "feather",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "icon",
+                  "id": "n9JSTJ",
+                  "name": "instagram",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "instagram",
+                  "library": "feather",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "icon",
+                  "id": "y8Lk8D",
+                  "name": "facebook",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "facebook",
+                  "library": "feather",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "icon",
+                  "id": "bIcDY",
+                  "name": "youtube",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "youtube",
+                  "library": "feather",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "icon",
+                  "id": "nDDh6",
+                  "name": "linkedin",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "linkedin",
+                  "library": "feather",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
