@@ -77,15 +77,53 @@ function FaIcon({ name }: { name: string }) {
   );
 }
 
-export function SiteFooter({ siteSettings }: SiteFooterProps) {
-  const email = siteSettings.contactEmail?.trim();
-  const socials = SOCIAL_ORDER.filter((s) => {
-    const url = siteSettings[s.key]?.trim();
-    return Boolean(url);
-  });
+const DEFAULT_SOCIAL_LINK_CLASS =
+  'inline-flex text-white transition-colors duration-vp-fast hover:text-vp-link';
+
+export function FooterSocials({
+  siteSettings,
+  linkClassName = DEFAULT_SOCIAL_LINK_CLASS,
+}: {
+  siteSettings: SiteSettings;
+  linkClassName?: string;
+}) {
+  const socials = SOCIAL_ORDER.filter((s) => Boolean(siteSettings[s.key]?.trim()));
+  if (!socials.length) return null;
 
   return (
-    <footer className="bg-vp-bg py-16 text-vp-text">
+    <ul className="vp-footer-social m-0 flex list-none gap-4 p-0">
+      {socials.map((s) => {
+        const url = siteSettings[s.key]!.trim();
+        return (
+          <li key={s.key}>
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={s.label}
+              aria-label={s.label}
+              className={linkClassName}
+            >
+              {s.icon === 'xinpianchang' ? (
+                <XinpianchangIcon />
+              ) : s.icon === 'xiaohongshu' ? (
+                <XiaohongshuIcon />
+              ) : (
+                <FaIcon name={s.icon} />
+              )}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+export function SiteFooter({ siteSettings }: SiteFooterProps) {
+  const email = siteSettings.contactEmail?.trim();
+
+  return (
+    <footer className="vp-site-footer bg-vp-bg py-16 text-vp-text">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-between gap-6 max-[575px]:flex-col min-[576px]:flex-row min-[576px]:items-center">
           <div className="text-center min-[576px]:text-left">
@@ -99,33 +137,7 @@ export function SiteFooter({ siteSettings }: SiteFooterProps) {
             ) : null}
           </div>
 
-          {socials.length > 0 ? (
-            <ul className="vp-footer-social m-0 flex list-none gap-4 p-0">
-              {socials.map((s) => {
-                const url = siteSettings[s.key]!.trim();
-                return (
-                  <li key={s.key}>
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={s.label}
-                      aria-label={s.label}
-                      className="inline-flex text-white transition-colors duration-vp-fast hover:text-vp-link"
-                    >
-                      {s.icon === 'xinpianchang' ? (
-                        <XinpianchangIcon />
-                      ) : s.icon === 'xiaohongshu' ? (
-                        <XiaohongshuIcon />
-                      ) : (
-                        <FaIcon name={s.icon} />
-                      )}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
+          <FooterSocials siteSettings={siteSettings} />
         </div>
       </div>
     </footer>

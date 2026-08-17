@@ -4,6 +4,7 @@
 
 import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
+import {HomeContactSection} from '@/components/home/HomeContactSection';
 import {FeaturedWorkCarousel} from '@/components/prototype/carousel/FeaturedWorkCarousel';
 import {loadFeaturedWorkSlides} from '@/components/prototype/carousel/load-slides';
 import {JsonLd} from '@/components/seo/JsonLd';
@@ -84,6 +85,7 @@ export default async function HomePage({params}: Props) {
       <JsonLd data={buildOrganization(organization)} />
       <JsonLd data={buildBreadcrumbs([homeBreadcrumb(typedLocale)])} />
       <FeaturedWorkCarousel slides={slides} />
+      <HomeContactSection />
     </>
   );
 }

@@ -28,6 +28,8 @@
 
   --color-vp-link: #f9db24;
   --color-vp-link-hover: #d7bf1f;
+  /* VP Color Section — brand orange. Black text only (never white on orange). */
+  --color-vp-orange: #f04e23;
 
   /* Colour Palette — Borders */
 
@@ -189,6 +191,7 @@
 
   --vp-link: #f9db24;
   --vp-link-hover: #d7bf1f;
+  --vp-orange: #f04e23;
 
   /* Colour Palette — Borders */
 
@@ -329,6 +332,12 @@
     font-weight: 400;
     color: var(--vp-text);
     /* No forced font-smoothing — leave the browser default. */
+  }
+
+  /* Temp Home contact section covers email/socials; hide the sitewide footer
+   * on that route so the two don't stack. Header Contact modal stays. */
+  body:has(.vp-home-contact) .vp-site-footer {
+    display: none;
   }
 
   /* Outline text effect — hero and page titles.
