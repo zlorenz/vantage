@@ -5,6 +5,10 @@
  * overscroll chaining never fires while it remains interactive. Use
  * isCarouselScrollActive() (viewport visibility) as the single gate for wheel,
  * keys, and touch — when inactive, the scroller must not capture input.
+ *
+ * At the first/last slide, a continued gesture in the outbound direction must
+ * go passive immediately. Waiting for document scroll lets mandatory snap fight
+ * overscroll chaining and feels sticky.
  */
 
 /** Carousel top may sit slightly below the fixed header while still "active". */
@@ -26,6 +30,18 @@ export function isCarouselScrollActive(options: {
   );
 }
 
+/** True when a vertical gesture would leave the carousel past first/last slide. */
+export function isBoundaryRelease(options: {
+  activeIndex: number;
+  lastIndex: number;
+  deltaY: number;
+}): boolean {
+  const {activeIndex, lastIndex, deltaY} = options;
+  if (deltaY < 0 && activeIndex <= 0) return true;
+  if (deltaY > 0 && activeIndex >= lastIndex) return true;
+  return false;
+}
+
 export function shouldReleaseWheelToPage(options: {
   carouselActive: boolean;
   activeIndex: number;
@@ -34,9 +50,7 @@ export function shouldReleaseWheelToPage(options: {
 }): boolean {
   const {carouselActive, activeIndex, lastIndex, deltaY} = options;
   if (!carouselActive) return true;
-  if (deltaY < 0 && activeIndex <= 0) return true;
-  if (deltaY > 0 && activeIndex >= lastIndex) return true;
-  return false;
+  return isBoundaryRelease({activeIndex, lastIndex, deltaY});
 }
 
 export function shouldReleaseKeyToPage(options: {
@@ -47,13 +61,12 @@ export function shouldReleaseKeyToPage(options: {
 }): boolean {
   const {carouselActive, activeIndex, lastIndex, key} = options;
   if (!carouselActive) return true;
-  if ((key === 'ArrowDown' || key === 'PageDown') && activeIndex >= lastIndex) {
-    return true;
+  if (key === 'ArrowDown' || key === 'PageDown' || key === 'End') {
+    return isBoundaryRelease({activeIndex, lastIndex, deltaY: 1});
   }
-  if ((key === 'ArrowUp' || key === 'PageUp') && activeIndex <= 0) {
-    return true;
+  if (key === 'ArrowUp' || key === 'PageUp' || key === 'Home') {
+    return isBoundaryRelease({activeIndex, lastIndex, deltaY: -1});
   }
-  if (key === 'Home' && activeIndex <= 0) return true;
-  if (key === 'End' && activeIndex >= lastIndex) return true;
   return false;
 }
+

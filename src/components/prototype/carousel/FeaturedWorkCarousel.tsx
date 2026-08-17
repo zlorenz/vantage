@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
 import {
+  isBoundaryRelease,
   isCarouselScrollActive,
   shouldReleaseKeyToPage,
   shouldReleaseWheelToPage,
@@ -29,6 +30,7 @@ interface FeaturedWorkCarouselProps {
 const SLIDE_DURATION_MS = 300;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
+const TOUCH_BOUNDARY_PX = 10;
 
 type AnimSignal = { cancelled: boolean };
 
@@ -97,11 +99,72 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const settledIndexRef = useRef(0);
   const overlapPairRef = useRef<OverlapPair | null>(null);
   const carouselActiveRef = useRef(true);
+  const boundaryPassiveRef = useRef(false);
+  const touchStartYRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
   const [carouselScrollActive, setCarouselScrollActive] = useState(true);
 
   const lastIndex = Math.max(0, slides.length - 1);
+
+  const readVisibilityActive = useCallback(() => {
+    const root = rootRef.current;
+    if (!root) return false;
+    const rect = root.getBoundingClientRect();
+    return isCarouselScrollActive({
+      rootTop: rect.top,
+      intersectionRatio:
+        rect.height > 0
+          ? Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top)) /
+            rect.height
+          : 0,
+    });
+  }, []);
+
+  const applyScrollActive = useCallback((visibilityActive: boolean) => {
+    if (!visibilityActive) boundaryPassiveRef.current = false;
+    const active = visibilityActive && !boundaryPassiveRef.current;
+    carouselActiveRef.current = active;
+    setCarouselScrollActive(active);
+  }, []);
+
+  const releasePastBoundary = useCallback(
+    (deltaY: number) => {
+      if (!carouselActiveRef.current) return false;
+      if (
+        !isBoundaryRelease({
+          activeIndex: activeIndexRef.current,
+          lastIndex,
+          deltaY,
+        })
+      ) {
+        return false;
+      }
+      boundaryPassiveRef.current = true;
+      carouselActiveRef.current = false;
+      setCarouselScrollActive(false);
+      return true;
+    },
+    [lastIndex],
+  );
+
+  const restoreFromBoundaryIfReversed = useCallback(
+    (deltaY: number) => {
+      if (!boundaryPassiveRef.current) return;
+      if (
+        isBoundaryRelease({
+          activeIndex: activeIndexRef.current,
+          lastIndex,
+          deltaY,
+        })
+      ) {
+        return;
+      }
+      boundaryPassiveRef.current = false;
+      applyScrollActive(readVisibilityActive());
+    },
+    [applyScrollActive, lastIndex, readVisibilityActive],
+  );
 
   const syncOverlap = useCallback(() => {
     const scroller = scrollerRef.current;
@@ -163,17 +226,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     if (!root) return;
 
     const syncCarouselScrollActive = () => {
-      const rect = root.getBoundingClientRect();
-      const active = isCarouselScrollActive({
-        rootTop: rect.top,
-        intersectionRatio:
-          rect.height > 0
-            ? Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top)) /
-              rect.height
-            : 0,
-      });
-      carouselActiveRef.current = active;
-      setCarouselScrollActive(active);
+      applyScrollActive(readVisibilityActive());
     };
 
     const observer = new IntersectionObserver(
@@ -193,7 +246,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       window.removeEventListener('scroll', syncCarouselScrollActive);
       window.removeEventListener('resize', syncCarouselScrollActive);
     };
-  }, [slides.length]);
+  }, [applyScrollActive, readVisibilityActive, slides.length]);
 
   useEffect(() => {
     if (neighborMountIndex === activeIndex) return;
@@ -330,6 +383,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
           deltaY: delta,
         })
       ) {
+        if (!releasePastBoundary(delta)) restoreFromBoundaryIfReversed(delta);
         return;
       }
 
@@ -358,7 +412,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.removeEventListener('wheel', onWheel);
       window.clearTimeout(wheelIdleTimerRef.current);
     };
-  }, [goTo, lastIndex]);
+  }, [goTo, lastIndex, releasePastBoundary, restoreFromBoundaryIfReversed]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -384,6 +438,9 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
           key,
         })
       ) {
+        const deltaY =
+          key === 'ArrowDown' || key === 'PageDown' || key === 'End' ? 1 : -1;
+        if (!releasePastBoundary(deltaY)) restoreFromBoundaryIfReversed(deltaY);
         return;
       }
 
@@ -401,7 +458,41 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [goTo, lastIndex]);
+  }, [goTo, lastIndex, releasePastBoundary, restoreFromBoundaryIfReversed]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const onTouchStart = (event: TouchEvent) => {
+      touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const startY = touchStartYRef.current;
+      const currentY = event.touches[0]?.clientY;
+      if (startY == null || currentY == null) return;
+      const deltaY = startY - currentY;
+      if (Math.abs(deltaY) < TOUCH_BOUNDARY_PX) return;
+      if (releasePastBoundary(deltaY)) return;
+      restoreFromBoundaryIfReversed(deltaY);
+    };
+
+    const onTouchEnd = () => {
+      touchStartYRef.current = null;
+    };
+
+    scroller.addEventListener('touchstart', onTouchStart, {passive: true});
+    scroller.addEventListener('touchmove', onTouchMove, {passive: true});
+    scroller.addEventListener('touchend', onTouchEnd, {passive: true});
+    scroller.addEventListener('touchcancel', onTouchEnd, {passive: true});
+    return () => {
+      scroller.removeEventListener('touchstart', onTouchStart);
+      scroller.removeEventListener('touchmove', onTouchMove);
+      scroller.removeEventListener('touchend', onTouchEnd);
+      scroller.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [releasePastBoundary, restoreFromBoundaryIfReversed]);
 
   if (!slides.length) {
     return (

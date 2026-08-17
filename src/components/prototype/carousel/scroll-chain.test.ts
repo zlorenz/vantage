@@ -4,6 +4,7 @@
 
 import assert from 'node:assert/strict';
 import {
+  isBoundaryRelease,
   isCarouselScrollActive,
   shouldReleaseKeyToPage,
   shouldReleaseWheelToPage,
@@ -97,6 +98,29 @@ function testKeysMatchWheelAtBoundariesWhileActive() {
   );
 }
 
+function testBoundaryReleaseOnlyAtEnds() {
+  assert.equal(
+    isBoundaryRelease({activeIndex: 8, lastIndex: 8, deltaY: 20}),
+    true,
+  );
+  assert.equal(
+    isBoundaryRelease({activeIndex: 8, lastIndex: 8, deltaY: -20}),
+    false,
+  );
+  assert.equal(
+    isBoundaryRelease({activeIndex: 0, lastIndex: 8, deltaY: -20}),
+    true,
+  );
+  assert.equal(
+    isBoundaryRelease({activeIndex: 0, lastIndex: 8, deltaY: 20}),
+    false,
+  );
+  assert.equal(
+    isBoundaryRelease({activeIndex: 3, lastIndex: 8, deltaY: 20}),
+    false,
+  );
+}
+
 testCarouselActiveWhenFlushInViewport();
 testCarouselInactiveWhenPageHasScrolledPast();
 testWheelPagesInsideActiveCarousel();
@@ -104,5 +128,6 @@ testWheelReleasesWhenCarouselInactive();
 testWheelChainsAtFirstAndLastWhileActive();
 testKeysReleaseWhenCarouselInactive();
 testKeysMatchWheelAtBoundariesWhileActive();
+testBoundaryReleaseOnlyAtEnds();
 
 console.log('scroll-chain.test.ts: ok');
