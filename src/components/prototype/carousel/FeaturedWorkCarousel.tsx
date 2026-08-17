@@ -7,7 +7,7 @@
  * scroll chains into the page (content below / back to the top).
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
 import {
   isBoundaryRelease,
@@ -105,9 +105,28 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const touchStartYRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
-  const [carouselScrollActive, setCarouselScrollActive] = useState(true);
 
   const lastIndex = Math.max(0, slides.length - 1);
+
+  const commitActiveIndex = useCallback((index: number) => {
+    if (index === activeIndexRef.current) return false;
+    activeIndexRef.current = index;
+    setActiveIndex(index);
+    return true;
+  }, []);
+
+  const setCarouselScrollActive = useCallback((active: boolean) => {
+    if (active === carouselActiveRef.current) return;
+    carouselActiveRef.current = active;
+    rootRef.current?.classList.toggle('is-scroll-passive', !active);
+  }, []);
+
+  useLayoutEffect(() => {
+    rootRef.current?.classList.toggle(
+      'is-scroll-passive',
+      !carouselActiveRef.current,
+    );
+  });
 
   const readVisibilityActive = useCallback(() => {
     const root = rootRef.current;
@@ -125,10 +144,8 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
   const applyScrollActive = useCallback((visibilityActive: boolean) => {
     if (!visibilityActive) boundaryPassiveRef.current = false;
-    const active = visibilityActive && !boundaryPassiveRef.current;
-    carouselActiveRef.current = active;
-    setCarouselScrollActive(active);
-  }, []);
+    setCarouselScrollActive(visibilityActive && !boundaryPassiveRef.current);
+  }, [setCarouselScrollActive]);
 
   const releasePastBoundary = useCallback(
     (deltaY: number) => {
@@ -143,11 +160,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         return false;
       }
       boundaryPassiveRef.current = true;
-      carouselActiveRef.current = false;
       setCarouselScrollActive(false);
       return true;
     },
-    [lastIndex],
+    [lastIndex, setCarouselScrollActive],
   );
 
   const restoreFromBoundaryIfReversed = useCallback(
@@ -307,10 +323,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     (index: number, animate: boolean) => {
       const scroller = scrollerRef.current;
       const next = Math.min(Math.max(index, 0), lastIndex);
-      if (next === activeIndexRef.current) return;
-
-      activeIndexRef.current = next;
-      setActiveIndex(next);
+      if (!commitActiveIndex(next)) return;
 
       if (!scroller) return;
       const top = next * scroller.clientHeight;
@@ -339,7 +352,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         syncOverlap();
       });
     },
-    [lastIndex, syncOverlap],
+    [commitActiveIndex, lastIndex, syncOverlap],
   );
 
   useEffect(() => {
@@ -366,9 +379,8 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!visible) return;
         const index = Number((visible.target as HTMLElement).dataset.index);
-        if (!Number.isFinite(index) || index === activeIndexRef.current) return;
-        activeIndexRef.current = index;
-        setActiveIndex(index);
+        if (!Number.isFinite(index)) return;
+        commitActiveIndex(index);
       },
       { root: scroller, threshold: [0.6, 0.9] },
     );
@@ -378,7 +390,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     }
 
     return () => observer.disconnect();
-  }, [slides.length]);
+  }, [commitActiveIndex, slides.length]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -552,7 +564,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   return (
     <div
       ref={rootRef}
-      className={`vp-proto-carousel${carouselScrollActive ? '' : ' is-scroll-passive'}`}
+      className="vp-proto-carousel"
     >
       <div
         ref={scrollerRef}
