@@ -2,6 +2,8 @@
 
 import {forwardRef, useEffect, useState} from 'react';
 import Image from 'next/image';
+import {useTranslations} from 'next-intl';
+import {VpButton} from '@/components/ui/VpButton';
 import {CarouselVimeo} from './CarouselVimeo';
 import type {PrototypeCarouselSlide} from './types';
 
@@ -14,6 +16,7 @@ interface CarouselSlideProps {
 
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
   function CarouselSlide({slide, index, active, mountPlayer}, ref) {
+    const t = useTranslations('Home');
     const [playerReady, setPlayerReady] = useState(false);
 
     useEffect(() => {
@@ -69,6 +72,20 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               <dd>{slide.formatLine}</dd>
             </div>
           </dl>
+          {slide.hrefSlug ? (
+            <VpButton
+              href={{
+                pathname: '/portfolio/[slug]',
+                params: {slug: slide.hrefSlug},
+              }}
+              variant="ghost"
+              className={`vp-proto-carousel__explore mt-2 w-fit ${
+                active ? 'pointer-events-auto' : 'pointer-events-none'
+              }`}
+            >
+              {t('exploreButton')}
+            </VpButton>
+          ) : null}
         </div>
       </article>
     );

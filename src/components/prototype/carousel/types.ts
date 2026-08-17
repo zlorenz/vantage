@@ -1,5 +1,6 @@
 export type PrototypeCarouselSlide = {
   slug: string;
+  hrefSlug: string;
   brandLine: string;
   campaignLine: string;
   directorNames: string;

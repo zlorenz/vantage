@@ -94,6 +94,7 @@ export default async function PrototypeCarouselPage({ params }: Props) {
     return [
       {
         slug,
+        hrefSlug: typedLocale === 'zh' ? entry.slugZh || slug : slug,
         brandLine,
         campaignLine,
         directorNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'director')),
