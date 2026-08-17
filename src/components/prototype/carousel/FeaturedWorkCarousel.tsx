@@ -3,11 +3,18 @@
 /**
  * Full-viewport featured-work prototype (vertical only).
  * Touch: native CSS scroll-snap. Wheel / keys: one animated page at a time.
+ * Overlay settle: scrollend (touch) / goTo completion (wheel, keys).
+ * Overlay depth-shift: read-only scrollTop on touch; never on wheel/keys.
  * Hard-stop at the ends. No wrap. No timer-based auto-advance.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
+import {
+  overlayDepthOffsetPx,
+  snapIndexFromScroll,
+  supportsScrollEnd,
+} from './overlay-motion';
 import { shouldMountCarouselPlayer, type PrototypeCarouselSlide } from './types';
 import './carousel.css';
 
@@ -18,6 +25,8 @@ interface FeaturedWorkCarouselProps {
 const SLIDE_DURATION_MS = 200;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
+/** Idle fallback when `scrollend` is missing (Safari < 26.2 / iOS < 26.2). */
+const SCROLL_SETTLE_IDLE_MS = 140;
 
 type AnimSignal = { cancelled: boolean };
 
@@ -79,8 +88,20 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelIdleTimerRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
+  const [overlayRevealIndex, setOverlayRevealIndex] = useState<number | null>(null);
 
   const lastIndex = Math.max(0, slides.length - 1);
+
+  const writeOverlayDepth = useCallback((scrollTop: number, slideHeight: number, forceZero: boolean) => {
+    for (let i = 0; i < slideRefs.current.length; i++) {
+      const overlay = slideRefs.current[i]?.querySelector<HTMLElement>(
+        '.vp-proto-carousel__overlay',
+      );
+      if (!overlay) continue;
+      const offset = forceZero ? 0 : overlayDepthOffsetPx(scrollTop, i, slideHeight);
+      overlay.style.transform = offset === 0 ? '' : `translateY(${offset}px)`;
+    }
+  }, []);
 
   useEffect(() => {
     void import('@vimeo/player');
@@ -114,21 +135,26 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         scroller.classList.remove('is-paging');
         scroller.scrollTop = top;
         animatingRef.current = false;
+        writeOverlayDepth(top, scroller.clientHeight, true);
+        setOverlayRevealIndex(next);
         return;
       }
 
       animatingRef.current = true;
       scroller.classList.add('is-paging');
       void scroller.offsetHeight;
+      writeOverlayDepth(scroller.scrollTop, scroller.clientHeight, true);
 
       void animateScrollTop(scroller, top, SLIDE_DURATION_MS, signal).then(() => {
         if (signal.cancelled) return;
         scroller.scrollTop = top;
         scroller.classList.remove('is-paging');
         animatingRef.current = false;
+        writeOverlayDepth(top, scroller.clientHeight, true);
+        setOverlayRevealIndex(next);
       });
     },
-    [lastIndex],
+    [lastIndex, writeOverlayDepth],
   );
 
   useEffect(() => {
@@ -181,6 +207,64 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
     return () => observer.disconnect();
   }, [slides.length]);
+
+  useEffect(() => {
+    setOverlayRevealIndex(0);
+  }, []);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    let raf = 0;
+    let ticking = false;
+    let settleTimer = 0;
+    const nativeScrollEnd = supportsScrollEnd(window);
+
+    const revealFromScroll = () => {
+      if (animatingRef.current) return;
+      const height = scroller.clientHeight;
+      const index = snapIndexFromScroll(scroller.scrollTop, height, lastIndex);
+      setOverlayRevealIndex(index);
+    };
+
+    const applyDepth = () => {
+      ticking = false;
+      const height = scroller.clientHeight;
+      if (animatingRef.current || prefersReducedMotion()) {
+        writeOverlayDepth(scroller.scrollTop, height, true);
+        return;
+      }
+      writeOverlayDepth(scroller.scrollTop, height, false);
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        raf = requestAnimationFrame(applyDepth);
+      }
+      if (nativeScrollEnd || animatingRef.current) return;
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(revealFromScroll, SCROLL_SETTLE_IDLE_MS);
+    };
+
+    const onScrollEnd = () => {
+      if (animatingRef.current) return;
+      revealFromScroll();
+    };
+
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    if (nativeScrollEnd) {
+      scroller.addEventListener('scrollend', onScrollEnd);
+    }
+
+    return () => {
+      scroller.removeEventListener('scroll', onScroll);
+      scroller.removeEventListener('scrollend', onScrollEnd);
+      window.clearTimeout(settleTimer);
+      cancelAnimationFrame(raf);
+    };
+  }, [lastIndex, writeOverlayDepth]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -287,6 +371,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
             slide={slide}
             index={index}
             active={index === activeIndex}
+            overlayIn={index === overlayRevealIndex}
             mountPlayer={shouldMountCarouselPlayer(index, activeIndex, neighborMountIndex)}
           />
         ))}

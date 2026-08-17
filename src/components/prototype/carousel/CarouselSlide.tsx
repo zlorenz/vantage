@@ -9,15 +9,20 @@ interface CarouselSlideProps {
   slide: PrototypeCarouselSlide;
   index: number;
   active: boolean;
+  overlayIn: boolean;
   mountPlayer: boolean;
 }
 
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
-  function CarouselSlide({ slide, index, active, mountPlayer }, ref) {
+  function CarouselSlide({ slide, index, active, overlayIn, mountPlayer }, ref) {
     return (
       <article
         ref={ref}
-        className="vp-proto-carousel__slide"
+        className={
+          overlayIn
+            ? 'vp-proto-carousel__slide is-overlay-in'
+            : 'vp-proto-carousel__slide'
+        }
         aria-hidden={!active}
         data-index={index}
       >
