@@ -1,13 +1,18 @@
 'use client';
 
 /**
- * Full-viewport featured-work carousel (vertical only).
+ * Full-viewport featured-work carousel (vertical only), in document flow.
  * Touch: native CSS scroll-snap. Wheel / keys: one animated page at a time.
- * Hard-stop at the ends. No wrap. No timer-based auto-advance.
+ * No wrap. No timer-based auto-advance. At the first/last slide, further
+ * scroll chains into the page (content below / back to the top).
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
+import {
+  shouldReleaseKeyToPage,
+  shouldReleaseWheelToPage,
+} from './scroll-chain';
 import {
   getScrollTransitionState,
   syncOverlapToSlides,
@@ -173,25 +178,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   );
 
   useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    const prev = {
-      htmlOverflow: html.style.overflow,
-      bodyOverflow: body.style.overflow,
-      htmlOverscroll: html.style.overscrollBehavior,
-      bodyOverscroll: body.style.overscrollBehavior,
-    };
-
-    html.style.overflow = 'hidden';
-    body.style.overflow = 'hidden';
-    html.style.overscrollBehavior = 'none';
-    body.style.overscrollBehavior = 'none';
-
     return () => {
-      html.style.overflow = prev.htmlOverflow;
-      body.style.overflow = prev.bodyOverflow;
-      html.style.overscrollBehavior = prev.htmlOverscroll;
-      body.style.overscrollBehavior = prev.bodyOverscroll;
       if (animSignalRef.current) animSignalRef.current.cancelled = true;
       window.clearTimeout(wheelIdleTimerRef.current);
       overlapPairRef.current = syncOverlapToSlides(
@@ -259,17 +246,34 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     const onWheel = (event: WheelEvent) => {
       if (event.ctrlKey) return;
 
-      event.preventDefault();
-
       if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
 
-      if (wheelLockedRef.current || animatingRef.current) {
+      const delta = normalizeWheelDelta(event);
+      if (delta === 0) return;
+
+      if (animatingRef.current) {
+        event.preventDefault();
         scheduleWheelUnlock();
         return;
       }
 
-      const delta = normalizeWheelDelta(event);
-      if (delta === 0) return;
+      if (
+        shouldReleaseWheelToPage({
+          pageScrollY: window.scrollY,
+          activeIndex: activeIndexRef.current,
+          lastIndex,
+          deltaY: delta,
+        })
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (wheelLockedRef.current) {
+        scheduleWheelUnlock();
+        return;
+      }
 
       wheelAccumRef.current += delta;
       if (Math.abs(wheelAccumRef.current) < WHEEL_THRESHOLD_PX) {
@@ -289,23 +293,43 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.removeEventListener('wheel', onWheel);
       window.clearTimeout(wheelIdleTimerRef.current);
     };
-  }, [goTo]);
+  }, [goTo, lastIndex]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.repeat || animatingRef.current) return;
 
-      if (event.key === 'ArrowDown' || event.key === 'PageDown') {
-        event.preventDefault();
+      const {key} = event;
+      if (
+        key !== 'ArrowDown' &&
+        key !== 'PageDown' &&
+        key !== 'ArrowUp' &&
+        key !== 'PageUp' &&
+        key !== 'Home' &&
+        key !== 'End'
+      ) {
+        return;
+      }
+
+      if (
+        shouldReleaseKeyToPage({
+          pageScrollY: window.scrollY,
+          activeIndex: activeIndexRef.current,
+          lastIndex,
+          key,
+        })
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      if (key === 'ArrowDown' || key === 'PageDown') {
         goTo(activeIndexRef.current + 1, true);
-      } else if (event.key === 'ArrowUp' || event.key === 'PageUp') {
-        event.preventDefault();
+      } else if (key === 'ArrowUp' || key === 'PageUp') {
         goTo(activeIndexRef.current - 1, true);
-      } else if (event.key === 'Home') {
-        event.preventDefault();
+      } else if (key === 'Home') {
         goTo(0, true);
-      } else if (event.key === 'End') {
-        event.preventDefault();
+      } else {
         goTo(lastIndex, true);
       }
     }

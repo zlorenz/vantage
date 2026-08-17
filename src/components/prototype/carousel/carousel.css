@@ -7,17 +7,16 @@
  */
 
 .vp-proto-carousel {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   background: #000;
   color: #fff;
-  overscroll-behavior: none;
 }
 
 .vp-proto-carousel__scroller {
   position: relative;
-  z-index: 0;
   height: 100%;
   width: 100%;
   overflow-x: hidden;
@@ -25,7 +24,10 @@
   scroll-behavior: auto;
   scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
-  overscroll-behavior: none;
+  /* auto (not none/contain): first/last slide overscroll chains into the
+   * page. Snap paging between slides is regular overflow, not overscroll,
+   * so this does not reintroduce bounce mid-carousel. */
+  overscroll-behavior-y: auto;
   touch-action: pan-y;
   -webkit-overflow-scrolling: auto;
   scrollbar-width: none;
@@ -101,61 +103,18 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  pointer-events: none;
-}
-
-/* Solid legibility gradient — unmasked. Stays with the slide, not the copy parallax. */
-.vp-proto-carousel__overlay-scrim {
-  position: absolute;
-  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 1.5rem 1.25rem 5.5rem;
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.55) 0%,
     rgba(0, 0, 0, 0.15) 42%,
     transparent 70%
   );
-}
-
-/*
- * Copy sits flex-end above 5.5rem (~8–10vh) padding, so the text block
- * typically occupies the lower ~30–40% of the slide. A symmetric 15/85
- * mask never reached the title. Bottom opaque-stop is therefore lower
- * (closer to center) than the top stop.
- *
- * Tune on-device:
- *   --vp-overlay-feather-top     where the top fade reaches full opacity
- *   --vp-overlay-feather-bottom  where the bottom fade begins
- */
-.vp-proto-carousel__overlay-copy {
-  --vp-overlay-feather-top: 28%;
-  --vp-overlay-feather-bottom: 68%;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 1.5rem 1.25rem 5.5rem;
-  /* -webkit- prefix: Safari < 15.4 / iOS < 15.4 */
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    #000 var(--vp-overlay-feather-top),
-    #000 var(--vp-overlay-feather-bottom),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    #000 var(--vp-overlay-feather-top),
-    #000 var(--vp-overlay-feather-bottom),
-    transparent 100%
-  );
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+  pointer-events: none;
 }
 
 .vp-proto-carousel__brand {
