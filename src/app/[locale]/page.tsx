@@ -1,5 +1,9 @@
 /**
  * Home page — featured-work carousel hero.
+ *
+ * generateMetadata still reads the CMS home document for title, description,
+ * OG image, and noIndex. METADATA_BASE remains https://vantage.pictures
+ * (existing sitewide behaviour, unchanged here).
  */
 
 import type {Metadata} from 'next';
@@ -28,11 +32,6 @@ import type {SanityImage, SeoFields} from '@/types/sanity';
 
 type HomePageData = {
   featuredImage?: SanityImage;
-  heroSlides?: unknown;
-  featuredWork?: unknown;
-  body?: unknown;
-  bodyZh?: unknown;
-  brandLogos?: unknown;
   seo?: SeoFields;
   noIndex?: boolean | null;
 };
