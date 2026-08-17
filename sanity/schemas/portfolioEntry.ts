@@ -11,7 +11,7 @@ import {defineField, defineType} from 'sanity'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
-import {PreviewBoundsInput} from '../components/PreviewBoundsInput'
+import {PreviewBoundsPairField} from '../components/PreviewBoundsInput'
 import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
 import {NullField} from '../components/locale-pair/NullField'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
@@ -36,6 +36,7 @@ export const portfolioEntry = defineType({
     {name: 'slugAndDate', options: {columns: 2}},
     {name: 'copy', title: 'Description', options: {columns: 2}},
     {name: 'taxonomy', title: 'Formats / Industries / Markets', options: {columns: 3}},
+    {name: 'carouselPreview', title: 'Carousel Preview', options: {columns: 2}},
   ],
 
   fields: [
@@ -274,40 +275,11 @@ export const portfolioEntry = defineType({
     }),
 
     defineField({
-      name: 'previewStartSeconds',
-      title: 'Preview Start (seconds)',
-      type: 'number',
-      group: 'media',
-      description:
-        'Optional carousel preview in-point. Leave empty to play from the start of the video. Options are real video keyframes when a Vimeo URL is set.',
-      hidden: hiddenForTranslator,
-      components: {input: PreviewBoundsInput},
-      validation: (rule) => rule.min(0),
-    }),
-
-    defineField({
-      name: 'previewEndSeconds',
-      title: 'Preview End (seconds)',
-      type: 'number',
-      group: 'media',
-      description:
-        'Optional carousel preview out-point. When set, playback loops back to Preview Start instead of the full video. Options are keyframes after Preview Start.',
-      hidden: hiddenForTranslator,
-      components: {input: PreviewBoundsInput},
-      validation: (rule) =>
-        rule.min(0).custom((end, context) => {
-          const start = (context.parent as {previewStartSeconds?: number} | undefined)
-            ?.previewStartSeconds
-          if (end == null || start == null) return true
-          return end > start ? true : 'Preview End must be greater than Preview Start'
-        }),
-    }),
-
-    defineField({
       name: 'previewCleanVimeoUrl',
-      title: 'Clean Preview Video URL (Vimeo)',
+      title: 'Clean Preview Video URL',
       type: 'url',
       group: 'media',
+      fieldset: 'carouselPreview',
       description:
         'Optional. Vimeo URL for a clean export (no burned-in text/logos), ' +
         'used only for the homepage carousel preview clip. When set, this ' +
@@ -316,6 +288,37 @@ export const portfolioEntry = defineType({
         'empty to use the master video for the carousel too.',
       hidden: hiddenForTranslator,
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
+    }),
+
+    defineField({
+      name: 'previewStartSeconds',
+      title: 'Start',
+      type: 'number',
+      group: 'media',
+      fieldset: 'carouselPreview',
+      description:
+        'Optional in and out points for the homepage carousel clip. Leave empty to play the full video. Options are real keyframes when a Vimeo URL is set.',
+      hidden: hiddenForTranslator,
+      components: {field: PreviewBoundsPairField},
+      validation: (rule) => rule.min(0),
+    }),
+
+    defineField({
+      name: 'previewEndSeconds',
+      title: 'End',
+      type: 'number',
+      group: 'media',
+      // Omit fieldset so NullField does not consume a column in the 2-col row.
+      // Stay in the form tree for editors (NullField) so sibling patches work.
+      hidden: hiddenForTranslator,
+      components: {field: NullField},
+      validation: (rule) =>
+        rule.min(0).custom((end, context) => {
+          const start = (context.parent as {previewStartSeconds?: number} | undefined)
+            ?.previewStartSeconds
+          if (end == null || start == null) return true
+          return end > start ? true : 'End must be greater than Start'
+        }),
     }),
 
     ...defineLocalePair({

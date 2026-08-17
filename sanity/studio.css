@@ -58,8 +58,25 @@ fieldset[data-testid='fieldset-titleAndNav'] > [data-ui='Box'] > [data-ui='Grid'
 fieldset[data-testid='fieldset-slugAndDate'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-contactPhoneWhatsapp'] > [data-ui='Box'] > [data-ui='Grid'],
 fieldset[data-testid='fieldset-contactModalTitleCta'] > [data-ui='Box'] > [data-ui='Grid'],
-fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Box'] > [data-ui='Grid'] {
+fieldset[data-testid='fieldset-metaTitleOgImage'] > [data-ui='Box'] > [data-ui='Grid'],
+fieldset[data-testid='fieldset-carouselPreview'] > [data-ui='Box'] > [data-ui='Grid'] {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+fieldset[data-testid='fieldset-carouselPreview'] > [data-ui='Box'] > [data-ui='Grid'] {
+  align-items: start;
+}
+
+/**
+ * Portfolio Carousel Preview (clean URL | start/end): stack when narrow.
+ */
+fieldset[data-testid='fieldset-carouselPreview'] {
+  container-type: inline-size;
+}
+@container (max-width: 640px) {
+  fieldset[data-testid='fieldset-carouselPreview'] > [data-ui='Box'] > [data-ui='Grid'] {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /**

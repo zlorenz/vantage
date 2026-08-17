@@ -1,20 +1,25 @@
 /**
- * Preview start/end picker — keyframe timestamps from /api/vimeo-keyframes.
- * Loads only after the editor focuses the field (not on document open / list view).
- * Falls back to the default number input when the video is not a Vimeo progressive MP4.
+ * Carousel preview Start/End picker — keyframe timestamps from /api/vimeo-keyframes.
+ * Loads only after the editor focuses the pair (not on document open / list view).
+ * Falls back to number inputs when the video is not a Vimeo progressive MP4.
+ *
+ * Rendered as one stacked field via PreviewBoundsPairField. previewEndSeconds
+ * stays in the form tree as NullField so sibling patches keep working.
  */
 
-import {Flex, Select, Spinner, Stack, Text} from '@sanity/ui'
-import {useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent} from 'react'
+import {Box, Flex, Select, Spinner, Stack, Text, TextInput} from '@sanity/ui'
+import {useCallback, useMemo, useState, type ChangeEvent, type ReactNode} from 'react'
 import {
   getPublishedId,
   set,
   unset,
   useDocumentOperation,
   useFormValue,
-  type NumberInputProps,
+  type FieldProps,
 } from 'sanity'
 import {extractVimeoId, normalizeStoredVideoUrl} from '@video-url'
+
+import {FieldLabel} from './FieldLabel'
 
 const DEFAULT_SITE_URL = 'https://vantage.pictures'
 
@@ -29,6 +34,7 @@ function getKeyframeApiBaseUrl(): string {
 }
 
 type LoadStatus = 'idle' | 'loading' | 'ready' | 'fallback'
+type Bound = 'start' | 'end'
 
 const successCache = new Map<string, number[]>()
 const inflight = new Map<string, Promise<number[] | null>>()
@@ -84,39 +90,92 @@ function formatSeconds(value: number): string {
   return `${value}s`
 }
 
-export function PreviewBoundsInput(props: NumberInputProps) {
-  const {value, onChange, readOnly, path} = props
-  const bound = path.at(-1) === 'previewEndSeconds' ? 'end' : 'start'
-  const vimeoUrl = asUrl(useFormValue(['vimeoUrl']))
-  const cleanPreviewUrl = asUrl(useFormValue(['previewCleanVimeoUrl']))
-  const startValue = useFormValue(['previewStartSeconds'])
-  const endValue = useFormValue(['previewEndSeconds'])
-  const documentId = asUrl(useFormValue(['_id']))
-  const {patch} = useDocumentOperation(getPublishedId(documentId), 'portfolioEntry')
+function PreviewBoundControl(props: {
+  bound: Bound
+  value: number | undefined
+  options: number[]
+  status: LoadStatus
+  keyframes: number[]
+  readOnly?: boolean
+  onBeginLoad: () => void
+  onSelect: (bound: Bound, next: string) => void
+}) {
+  const {bound, value, options, status, keyframes, readOnly, onBeginLoad, onSelect} = props
 
-  const videoId = useMemo(() => {
-    const raw = cleanPreviewUrl || vimeoUrl
-    if (!raw) return null
-    return extractVimeoId(normalizeStoredVideoUrl(raw))
-  }, [cleanPreviewUrl, vimeoUrl])
+  if (status === 'fallback') {
+    return (
+      <TextInput
+        type="number"
+        fontSize={1}
+        padding={3}
+        radius={1}
+        min={0}
+        step="any"
+        value={typeof value === 'number' ? String(value) : ''}
+        readOnly={readOnly}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          onSelect(bound, event.currentTarget.value)
+        }}
+      />
+    )
+  }
+
+  return (
+    <Select
+      fontSize={1}
+      padding={3}
+      radius={1}
+      value={typeof value === 'number' ? String(value) : ''}
+      disabled={readOnly}
+      onPointerDown={onBeginLoad}
+      onFocus={onBeginLoad}
+      onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+        onSelect(bound, event.currentTarget.value)
+      }}
+    >
+      <option value="">{bound === 'start' ? 'Play from start' : 'Play to end'}</option>
+      {options.map((time) => (
+        <option key={time} value={String(time)}>
+          {formatSeconds(time)}
+          {status === 'ready' && typeof value === 'number' && time === value && !keyframes.includes(time)
+            ? ' (current)'
+            : ''}
+        </option>
+      ))}
+    </Select>
+  )
+}
+
+type PairInnerProps = {
+  videoId: string | null
+  readOnly: boolean
+  startSeconds: number | undefined
+  endSeconds: number | undefined
+  documentId: string
+  description?: ReactNode
+  errors: string[]
+  startOnChange?: FieldProps['inputProps']['onChange']
+  patch: ReturnType<typeof useDocumentOperation>['patch']
+}
+
+function PreviewBoundsPairInner(props: PairInnerProps) {
+  const {
+    videoId,
+    readOnly,
+    startSeconds,
+    endSeconds,
+    documentId,
+    description,
+    errors,
+    startOnChange,
+    patch,
+  } = props
 
   const [status, setStatus] = useState<LoadStatus>(videoId ? 'idle' : 'fallback')
   const [keyframes, setKeyframes] = useState<number[]>([])
-  const statusRef = useRef(status)
-  statusRef.current = status
-
-  useEffect(() => {
-    if (!videoId) {
-      setStatus('fallback')
-      setKeyframes([])
-      return
-    }
-    setStatus('idle')
-    setKeyframes([])
-  }, [videoId])
 
   const beginLoad = useCallback(() => {
-    if (statusRef.current !== 'idle' || readOnly) return
+    if (status !== 'idle' || readOnly) return
     if (!videoId) {
       setStatus('fallback')
       return
@@ -130,79 +189,154 @@ export function PreviewBoundsInput(props: NumberInputProps) {
       setKeyframes(times)
       setStatus('ready')
     })
-  }, [readOnly, videoId])
+  }, [readOnly, status, videoId])
 
-  const startSeconds = typeof startValue === 'number' ? startValue : undefined
-  const options = useMemo(() => {
+  const startOptions = useMemo(() => {
+    if (typeof startSeconds === 'number' && !keyframes.some((time) => time === startSeconds)) {
+      return [startSeconds, ...keyframes]
+    }
+    return keyframes
+  }, [keyframes, startSeconds])
+
+  const endOptions = useMemo(() => {
     const filtered =
-      bound === 'end' && startSeconds != null
-        ? keyframes.filter((time) => time > startSeconds)
-        : keyframes
-    if (typeof value === 'number' && !filtered.some((time) => time === value)) {
-      return [value, ...filtered]
+      startSeconds != null ? keyframes.filter((time) => time > startSeconds) : keyframes
+    if (typeof endSeconds === 'number' && !filtered.some((time) => time === endSeconds)) {
+      return [endSeconds, ...filtered]
     }
     return filtered
-  }, [bound, keyframes, startSeconds, value])
+  }, [endSeconds, keyframes, startSeconds])
 
   const handleSelect = useCallback(
-    (event: ChangeEvent<HTMLSelectElement>) => {
-      const next = event.currentTarget.value
+    (bound: Bound, next: string) => {
       if (!next) {
-        onChange(unset())
+        if (bound === 'start') {
+          startOnChange?.(unset())
+        } else if (documentId) {
+          patch.execute([{unset: ['previewEndSeconds']}])
+        }
         return
       }
       const parsed = Number(next)
       if (!Number.isFinite(parsed)) return
-      onChange(set(parsed))
-      if (
-        bound === 'start' &&
-        typeof endValue === 'number' &&
-        parsed >= endValue &&
-        documentId
-      ) {
-        patch.execute([{unset: ['previewEndSeconds']}])
+
+      if (bound === 'start') {
+        startOnChange?.(set(parsed))
+        if (typeof endSeconds === 'number' && parsed >= endSeconds && documentId) {
+          patch.execute([{unset: ['previewEndSeconds']}])
+        }
+        return
+      }
+
+      if (documentId) {
+        patch.execute([{set: {previewEndSeconds: parsed}}])
       }
     },
-    [bound, documentId, endValue, onChange, patch],
+    [documentId, endSeconds, patch, startOnChange],
   )
 
-  if (status === 'fallback' || !videoId) {
-    return props.renderDefault(props)
-  }
-
-  if (status === 'loading') {
-    return (
-      <Flex align="center" gap={3} paddingY={2}>
-        <Spinner muted />
-        <Text size={1} muted>
-          Loading keyframes...
-        </Text>
-      </Flex>
-    )
-  }
+  const rangeError =
+    endSeconds != null && startSeconds != null && endSeconds <= startSeconds
+      ? 'End must be greater than Start'
+      : null
 
   return (
-    <Stack space={2} onPointerDown={beginLoad} onFocusCapture={beginLoad}>
-      <Select
-        fontSize={1}
-        padding={3}
-        radius={1}
-        value={typeof value === 'number' ? String(value) : ''}
-        disabled={readOnly}
-        onPointerDown={beginLoad}
-        onFocus={beginLoad}
-        onChange={handleSelect}
-      >
-        <option value="">{bound === 'start' ? 'Play from start' : 'Play to end'}</option>
-        {options.map((time) => (
-          <option key={time} value={String(time)}>
-            {formatSeconds(time)}
-            {status === 'ready' && typeof value === 'number' && time === value && !keyframes.includes(time)
-              ? ' (current)'
-              : ''}
-          </option>
-        ))}
-      </Select>
-    </Stack>
+    <Box paddingY={1}>
+      <Stack space={2} onPointerDown={beginLoad} onFocusCapture={beginLoad}>
+        {description ? (
+          <div style={{opacity: 0.7, fontSize: 13, lineHeight: 1.4}}>{description}</div>
+        ) : null}
+
+        {status === 'loading' ? (
+          <Flex align="center" gap={3} paddingY={2}>
+            <Spinner muted />
+            <Text size={1} muted>
+              Loading keyframes...
+            </Text>
+          </Flex>
+        ) : (
+          <Stack space={2}>
+            <Stack space={2}>
+              <FieldLabel optional size={1}>
+                Start
+              </FieldLabel>
+              <PreviewBoundControl
+                bound="start"
+                value={startSeconds}
+                options={startOptions}
+                status={status}
+                keyframes={keyframes}
+                readOnly={readOnly}
+                onBeginLoad={beginLoad}
+                onSelect={handleSelect}
+              />
+            </Stack>
+
+            <Stack space={2}>
+              <FieldLabel optional size={1}>
+                End
+              </FieldLabel>
+              <PreviewBoundControl
+                bound="end"
+                value={endSeconds}
+                options={endOptions}
+                status={status}
+                keyframes={keyframes}
+                readOnly={readOnly}
+                onBeginLoad={beginLoad}
+                onSelect={handleSelect}
+              />
+            </Stack>
+          </Stack>
+        )}
+
+        {errors.length > 0 || rangeError ? (
+          <Text size={0} style={{color: 'var(--card-badge-critical-fg-color)'}}>
+            {[...errors, rangeError].filter(Boolean).join(' · ')}
+          </Text>
+        ) : null}
+      </Stack>
+    </Box>
+  )
+}
+
+/** Stacked Start / End field for the Carousel Preview fieldset. */
+export function PreviewBoundsPairField(props: FieldProps) {
+  const readOnly = Boolean(props.inputProps?.readOnly)
+  const startOnChange = props.inputProps?.onChange
+  const vimeoUrl = asUrl(useFormValue(['vimeoUrl']))
+  const cleanPreviewUrl = asUrl(useFormValue(['previewCleanVimeoUrl']))
+  const startValue = useFormValue(['previewStartSeconds'])
+  const endValue = useFormValue(['previewEndSeconds'])
+  const documentId = asUrl(useFormValue(['_id']))
+  const {patch} = useDocumentOperation(getPublishedId(documentId), 'portfolioEntry')
+
+  const startSeconds = typeof startValue === 'number' ? startValue : undefined
+  const endSeconds = typeof endValue === 'number' ? endValue : undefined
+
+  const videoId = useMemo(() => {
+    const raw = cleanPreviewUrl || vimeoUrl
+    if (!raw) return null
+    return extractVimeoId(normalizeStoredVideoUrl(raw))
+  }, [cleanPreviewUrl, vimeoUrl])
+
+  const errors = (props.validation ?? [])
+    .filter((marker) => marker.level === 'error')
+    .map((marker) => marker.message)
+    .filter(Boolean)
+
+  return (
+    <PreviewBoundsPairInner
+      key={videoId ?? 'none'}
+      videoId={videoId}
+      readOnly={readOnly}
+      startSeconds={startSeconds}
+      endSeconds={endSeconds}
+      documentId={documentId}
+      description={props.description as ReactNode}
+      errors={errors}
+      startOnChange={startOnChange}
+      patch={patch}
+    />
   )
 }
