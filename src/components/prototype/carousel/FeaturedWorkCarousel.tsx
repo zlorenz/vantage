@@ -233,7 +233,11 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     if (!scroller) return;
 
     scroller.addEventListener('scroll', syncOverlap, {passive: true});
-    return () => scroller.removeEventListener('scroll', syncOverlap);
+    scroller.addEventListener('scrollend', syncOverlap);
+    return () => {
+      scroller.removeEventListener('scroll', syncOverlap);
+      scroller.removeEventListener('scrollend', syncOverlap);
+    };
   }, [syncOverlap]);
 
   useEffect(() => {
