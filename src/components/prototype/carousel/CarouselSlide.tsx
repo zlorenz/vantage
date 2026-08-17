@@ -56,36 +56,39 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         </div>
 
         <div className="vp-proto-carousel__overlay">
-          <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
-          <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
-          <dl className="vp-proto-carousel__credits">
-            <div className="vp-proto-carousel__credit">
-              <dt>Director</dt>
-              <dd>{slide.directorNames}</dd>
-            </div>
-            <div className="vp-proto-carousel__credit">
-              <dt>DOP</dt>
-              <dd>{slide.dopNames}</dd>
-            </div>
-            <div className="vp-proto-carousel__credit">
-              <dt>Format</dt>
-              <dd>{slide.formatLine}</dd>
-            </div>
-          </dl>
-          {slide.hrefSlug ? (
-            <VpButton
-              href={{
-                pathname: '/portfolio/[slug]',
-                params: {slug: slide.hrefSlug},
-              }}
-              variant="ghost"
-              className={`vp-proto-carousel__explore mt-2 w-fit ${
-                active ? 'pointer-events-auto' : 'pointer-events-none'
-              }`}
-            >
-              {t('exploreButton')}
-            </VpButton>
-          ) : null}
+          <div className="vp-proto-carousel__overlay-scrim" aria-hidden />
+          <div className="vp-proto-carousel__overlay-copy">
+            <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
+            <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
+            <dl className="vp-proto-carousel__credits">
+              <div className="vp-proto-carousel__credit">
+                <dt>Director</dt>
+                <dd>{slide.directorNames}</dd>
+              </div>
+              <div className="vp-proto-carousel__credit">
+                <dt>DOP</dt>
+                <dd>{slide.dopNames}</dd>
+              </div>
+              <div className="vp-proto-carousel__credit">
+                <dt>Format</dt>
+                <dd>{slide.formatLine}</dd>
+              </div>
+            </dl>
+            {slide.hrefSlug ? (
+              <VpButton
+                href={{
+                  pathname: '/portfolio/[slug]',
+                  params: {slug: slide.hrefSlug},
+                }}
+                variant="ghost"
+                className={`vp-proto-carousel__explore mt-2 w-fit ${
+                  active ? 'pointer-events-auto' : 'pointer-events-none'
+                }`}
+              >
+                {t('exploreButton')}
+              </VpButton>
+            ) : null}
+          </div>
         </div>
       </article>
     );
