@@ -7,7 +7,7 @@
  * stays in the form tree as NullField so sibling patches keep working.
  */
 
-import {Box, Flex, Select, Spinner, Stack, Text, TextInput} from '@sanity/ui'
+import {Box, Flex, Grid, Select, Spinner, Stack, Text, TextInput} from '@sanity/ui'
 import {useCallback, useMemo, useState, type ChangeEvent, type ReactNode} from 'react'
 import {
   getPublishedId,
@@ -152,6 +152,7 @@ type PairInnerProps = {
   startSeconds: number | undefined
   endSeconds: number | undefined
   documentId: string
+  title: ReactNode
   description?: ReactNode
   errors: string[]
   startOnChange?: FieldProps['inputProps']['onChange']
@@ -165,6 +166,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
     startSeconds,
     endSeconds,
     documentId,
+    title,
     description,
     errors,
     startOnChange,
@@ -243,6 +245,9 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
   return (
     <Box paddingY={1}>
       <Stack space={2} onPointerDown={beginLoad} onFocusCapture={beginLoad}>
+        <FieldLabel optional size={1}>
+          {title}
+        </FieldLabel>
         {description ? (
           <div style={{opacity: 0.7, fontSize: 13, lineHeight: 1.4}}>{description}</div>
         ) : null}
@@ -255,7 +260,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
             </Text>
           </Flex>
         ) : (
-          <Stack space={2}>
+          <Grid columns={2} gap={2}>
             <Stack space={2}>
               <FieldLabel optional size={1}>
                 Start
@@ -287,7 +292,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
                 onSelect={handleSelect}
               />
             </Stack>
-          </Stack>
+          </Grid>
         )}
 
         {errors.length > 0 || rangeError ? (
@@ -333,6 +338,7 @@ export function PreviewBoundsPairField(props: FieldProps) {
       startSeconds={startSeconds}
       endSeconds={endSeconds}
       documentId={documentId}
+      title={props.title || 'In and Out Points'}
       description={props.description as ReactNode}
       errors={errors}
       startOnChange={startOnChange}

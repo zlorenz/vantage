@@ -68,6 +68,14 @@ fieldset[data-testid='fieldset-carouselPreview'] > [data-ui='Box'] > [data-ui='G
 }
 
 /**
+ * FormField header ContentBox subtracts presence-avatar width, so the helper
+ * note wraps short of the input. That gutter is empty in this 2-col row.
+ */
+fieldset[data-testid='fieldset-carouselPreview'] [class*='ContentBox'] {
+  max-width: 100% !important;
+}
+
+/**
  * Portfolio Carousel Preview (clean URL | start/end): stack when narrow.
  */
 fieldset[data-testid='fieldset-carouselPreview'] {

@@ -11,6 +11,7 @@ import {defineField, defineType} from 'sanity'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
+import {OptionalField} from '../components/OptionalField'
 import {PreviewBoundsPairField} from '../components/PreviewBoundsInput'
 import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
 import {NullField} from '../components/locale-pair/NullField'
@@ -281,23 +282,20 @@ export const portfolioEntry = defineType({
       group: 'media',
       fieldset: 'carouselPreview',
       description:
-        'Optional. Vimeo URL for a clean export (no burned-in text/logos), ' +
-        'used only for the homepage carousel preview clip. When set, this ' +
-        'replaces the master Video URL above for carousel playback only — ' +
-        'single portfolio pages always use the master Video URL. Leave ' +
-        'empty to use the master video for the carousel too.',
+        'Vimeo URL for clean export (no burned-in text/logos), for carousel preview clips. This replaces the master video above for carousel playback only — single portfolio pages always use the master Video URL.',
       hidden: hiddenForTranslator,
+      components: {field: OptionalField},
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'previewStartSeconds',
-      title: 'Start',
+      title: 'In and Out Points',
       type: 'number',
       group: 'media',
       fieldset: 'carouselPreview',
       description:
-        'Optional in and out points for the homepage carousel clip. Leave empty to play the full video. Options are real keyframes when a Vimeo URL is set.',
+        'For the homepage carousel clip. Leave empty to play the full video. Options are real keyframes when a Vimeo URL is set.',
       hidden: hiddenForTranslator,
       components: {field: PreviewBoundsPairField},
       validation: (rule) => rule.min(0),
