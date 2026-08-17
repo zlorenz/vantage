@@ -30,8 +30,7 @@ export type ScrollTransitionState =
     };
 
 const MEDIA_SELECTOR = '.vp-proto-carousel__media';
-/** Parallax target: copy wrapper, not the unmasked scrim sibling. */
-const OVERLAY_SELECTOR = '.vp-proto-carousel__overlay-copy';
+const OVERLAY_SELECTOR = '.vp-proto-carousel__overlay';
 
 function clamp01(value: number): number {
   if (value <= 0) return 0;
