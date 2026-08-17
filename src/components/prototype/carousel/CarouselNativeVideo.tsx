@@ -10,6 +10,8 @@ import {useEffect, useRef, useState} from 'react';
 
 /** Independent of SLIDE_DURATION_MS — poster hold must not couple to paging/neighbor mount. */
 const POSTER_HOLD_MS = 800;
+/** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
+const SEEK_TOLERANCE_S = 0.05;
 
 interface CarouselNativeVideoProps {
   src: string;
@@ -89,16 +91,34 @@ export function CarouselNativeVideo({
     const video = videoRef.current;
     if (!video) return;
 
-    if (active) {
-      if (startRef.current != null) {
-        video.currentTime = startRef.current;
-      }
+    const tryPlay = () => {
+      if (!activeRef.current) return;
       void video.play().catch(() => {
         // Autoplay can be blocked until the first gesture; swipe is enough.
       });
-    } else {
+    };
+
+    if (!active) {
       video.pause();
+      return;
     }
+
+    const start = startRef.current;
+    const needsSeek =
+      start != null && Math.abs(video.currentTime - start) > SEEK_TOLERANCE_S;
+
+    if (needsSeek) {
+      const onSeeked = () => {
+        video.removeEventListener('seeked', onSeeked);
+        tryPlay();
+      };
+      video.addEventListener('seeked', onSeeked);
+      video.currentTime = start;
+      tryPlay();
+      return () => video.removeEventListener('seeked', onSeeked);
+    }
+
+    tryPlay();
   }, [active, src]);
 
   useEffect(() => {
