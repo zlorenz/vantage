@@ -110,7 +110,6 @@
     transparent 70%
   );
   pointer-events: none;
-  /* Depth-shift is an inline transform written from scrollTop. No transition. */
 }
 
 .vp-proto-carousel__brand {
@@ -167,65 +166,6 @@
   font-size: 12px;
   font-weight: 300;
   color: #fff;
-}
-
-/* Staggered fade/rise-in on settle. Delays match nav stagger feel
- * (0.08s + index * 0.04s, 0.2s duration → last row lands at 0.44s). */
-.vp-proto-carousel__slide .vp-proto-carousel__brand,
-.vp-proto-carousel__slide .vp-proto-carousel__campaign,
-.vp-proto-carousel__slide .vp-proto-carousel__credit {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__brand,
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__campaign,
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__credit {
-  animation: vpCarouselOverlayIn 0.2s ease-out forwards;
-}
-
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__brand {
-  animation-delay: 0.08s;
-}
-
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__campaign {
-  animation-delay: 0.12s;
-}
-
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__credit:nth-child(1) {
-  animation-delay: 0.16s;
-}
-
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__credit:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__credit:nth-child(3) {
-  animation-delay: 0.24s;
-}
-
-@keyframes vpCarouselOverlayIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .vp-proto-carousel__slide .vp-proto-carousel__brand,
-  .vp-proto-carousel__slide .vp-proto-carousel__campaign,
-  .vp-proto-carousel__slide .vp-proto-carousel__credit,
-  .vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__brand,
-  .vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__campaign,
-  .vp-proto-carousel__slide.is-overlay-in .vp-proto-carousel__credit {
-    opacity: 1;
-    transform: none;
-    animation: none;
-  }
 }
 
 @media (min-width: 768px) {
