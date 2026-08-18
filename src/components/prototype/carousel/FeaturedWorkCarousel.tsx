@@ -270,7 +270,6 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     scroller?.addEventListener('touchstart', startHeightLoop, {passive: true});
     scroller?.addEventListener('touchend', scheduleHeightLoopStop, {passive: true});
     scroller?.addEventListener('touchcancel', scheduleHeightLoopStop, {passive: true});
-    scroller?.addEventListener('scroll', startHeightLoop, {passive: true});
     scroller?.addEventListener('scrollend', scheduleHeightLoopStop);
 
     return () => {
@@ -282,7 +281,6 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller?.removeEventListener('touchstart', startHeightLoop);
       scroller?.removeEventListener('touchend', scheduleHeightLoopStop);
       scroller?.removeEventListener('touchcancel', scheduleHeightLoopStop);
-      scroller?.removeEventListener('scroll', startHeightLoop);
       scroller?.removeEventListener('scrollend', scheduleHeightLoopStop);
       root.style.removeProperty('--vp-carousel-vh');
     };
