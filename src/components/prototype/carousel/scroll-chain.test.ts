@@ -4,8 +4,10 @@
 
 import assert from 'node:assert/strict';
 import {
+  boundaryLatchDirection,
   isBoundaryRelease,
   isCarouselScrollActive,
+  shouldKeepBoundaryLatch,
   shouldReleaseKeyToPage,
   shouldReleaseWheelToPage,
 } from './scroll-chain';
@@ -121,6 +123,31 @@ function testBoundaryReleaseOnlyAtEnds() {
   );
 }
 
+function testLatchDirectionFromDelta() {
+  assert.equal(boundaryLatchDirection(20), 1);
+  assert.equal(boundaryLatchDirection(-20), -1);
+  assert.equal(boundaryLatchDirection(0), null);
+}
+
+function testKeepLatchOnlyWhileStillOnThatEdge() {
+  assert.equal(
+    shouldKeepBoundaryLatch({direction: 1, activeIndex: 8, lastIndex: 8}),
+    true,
+  );
+  assert.equal(
+    shouldKeepBoundaryLatch({direction: 1, activeIndex: 3, lastIndex: 8}),
+    false,
+  );
+  assert.equal(
+    shouldKeepBoundaryLatch({direction: -1, activeIndex: 0, lastIndex: 8}),
+    true,
+  );
+  assert.equal(
+    shouldKeepBoundaryLatch({direction: -1, activeIndex: 3, lastIndex: 8}),
+    false,
+  );
+}
+
 testCarouselActiveWhenFlushInViewport();
 testCarouselInactiveWhenPageHasScrolledPast();
 testWheelPagesInsideActiveCarousel();
@@ -129,5 +156,7 @@ testWheelChainsAtFirstAndLastWhileActive();
 testKeysReleaseWhenCarouselInactive();
 testKeysMatchWheelAtBoundariesWhileActive();
 testBoundaryReleaseOnlyAtEnds();
+testLatchDirectionFromDelta();
+testKeepLatchOnlyWhileStillOnThatEdge();
 
 console.log('scroll-chain.test.ts: ok');

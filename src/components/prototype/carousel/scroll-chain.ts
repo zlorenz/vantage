@@ -30,6 +30,31 @@ export function isCarouselScrollActive(options: {
   );
 }
 
+/** +1 = released past the last slide; -1 = released past the first. */
+export type BoundaryLatchDirection = 1 | -1;
+
+export function boundaryLatchDirection(
+  deltaY: number,
+): BoundaryLatchDirection | null {
+  if (deltaY > 0) return 1;
+  if (deltaY < 0) return -1;
+  return null;
+}
+
+/**
+ * Keep a boundary latch only while the current index still sits on that
+ * edge. A mid-sequence latch (false-positive or stale) must not persist.
+ */
+export function shouldKeepBoundaryLatch(options: {
+  direction: BoundaryLatchDirection;
+  activeIndex: number;
+  lastIndex: number;
+}): boolean {
+  const {direction, activeIndex, lastIndex} = options;
+  if (direction > 0) return activeIndex >= lastIndex;
+  return activeIndex <= 0;
+}
+
 /** True when a vertical gesture would leave the carousel past first/last slide. */
 export function isBoundaryRelease(options: {
   activeIndex: number;
@@ -37,9 +62,9 @@ export function isBoundaryRelease(options: {
   deltaY: number;
 }): boolean {
   const {activeIndex, lastIndex, deltaY} = options;
-  if (deltaY < 0 && activeIndex <= 0) return true;
-  if (deltaY > 0 && activeIndex >= lastIndex) return true;
-  return false;
+  const direction = boundaryLatchDirection(deltaY);
+  if (!direction) return false;
+  return shouldKeepBoundaryLatch({direction, activeIndex, lastIndex});
 }
 
 export function shouldReleaseWheelToPage(options: {

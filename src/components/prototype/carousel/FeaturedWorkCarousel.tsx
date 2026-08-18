@@ -10,10 +10,13 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
 import {
+  boundaryLatchDirection,
   isBoundaryRelease,
   isCarouselScrollActive,
+  shouldKeepBoundaryLatch,
   shouldReleaseKeyToPage,
   shouldReleaseWheelToPage,
+  type BoundaryLatchDirection,
 } from './scroll-chain';
 import {
   getScrollTransitionState,
@@ -101,7 +104,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const settledIndexRef = useRef(0);
   const overlapPairRef = useRef<OverlapPair | null>(null);
   const carouselActiveRef = useRef(true);
-  const boundaryPassiveRef = useRef(false);
+  const boundaryLatchRef = useRef<BoundaryLatchDirection | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
@@ -147,9 +150,25 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   }, []);
 
   const applyScrollActive = useCallback((visibilityActive: boolean) => {
-    if (!visibilityActive) boundaryPassiveRef.current = false;
-    setCarouselScrollActive(visibilityActive && !boundaryPassiveRef.current);
-  }, [setCarouselScrollActive]);
+    // Re-validate on every visibility pass (window scroll/resize/IO), not
+    // only on scroller wheel/touch — those never fire while is-scroll-passive
+    // sets pointer-events: none. Keep the latch only while still on the
+    // edge that armed it; a mid-sequence latch must drop even if the
+    // carousel is still in the visibility band.
+    if (!visibilityActive) {
+      boundaryLatchRef.current = null;
+    } else if (
+      boundaryLatchRef.current &&
+      !shouldKeepBoundaryLatch({
+        direction: boundaryLatchRef.current,
+        activeIndex: activeIndexRef.current,
+        lastIndex,
+      })
+    ) {
+      boundaryLatchRef.current = null;
+    }
+    setCarouselScrollActive(visibilityActive && boundaryLatchRef.current == null);
+  }, [lastIndex, setCarouselScrollActive]);
 
   const releasePastBoundary = useCallback(
     (deltaY: number) => {
@@ -163,7 +182,9 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       ) {
         return false;
       }
-      boundaryPassiveRef.current = true;
+      const direction = boundaryLatchDirection(deltaY);
+      if (!direction) return false;
+      boundaryLatchRef.current = direction;
       setCarouselScrollActive(false);
       return true;
     },
@@ -172,7 +193,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
   const restoreFromBoundaryIfReversed = useCallback(
     (deltaY: number) => {
-      if (!boundaryPassiveRef.current) return;
+      if (boundaryLatchRef.current == null) return;
       if (
         isBoundaryRelease({
           activeIndex: activeIndexRef.current,
@@ -182,7 +203,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       ) {
         return;
       }
-      boundaryPassiveRef.current = false;
+      boundaryLatchRef.current = null;
       applyScrollActive(readVisibilityActive());
     },
     [applyScrollActive, lastIndex, readVisibilityActive],
@@ -312,6 +333,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       window.removeEventListener('resize', syncCarouselScrollActive);
     };
   }, [applyScrollActive, readVisibilityActive, slides.length]);
+
+  useEffect(() => {
+    applyScrollActive(readVisibilityActive());
+  }, [activeIndex, applyScrollActive, readVisibilityActive]);
 
   useEffect(() => {
     if (neighborMountIndex === activeIndex) return;
