@@ -34,8 +34,6 @@ const SLIDE_DURATION_MS = 300;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
 const TOUCH_BOUNDARY_PX = 10;
-/** Keep sampling visualViewport after the last nested-scroller input. */
-const HEIGHT_GESTURE_TAIL_MS = 400;
 
 type AnimSignal = { cancelled: boolean };
 
@@ -135,9 +133,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     const root = rootRef.current;
     if (!root) return false;
     const rect = root.getBoundingClientRect();
-    // Same source as --vp-carousel-vh. innerHeight can disagree with the
-    // visual viewport (DevTools device mode, iOS chrome) and drop the
-    // ratio below 0.85 while the carousel still fills the screen.
+    // visualViewport height for the on-screen gate — not carousel box sizing.
+    // innerHeight can disagree with the visual viewport (DevTools device mode,
+    // iOS chrome) and drop the ratio below 0.85 while the carousel still fills
+    // the screen.
     const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     return isCarouselScrollActive({
       rootTop: rect.top,
@@ -239,73 +238,6 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   useEffect(() => {
     void import('@vimeo/player');
   }, []);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    const scroller = scrollerRef.current;
-    if (!root) return;
-
-    const viewport = window.visualViewport;
-    if (!viewport) return;
-
-    let lastWrittenPx = 0;
-    let rafId = 0;
-    let looping = false;
-    let settleTimer = 0;
-
-    const syncVisualHeight = () => {
-      const height = viewport.height;
-      if (!Number.isFinite(height) || height <= 0) return;
-      const rounded = Math.round(height);
-      if (rounded === lastWrittenPx) return;
-      lastWrittenPx = rounded;
-      root.style.setProperty('--vp-carousel-vh', `${rounded}px`);
-    };
-
-    const tick = () => {
-      syncVisualHeight();
-      if (looping) rafId = requestAnimationFrame(tick);
-    };
-
-    const startHeightLoop = () => {
-      window.clearTimeout(settleTimer);
-      if (looping) return;
-      looping = true;
-      rafId = requestAnimationFrame(tick);
-    };
-
-    const scheduleHeightLoopStop = () => {
-      window.clearTimeout(settleTimer);
-      settleTimer = window.setTimeout(() => {
-        looping = false;
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = 0;
-        syncVisualHeight();
-      }, HEIGHT_GESTURE_TAIL_MS);
-    };
-
-    viewport.addEventListener('resize', syncVisualHeight);
-    viewport.addEventListener('scroll', syncVisualHeight);
-    syncVisualHeight();
-
-    scroller?.addEventListener('touchstart', startHeightLoop, {passive: true});
-    scroller?.addEventListener('touchend', scheduleHeightLoopStop, {passive: true});
-    scroller?.addEventListener('touchcancel', scheduleHeightLoopStop, {passive: true});
-    scroller?.addEventListener('scrollend', scheduleHeightLoopStop);
-
-    return () => {
-      looping = false;
-      if (rafId) cancelAnimationFrame(rafId);
-      window.clearTimeout(settleTimer);
-      viewport.removeEventListener('resize', syncVisualHeight);
-      viewport.removeEventListener('scroll', syncVisualHeight);
-      scroller?.removeEventListener('touchstart', startHeightLoop);
-      scroller?.removeEventListener('touchend', scheduleHeightLoopStop);
-      scroller?.removeEventListener('touchcancel', scheduleHeightLoopStop);
-      scroller?.removeEventListener('scrollend', scheduleHeightLoopStop);
-      root.style.removeProperty('--vp-carousel-vh');
-    };
-  }, [slides.length]);
 
   useEffect(() => {
     const root = rootRef.current;

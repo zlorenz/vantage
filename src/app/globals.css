@@ -329,6 +329,8 @@
   html {
     /* Prevent horizontal scroll from full-bleed sections */
     overflow-x: hidden;
+    /* Liquid Glass fallback when Safari cannot sample carousel pixels. */
+    background: var(--vp-bg);
   }
 
   body {

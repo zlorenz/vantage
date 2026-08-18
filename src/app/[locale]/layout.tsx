@@ -12,7 +12,7 @@
  */
 
 import '../globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { draftMode } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
@@ -42,6 +42,10 @@ type Props = {
 
 export const metadata: Metadata = {
   metadataBase: METADATA_BASE,
+};
+
+export const viewport: Viewport = {
+  viewportFit: 'cover',
 };
 
 export function generateStaticParams() {
