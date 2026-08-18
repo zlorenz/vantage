@@ -1,39 +1,28 @@
 /**
- * Safari 26 Liquid Glass samples document pixels beyond 100lvh up to
- * window.outerHeight. Sync --vp-chrome-bleed so an in-flow black strip can
- * cover the compositing gap without resizing the carousel snap box.
+ * Safari 26 Liquid Glass — in-flow black bleed below the homepage carousel (A1).
  *
- * Mount + orientationchange only — never wire to visualViewport resize.
+ * Bleed height is a fixed constant, not live-measured. Calibrated on real iPhone
+ * hardware: screen.height − 100lvh ≈ 60px; direct screenshot inspection of the
+ * toolbar band ≈ 58px CSS (174 physical px ÷ 3x DPR). We use 64px for a small
+ * safety margin.
+ *
+ * syncVpChromeBleed() writes --vp-chrome-bleed on mount + orientationchange.
+ * That hook is harmless with a constant but kept so a future Safari build can
+ * swap back to dynamic measurement without changing consumers. Never wire to
+ * visualViewport resize.
  */
 
 const VP_CHROME_BLEED_VAR = '--vp-chrome-bleed';
 
-/** Hidden 100lvh probe — returns large-viewport height in CSS pixels. */
-export function probe100lvh(): number {
-  if (typeof document === 'undefined') return 0;
+/** Calibrated fixed bleed height in CSS pixels. */
+const VP_CHROME_BLEED_PX = 64;
 
-  const probe = document.createElement('div');
-  probe.style.cssText =
-    'position:absolute;visibility:hidden;pointer-events:none;height:100lvh;width:0;top:0;left:0;';
-  document.documentElement.appendChild(probe);
-  const height = probe.offsetHeight;
-  probe.remove();
-  return height;
-}
-
-/** Set --vp-chrome-bleed on :root from outerHeight − 100lvh (min 0). */
+/** Set --vp-chrome-bleed on :root (fixed 64px; see module comment). */
 export function syncVpChromeBleed(): void {
-  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (typeof document === 'undefined') return;
 
-  const root = document.documentElement;
-  const outerHeight = window.outerHeight;
-
-  if (!outerHeight || outerHeight <= 0) {
-    root.style.setProperty(VP_CHROME_BLEED_VAR, '0px');
-    return;
-  }
-
-  const lvhPx = probe100lvh();
-  const bleed = Math.max(0, Math.round(outerHeight - lvhPx));
-  root.style.setProperty(VP_CHROME_BLEED_VAR, `${bleed}px`);
+  document.documentElement.style.setProperty(
+    VP_CHROME_BLEED_VAR,
+    `${VP_CHROME_BLEED_PX}px`,
+  );
 }

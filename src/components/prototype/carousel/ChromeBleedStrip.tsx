@@ -2,7 +2,7 @@
 
 /**
  * In-flow black strip between the homepage carousel and contact section.
- * Height comes from --vp-chrome-bleed (synced on mount + orientationchange).
+ * Height from --vp-chrome-bleed (fixed 64px, synced on mount + orientationchange).
  */
 
 import { useEffect } from 'react';
