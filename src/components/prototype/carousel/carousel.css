@@ -40,10 +40,8 @@
   scroll-behavior: auto;
   scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
-  /* auto (not none/contain): first/last slide overscroll chains into the
-   * page. Snap paging between slides is regular overflow, not overscroll,
-   * so this does not reintroduce bounce mid-carousel. */
-  overscroll-behavior-y: auto;
+  /* contain: loop has no page boundary. auto would chain past the clones. */
+  overscroll-behavior-y: contain;
   touch-action: pan-y;
   -webkit-overflow-scrolling: auto;
   scrollbar-width: none;

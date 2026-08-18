@@ -12,9 +12,24 @@ export type PrototypeCarouselSlide = {
   previewEndSeconds: number | null;
 };
 
-/** Current item plus one neighbor on each side (window of 3; 2 at the ends). */
-export function isInPlayerWindow(index: number, activeIndex: number): boolean {
-  return Math.abs(index - activeIndex) <= 1;
+/** Wrap an index into [0, count). count <= 0 → 0. */
+export function wrapSlideIndex(index: number, count: number): number {
+  if (count <= 0) return 0;
+  return ((index % count) + count) % count;
+}
+
+/**
+ * Current item plus one neighbor on each side (window of 3).
+ * Neighbors wrap: last is adjacent to first.
+ */
+export function isInPlayerWindow(
+  index: number,
+  activeIndex: number,
+  slideCount: number,
+): boolean {
+  if (slideCount <= 0) return false;
+  const dist = Math.abs(index - activeIndex);
+  return Math.min(dist, slideCount - dist) <= 1;
 }
 
 /**
@@ -26,8 +41,9 @@ export function shouldMountCarouselPlayer(
   index: number,
   activeIndex: number,
   neighborMountIndex: number,
+  slideCount: number,
 ): boolean {
-  if (!isInPlayerWindow(index, activeIndex)) return false;
+  if (!isInPlayerWindow(index, activeIndex, slideCount)) return false;
   if (index === activeIndex) return true;
-  return isInPlayerWindow(index, neighborMountIndex);
+  return isInPlayerWindow(index, neighborMountIndex, slideCount);
 }

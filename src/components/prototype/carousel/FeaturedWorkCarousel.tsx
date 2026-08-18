@@ -3,11 +3,12 @@
 /**
  * Full-viewport featured-work carousel (vertical only), in document flow.
  * Touch: native CSS scroll-snap. Wheel / keys: one animated page at a time.
- * No wrap. No timer-based auto-advance. At the first/last slide, further
- * scroll chains into the page (content below / back to the top).
+ * Infinite loop: last advances to first, first reverses to last.
+ * No timer-based auto-advance. Boundary-latch helpers remain in this file
+ * but must not arm — a latch would block the wrap.
  */
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { CarouselSlide } from './CarouselSlide';
 import {
   boundaryLatchDirection,
@@ -20,11 +21,16 @@ import {
   type BoundaryLatchDirection,
 } from './scroll-chain';
 import {
+  SETTLE_EPSILON_PX,
   getScrollTransitionState,
   syncOverlapToSlides,
   type OverlapPair,
 } from './transition';
-import { shouldMountCarouselPlayer, type PrototypeCarouselSlide } from './types';
+import {
+  shouldMountCarouselPlayer,
+  wrapSlideIndex,
+  type PrototypeCarouselSlide,
+} from './types';
 import './carousel.css';
 
 interface FeaturedWorkCarouselProps {
@@ -108,8 +114,33 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const windowTouchStartYRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
+  const [loopMounted, setLoopMounted] = useState(false);
 
   const lastIndex = Math.max(0, slides.length - 1);
+  const loopable = lastIndex > 0 && loopMounted;
+  const slideCount = slides.length;
+  const domLastIndex = loopable ? lastIndex + 2 : lastIndex;
+
+  const loopItems = useMemo(() => {
+    const items = slides.map((slide, logicalIndex) => ({
+      slide,
+      logicalIndex,
+      clone: null as 'head' | 'tail' | null,
+    }));
+    if (slides.length > 1 && loopMounted) {
+      items.unshift({
+        slide: slides[slides.length - 1],
+        logicalIndex: slides.length - 1,
+        clone: 'head',
+      });
+      items.push({
+        slide: slides[0],
+        logicalIndex: 0,
+        clone: 'tail',
+      });
+    }
+    return items;
+  }, [loopMounted, slides]);
 
   const commitActiveIndex = useCallback((index: number) => {
     if (index === activeIndexRef.current) return false;
@@ -264,7 +295,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.scrollTop,
       scroller.clientHeight,
       settledIndexRef.current,
-      lastIndex,
+      domLastIndex,
     );
     if (state.settled) settledIndexRef.current = state.index;
     overlapPairRef.current = syncOverlapToSlides(
@@ -272,7 +303,51 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       state,
       overlapPairRef.current,
     );
-  }, [lastIndex]);
+  }, [domLastIndex]);
+
+  const jumpToDomIndex = useCallback(
+    (domIndex: number) => {
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      scroller.classList.add('is-paging');
+      void scroller.offsetHeight;
+      scroller.scrollTop = domIndex * scroller.clientHeight;
+      settledIndexRef.current = domIndex;
+      scroller.classList.remove('is-paging');
+      syncOverlap();
+    },
+    [syncOverlap],
+  );
+
+  const normalizeLoopScroll = useCallback(() => {
+    if (!loopable || animatingRef.current) return;
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const height = scroller.clientHeight;
+    if (height <= 0) return;
+    const nearest = Math.round(scroller.scrollTop / height);
+    if (Math.abs(scroller.scrollTop - nearest * height) >= SETTLE_EPSILON_PX) {
+      return;
+    }
+    if (nearest === 0) {
+      jumpToDomIndex(lastIndex + 1);
+      commitActiveIndex(lastIndex);
+      return;
+    }
+    if (nearest === lastIndex + 2) {
+      jumpToDomIndex(1);
+      commitActiveIndex(0);
+    }
+  }, [commitActiveIndex, jumpToDomIndex, lastIndex, loopable]);
+
+  useLayoutEffect(() => {
+    setLoopMounted(true);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!loopable) return;
+    jumpToDomIndex(activeIndexRef.current + 1);
+  }, [jumpToDomIndex, loopable, slides.length]);
 
   useEffect(() => {
     void import('@vimeo/player');
@@ -360,21 +435,37 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const goTo = useCallback(
     (index: number, animate: boolean) => {
       const scroller = scrollerRef.current;
-      const next = Math.min(Math.max(index, 0), lastIndex);
-      if (!commitActiveIndex(next)) return;
+      const next = wrapSlideIndex(index, slideCount);
+      const forwardWrap = loopable && activeIndexRef.current === lastIndex && index === lastIndex + 1;
+      const backwardWrap = loopable && activeIndexRef.current === 0 && index === -1;
+      if (!commitActiveIndex(next) && !forwardWrap && !backwardWrap) return;
 
       if (!scroller) return;
-      const top = next * scroller.clientHeight;
+
+      const settleDom = loopable ? next + 1 : next;
+      const targetDom = forwardWrap ? lastIndex + 2 : backwardWrap ? 0 : settleDom;
+      const top = targetDom * scroller.clientHeight;
 
       if (animSignalRef.current) animSignalRef.current.cancelled = true;
       const signal: AnimSignal = { cancelled: false };
       animSignalRef.current = signal;
 
-      if (!animate || prefersReducedMotion()) {
+      const settle = () => {
+        if (forwardWrap || backwardWrap) {
+          jumpToDomIndex(settleDom);
+        } else {
+          scroller.scrollTop = top;
+          settledIndexRef.current = settleDom;
+        }
         scroller.classList.remove('is-paging');
-        scroller.scrollTop = top;
         animatingRef.current = false;
         syncOverlap();
+      };
+
+      if (!animate || prefersReducedMotion()) {
+        scroller.classList.remove('is-paging');
+        jumpToDomIndex(settleDom);
+        animatingRef.current = false;
         return;
       }
 
@@ -384,13 +475,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
       void animateScrollTop(scroller, top, SLIDE_DURATION_MS, signal, syncOverlap).then(() => {
         if (signal.cancelled) return;
-        scroller.scrollTop = top;
-        scroller.classList.remove('is-paging');
-        animatingRef.current = false;
-        syncOverlap();
+        settle();
       });
     },
-    [commitActiveIndex, lastIndex, syncOverlap],
+    [commitActiveIndex, jumpToDomIndex, lastIndex, loopable, slideCount, syncOverlap],
   );
 
   useEffect(() => {
@@ -428,19 +516,24 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     }
 
     return () => observer.disconnect();
-  }, [commitActiveIndex, slides.length]);
+  }, [commitActiveIndex, loopItems.length, slides.length]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    scroller.addEventListener('scroll', syncOverlap, {passive: true});
-    scroller.addEventListener('scrollend', syncOverlap);
-    return () => {
-      scroller.removeEventListener('scroll', syncOverlap);
-      scroller.removeEventListener('scrollend', syncOverlap);
+    const onScroll = () => {
+      syncOverlap();
+      normalizeLoopScroll();
     };
-  }, [syncOverlap]);
+
+    scroller.addEventListener('scroll', onScroll, {passive: true});
+    scroller.addEventListener('scrollend', onScroll);
+    return () => {
+      scroller.removeEventListener('scroll', onScroll);
+      scroller.removeEventListener('scrollend', onScroll);
+    };
+  }, [normalizeLoopScroll, syncOverlap]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -571,7 +664,6 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       if (startY == null || currentY == null) return;
       const deltaY = startY - currentY;
       if (Math.abs(deltaY) < TOUCH_BOUNDARY_PX) return;
-      if (releasePastBoundary(deltaY)) return;
       restoreFromBoundaryIfReversed(deltaY);
     };
 
@@ -589,7 +681,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.removeEventListener('touchend', onTouchEnd);
       scroller.removeEventListener('touchcancel', onTouchEnd);
     };
-  }, [releasePastBoundary, restoreFromBoundaryIfReversed]);
+  }, [restoreFromBoundaryIfReversed]);
 
   if (!slides.length) {
     return (
@@ -609,16 +701,24 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         className="vp-proto-carousel__scroller"
         aria-label="Featured work carousel"
       >
-        {slides.map((slide, index) => (
+        {loopItems.map((item, domIndex) => (
           <CarouselSlide
-            key={slide.slug}
+            key={item.clone ? `${item.clone}-${item.slide.slug}` : item.slide.slug}
             ref={(node) => {
-              slideRefs.current[index] = node;
+              slideRefs.current[domIndex] = node;
             }}
-            slide={slide}
-            index={index}
-            active={index === activeIndex}
-            mountPlayer={shouldMountCarouselPlayer(index, activeIndex, neighborMountIndex)}
+            slide={item.slide}
+            index={item.logicalIndex}
+            active={item.clone == null && item.logicalIndex === activeIndex}
+            mountPlayer={
+              item.clone == null &&
+              shouldMountCarouselPlayer(
+                item.logicalIndex,
+                activeIndex,
+                neighborMountIndex,
+                slideCount,
+              )
+            }
           />
         ))}
       </div>

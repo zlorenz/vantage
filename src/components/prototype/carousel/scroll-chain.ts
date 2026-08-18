@@ -6,9 +6,9 @@
  * isCarouselScrollActive() (viewport visibility) as the single gate for wheel,
  * keys, and touch — when inactive, the scroller must not capture input.
  *
- * At the first/last slide, a continued gesture in the outbound direction must
- * go passive immediately. Waiting for document scroll lets mandatory snap fight
- * overscroll chaining and feels sticky.
+ * Boundary latch helpers below are unused while the carousel loops (no
+ * first/last hand-off). They stay for a later cleanup; callers must not arm
+ * them or the loop cannot wrap.
  */
 
 /** Carousel top may sit slightly below the fixed header while still "active". */
@@ -108,9 +108,7 @@ export function shouldReleaseWheelToPage(options: {
   lastIndex: number;
   deltaY: number;
 }): boolean {
-  const {carouselActive, activeIndex, lastIndex, deltaY} = options;
-  if (!carouselActive) return true;
-  return isBoundaryRelease({activeIndex, lastIndex, deltaY});
+  return !options.carouselActive;
 }
 
 export function shouldReleaseKeyToPage(options: {
@@ -119,14 +117,6 @@ export function shouldReleaseKeyToPage(options: {
   lastIndex: number;
   key: string;
 }): boolean {
-  const {carouselActive, activeIndex, lastIndex, key} = options;
-  if (!carouselActive) return true;
-  if (key === 'ArrowDown' || key === 'PageDown' || key === 'End') {
-    return isBoundaryRelease({activeIndex, lastIndex, deltaY: 1});
-  }
-  if (key === 'ArrowUp' || key === 'PageUp' || key === 'Home') {
-    return isBoundaryRelease({activeIndex, lastIndex, deltaY: -1});
-  }
-  return false;
+  return !options.carouselActive;
 }
 

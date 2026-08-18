@@ -47,7 +47,7 @@ function testWheelReleasesWhenCarouselInactive() {
   );
 }
 
-function testWheelChainsAtFirstAndLastWhileActive() {
+function testWheelKeepsPagingAtFirstAndLastWhileActive() {
   assert.equal(
     shouldReleaseWheelToPage({
       carouselActive: true,
@@ -55,7 +55,7 @@ function testWheelChainsAtFirstAndLastWhileActive() {
       lastIndex: 8,
       deltaY: -40,
     }),
-    true,
+    false,
   );
   assert.equal(
     shouldReleaseWheelToPage({
@@ -64,7 +64,7 @@ function testWheelChainsAtFirstAndLastWhileActive() {
       lastIndex: 8,
       deltaY: 40,
     }),
-    true,
+    false,
   );
 }
 
@@ -80,7 +80,7 @@ function testKeysReleaseWhenCarouselInactive() {
   );
 }
 
-function testKeysMatchWheelAtBoundariesWhileActive() {
+function testKeysKeepPagingAtBoundariesWhileActive() {
   assert.equal(
     shouldReleaseKeyToPage({
       carouselActive: true,
@@ -88,7 +88,7 @@ function testKeysMatchWheelAtBoundariesWhileActive() {
       lastIndex: 8,
       key: 'ArrowDown',
     }),
-    true,
+    false,
   );
   assert.equal(
     shouldReleaseKeyToPage({
@@ -229,9 +229,9 @@ testCarouselActiveWhenFlushInViewport();
 testCarouselInactiveWhenPageHasScrolledPast();
 testWheelPagesInsideActiveCarousel();
 testWheelReleasesWhenCarouselInactive();
-testWheelChainsAtFirstAndLastWhileActive();
+testWheelKeepsPagingAtFirstAndLastWhileActive();
 testKeysReleaseWhenCarouselInactive();
-testKeysMatchWheelAtBoundariesWhileActive();
+testKeysKeepPagingAtBoundariesWhileActive();
 testBoundaryReleaseOnlyAtEnds();
 testLatchDirectionFromDelta();
 testKeepLatchOnlyWhileStillOnThatEdge();

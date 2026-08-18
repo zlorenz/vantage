@@ -342,16 +342,18 @@
   }
 
   /* Contain document overscroll so Chrome iOS pull-to-refresh does not
-   * steal the swipe after homepage carousel scrollTo(0). Nested scroller
-   * stays overscroll-behavior-y: auto so last-slide still chains to the page. */
+   * steal a nested carousel swipe. Nested scroller is also contain now
+   * (infinite loop, no page-boundary hand-off). */
   html,
   body {
     overscroll-behavior-y: contain;
   }
 
-  /* Temp Home contact section covers email/socials; hide the sitewide footer
-   * on that route so the two don't stack. Header Contact modal stays. */
-  body:has(.vp-home-contact) .vp-site-footer {
+  /* Homepage is the looping carousel only. Hide the sitewide footer so
+   * nothing sits below the hero (previously gated on .vp-home-contact).
+   * Header Contact modal and the /contact route stay. */
+  body:has(.vp-home-contact) .vp-site-footer,
+  body:has(.vp-home-hero) .vp-site-footer {
     display: none;
   }
 
