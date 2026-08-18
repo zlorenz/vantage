@@ -10,6 +10,8 @@ import {useEffect, useRef, useState} from 'react';
 
 /** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
 const SEEK_TOLERANCE_S = 0.05;
+/** Retry once when Safari accepts currentTime but never fires seeked. */
+const SEEK_RETRY_MS = 400;
 
 const READY_EVENTS = [
   'loadedmetadata',
@@ -23,16 +25,45 @@ const READY_EVENTS = [
   'emptied',
 ] as const;
 
+function isAtInPoint(
+  video: HTMLVideoElement,
+  startSeconds: number | null | undefined,
+): boolean {
+  if (startSeconds == null) return true;
+  return Math.abs(video.currentTime - startSeconds) <= SEEK_TOLERANCE_S;
+}
+
+function hasVideoMetadata(video: HTMLVideoElement): boolean {
+  return video.readyState >= HTMLMediaElement.HAVE_METADATA;
+}
+
+/**
+ * Assign currentTime to the in-point when metadata is loaded and the playhead
+ * is not already within tolerance. No-op before HAVE_METADATA (Safari ignores it).
+ */
+function seekToInPoint(
+  video: HTMLVideoElement,
+  startSeconds: number | null | undefined,
+): boolean {
+  if (startSeconds == null) return false;
+  if (!hasVideoMetadata(video)) return false;
+  if (isAtInPoint(video, startSeconds)) return false;
+  video.currentTime = startSeconds;
+  return true;
+}
+
 function isCarouselPreviewReady(
   video: HTMLVideoElement,
   startSeconds: number | null | undefined,
 ): boolean {
   if (video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return false;
-  // Playing: currentTime leaving the in-point is expected. Keep the frame
-  // visible unless readyState itself drops (real stall / waiting).
-  if (!video.paused) return true;
+  if (!video.paused) {
+    if (startSeconds == null) return true;
+    // Playing before the in-point is not ready (mobile Safari race at t=0).
+    return video.currentTime >= startSeconds - SEEK_TOLERANCE_S;
+  }
   if (startSeconds == null) return true;
-  return Math.abs(video.currentTime - startSeconds) <= SEEK_TOLERANCE_S;
+  return isAtInPoint(video, startSeconds);
 }
 
 interface CarouselNativeVideoProps {
@@ -93,9 +124,7 @@ export function CarouselNativeVideo({
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    if (startRef.current != null) {
-      video.currentTime = startRef.current;
-    }
+    seekToInPoint(video, startRef.current);
     reportReady(video);
   }, [src]);
 
@@ -125,36 +154,128 @@ export function CarouselNativeVideo({
     const video = videoRef.current;
     if (!video) return;
 
+    let cancelled = false;
+    let seekedListener: (() => void) | null = null;
+    let metadataListener: (() => void) | null = null;
+    let seekRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const clearSeekWait = () => {
+      if (seekedListener) {
+        video.removeEventListener('seeked', seekedListener);
+        seekedListener = null;
+      }
+      if (metadataListener) {
+        video.removeEventListener('loadedmetadata', metadataListener);
+        metadataListener = null;
+      }
+      if (seekRetryTimer != null) {
+        clearTimeout(seekRetryTimer);
+        seekRetryTimer = null;
+      }
+    };
+
+    const cleanup = () => {
+      cancelled = true;
+      clearSeekWait();
+    };
+
     const tryPlay = () => {
-      if (!activeRef.current) return;
+      if (cancelled || !activeRef.current) return;
       void video.play().catch(() => {
         // Autoplay can be blocked until the first gesture; swipe is enough.
       });
     };
 
+    const finishAtInPoint = () => {
+      if (cancelled || !activeRef.current) return;
+      clearSeekWait();
+      reportReady(video);
+      tryPlay();
+    };
+
+    const waitForSeeked = (start: number, allowRetry: boolean) => {
+      clearSeekWait();
+
+      const onSeeked = () => {
+        if (cancelled || !activeRef.current) return;
+        if (!isAtInPoint(video, start)) return;
+        video.removeEventListener('seeked', onSeeked);
+        seekedListener = null;
+        if (seekRetryTimer != null) {
+          clearTimeout(seekRetryTimer);
+          seekRetryTimer = null;
+        }
+        finishAtInPoint();
+      };
+
+      seekedListener = onSeeked;
+      video.addEventListener('seeked', onSeeked);
+
+      if (allowRetry) {
+        seekRetryTimer = setTimeout(() => {
+          seekRetryTimer = null;
+          if (cancelled || !activeRef.current) return;
+          if (isAtInPoint(video, start)) {
+            finishAtInPoint();
+            return;
+          }
+          seekToInPoint(video, start);
+          waitForSeeked(start, false);
+        }, SEEK_RETRY_MS);
+      }
+    };
+
+    const beginSeekAndPlay = (start: number) => {
+      if (cancelled || !activeRef.current) return;
+
+      if (isAtInPoint(video, start)) {
+        finishAtInPoint();
+        return;
+      }
+
+      if (!hasVideoMetadata(video)) {
+        const onMetadata = () => {
+          if (cancelled) return;
+          video.removeEventListener('loadedmetadata', onMetadata);
+          metadataListener = null;
+          if (!activeRef.current) {
+            seekToInPoint(video, start);
+            reportReady(video);
+            return;
+          }
+          beginSeekAndPlay(start);
+        };
+        metadataListener = onMetadata;
+        video.addEventListener('loadedmetadata', onMetadata);
+        return;
+      }
+
+      if (!seekToInPoint(video, start)) {
+        finishAtInPoint();
+        return;
+      }
+
+      waitForSeeked(start, true);
+    };
+
     if (!active) {
       video.pause();
+      clearSeekWait();
       reportReady(video);
-      return;
+      return cleanup;
     }
 
     const start = startRef.current;
-    const needsSeek =
-      start != null && Math.abs(video.currentTime - start) > SEEK_TOLERANCE_S;
+    const needsSeek = start != null && !isAtInPoint(video, start);
 
-    if (needsSeek) {
-      const onSeeked = () => {
-        video.removeEventListener('seeked', onSeeked);
-        tryPlay();
-      };
-      video.addEventListener('seeked', onSeeked);
-      video.currentTime = start;
+    if (!needsSeek) {
       reportReady(video);
       tryPlay();
-      return () => video.removeEventListener('seeked', onSeeked);
+      return cleanup;
     }
 
-    tryPlay();
+    beginSeekAndPlay(start);
+    return cleanup;
   }, [active, src]);
 
   useEffect(() => {
@@ -173,6 +294,13 @@ export function CarouselNativeVideo({
     return () => video.removeEventListener('timeupdate', onTimeUpdate);
   }, [src, boundedLoop]);
 
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    seekToInPoint(video, startRef.current);
+    reportReady(video);
+  };
+
   return (
     <div className="vp-proto-carousel__player" aria-hidden data-player="native">
       <video
@@ -188,14 +316,7 @@ export function CarouselNativeVideo({
         loop={!boundedLoop}
         preload="auto"
         disablePictureInPicture
-        onLoadedMetadata={() => {
-          const video = videoRef.current;
-          if (!video) return;
-          if (startRef.current != null) {
-            video.currentTime = startRef.current;
-          }
-          reportReady(video);
-        }}
+        onLoadedMetadata={handleLoadedMetadata}
         onError={() => onPlaybackError?.()}
       />
     </div>
