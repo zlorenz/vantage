@@ -1,9 +1,20 @@
 'use client';
 
 /**
- * Native muted preview for a carousel slide, using a server-minted progressive MP4.
+ * Native muted preview for a carousel slide, using a server-minted source.
  * Optional previewStartSeconds / previewEndSeconds loop a bounded range;
  * otherwise the element uses the native loop attribute for the full clip.
+ *
+ * Two activation paths share this element:
+ *
+ * - `progressive` (desktop) drives the seek-gating below, which exists to
+ *   survive a seek that may never report completion.
+ * - `hls` (iOS WebKit) seeks by segment and lands reliably, so it just waits
+ *   for metadata, assigns the in-point and plays — the same shape as the
+ *   iframe fallback. None of the seek-gating runs there.
+ *
+ * Everything else — the element setup, the ready latch, the active/inactive
+ * pause, and the bounded in/out loop — is shared by both.
  */
 
 import {useEffect, useRef, useState} from 'react';
@@ -77,9 +88,23 @@ function isCarouselPreviewReady(
   return isAtInPoint(video, startSeconds);
 }
 
+/**
+ * HLS readiness drops the in-point comparisons of isCarouselPreviewReady:
+ * those exist only to catch the progressive seek race, and on a path where
+ * the seek lands they would hold the poster over a frame that is already
+ * correct. Same buffer threshold as progressive.
+ */
+function isHlsPreviewReady(video: HTMLVideoElement): boolean {
+  return video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA;
+}
+
+export type PlaybackFormat = 'progressive' | 'hls';
+
 interface CarouselNativeVideoProps {
   src: string;
   active: boolean;
+  /** Defaults to the progressive MP4 path; 'hls' is the iOS WebKit path. */
+  playbackFormat?: PlaybackFormat;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
   onPlaybackError?: () => void;
@@ -89,6 +114,7 @@ interface CarouselNativeVideoProps {
 export function CarouselNativeVideo({
   src,
   active,
+  playbackFormat = 'progressive',
   previewStartSeconds,
   previewEndSeconds,
   onPlaybackError,
@@ -98,6 +124,7 @@ export function CarouselNativeVideo({
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
   const activeRef = useRef(active);
+  const formatRef = useRef(playbackFormat);
   const onReadyChangeRef = useRef(onReadyChange);
   const lastReadyRef = useRef(false);
   const hasBeenReadyRef = useRef(false);
@@ -115,8 +142,16 @@ export function CarouselNativeVideo({
     activeRef.current = active;
   }, [active]);
 
+  useEffect(() => {
+    formatRef.current = playbackFormat;
+  }, [playbackFormat]);
+
   const reportReady = (video: HTMLVideoElement) => {
-    if (isCarouselPreviewReady(video, startRef.current)) {
+    const readyNow =
+      formatRef.current === 'hls'
+        ? isHlsPreviewReady(video)
+        : isCarouselPreviewReady(video, startRef.current);
+    if (readyNow) {
       hasBeenReadyRef.current = true;
     }
     // Latch once a real frame has shown. Seeking a paused slide back to
@@ -164,6 +199,54 @@ export function CarouselNativeVideo({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    if (playbackFormat === 'hls') {
+      let cancelled = false;
+      let metadataListener: (() => void) | null = null;
+
+      const cleanup = () => {
+        cancelled = true;
+        if (metadataListener) {
+          video.removeEventListener('loadedmetadata', metadataListener);
+          metadataListener = null;
+        }
+      };
+
+      if (!active) {
+        video.pause();
+        reportReady(video);
+        return cleanup;
+      }
+
+      const startAtInPoint = () => {
+        if (cancelled || !activeRef.current) return;
+        const start = startRef.current;
+        if (!needsNoSeek(start) && !isAtInPoint(video, start)) {
+          video.currentTime = start;
+        }
+        reportReady(video);
+        void video.play().catch(() => {
+          // Autoplay can be blocked until the first gesture; swipe is enough.
+        });
+      };
+
+      // currentTime before HAVE_METADATA is ignored, so wait for it — then
+      // trust the seek, rather than gating play() on a `seeked` that
+      // progressive MP4 on this platform may never fire.
+      if (hasVideoMetadata(video)) {
+        startAtInPoint();
+      } else {
+        const onMetadata = () => {
+          video.removeEventListener('loadedmetadata', onMetadata);
+          metadataListener = null;
+          startAtInPoint();
+        };
+        metadataListener = onMetadata;
+        video.addEventListener('loadedmetadata', onMetadata);
+      }
+
+      return cleanup;
+    }
 
     let cancelled = false;
     let seekedListener: (() => void) | null = null;
@@ -286,7 +369,7 @@ export function CarouselNativeVideo({
 
     beginSeekAndPlay(start);
     return cleanup;
-  }, [active, src]);
+  }, [active, src, playbackFormat]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -312,7 +395,12 @@ export function CarouselNativeVideo({
   };
 
   return (
-    <div className="vp-proto-carousel__player" aria-hidden data-player="native">
+    <div
+      className="vp-proto-carousel__player"
+      aria-hidden
+      data-player="native"
+      data-format={playbackFormat}
+    >
       <video
         ref={videoRef}
         className={
