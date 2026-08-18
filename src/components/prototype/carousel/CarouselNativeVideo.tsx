@@ -33,17 +33,6 @@ function isAtInPoint(
   return Math.abs(video.currentTime - startSeconds) <= SEEK_TOLERANCE_S;
 }
 
-/**
- * Safe to play. currentTime reports the seek *target* while seeking is true
- * (HTML/WebKit IDL) — that is not a completed seek.
- */
-function isSettledAtInPoint(
-  video: HTMLVideoElement,
-  startSeconds: number | null | undefined,
-): boolean {
-  return !video.seeking && isAtInPoint(video, startSeconds);
-}
-
 function hasVideoMetadata(video: HTMLVideoElement): boolean {
   return video.readyState >= HTMLMediaElement.HAVE_METADATA;
 }
@@ -69,15 +58,12 @@ function isCarouselPreviewReady(
 ): boolean {
   if (video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return false;
   if (!video.paused) {
-    // Playing while a seek is still pending presents buffered frames (often
-    // the start of a progressive MP4) under a currentTime that already
-    // reads as the in-point. Do not reveal that as ready.
-    if (video.seeking) return false;
     if (startSeconds == null) return true;
+    // Playing before the in-point is not ready (mobile Safari race at t=0).
     return video.currentTime >= startSeconds - SEEK_TOLERANCE_S;
   }
   if (startSeconds == null) return true;
-  return isSettledAtInPoint(video, startSeconds);
+  return isAtInPoint(video, startSeconds);
 }
 
 interface CarouselNativeVideoProps {
@@ -212,7 +198,7 @@ export function CarouselNativeVideo({
 
       const onSeeked = () => {
         if (cancelled || !activeRef.current) return;
-        if (!isSettledAtInPoint(video, start)) return;
+        if (!isAtInPoint(video, start)) return;
         video.removeEventListener('seeked', onSeeked);
         seekedListener = null;
         if (seekRetryTimer != null) {
@@ -229,13 +215,10 @@ export function CarouselNativeVideo({
         seekRetryTimer = setTimeout(() => {
           seekRetryTimer = null;
           if (cancelled || !activeRef.current) return;
-          if (isSettledAtInPoint(video, start)) {
+          if (isAtInPoint(video, start)) {
             finishAtInPoint();
             return;
           }
-          // Targeting the in-point but still seeking: keep waiting for
-          // seeked. Do not play() and do not re-assign currentTime.
-          if (isAtInPoint(video, start)) return;
           seekToInPoint(video, start);
           waitForSeeked(start, false);
         }, SEEK_RETRY_MS);
@@ -245,7 +228,7 @@ export function CarouselNativeVideo({
     const beginSeekAndPlay = (start: number) => {
       if (cancelled || !activeRef.current) return;
 
-      if (isSettledAtInPoint(video, start)) {
+      if (isAtInPoint(video, start)) {
         finishAtInPoint();
         return;
       }
@@ -268,11 +251,7 @@ export function CarouselNativeVideo({
       }
 
       if (!seekToInPoint(video, start)) {
-        if (isSettledAtInPoint(video, start)) {
-          finishAtInPoint();
-          return;
-        }
-        waitForSeeked(start, true);
+        finishAtInPoint();
         return;
       }
 
@@ -287,7 +266,9 @@ export function CarouselNativeVideo({
     }
 
     const start = startRef.current;
-    if (start == null || isSettledAtInPoint(video, start)) {
+    const needsSeek = start != null && !isAtInPoint(video, start);
+
+    if (!needsSeek) {
       reportReady(video);
       tryPlay();
       return cleanup;
