@@ -6,6 +6,23 @@
  * only for the duration of that programmatic page move.
  */
 
+:root {
+  /* Safari 26 Liquid Glass compositing gap (outerHeight − 100lvh). JS overrides
+   * via inline custom property on mount + orientationchange only. */
+  --vp-chrome-bleed: 0px;
+}
+
+/* In-flow black bleed between carousel and the next section (homepage only).
+ * If JS measurement fails, height stays 0 — manual fallback only (not enabled):
+ *   height: 136px;
+ * 136px is a community-sourced approximation from other devices (1ar.io), not
+ * verified on our test hardware — do not substitute silently for measurement. */
+.vp-chrome-bleed {
+  height: var(--vp-chrome-bleed);
+  background: #000;
+  pointer-events: none;
+}
+
 .vp-proto-carousel {
   position: relative;
   width: 100%;
