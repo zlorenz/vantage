@@ -132,11 +132,15 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     const root = rootRef.current;
     if (!root) return false;
     const rect = root.getBoundingClientRect();
+    // Same source as --vp-carousel-vh. innerHeight can disagree with the
+    // visual viewport (DevTools device mode, iOS chrome) and drop the
+    // ratio below 0.85 while the carousel still fills the screen.
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     return isCarouselScrollActive({
       rootTop: rect.top,
       intersectionRatio:
         rect.height > 0
-          ? Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top)) /
+          ? Math.max(0, Math.min(viewportHeight, rect.bottom) - Math.max(0, rect.top)) /
             rect.height
           : 0,
     });
