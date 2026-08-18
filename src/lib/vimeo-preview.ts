@@ -2,6 +2,11 @@
  * Pick a progressive MP4 from Vimeo's play.progressive list.
  * Used by /api/vimeo-preview/[id] (carousel) and /api/vimeo-keyframes/[id]
  * (Studio bounds picker) with different preferred heights.
+ *
+ * Also mints Vimeo's play.hls link. iOS WebKit will not range-seek a
+ * progressive MP4 — it downloads sequentially from byte 0 and presents
+ * frames from t=0 while `seeking` stays true — so trimmed previews need a
+ * segmented source there. Desktop stays on progressive.
  */
 
 /** Carousel muted autoplay — 720p on all devices. Reverted from a 540p
@@ -156,6 +161,100 @@ export async function loadProgressiveRendition(
       status: 502,
       error: 'no_progressive',
       message: 'No progressive MP4 rendition is available.',
+    };
+  }
+  return {ok: true, picked};
+}
+
+export type VimeoHlsFile = {
+  link?: string | null;
+  link_expiration_time?: string | null;
+};
+
+export type PickedHls = {
+  url: string;
+  expiresAt: string | null;
+};
+
+export type VimeoHlsPlayResponse = {
+  play?:
+    | {
+        hls?: VimeoHlsFile | null;
+        status?: string;
+      }
+    | VimeoHlsFile[]
+    | null;
+  error?: string;
+};
+
+export type HlsLoadResult =
+  | {ok: true; picked: PickedHls}
+  | {ok: false; status: number; error: string; message: string};
+
+/**
+ * Unlike progressive, HLS is a single manifest link — no rendition picking,
+ * the variants live inside the m3u8.
+ */
+export function pickHlsLink(body: VimeoHlsPlayResponse): PickedHls | null {
+  const play = body.play;
+  if (!play || Array.isArray(play)) return null;
+  const hls = play.hls;
+  if (!hls || typeof hls.link !== 'string' || !hls.link.startsWith('http')) return null;
+  return {url: hls.link, expiresAt: hls.link_expiration_time ?? null};
+}
+
+export async function fetchPlayHls(id: string, token: string): Promise<Response> {
+  return fetch(`https://api.vimeo.com/videos/${id}?fields=play.hls`, {
+    headers: {
+      Authorization: `bearer ${token}`,
+      Accept: 'application/vnd.vimeo.*+json;version=3.4',
+    },
+    cache: 'no-store',
+  });
+}
+
+/**
+ * Mint the HLS manifest link. Mirrors loadProgressiveRendition, including the
+ * single retry for a transient empty payload under concurrent carousel mints.
+ */
+export async function loadHlsRendition(id: string, token: string): Promise<HlsLoadResult> {
+  const first = await fetchPlayHls(id, token);
+  if (first.status === 404) {
+    return {ok: false, status: 404, error: 'not_found', message: 'That Vimeo video was not found.'};
+  }
+  if (first.status === 429) {
+    return {
+      ok: false,
+      status: 429,
+      error: 'rate_limited',
+      message: 'Vimeo rate limit reached. Try again shortly.',
+    };
+  }
+  if (!first.ok) {
+    return {
+      ok: false,
+      status: 502,
+      error: 'vimeo_error',
+      message: 'Vimeo did not return a playable file.',
+    };
+  }
+
+  let body = (await first.json()) as VimeoHlsPlayResponse;
+  let picked = pickHlsLink(body);
+  if (!picked) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const retry = await fetchPlayHls(id, token);
+    if (retry.ok) {
+      body = (await retry.json()) as VimeoHlsPlayResponse;
+      picked = pickHlsLink(body);
+    }
+  }
+  if (!picked) {
+    return {
+      ok: false,
+      status: 502,
+      error: 'no_hls',
+      message: 'No HLS rendition is available.',
     };
   }
   return {ok: true, picked};

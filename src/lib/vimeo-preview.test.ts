@@ -4,6 +4,7 @@
 
 import assert from 'node:assert/strict';
 import {
+  pickHlsLink,
   pickProgressiveRendition,
   PREFERRED_CAROUSEL_HEIGHT,
   PREFERRED_KEYFRAME_HEIGHT,
@@ -78,6 +79,34 @@ function testEmptyOrUnlinkedReturnsNull() {
   );
 }
 
+function testPicksHlsLinkWithExpiry() {
+  const picked = pickHlsLink({
+    play: {
+      hls: {
+        link: 'https://player.vimeo.com/play/example.m3u8',
+        link_expiration_time: '2026-08-17T10:00:00+00:00',
+      },
+    },
+  });
+  assert.equal(picked?.url, 'https://player.vimeo.com/play/example.m3u8');
+  assert.equal(picked?.expiresAt, '2026-08-17T10:00:00+00:00');
+}
+
+function testHlsMissingExpiryIsNull() {
+  const picked = pickHlsLink({
+    play: {hls: {link: 'https://player.vimeo.com/play/example.m3u8'}},
+  });
+  assert.equal(picked?.expiresAt, null);
+}
+
+function testHlsAbsentOrUnlinkedReturnsNull() {
+  assert.equal(pickHlsLink({}), null);
+  assert.equal(pickHlsLink({play: null}), null);
+  assert.equal(pickHlsLink({play: {}}), null);
+  assert.equal(pickHlsLink({play: {hls: {link: null}}}), null);
+  assert.equal(pickHlsLink({play: []}), null);
+}
+
 const tests = [
   testPrefers720WhenPresent,
   testFallsBackToHighestWhen720Missing,
@@ -87,6 +116,9 @@ const tests = [
   testCarouselFallsBackToHighestWhen720Missing,
   testCarouselFallsBackToHighestBelow720,
   testEmptyOrUnlinkedReturnsNull,
+  testPicksHlsLinkWithExpiry,
+  testHlsMissingExpiryIsNull,
+  testHlsAbsentOrUnlinkedReturnsNull,
 ];
 
 for (const test of tests) {
