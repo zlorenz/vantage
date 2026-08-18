@@ -44,8 +44,6 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
 }
 
-export const revalidate = 60;
-
 export async function generateMetadata({params}: Props): Promise<Metadata> {
   const {locale} = await params;
   const typedLocale = locale as Locale;

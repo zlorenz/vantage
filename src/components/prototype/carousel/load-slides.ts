@@ -4,7 +4,8 @@ import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import {getPhraseRecord} from '@/lib/phrase-book';
-import {sanityClient, urlForImage} from '@/lib/sanity';
+import {urlForImage} from '@/lib/sanity';
+import {sanityFetch} from '@/sanity/lib/live';
 import type {CrewCredit, DisplayTitlePartsValue, SanityImage} from '@/types/sanity';
 import {composeOverlayCopy, joinOverlayList} from './overlay';
 import {PROTOTYPE_CAROUSEL_ENTRIES_QUERY} from './query';
@@ -34,13 +35,15 @@ export async function loadFeaturedWorkSlides(
   locale: Locale,
 ): Promise<PrototypeCarouselSlide[]> {
   const [entriesResult, phrases] = await Promise.all([
-    sanityClient.fetch<CarouselEntry[]>(PROTOTYPE_CAROUSEL_ENTRIES_QUERY, {
-      slugs: [...PROTOTYPE_CAROUSEL_SLUGS],
+    sanityFetch({
+      query: PROTOTYPE_CAROUSEL_ENTRIES_QUERY,
+      params: {slugs: [...PROTOTYPE_CAROUSEL_SLUGS]},
+      stega: false,
     }),
     getPhraseRecord(),
   ]);
 
-  const entries = entriesResult ?? [];
+  const entries = (entriesResult.data as CarouselEntry[] | null) ?? [];
   const bySlug = new Map(
     entries
       .filter((entry): entry is CarouselEntry & {slug: string} => Boolean(entry.slug))

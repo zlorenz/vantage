@@ -1,5 +1,5 @@
 /**
- * Prototype-only GROQ — not used by the live homepage or other production routes.
+ * Featured-work carousel GROQ — used by Home and /prototype/carousel.
  */
 
 export const PROTOTYPE_CAROUSEL_ENTRIES_QUERY = `

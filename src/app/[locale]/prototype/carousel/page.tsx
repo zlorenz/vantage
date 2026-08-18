@@ -17,8 +17,6 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
 }
 
-export const revalidate = 60;
-
 export const metadata: Metadata = {
   title: 'Prototype Carousel | Vantage Pictures',
   robots: {index: false, follow: false},
