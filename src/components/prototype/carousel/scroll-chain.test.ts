@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import {
   boundaryLatchDirection,
   isBoundaryRelease,
+  isCarouselReturnRecovery,
   isCarouselScrollActive,
   shouldKeepBoundaryLatch,
   shouldReleaseKeyToPage,
@@ -148,6 +149,82 @@ function testKeepLatchOnlyWhileStillOnThatEdge() {
   );
 }
 
+function testReturnRecoveryPeekAndStick() {
+  assert.equal(
+    isCarouselReturnRecovery({
+      latchDirection: 1,
+      carouselActive: false,
+      activeIndex: 8,
+      lastIndex: 8,
+      deltaY: -20,
+      rootTop: 0,
+      intersectionRatio: 1,
+    }),
+    true,
+  );
+}
+
+function testReturnRecoveryContactVisibleIgnoresTopMin() {
+  assert.equal(
+    isCarouselScrollActive({rootTop: -100, intersectionRatio: 0.9}),
+    false,
+  );
+  assert.equal(
+    isCarouselReturnRecovery({
+      latchDirection: null,
+      carouselActive: false,
+      activeIndex: 8,
+      lastIndex: 8,
+      deltaY: -20,
+      rootTop: -100,
+      intersectionRatio: 0.9,
+    }),
+    true,
+  );
+}
+
+function testReturnRecoveryDoesNotMatchDeepInContact() {
+  assert.equal(
+    isCarouselReturnRecovery({
+      latchDirection: null,
+      carouselActive: false,
+      activeIndex: 8,
+      lastIndex: 8,
+      deltaY: -20,
+      rootTop: -400,
+      intersectionRatio: 0.3,
+    }),
+    false,
+  );
+}
+
+function testReturnRecoveryIgnoresDownwardAndActiveCarousel() {
+  assert.equal(
+    isCarouselReturnRecovery({
+      latchDirection: 1,
+      carouselActive: false,
+      activeIndex: 8,
+      lastIndex: 8,
+      deltaY: 20,
+      rootTop: 0,
+      intersectionRatio: 1,
+    }),
+    false,
+  );
+  assert.equal(
+    isCarouselReturnRecovery({
+      latchDirection: null,
+      carouselActive: true,
+      activeIndex: 8,
+      lastIndex: 8,
+      deltaY: -20,
+      rootTop: 0,
+      intersectionRatio: 1,
+    }),
+    false,
+  );
+}
+
 testCarouselActiveWhenFlushInViewport();
 testCarouselInactiveWhenPageHasScrolledPast();
 testWheelPagesInsideActiveCarousel();
@@ -158,5 +235,9 @@ testKeysMatchWheelAtBoundariesWhileActive();
 testBoundaryReleaseOnlyAtEnds();
 testLatchDirectionFromDelta();
 testKeepLatchOnlyWhileStillOnThatEdge();
+testReturnRecoveryPeekAndStick();
+testReturnRecoveryContactVisibleIgnoresTopMin();
+testReturnRecoveryDoesNotMatchDeepInContact();
+testReturnRecoveryIgnoresDownwardAndActiveCarousel();
 
 console.log('scroll-chain.test.ts: ok');

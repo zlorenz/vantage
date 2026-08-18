@@ -12,6 +12,7 @@ import { CarouselSlide } from './CarouselSlide';
 import {
   boundaryLatchDirection,
   isBoundaryRelease,
+  isCarouselReturnRecovery,
   isCarouselScrollActive,
   shouldKeepBoundaryLatch,
   shouldReleaseKeyToPage,
@@ -104,6 +105,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const carouselActiveRef = useRef(true);
   const boundaryLatchRef = useRef<BoundaryLatchDirection | null>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const windowTouchStartYRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
 
@@ -129,24 +131,36 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     );
   });
 
-  const readVisibilityActive = useCallback(() => {
+  const readVisibilityMetrics = useCallback(() => {
     const root = rootRef.current;
-    if (!root) return false;
+    if (!root) {
+      return {rootTop: 0, intersectionRatio: 0, visibilityActive: false};
+    }
     const rect = root.getBoundingClientRect();
     // visualViewport height for the on-screen gate — not carousel box sizing.
     // innerHeight can disagree with the visual viewport (DevTools device mode,
     // iOS chrome) and drop the ratio below 0.85 while the carousel still fills
     // the screen.
     const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-    return isCarouselScrollActive({
+    const intersectionRatio =
+      rect.height > 0
+        ? Math.max(0, Math.min(viewportHeight, rect.bottom) - Math.max(0, rect.top)) /
+          rect.height
+        : 0;
+    return {
       rootTop: rect.top,
-      intersectionRatio:
-        rect.height > 0
-          ? Math.max(0, Math.min(viewportHeight, rect.bottom) - Math.max(0, rect.top)) /
-            rect.height
-          : 0,
-    });
+      intersectionRatio,
+      visibilityActive: isCarouselScrollActive({
+        rootTop: rect.top,
+        intersectionRatio,
+      }),
+    };
   }, []);
+
+  const readVisibilityActive = useCallback(
+    () => readVisibilityMetrics().visibilityActive,
+    [readVisibilityMetrics],
+  );
 
   const applyScrollActive = useCallback((visibilityActive: boolean) => {
     // Re-validate on every visibility pass (window scroll/resize/IO), not
@@ -208,6 +222,31 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     [applyScrollActive, lastIndex, readVisibilityActive],
   );
 
+  const recoverFromContactIfReversed = useCallback(
+    (deltaY: number) => {
+      const {rootTop, intersectionRatio} = readVisibilityMetrics();
+      if (
+        !isCarouselReturnRecovery({
+          latchDirection: boundaryLatchRef.current,
+          carouselActive: carouselActiveRef.current,
+          activeIndex: activeIndexRef.current,
+          lastIndex,
+          deltaY,
+          rootTop,
+          intersectionRatio,
+        })
+      ) {
+        return;
+      }
+      boundaryLatchRef.current = null;
+      if (window.scrollY > 0) {
+        window.scrollTo({top: 0, behavior: 'instant'});
+      }
+      applyScrollActive(readVisibilityActive());
+    },
+    [applyScrollActive, lastIndex, readVisibilityActive, readVisibilityMetrics],
+  );
+
   const syncOverlap = useCallback(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
@@ -265,6 +304,46 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       window.removeEventListener('resize', syncCarouselScrollActive);
     };
   }, [applyScrollActive, readVisibilityActive, slides.length]);
+
+  useEffect(() => {
+    const onTouchStart = (event: TouchEvent) => {
+      windowTouchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const startY = windowTouchStartYRef.current;
+      const currentY = event.touches[0]?.clientY;
+      if (startY == null || currentY == null) return;
+      const deltaY = startY - currentY;
+      if (Math.abs(deltaY) < TOUCH_BOUNDARY_PX) return;
+      recoverFromContactIfReversed(deltaY);
+    };
+
+    const onTouchEnd = () => {
+      windowTouchStartYRef.current = null;
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) return;
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      const delta = normalizeWheelDelta(event);
+      if (delta === 0) return;
+      recoverFromContactIfReversed(delta);
+    };
+
+    window.addEventListener('touchstart', onTouchStart, {passive: true});
+    window.addEventListener('touchmove', onTouchMove, {passive: true});
+    window.addEventListener('touchend', onTouchEnd, {passive: true});
+    window.addEventListener('touchcancel', onTouchEnd, {passive: true});
+    window.addEventListener('wheel', onWheel, {passive: true});
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+      window.removeEventListener('touchcancel', onTouchEnd);
+      window.removeEventListener('wheel', onWheel);
+    };
+  }, [recoverFromContactIfReversed]);
 
   useEffect(() => {
     applyScrollActive(readVisibilityActive());

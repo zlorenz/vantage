@@ -33,6 +33,41 @@ export function isCarouselScrollActive(options: {
 /** +1 = released past the last slide; -1 = released past the first. */
 export type BoundaryLatchDirection = 1 | -1;
 
+/**
+ * Return-only recovery from Contact. Separate from isCarouselScrollActive —
+ * does not use CAROUSEL_ACTIVE_TOP_MIN_PX. Reverse = deltaY < 0.
+ *
+ * Matches: last-slide outbound latch (+1), or last slide, passive, mostly
+ * on-screen (ratio ≥ 0.85, rootTop ≤ 96). Does not match deep in Contact
+ * (low ratio, latch already null) or an active carousel (live paging).
+ */
+export function isCarouselReturnRecovery(options: {
+  latchDirection: BoundaryLatchDirection | null;
+  carouselActive: boolean;
+  activeIndex: number;
+  lastIndex: number;
+  deltaY: number;
+  rootTop: number;
+  intersectionRatio: number;
+}): boolean {
+  const {
+    latchDirection,
+    carouselActive,
+    activeIndex,
+    lastIndex,
+    deltaY,
+    rootTop,
+    intersectionRatio,
+  } = options;
+  if (deltaY >= 0) return false;
+  if (latchDirection === 1) return true;
+  if (carouselActive) return false;
+  if (activeIndex < lastIndex) return false;
+  if (intersectionRatio < CAROUSEL_ACTIVE_INTERSECTION_MIN) return false;
+  if (rootTop > CAROUSEL_ACTIVE_TOP_MAX_PX) return false;
+  return true;
+}
+
 export function boundaryLatchDirection(
   deltaY: number,
 ): BoundaryLatchDirection | null {
