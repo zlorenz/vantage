@@ -25,11 +25,22 @@ const READY_EVENTS = [
   'emptied',
 ] as const;
 
+/**
+ * Sanity stores "play from the start" as 0, not null. `?? null` in
+ * load-slides only converts missing values. 0 must not enter seek-wait
+ * (timeline origin never needs a seek). Explicit `=== 0`, not falsy.
+ */
+function needsNoSeek(
+  start: number | null | undefined,
+): start is null | undefined | 0 {
+  return start == null || start === 0;
+}
+
 function isAtInPoint(
   video: HTMLVideoElement,
   startSeconds: number | null | undefined,
 ): boolean {
-  if (startSeconds == null) return true;
+  if (needsNoSeek(startSeconds)) return true;
   return Math.abs(video.currentTime - startSeconds) <= SEEK_TOLERANCE_S;
 }
 
@@ -45,7 +56,7 @@ function seekToInPoint(
   video: HTMLVideoElement,
   startSeconds: number | null | undefined,
 ): boolean {
-  if (startSeconds == null) return false;
+  if (needsNoSeek(startSeconds)) return false;
   if (!hasVideoMetadata(video)) return false;
   if (isAtInPoint(video, startSeconds)) return false;
   video.currentTime = startSeconds;
@@ -58,11 +69,11 @@ function isCarouselPreviewReady(
 ): boolean {
   if (video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return false;
   if (!video.paused) {
-    if (startSeconds == null) return true;
+    if (needsNoSeek(startSeconds)) return true;
     // Playing before the in-point is not ready (mobile Safari race at t=0).
     return video.currentTime >= startSeconds - SEEK_TOLERANCE_S;
   }
-  if (startSeconds == null) return true;
+  if (needsNoSeek(startSeconds)) return true;
   return isAtInPoint(video, startSeconds);
 }
 
@@ -266,9 +277,8 @@ export function CarouselNativeVideo({
     }
 
     const start = startRef.current;
-    const needsSeek = start != null && !isAtInPoint(video, start);
 
-    if (!needsSeek) {
+    if (needsNoSeek(start) || isAtInPoint(video, start)) {
       reportReady(video);
       tryPlay();
       return cleanup;
