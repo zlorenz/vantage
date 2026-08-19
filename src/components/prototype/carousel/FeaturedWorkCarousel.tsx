@@ -307,9 +307,15 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   }, [domLastIndex]);
 
   const jumpToDomIndex = useCallback(
-    (domIndex: number) => {
+    (domIndex: number, options?: {loopWrap?: boolean}) => {
       const scroller = scrollerRef.current;
       if (!scroller) return;
+      if (options?.loopWrap) {
+        scroller.scrollTop = domIndex * scroller.clientHeight;
+        settledIndexRef.current = domIndex;
+        syncOverlap();
+        return;
+      }
       if (pagingRafRef.current != null) {
         cancelAnimationFrame(pagingRafRef.current);
         pagingRafRef.current = null;
@@ -340,12 +346,12 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       return;
     }
     if (nearest === 0) {
-      jumpToDomIndex(lastIndex + 1);
+      jumpToDomIndex(lastIndex + 1, {loopWrap: true});
       commitActiveIndex(lastIndex);
       return;
     }
     if (nearest === lastIndex + 2) {
-      jumpToDomIndex(1);
+      jumpToDomIndex(1, {loopWrap: true});
       commitActiveIndex(0);
     }
   }, [commitActiveIndex, jumpToDomIndex, lastIndex, loopable]);
