@@ -23,7 +23,7 @@ async function loadPhraseMap(): Promise<PhraseMap> {
 /** Deduped per request — safe to call from multiple server components. */
 export const getPhraseMap = cache(loadPhraseMap)
 
-/** Serializable map for client components (PortfolioGrid, HeroCarousel). */
+/** Serializable map for client components (PortfolioGrid). */
 export async function getPhraseRecord(): Promise<Record<string, string>> {
   return phraseMapToRecord(await getPhraseMap())
 }
