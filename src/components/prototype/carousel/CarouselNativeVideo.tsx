@@ -99,6 +99,14 @@ function isHlsPreviewReady(video: HTMLVideoElement): boolean {
   return video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA;
 }
 
+/** Coded aspect as a CSS `width / height` expression, or null before metadata. */
+function previewAspectValue(video: HTMLVideoElement): string | null {
+  const width = video.videoWidth;
+  const height = video.videoHeight;
+  if (width <= 0 || height <= 0) return null;
+  return `${width} / ${height}`;
+}
+
 export type PlaybackFormat = 'progressive' | 'hls';
 
 interface CarouselNativeVideoProps {
@@ -122,6 +130,8 @@ export function CarouselNativeVideo({
   onReadyChange,
 }: CarouselNativeVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
+  const appliedAspectRef = useRef<string | null>(null);
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
   const activeRef = useRef(active);
@@ -147,7 +157,17 @@ export function CarouselNativeVideo({
     formatRef.current = playbackFormat;
   }, [playbackFormat]);
 
+  const applyPreviewAspect = (video: HTMLVideoElement) => {
+    const player = playerRef.current;
+    if (!player) return;
+    const value = previewAspectValue(video);
+    if (value == null || value === appliedAspectRef.current) return;
+    appliedAspectRef.current = value;
+    player.style.setProperty('--vp-preview-aspect', value);
+  };
+
   const reportReady = (video: HTMLVideoElement) => {
+    applyPreviewAspect(video);
     const readyNow =
       formatRef.current === 'hls'
         ? isHlsPreviewReady(video)
@@ -181,6 +201,7 @@ export function CarouselNativeVideo({
 
   useEffect(() => {
     const video = videoRef.current;
+    const player = playerRef.current;
     if (!video) return;
 
     const onReadyEvent = () => reportReady(video);
@@ -193,6 +214,8 @@ export function CarouselNativeVideo({
         video.removeEventListener(event, onReadyEvent);
       }
       hasBeenReadyRef.current = false;
+      appliedAspectRef.current = null;
+      player?.style.removeProperty('--vp-preview-aspect');
       if (lastReadyRef.current) {
         lastReadyRef.current = false;
         setReady(false);
@@ -406,6 +429,7 @@ export function CarouselNativeVideo({
 
   return (
     <div
+      ref={playerRef}
       className="vp-proto-carousel__player"
       aria-hidden
       data-player="native"

@@ -87,14 +87,17 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  /* 16/9 until native loadedmetadata writes the coded size. Iframe fallback
+   * never learns videoWidth — keep this default rather than a per-slug map. */
+  --vp-preview-aspect: 16 / 9;
 }
 
 .vp-proto-carousel__iframe {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: max(100%, 177.78vh);
-  height: max(100%, 56.25vw);
+  width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
+  height: max(100%, calc(100vw / var(--vp-preview-aspect)));
   min-width: 100%;
   min-height: 100%;
   border: 0;
@@ -104,9 +107,15 @@
 
 .vp-proto-carousel__video {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
+  height: max(100%, calc(100vw / var(--vp-preview-aspect)));
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  /* Cover-math sizes the box to the coded aspect; object-fit is a fallback
+   * if WebKit ignores the box size, not the primary crop. */
   object-fit: cover;
   pointer-events: none;
   /* Hard hide so an unready <video> cannot paint opaque black over the poster.
