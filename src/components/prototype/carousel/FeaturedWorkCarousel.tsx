@@ -41,6 +41,8 @@ const SLIDE_DURATION_MS = 300;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
 const TOUCH_BOUNDARY_PX = 10;
+const EXPLORE_WRAP_GRACE_MS = 200;
+const EXPLORE_GRACE_SCROLL_DELTA_PX = 2;
 
 type AnimSignal = { cancelled: boolean };
 
@@ -108,6 +110,9 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelIdleTimerRef = useRef(0);
   const settledIndexRef = useRef(0);
   const pagingRafRef = useRef<number | null>(null);
+  const exploreGraceTimerRef = useRef(0);
+  const exploreGraceScrollTopRef = useRef(0);
+  const exploreGraceActiveRef = useRef(false);
   const overlapPairRef = useRef<OverlapPair | null>(null);
   const carouselActiveRef = useRef(true);
   const boundaryLatchRef = useRef<BoundaryLatchDirection | null>(null);
@@ -116,6 +121,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
   const [loopMounted, setLoopMounted] = useState(false);
+  const [exploreGraceActive, setExploreGraceActive] = useState(false);
 
   const lastIndex = Math.max(0, slides.length - 1);
   const loopable = lastIndex > 0 && loopMounted;
@@ -149,6 +155,24 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     setActiveIndex(index);
     return true;
   }, []);
+
+  const clearExploreGrace = useCallback(() => {
+    if (!exploreGraceActiveRef.current) return;
+    exploreGraceActiveRef.current = false;
+    window.clearTimeout(exploreGraceTimerRef.current);
+    setExploreGraceActive(false);
+  }, []);
+
+  const beginExploreGraceAfterWrap = useCallback(() => {
+    const scroller = scrollerRef.current;
+    exploreGraceScrollTopRef.current = scroller?.scrollTop ?? 0;
+    exploreGraceActiveRef.current = true;
+    setExploreGraceActive(true);
+    window.clearTimeout(exploreGraceTimerRef.current);
+    exploreGraceTimerRef.current = window.setTimeout(() => {
+      clearExploreGrace();
+    }, EXPLORE_WRAP_GRACE_MS);
+  }, [clearExploreGrace]);
 
   const setCarouselScrollActive = useCallback((active: boolean) => {
     if (active === carouselActiveRef.current) return;
@@ -348,13 +372,15 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     if (nearest === 0) {
       jumpToDomIndex(lastIndex + 1, {loopWrap: true});
       commitActiveIndex(lastIndex);
+      beginExploreGraceAfterWrap();
       return;
     }
     if (nearest === lastIndex + 2) {
       jumpToDomIndex(1, {loopWrap: true});
       commitActiveIndex(0);
+      beginExploreGraceAfterWrap();
     }
-  }, [commitActiveIndex, jumpToDomIndex, lastIndex, loopable]);
+  }, [beginExploreGraceAfterWrap, commitActiveIndex, jumpToDomIndex, lastIndex, loopable]);
 
   useLayoutEffect(() => {
     setLoopMounted(true);
@@ -504,6 +530,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         cancelAnimationFrame(pagingRafRef.current);
         pagingRafRef.current = null;
       }
+      window.clearTimeout(exploreGraceTimerRef.current);
       window.clearTimeout(wheelIdleTimerRef.current);
       overlapPairRef.current = syncOverlapToSlides(
         slideRefs.current,
@@ -543,6 +570,12 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     if (!scroller) return;
 
     const onScroll = () => {
+      if (exploreGraceActiveRef.current) {
+        const delta = Math.abs(scroller.scrollTop - exploreGraceScrollTopRef.current);
+        if (delta >= EXPLORE_GRACE_SCROLL_DELTA_PX) {
+          clearExploreGrace();
+        }
+      }
       syncOverlap();
     };
     const onScrollEnd = () => {
@@ -556,7 +589,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.removeEventListener('scroll', onScroll);
       scroller.removeEventListener('scrollend', onScrollEnd);
     };
-  }, [normalizeLoopScroll, syncOverlap]);
+  }, [clearExploreGrace, normalizeLoopScroll, syncOverlap]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -733,6 +766,11 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
             slide={item.slide}
             index={item.logicalIndex}
             active={item.clone == null && item.logicalIndex === activeIndex}
+            blockExplore={
+              item.clone == null &&
+              item.logicalIndex === activeIndex &&
+              exploreGraceActive
+            }
             mountPlayer={
               item.clone == null &&
               shouldMountCarouselPlayer(

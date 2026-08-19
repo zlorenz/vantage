@@ -11,11 +11,14 @@ interface CarouselSlideProps {
   slide: PrototypeCarouselSlide;
   index: number;
   active: boolean;
+  /** After a loop-wrap teleport, Explore stays inert briefly so a stray tap
+   *  does not consume a touch meant as the next swipe. */
+  blockExplore?: boolean;
   mountPlayer: boolean;
 }
 
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
-  function CarouselSlide({slide, index, active, mountPlayer}, ref) {
+  function CarouselSlide({slide, index, active, blockExplore = false, mountPlayer}, ref) {
     const t = useTranslations('Home');
     const [playerReady, setPlayerReady] = useState(false);
 
@@ -69,7 +72,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                   }}
                   variant="ghost"
                   className={`vp-proto-carousel__explore mt-2 w-fit ${
-                    active ? 'pointer-events-auto' : 'pointer-events-none'
+                    active && !blockExplore ? 'pointer-events-auto' : 'pointer-events-none'
                   }`}
                 >
                   {t('exploreButton')}
