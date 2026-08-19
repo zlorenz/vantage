@@ -47,9 +47,6 @@ interface FeaturedWorkCarouselProps {
 const SLIDE_DURATION_MS = 300;
 const WHEEL_THRESHOLD_PX = 30;
 const WHEEL_GESTURE_END_MS = 140;
-// Hard cap so continuous-delta devices (Magic Mouse, trackpads) aren't locked
-// for the entire gesture duration — discrete notched wheels still use the idle timer.
-const WHEEL_LOCK_HARD_CAP_MS = SLIDE_DURATION_MS + 150;
 const TOUCH_BOUNDARY_PX = 10;
 const EXPLORE_WRAP_GRACE_MS = 200;
 const EXPLORE_GRACE_SCROLL_DELTA_PX = 2;
@@ -131,8 +128,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelLockedRef = useRef(false);
   const wheelAccumRef = useRef(0);
   const wheelIdleTimerRef = useRef(0);
-  const wheelLockDeadlineRef = useRef<number | null>(null);
-  const wheelLockCapTimerRef = useRef(0);
+  const wheelLastFireDirRef = useRef(0);
   const settledIndexRef = useRef(0);
   const pagingRafRef = useRef<number | null>(null);
   const exploreGraceTimerRef = useRef(0);
@@ -611,7 +607,6 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       }
       window.clearTimeout(exploreGraceTimerRef.current);
       window.clearTimeout(wheelIdleTimerRef.current);
-      window.clearTimeout(wheelLockCapTimerRef.current);
       window.clearTimeout(wrapCompensationTimerRef.current);
       overlapPairRef.current = syncOverlapToSlides(
         slideRefs.current,
@@ -679,18 +674,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     const clearWheelLock = () => {
       wheelLockedRef.current = false;
       wheelAccumRef.current = 0;
-      wheelLockDeadlineRef.current = null;
-      window.clearTimeout(wheelLockCapTimerRef.current);
+      wheelLastFireDirRef.current = 0;
     };
 
     const scheduleWheelUnlock = () => {
-      if (
-        wheelLockDeadlineRef.current !== null &&
-        Date.now() >= wheelLockDeadlineRef.current
-      ) {
-        clearWheelLock();
-        return;
-      }
       window.clearTimeout(wheelIdleTimerRef.current);
       wheelIdleTimerRef.current = window.setTimeout(() => {
         if (animatingRef.current) {
@@ -732,10 +719,21 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       event.preventDefault();
 
       if (wheelLockedRef.current) {
-        // TEMP-DIAGNOSTIC — remove after investigation
-        console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=true fired=false (locked)`);
-        scheduleWheelUnlock();
-        return;
+        // Direction reversal unlocks immediately — continuous-delta devices
+        // (Magic Mouse, trackpads) emit a monotonic same-direction momentum
+        // tail after a swipe, so a direction change signals a genuinely new gesture.
+        const incomingDir = delta > 0 ? 1 : -1;
+        if (incomingDir !== wheelLastFireDirRef.current) {
+          clearWheelLock();
+          // TEMP-DIAGNOSTIC — remove after investigation
+          console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=false fired=false (reversal-unlocked)`);
+          // Fall through to accumulation below
+        } else {
+          // TEMP-DIAGNOSTIC — remove after investigation
+          console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=true fired=false (locked)`);
+          scheduleWheelUnlock();
+          return;
+        }
       }
 
       wheelAccumRef.current += delta;
@@ -748,12 +746,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
       const dir = wheelAccumRef.current > 0 ? 1 : -1;
       // TEMP-DIAGNOSTIC — remove after investigation
-      console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=false fired=true dir=${dir} deadline=${WHEEL_LOCK_HARD_CAP_MS}`);
+      console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=false fired=true dir=${dir}`);
       wheelAccumRef.current = 0;
       wheelLockedRef.current = true;
-      wheelLockDeadlineRef.current = Date.now() + WHEEL_LOCK_HARD_CAP_MS;
-      window.clearTimeout(wheelLockCapTimerRef.current);
-      wheelLockCapTimerRef.current = window.setTimeout(clearWheelLock, WHEEL_LOCK_HARD_CAP_MS);
+      wheelLastFireDirRef.current = dir;
       goTo(activeIndexRef.current + dir, true);
       scheduleWheelUnlock();
     };
@@ -762,7 +758,6 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     return () => {
       scroller.removeEventListener('wheel', onWheel);
       window.clearTimeout(wheelIdleTimerRef.current);
-      window.clearTimeout(wheelLockCapTimerRef.current);
     };
   }, [goTo, lastIndex, releasePastBoundary, restoreFromBoundaryIfReversed]);
 
