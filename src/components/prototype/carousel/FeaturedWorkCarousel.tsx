@@ -793,7 +793,12 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       if (travelled > SWALLOWED_TOUCH_MAX_MOVE_PX) return;
       if (performance.now() - touchStartTimeRef.current > SWALLOWED_TOUCH_MAX_MS) return;
 
-      goTo(activeIndexRef.current + direction, true);
+      // Native instant jump — goTo's is-paging RAF animation fights iOS snap
+      // settling ~100ms after the wrap's loopWrap teleport.
+      const next = wrapSlideIndex(activeIndexRef.current + direction, slideCount);
+      const settleDom = loopable ? next + 1 : next;
+      commitActiveIndex(next);
+      jumpToDomIndex(settleDom, loopable ? {loopWrap: true} : undefined);
     };
 
     const onTouchCancel = () => {
@@ -811,7 +816,14 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       scroller.removeEventListener('touchend', onTouchEnd);
       scroller.removeEventListener('touchcancel', onTouchCancel);
     };
-  }, [disarmWrapCompensation, goTo, restoreFromBoundaryIfReversed]);
+  }, [
+    commitActiveIndex,
+    disarmWrapCompensation,
+    jumpToDomIndex,
+    loopable,
+    restoreFromBoundaryIfReversed,
+    slideCount,
+  ]);
 
   if (!slides.length) {
     return (
