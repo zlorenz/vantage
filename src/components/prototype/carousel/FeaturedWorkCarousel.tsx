@@ -107,6 +107,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const wheelAccumRef = useRef(0);
   const wheelIdleTimerRef = useRef(0);
   const settledIndexRef = useRef(0);
+  const pagingRafRef = useRef<number | null>(null);
   const overlapPairRef = useRef<OverlapPair | null>(null);
   const carouselActiveRef = useRef(true);
   const boundaryLatchRef = useRef<BoundaryLatchDirection | null>(null);
@@ -309,12 +310,21 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     (domIndex: number) => {
       const scroller = scrollerRef.current;
       if (!scroller) return;
+      if (pagingRafRef.current != null) {
+        cancelAnimationFrame(pagingRafRef.current);
+        pagingRafRef.current = null;
+      }
       scroller.classList.add('is-paging');
       void scroller.offsetHeight;
       scroller.scrollTop = domIndex * scroller.clientHeight;
       settledIndexRef.current = domIndex;
-      scroller.classList.remove('is-paging');
-      syncOverlap();
+      // Keep snap off for a frame so iOS can commit the new scrollTop
+      // before snap/momentum re-engage (same-turn toggle left them stale).
+      pagingRafRef.current = requestAnimationFrame(() => {
+        pagingRafRef.current = null;
+        scroller.classList.remove('is-paging');
+        syncOverlap();
+      });
     },
     [syncOverlap],
   );
@@ -456,8 +466,8 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
         } else {
           scroller.scrollTop = top;
           settledIndexRef.current = settleDom;
+          scroller.classList.remove('is-paging');
         }
-        scroller.classList.remove('is-paging');
         animatingRef.current = false;
         syncOverlap();
       };
@@ -484,6 +494,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   useEffect(() => {
     return () => {
       if (animSignalRef.current) animSignalRef.current.cancelled = true;
+      if (pagingRafRef.current != null) {
+        cancelAnimationFrame(pagingRafRef.current);
+        pagingRafRef.current = null;
+      }
       window.clearTimeout(wheelIdleTimerRef.current);
       overlapPairRef.current = syncOverlapToSlides(
         slideRefs.current,
@@ -524,14 +538,17 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
     const onScroll = () => {
       syncOverlap();
+    };
+    const onScrollEnd = () => {
+      syncOverlap();
       normalizeLoopScroll();
     };
 
     scroller.addEventListener('scroll', onScroll, {passive: true});
-    scroller.addEventListener('scrollend', onScroll);
+    scroller.addEventListener('scrollend', onScrollEnd);
     return () => {
       scroller.removeEventListener('scroll', onScroll);
-      scroller.removeEventListener('scrollend', onScroll);
+      scroller.removeEventListener('scrollend', onScrollEnd);
     };
   }, [normalizeLoopScroll, syncOverlap]);
 
