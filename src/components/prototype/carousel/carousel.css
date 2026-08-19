@@ -70,16 +70,21 @@
   scroll-snap-align: start;
   scroll-snap-stop: always;
   background: #000;
+  /* WebKit double-tap disambiguation (~350ms) on tap-classified contacts. */
+  touch-action: manipulation;
 }
 
 .vp-proto-carousel__media {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  /* auto (default) lets WebKit hold zero-movement taps for double-tap zoom. */
+  touch-action: manipulation;
 }
 
 .vp-proto-carousel__poster {
   object-fit: cover;
+  touch-action: manipulation;
 }
 
 .vp-proto-carousel__player {
