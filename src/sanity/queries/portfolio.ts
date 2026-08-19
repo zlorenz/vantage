@@ -327,16 +327,6 @@ export const TAXONOMY_HERO_IMAGE_QUERY = `
 `;
 
 /**
- * Nine most recent public portfolio entries — homepage "A Bit of Our Work" grid.
- */
-export const RECENT_PORTFOLIO_QUERY = `
-  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc, title asc)[0...9] {
-    ${PORTFOLIO_CARD_FIELDS}
-  }
-`;
-
-/** All clients for work-internal Client filter dropdown. */
-/**
  * Client terms for work-internal filter dropdown (legacy — prefer identities from credits).
  * @deprecated Use credit identities resolved from crewCredits.
  */
