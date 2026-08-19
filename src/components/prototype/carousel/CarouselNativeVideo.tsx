@@ -9,9 +9,10 @@
  *
  * - `progressive` (desktop) drives the seek-gating below, which exists to
  *   survive a seek that may never report completion.
- * - `hls` (iOS WebKit) seeks by segment and lands reliably, so it just waits
- *   for metadata, assigns the in-point and plays — the same shape as the
- *   iframe fallback. None of the seek-gating runs there.
+ * - `hls` (iOS WebKit) waits for metadata, then always re-assigns the
+ *   in-point immediately before play(). It does not trust a seek that
+ *   ran while the slide was an inactive neighbor, and it does not wait
+ *   for `seeked`. None of the progressive seek-gating runs there.
  *
  * Everything else — the element setup, the ready latch, the active/inactive
  * pause, and the bounded in/out loop — is shared by both.
@@ -236,9 +237,10 @@ export function CarouselNativeVideo({
         });
       };
 
-      // currentTime before HAVE_METADATA is ignored, so wait for it — then
-      // trust the seek, rather than gating play() on a `seeked` that
-      // progressive MP4 on this platform may never fire.
+      // currentTime before HAVE_METADATA is ignored, so wait for it. Then
+      // startAtInPoint assigns the in-point and calls play() in the same
+      // turn — no `seeked` gate, because progressive MP4 on this platform
+      // may never fire that event. The assignment itself is not skipped.
       if (hasVideoMetadata(video)) {
         startAtInPoint();
       } else {
