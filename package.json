@@ -50,6 +50,8 @@
     "@sanity/image-url": "^2.1.1",
     "@vimeo/player": "^2.30.4",
     "dotenv": "^17.4.2",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "groq": "^6.5.0",
     "jsdom": "^29.1.1",
     "mysql2": "^3.22.5",
