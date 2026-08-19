@@ -6,20 +6,6 @@
  * only for the duration of that programmatic page move.
  */
 
-:root {
-  /* Safari 26 Liquid Glass bleed — JS sets --vp-chrome-bleed to 64px on mount.
-   * 0px until hydration. Calibrated: screen.height − lvh ≈ 60px, screenshot
-   * band ≈ 58px CSS; constant uses 64px margin. */
-  --vp-chrome-bleed: 0px;
-}
-
-/* In-flow black bleed between carousel and contact (homepage only). */
-.vp-chrome-bleed {
-  height: var(--vp-chrome-bleed);
-  background: #000;
-  pointer-events: none;
-}
-
 .vp-proto-carousel {
   position: relative;
   width: 100%;
