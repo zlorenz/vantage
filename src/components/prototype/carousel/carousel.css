@@ -48,6 +48,19 @@
   scroll-snap-type: none;
 }
 
+/* After the tail clone so that snap point is not scrollMax. iOS contain-
+ * overscroll rubber-bands a last-snap commit; 1px of real overflow lets the
+ * wrap snap land. Not a snap target. */
+.vp-proto-carousel__loop-spacer {
+  display: block;
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+  background: #000;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
+
 .vp-proto-carousel__slide {
   position: relative;
   width: 100%;

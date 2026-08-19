@@ -721,6 +721,9 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
             }
           />
         ))}
+        {loopable ? (
+          <div className="vp-proto-carousel__loop-spacer" aria-hidden />
+        ) : null}
       </div>
     </div>
   );
