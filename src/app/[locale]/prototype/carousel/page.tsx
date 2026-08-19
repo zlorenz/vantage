@@ -5,7 +5,7 @@
 
 import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
-import {FeaturedWorkCarousel} from '@/components/prototype/carousel/FeaturedWorkCarousel';
+import {FeaturedWorkCarouselShell} from '@/components/prototype/carousel/FeaturedWorkCarouselShell';
 import {loadFeaturedWorkSlides} from '@/components/prototype/carousel/load-slides';
 import {routing, type Locale} from '@/i18n/routing';
 
@@ -26,5 +26,5 @@ export default async function PrototypeCarouselPage({params}: Props) {
   const {locale} = await params;
   setRequestLocale(locale);
   const slides = await loadFeaturedWorkSlides(locale as Locale);
-  return <FeaturedWorkCarousel slides={slides} />;
+  return <FeaturedWorkCarouselShell slides={slides} />;
 }
