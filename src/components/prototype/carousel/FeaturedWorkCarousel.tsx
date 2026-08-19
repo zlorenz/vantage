@@ -710,6 +710,8 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       if (delta === 0) return;
 
       if (animatingRef.current) {
+        // TEMP-DIAGNOSTIC — remove after investigation
+        console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=${wheelLockedRef.current} fired=false (animating)`);
         event.preventDefault();
         scheduleWheelUnlock();
         return;
@@ -730,17 +732,23 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       event.preventDefault();
 
       if (wheelLockedRef.current) {
+        // TEMP-DIAGNOSTIC — remove after investigation
+        console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=true fired=false (locked)`);
         scheduleWheelUnlock();
         return;
       }
 
       wheelAccumRef.current += delta;
       if (Math.abs(wheelAccumRef.current) < WHEEL_THRESHOLD_PX) {
+        // TEMP-DIAGNOSTIC — remove after investigation
+        console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=false fired=false (below-threshold)`);
         scheduleWheelUnlock();
         return;
       }
 
       const dir = wheelAccumRef.current > 0 ? 1 : -1;
+      // TEMP-DIAGNOSTIC — remove after investigation
+      console.log(`[wheel] t=${performance.now().toFixed(1)} deltaY=${event.deltaY.toFixed(1)} norm=${delta.toFixed(1)} accum=${wheelAccumRef.current.toFixed(1)} locked=false fired=true dir=${dir} deadline=${WHEEL_LOCK_HARD_CAP_MS}`);
       wheelAccumRef.current = 0;
       wheelLockedRef.current = true;
       wheelLockDeadlineRef.current = Date.now() + WHEEL_LOCK_HARD_CAP_MS;
