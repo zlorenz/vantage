@@ -199,6 +199,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
   const armWrapCompensation = useCallback(
     (direction: 1 | -1) => {
+      console.log('[wrap-watch] armed', {
+        direction,
+        ts: performance.now(),
+      });
       wrapCompensationDirRef.current = direction;
       window.clearTimeout(wrapCompensationTimerRef.current);
       wrapCompensationTimerRef.current = window.setTimeout(() => {
@@ -755,6 +759,12 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     if (!scroller) return;
 
     const onTouchStart = (event: TouchEvent) => {
+      console.log('[scroller] touchstart', {
+        ts: performance.now(),
+        wrapWatchArmed: wrapCompensationDirRef.current != null,
+        target: event.target,
+        clientY: event.touches[0]?.clientY ?? null,
+      });
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
       touchStartTimeRef.current = performance.now();
       touchMaxMoveRef.current = 0;
@@ -793,6 +803,13 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       if (travelled > SWALLOWED_TOUCH_MAX_MOVE_PX) return;
       if (performance.now() - touchStartTimeRef.current > SWALLOWED_TOUCH_MAX_MS) return;
 
+      console.log('[swallowed-touch] detected, calling goTo', {
+        ts: performance.now(),
+        direction,
+        travelled,
+        durationMs: performance.now() - touchStartTimeRef.current,
+        nextIndex: activeIndexRef.current + direction,
+      });
       goTo(activeIndexRef.current + direction, true);
     };
 
