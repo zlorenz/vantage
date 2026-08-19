@@ -34,12 +34,8 @@
     "learnMoreAboutUs": "LEARN MORE ABOUT US",
     "brandsOutline": "BRANDS",
     "brands": "WE WORK WITH",
-    "watchButton": "Watch",
     "exploreButton": "Explore",
-    "contactHeading": "Contact Vantage Pictures",
-    "goToSlide": "Go to slide {index}",
-    "previousSlide": "Previous slide",
-    "nextSlide": "Next slide"
+    "contactHeading": "Contact Vantage Pictures"
   },
   "About": {
     "teamOutline": "OUR",

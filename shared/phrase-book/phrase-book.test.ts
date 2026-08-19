@@ -141,7 +141,7 @@ function testInterfaceVsPagesNewsCodeRows() {
     'interface',
   )
   assert.equal(
-    byPath.get('messages/*.json → Home.previousSlide')?.category,
+    byPath.get('messages/*.json → Home.exploreButton')?.category,
     'interface',
   )
   assert.equal(
