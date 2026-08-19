@@ -170,7 +170,11 @@ export function CarouselNativeVideo({
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    seekToInPoint(video, startRef.current);
+    // HLS seeks only when the slide becomes active — a paused neighbor seek
+    // does not complete on iOS WebKit but currentTime reads back as the target.
+    if (formatRef.current !== 'hls') {
+      seekToInPoint(video, startRef.current);
+    }
     reportReady(video);
   }, [src]);
 
@@ -221,7 +225,9 @@ export function CarouselNativeVideo({
       const startAtInPoint = () => {
         if (cancelled || !activeRef.current) return;
         const start = startRef.current;
-        if (!needsNoSeek(start) && !isAtInPoint(video, start)) {
+        // Always assign on activation — isAtInPoint cannot be trusted after a
+        // paused neighbor seek left currentTime at the target without landing.
+        if (!needsNoSeek(start)) {
           video.currentTime = start;
         }
         reportReady(video);
@@ -390,7 +396,9 @@ export function CarouselNativeVideo({
   const handleLoadedMetadata = () => {
     const video = videoRef.current;
     if (!video) return;
-    seekToInPoint(video, startRef.current);
+    if (formatRef.current !== 'hls') {
+      seekToInPoint(video, startRef.current);
+    }
     reportReady(video);
   };
 
