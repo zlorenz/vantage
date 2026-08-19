@@ -43,6 +43,19 @@ const WHEEL_GESTURE_END_MS = 140;
 const TOUCH_BOUNDARY_PX = 10;
 const EXPLORE_WRAP_GRACE_MS = 200;
 const EXPLORE_GRACE_SCROLL_DELTA_PX = 2;
+/**
+ * Post-wrap swallowed-touch compensation. WebKit drops the first gesture
+ * after the wrap's programmatic scrollTop write: it arrives as a contact
+ * with no touchmove and no scroll. Tuned from device traces — swallowed
+ * contacts ran 31ms and 39ms with 0px travel (one starting 30ms after the
+ * jump, one already in flight when it landed), while the shortest genuine
+ * swipe in the same capture travelled 200px in 42ms. Travel is therefore
+ * the discriminator; duration only keeps a deliberate tap out.
+ */
+const WRAP_TOUCH_WATCH_MS = 250;
+const SWALLOWED_TOUCH_MAX_MS = 60;
+const SWALLOWED_TOUCH_MAX_MOVE_PX = 3;
+const EXPLORE_SELECTOR = '.vp-proto-carousel__explore';
 
 type AnimSignal = { cancelled: boolean };
 
@@ -117,6 +130,10 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
   const carouselActiveRef = useRef(true);
   const boundaryLatchRef = useRef<BoundaryLatchDirection | null>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const touchStartTimeRef = useRef(0);
+  const touchMaxMoveRef = useRef(0);
+  const wrapCompensationDirRef = useRef<1 | -1 | null>(null);
+  const wrapCompensationTimerRef = useRef(0);
   const windowTouchStartYRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
@@ -173,6 +190,23 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       clearExploreGrace();
     }, EXPLORE_WRAP_GRACE_MS);
   }, [clearExploreGrace]);
+
+  const disarmWrapCompensation = useCallback(() => {
+    if (wrapCompensationDirRef.current == null) return;
+    wrapCompensationDirRef.current = null;
+    window.clearTimeout(wrapCompensationTimerRef.current);
+  }, []);
+
+  const armWrapCompensation = useCallback(
+    (direction: 1 | -1) => {
+      wrapCompensationDirRef.current = direction;
+      window.clearTimeout(wrapCompensationTimerRef.current);
+      wrapCompensationTimerRef.current = window.setTimeout(() => {
+        disarmWrapCompensation();
+      }, WRAP_TOUCH_WATCH_MS);
+    },
+    [disarmWrapCompensation],
+  );
 
   const setCarouselScrollActive = useCallback((active: boolean) => {
     if (active === carouselActiveRef.current) return;
@@ -373,14 +407,23 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       jumpToDomIndex(lastIndex + 1, {loopWrap: true});
       commitActiveIndex(lastIndex);
       beginExploreGraceAfterWrap();
+      armWrapCompensation(-1);
       return;
     }
     if (nearest === lastIndex + 2) {
       jumpToDomIndex(1, {loopWrap: true});
       commitActiveIndex(0);
       beginExploreGraceAfterWrap();
+      armWrapCompensation(1);
     }
-  }, [beginExploreGraceAfterWrap, commitActiveIndex, jumpToDomIndex, lastIndex, loopable]);
+  }, [
+    armWrapCompensation,
+    beginExploreGraceAfterWrap,
+    commitActiveIndex,
+    jumpToDomIndex,
+    lastIndex,
+    loopable,
+  ]);
 
   useLayoutEffect(() => {
     setLoopMounted(true);
@@ -532,6 +575,7 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       }
       window.clearTimeout(exploreGraceTimerRef.current);
       window.clearTimeout(wheelIdleTimerRef.current);
+      window.clearTimeout(wrapCompensationTimerRef.current);
       overlapPairRef.current = syncOverlapToSlides(
         slideRefs.current,
         {settled: true, index: settledIndexRef.current},
@@ -712,6 +756,13 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
 
     const onTouchStart = (event: TouchEvent) => {
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
+      touchStartTimeRef.current = performance.now();
+      touchMaxMoveRef.current = 0;
+      // A tap meant for Explore must never be read as a swallowed swipe.
+      const target = event.target;
+      if (target instanceof Element && target.closest(EXPLORE_SELECTOR)) {
+        disarmWrapCompensation();
+      }
     };
 
     const onTouchMove = (event: TouchEvent) => {
@@ -719,25 +770,48 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
       const currentY = event.touches[0]?.clientY;
       if (startY == null || currentY == null) return;
       const deltaY = startY - currentY;
-      if (Math.abs(deltaY) < TOUCH_BOUNDARY_PX) return;
+      const moved = Math.abs(deltaY);
+      if (moved > touchMaxMoveRef.current) touchMaxMoveRef.current = moved;
+      if (moved > SWALLOWED_TOUCH_MAX_MOVE_PX) disarmWrapCompensation();
+      if (moved < TOUCH_BOUNDARY_PX) return;
       restoreFromBoundaryIfReversed(deltaY);
     };
 
-    const onTouchEnd = () => {
+    const onTouchEnd = (event: TouchEvent) => {
+      const startY = touchStartYRef.current;
       touchStartYRef.current = null;
+
+      const direction = wrapCompensationDirRef.current;
+      if (direction == null) return;
+      disarmWrapCompensation();
+
+      const endY = event.changedTouches[0]?.clientY;
+      const travelled =
+        startY != null && endY != null
+          ? Math.max(touchMaxMoveRef.current, Math.abs(startY - endY))
+          : touchMaxMoveRef.current;
+      if (travelled > SWALLOWED_TOUCH_MAX_MOVE_PX) return;
+      if (performance.now() - touchStartTimeRef.current > SWALLOWED_TOUCH_MAX_MS) return;
+
+      goTo(activeIndexRef.current + direction, true);
+    };
+
+    const onTouchCancel = () => {
+      touchStartYRef.current = null;
+      disarmWrapCompensation();
     };
 
     scroller.addEventListener('touchstart', onTouchStart, {passive: true});
     scroller.addEventListener('touchmove', onTouchMove, {passive: true});
     scroller.addEventListener('touchend', onTouchEnd, {passive: true});
-    scroller.addEventListener('touchcancel', onTouchEnd, {passive: true});
+    scroller.addEventListener('touchcancel', onTouchCancel, {passive: true});
     return () => {
       scroller.removeEventListener('touchstart', onTouchStart);
       scroller.removeEventListener('touchmove', onTouchMove);
       scroller.removeEventListener('touchend', onTouchEnd);
-      scroller.removeEventListener('touchcancel', onTouchEnd);
+      scroller.removeEventListener('touchcancel', onTouchCancel);
     };
-  }, [restoreFromBoundaryIfReversed]);
+  }, [disarmWrapCompensation, goTo, restoreFromBoundaryIfReversed]);
 
   if (!slides.length) {
     return (
