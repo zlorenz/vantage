@@ -61,6 +61,40 @@
   scroll-snap-stop: normal;
 }
 
+/* Coarse-pointer (Embla) variant. Position comes from a transform on the
+ * container, so this subtree has no scroll container at all: the native snap
+ * contract below does not apply, and the slide resets it so that stays
+ * explicit. Every rule is scoped to --touch, leaving the native build's
+ * scroller and snap points exactly as they were. */
+.vp-proto-carousel--touch .vp-proto-carousel__viewport {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* Embla owns vertical drag while the carousel is the primary viewport
+   * occupant; pan-x leaves horizontal browser gestures and pinch-zoom alone. */
+  touch-action: pan-x pinch-zoom;
+}
+
+/* Passive mirrors the native build — the page, not the carousel, takes the drag. */
+.vp-proto-carousel--touch.is-scroll-passive .vp-proto-carousel__viewport {
+  pointer-events: none;
+  touch-action: auto;
+}
+
+.vp-proto-carousel--touch .vp-proto-carousel__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.vp-proto-carousel--touch .vp-proto-carousel__slide {
+  flex: 0 0 100%;
+  min-height: 0;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
+
 .vp-proto-carousel__slide {
   position: relative;
   width: 100%;
