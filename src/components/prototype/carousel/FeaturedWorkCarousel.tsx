@@ -6,6 +6,13 @@
  * Infinite loop: last advances to first, first reverses to last.
  * No timer-based auto-advance. Boundary-latch helpers remain in this file
  * but must not arm — a latch would block the wrap.
+ *
+ * DESKTOP / FINE-POINTER BUILD ONLY (Aug 2026 Embla migration).
+ * Coarse-pointer (touch) devices are served by FeaturedWorkCarouselTouch.tsx,
+ * selected at runtime in FeaturedWorkCarouselShell.tsx via (pointer: coarse).
+ * This file is the sole path for wheel and keyboard input and remains the
+ * only implementation that drives desktop loop wraps — see the note above
+ * jumpToDomIndex below before deleting anything from this file.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -180,6 +187,8 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     setExploreGraceActive(false);
   }, []);
 
+  // Part of the desktop loop-wrap machinery — see the block comment above
+  // jumpToDomIndex before removing.
   const beginExploreGraceAfterWrap = useCallback(() => {
     const scroller = scrollerRef.current;
     exploreGraceScrollTopRef.current = scroller?.scrollTop ?? 0;
@@ -364,6 +373,26 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     );
   }, [domLastIndex]);
 
+  // ─── Desktop loop-wrap machinery ────────────────────────────────────────────
+  // jumpToDomIndex, normalizeLoopScroll, armWrapCompensation, and
+  // beginExploreGraceAfterWrap are NOT dead code from the Aug 2026 Embla touch
+  // migration. They are load-bearing for this (desktop/fine-pointer) build:
+  //
+  //   • goTo() calls jumpToDomIndex at lines ~540 and ~552 to settle the
+  //     scroller after an animated wheel/keyboard wrap.
+  //   • Desktop wrap deliberately animates *into* the head/tail clone first
+  //     (targetDom = forwardWrap ? lastIndex + 2 : 0) — that clone DOM only
+  //     exists in this file's loopItems structure, not in the Embla build.
+  //   • normalizeLoopScroll detects when native scroll-snap stops at a clone
+  //     and teleports back to the real slide on scrollend.
+  //   • armWrapCompensation and beginExploreGraceAfterWrap guard against the
+  //     WebKit touch-swallow race that the Embla build structurally avoids;
+  //     they are still present here because this file still uses scrollTop.
+  //
+  // DO NOT delete this block as part of a future cleanup without first
+  // verifying that desktop wheel and keyboard loop-wrap behavior is preserved.
+  // Context: the Aug 19 2026 Embla migration thread in Cursor agent history.
+  // ────────────────────────────────────────────────────────────────────────────
   const jumpToDomIndex = useCallback(
     (domIndex: number, options?: {loopWrap?: boolean}) => {
       const scroller = scrollerRef.current;
@@ -393,6 +422,8 @@ export function FeaturedWorkCarousel({ slides }: FeaturedWorkCarouselProps) {
     [syncOverlap],
   );
 
+  // Part of the desktop loop-wrap machinery — see the block comment above
+  // jumpToDomIndex before removing.
   const normalizeLoopScroll = useCallback(() => {
     if (!loopable || animatingRef.current) return;
     const scroller = scrollerRef.current;
