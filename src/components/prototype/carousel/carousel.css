@@ -3,10 +3,11 @@
 .vp-proto-carousel {
   position: relative;
   width: 100%;
-  /* Large viewport (toolbar hidden) — extends carousel media/black under
-   * Safari's translucent bottom bar so the next section never tints through. */
+  /* Smallest viewport — keeps the full carousel (media + bottom overlay)
+   * on-screen when browser chrome never retracts (e.g. Chrome iOS, where
+   * Embla touch handling intercepts the swipe that would collapse toolbars). */
   height: 100vh;
-  height: 100lvh;
+  height: 100svh;
   background: #000;
   color: #fff;
 }
@@ -131,7 +132,7 @@
   justify-content: flex-end;
   gap: 8px;
   padding: 1.5rem var(--spacing-vp-gutter)
-    calc(5.5rem + (100lvh - 100svh) + env(safe-area-inset-bottom, 0px));
+    calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* display:contents so the left-group wrapper does not change the mobile stack. */
