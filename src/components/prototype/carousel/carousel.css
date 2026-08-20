@@ -225,12 +225,26 @@
   color: #fff;
 }
 
+/* Desktop-only watch CTA — hidden on mobile; Explore stays the mobile CTA. */
+.vp-proto-carousel__watch {
+  display: none;
+}
+
+.vp-proto-carousel__watch-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 @media (min-width: 768px) {
   .vp-proto-carousel__overlay-copy {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
     gap: 2rem;
+    /* Match side insets to bottom pad (3.25rem); ignore nav gutter alignment. */
+    padding-inline: 3.25rem;
   }
 
   .vp-proto-carousel__overlay-main {
@@ -243,6 +257,116 @@
 
   .vp-proto-carousel__explore {
     order: 0;
+    /* Desktop: CTA paused while we explore a non-button affordance. */
+    display: none;
+  }
+
+  /*
+   * Anchored to __overlay (inset:0 on the slide) — full-slide vertical center,
+   * not __overlay-copy's bottom content box.
+   */
+  .vp-proto-carousel__watch {
+    --vp-watch-size: 3.25rem;
+    --vp-watch-motion: 0.35s ease-out;
+
+    display: flex;
+    position: absolute;
+    top: 50%;
+    right: 3.25rem;
+    z-index: 2;
+    align-items: center;
+    justify-content: flex-end;
+    width: calc(var(--vp-watch-size) * 2.75);
+    height: calc(var(--vp-watch-size) * 1.9);
+    transform: translateY(-50%);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .vp-proto-carousel__watch-halo {
+    position: absolute;
+    top: 50%;
+    right: calc(var(--vp-watch-size) * -0.15);
+    width: calc(var(--vp-watch-size) * 2.4);
+    height: calc(var(--vp-watch-size) * 2.4);
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.22) 42%,
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
+  .vp-proto-carousel__watch-cluster {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .vp-proto-carousel__watch-label-mask {
+    overflow: hidden;
+    width: 0;
+    transition: width var(--vp-watch-motion);
+  }
+
+  .vp-proto-carousel__watch-label {
+    display: block;
+    padding-right: 0.85rem;
+    font-family: var(--font-vp-heading);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transform: translateX(0.65rem);
+    transition: transform var(--vp-watch-motion);
+  }
+
+  .vp-proto-carousel__watch-glass {
+    flex-shrink: 0;
+    width: var(--vp-watch-size);
+    height: var(--vp-watch-size);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.42) 0%,
+      rgba(255, 255, 255, 0.14) 48%,
+      rgba(255, 255, 255, 0.06) 100%
+    );
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.55),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.12),
+      inset 1px 0 1px rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.55);
+    backdrop-filter: blur(14px) saturate(1.55);
+    transform: scale(1);
+    transform-origin: center center;
+    transition: transform var(--vp-watch-motion);
+  }
+
+  .vp-proto-carousel__watch:hover .vp-proto-carousel__watch-glass,
+  .vp-proto-carousel__watch:focus-visible .vp-proto-carousel__watch-glass {
+    transform: scale(1.12);
+  }
+
+  .vp-proto-carousel__watch:hover .vp-proto-carousel__watch-label-mask,
+  .vp-proto-carousel__watch:focus-visible .vp-proto-carousel__watch-label-mask {
+    width: 5.25rem;
+  }
+
+  .vp-proto-carousel__watch:hover .vp-proto-carousel__watch-label,
+  .vp-proto-carousel__watch:focus-visible .vp-proto-carousel__watch-label {
+    transform: translateX(0);
+  }
+
+  .vp-proto-carousel__watch:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 6px;
   }
 
   .vp-proto-carousel__credits {
@@ -263,7 +387,7 @@
   }
 
   .vp-proto-carousel__campaign {
-    font-size: 60px;
+    font-size: 48px;
   }
 
   .vp-proto-carousel__credit dt {
