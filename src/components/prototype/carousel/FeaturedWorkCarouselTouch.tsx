@@ -266,6 +266,42 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
   }, [emblaApi]);
 
   useEffect(() => {
+    if (!emblaApi) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat) return;
+
+      const {key} = event;
+      if (
+        key !== 'ArrowDown' &&
+        key !== 'PageDown' &&
+        key !== 'ArrowUp' &&
+        key !== 'PageUp' &&
+        key !== 'Home' &&
+        key !== 'End'
+      ) {
+        return;
+      }
+
+      if (!carouselActiveRef.current) return;
+
+      event.preventDefault();
+      if (key === 'ArrowDown' || key === 'PageDown') {
+        emblaApi.scrollNext();
+      } else if (key === 'ArrowUp' || key === 'PageUp') {
+        emblaApi.scrollPrev();
+      } else if (key === 'Home') {
+        emblaApi.scrollTo(0);
+      } else {
+        emblaApi.scrollTo(Math.max(0, slideCount - 1));
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [emblaApi, slideCount]);
+
+  useEffect(() => {
     if (neighborMountIndex === activeIndex) return;
     const id = window.setTimeout(() => {
       setNeighborMountIndex(activeIndex);
