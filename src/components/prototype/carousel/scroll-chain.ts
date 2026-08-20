@@ -1,14 +1,8 @@
 /**
- * Scroll hand-off between the carousel's nested scroller and the page.
+ * Scroll hand-off between the carousel and the page.
  *
- * The nested scroller can always scroll to another slide internally, so native
- * overscroll chaining never fires while it remains interactive. Use
- * isCarouselScrollActive() (viewport visibility) as the single gate for wheel,
- * keys, and touch — when inactive, the scroller must not capture input.
- *
- * Boundary latch helpers below are unused while the carousel loops (no
- * first/last hand-off). They stay for a later cleanup; callers must not arm
- * them or the loop cannot wrap.
+ * Use isCarouselScrollActive() (viewport visibility) as the single gate for
+ * wheel, keys, and touch — when inactive, the carousel must not capture input.
  */
 
 /** Carousel top may sit slightly below the fixed header while still "active". */
@@ -29,94 +23,3 @@ export function isCarouselScrollActive(options: {
     intersectionRatio >= CAROUSEL_ACTIVE_INTERSECTION_MIN
   );
 }
-
-/** +1 = released past the last slide; -1 = released past the first. */
-export type BoundaryLatchDirection = 1 | -1;
-
-/**
- * Return-only recovery from Contact. Separate from isCarouselScrollActive —
- * does not use CAROUSEL_ACTIVE_TOP_MIN_PX. Reverse = deltaY < 0.
- *
- * Matches: last-slide outbound latch (+1), or last slide, passive, mostly
- * on-screen (ratio ≥ 0.85, rootTop ≤ 96). Does not match deep in Contact
- * (low ratio, latch already null) or an active carousel (live paging).
- */
-export function isCarouselReturnRecovery(options: {
-  latchDirection: BoundaryLatchDirection | null;
-  carouselActive: boolean;
-  activeIndex: number;
-  lastIndex: number;
-  deltaY: number;
-  rootTop: number;
-  intersectionRatio: number;
-}): boolean {
-  const {
-    latchDirection,
-    carouselActive,
-    activeIndex,
-    lastIndex,
-    deltaY,
-    rootTop,
-    intersectionRatio,
-  } = options;
-  if (deltaY >= 0) return false;
-  if (latchDirection === 1) return true;
-  if (carouselActive) return false;
-  if (activeIndex < lastIndex) return false;
-  if (intersectionRatio < CAROUSEL_ACTIVE_INTERSECTION_MIN) return false;
-  if (rootTop > CAROUSEL_ACTIVE_TOP_MAX_PX) return false;
-  return true;
-}
-
-export function boundaryLatchDirection(
-  deltaY: number,
-): BoundaryLatchDirection | null {
-  if (deltaY > 0) return 1;
-  if (deltaY < 0) return -1;
-  return null;
-}
-
-/**
- * Keep a boundary latch only while the current index still sits on that
- * edge. A mid-sequence latch (false-positive or stale) must not persist.
- */
-export function shouldKeepBoundaryLatch(options: {
-  direction: BoundaryLatchDirection;
-  activeIndex: number;
-  lastIndex: number;
-}): boolean {
-  const {direction, activeIndex, lastIndex} = options;
-  if (direction > 0) return activeIndex >= lastIndex;
-  return activeIndex <= 0;
-}
-
-/** True when a vertical gesture would leave the carousel past first/last slide. */
-export function isBoundaryRelease(options: {
-  activeIndex: number;
-  lastIndex: number;
-  deltaY: number;
-}): boolean {
-  const {activeIndex, lastIndex, deltaY} = options;
-  const direction = boundaryLatchDirection(deltaY);
-  if (!direction) return false;
-  return shouldKeepBoundaryLatch({direction, activeIndex, lastIndex});
-}
-
-export function shouldReleaseWheelToPage(options: {
-  carouselActive: boolean;
-  activeIndex: number;
-  lastIndex: number;
-  deltaY: number;
-}): boolean {
-  return !options.carouselActive;
-}
-
-export function shouldReleaseKeyToPage(options: {
-  carouselActive: boolean;
-  activeIndex: number;
-  lastIndex: number;
-  key: string;
-}): boolean {
-  return !options.carouselActive;
-}
-

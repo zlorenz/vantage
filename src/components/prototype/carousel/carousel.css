@@ -1,10 +1,4 @@
-/* Featured-work carousel — vertical paging only.
- *
- * Touch: native CSS scroll-snap (mandatory + always). Do not replace
- * with JS paging — the continuous swipe + snap glide is the locked feel.
- * Wheel / keys: JS intercepts and animates (~300ms). Snap is disabled
- * only for the duration of that programmatic page move.
- */
+/* Featured-work carousel — vertical paging only (Embla). */
 
 .vp-proto-carousel {
   position: relative;
@@ -17,55 +11,9 @@
   color: #fff;
 }
 
-.vp-proto-carousel__scroller {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scroll-behavior: auto;
-  scroll-snap-type: y mandatory;
-  scroll-snap-stop: always;
-  /* contain: loop has no page boundary. auto would chain past the clones. */
-  overscroll-behavior-y: contain;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.vp-proto-carousel.is-scroll-passive .vp-proto-carousel__scroller {
-  overflow-y: hidden;
-  pointer-events: none;
-  touch-action: auto;
-}
-
-.vp-proto-carousel__scroller::-webkit-scrollbar {
-  display: none;
-}
-
-.vp-proto-carousel__scroller.is-paging {
-  scroll-snap-type: none;
-}
-
-/* After the tail clone so that snap point is not scrollMax. iOS contain-
- * overscroll rubber-bands a last-snap commit; 1px of real overflow lets the
- * wrap snap land. Not a snap target. */
-.vp-proto-carousel__loop-spacer {
-  display: block;
-  width: 100%;
-  height: 1px;
-  pointer-events: none;
-  background: #000;
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
-}
-
 /* Coarse-pointer (Embla) variant. Position comes from a transform on the
- * container, so this subtree has no scroll container at all: the native snap
- * contract below does not apply, and the slide resets it so that stays
- * explicit. Every rule is scoped to --touch, leaving the native build's
- * scroller and snap points exactly as they were. */
+ * container, so this subtree has no scroll container. Every rule is scoped
+ * to --touch. */
 .vp-proto-carousel--touch .vp-proto-carousel__viewport {
   position: relative;
   height: 100%;
