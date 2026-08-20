@@ -4,6 +4,9 @@
 
 import assert from 'node:assert/strict';
 import {
+  OUTGOING_BLUR_EDGE_SCALE,
+  OUTGOING_BLUR_MAX_PX,
+  OUTGOING_OPACITY_MIN,
   OUTGOING_SPEED_FACTOR,
   OVERLAY_SPEED_FACTOR,
   getScrollTransitionState,
@@ -13,9 +16,13 @@ import {
 function testRestHasIdentityStyles() {
   const down = getTransitionStyles(0, 1);
   assert.equal(down.outgoing.opacity, 1);
+  assert.equal(down.outgoing.filter, 'none');
+  assert.equal(down.outgoing.stackTransform, 'none');
   assert.equal(down.outgoing.transform, 'translateY(0%)');
   assert.equal(down.outgoing.overlayTransform, 'translateY(0%)');
-  assert.equal(down.incoming.opacity, 1);
+  assert.equal(down.incoming.opacity, OUTGOING_OPACITY_MIN);
+  assert.equal(down.incoming.filter, `blur(${OUTGOING_BLUR_MAX_PX}px)`);
+  assert.equal(down.incoming.stackTransform, `scale(${OUTGOING_BLUR_EDGE_SCALE})`);
   assert.equal(down.incoming.transform, 'translateY(0%)');
   assert.equal(
     down.incoming.overlayTransform,
@@ -24,32 +31,56 @@ function testRestHasIdentityStyles() {
 
   const up = getTransitionStyles(0, -1);
   assert.equal(up.outgoing.opacity, 1);
+  assert.equal(up.outgoing.filter, 'none');
+  assert.equal(up.outgoing.stackTransform, 'none');
   assert.equal(up.outgoing.transform, 'translateY(0%)');
   assert.equal(up.outgoing.overlayTransform, 'translateY(0%)');
+  assert.equal(up.incoming.opacity, OUTGOING_OPACITY_MIN);
+  assert.equal(up.incoming.filter, `blur(${OUTGOING_BLUR_MAX_PX}px)`);
+  assert.equal(up.incoming.stackTransform, `scale(${OUTGOING_BLUR_EDGE_SCALE})`);
 }
 
 function testCompleteFadesOutgoingAndParksIncoming() {
   const down = getTransitionStyles(1, 1);
-  assert.equal(down.outgoing.opacity, 0);
+  assert.equal(down.outgoing.opacity, OUTGOING_OPACITY_MIN);
+  assert.equal(down.outgoing.filter, `blur(${OUTGOING_BLUR_MAX_PX}px)`);
+  assert.equal(down.outgoing.stackTransform, `scale(${OUTGOING_BLUR_EDGE_SCALE})`);
   assert.equal(down.outgoing.transform, `translateY(${(1 - OUTGOING_SPEED_FACTOR) * 100}%)`);
   assert.equal(down.incoming.opacity, 1);
+  assert.equal(down.incoming.filter, 'none');
+  assert.equal(down.incoming.stackTransform, 'none');
   assert.equal(down.incoming.transform, 'translateY(0%)');
   assert.equal(down.incoming.overlayTransform, 'translateY(0%)');
 
   const up = getTransitionStyles(1, -1);
-  assert.equal(up.outgoing.opacity, 0);
+  assert.equal(up.outgoing.opacity, OUTGOING_OPACITY_MIN);
+  assert.equal(up.outgoing.filter, `blur(${OUTGOING_BLUR_MAX_PX}px)`);
+  assert.equal(up.outgoing.stackTransform, `scale(${OUTGOING_BLUR_EDGE_SCALE})`);
   assert.equal(up.outgoing.transform, `translateY(${-(1 - OUTGOING_SPEED_FACTOR) * 100}%)`);
   assert.equal(up.incoming.opacity, 1);
+  assert.equal(up.incoming.filter, 'none');
+  assert.equal(up.incoming.stackTransform, 'none');
   assert.equal(up.incoming.overlayTransform, 'translateY(0%)');
 }
 
 function testMidpointIsSymmetricByDirection() {
   const down = getTransitionStyles(0.5, 1);
   const up = getTransitionStyles(0.5, -1);
-  assert.equal(down.outgoing.opacity, 0.5);
-  assert.equal(up.outgoing.opacity, 0.5);
-  assert.equal(down.incoming.opacity, 1);
-  assert.equal(up.incoming.opacity, 1);
+  const midOpacity = OUTGOING_OPACITY_MIN + (1 - OUTGOING_OPACITY_MIN) * 0.5;
+  const midBlur = `blur(${0.5 * OUTGOING_BLUR_MAX_PX}px)`;
+  const midScale = `scale(${1 + 0.5 * (OUTGOING_BLUR_EDGE_SCALE - 1)})`;
+  assert.equal(down.outgoing.opacity, midOpacity);
+  assert.equal(up.outgoing.opacity, midOpacity);
+  assert.equal(down.outgoing.filter, midBlur);
+  assert.equal(up.outgoing.filter, midBlur);
+  assert.equal(down.outgoing.stackTransform, midScale);
+  assert.equal(up.outgoing.stackTransform, midScale);
+  assert.equal(down.incoming.opacity, midOpacity);
+  assert.equal(up.incoming.opacity, midOpacity);
+  assert.equal(down.incoming.filter, midBlur);
+  assert.equal(up.incoming.filter, midBlur);
+  assert.equal(down.incoming.stackTransform, midScale);
+  assert.equal(up.incoming.stackTransform, midScale);
 
   const expectedPct = 0.5 * (1 - OUTGOING_SPEED_FACTOR) * 100;
   assert.equal(down.outgoing.transform, `translateY(${expectedPct}%)`);
@@ -66,8 +97,18 @@ function testProgressIsClamped() {
   const under = getTransitionStyles(-0.2, 1);
   const over = getTransitionStyles(1.4, 1);
   assert.equal(under.outgoing.opacity, 1);
+  assert.equal(under.outgoing.filter, 'none');
+  assert.equal(under.outgoing.stackTransform, 'none');
   assert.equal(under.outgoing.transform, 'translateY(0%)');
-  assert.equal(over.outgoing.opacity, 0);
+  assert.equal(under.incoming.opacity, OUTGOING_OPACITY_MIN);
+  assert.equal(under.incoming.filter, `blur(${OUTGOING_BLUR_MAX_PX}px)`);
+  assert.equal(under.incoming.stackTransform, `scale(${OUTGOING_BLUR_EDGE_SCALE})`);
+  assert.equal(over.outgoing.opacity, OUTGOING_OPACITY_MIN);
+  assert.equal(over.outgoing.filter, `blur(${OUTGOING_BLUR_MAX_PX}px)`);
+  assert.equal(over.outgoing.stackTransform, `scale(${OUTGOING_BLUR_EDGE_SCALE})`);
+  assert.equal(over.incoming.opacity, 1);
+  assert.equal(over.incoming.filter, 'none');
+  assert.equal(over.incoming.stackTransform, 'none');
   assert.equal(over.incoming.transform, 'translateY(0%)');
   assert.equal(over.incoming.overlayTransform, 'translateY(0%)');
 }

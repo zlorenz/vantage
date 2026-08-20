@@ -3,19 +3,34 @@
  *
  * Native scroll already moves both slides at 100%. These transforms are
  * supplementary: outgoing media is counter-shifted so its *visual* speed is
- * OUTGOING_SPEED_FACTOR of the incoming slide, and it fades 1 → 0.
- * Overlay copy travels OVERLAY_SPEED_FACTOR of native scroll so text
- * outpaces its own background; opacity is not tied to progress.
+ * OUTGOING_SPEED_FACTOR of the incoming slide. Media opacity/blur are
+ * mirrored: outgoing goes 1 → OUTGOING_OPACITY_MIN and 0 → OUTGOING_BLUR_MAX_PX;
+ * incoming goes the reverse (floor+blur → sharp full opacity). While blurred,
+ * the media stack scales up slightly so soft edges fall outside __media's
+ * overflow clip (avoids a dark fringe against the slide's black bg). Overlay
+ * copy travels OVERLAY_SPEED_FACTOR of native scroll so text outpaces its own
+ * background; opacity/blur/scale are media-stack-only.
  */
 
 export const OUTGOING_SPEED_FACTOR = 0.22;
+/** Opacity floor at the dark end of the media fade (outgoing end / incoming start). */
+export const OUTGOING_OPACITY_MIN = 0.2;
+/** Peak blur at the dark end of the media fade (px). */
+export const OUTGOING_BLUR_MAX_PX = 10;
+/**
+ * Peak scale on the blurred stack at max blur. Soft alpha edges land outside
+ * the overflow clip so they don't darken against the slide background.
+ */
+export const OUTGOING_BLUR_EDGE_SCALE = 1.06;
 /** Visual overlay travel vs native scroll (1 = lockstep, >1 = leads media). */
-export const OVERLAY_SPEED_FACTOR = 1.22;
+export const OVERLAY_SPEED_FACTOR = 1.35;
 export const SETTLE_EPSILON_PX = 1;
 
 export type TransitionLayerStyles = {
   transform: string;
+  stackTransform: string;
   opacity: number;
+  filter: string;
   overlayTransform: string;
 };
 
@@ -30,6 +45,8 @@ export type ScrollTransitionState =
     };
 
 const MEDIA_SELECTOR = '.vp-proto-carousel__media';
+/** Opacity/blur target inside media — keeps filter halo clipped by overflow. */
+const MEDIA_STACK_SELECTOR = '.vp-proto-carousel__media-stack';
 /** Parallax target: copy wrapper only — scrim sibling stays static. */
 const OVERLAY_SELECTOR = '.vp-proto-carousel__overlay-copy';
 
@@ -39,9 +56,17 @@ function clamp01(value: number): number {
   return value;
 }
 
+/** Scale that tracks blur so the soft fringe is cropped by overflow:hidden. */
+function stackScaleForBlur(blurPx: number): string {
+  if (blurPx <= 0 || OUTGOING_BLUR_MAX_PX <= 0) return 'none';
+  const t = blurPx / OUTGOING_BLUR_MAX_PX;
+  const scale = 1 + t * (OUTGOING_BLUR_EDGE_SCALE - 1);
+  return `scale(${scale})`;
+}
+
 /**
- * @param progress 0 = outgoing fully active / incoming not yet visible;
- *                 1 = incoming fully active / outgoing fully faded
+ * @param progress 0 = outgoing sharp/full / incoming dark+blurred;
+ *                 1 = incoming sharp/full / outgoing dark+blurred
  * @param direction 1 = scrolling down (incoming from below),
  *                  -1 = scrolling up (incoming from above)
  */
@@ -52,15 +77,21 @@ export function getTransitionStyles(
   const p = clamp01(progress);
   const outgoingShiftPct = p * (1 - OUTGOING_SPEED_FACTOR) * 100;
   const overlayLeadPct = (OVERLAY_SPEED_FACTOR - 1) * 100;
+  const outgoingBlurPx = p * OUTGOING_BLUR_MAX_PX;
+  const incomingBlurPx = (1 - p) * OUTGOING_BLUR_MAX_PX;
   return {
     outgoing: {
       transform: `translateY(${direction * outgoingShiftPct}%)`,
-      opacity: 1 - p,
+      stackTransform: stackScaleForBlur(outgoingBlurPx),
+      opacity: OUTGOING_OPACITY_MIN + (1 - OUTGOING_OPACITY_MIN) * (1 - p),
+      filter: outgoingBlurPx > 0 ? `blur(${outgoingBlurPx}px)` : 'none',
       overlayTransform: `translateY(${-direction * p * overlayLeadPct}%)`,
     },
     incoming: {
       transform: 'translateY(0%)',
-      opacity: 1,
+      stackTransform: stackScaleForBlur(incomingBlurPx),
+      opacity: OUTGOING_OPACITY_MIN + (1 - OUTGOING_OPACITY_MIN) * p,
+      filter: incomingBlurPx > 0 ? `blur(${incomingBlurPx}px)` : 'none',
       overlayTransform: `translateY(${direction * (1 - p) * overlayLeadPct}%)`,
     },
   };
@@ -111,7 +142,12 @@ export function clearSlideOverlap(slide: HTMLElement | null): void {
   const media = slide.querySelector<HTMLElement>(MEDIA_SELECTOR);
   if (media) {
     media.style.transform = '';
-    media.style.opacity = '';
+  }
+  const stack = slide.querySelector<HTMLElement>(MEDIA_STACK_SELECTOR);
+  if (stack) {
+    stack.style.opacity = '';
+    stack.style.filter = '';
+    stack.style.transform = '';
   }
   const overlay = slide.querySelector<HTMLElement>(OVERLAY_SELECTOR);
   if (overlay) overlay.style.transform = '';
@@ -127,7 +163,13 @@ function paintSlideOverlap(
   const media = slide.querySelector<HTMLElement>(MEDIA_SELECTOR);
   if (media) {
     media.style.transform = styles.transform;
-    media.style.opacity = String(styles.opacity);
+  }
+  const stack = slide.querySelector<HTMLElement>(MEDIA_STACK_SELECTOR);
+  if (stack) {
+    stack.style.opacity = String(styles.opacity);
+    stack.style.filter = styles.filter;
+    stack.style.transform =
+      styles.stackTransform === 'none' ? '' : styles.stackTransform;
   }
   const overlay = slide.querySelector<HTMLElement>(OVERLAY_SELECTOR);
   if (overlay) overlay.style.transform = styles.overlayTransform;
