@@ -33,14 +33,20 @@ import {
   wrapSlideIndex,
   type PrototypeCarouselSlide,
 } from './types';
+// TEMP-DIAGNOSTIC — remove after investigation
+import {
+  HLS_NEIGHBOR_PROBE_MODE,
+  probeNeighborMountDelayMs,
+} from './hls-neighbor-probe';
 import './carousel.css';
 
 interface FeaturedWorkCarouselTouchProps {
   slides: PrototypeCarouselSlide[];
 }
 
-/** Matches the native build's hold before a newly entered neighbor mounts. */
-const NEIGHBOR_MOUNT_DELAY_MS = 300;
+/** Matches the native build's hold before a newly entered neighbor mounts.
+ * TEMP-DIAGNOSTIC — probeNeighborMountDelayMs() overrides for early-mount modes. */
+const NEIGHBOR_MOUNT_DELAY_MS = probeNeighborMountDelayMs();
 /** In-gesture |deltaY| before paging; gesture bounds come from wheel-gestures. */
 const WHEEL_GESTURE_THRESHOLD_PX = 30;
 
@@ -302,6 +308,10 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
   }, [emblaApi, slideCount]);
 
   useEffect(() => {
+    // TEMP-DIAGNOSTIC — remove after investigation
+    console.log(
+      `[hls-probe] mode=${HLS_NEIGHBOR_PROBE_MODE} neighborDelayMs=${NEIGHBOR_MOUNT_DELAY_MS} activeIndex=${activeIndex} neighborMountIndex=${neighborMountIndex}`,
+    );
     if (neighborMountIndex === activeIndex) return;
     const id = window.setTimeout(() => {
       setNeighborMountIndex(activeIndex);
