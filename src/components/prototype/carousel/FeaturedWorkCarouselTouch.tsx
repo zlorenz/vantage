@@ -19,6 +19,7 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import type {EmblaOptionsType} from 'embla-carousel';
+import {WheelGestures} from 'wheel-gestures';
 import {CarouselSlide} from './CarouselSlide';
 import {isCarouselScrollActive} from './scroll-chain';
 import {
@@ -40,6 +41,8 @@ interface FeaturedWorkCarouselTouchProps {
 
 /** Matches the native build's hold before a newly entered neighbor mounts. */
 const NEIGHBOR_MOUNT_DELAY_MS = 300;
+/** In-gesture |deltaY| before paging; gesture bounds come from wheel-gestures. */
+const WHEEL_GESTURE_THRESHOLD_PX = 30;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -78,6 +81,8 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
   const overlapPairRef = useRef<OverlapPair | null>(null);
   const settledIndexRef = useRef(0);
   const carouselActiveRef = useRef(true);
+  const gestureAccumRef = useRef(0);
+  const gestureFiredRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [neighborMountIndex, setNeighborMountIndex] = useState(0);
 
@@ -212,6 +217,53 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
       emblaApi.off('reInit', syncOverlap);
     };
   }, [emblaApi, syncOverlap]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const viewport = emblaApi.rootNode();
+    const wheelGestures = WheelGestures({
+      reverseSign: false,
+      preventWheelAction: false,
+    });
+
+    const unobserve = wheelGestures.observe(viewport);
+    const unsubscribe = wheelGestures.on('wheel', (wheelEventState) => {
+      const {isStart, isMomentum, axisDelta, event} = wheelEventState;
+      const [deltaX, deltaY] = axisDelta;
+
+      if (isStart) {
+        gestureAccumRef.current = 0;
+        gestureFiredRef.current = false;
+      }
+
+      if (event.ctrlKey) return;
+      if (Math.abs(deltaX) > Math.abs(deltaY)) return;
+      if (deltaY === 0) return;
+      if (!carouselActiveRef.current) return;
+
+      event.preventDefault?.();
+
+      if (isMomentum) return;
+
+      gestureAccumRef.current += Math.abs(deltaY);
+      if (gestureFiredRef.current) return;
+      if (gestureAccumRef.current < WHEEL_GESTURE_THRESHOLD_PX) return;
+
+      gestureFiredRef.current = true;
+      if (deltaY > 0) {
+        emblaApi.scrollNext();
+      } else {
+        emblaApi.scrollPrev();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      unobserve();
+      wheelGestures.disconnect();
+    };
+  }, [emblaApi]);
 
   useEffect(() => {
     if (neighborMountIndex === activeIndex) return;
