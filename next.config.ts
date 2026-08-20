@@ -7,6 +7,8 @@ import { legacyZhRedirects } from './src/lib/legacy-zh-redirects';
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
+  // Zach's Mac LAN IP for iPhone testing; update if DHCP reassigns it.
+  allowedDevOrigins: ['192.168.86.246'],
   async redirects() {
     return [
       // WordPress migration redirects — Milestone 8, 2026-06-22
