@@ -11,10 +11,7 @@
   color: #fff;
 }
 
-/* Coarse-pointer (Embla) variant. Position comes from a transform on the
- * container, so this subtree has no scroll container. Every rule is scoped
- * to --touch. */
-.vp-proto-carousel--touch .vp-proto-carousel__viewport {
+.vp-proto-carousel__viewport {
   position: relative;
   height: 100%;
   width: 100%;
@@ -24,33 +21,25 @@
   touch-action: pan-x pinch-zoom;
 }
 
-/* Passive mirrors the native build — the page, not the carousel, takes the drag. */
-.vp-proto-carousel--touch.is-scroll-passive .vp-proto-carousel__viewport {
+.vp-proto-carousel.is-scroll-passive .vp-proto-carousel__viewport {
   pointer-events: none;
   touch-action: auto;
 }
 
-.vp-proto-carousel--touch .vp-proto-carousel__container {
+.vp-proto-carousel__container {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.vp-proto-carousel--touch .vp-proto-carousel__slide {
-  flex: 0 0 100%;
-  min-height: 0;
-  scroll-snap-align: none;
-  scroll-snap-stop: normal;
 }
 
 .vp-proto-carousel__slide {
   position: relative;
   width: 100%;
   height: 100%;
+  flex: 0 0 100%;
+  min-height: 0;
   /* Visible so lagging outgoing media can overlap the incoming slide. */
   overflow: visible;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   background: #000;
   /* WebKit double-tap disambiguation (~350ms) on tap-classified contacts. */
   touch-action: manipulation;

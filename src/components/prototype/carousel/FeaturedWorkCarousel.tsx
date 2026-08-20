@@ -1,19 +1,13 @@
 'use client';
 
 /**
- * Coarse-pointer implementation of the featured-work carousel.
+ * Featured-work carousel — one Embla engine for all pointer types.
  *
- * Embla moves the slide strip with a transform on its container. The native
- * scroll-snap build (FeaturedWorkCarousel.tsx) instead writes scrollTop, and on
- * WebKit a programmatic scrollTop write during a loop wrap makes the next touch
- * arrive as a contact with no touchmove and no scroll — the swipe is lost and
- * the user has to repeat it. That happens below the DOM event layer, so this
- * path removes the scrollTop write rather than compensating for it: Embla owns
- * the loop internally and never seeks a scroll container.
- *
- * Consequently there are no slide clones, no boundary teleport, and no
- * post-wrap touch recovery here. Everything downstream of "which slide is
- * active" is shared with the native build unchanged.
+ * Embla moves the slide strip with a transform on its container (`loop: true`).
+ * Wheel/trackpad paging uses `wheel-gestures` (`isStart` / `isMomentum`) plus an
+ * in-gesture |deltaY| threshold. Keyboard nav (arrows, Page, Home, End) calls
+ * Embla's scroll API directly. There is no nested scroll container and no
+ * clone/teleport wrap.
  */
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -40,11 +34,11 @@ import {
 } from './hls-neighbor-probe';
 import './carousel.css';
 
-interface FeaturedWorkCarouselTouchProps {
+interface FeaturedWorkCarouselProps {
   slides: PrototypeCarouselSlide[];
 }
 
-/** Matches the native build's hold before a newly entered neighbor mounts.
+/** Hold before a newly entered neighbor mounts.
  * TEMP-DIAGNOSTIC — probeNeighborMountDelayMs() overrides for early-mount modes. */
 const NEIGHBOR_MOUNT_DELAY_MS = probeNeighborMountDelayMs();
 /** In-gesture |deltaY| before paging; gesture bounds come from wheel-gestures. */
@@ -81,7 +75,7 @@ function wrapTransitionState(
   };
 }
 
-export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchProps) {
+export function FeaturedWorkCarousel({slides}: FeaturedWorkCarouselProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLElement | null>>([]);
   const overlapPairRef = useRef<OverlapPair | null>(null);
@@ -99,7 +93,7 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
       axis: 'y',
       loop: true,
       align: 'start',
-      // Discrete paging, matching the native build — never free-scrolling.
+      // Discrete paging — never free-scrolling.
       dragFree: false,
       // Hand the gesture back to the page whenever the carousel is not the
       // primary viewport occupant, mirroring the is-scroll-passive gate.
@@ -146,8 +140,7 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
 
     const engine = emblaApi.internalEngine();
     const {scrollSnaps} = engine;
-    // Uniform because every slide is a full-height flex item; this is the
-    // direct analogue of the native build's scroller.clientHeight stride.
+    // Uniform because every slide is a full-height flex item.
     const stride = Math.abs(scrollSnaps[0] - scrollSnaps[1]);
     if (!Number.isFinite(stride) || stride <= 0) return;
 
@@ -328,7 +321,7 @@ export function FeaturedWorkCarouselTouch({slides}: FeaturedWorkCarouselTouchPro
   }
 
   return (
-    <div ref={rootRef} className="vp-proto-carousel vp-proto-carousel--touch">
+    <div ref={rootRef} className="vp-proto-carousel">
       <div
         ref={emblaRef}
         className="vp-proto-carousel__viewport"

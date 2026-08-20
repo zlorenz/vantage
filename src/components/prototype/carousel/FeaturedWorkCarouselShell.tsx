@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Entry for the featured-work carousel. One Embla engine for all pointer types.
+ * Entry for the featured-work carousel (Embla + wheel-gestures + keyboard).
  */
 
-import {FeaturedWorkCarouselTouch} from './FeaturedWorkCarouselTouch';
+import {FeaturedWorkCarousel} from './FeaturedWorkCarousel';
 import type {PrototypeCarouselSlide} from './types';
 
 interface FeaturedWorkCarouselShellProps {
@@ -12,5 +12,5 @@ interface FeaturedWorkCarouselShellProps {
 }
 
 export function FeaturedWorkCarouselShell({slides}: FeaturedWorkCarouselShellProps) {
-  return <FeaturedWorkCarouselTouch slides={slides} />;
+  return <FeaturedWorkCarousel slides={slides} />;
 }
