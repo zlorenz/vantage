@@ -12,18 +12,15 @@
  * - `hls` (iOS WebKit) waits for metadata, then always re-assigns the
  *   in-point immediately before play(). It does not trust a seek that
  *   ran while the slide was an inactive neighbor, and it does not wait
- *   for `seeked`. None of the progressive seek-gating runs there.
+ *   for `seeked`. Inactive HLS neighbors still muted-play briefly to the
+ *   in-point so WebKit buffers to HAVE_ENOUGH_DATA before activation.
+ *   None of the progressive seek-gating runs on the HLS path.
  *
  * Everything else — the element setup, the ready latch, the active/inactive
  * pause, and the bounded in/out loop — is shared by both.
  */
 
 import {useEffect, useRef, useState} from 'react';
-// TEMP-DIAGNOSTIC — remove after investigation
-import {
-  HLS_NEIGHBOR_PROBE_MODE,
-  probeUseMutedAutoplayPause,
-} from './hls-neighbor-probe';
 
 /** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
 const SEEK_TOLERANCE_S = 0.05;
@@ -146,16 +143,6 @@ export function CarouselNativeVideo({
   const hasBeenReadyRef = useRef(false);
   const [ready, setReady] = useState(false);
   const boundedLoop = previewEndSeconds != null;
-  // TEMP-DIAGNOSTIC — remove after investigation
-  const probeIdRef = useRef(
-    `v-${Math.random().toString(36).slice(2, 7)}`,
-  );
-  const probeMountTRef = useRef(0);
-  const probeLastRsRef = useRef(-1);
-  const probeFirstReadyTRef = useRef<number | null>(null);
-  const probeReadyWhileInactiveRef = useRef(false);
-  const probeActivateTRef = useRef<number | null>(null);
-  const probeLoggedActivateWaitRef = useRef(false);
 
   onReadyChangeRef.current = onReadyChange;
 
@@ -187,46 +174,6 @@ export function CarouselNativeVideo({
       formatRef.current === 'hls'
         ? isHlsPreviewReady(video)
         : isCarouselPreviewReady(video, startRef.current);
-
-    // TEMP-DIAGNOSTIC — remove after investigation
-    if (formatRef.current === 'hls') {
-      const t = performance.now();
-      const rs = video.readyState;
-      if (rs !== probeLastRsRef.current) {
-        const sinceMount = probeMountTRef.current
-          ? (t - probeMountTRef.current).toFixed(0)
-          : '?';
-        console.log(
-          `[hls-probe] id=${probeIdRef.current} event=readyState t=${t.toFixed(1)} sinceMountMs=${sinceMount} rs=${probeLastRsRef.current}->${rs} active=${activeRef.current} paused=${video.paused}`,
-        );
-        probeLastRsRef.current = rs;
-      }
-      if (readyNow && probeFirstReadyTRef.current == null) {
-        probeFirstReadyTRef.current = t;
-        if (!activeRef.current) {
-          probeReadyWhileInactiveRef.current = true;
-        }
-        const sinceMount = probeMountTRef.current
-          ? (t - probeMountTRef.current).toFixed(0)
-          : '?';
-        console.log(
-          `[hls-probe] id=${probeIdRef.current} event=first-ready t=${t.toFixed(1)} sinceMountMs=${sinceMount} active=${activeRef.current} readyWhileInactive=${probeReadyWhileInactiveRef.current}`,
-        );
-      }
-      if (
-        activeRef.current &&
-        probeActivateTRef.current != null &&
-        readyNow &&
-        !probeLoggedActivateWaitRef.current
-      ) {
-        probeLoggedActivateWaitRef.current = true;
-        const waitMs = (t - probeActivateTRef.current).toFixed(0);
-        console.log(
-          `[hls-probe] id=${probeIdRef.current} event=ready-after-activate waitMs=${waitMs} wasReadyBeforeActivate=${probeReadyWhileInactiveRef.current}`,
-        );
-      }
-    }
-
     if (readyNow) {
       hasBeenReadyRef.current = true;
     }
@@ -246,19 +193,6 @@ export function CarouselNativeVideo({
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    // TEMP-DIAGNOSTIC — remove after investigation
-    if (formatRef.current === 'hls') {
-      probeMountTRef.current = performance.now();
-      probeLastRsRef.current = video.readyState;
-      probeFirstReadyTRef.current = null;
-      probeReadyWhileInactiveRef.current = false;
-      probeActivateTRef.current = null;
-      probeLoggedActivateWaitRef.current = false;
-      const srcTail = src.split('/').pop()?.slice(0, 24) ?? '?';
-      console.log(
-        `[hls-probe] id=${probeIdRef.current} event=mount mode=${HLS_NEIGHBOR_PROBE_MODE} t=${probeMountTRef.current.toFixed(1)} active=${activeRef.current} rs=${video.readyState} srcTail=${srcTail}`,
-      );
-    }
     // HLS seeks only when the slide becomes active — a paused neighbor seek
     // does not complete on iOS WebKit but currentTime reads back as the target.
     if (formatRef.current !== 'hls') {
@@ -312,65 +246,44 @@ export function CarouselNativeVideo({
         video.pause();
         reportReady(video);
 
-        // TEMP-DIAGNOSTIC — remove after investigation
-        // Coax iOS into buffering while visually inactive (poster still covers).
-        if (probeUseMutedAutoplayPause()) {
-          const kickBuffer = () => {
-            if (cancelled || activeRef.current) return;
-            video.muted = true;
-            console.log(
-              `[hls-probe] id=${probeIdRef.current} event=autoplay-pause-start t=${performance.now().toFixed(1)} rs=${video.readyState}`,
-            );
-            void video
-              .play()
-              .then(() => {
-                if (cancelled) return;
-                if (!activeRef.current) {
-                  video.pause();
-                }
-                reportReady(video);
-                console.log(
-                  `[hls-probe] id=${probeIdRef.current} event=autoplay-pause-done t=${performance.now().toFixed(1)} rs=${video.readyState} active=${activeRef.current} paused=${video.paused}`,
-                );
-              })
-              .catch((err: unknown) => {
-                const msg = err instanceof Error ? err.message : String(err);
-                console.log(
-                  `[hls-probe] id=${probeIdRef.current} event=autoplay-pause-fail t=${performance.now().toFixed(1)} rs=${video.readyState} err=${msg}`,
-                );
-              });
-          };
-
-          if (hasVideoMetadata(video)) {
-            kickBuffer();
-          } else {
-            const onMetadata = () => {
-              video.removeEventListener('loadedmetadata', onMetadata);
-              metadataListener = null;
-              kickBuffer();
-            };
-            metadataListener = onMetadata;
-            video.addEventListener('loadedmetadata', onMetadata);
+        // iOS WebKit will not buffer paused HLS toward HAVE_ENOUGH_DATA.
+        // Seek to the in-point, muted-play briefly, then pause so neighbors
+        // latch ready before activation (poster can skip). Video stays
+        // opacity:0 until ready; muted for the whole kick.
+        const kickBuffer = () => {
+          if (cancelled || activeRef.current) return;
+          video.muted = true;
+          const start = startRef.current;
+          if (!needsNoSeek(start)) {
+            video.currentTime = start;
           }
+          void video
+            .play()
+            .then(() => {
+              if (cancelled) return;
+              if (!activeRef.current) {
+                video.pause();
+              }
+              reportReady(video);
+            })
+            .catch(() => {
+              // Autoplay can be blocked until the first gesture; swipe is enough.
+            });
+        };
+
+        if (hasVideoMetadata(video)) {
+          kickBuffer();
+        } else {
+          const onMetadata = () => {
+            video.removeEventListener('loadedmetadata', onMetadata);
+            metadataListener = null;
+            kickBuffer();
+          };
+          metadataListener = onMetadata;
+          video.addEventListener('loadedmetadata', onMetadata);
         }
 
         return cleanup;
-      }
-
-      // TEMP-DIAGNOSTIC — remove after investigation
-      probeActivateTRef.current = performance.now();
-      probeLoggedActivateWaitRef.current = false;
-      const alreadyReady = isHlsPreviewReady(video) || hasBeenReadyRef.current;
-      console.log(
-        `[hls-probe] id=${probeIdRef.current} event=activate t=${probeActivateTRef.current.toFixed(1)} rs=${video.readyState} alreadyReady=${alreadyReady} readyWhileInactive=${probeReadyWhileInactiveRef.current} sinceMountMs=${(
-          probeActivateTRef.current - probeMountTRef.current
-        ).toFixed(0)}`,
-      );
-      if (alreadyReady) {
-        probeLoggedActivateWaitRef.current = true;
-        console.log(
-          `[hls-probe] id=${probeIdRef.current} event=ready-before-activate waitMs=0`,
-        );
       }
 
       const startAtInPoint = () => {
