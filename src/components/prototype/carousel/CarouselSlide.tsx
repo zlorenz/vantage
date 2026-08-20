@@ -36,33 +36,40 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         data-index={index}
       >
         <div className="vp-proto-carousel__media">
-          {slide.posterUrl && !playerReady ? (
-            <Image
-              src={slide.posterUrl}
-              alt=""
-              fill
-              loading="eager"
-              priority={index === 0}
-              className="vp-proto-carousel__poster"
-              sizes="100vw"
-            />
-          ) : null}
-          {mountPlayer && slide.vimeoUrl ? (
-            <CarouselVimeo
-              vimeoUrl={slide.vimeoUrl}
-              active={active}
-              previewStartSeconds={slide.previewStartSeconds}
-              previewEndSeconds={slide.previewEndSeconds}
-              onReadyChange={setPlayerReady}
-            />
-          ) : null}
+          <div className="vp-proto-carousel__media-stack">
+            {slide.posterUrl && !playerReady ? (
+              <Image
+                src={slide.posterUrl}
+                alt=""
+                fill
+                loading="eager"
+                priority={index === 0}
+                className="vp-proto-carousel__poster"
+                sizes="100vw"
+              />
+            ) : null}
+            {mountPlayer && slide.vimeoUrl ? (
+              <CarouselVimeo
+                vimeoUrl={slide.vimeoUrl}
+                active={active}
+                previewStartSeconds={slide.previewStartSeconds}
+                previewEndSeconds={slide.previewEndSeconds}
+                onReadyChange={setPlayerReady}
+              />
+            ) : null}
+          </div>
         </div>
 
         <div className="vp-proto-carousel__overlay">
           <div className="vp-proto-carousel__overlay-scrim" aria-hidden />
           <div className="vp-proto-carousel__overlay-copy">
             <div className="vp-proto-carousel__overlay-main">
-              <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
+              <div className="vp-proto-carousel__brand-row">
+                <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
+                {slide.formatLine ? (
+                  <p className="vp-proto-carousel__format">{slide.formatLine}</p>
+                ) : null}
+              </div>
               <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
               {slide.hrefSlug ? (
                 <VpButton
@@ -87,10 +94,6 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               <div className="vp-proto-carousel__credit">
                 <dt>DOP</dt>
                 <dd>{slide.dopNames}</dd>
-              </div>
-              <div className="vp-proto-carousel__credit">
-                <dt>Format</dt>
-                <dd>{slide.formatLine}</dd>
               </div>
             </dl>
           </div>
