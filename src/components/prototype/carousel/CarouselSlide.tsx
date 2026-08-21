@@ -2,7 +2,7 @@
 
 import {forwardRef, useEffect, useState} from 'react';
 import Image from 'next/image';
-import {useTranslations} from 'next-intl';
+import {useLocale, useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
 import {VpButton} from '@/components/ui/VpButton';
 import {CarouselVimeo} from './CarouselVimeo';
@@ -21,6 +21,7 @@ interface CarouselSlideProps {
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
   function CarouselSlide({slide, index, active, blockExplore = false, mountPlayer}, ref) {
     const t = useTranslations('Home');
+    const locale = useLocale();
     const [playerReady, setPlayerReady] = useState(false);
     const portfolioHref = slide.hrefSlug
       ? ({
@@ -29,12 +30,15 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         } as const)
       : null;
     const interactive = active && !blockExplore;
+    // ZH: static featuredImage poster only — no Vimeo/XPC preview (autoplay unreliable).
+    const allowVideoPreview = locale !== 'zh';
+    const shouldMountVideo = allowVideoPreview && mountPlayer && Boolean(slide.vimeoUrl);
 
     useEffect(() => {
-      if (!mountPlayer) {
+      if (!shouldMountVideo) {
         setPlayerReady(false);
       }
-    }, [mountPlayer]);
+    }, [shouldMountVideo]);
 
     return (
       <article
@@ -56,7 +60,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                 sizes="100vw"
               />
             ) : null}
-            {mountPlayer && slide.vimeoUrl ? (
+            {shouldMountVideo && slide.vimeoUrl ? (
               <CarouselVimeo
                 vimeoUrl={slide.vimeoUrl}
                 active={active}
