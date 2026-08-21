@@ -8,7 +8,9 @@
  * so this only toggles visibility, leaving the backdrop untouched.
  *
  * Also publishes --vp-header-height from the real rendered header size so
- * the mobile full-screen nav can pad its content below the chrome.
+ * the mobile full-screen nav can pad its content below the chrome, and so
+ * siblings (e.g. /work PortfolioIndexCarousel) can read the same token via
+ * :root — custom properties set only on #header do not inherit to them.
  */
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -37,13 +39,18 @@ export function SiteHeaderNav({
 
     function publishHeight() {
       if (!el) return;
-      el.style.setProperty('--vp-header-height', `${el.offsetHeight}px`);
+      const value = `${el.offsetHeight}px`;
+      el.style.setProperty('--vp-header-height', value);
+      document.documentElement.style.setProperty('--vp-header-height', value);
     }
 
     publishHeight();
     const ro = new ResizeObserver(publishHeight);
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty('--vp-header-height');
+    };
   }, []);
 
   useEffect(() => {

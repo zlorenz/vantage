@@ -1,8 +1,11 @@
 /* Full Portfolio Index — horizontal peek carousel (Embla).
  *
- * Viewport stage mirrors homepage carousel.css (100vh/100svh, nav overlays —
- * no subtracted nav offset). Cards fill stage height; width comes from the
- * responsive flex-basis peek percentages (not aspect-ratio).
+ * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
+ * 100vh/100svh with the fixed nav overlaying media. Here the stage sits
+ * BELOW the nav (margin-top + height subtract --vp-header-height) and
+ * reserves bottom chrome for a future filter + scrubber (--vp-index-
+ * bottom-bar-height + safe-area). Cards still fill 100% of the stage;
+ * width comes from responsive flex-basis peek percentages (no aspect-ratio).
  */
 
 .vp-portfolio-index {
@@ -10,12 +13,21 @@
   --vp-index-slide-gap: 0.75rem;
   --vp-index-inactive-opacity: 0.45;
   --vp-index-inactive-scale: 0.94;
+  /* Placeholder for Phase 3 filter + scrubber — tighten once UI lands. */
+  --vp-index-bottom-bar-height: 5rem;
 
   position: relative;
   width: 100%;
-  /* Same strategy as .vp-proto-carousel — full visual viewport; fixed nav overlays. */
-  height: 100vh;
-  height: 100svh;
+  /* Push below fixed #header; height leaves bottom bar + home-indicator room. */
+  margin-top: var(--vp-header-height, 4.5rem);
+  height: calc(
+    100vh - var(--vp-header-height, 4.5rem) -
+      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
+  );
+  height: calc(
+    100svh - var(--vp-header-height, 4.5rem) -
+      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
+  );
   background: #000;
   color: #fff;
 }
