@@ -1,4 +1,9 @@
-/* Full Portfolio Index — horizontal peek carousel (Embla). */
+/* Full Portfolio Index — horizontal peek carousel (Embla).
+ *
+ * Viewport stage mirrors homepage carousel.css (100vh/100svh, nav overlays —
+ * no subtracted nav offset). Cards fill stage height; width comes from the
+ * responsive flex-basis peek percentages (not aspect-ratio).
+ */
 
 .vp-portfolio-index {
   --vp-index-slide-basis: 86%;
@@ -6,17 +11,19 @@
   --vp-index-inactive-opacity: 0.45;
   --vp-index-inactive-scale: 0.94;
 
+  position: relative;
   width: 100%;
-  /* Edge-to-edge so left/right peeks aren't clipped by page gutters. */
-  margin-inline: -0.75rem;
-  padding-block: 0.5rem 1.5rem;
+  /* Same strategy as .vp-proto-carousel — full visual viewport; fixed nav overlays. */
+  height: 100vh;
+  height: 100svh;
+  background: #000;
+  color: #fff;
 }
 
 @media (min-width: 576px) {
   .vp-portfolio-index {
     --vp-index-slide-basis: 78%;
     --vp-index-slide-gap: 1rem;
-    margin-inline: -1rem;
   }
 }
 
@@ -25,7 +32,6 @@
     /* ~11% peek each side + gap — Siena-style filmstrip read. */
     --vp-index-slide-basis: 68%;
     --vp-index-slide-gap: 1.25rem;
-    margin-inline: 0;
   }
 }
 
@@ -37,9 +43,11 @@
 }
 
 .vp-portfolio-index__viewport {
-  overflow: hidden;
+  position: relative;
+  height: 100%;
   width: 100%;
-  /* Horizontal Embla owns pan-x; leave vertical page scroll + pinch alone. */
+  overflow: hidden;
+  /* Embla owns horizontal drag; no vertical page scroll on this route. */
   touch-action: pan-y pinch-zoom;
   cursor: grab;
 }
@@ -50,6 +58,8 @@
 
 .vp-portfolio-index__container {
   display: flex;
+  align-items: stretch;
+  height: 100%;
   touch-action: pan-y pinch-zoom;
   margin-left: calc(var(--vp-index-slide-gap) * -1);
 }
@@ -58,14 +68,17 @@
   position: relative;
   flex: 0 0 var(--vp-index-slide-basis);
   min-width: 0;
+  height: 100%;
   padding-left: var(--vp-index-slide-gap);
+  box-sizing: border-box;
 }
 
 .vp-portfolio-index__card {
   position: relative;
   display: block;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: 100%;
   background: #111;
   color: #fff;
   text-decoration: none;

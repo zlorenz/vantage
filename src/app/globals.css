@@ -358,6 +358,11 @@
     display: none;
   }
 
+  /* Work index is a locked horizontal stage — no document scroll. */
+  body:has(.vp-work-index) {
+    overflow: hidden;
+  }
+
   /* Outline text effect — hero and page titles.
    *
    * Default: -webkit-text-stroke (hollow outline). Works for Latin
