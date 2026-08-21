@@ -761,6 +761,11 @@
     cursor: pointer;
     white-space: nowrap;
   }
+
+  /* Search sits above the link list — same gap rhythm as nav items. */
+  #header .vp-desktop-nav-panel .vp-desktop-nav-search {
+    margin-bottom: 1.35rem;
+  }
 }
 
 .navbar .dropdown .dropdown-menu {

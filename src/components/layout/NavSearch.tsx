@@ -2,17 +2,22 @@
 
 /**
  * NavSearch — expandable inline search in the desktop navbar.
+ *
+ * Default: icon click reveals an input. Pass `alwaysExpanded` to render the
+ * input immediately (used inside the desktop hamburger dropdown).
  */
 
 import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 
-export function NavSearch() {
+export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean }) {
   const t = useTranslations('Search');
   const router = useRouter();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(alwaysExpanded);
   const [query, setQuery] = useState('');
+
+  const showInput = alwaysExpanded || expanded;
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -24,42 +29,51 @@ export function NavSearch() {
         query: { q },
       } as Parameters<typeof router.push>[0],
     );
-    setExpanded(false);
+    if (!alwaysExpanded) setExpanded(false);
     setQuery('');
   }
 
   return (
     <form
-      className="vp-search-form ml-2 hidden md:block"
+      className={
+        alwaysExpanded
+          ? 'vp-search-form vp-desktop-nav-search w-full'
+          : 'vp-search-form ml-2 hidden md:block'
+      }
       role="search"
       onSubmit={handleSubmit}
     >
       <div className="vp-search-wrapper relative flex items-center">
-        {expanded ? (
+        {showInput ? (
           <input
             type="search"
             name="q"
-            className="vp-search-input w-48 min-h-[2.625rem] border border-vp-input-border bg-vp-input-bg px-[0.9rem] py-2 pr-10 text-sm text-white transition-[background,border-color] duration-vp-default focus:border-vp-input-border-focus focus:bg-vp-input-bg-focus focus:outline-none"
+            className={
+              alwaysExpanded
+                ? 'vp-search-input w-full min-h-[2.625rem] border border-vp-input-border bg-vp-input-bg px-[0.9rem] py-2 pr-10 text-sm text-white transition-[background,border-color] duration-vp-default focus:border-vp-input-border-focus focus:bg-vp-input-bg-focus focus:outline-none'
+                : 'vp-search-input w-48 min-h-[2.625rem] border border-vp-input-border bg-vp-input-bg px-[0.9rem] py-2 pr-10 text-sm text-white transition-[background,border-color] duration-vp-default focus:border-vp-input-border-focus focus:bg-vp-input-bg-focus focus:outline-none'
+            }
             placeholder={t('placeholder')}
             aria-label={t('placeholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            autoFocus
+            autoFocus={!alwaysExpanded}
             onBlur={() => {
+              if (alwaysExpanded) return;
               if (!query.trim()) setExpanded(false);
             }}
           />
         ) : null}
         <button
-          type={expanded ? 'submit' : 'button'}
+          type={showInput ? 'submit' : 'button'}
           className={
-            expanded
+            showInput
               ? 'vp-search-button absolute right-[0.7rem] top-1/2 -translate-y-1/2 cursor-pointer border-0 bg-transparent p-0 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white'
               : 'vp-search-button inline-flex cursor-pointer items-center border-0 bg-transparent p-2 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white'
           }
-          aria-label={expanded ? t('submitAria') : t('openAria')}
+          aria-label={showInput ? t('submitAria') : t('openAria')}
           onClick={() => {
-            if (!expanded) setExpanded(true);
+            if (!showInput) setExpanded(true);
           }}
         >
           <svg

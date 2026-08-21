@@ -283,14 +283,13 @@ export function NavBar({
             id="vp-desktop-navbar"
             aria-hidden={!panelVisible}
           >
+            <NavSearch alwaysExpanded />
             <ul className="vp-desktop-nav-list m-0 list-none p-0">
               {desktopItems}
             </ul>
           </div>
         ) : null}
       </div>
-
-      <NavSearch />
 
       {/* Mobile full-viewport panel — slides behind header chrome (z-50) */}
       {panelMounted && isMobileViewport ? (
