@@ -18,6 +18,7 @@ import { platform } from './platform';
 import { portfolioEntry } from './portfolioEntry';
 import { blogPost } from './blogPost';
 import { page } from './page';
+import { homeRedesign } from './homeRedesign';
 import { trashRecord } from './trashRecord';
 import { campaignBriefAttachment } from './campaignBriefAttachment';
 
@@ -67,6 +68,7 @@ export const schemaTypes = [
   portfolioEntry,
   blogPost,
   page,
+  homeRedesign,
   trashRecord,
   campaignBriefAttachment,
 ];

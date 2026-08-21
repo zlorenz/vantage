@@ -105,6 +105,7 @@ export default defineConfig({
           t.templateId !== 'client' &&
           t.templateId !== 'crewMember' &&
           t.templateId !== 'siteSettings' &&
+          t.templateId !== 'homeRedesign' &&
           t.templateId !== 'trashRecord' &&
           t.templateId !== 'campaignBriefAttachment',
       ),

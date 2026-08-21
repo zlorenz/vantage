@@ -96,6 +96,20 @@ export type PortfolioEntryReference = {
   [internalGroqTypeReferenceTo]?: "portfolioEntry";
 };
 
+export type HomeRedesign = {
+  _id: string;
+  _type: "homeRedesign";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  carouselSlides?: Array<
+    {
+      _key: string;
+    } & PortfolioEntryReference
+  >;
+};
+
 export type Page = {
   _id: string;
   _type: "page";
@@ -407,9 +421,9 @@ export type PortfolioEntry = {
   };
   vimeoUrl?: string;
   xinpianchangUrl?: string;
+  previewCleanVimeoUrl?: string;
   previewStartSeconds?: number;
   previewEndSeconds?: number;
-  previewCleanVimeoUrl?: string;
   heroFilmTitle?: string;
   heroFilmTitleZh?: string;
   additionalVideos?: Array<
@@ -936,6 +950,7 @@ export type AllSanitySchemaTypes =
   | CampaignBriefAttachment
   | TrashRecord
   | PortfolioEntryReference
+  | HomeRedesign
   | Page
   | TrashMetadata
   | PdfDownload
