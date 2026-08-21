@@ -180,7 +180,8 @@ export function LocalePairField(props: FieldProps) {
           zhReadOnly={zhReadOnly}
           rows={useTextarea ? (typeof rows === 'number' ? rows : 3) : undefined}
           showZh={shouldShowZh(enValue, zhValue)}
-          phraseBook={!isSlugType(typeName)}
+          // Slugs and embed URLs are not translations — do not look up or teach the phrase book.
+          phraseBook={!isSlugType(typeName) && typeName !== 'url'}
           onGenerateEn={pair?.slugSource ? generateEn : undefined}
           onGenerateZh={pair?.slugZhSource ? generateZh : undefined}
           generateEnDisabled={!enSourceText.trim()}

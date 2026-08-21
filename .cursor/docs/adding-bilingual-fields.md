@@ -98,6 +98,10 @@ delivery (locale ≈ region for our audience), but conceptually it's a
 hosting choice, not translated text. Don't "clean it up" into a translation
 field, and don't rename it.
 
+`LocalePairField` already excludes `type: 'url'` (and slugs) from the shared
+phrase book — no lookup, fill/overwrite UI, or blur upsert. Use
+`editorCanEditZh: true` so editors can still set the ZH host URL.
+
 ---
 
 ## Case 2 — Portable Text bodies → build both fields by hand
