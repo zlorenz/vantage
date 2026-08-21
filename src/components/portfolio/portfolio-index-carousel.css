@@ -99,8 +99,8 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
-  /* % radius: horizontal from width, vertical from height — scales per card box. */
-  border-radius: 14%;
+  /* Fixed rem — % radius flattens on tall cards once ry exceeds half-width. */
+  border-radius: 1.75rem;
   background: #111;
   color: #fff;
   text-decoration: none;
