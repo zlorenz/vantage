@@ -9,8 +9,8 @@
  */
 
 .vp-portfolio-index {
-  --vp-index-slide-basis: 86%;
-  --vp-index-slide-gap: 0.75rem;
+  --vp-index-slide-basis: 74%;
+  --vp-index-slide-gap: 0.5rem;
   --vp-index-inactive-opacity: 0.45;
   --vp-index-inactive-scale: 0.94;
   /* Placeholder for Phase 3 filter + scrubber — tighten once UI lands. */
@@ -34,23 +34,23 @@
 
 @media (min-width: 576px) {
   .vp-portfolio-index {
-    --vp-index-slide-basis: 78%;
-    --vp-index-slide-gap: 1rem;
+    --vp-index-slide-basis: 64%;
+    --vp-index-slide-gap: 0.75rem;
   }
 }
 
 @media (min-width: 992px) {
   .vp-portfolio-index {
-    /* ~11% peek each side + gap — Siena-style filmstrip read. */
-    --vp-index-slide-basis: 68%;
-    --vp-index-slide-gap: 1.25rem;
+    /* ~23% peek each side + gap — more neighbor cards visible. */
+    --vp-index-slide-basis: 54%;
+    --vp-index-slide-gap: 1rem;
   }
 }
 
 @media (min-width: 1400px) {
   .vp-portfolio-index {
-    --vp-index-slide-basis: 62%;
-    --vp-index-slide-gap: 1.5rem;
+    --vp-index-slide-basis: 48%;
+    --vp-index-slide-gap: 1.25rem;
   }
 }
 
