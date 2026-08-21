@@ -279,7 +279,7 @@ export function NavBar({
       <button
         ref={togglerRef}
         type="button"
-        className="navbar-toggler border-0 bg-transparent p-2 shadow-none md:hidden"
+        className="navbar-toggler border-0 bg-transparent p-2 shadow-none"
         aria-expanded={mobileOpen}
         aria-controls="vp-navbar"
         aria-label={toggleAria}

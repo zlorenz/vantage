@@ -692,9 +692,8 @@
   }
 }
 
-/* Mobile hamburger — 3 lines to X.
- * No max-width gate: the toggler itself is already `md:hidden` (992px).
- * Gating the icon lines separately caused a 768–991px blank-button gap. */
+/* Hamburger — 3 lines to X (mobile + desktop).
+ * No breakpoint gate on the icon lines: the toggler is always rendered. */
 #header .navbar-toggler .navbar-toggler-icon {
   background-image: none;
 }
