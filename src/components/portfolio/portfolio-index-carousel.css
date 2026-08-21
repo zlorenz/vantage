@@ -15,18 +15,26 @@
   --vp-index-inactive-scale: 0.94;
   /* Placeholder for Phase 3 filter + scrubber — tighten once UI lands. */
   --vp-index-bottom-bar-height: 5rem;
+  /* Independent card-stage height tune (does not change bottom-bar reservation). */
+  --vp-index-height-scale: 0.72;
 
   position: relative;
   width: 100%;
   /* Push below fixed #header; height leaves bottom bar + home-indicator room. */
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
-    100vh - var(--vp-header-height, 4.5rem) -
-      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
+    (
+        100vh - var(--vp-header-height, 4.5rem) -
+          var(--vp-index-bottom-bar-height, 5rem) -
+          env(safe-area-inset-bottom, 0px)
+      ) * var(--vp-index-height-scale, 0.72)
   );
   height: calc(
-    100svh - var(--vp-header-height, 4.5rem) -
-      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
+    (
+        100svh - var(--vp-header-height, 4.5rem) -
+          var(--vp-index-bottom-bar-height, 5rem) -
+          env(safe-area-inset-bottom, 0px)
+      ) * var(--vp-index-height-scale, 0.72)
   );
   background: #000;
   color: #fff;
