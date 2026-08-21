@@ -23,6 +23,29 @@ interface PortfolioIndexCarouselProps {
 /** In-gesture |delta| before paging; gesture bounds come from wheel-gestures. */
 const WHEEL_GESTURE_THRESHOLD_PX = 30;
 
+/**
+ * How many neighbors on each side of the active snap mount a real poster.
+ * ±8 → up to 17 Images at once (fewer when slideCount is smaller).
+ */
+const POSTER_WINDOW_RADIUS = 8;
+
+/**
+ * Loop-aware neighbor check for /work poster mounting only.
+ * Same circular-distance idea as the homepage player window, but local to
+ * this file and sized for a 146-slide strip (not imported from types.ts).
+ */
+function shouldMountPortfolioIndexPoster(
+  index: number,
+  activeIndex: number,
+  slideCount: number,
+  radius: number = POSTER_WINDOW_RADIUS,
+): boolean {
+  if (slideCount <= 0) return false;
+  if (slideCount <= radius * 2 + 1) return true;
+  const dist = Math.abs(index - activeIndex);
+  return Math.min(dist, slideCount - dist) <= radius;
+}
+
 export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
   const slideCount = slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -151,6 +174,11 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
         <div className="vp-portfolio-index__container">
           {slides.map((slide, index) => {
             const active = index === activeIndex;
+            const mountPoster = shouldMountPortfolioIndexPoster(
+              index,
+              activeIndex,
+              slideCount,
+            );
             return (
               <div
                 key={slide.id}
@@ -165,14 +193,16 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
                   tabIndex={active ? undefined : -1}
                   aria-current={active ? 'true' : undefined}
                 >
-                  <Image
-                    src={slide.posterUrl}
-                    alt=""
-                    fill
-                    sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
-                    className="vp-portfolio-index__poster"
-                    priority={index < 3}
-                  />
+                  {mountPoster ? (
+                    <Image
+                      src={slide.posterUrl}
+                      alt=""
+                      fill
+                      sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
+                      className="vp-portfolio-index__poster"
+                      priority={active}
+                    />
+                  ) : null}
                   <div className="vp-portfolio-index__overlay" aria-hidden />
                   <h2
                     className="vp-portfolio-index__title"
