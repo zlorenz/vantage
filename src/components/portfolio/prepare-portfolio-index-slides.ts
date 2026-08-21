@@ -31,8 +31,8 @@ export function preparePortfolioIndexSlides(
     if (!entry.featuredImage || !hrefSlug) continue;
 
     const posterUrl = urlForImage(entry.featuredImage)
-      .width(1600)
-      .height(900)
+      .width(1920)
+      .height(1080)
       .fit('crop')
       .url();
 
