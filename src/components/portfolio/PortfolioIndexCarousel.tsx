@@ -23,10 +23,10 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   // axis: 'x' and align: 'center' are Embla 8.6.0 defaults — omit rather than override.
+  // containScroll is a no-op when loop is true (Embla containSnaps = !loop && …).
   const [emblaRef, emblaApi] = useEmblaCarousel({
     dragFree: false,
-    loop: false,
-    containScroll: 'trimSnaps',
+    loop: true,
   });
 
   const onSelect = useCallback(() => {
