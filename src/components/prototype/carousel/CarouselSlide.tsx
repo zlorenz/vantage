@@ -18,15 +18,10 @@ interface CarouselSlideProps {
   mountPlayer: boolean;
 }
 
-/** Rounded play-triangle path in objectBoundingBox units (0–1). */
-const WATCH_CLIP_PATH =
-  'M0.78 0.50 C0.78 0.54 0.75 0.58 0.71 0.60 L0.24 0.88 C0.16 0.93 0.10 0.88 0.10 0.80 L0.10 0.20 C0.10 0.12 0.16 0.07 0.24 0.12 L0.71 0.40 C0.75 0.42 0.78 0.46 0.78 0.50 Z';
-
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
   function CarouselSlide({slide, index, active, blockExplore = false, mountPlayer}, ref) {
     const t = useTranslations('Home');
     const [playerReady, setPlayerReady] = useState(false);
-    const watchClipId = `vp-proto-watch-clip-${slide.slug}`;
     const portfolioHref = slide.hrefSlug
       ? ({
           pathname: '/portfolio/[slug]' as const,
@@ -117,22 +112,25 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               aria-label="Watch"
               tabIndex={interactive ? undefined : -1}
             >
-              <svg className="vp-proto-carousel__watch-defs" aria-hidden width="0" height="0">
-                <defs>
-                  <clipPath id={watchClipId} clipPathUnits="objectBoundingBox">
-                    <path d={WATCH_CLIP_PATH} />
-                  </clipPath>
-                </defs>
-              </svg>
               <span className="vp-proto-carousel__watch-cluster">
                 <span className="vp-proto-carousel__watch-label-mask">
                   <span className="vp-proto-carousel__watch-label">Watch</span>
                 </span>
-                <span className="vp-proto-carousel__watch-glass-wrap" aria-hidden>
-                  <span
-                    className="vp-proto-carousel__watch-glass"
-                    style={{clipPath: `url(#${watchClipId})`}}
-                  />
+                <span className="vp-proto-carousel__watch-caret" aria-hidden>
+                  <svg
+                    className="vp-proto-carousel__watch-caret-icon"
+                    viewBox="7 4 12 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 6L16 12L9 18"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="square"
+                      strokeLinejoin="miter"
+                    />
+                  </svg>
                 </span>
               </span>
             </Link>
