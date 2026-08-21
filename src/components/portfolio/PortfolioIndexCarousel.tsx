@@ -206,6 +206,8 @@ export function PortfolioIndexCarousel({
    * When filters change, the rendered slide list length/order changes.
    * Re-init Embla against the new DOM, jump to index 0, and let windowing
    * recompute from activeIndex=0 + filtered slideCount (not the full 146).
+   * Sparse sets disable loop — Embla can't build a loop engine with only a
+   * couple of wide peek slides, which otherwise collapses to a single snap.
    */
   useEffect(() => {
     if (!emblaApi) return;
@@ -214,10 +216,23 @@ export function PortfolioIndexCarousel({
     filterSignatureRef.current = filterSignature;
     if (prev === null || prev === filterSignature) return;
 
-    setActiveIndex(0);
-    emblaApi.reInit();
-    emblaApi.scrollTo(0, true);
-  }, [emblaApi, filterSignature, filteredSlides]);
+    const resetToStart = () => {
+      emblaApi.off('reInit', resetToStart);
+      emblaApi.scrollTo(0, true);
+      setActiveIndex(0);
+    };
+
+    // Prefer the reInit event so scrollTo runs after Embla finishes measuring
+    // the new filtered slide nodes (sync scrollTo right after reInit can miss).
+    emblaApi.on('reInit', resetToStart);
+    emblaApi.reInit({
+      dragFree: false,
+      loop: slideCount > 3,
+    });
+    return () => {
+      emblaApi.off('reInit', resetToStart);
+    };
+  }, [emblaApi, filterSignature, filteredSlides, slideCount]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -360,7 +375,9 @@ export function PortfolioIndexCarousel({
   }
 
   return (
-    <div className="vp-portfolio-index">
+    <div
+      className={`vp-portfolio-index${slideCount <= 3 ? ' is-sparse' : ''}`}
+    >
       <div
         ref={emblaRef}
         className="vp-portfolio-index__viewport"
@@ -402,7 +419,7 @@ export function PortfolioIndexCarousel({
                         src={slide.posterUrl}
                         alt=""
                         fill
-                        sizes="100vw"
+                        sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
                         className="vp-portfolio-index__poster"
                         priority={active}
                       />
