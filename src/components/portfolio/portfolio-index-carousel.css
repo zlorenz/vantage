@@ -1,11 +1,12 @@
 /* Full Portfolio Index — horizontal peek carousel (Embla).
  *
  * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
- * 100vh/100svh with the fixed nav overlaying media. Here the stage sits
- * BELOW the nav (margin-top + height subtract --vp-header-height) and
- * reserves bottom chrome for a future filter + scrubber (--vp-index-
- * bottom-bar-height + safe-area). Cards still fill 100% of the stage;
- * width comes from responsive flex-basis peek percentages (no aspect-ratio).
+ * 100vh/100svh with the fixed nav overlaying media. Here the root fills
+ * the band BELOW the nav and ABOVE the bottom-bar reserve, then flex-
+ * centers a height-scaled Embla viewport inside that band so leftover
+ * space splits evenly above/below the cards (not all dumped at the
+ * bottom). Cards fill 100% of the viewport; width comes from responsive
+ * flex-basis peek percentages (no aspect-ratio).
  */
 
 .vp-portfolio-index {
@@ -19,22 +20,19 @@
   --vp-index-height-scale: 0.86;
 
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
-  /* Push below fixed #header; height leaves bottom bar + home-indicator room. */
+  /* Full nav → bottom-bar band; scale lives on the viewport child. */
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
-    (
-        100vh - var(--vp-header-height, 4.5rem) -
-          var(--vp-index-bottom-bar-height, 5rem) -
-          env(safe-area-inset-bottom, 0px)
-      ) * var(--vp-index-height-scale, 0.86)
+    100vh - var(--vp-header-height, 4.5rem) -
+      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
   );
   height: calc(
-    (
-        100svh - var(--vp-header-height, 4.5rem) -
-          var(--vp-index-bottom-bar-height, 5rem) -
-          env(safe-area-inset-bottom, 0px)
-      ) * var(--vp-index-height-scale, 0.86)
+    100svh - var(--vp-header-height, 4.5rem) -
+      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
   );
   background: #000;
   color: #fff;
@@ -64,8 +62,9 @@
 
 .vp-portfolio-index__viewport {
   position: relative;
-  height: 100%;
+  flex-shrink: 0;
   width: 100%;
+  height: calc(100% * var(--vp-index-height-scale, 0.86));
   overflow: hidden;
   /* Embla owns horizontal drag; no vertical page scroll on this route. */
   touch-action: pan-y pinch-zoom;
