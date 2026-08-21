@@ -402,7 +402,7 @@ export function PortfolioIndexCarousel({
                         src={slide.posterUrl}
                         alt=""
                         fill
-                        sizes="(max-width: 575px) 74vw, (max-width: 991px) 64vw, (max-width: 1399px) 54vw, 48vw"
+                        sizes="100vw"
                         className="vp-portfolio-index__poster"
                         priority={active}
                       />
