@@ -82,7 +82,7 @@ function termLabel(
   return decodeHtmlEntities(raw);
 }
 
-function readPublicFilters(
+export function readPublicFilters(
   params: URLSearchParams,
   preset?: PublicPresetFilters,
 ): PublicFilters {
@@ -102,7 +102,7 @@ function readInternalFilters(params: URLSearchParams): InternalFilters {
   };
 }
 
-function matchesPublicFilters(
+export function matchesPublicFilters(
   entry: PortfolioGridEntry,
   filters: PublicFilters,
 ): boolean {
@@ -119,7 +119,7 @@ function matchesPublicFilters(
 }
 
 /** Count entries matching when a given public filter key is set to `value`. */
-function countForPublicFilterValue(
+export function countForPublicFilterValue(
   entries: PortfolioGridEntry[],
   filters: PublicFilters,
   key: keyof PublicFilters,
@@ -133,7 +133,7 @@ function optionCountLabel(count: number, label: string): string {
   return count > 0 ? `${label} (${count})` : label;
 }
 
-function publicFilterOptions(
+export function publicFilterOptions(
   entries: PortfolioGridEntry[],
   filters: PublicFilters,
   key: keyof PublicFilters,
@@ -182,7 +182,7 @@ function matchesInternalFilters(
   return true;
 }
 
-function buildPublicQuery(filters: PublicFilters): Record<string, string> {
+export function buildPublicQuery(filters: PublicFilters): Record<string, string> {
   const query: Record<string, string> = {};
   if (filters.format) query.format = filters.format;
   if (filters.industry) query.industry = filters.industry;
@@ -190,7 +190,7 @@ function buildPublicQuery(filters: PublicFilters): Record<string, string> {
   return query;
 }
 
-function publicFiltersMatchPresets(
+export function publicFiltersMatchPresets(
   filters: PublicFilters,
   preset: PublicFilters,
 ): boolean {
@@ -206,7 +206,7 @@ function publicFiltersMatchPresets(
  * When filters equal archive presets (or are empty on /work), write no query —
  * matching clearPublicFilters / initial archive URLs.
  */
-function replacePublicFiltersUrl(
+export function replacePublicFiltersUrl(
   filters: PublicFilters,
   preset: PublicFilters,
 ): void {
