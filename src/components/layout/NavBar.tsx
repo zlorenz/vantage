@@ -50,10 +50,6 @@ const MOBILE_LINK_CLASS =
 const DESKTOP_LINK_CLASS =
   'vp-desktop-nav-link font-vp-heading text-[0.875rem] font-normal uppercase tracking-[var(--vp-navbar-link-spacing)] text-white no-underline';
 
-/** Compact primary pill — matches former desktop nav link type size/weight. */
-const DESKTOP_BRIEF_CLASS =
-  'inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-4 py-[0.35rem] font-vp-heading text-[0.875rem] font-normal uppercase tracking-[var(--vp-navbar-link-spacing)] text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
-
 const MOBILE_BRIEF_CLASS =
   'inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
 
@@ -290,26 +286,6 @@ export function NavBar({
             <ul className="vp-desktop-nav-list m-0 list-none p-0">
               {desktopItems}
             </ul>
-            <div className="vp-desktop-nav-divider" role="separator" />
-            <div className="vp-desktop-nav-footer">
-              <Link
-                href={briefHref}
-                className={`${DESKTOP_BRIEF_CLASS} vp-mobile-nav-item`}
-                style={staggerStyle(briefStaggerIndex)}
-                onClick={closeMenu}
-              >
-                {briefLabel}
-              </Link>
-              {email ? (
-                <a
-                  href={`mailto:${email}`}
-                  className="vp-desktop-nav-email vp-mobile-nav-item text-sm font-bold text-vp-link no-underline hover:text-vp-link-hover"
-                  style={staggerStyle(emailStaggerIndex)}
-                >
-                  {email}
-                </a>
-              ) : null}
-            </div>
           </div>
         ) : null}
       </div>
