@@ -131,14 +131,17 @@
   border-radius: 1.75rem;
   transform: scale(var(--vp-index-inactive-scale));
   opacity: var(--vp-index-inactive-opacity);
+  filter: blur(8px);
   transition:
     opacity 280ms ease,
-    transform 280ms ease;
+    transform 280ms ease,
+    filter 280ms ease;
 }
 
 .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled {
   opacity: 1;
   transform: scale(1);
+  filter: blur(0);
 }
 
 .vp-portfolio-index__poster {
@@ -225,6 +228,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .vp-portfolio-index__card--styled {
+    filter: none;
     transition: none;
   }
 }
