@@ -111,7 +111,9 @@ export default async function WorkPage({params}: Props) {
           workBreadcrumb(typedLocale),
         ])}
       />
-      <PortfolioIndexCarousel slides={slides} />
+      <div className="vp-work-index">
+        <PortfolioIndexCarousel slides={slides} />
+      </div>
     </>
   );
 }

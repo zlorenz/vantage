@@ -349,11 +349,12 @@
     overscroll-behavior-y: contain;
   }
 
-  /* Homepage is the looping carousel only. Hide the sitewide footer so
-   * nothing sits below the hero (previously gated on .vp-home-contact).
+  /* Homepage / Work index are carousel-only. Hide the sitewide footer so
+   * nothing sits below the stage (previously gated on .vp-home-contact).
    * Header Contact modal and the /contact route stay. */
   body:has(.vp-home-contact) .vp-site-footer,
-  body:has(.vp-home-hero) .vp-site-footer {
+  body:has(.vp-home-hero) .vp-site-footer,
+  body:has(.vp-work-index) .vp-site-footer {
     display: none;
   }
 
