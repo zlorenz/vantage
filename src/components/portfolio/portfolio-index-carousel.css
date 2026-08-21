@@ -39,10 +39,19 @@
   color: #fff;
 }
 
+.vp-portfolio-index.is-sparse {
+  /* Keep sparse filtered sets swipeable on wide viewports (2–3 peeks). */
+  --vp-index-slide-basis: 86%;
+}
+
 @media (min-width: 576px) {
   .vp-portfolio-index {
     --vp-index-slide-basis: 64%;
     --vp-index-slide-gap: 0.75rem;
+  }
+
+  .vp-portfolio-index.is-sparse {
+    --vp-index-slide-basis: 78%;
   }
 }
 
@@ -52,12 +61,20 @@
     --vp-index-slide-basis: 54%;
     --vp-index-slide-gap: 1rem;
   }
+
+  .vp-portfolio-index.is-sparse {
+    --vp-index-slide-basis: 72%;
+  }
 }
 
 @media (min-width: 1400px) {
   .vp-portfolio-index {
     --vp-index-slide-basis: 48%;
     --vp-index-slide-gap: 1.25rem;
+  }
+
+  .vp-portfolio-index.is-sparse {
+    --vp-index-slide-basis: 68%;
   }
 }
 
@@ -131,7 +148,7 @@
   border-radius: 1.75rem;
   transform: scale(var(--vp-index-inactive-scale));
   opacity: var(--vp-index-inactive-opacity);
-  filter: blur(8px);
+  filter: blur(4px);
   transition:
     opacity 280ms ease,
     transform 280ms ease,
