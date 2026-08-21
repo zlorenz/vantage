@@ -105,6 +105,8 @@
   height: 100%;
   padding-left: var(--vp-index-slide-gap);
   box-sizing: border-box;
+  /* Hollow off-window shells keep a solid fill without Link/title markup. */
+  background: #111;
 }
 
 .vp-portfolio-index__card {
@@ -119,8 +121,7 @@
 
 /*
  * Compositing-heavy visuals only near the active snap (± STYLE_WINDOW_RADIUS).
- * Far cards keep geometry + #111 (and may still hold a windowed poster) without
- * radius/overflow/transform layers.
+ * Far Embla shells are hollow (#111 on the slide wrapper only).
  */
 .vp-portfolio-index__card--styled {
   overflow: hidden;

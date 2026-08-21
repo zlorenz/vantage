@@ -26,6 +26,8 @@ const WHEEL_GESTURE_THRESHOLD_PX = 30;
 /**
  * How many neighbors on each side of the active snap mount a real poster.
  * ±8 → up to 17 Images at once (fewer when slideCount is smaller).
+ * Nested under the content window — posters only mount when the Link shell
+ * is present, so the effective poster set is min(poster, content).
  */
 const POSTER_WINDOW_RADIUS = 8;
 
@@ -36,6 +38,13 @@ const POSTER_WINDOW_RADIUS = 8;
  * class toggle (cheap); image decode still uses the wider ±8 buffer.
  */
 const STYLE_WINDOW_RADIUS = 2;
+
+/**
+ * How many neighbors mount full slide content (Link + overlay + title).
+ * Matches the style window so tappable peeks always have a real href, while
+ * far Embla shells stay empty measured boxes (no Link/title/overlay nodes).
+ */
+const CONTENT_WINDOW_RADIUS = 2;
 
 /**
  * Loop-aware circular distance for /work index windowing.
@@ -67,6 +76,15 @@ function shouldStylePortfolioIndexCard(
   activeIndex: number,
   slideCount: number,
   radius: number = STYLE_WINDOW_RADIUS,
+): boolean {
+  return isWithinCircularWindow(index, activeIndex, slideCount, radius);
+}
+
+function shouldMountPortfolioIndexContent(
+  index: number,
+  activeIndex: number,
+  slideCount: number,
+  radius: number = CONTENT_WINDOW_RADIUS,
 ): boolean {
   return isWithinCircularWindow(index, activeIndex, slideCount, radius);
 }
@@ -199,48 +217,51 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
         <div className="vp-portfolio-index__container">
           {slides.map((slide, index) => {
             const active = index === activeIndex;
-            const mountPoster = shouldMountPortfolioIndexPoster(
+            const mountContent = shouldMountPortfolioIndexContent(
               index,
               activeIndex,
               slideCount,
             );
-            const styleCard = shouldStylePortfolioIndexCard(
-              index,
-              activeIndex,
-              slideCount,
-            );
+            const mountPoster =
+              mountContent &&
+              shouldMountPortfolioIndexPoster(index, activeIndex, slideCount);
+            const styleCard =
+              mountContent &&
+              shouldStylePortfolioIndexCard(index, activeIndex, slideCount);
             return (
               <div
                 key={slide.id}
                 className={`vp-portfolio-index__slide${active ? ' is-active' : ''}`}
               >
-                <Link
-                  href={{
-                    pathname: '/portfolio/[slug]',
-                    params: {slug: slide.hrefSlug},
-                  }}
-                  className={`vp-portfolio-index__card${
-                    styleCard ? ' vp-portfolio-index__card--styled' : ''
-                  }`}
-                  tabIndex={active ? undefined : -1}
-                  aria-current={active ? 'true' : undefined}
-                >
-                  {mountPoster ? (
-                    <Image
-                      src={slide.posterUrl}
-                      alt=""
-                      fill
-                      sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
-                      className="vp-portfolio-index__poster"
-                      priority={active}
+                {mountContent ? (
+                  <Link
+                    href={{
+                      pathname: '/portfolio/[slug]',
+                      params: {slug: slide.hrefSlug},
+                    }}
+                    className={`vp-portfolio-index__card${
+                      styleCard ? ' vp-portfolio-index__card--styled' : ''
+                    }`}
+                    tabIndex={active ? undefined : -1}
+                    aria-current={active ? 'true' : undefined}
+                  >
+                    {mountPoster ? (
+                      <Image
+                        src={slide.posterUrl}
+                        alt=""
+                        fill
+                        sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
+                        className="vp-portfolio-index__poster"
+                        priority={active}
+                      />
+                    ) : null}
+                    <div className="vp-portfolio-index__overlay" aria-hidden />
+                    <h2
+                      className="vp-portfolio-index__title"
+                      dangerouslySetInnerHTML={{__html: slide.titleHtml}}
                     />
-                  ) : null}
-                  <div className="vp-portfolio-index__overlay" aria-hidden />
-                  <h2
-                    className="vp-portfolio-index__title"
-                    dangerouslySetInnerHTML={{__html: slide.titleHtml}}
-                  />
-                </Link>
+                  </Link>
+                ) : null}
               </div>
             );
           })}
