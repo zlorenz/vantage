@@ -67,8 +67,11 @@ export function SiteHeaderNav({
         return;
       }
 
-      // Keep visible while the mobile overlay menu is open.
-      if (document.getElementById('vp-navbar')) {
+      // Keep visible while a nav overlay/dropdown is open.
+      if (
+        document.getElementById('vp-navbar') ||
+        document.getElementById('vp-desktop-navbar')
+      ) {
         setHidden(false);
         lastY.current = y;
         return;

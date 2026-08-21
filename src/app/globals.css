@@ -565,6 +565,14 @@
   transform: translate(-50%, -100%) !important;
 }
 
+/* Desktop uses the anchored dropdown — never show the full-viewport overlay at md+.
+ * (Custom `display: block` above would otherwise override Tailwind `md:hidden`.) */
+@media (min-width: 992px) {
+  #header .vp-mobile-nav-panel {
+    display: none !important;
+  }
+}
+
 #header .vp-mobile-nav-panel__inner {
   display: flex;
   flex-direction: column;
@@ -621,12 +629,14 @@
 }
 
 /* Staggered item reveal — delayed into the slide so total feel stays under ~500ms */
-#header .vp-mobile-nav-panel .vp-mobile-nav-item {
+#header .vp-mobile-nav-panel .vp-mobile-nav-item,
+#header .vp-desktop-nav-panel .vp-mobile-nav-item {
   opacity: 0;
   transform: translateX(-1.25rem);
 }
 
-#header .vp-mobile-nav-panel.is-open .vp-mobile-nav-item {
+#header .vp-mobile-nav-panel.is-open .vp-mobile-nav-item,
+#header .vp-desktop-nav-panel.is-open .vp-mobile-nav-item {
   animation: vpMobileNavItemIn 0.2s ease-out forwards;
   animation-delay: calc(0.08s + (var(--vp-nav-stagger, 0) * 0.04s));
 }
@@ -655,11 +665,118 @@
     visibility: hidden;
   }
 
+  #header .vp-desktop-nav-panel,
+  #header .vp-desktop-nav-panel.is-open,
+  #header .vp-desktop-nav-panel:not(.is-open) {
+    transform: none;
+    transition: none;
+  }
+
+  #header .vp-desktop-nav-panel:not(.is-open) {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  #header .vp-desktop-nav-panel.is-open {
+    opacity: 1;
+  }
+
   #header .vp-mobile-nav-panel .vp-mobile-nav-item,
-  #header .vp-mobile-nav-panel.is-open .vp-mobile-nav-item {
+  #header .vp-mobile-nav-panel.is-open .vp-mobile-nav-item,
+  #header .vp-desktop-nav-panel .vp-mobile-nav-item,
+  #header .vp-desktop-nav-panel.is-open .vp-mobile-nav-item {
     opacity: 1;
     transform: none;
     animation: none;
+  }
+}
+
+/* Desktop anchored dropdown — below hamburger, right-aligned, hug-content.
+ * Same open/close timing as mobile (0.28s ease-out / 0.18s ease-in);
+ * short fade + slide-down instead of full-viewport translateY. */
+#header .vp-desktop-nav-panel {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  #header .vp-desktop-nav-panel {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    z-index: 50;
+    display: block;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: min(20rem, calc(100vw - 2rem));
+    padding: 1rem 1.25rem;
+    background-color: #000;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    will-change: opacity, transform;
+    pointer-events: none;
+  }
+
+  #header .vp-desktop-nav-panel.is-open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.28s ease-out,
+      transform 0.28s ease-out;
+  }
+
+  #header .vp-desktop-nav-panel:not(.is-open) {
+    transition:
+      opacity 0.18s ease-in,
+      transform 0.18s ease-in;
+  }
+
+  #header .vp-desktop-nav-panel.is-resetting {
+    transition: none !important;
+    opacity: 0 !important;
+    transform: translateY(-0.5rem) !important;
+  }
+
+  #header .vp-desktop-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #header .vp-desktop-nav-list .nav-item {
+    margin: 0;
+  }
+
+  #header .vp-desktop-nav-link {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  #header .vp-desktop-nav-divider {
+    height: 1px;
+    margin: 0.85rem 0;
+    background-color: rgba(255, 255, 255, 0.18);
+  }
+
+  #header .vp-desktop-nav-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  #header .vp-desktop-nav-email {
+    white-space: nowrap;
   }
 }
 
