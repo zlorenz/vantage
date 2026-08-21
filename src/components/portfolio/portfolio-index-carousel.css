@@ -173,6 +173,51 @@
   pointer-events: none;
 }
 
+/* Bottom chrome: filter trigger now; scrubber reserved beside it later. */
+.vp-portfolio-index__bottom-bar {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  height: var(--vp-index-bottom-bar-height, 5rem);
+  padding: 0 var(--spacing-vp-gutter, 1rem);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  pointer-events: none;
+}
+
+.vp-portfolio-index__filter-trigger {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-portfolio-index__filter-trigger:hover,
+.vp-portfolio-index__filter-trigger:focus-visible {
+  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
+  outline: none;
+}
+
+.vp-portfolio-index__filter-trigger-icon {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vp-portfolio-index__card--styled {
     transition: none;

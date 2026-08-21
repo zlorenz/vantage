@@ -93,9 +93,26 @@ function shouldMountPortfolioIndexContent(
   return isWithinCircularWindow(index, activeIndex, slideCount, radius);
 }
 
+function FunnelIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index__filter-trigger-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M3.5 5.25A.75.75 0 0 1 4.25 4.5h15.5a.75.75 0 0 1 .53 1.28l-5.78 5.78v5.69a.75.75 0 0 1-1.13.65l-3.5-2a.75.75 0 0 1-.37-.65v-3.69L3.72 5.78A.75.75 0 0 1 3.5 5.25Z"
+      />
+    </svg>
+  );
+}
+
 export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
   const slideCount = slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
 
@@ -207,6 +224,17 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
     return (
       <div className="vp-portfolio-index">
         <p className="py-12 text-center text-vp-text-soft">No portfolio entries.</p>
+        <div className="vp-portfolio-index__bottom-bar">
+          <button
+            type="button"
+            className="vp-portfolio-index__filter-trigger"
+            aria-label="Filter"
+            aria-expanded={filterSheetOpen}
+            onClick={() => setFilterSheetOpen(true)}
+          >
+            <FunnelIcon />
+          </button>
+        </div>
       </div>
     );
   }
@@ -270,6 +298,17 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
             );
           })}
         </div>
+      </div>
+      <div className="vp-portfolio-index__bottom-bar">
+        <button
+          type="button"
+          className="vp-portfolio-index__filter-trigger"
+          aria-label="Filter"
+          aria-expanded={filterSheetOpen}
+          onClick={() => setFilterSheetOpen(true)}
+        >
+          <FunnelIcon />
+        </button>
       </div>
     </div>
   );
