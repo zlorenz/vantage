@@ -313,6 +313,19 @@ export function FeaturedWorkCarousel({slides}: FeaturedWorkCarouselProps) {
   return (
     <div ref={rootRef} className="vp-proto-carousel">
       <div
+        className="vp-proto-carousel__counter"
+        role="status"
+        aria-label={`Slide ${activeIndex + 1} of ${slideCount}`}
+      >
+        <span className="vp-proto-carousel__counter-current" aria-hidden>
+          {activeIndex + 1}
+        </span>
+        <span className="vp-proto-carousel__counter-rule" aria-hidden />
+        <span className="vp-proto-carousel__counter-total" aria-hidden>
+          {slideCount}
+        </span>
+      </div>
+      <div
         ref={emblaRef}
         className="vp-proto-carousel__viewport"
         aria-label="Featured work carousel"

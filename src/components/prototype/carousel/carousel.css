@@ -230,6 +230,11 @@
   display: none;
 }
 
+/* Desktop-only slide index — mirrors watch on the opposite edge. */
+.vp-proto-carousel__counter {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .vp-proto-carousel__overlay-copy {
     flex-direction: row;
@@ -252,6 +257,40 @@
     order: 0;
     /* Desktop: CTA paused while we explore a non-button affordance. */
     display: none;
+  }
+
+  .vp-proto-carousel__counter {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: var(--spacing-vp-gutter);
+    z-index: 2;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-family: var(--font-vp-sans);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .vp-proto-carousel__counter-current,
+  .vp-proto-carousel__counter-total {
+    display: block;
+    min-width: 1.1em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .vp-proto-carousel__counter-rule {
+    display: block;
+    width: 1rem;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.55);
   }
 
   /*
