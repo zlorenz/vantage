@@ -358,9 +358,13 @@
     display: none;
   }
 
-  /* Work index is a locked horizontal stage — no document scroll. */
+  /* Work index is a locked horizontal stage — no document scroll.
+   * html + body both need overflow:hidden; iOS still rubber-bands with
+   * body alone. overscroll-behavior:none kills remaining bounce. */
+  html:has(.vp-work-index),
   body:has(.vp-work-index) {
     overflow: hidden;
+    overscroll-behavior: none;
   }
 
   /* Outline text effect — hero and page titles.

@@ -81,8 +81,10 @@
       ) * var(--vp-index-height-scale, 0.86)
   );
   overflow: hidden;
-  /* Embla owns horizontal drag; no vertical page scroll on this route. */
-  touch-action: pan-y pinch-zoom;
+  /* Horizontal Embla owns X; do NOT use pan-y — that lets iOS rubber-band
+   * the document and collapse the fixed nav. pinch-zoom only (same idea as
+   * homepage's pan-x on a vertical carousel: withhold the page-scroll axis). */
+  touch-action: pinch-zoom;
   cursor: grab;
 }
 
@@ -94,7 +96,7 @@
   display: flex;
   align-items: stretch;
   height: 100%;
-  touch-action: pan-y pinch-zoom;
+  touch-action: pinch-zoom;
   margin-left: calc(var(--vp-index-slide-gap) * -1);
 }
 
