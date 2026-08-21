@@ -1,0 +1,120 @@
+/* Full Portfolio Index — horizontal peek carousel (Embla). */
+
+.vp-portfolio-index {
+  --vp-index-slide-basis: 86%;
+  --vp-index-slide-gap: 0.75rem;
+  --vp-index-inactive-opacity: 0.45;
+  --vp-index-inactive-scale: 0.94;
+
+  width: 100%;
+  /* Edge-to-edge so left/right peeks aren't clipped by page gutters. */
+  margin-inline: -0.75rem;
+  padding-block: 0.5rem 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .vp-portfolio-index {
+    --vp-index-slide-basis: 78%;
+    --vp-index-slide-gap: 1rem;
+    margin-inline: -1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .vp-portfolio-index {
+    /* ~11% peek each side + gap — Siena-style filmstrip read. */
+    --vp-index-slide-basis: 68%;
+    --vp-index-slide-gap: 1.25rem;
+    margin-inline: 0;
+  }
+}
+
+@media (min-width: 1400px) {
+  .vp-portfolio-index {
+    --vp-index-slide-basis: 62%;
+    --vp-index-slide-gap: 1.5rem;
+  }
+}
+
+.vp-portfolio-index__viewport {
+  overflow: hidden;
+  width: 100%;
+  /* Horizontal Embla owns pan-x; leave vertical page scroll + pinch alone. */
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+}
+
+.vp-portfolio-index__viewport:active {
+  cursor: grabbing;
+}
+
+.vp-portfolio-index__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--vp-index-slide-gap) * -1);
+}
+
+.vp-portfolio-index__slide {
+  position: relative;
+  flex: 0 0 var(--vp-index-slide-basis);
+  min-width: 0;
+  padding-left: var(--vp-index-slide-gap);
+}
+
+.vp-portfolio-index__card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  transform: scale(var(--vp-index-inactive-scale));
+  opacity: var(--vp-index-inactive-opacity);
+  transition:
+    opacity 280ms ease,
+    transform 280ms ease;
+}
+
+.vp-portfolio-index__slide.is-active .vp-portfolio-index__card {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.vp-portfolio-index__poster {
+  object-fit: cover;
+}
+
+.vp-portfolio-index__overlay {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 45%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+.vp-portfolio-index__title {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 1.25em 1em 0.75em;
+  color: #fff;
+  font-family: var(--vp-font-heading);
+  font-size: clamp(0.85rem, 1.6vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.0625rem;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-portfolio-index__card {
+    transition: none;
+  }
+}
