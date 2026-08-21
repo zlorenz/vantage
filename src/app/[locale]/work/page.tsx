@@ -1,12 +1,9 @@
 /**
- * Work index page — hero, intro, and Full Portfolio Index peek carousel.
+ * Work index page — Full Portfolio Index carousel (page IS the carousel).
  */
 
 import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
-import {PageHero} from '@/components/ui/PageHero';
-import {PortableTextIntro} from '@/components/ui/PortableTextIntro';
-import {SectionWrapper} from '@/components/ui/SectionWrapper';
 import {PortfolioIndexCarousel} from '@/components/portfolio/PortfolioIndexCarousel';
 import {preparePortfolioIndexSlides} from '@/components/portfolio/prepare-portfolio-index-slides';
 import {routing, type Locale} from '@/i18n/routing';
@@ -91,11 +88,6 @@ export default async function WorkPage({params}: Props) {
       ? workPage.heroTitleZh
       : workPage?.heroTitle || workPage?.title || 'Work';
 
-  const introBlocks =
-    typedLocale === 'zh' && workPage?.bodyZh?.length
-      ? workPage.bodyZh
-      : workPage?.body;
-
   const workUrl = workBreadcrumb(typedLocale).url;
 
   return (
@@ -119,20 +111,7 @@ export default async function WorkPage({params}: Props) {
           workBreadcrumb(typedLocale),
         ])}
       />
-      <PageHero
-        title={heroTitle}
-        backgroundImage={workPage?.featuredImage ?? undefined}
-      />
-      <SectionWrapper fullBleed={true}>
-        <div className="container-fluid px-3 md:px-4">
-          {introBlocks?.length ? (
-            <div className="vp-work-intro container mx-auto mb-8 text-center font-light text-vp-text-muted min-[1400px]:max-w-[1320px]">
-              <PortableTextIntro blocks={introBlocks} />
-            </div>
-          ) : null}
-          <PortfolioIndexCarousel slides={slides} />
-        </div>
-      </SectionWrapper>
+      <PortfolioIndexCarousel slides={slides} />
     </>
   );
 }
