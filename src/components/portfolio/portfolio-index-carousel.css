@@ -110,14 +110,22 @@
 .vp-portfolio-index__card {
   position: relative;
   display: block;
-  overflow: hidden;
   width: 100%;
   height: 100%;
-  /* Fixed rem — % radius flattens on tall cards once ry exceeds half-width. */
-  border-radius: 1.75rem;
   background: #111;
   color: #fff;
   text-decoration: none;
+}
+
+/*
+ * Compositing-heavy visuals only near the active snap (± STYLE_WINDOW_RADIUS).
+ * Far cards keep geometry + #111 (and may still hold a windowed poster) without
+ * radius/overflow/transform layers.
+ */
+.vp-portfolio-index__card--styled {
+  overflow: hidden;
+  /* Fixed rem — % radius flattens on tall cards once ry exceeds half-width. */
+  border-radius: 1.75rem;
   transform: scale(var(--vp-index-inactive-scale));
   opacity: var(--vp-index-inactive-opacity);
   transition:
@@ -125,7 +133,7 @@
     transform 280ms ease;
 }
 
-.vp-portfolio-index__slide.is-active .vp-portfolio-index__card {
+.vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled {
   opacity: 1;
   transform: scale(1);
 }
@@ -163,7 +171,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vp-portfolio-index__card {
+  .vp-portfolio-index__card--styled {
     transition: none;
   }
 }

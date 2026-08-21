@@ -30,20 +30,45 @@ const WHEEL_GESTURE_THRESHOLD_PX = 30;
 const POSTER_WINDOW_RADIUS = 8;
 
 /**
- * Loop-aware neighbor check for /work poster mounting only.
- * Same circular-distance idea as the homepage player window, but local to
- * this file and sized for a 146-slide strip (not imported from types.ts).
+ * How many neighbors get radius/overflow/transform/transition styling.
+ * Tighter than the image window: peek layout only shows ~3 cards on screen;
+ * ±2 → 5 styled cards (active + peeks + one-step buffer). Restyling is a
+ * class toggle (cheap); image decode still uses the wider ±8 buffer.
  */
+const STYLE_WINDOW_RADIUS = 2;
+
+/**
+ * Loop-aware circular distance for /work index windowing.
+ * Local to this file (not imported from homepage carousel types).
+ */
+function isWithinCircularWindow(
+  index: number,
+  activeIndex: number,
+  slideCount: number,
+  radius: number,
+): boolean {
+  if (slideCount <= 0) return false;
+  if (slideCount <= radius * 2 + 1) return true;
+  const dist = Math.abs(index - activeIndex);
+  return Math.min(dist, slideCount - dist) <= radius;
+}
+
 function shouldMountPortfolioIndexPoster(
   index: number,
   activeIndex: number,
   slideCount: number,
   radius: number = POSTER_WINDOW_RADIUS,
 ): boolean {
-  if (slideCount <= 0) return false;
-  if (slideCount <= radius * 2 + 1) return true;
-  const dist = Math.abs(index - activeIndex);
-  return Math.min(dist, slideCount - dist) <= radius;
+  return isWithinCircularWindow(index, activeIndex, slideCount, radius);
+}
+
+function shouldStylePortfolioIndexCard(
+  index: number,
+  activeIndex: number,
+  slideCount: number,
+  radius: number = STYLE_WINDOW_RADIUS,
+): boolean {
+  return isWithinCircularWindow(index, activeIndex, slideCount, radius);
 }
 
 export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
@@ -179,6 +204,11 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
               activeIndex,
               slideCount,
             );
+            const styleCard = shouldStylePortfolioIndexCard(
+              index,
+              activeIndex,
+              slideCount,
+            );
             return (
               <div
                 key={slide.id}
@@ -189,7 +219,9 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
                     pathname: '/portfolio/[slug]',
                     params: {slug: slide.hrefSlug},
                   }}
-                  className="vp-portfolio-index__card"
+                  className={`vp-portfolio-index__card${
+                    styleCard ? ' vp-portfolio-index__card--styled' : ''
+                  }`}
                   tabIndex={active ? undefined : -1}
                   aria-current={active ? 'true' : undefined}
                 >
