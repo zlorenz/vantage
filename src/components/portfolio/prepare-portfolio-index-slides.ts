@@ -15,6 +15,9 @@ export type PortfolioIndexSlide = {
   hrefSlug: string;
   posterUrl: string;
   titleHtml: string;
+  videoFormatSlugs: string[];
+  industrySlugs: string[];
+  marketSlugs: string[];
 };
 
 export function preparePortfolioIndexSlides(
@@ -43,6 +46,9 @@ export function preparePortfolioIndexSlides(
       hrefSlug,
       posterUrl,
       titleHtml: thumbTitle,
+      videoFormatSlugs: entry.videoFormatSlugs ?? [],
+      industrySlugs: entry.industrySlugs ?? [],
+      marketSlugs: entry.marketSlugs ?? [],
     });
   }
 
