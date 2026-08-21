@@ -33,13 +33,6 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('platform'),
       S.documentTypeListItem('translatedPhrase').title('Phrases (EN→ZH)'),
       S.listItem()
-        .title('Homepage Redesign')
-        .id('homeRedesign')
-        .schemaType('homeRedesign')
-        .child(
-          S.document().schemaType('homeRedesign').documentId('homeRedesign'),
-        ),
-      S.listItem()
         .title('Site Settings')
         .id('siteSettings')
         .schemaType('siteSettings')

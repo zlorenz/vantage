@@ -169,6 +169,18 @@ export const page = defineType({
     }),
 
     defineField({
+      name: 'carouselSlides',
+      title: 'Carousel Slides',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
+      description:
+        'Drag to reorder. Powers the redesigned homepage carousel.',
+      hidden: (ctx) =>
+        hideUnlessPageSlug('home-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
+    defineField({
       name: 'body',
       title: 'Body (English)',
       type: 'pagePortableText',
