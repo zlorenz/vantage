@@ -2,7 +2,7 @@
  * Featured-work carousel GROQ — used by Home and /prototype/carousel.
  */
 
-/** Shared portfolio projection for carousel slides (slug list or page refs). */
+/** Shared portfolio projection for carousel slides. */
 const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
   _id,
   "slug": slug.current,
@@ -29,13 +29,6 @@ const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
   previewEndSeconds,
   previewCleanVimeoUrl
 `
-
-/** @deprecated Prefer HOME_REDESIGN_CAROUSEL_QUERY — kept for quick rollback. */
-export const PROTOTYPE_CAROUSEL_ENTRIES_QUERY = `
-  *[_type == "portfolioEntry" && slug.current in $slugs && !defined(trash.trashedAt)] {
-    ${PROTOTYPE_CAROUSEL_ENTRY_PROJECTION}
-  }
-`;
 
 /** Redesign homepage carousel — CMS order from page.carouselSlides. */
 export const HOME_REDESIGN_CAROUSEL_QUERY = `
