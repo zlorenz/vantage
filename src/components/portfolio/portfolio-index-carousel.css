@@ -35,7 +35,7 @@
   height: calc(
     100svh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
   );
-  background: #000;
+  background: var(--vp-bg, #000000);
   color: #fff;
 }
 
@@ -105,8 +105,8 @@
   height: 100%;
   padding-left: var(--vp-index-slide-gap);
   box-sizing: border-box;
-  /* Hollow off-window shells keep a solid fill without Link/title markup. */
-  background: #111;
+  /* Hollow off-window shells — same pure black as site bg (not #111 gray). */
+  background: var(--vp-bg, #000000);
 }
 
 .vp-portfolio-index__card {
@@ -114,7 +114,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: #111;
+  background: var(--vp-bg, #000000);
   color: #fff;
   text-decoration: none;
 }
