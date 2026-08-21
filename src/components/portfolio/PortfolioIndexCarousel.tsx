@@ -3,12 +3,14 @@
 /**
  * Full Portfolio Index — horizontal peek carousel (Embla).
  *
- * Phase 1: static posters only, discrete snap-per-card, centered active slide
- * with left/right peeks. No shared imports from the homepage FeaturedWorkCarousel.
+ * Static posters only (featuredImage). Discrete snap-per-card, centered
+ * active slide with left/right peeks, infinite loop. No shared imports from
+ * the homepage FeaturedWorkCarousel.
  */
 
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import {WheelGestures} from 'wheel-gestures';
 import Image from 'next/image';
 import {Link} from '@/i18n/navigation';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
@@ -18,9 +20,14 @@ interface PortfolioIndexCarouselProps {
   slides: PortfolioIndexSlide[];
 }
 
+/** In-gesture |delta| before paging; gesture bounds come from wheel-gestures. */
+const WHEEL_GESTURE_THRESHOLD_PX = 30;
+
 export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
   const slideCount = slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
+  const gestureAccumRef = useRef(0);
+  const gestureFiredRef = useRef(false);
 
   // axis: 'x' and align: 'center' are Embla 8.6.0 defaults — omit rather than override.
   // containScroll is a no-op when loop is true (Embla containSnaps = !loop && …).
@@ -44,6 +51,56 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
       emblaApi.off('reInit', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const viewport = emblaApi.rootNode();
+    const wheelGestures = WheelGestures({
+      reverseSign: false,
+      preventWheelAction: false,
+    });
+
+    const unobserve = wheelGestures.observe(viewport);
+    const unsubscribe = wheelGestures.on('wheel', (wheelEventState) => {
+      const {isStart, isMomentum, axisDelta, event} = wheelEventState;
+      const [deltaX, deltaY] = axisDelta;
+
+      if (isStart) {
+        gestureAccumRef.current = 0;
+        gestureFiredRef.current = false;
+      }
+
+      if (event.ctrlKey) return;
+
+      // Dominant axis: horizontal strip owns both trackpad axes because this
+      // route has no vertical page scroll — vertical two-finger swipe also pages.
+      const dominant =
+        Math.abs(deltaX) >= Math.abs(deltaY) ? deltaX : deltaY;
+      if (dominant === 0) return;
+
+      event.preventDefault?.();
+
+      if (isMomentum) return;
+
+      gestureAccumRef.current += Math.abs(dominant);
+      if (gestureFiredRef.current) return;
+      if (gestureAccumRef.current < WHEEL_GESTURE_THRESHOLD_PX) return;
+
+      gestureFiredRef.current = true;
+      if (dominant > 0) {
+        emblaApi.scrollNext();
+      } else {
+        emblaApi.scrollPrev();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      unobserve();
+      wheelGestures.disconnect();
+    };
+  }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
