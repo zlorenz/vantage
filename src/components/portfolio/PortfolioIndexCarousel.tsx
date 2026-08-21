@@ -13,11 +13,15 @@ import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import Image from 'next/image';
 import {Link} from '@/i18n/navigation';
+import type {TaxonomyTerm} from '@/types/sanity';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import './portfolio-index-carousel.css';
 
 interface PortfolioIndexCarouselProps {
   slides: PortfolioIndexSlide[];
+  videoFormats: TaxonomyTerm[];
+  industries: TaxonomyTerm[];
+  markets: TaxonomyTerm[];
 }
 
 /** In-gesture |delta| before paging; gesture bounds come from wheel-gestures. */

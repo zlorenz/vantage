@@ -26,12 +26,18 @@ import {
 import {JsonLd} from '@/components/seo/JsonLd';
 import {sanityFetch} from '@/sanity/lib/live';
 import {WORK_PAGE_META_QUERY} from '@/sanity/queries/pages';
-import {ALL_PORTFOLIO_QUERY, WORK_PAGE_QUERY} from '@/sanity/queries/portfolio';
+import {
+  ALL_PORTFOLIO_QUERY,
+  INDUSTRIES_QUERY,
+  MARKETS_QUERY,
+  VIDEO_FORMATS_QUERY,
+  WORK_PAGE_QUERY,
+} from '@/sanity/queries/portfolio';
 import type {
   WORK_PAGE_META_QUERY_RESULT,
   WORK_PAGE_QUERY_RESULT,
 } from '@/sanity/sanity.types';
-import type {PortfolioGridEntry} from '@/types/sanity';
+import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 
 type Props = {
   params: Promise<{locale: string}>;
@@ -70,17 +76,31 @@ export default async function WorkPage({params}: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [workPageResult, workMetaResult, entriesResult, phrases, organization] =
-    await Promise.all([
-      sanityFetch({query: WORK_PAGE_QUERY}),
-      sanityFetch({query: WORK_PAGE_META_QUERY, stega: false}),
-      sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
-      getPhraseRecord(),
-      loadOrganizationSchemaInput(typedLocale),
-    ]);
+  const [
+    workPageResult,
+    workMetaResult,
+    entriesResult,
+    videoFormatsResult,
+    industriesResult,
+    marketsResult,
+    phrases,
+    organization,
+  ] = await Promise.all([
+    sanityFetch({query: WORK_PAGE_QUERY}),
+    sanityFetch({query: WORK_PAGE_META_QUERY, stega: false}),
+    sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
+    sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
+    sanityFetch({query: INDUSTRIES_QUERY, stega: false}),
+    sanityFetch({query: MARKETS_QUERY, stega: false}),
+    getPhraseRecord(),
+    loadOrganizationSchemaInput(typedLocale),
+  ]);
   const workPage = workPageResult.data as WORK_PAGE_QUERY_RESULT;
   const workPageMeta = workMetaResult.data as WORK_PAGE_META_QUERY_RESULT;
   const entries = entriesResult.data as PortfolioGridEntry[];
+  const videoFormats = videoFormatsResult.data as TaxonomyTerm[];
+  const industries = industriesResult.data as TaxonomyTerm[];
+  const markets = marketsResult.data as TaxonomyTerm[];
   const slides = preparePortfolioIndexSlides(entries, typedLocale, phrases);
 
   const heroTitle =
@@ -112,7 +132,12 @@ export default async function WorkPage({params}: Props) {
         ])}
       />
       <div className="vp-work-index">
-        <PortfolioIndexCarousel slides={slides} />
+        <PortfolioIndexCarousel
+          slides={slides}
+          videoFormats={videoFormats}
+          industries={industries}
+          markets={markets}
+        />
       </div>
     </>
   );
