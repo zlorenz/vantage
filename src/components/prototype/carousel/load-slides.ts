@@ -8,8 +8,7 @@ import {urlForImage} from '@/lib/sanity';
 import {sanityFetch} from '@/sanity/lib/live';
 import type {CrewCredit, DisplayTitlePartsValue, SanityImage} from '@/types/sanity';
 import {composeOverlayCopy, joinOverlayList} from './overlay';
-import {PROTOTYPE_CAROUSEL_ENTRIES_QUERY} from './query';
-import {PROTOTYPE_CAROUSEL_SLUGS} from './slugs';
+import {HOME_REDESIGN_CAROUSEL_QUERY} from './query';
 import type {PrototypeCarouselSlide} from './types';
 
 type CarouselFormat = {
@@ -31,30 +30,29 @@ type CarouselEntry = {
   previewCleanVimeoUrl?: string | null;
 };
 
+type HomeRedesignCarouselResult = {
+  carouselSlides?: CarouselEntry[] | null;
+};
+
 export async function loadFeaturedWorkSlides(
   locale: Locale,
 ): Promise<PrototypeCarouselSlide[]> {
-  const [entriesResult, phrases] = await Promise.all([
+  const [pageResult, phrases] = await Promise.all([
     sanityFetch({
-      query: PROTOTYPE_CAROUSEL_ENTRIES_QUERY,
-      params: {slugs: [...PROTOTYPE_CAROUSEL_SLUGS]},
+      query: HOME_REDESIGN_CAROUSEL_QUERY,
       stega: false,
     }),
     getPhraseRecord(),
   ]);
 
-  const entries = (entriesResult.data as CarouselEntry[] | null) ?? [];
-  const bySlug = new Map(
-    entries
-      .filter((entry): entry is CarouselEntry & {slug: string} => Boolean(entry.slug))
-      .map((entry) => [entry.slug, entry]),
+  const page = pageResult.data as HomeRedesignCarouselResult | null;
+  const entries = (page?.carouselSlides ?? []).filter(
+    (entry): entry is CarouselEntry & {slug: string} => Boolean(entry?.slug),
   );
   const phraseMap = phraseRecordToMap(phrases);
 
-  return PROTOTYPE_CAROUSEL_SLUGS.flatMap((slug) => {
-    const entry = bySlug.get(slug);
-    if (!entry) return [];
-
+  return entries.map((entry) => {
+    const slug = entry.slug;
     const posterUrl = entry.featuredImage
       ? urlForImage(entry.featuredImage).width(1920).height(1080).fit('crop').url()
       : null;
@@ -66,20 +64,18 @@ export async function loadFeaturedWorkSlides(
       ),
     );
 
-    return [
-      {
-        slug,
-        hrefSlug: locale === 'zh' ? entry.slugZh || slug : slug,
-        brandLine,
-        campaignLine,
-        directorNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'director')),
-        dopNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'dop')),
-        formatLine,
-        posterUrl,
-        vimeoUrl: entry.previewCleanVimeoUrl?.trim() || entry.vimeoUrl?.trim() || null,
-        previewStartSeconds: entry.previewStartSeconds ?? null,
-        previewEndSeconds: entry.previewEndSeconds ?? null,
-      },
-    ];
+    return {
+      slug,
+      hrefSlug: locale === 'zh' ? entry.slugZh || slug : slug,
+      brandLine,
+      campaignLine,
+      directorNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'director')),
+      dopNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'dop')),
+      formatLine,
+      posterUrl,
+      vimeoUrl: entry.previewCleanVimeoUrl?.trim() || entry.vimeoUrl?.trim() || null,
+      previewStartSeconds: entry.previewStartSeconds ?? null,
+      previewEndSeconds: entry.previewEndSeconds ?? null,
+    };
   });
 }
