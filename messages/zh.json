@@ -61,6 +61,10 @@
     "artDirector": "美术指导",
     "all": "全部",
     "clear": "清除筛选",
+    "clearAll": "清除全部",
+    "filter": "筛选",
+    "closeFilterAria": "关闭筛选",
+    "backToFiltersAria": "返回筛选分类",
     "empty": "未找到符合条件的作品。",
     "portfolioAria": "作品集筛选",
     "crewAria": "制作团队筛选"

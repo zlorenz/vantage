@@ -61,6 +61,10 @@
     "artDirector": "Art Director",
     "all": "All",
     "clear": "Clear filters",
+    "clearAll": "Clear all",
+    "filter": "Filter",
+    "closeFilterAria": "Close filters",
+    "backToFiltersAria": "Back to filter categories",
     "empty": "No portfolio items found.",
     "portfolioAria": "Portfolio filters",
     "crewAria": "Portfolio crew filters"

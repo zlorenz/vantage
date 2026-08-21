@@ -10,23 +10,27 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
+import {useTranslations} from 'next-intl';
 import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import Image from 'next/image';
 import {Link} from '@/i18n/navigation';
-import type {TaxonomyTerm} from '@/types/sanity';
-import type {PortfolioGridEntry} from '@/types/sanity';
+import type {Locale} from '@/i18n/routing';
+import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 import {
   matchesPublicFilters,
   readPublicFilters,
   replacePublicFiltersUrl,
   type PublicFilters,
 } from './PortfolioGrid';
+import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import './portfolio-index-carousel.css';
 
 interface PortfolioIndexCarouselProps {
   slides: PortfolioIndexSlide[];
+  locale: Locale;
+  phrases?: Record<string, string>;
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
@@ -134,7 +138,13 @@ function slideMatchesPublicFilters(
 
 export function PortfolioIndexCarousel({
   slides,
+  locale,
+  phrases,
+  videoFormats,
+  industries,
+  markets,
 }: PortfolioIndexCarouselProps) {
+  const t = useTranslations('Filters');
   const searchParams = useSearchParams();
   const [publicFilters, setPublicFilters] = useState(() =>
     readPublicFilters(searchParams),
@@ -263,6 +273,7 @@ export function PortfolioIndexCarousel({
     if (!emblaApi) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (filterSheetOpen) return;
       if (event.repeat) return;
       const {key} = event;
       if (key !== 'ArrowLeft' && key !== 'ArrowRight') return;
@@ -288,7 +299,22 @@ export function PortfolioIndexCarousel({
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [emblaApi]);
+  }, [emblaApi, filterSheetOpen]);
+
+  const updatePublicFilter = useCallback(
+    (key: keyof PublicFilters, value: string) => {
+      setPublicFilters((prev) => ({...prev, [key]: value}));
+    },
+    [],
+  );
+
+  const clearPublicFilters = useCallback(() => {
+    setPublicFilters(EMPTY_PUBLIC_PRESETS);
+  }, []);
+
+  const closeFilterSheet = useCallback(() => {
+    setFilterSheetOpen(false);
+  }, []);
 
   const filterTrigger = (
     <div className="vp-portfolio-index__bottom-bar">
@@ -297,7 +323,7 @@ export function PortfolioIndexCarousel({
         className={`vp-portfolio-index__filter-trigger${
           hasActiveFilters ? ' is-active' : ''
         }`}
-        aria-label="Filter"
+        aria-label={t('filter')}
         aria-expanded={filterSheetOpen}
         aria-pressed={hasActiveFilters}
         onClick={() => setFilterSheetOpen(true)}
@@ -307,13 +333,28 @@ export function PortfolioIndexCarousel({
     </div>
   );
 
+  const filterSheet = (
+    <PortfolioIndexFilterSheet
+      open={filterSheetOpen}
+      onClose={closeFilterSheet}
+      locale={locale}
+      phrases={phrases}
+      slides={slides}
+      filters={publicFilters}
+      onChangeFilter={updatePublicFilter}
+      onClearAll={clearPublicFilters}
+      videoFormats={videoFormats}
+      industries={industries}
+      markets={markets}
+    />
+  );
+
   if (!slideCount) {
     return (
       <div className="vp-portfolio-index">
-        <p className="py-12 text-center text-vp-text-soft">
-          No portfolio items found.
-        </p>
+        <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
         {filterTrigger}
+        {filterSheet}
       </div>
     );
   }
@@ -361,7 +402,7 @@ export function PortfolioIndexCarousel({
                         src={slide.posterUrl}
                         alt=""
                         fill
-                        sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
+                        sizes="(max-width: 575px) 74vw, (max-width: 991px) 64vw, (max-width: 1399px) 54vw, 48vw"
                         className="vp-portfolio-index__poster"
                         priority={active}
                       />
@@ -379,6 +420,7 @@ export function PortfolioIndexCarousel({
         </div>
       </div>
       {filterTrigger}
+      {filterSheet}
     </div>
   );
 }

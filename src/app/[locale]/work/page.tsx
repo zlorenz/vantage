@@ -138,6 +138,8 @@ export default async function WorkPage({params}: Props) {
         >
           <PortfolioIndexCarousel
             slides={slides}
+            locale={typedLocale}
+            phrases={phrases}
             videoFormats={videoFormats}
             industries={industries}
             markets={markets}
