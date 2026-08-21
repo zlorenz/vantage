@@ -410,6 +410,8 @@
 
   .vp-proto-carousel__campaign {
     font-size: 48px;
+    /* Nudge down so Special Gothic baseline meets credit name baseline. */
+    margin-bottom: -0.1em;
   }
 
   .vp-proto-carousel__credit dt {
