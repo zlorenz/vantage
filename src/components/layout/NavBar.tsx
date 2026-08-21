@@ -259,6 +259,23 @@ export function NavBar({
         <LanguageSwitcher />
       </div>
 
+      {/* Desktop navigation — links + brief; lang/search sit outside as siblings */}
+      <div className="hidden flex-grow items-center md:flex">
+        <ul className="navbar-nav ms-auto flex list-none flex-row items-center p-0">
+          {items.map((item) => renderItem(item))}
+          <li className="nav-item">
+            <Link href={briefHref} className={DESKTOP_BRIEF_CLASS}>
+              {briefLabel}
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Desktop language switcher — sibling before hamburger (mirrors mobile slot) */}
+      <div className="vp-desktop-lang-slot mr-1 hidden items-center md:flex">
+        <LanguageSwitcher />
+      </div>
+
       <button
         ref={togglerRef}
         type="button"
@@ -271,21 +288,7 @@ export function NavBar({
         <span className="navbar-toggler-icon relative block h-5 w-7" />
       </button>
 
-      {/* Desktop navigation */}
-      <div className="hidden flex-grow items-center md:flex">
-        <ul className="navbar-nav ms-auto flex list-none flex-row items-center p-0">
-          {items.map((item) => renderItem(item))}
-          <li className="nav-item">
-            <Link href={briefHref} className={DESKTOP_BRIEF_CLASS}>
-              {briefLabel}
-            </Link>
-          </li>
-          <li className="nav-item">
-            <LanguageSwitcher />
-          </li>
-        </ul>
-        <NavSearch />
-      </div>
+      <NavSearch />
 
       {/* Mobile full-viewport panel — slides behind header chrome (z-50) */}
       {panelMounted ? (

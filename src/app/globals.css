@@ -476,6 +476,7 @@
  * .container-fluid, so its z-40 competes with siblings — not the wrapper). */
 #header .navbar-brand,
 #header .vp-mobile-lang-slot,
+#header .vp-desktop-lang-slot,
 #header .navbar-toggler {
   position: relative;
   z-index: 50;
