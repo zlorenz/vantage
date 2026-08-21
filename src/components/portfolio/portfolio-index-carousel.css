@@ -2,11 +2,14 @@
  *
  * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
- * the band BELOW the nav and ABOVE the bottom-bar reserve, then flex-
- * centers a height-scaled Embla viewport inside that band so leftover
- * space splits evenly above/below the cards (not all dumped at the
- * bottom). Cards fill 100% of the viewport; width comes from responsive
- * flex-basis peek percentages (no aspect-ratio).
+ * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
+ * viewport (safe-area aware), then flex-centers a height-scaled Embla
+ * viewport so the cards optically sit midway under the nav — not midway
+ * in a shorter band that excludes the Phase 3 bottom-bar reserve (that
+ * shorter band left the strip looking top-heavy). Card HEIGHT still uses
+ * the bottom-bar-aware calc so Phase 3 chrome space stays in the budget;
+ * only the centering band spans nav → viewport bottom. Width comes from
+ * responsive flex-basis peek percentages (no aspect-ratio).
  */
 
 .vp-portfolio-index {
@@ -14,7 +17,7 @@
   --vp-index-slide-gap: 0.5rem;
   --vp-index-inactive-opacity: 0.45;
   --vp-index-inactive-scale: 0.94;
-  /* Placeholder for Phase 3 filter + scrubber — tighten once UI lands. */
+  /* Placeholder for Phase 3 filter + scrubber — used in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
   /* Independent card-stage height tune (does not change bottom-bar reservation). */
   --vp-index-height-scale: 0.86;
@@ -24,15 +27,13 @@
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  /* Full nav → bottom-bar band; scale lives on the viewport child. */
+  /* Centering band: nav bottom → viewport bottom (ignore bottom-bar for optical mid). */
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
-    100vh - var(--vp-header-height, 4.5rem) -
-      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
+    100vh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
   );
   height: calc(
-    100svh - var(--vp-header-height, 4.5rem) -
-      var(--vp-index-bottom-bar-height, 5rem) - env(safe-area-inset-bottom, 0px)
+    100svh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
   );
   background: #000;
   color: #fff;
@@ -64,7 +65,21 @@
   position: relative;
   flex-shrink: 0;
   width: 100%;
-  height: calc(100% * var(--vp-index-height-scale, 0.86));
+  /* Absolute height (not % of root) so expanding the centering band does not grow cards. */
+  height: calc(
+    (
+        100vh - var(--vp-header-height, 4.5rem) -
+          var(--vp-index-bottom-bar-height, 5rem) -
+          env(safe-area-inset-bottom, 0px)
+      ) * var(--vp-index-height-scale, 0.86)
+  );
+  height: calc(
+    (
+        100svh - var(--vp-header-height, 4.5rem) -
+          var(--vp-index-bottom-bar-height, 5rem) -
+          env(safe-area-inset-bottom, 0px)
+      ) * var(--vp-index-height-scale, 0.86)
+  );
   overflow: hidden;
   /* Embla owns horizontal drag; no vertical page scroll on this route. */
   touch-action: pan-y pinch-zoom;
