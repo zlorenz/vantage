@@ -48,7 +48,7 @@ const MOBILE_LINK_CLASS =
   'vp-mobile-nav-link font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-[1] tracking-vp-heading text-white no-underline';
 
 const DESKTOP_LINK_CLASS =
-  'vp-desktop-nav-link font-vp-heading text-[0.875rem] font-normal uppercase tracking-[var(--vp-navbar-link-spacing)] text-white no-underline';
+  'vp-desktop-nav-link font-vp-heading text-[1.25rem] font-semibold uppercase tracking-[var(--vp-navbar-link-spacing)] text-white no-underline';
 
 const MOBILE_BRIEF_CLASS =
   'inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
