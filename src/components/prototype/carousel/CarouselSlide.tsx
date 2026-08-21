@@ -124,16 +124,16 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                   </clipPath>
                 </defs>
               </svg>
-              <span className="vp-proto-carousel__watch-halo" aria-hidden />
               <span className="vp-proto-carousel__watch-cluster">
                 <span className="vp-proto-carousel__watch-label-mask">
                   <span className="vp-proto-carousel__watch-label">Watch</span>
                 </span>
-                <span
-                  className="vp-proto-carousel__watch-glass"
-                  style={{clipPath: `url(#${watchClipId})`}}
-                  aria-hidden
-                />
+                <span className="vp-proto-carousel__watch-glass-wrap" aria-hidden>
+                  <span
+                    className="vp-proto-carousel__watch-glass"
+                    style={{clipPath: `url(#${watchClipId})`}}
+                  />
+                </span>
               </span>
             </Link>
           ) : null}
