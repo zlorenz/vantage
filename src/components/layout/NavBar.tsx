@@ -44,10 +44,6 @@ interface NavBarProps {
 const MOBILE_LINK_CLASS =
   'vp-mobile-nav-link font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-[1] tracking-vp-heading text-white no-underline';
 
-/** Compact primary pill — matches desktop nav link type size/weight. */
-const DESKTOP_BRIEF_CLASS =
-  'mr-4 inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-4 py-[0.35rem] font-vp-heading text-[0.875rem] font-normal uppercase tracking-[var(--vp-navbar-link-spacing)] text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
-
 const MOBILE_BRIEF_CLASS =
   'inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
 
@@ -167,35 +163,6 @@ export function NavBar({
     setMobileOpen(false);
   }
 
-  function renderItem(item: NavItem) {
-    if (item.isContact) {
-      return (
-        <li key={item.label} className="nav-item">
-          <button
-            type="button"
-            className="nav-link block cursor-pointer border-0 bg-transparent px-4 py-[0.35rem] uppercase"
-            onClick={() => {
-              openContact();
-            }}
-          >
-            {item.label}
-          </button>
-        </li>
-      );
-    }
-
-    return (
-      <li key={item.label} className="nav-item">
-        <Link
-          href={item.href!}
-          className="nav-link block cursor-pointer px-4 py-[0.35rem] uppercase"
-        >
-          {item.label}
-        </Link>
-      </li>
-    );
-  }
-
   function staggerStyle(index: number): CSSProperties {
     return { '--vp-nav-stagger': index } as CSSProperties;
   }
@@ -259,20 +226,8 @@ export function NavBar({
         <LanguageSwitcher />
       </div>
 
-      {/* Desktop navigation — links + brief; lang/search sit outside as siblings */}
-      <div className="hidden flex-grow items-center md:flex">
-        <ul className="navbar-nav ms-auto flex list-none flex-row items-center p-0">
-          {items.map((item) => renderItem(item))}
-          <li className="nav-item">
-            <Link href={briefHref} className={DESKTOP_BRIEF_CLASS}>
-              {briefLabel}
-            </Link>
-          </li>
-        </ul>
-      </div>
-
       {/* Desktop language switcher — sibling before hamburger (mirrors mobile slot) */}
-      <div className="vp-desktop-lang-slot mr-1 hidden items-center md:flex">
+      <div className="vp-desktop-lang-slot ml-auto mr-1 hidden items-center md:flex">
         <LanguageSwitcher />
       </div>
 
