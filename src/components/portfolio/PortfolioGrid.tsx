@@ -51,7 +51,7 @@ interface PortfolioGridProps {
   phrases?: Record<string, string>;
 }
 
-interface PublicFilters {
+export interface PublicFilters {
   format: string;
   industry: string;
   market: string;

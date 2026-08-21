@@ -2,6 +2,7 @@
  * Work index page — Full Portfolio Index carousel (page IS the carousel).
  */
 
+import {Suspense} from 'react';
 import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
 import {PortfolioIndexCarousel} from '@/components/portfolio/PortfolioIndexCarousel';
@@ -132,12 +133,16 @@ export default async function WorkPage({params}: Props) {
         ])}
       />
       <div className="vp-work-index">
-        <PortfolioIndexCarousel
-          slides={slides}
-          videoFormats={videoFormats}
-          industries={industries}
-          markets={markets}
-        />
+        <Suspense
+          fallback={<div className="vp-portfolio-index" aria-busy="true" />}
+        >
+          <PortfolioIndexCarousel
+            slides={slides}
+            videoFormats={videoFormats}
+            industries={industries}
+            markets={markets}
+          />
+        </Suspense>
       </div>
     </>
   );

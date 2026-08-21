@@ -8,12 +8,20 @@
  * the homepage FeaturedWorkCarousel.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import Image from 'next/image';
 import {Link} from '@/i18n/navigation';
 import type {TaxonomyTerm} from '@/types/sanity';
+import type {PortfolioGridEntry} from '@/types/sanity';
+import {
+  matchesPublicFilters,
+  readPublicFilters,
+  replacePublicFiltersUrl,
+  type PublicFilters,
+} from './PortfolioGrid';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import './portfolio-index-carousel.css';
 
@@ -23,6 +31,13 @@ interface PortfolioIndexCarouselProps {
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
 }
+
+/** Empty presets — /work has no archive lock-in (unlike taxonomy pages). */
+const EMPTY_PUBLIC_PRESETS: PublicFilters = {
+  format: '',
+  industry: '',
+  market: '',
+};
 
 /** In-gesture |delta| before paging; gesture bounds come from wheel-gestures. */
 const WHEEL_GESTURE_THRESHOLD_PX = 30;
@@ -109,12 +124,36 @@ function FunnelIcon() {
   );
 }
 
-export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
-  const slideCount = slides.length;
-  const [activeIndex, setActiveIndex] = useState(0);
+function slideMatchesPublicFilters(
+  slide: PortfolioIndexSlide,
+  filters: PublicFilters,
+): boolean {
+  // Helpers are typed against PortfolioGridEntry; slides carry the same slug arrays.
+  return matchesPublicFilters(slide as unknown as PortfolioGridEntry, filters);
+}
+
+export function PortfolioIndexCarousel({
+  slides,
+}: PortfolioIndexCarouselProps) {
+  const searchParams = useSearchParams();
+  const [publicFilters, setPublicFilters] = useState(() =>
+    readPublicFilters(searchParams),
+  );
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
+  const filterSignatureRef = useRef<string | null>(null);
+
+  const filteredSlides = useMemo(
+    () => slides.filter((slide) => slideMatchesPublicFilters(slide, publicFilters)),
+    [slides, publicFilters],
+  );
+  const slideCount = filteredSlides.length;
+  const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}`;
+  const hasActiveFilters = Boolean(
+    publicFilters.format || publicFilters.industry || publicFilters.market,
+  );
 
   // axis: 'x' and align: 'center' are Embla 8.6.0 defaults — omit rather than override.
   // containScroll is a no-op when loop is true (Embla containSnaps = !loop && …).
@@ -122,6 +161,20 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
     dragFree: false,
     loop: true,
   });
+
+  useEffect(() => {
+    replacePublicFiltersUrl(publicFilters, EMPTY_PUBLIC_PRESETS);
+  }, [publicFilters]);
+
+  useEffect(() => {
+    function onPopState() {
+      setPublicFilters(
+        readPublicFilters(new URLSearchParams(window.location.search)),
+      );
+    }
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -138,6 +191,23 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
       emblaApi.off('reInit', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  /**
+   * When filters change, the rendered slide list length/order changes.
+   * Re-init Embla against the new DOM, jump to index 0, and let windowing
+   * recompute from activeIndex=0 + filtered slideCount (not the full 146).
+   */
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const prev = filterSignatureRef.current;
+    filterSignatureRef.current = filterSignature;
+    if (prev === null || prev === filterSignature) return;
+
+    setActiveIndex(0);
+    emblaApi.reInit();
+    emblaApi.scrollTo(0, true);
+  }, [emblaApi, filterSignature, filteredSlides]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -220,21 +290,30 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [emblaApi]);
 
+  const filterTrigger = (
+    <div className="vp-portfolio-index__bottom-bar">
+      <button
+        type="button"
+        className={`vp-portfolio-index__filter-trigger${
+          hasActiveFilters ? ' is-active' : ''
+        }`}
+        aria-label="Filter"
+        aria-expanded={filterSheetOpen}
+        aria-pressed={hasActiveFilters}
+        onClick={() => setFilterSheetOpen(true)}
+      >
+        <FunnelIcon />
+      </button>
+    </div>
+  );
+
   if (!slideCount) {
     return (
       <div className="vp-portfolio-index">
-        <p className="py-12 text-center text-vp-text-soft">No portfolio entries.</p>
-        <div className="vp-portfolio-index__bottom-bar">
-          <button
-            type="button"
-            className="vp-portfolio-index__filter-trigger"
-            aria-label="Filter"
-            aria-expanded={filterSheetOpen}
-            onClick={() => setFilterSheetOpen(true)}
-          >
-            <FunnelIcon />
-          </button>
-        </div>
+        <p className="py-12 text-center text-vp-text-soft">
+          No portfolio items found.
+        </p>
+        {filterTrigger}
       </div>
     );
   }
@@ -247,7 +326,7 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
         aria-label="Portfolio index carousel"
       >
         <div className="vp-portfolio-index__container">
-          {slides.map((slide, index) => {
+          {filteredSlides.map((slide, index) => {
             const active = index === activeIndex;
             const mountContent = shouldMountPortfolioIndexContent(
               index,
@@ -299,17 +378,7 @@ export function PortfolioIndexCarousel({slides}: PortfolioIndexCarouselProps) {
           })}
         </div>
       </div>
-      <div className="vp-portfolio-index__bottom-bar">
-        <button
-          type="button"
-          className="vp-portfolio-index__filter-trigger"
-          aria-label="Filter"
-          aria-expanded={filterSheetOpen}
-          onClick={() => setFilterSheetOpen(true)}
-        >
-          <FunnelIcon />
-        </button>
-      </div>
+      {filterTrigger}
     </div>
   );
 }
