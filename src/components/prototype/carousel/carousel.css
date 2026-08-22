@@ -167,7 +167,7 @@
   font-family: var(--font-vp-heading);
   font-size: 12px;
   font-weight: 400;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 
@@ -406,6 +406,7 @@
   .vp-proto-carousel__brand,
   .vp-proto-carousel__format {
     font-size: 16px;
+    letter-spacing: 1.6px;
   }
 
   .vp-proto-carousel__campaign {
