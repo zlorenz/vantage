@@ -2,7 +2,7 @@
 
 /**
  * /work index scrubber — bidirectional speed/throttle (center = stop).
- * rAF accumulator drives public scrollNext(true)/scrollPrev(true).
+ * Drives Embla's scroll body like a drag gesture for smooth snap animation.
  */
 
 import {useCallback, useEffect, useRef, useState, type PointerEvent} from 'react';
@@ -10,12 +10,18 @@ import type {EmblaCarouselType} from 'embla-carousel';
 
 const TICK_COUNT = 48;
 
-/** Tunable after device testing — max snap steps per second at full deflection. */
-const MAX_SNAPS_PER_SECOND = 12;
+/** Tunable after device testing — snap-widths scrolled per second at full deflection. */
+const MAX_SNAP_WIDTHS_PER_SECOND = 8;
 
 const DEAD_ZONE = 0.08;
 const POWER_EXPONENT = 1.6;
 const NEUTRAL_THUMB_PERCENT = 50;
+
+/** Matches Embla DragHandler.move — smooth follow while scrubbing. */
+const SCRUB_MOVE_FRICTION = 0.3;
+const SCRUB_MOVE_DURATION = 0.75;
+
+type EmblaEngine = ReturnType<EmblaCarouselType['internalEngine']>;
 
 type PortfolioIndexScrubberProps = {
   /** Filtered snap/slide count (same as Embla snap count for this carousel). */
@@ -45,6 +51,45 @@ function thumbPercentFromDeflection(d: number): number {
   return NEUTRAL_THUMB_PERCENT + d * 50;
 }
 
+function averageSnapDistance(engine: EmblaEngine): number {
+  const {scrollSnaps, containerRect} = engine;
+  if (scrollSnaps.length < 2) {
+    return containerRect.width || 1;
+  }
+  let total = 0;
+  for (let i = 1; i < scrollSnaps.length; i++) {
+    total += Math.abs(scrollSnaps[i] - scrollSnaps[i - 1]);
+  }
+  return total / (scrollSnaps.length - 1);
+}
+
+function syncEngineToLocation(engine: EmblaEngine) {
+  engine.scrollBody.useFriction(0).useDuration(0);
+  engine.target.set(engine.location.get());
+}
+
+function settleToNearestSnap(emblaApi: EmblaCarouselType) {
+  const engine = emblaApi.internalEngine();
+  engine.scrollBody.useFriction(0).useDuration(0);
+  engine.target.set(engine.location.get());
+
+  const snaps = emblaApi.scrollSnapList();
+  if (snaps.length <= 1) return;
+
+  const progress = emblaApi.scrollProgress();
+  let nearest = 0;
+  let bestDist = Number.POSITIVE_INFINITY;
+  for (let i = 0; i < snaps.length; i++) {
+    const dist = Math.abs(snaps[i] - progress);
+    if (dist < bestDist) {
+      bestDist = dist;
+      nearest = i;
+    }
+  }
+
+  emblaApi.scrollTo(nearest, false);
+}
+
 export function PortfolioIndexScrubber({
   snapCount,
   emblaApi,
@@ -52,7 +97,6 @@ export function PortfolioIndexScrubber({
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
   const deflectionRef = useRef(0);
-  const accumulatorRef = useRef(0);
   const lastFrameRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -65,24 +109,16 @@ export function PortfolioIndexScrubber({
       rafRef.current = null;
     }
     lastFrameRef.current = null;
-    accumulatorRef.current = 0;
   }, []);
 
-  const advanceOneStep = useCallback(
-    (direction: number) => {
-      if (!emblaApi || direction === 0) return false;
-
-      if (direction > 0) {
-        if (!emblaApi.canScrollNext()) return false;
-        emblaApi.scrollNext(true);
-        return true;
-      }
-
-      if (!emblaApi.canScrollPrev()) return false;
-      emblaApi.scrollPrev(true);
-      return true;
+  const applyScrollDelta = useCallback(
+    (engine: EmblaEngine, deltaScroll: number) => {
+      if (deltaScroll === 0) return;
+      engine.scrollBody.useFriction(SCRUB_MOVE_FRICTION).useDuration(SCRUB_MOVE_DURATION);
+      engine.animation.start();
+      engine.target.add(engine.axis.direction(deltaScroll));
     },
-    [emblaApi],
+    [],
   );
 
   const tick = useCallback(
@@ -101,21 +137,16 @@ export function PortfolioIndexScrubber({
       const direction = Math.sign(d);
 
       if (m > 0 && direction !== 0) {
-        accumulatorRef.current += m * MAX_SNAPS_PER_SECOND * deltaSeconds;
-
-        while (accumulatorRef.current >= 1) {
-          const advanced = advanceOneStep(direction);
-          if (!advanced) {
-            accumulatorRef.current = 0;
-            break;
-          }
-          accumulatorRef.current -= 1;
-        }
+        const engine = emblaApi.internalEngine();
+        const snapDistance = averageSnapDistance(engine);
+        const deltaScroll =
+          -direction * m * MAX_SNAP_WIDTHS_PER_SECOND * snapDistance * deltaSeconds;
+        applyScrollDelta(engine, deltaScroll);
       }
 
       rafRef.current = requestAnimationFrame(tick);
     },
-    [advanceOneStep, emblaApi, stopLoop],
+    [applyScrollDelta, emblaApi, stopLoop],
   );
 
   const startLoop = useCallback(() => {
@@ -137,6 +168,7 @@ export function PortfolioIndexScrubber({
     event.preventDefault();
     draggingRef.current = true;
     setIsReturning(false);
+    syncEngineToLocation(emblaApi.internalEngine());
     updateDeflection(event.clientX);
     startLoop();
     try {
@@ -156,6 +188,9 @@ export function PortfolioIndexScrubber({
     draggingRef.current = false;
     deflectionRef.current = 0;
     stopLoop();
+    if (emblaApi) {
+      settleToNearestSnap(emblaApi);
+    }
     try {
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId);

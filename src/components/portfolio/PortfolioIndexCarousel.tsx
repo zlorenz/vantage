@@ -192,16 +192,36 @@ export function PortfolioIndexCarousel({
     setActiveIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
+  /** Keep counter/windowing aligned while Embla animates between snaps (scrub + swipe). */
+  const onScroll = useCallback(() => {
+    if (!emblaApi) return;
+    const snaps = emblaApi.scrollSnapList();
+    if (snaps.length <= 1) return;
+    const progress = emblaApi.scrollProgress();
+    let nearest = 0;
+    let bestDist = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < snaps.length; i++) {
+      const dist = Math.abs(snaps[i] - progress);
+      if (dist < bestDist) {
+        bestDist = dist;
+        nearest = i;
+      }
+    }
+    setActiveIndex((prev) => (prev === nearest ? prev : nearest));
+  }, [emblaApi]);
+
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
+    emblaApi.on('scroll', onScroll);
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
+      emblaApi.off('scroll', onScroll);
     };
-  }, [emblaApi, onSelect]);
+  }, [emblaApi, onSelect, onScroll]);
 
   /**
    * When filters change, the rendered slide list length/order changes.

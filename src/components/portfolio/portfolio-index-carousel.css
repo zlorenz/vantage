@@ -3,13 +3,10 @@
  * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
  * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
- * viewport (safe-area aware), then flex-centers a height-scaled Embla
- * viewport so the cards optically sit midway under the nav — not midway
- * in a shorter band that excludes the Phase 3 bottom-bar reserve (that
- * shorter band left the strip looking top-heavy). Card HEIGHT still uses
- * the bottom-bar-aware calc so Phase 3 chrome space stays in the budget;
- * only the centering band spans nav → viewport bottom. Width comes from
- * responsive flex-basis peek percentages (no aspect-ratio).
+ * viewport (safe-area aware), then flex-centers the card stage in the band
+ * from nav bottom → top of the Phase 3 bottom bar (padding-bottom reserve).
+ * Card HEIGHT still subtracts the bottom bar from the viewport calc; the
+ * padding shifts optical center upward so the strip is not top-heavy.
  */
 
 .vp-portfolio-index {
@@ -27,7 +24,10 @@
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  /* Centering band: nav bottom → viewport bottom (ignore bottom-bar for optical mid). */
+  box-sizing: border-box;
+  /* Reserve bottom-bar space so flex centering sits above the scrubber band. */
+  padding-bottom: var(--vp-index-bottom-bar-height, 5rem);
+  /* Band: nav bottom → viewport bottom (height includes padding above). */
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
     100vh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
