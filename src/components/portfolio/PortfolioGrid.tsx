@@ -133,6 +133,18 @@ function optionCountLabel(count: number, label: string): string {
   return count > 0 ? `${label} (${count})` : label;
 }
 
+/** Baseline for global counts: page presets only, no stacked user selections. */
+function baselinePublicFiltersForFacet(
+  key: keyof PublicFilters,
+  preset?: PublicPresetFilters,
+): PublicFilters {
+  return {
+    format: key === 'format' ? '' : preset?.format || '',
+    industry: key === 'industry' ? '' : preset?.industry || '',
+    market: key === 'market' ? '' : preset?.market || '',
+  };
+}
+
 export function publicFilterOptions(
   entries: PortfolioGridEntry[],
   filters: PublicFilters,
@@ -140,18 +152,38 @@ export function publicFilterOptions(
   terms: TaxonomyTerm[],
   locale: Locale,
   phrases?: Record<string, string>,
+  preset?: PublicPresetFilters,
 ): { value: string; label: string; disabled: boolean }[] {
-  return flattenTaxonomyTree(terms).map(({ term, depth }) => {
-    const slug = termSlug(term, locale);
-    const count = countForPublicFilterValue(entries, filters, key, slug);
-    return {
-      value: slug,
-      label:
-        optionIndent(depth) +
-        optionCountLabel(count, termLabel(term, locale, phrases)),
-      disabled: count === 0 && filters[key] !== slug,
-    };
-  });
+  const baseline = baselinePublicFiltersForFacet(key, preset);
+
+  return flattenTaxonomyTree(terms)
+    .map(({ term, depth }) => {
+      const slug = termSlug(term, locale);
+      const globalCount = countForPublicFilterValue(
+        entries,
+        baseline,
+        key,
+        slug,
+      );
+      const facetCount = countForPublicFilterValue(entries, filters, key, slug);
+      const selected = filters[key] === slug;
+
+      // Hide terms with no public items in this gallery scope (keep stale selection).
+      if (globalCount === 0 && !selected) {
+        return null;
+      }
+
+      return {
+        value: slug,
+        label:
+          optionIndent(depth) +
+          optionCountLabel(facetCount, termLabel(term, locale, phrases)),
+        disabled: globalCount > 0 && facetCount === 0 && !selected,
+      };
+    })
+    .filter((opt): opt is { value: string; label: string; disabled: boolean } =>
+      opt !== null,
+    );
 }
 
 function matchesInternalFilters(
@@ -336,9 +368,10 @@ export function PortfolioGrid({
             videoFormats,
             locale,
             phrases,
+            publicPresets,
           )
         : [],
-    [filterMode, entries, publicFilters, videoFormats, locale, phrases],
+    [filterMode, entries, publicFilters, videoFormats, locale, phrases, publicPresets],
   );
   const industryOptions = useMemo(
     () =>
@@ -350,9 +383,10 @@ export function PortfolioGrid({
             industries,
             locale,
             phrases,
+            publicPresets,
           )
         : [],
-    [filterMode, entries, publicFilters, industries, locale, phrases],
+    [filterMode, entries, publicFilters, industries, locale, phrases, publicPresets],
   );
   const marketOptions = useMemo(
     () =>
@@ -364,9 +398,10 @@ export function PortfolioGrid({
             markets,
             locale,
             phrases,
+            publicPresets,
           )
         : [],
-    [filterMode, entries, publicFilters, markets, locale, phrases],
+    [filterMode, entries, publicFilters, markets, locale, phrases, publicPresets],
   );
 
   const [visibleCount, setVisibleCount] = useState(PER_PAGE);
