@@ -37,6 +37,16 @@ function percentAlong(duration: number, time: number): number {
   return Math.min(100, Math.max(0, (time / duration) * 100))
 }
 
+/** Coded aspect as a CSS `width / height` expression, or null before metadata. */
+function previewAspectValue(video: HTMLVideoElement): string | null {
+  const width = video.videoWidth
+  const height = video.videoHeight
+  if (width <= 0 || height <= 0) return null
+  return `${width} / ${height}`
+}
+
+const DEFAULT_VIDEO_ASPECT = '16 / 9'
+
 type PreviewBoundsVisualPickerProps = {
   videoId: string
   keyframes: number[]
@@ -65,6 +75,7 @@ export function PreviewBoundsVisualPicker({
   const [mintStatus, setMintStatus] = useState<MintStatus>('loading')
   const [src, setSrc] = useState<string | null>(null)
   const [duration, setDuration] = useState<number | null>(null)
+  const [videoAspect, setVideoAspect] = useState(DEFAULT_VIDEO_ASPECT)
   const [playhead, setPlayhead] = useState(0)
   const [loopPreview, setLoopPreview] = useState(false)
 
@@ -79,6 +90,7 @@ export function PreviewBoundsVisualPicker({
     setMintStatus('loading')
     setSrc(null)
     setDuration(null)
+    setVideoAspect(DEFAULT_VIDEO_ASPECT)
 
     void (async () => {
       const url = await mintPreviewUrl(videoId)
@@ -160,20 +172,25 @@ export function PreviewBoundsVisualPicker({
     const video = videoRef.current
     if (!video) return
 
-    const onTimeUpdate = () => setPlayhead(video.currentTime)
-    const onLoadedMetadata = () => {
+    const applyVideoMetadata = () => {
       if (Number.isFinite(video.duration) && video.duration > 0) {
         setDuration(video.duration)
       }
+      const aspect = previewAspectValue(video)
+      if (aspect) setVideoAspect(aspect)
     }
 
+    const onTimeUpdate = () => setPlayhead(video.currentTime)
+
     video.addEventListener('timeupdate', onTimeUpdate)
-    video.addEventListener('loadedmetadata', onLoadedMetadata)
-    onLoadedMetadata()
+    video.addEventListener('loadedmetadata', applyVideoMetadata)
+    video.addEventListener('loadeddata', applyVideoMetadata)
+    applyVideoMetadata()
 
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate)
-      video.removeEventListener('loadedmetadata', onLoadedMetadata)
+      video.removeEventListener('loadedmetadata', applyVideoMetadata)
+      video.removeEventListener('loadeddata', applyVideoMetadata)
     }
   }, [src])
 
@@ -224,6 +241,8 @@ export function PreviewBoundsVisualPicker({
           borderRadius: 4,
           overflow: 'hidden',
           background: 'var(--card-muted-fg-color, #111)',
+          width: '100%',
+          aspectRatio: videoAspect,
         }}
       >
         <video
@@ -232,7 +251,7 @@ export function PreviewBoundsVisualPicker({
           controls
           playsInline
           preload="metadata"
-          style={{display: 'block', width: '100%', maxHeight: 320}}
+          style={{display: 'block', width: '100%', height: '100%', objectFit: 'contain'}}
         />
       </Box>
 
