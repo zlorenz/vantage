@@ -24,6 +24,7 @@ import {
   type PublicFilters,
 } from './PortfolioGrid';
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
+import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import './portfolio-index-carousel.css';
 
@@ -345,6 +346,7 @@ export function PortfolioIndexCarousel({
       >
         <FunnelIcon />
       </button>
+      <PortfolioIndexScrubber />
     </div>
   );
 
@@ -378,62 +380,90 @@ export function PortfolioIndexCarousel({
     <div
       className={`vp-portfolio-index${slideCount <= 3 ? ' is-sparse' : ''}`}
     >
-      <div
-        ref={emblaRef}
-        className="vp-portfolio-index__viewport"
-        aria-label="Portfolio index carousel"
-      >
-        <div className="vp-portfolio-index__container">
-          {filteredSlides.map((slide, index) => {
-            const active = index === activeIndex;
-            const mountContent = shouldMountPortfolioIndexContent(
-              index,
-              activeIndex,
-              slideCount,
-            );
-            const mountPoster =
-              mountContent &&
-              shouldMountPortfolioIndexPoster(index, activeIndex, slideCount);
-            const styleCard =
-              mountContent &&
-              shouldStylePortfolioIndexCard(index, activeIndex, slideCount);
-            return (
-              <div
-                key={slide.id}
-                className={`vp-portfolio-index__slide${active ? ' is-active' : ''}`}
-              >
-                {mountContent ? (
-                  <Link
-                    href={{
-                      pathname: '/portfolio/[slug]',
-                      params: {slug: slide.hrefSlug},
-                    }}
-                    className={`vp-portfolio-index__card${
-                      styleCard ? ' vp-portfolio-index__card--styled' : ''
-                    }`}
-                    tabIndex={active ? undefined : -1}
-                    aria-current={active ? 'true' : undefined}
-                  >
-                    {mountPoster ? (
-                      <Image
-                        src={slide.posterUrl}
-                        alt=""
-                        fill
-                        sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
-                        className="vp-portfolio-index__poster"
-                        priority={active}
-                      />
-                    ) : null}
-                    <div className="vp-portfolio-index__overlay" aria-hidden />
-                    <h2
-                      className="vp-portfolio-index__title"
-                      dangerouslySetInnerHTML={{__html: slide.titleHtml}}
-                    />
-                  </Link>
-                ) : null}
-              </div>
-            );
-          })}
+      <div className="vp-portfolio-index__stage">
+        <p
+          className="vp-portfolio-index__counter"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span className="vp-portfolio-index__counter-current">
+            {activeIndex + 1}
+          </span>
+          <span className="vp-portfolio-index__counter-sep" aria-hidden>
+            /
+          </span>
+          <span className="vp-portfolio-index__counter-total">{slideCount}</span>
+        </p>
+        <div
+          ref={emblaRef}
+          className="vp-portfolio-index__viewport"
+          aria-label="Portfolio index carousel"
+        >
+          <div className="vp-portfolio-index__container">
+            {filteredSlides.map((slide, index) => {
+              const active = index === activeIndex;
+              const mountContent = shouldMountPortfolioIndexContent(
+                index,
+                activeIndex,
+                slideCount,
+              );
+              const mountPoster =
+                mountContent &&
+                shouldMountPortfolioIndexPoster(index, activeIndex, slideCount);
+              const styleCard =
+                mountContent &&
+                shouldStylePortfolioIndexCard(index, activeIndex, slideCount);
+              return (
+                <div
+                  key={slide.id}
+                  className={`vp-portfolio-index__slide${active ? ' is-active' : ''}`}
+                >
+                  {mountContent ? (
+                    <Link
+                      href={{
+                        pathname: '/portfolio/[slug]',
+                        params: {slug: slide.hrefSlug},
+                      }}
+                      className={`vp-portfolio-index__card${
+                        styleCard ? ' vp-portfolio-index__card--styled' : ''
+                      }`}
+                      tabIndex={active ? undefined : -1}
+                      aria-current={active ? 'true' : undefined}
+                    >
+                      {mountPoster ? (
+                        <Image
+                          src={slide.posterUrl}
+                          alt=""
+                          fill
+                          sizes="(max-width: 575px) 86vw, (max-width: 991px) 78vw, (max-width: 1399px) 68vw, 62vw"
+                          className="vp-portfolio-index__poster"
+                          priority={active}
+                        />
+                      ) : null}
+                      <div className="vp-portfolio-index__overlay">
+                        <div
+                          className="vp-portfolio-index__overlay-scrim"
+                          aria-hidden
+                        />
+                        <div className="vp-portfolio-index__overlay-copy">
+                          {slide.brandLine ? (
+                            <p className="vp-portfolio-index__brand">
+                              {slide.brandLine}
+                            </p>
+                          ) : null}
+                          {slide.campaignLine ? (
+                            <h2 className="vp-portfolio-index__campaign">
+                              {slide.campaignLine}
+                            </h2>
+                          ) : null}
+                        </div>
+                      </div>
+                    </Link>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
       {filterTrigger}
