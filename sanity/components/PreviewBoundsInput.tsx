@@ -1,13 +1,14 @@
 /**
  * Carousel preview Start/End picker — keyframe timestamps from /api/vimeo-keyframes.
- * Loads only after the editor focuses the pair (not on document open / list view).
- * Falls back to number inputs when the video is not a Vimeo progressive MP4.
+ * Visual editor opens in a dialog on demand; falls back to number inputs when
+ * the video is not a Vimeo progressive MP4 or keyframes/mint fail.
  *
  * Rendered as one stacked field via PreviewBoundsPairField. previewEndSeconds
  * stays in the form tree as NullField so sibling patches keep working.
  */
 
-import {Box, Flex, Grid, Spinner, Stack, Text, TextInput} from '@sanity/ui'
+import {EditIcon} from '@sanity/icons'
+import {Box, Button, Flex, Grid, Stack, Text, TextInput} from '@sanity/ui'
 import {useCallback, useMemo, useState, type ChangeEvent, type ReactNode} from 'react'
 import {
   getPublishedId,
@@ -20,6 +21,7 @@ import {
 import {extractVimeoId, normalizeStoredVideoUrl} from '@video-url'
 
 import {FieldLabel} from './FieldLabel'
+import {PreviewBoundsPickerDialog} from './video/PreviewBoundsPickerDialog'
 import {
   PreviewBoundsVisualPicker,
   type PreviewBound,
@@ -89,6 +91,11 @@ function asUrl(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
 }
 
+function formatSummarySeconds(value: number | undefined): string {
+  if (value == null) return 'Not set'
+  return `${value.toFixed(2)}s`
+}
+
 function PreviewBoundFallbackInput(props: {
   bound: PreviewBound
   value: number | undefined
@@ -112,6 +119,54 @@ function PreviewBoundFallbackInput(props: {
         onSelect(bound, event.currentTarget.value)
       }}
     />
+  )
+}
+
+function PreviewBoundFallbackFields(props: {
+  startSeconds: number | undefined
+  endSeconds: number | undefined
+  readOnly?: boolean
+  onSelect: (bound: PreviewBound, next: string) => void
+  hint?: ReactNode
+}) {
+  const {startSeconds, endSeconds, readOnly, onSelect, hint} = props
+
+  return (
+    <Stack space={2}>
+      {hint ? (
+        typeof hint === 'string' ? (
+          <Text size={1} muted>
+            {hint}
+          </Text>
+        ) : (
+          hint
+        )
+      ) : null}
+      <Grid columns={2} gap={2}>
+        <Stack space={2}>
+          <FieldLabel optional size={1}>
+            Start
+          </FieldLabel>
+          <PreviewBoundFallbackInput
+            bound="start"
+            value={startSeconds}
+            readOnly={readOnly}
+            onSelect={onSelect}
+          />
+        </Stack>
+        <Stack space={2}>
+          <FieldLabel optional size={1}>
+            End
+          </FieldLabel>
+          <PreviewBoundFallbackInput
+            bound="end"
+            value={endSeconds}
+            readOnly={readOnly}
+            onSelect={onSelect}
+          />
+        </Stack>
+      </Grid>
+    </Stack>
   )
 }
 
@@ -142,16 +197,18 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
     patch,
   } = props
 
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [status, setStatus] = useState<LoadStatus>(videoId ? 'idle' : 'fallback')
   const [keyframes, setKeyframes] = useState<number[]>([])
   const [mintFailed, setMintFailed] = useState(false)
 
-  const beginLoad = useCallback(() => {
-    if (status !== 'idle' || readOnly) return
+  const startKeyframeLoad = useCallback(() => {
     if (!videoId) {
       setStatus('fallback')
       return
     }
+    if (status === 'loading' || status === 'ready') return
+
     setMintFailed(false)
     setStatus('loading')
     loadKeyframes(videoId).then((times) => {
@@ -162,7 +219,18 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
       setKeyframes(times)
       setStatus('ready')
     })
-  }, [readOnly, status, videoId])
+  }, [status, videoId])
+
+  const openPicker = useCallback(() => {
+    if (readOnly) return
+    setPickerOpen(true)
+    setMintFailed(false)
+    startKeyframeLoad()
+  }, [readOnly, startKeyframeLoad])
+
+  const closePicker = useCallback(() => {
+    setPickerOpen(false)
+  }, [])
 
   const handleSelect = useCallback(
     (bound: PreviewBound, next: string) => {
@@ -197,11 +265,13 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
       ? 'End must be greater than Start'
       : null
 
-  const showFallbackInputs = status === 'fallback' || mintFailed
+  const showSummaryFallback = status === 'fallback' && !pickerOpen
+  const showVisualPicker = status === 'ready' && videoId && !mintFailed
+  const showDialogFallback = status === 'fallback' || mintFailed
 
   return (
     <Box paddingY={1}>
-      <Stack space={3} onPointerDown={beginLoad} onFocusCapture={beginLoad}>
+      <Stack space={3}>
         <FieldLabel optional size={1}>
           {title}
         </FieldLabel>
@@ -209,59 +279,72 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
           <div style={{opacity: 0.7, fontSize: 13, lineHeight: 1.4}}>{description}</div>
         ) : null}
 
-        {status === 'loading' ? (
-          <Flex align="center" gap={3} paddingY={2}>
-            <Spinner muted />
-            <Text size={1} muted>
-              Loading keyframes...
+        <Stack space={2}>
+          <Flex gap={3} wrap="wrap" align="center">
+            <Text size={1}>
+              Start: <strong>{formatSummarySeconds(startSeconds)}</strong>
+            </Text>
+            <Text size={1}>
+              End: <strong>{formatSummarySeconds(endSeconds)}</strong>
             </Text>
           </Flex>
-        ) : null}
 
-        {status === 'ready' && videoId && !showFallbackInputs ? (
-          <PreviewBoundsVisualPicker
-            videoId={videoId}
-            keyframes={keyframes}
+          <Flex gap={2} wrap="wrap">
+            <Button
+              mode="ghost"
+              icon={EditIcon}
+              text="Edit in/out points"
+              disabled={readOnly || !videoId}
+              onClick={openPicker}
+            />
+          </Flex>
+
+          {!videoId ? (
+            <Text size={1} muted>
+              Set a Vimeo URL above to pick in/out points visually.
+            </Text>
+          ) : null}
+        </Stack>
+
+        {showSummaryFallback ? (
+          <PreviewBoundFallbackFields
             startSeconds={startSeconds}
             endSeconds={endSeconds}
             readOnly={readOnly}
             onSelect={handleSelect}
-            onMintError={() => setMintFailed(true)}
+            hint="Keyframes unavailable — set bounds manually (seconds)."
           />
         ) : null}
 
-        {showFallbackInputs ? (
-          <Stack space={2}>
-            {status === 'ready' && mintFailed ? (
-              <Text size={1} muted>
-                Preview video unavailable — set bounds manually (seconds).
-              </Text>
+        {pickerOpen ? (
+          <PreviewBoundsPickerDialog
+            onClose={closePicker}
+            loading={status === 'loading'}
+          >
+            {showVisualPicker ? (
+              <PreviewBoundsVisualPicker
+                videoId={videoId!}
+                keyframes={keyframes}
+                startSeconds={startSeconds}
+                endSeconds={endSeconds}
+                readOnly={readOnly}
+                onSelect={handleSelect}
+                onMintError={() => setMintFailed(true)}
+              />
+            ) : showDialogFallback ? (
+              <PreviewBoundFallbackFields
+                startSeconds={startSeconds}
+                endSeconds={endSeconds}
+                readOnly={readOnly}
+                onSelect={handleSelect}
+                hint={
+                  mintFailed
+                    ? 'Preview video unavailable — set bounds manually (seconds).'
+                    : 'Keyframes unavailable — set bounds manually (seconds).'
+                }
+              />
             ) : null}
-            <Grid columns={2} gap={2}>
-              <Stack space={2}>
-                <FieldLabel optional size={1}>
-                  Start
-                </FieldLabel>
-                <PreviewBoundFallbackInput
-                  bound="start"
-                  value={startSeconds}
-                  readOnly={readOnly}
-                  onSelect={handleSelect}
-                />
-              </Stack>
-              <Stack space={2}>
-                <FieldLabel optional size={1}>
-                  End
-                </FieldLabel>
-                <PreviewBoundFallbackInput
-                  bound="end"
-                  value={endSeconds}
-                  readOnly={readOnly}
-                  onSelect={handleSelect}
-                />
-              </Stack>
-            </Grid>
-          </Stack>
+          </PreviewBoundsPickerDialog>
         ) : null}
 
         {errors.length > 0 || rangeError ? (
