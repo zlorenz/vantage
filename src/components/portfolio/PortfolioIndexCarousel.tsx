@@ -295,6 +295,7 @@ export function PortfolioIndexCarousel({
       if (key !== 'ArrowLeft' && key !== 'ArrowRight') return;
 
       const target = event.target as HTMLElement | null;
+      if (target?.closest?.('.vp-portfolio-index__scrubber')) return;
       if (
         target &&
         (target.tagName === 'INPUT' ||
@@ -346,7 +347,11 @@ export function PortfolioIndexCarousel({
       >
         <FunnelIcon />
       </button>
-      <PortfolioIndexScrubber activeIndex={activeIndex} snapCount={slideCount} />
+      <PortfolioIndexScrubber
+        activeIndex={activeIndex}
+        snapCount={slideCount}
+        emblaApi={emblaApi}
+      />
     </div>
   );
 

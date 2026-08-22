@@ -308,6 +308,19 @@
   height: 2.75rem;
   display: flex;
   align-items: center;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-portfolio-index__scrubber.is-inert {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.vp-portfolio-index__scrubber:active {
+  cursor: grabbing;
 }
 
 .vp-portfolio-index__scrubber-track {
@@ -316,6 +329,7 @@
   height: 1.35rem;
   display: flex;
   align-items: center;
+  pointer-events: auto;
 }
 
 .vp-portfolio-index__scrubber-ticks {
