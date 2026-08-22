@@ -3,8 +3,9 @@
  * Playback/loop patterns adapted from CarouselNativeVideo (carousel-only concerns removed).
  */
 
+import {PauseIcon, PlayIcon} from '@sanity/icons'
 import {Box, Button, Flex, Spinner, Stack, Text} from '@sanity/ui'
-import {useCallback, useEffect, useRef, useState, type FocusEvent} from 'react'
+import {useCallback, useEffect, useRef, useState, type FocusEvent, type PointerEvent} from 'react'
 
 import {candidateStudioApiBaseUrls} from './studio-api-base-url'
 
@@ -47,6 +48,17 @@ function previewAspectValue(video: HTMLVideoElement): string | null {
 
 const DEFAULT_VIDEO_ASPECT = '16 / 9'
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+function timeFromClientX(clientX: number, track: HTMLElement, duration: number): number {
+  const rect = track.getBoundingClientRect()
+  if (rect.width <= 0 || duration <= 0) return 0
+  const ratio = clamp((clientX - rect.left) / rect.width, 0, 1)
+  return ratio * duration
+}
+
 type PreviewBoundsVisualPickerProps = {
   videoId: string
   keyframes: number[]
@@ -68,6 +80,8 @@ export function PreviewBoundsVisualPicker({
 }: PreviewBoundsVisualPickerProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const draggingRef = useRef(false)
   const startRef = useRef(startSeconds)
   const endRef = useRef(endSeconds)
   const focusedWithinRef = useRef(false)
@@ -77,6 +91,7 @@ export function PreviewBoundsVisualPicker({
   const [duration, setDuration] = useState<number | null>(null)
   const [videoAspect, setVideoAspect] = useState(DEFAULT_VIDEO_ASPECT)
   const [playhead, setPlayhead] = useState(0)
+  const [isPaused, setIsPaused] = useState(true)
   const [loopPreview, setLoopPreview] = useState(false)
 
   const boundedLoop =
@@ -120,6 +135,63 @@ export function PreviewBoundsVisualPicker({
     const video = videoRef.current
     if (!video || !Number.isFinite(time)) return
     video.currentTime = time
+  }, [])
+
+  const seekFromClientX = useCallback(
+    (clientX: number) => {
+      if (duration == null || duration <= 0) return
+      const track = trackRef.current
+      if (!track) return
+      seekTo(timeFromClientX(clientX, track, duration))
+    },
+    [duration, seekTo],
+  )
+
+  const togglePlayPause = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (video.paused) {
+      void video.play().catch(() => {
+        // Editor may need to press play after a gesture.
+      })
+    } else {
+      video.pause()
+    }
+  }, [])
+
+  const onTrackPointerDown = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (readOnly || duration == null || duration <= 0) return
+      event.preventDefault()
+      draggingRef.current = true
+      seekFromClientX(event.clientX)
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId)
+      } catch {
+        // Untrusted / synthetic events may reject capture.
+      }
+    },
+    [duration, readOnly, seekFromClientX],
+  )
+
+  const onTrackPointerMove = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (!draggingRef.current || readOnly) return
+      seekFromClientX(event.clientX)
+    },
+    [readOnly, seekFromClientX],
+  )
+
+  const endTrackDrag = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return
+    draggingRef.current = false
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId)
+      }
+    } catch {
+      // ignore
+    }
   }, [])
 
   const handleFocusIn = useCallback(() => {
@@ -181,14 +253,20 @@ export function PreviewBoundsVisualPicker({
     }
 
     const onTimeUpdate = () => setPlayhead(video.currentTime)
+    const syncPaused = () => setIsPaused(video.paused)
 
     video.addEventListener('timeupdate', onTimeUpdate)
+    video.addEventListener('play', syncPaused)
+    video.addEventListener('pause', syncPaused)
     video.addEventListener('loadedmetadata', applyVideoMetadata)
     video.addEventListener('loadeddata', applyVideoMetadata)
     applyVideoMetadata()
+    syncPaused()
 
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate)
+      video.removeEventListener('play', syncPaused)
+      video.removeEventListener('pause', syncPaused)
       video.removeEventListener('loadedmetadata', applyVideoMetadata)
       video.removeEventListener('loadeddata', applyVideoMetadata)
     }
@@ -248,32 +326,37 @@ export function PreviewBoundsVisualPicker({
         <video
           ref={videoRef}
           src={src}
-          controls
           playsInline
           preload="metadata"
           style={{display: 'block', width: '100%', height: '100%', objectFit: 'contain'}}
         />
       </Box>
 
-      <Stack space={2}>
-        <Flex align="center" justify="space-between" gap={2} wrap="wrap">
-          <Text size={1} weight="medium">
-            Timeline
-          </Text>
-          <Text size={0} muted>
-            Click a tick to seek · <kbd>I</kbd> set Start · <kbd>O</kbd> set End
-          </Text>
-        </Flex>
+      <Flex align="center" gap={2}>
+        <Button
+          mode="ghost"
+          icon={isPaused ? PlayIcon : PauseIcon}
+          aria-label={isPaused ? 'Play' : 'Pause'}
+          disabled={readOnly || !timelineReady}
+          onClick={togglePlayPause}
+        />
 
         <Box
+          ref={trackRef}
+          flex={1}
           style={{
             position: 'relative',
             height: 40,
             borderRadius: 4,
             background: 'var(--card-border-color, rgba(0,0,0,0.08))',
-            cursor: timelineReady ? 'pointer' : 'default',
+            cursor: timelineReady && !readOnly ? 'pointer' : 'default',
+            touchAction: 'none',
           }}
           aria-hidden={!timelineReady}
+          onPointerDown={onTrackPointerDown}
+          onPointerMove={onTrackPointerMove}
+          onPointerUp={endTrackDrag}
+          onPointerCancel={endTrackDrag}
         >
           {timelineReady && startPct != null && endPct != null && endPct > startPct ? (
             <Box
@@ -336,9 +419,9 @@ export function PreviewBoundsVisualPicker({
                     type="button"
                     title={`${formatTime(time)} — click to seek`}
                     disabled={readOnly}
-                    onClick={(event) => {
+                    onPointerDown={(event) => {
                       event.stopPropagation()
-                      seekTo(time)
+                      if (!readOnly) seekTo(time)
                     }}
                     style={{
                       position: 'absolute',
@@ -357,7 +440,7 @@ export function PreviewBoundsVisualPicker({
                           : 'var(--card-fg-color, #666)',
                       opacity: invalidEnd ? 0.35 : 0.85,
                       cursor: readOnly ? 'default' : 'pointer',
-                      zIndex: 1,
+                      zIndex: 4,
                     }}
                   />
                 )
@@ -374,20 +457,24 @@ export function PreviewBoundsVisualPicker({
                 width: 2,
                 marginLeft: -1,
                 background: 'var(--card-fg-color, #333)',
-                opacity: 0.5,
+                opacity: 0.85,
                 pointerEvents: 'none',
                 zIndex: 3,
               }}
             />
           ) : null}
         </Box>
+      </Flex>
 
-        {!timelineReady ? (
-          <Text size={0} muted>
-            Waiting for video duration...
-          </Text>
-        ) : null}
-      </Stack>
+      {!timelineReady ? (
+        <Text size={0} muted>
+          Waiting for video duration...
+        </Text>
+      ) : (
+        <Text size={0} muted>
+          Scrub bar or keyframe ticks to seek · <kbd>I</kbd> set Start · <kbd>O</kbd> set End
+        </Text>
+      )}
 
       <Flex gap={2} wrap="wrap" align="center">
         <Button
