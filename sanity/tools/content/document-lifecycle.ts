@@ -672,6 +672,65 @@ export async function moveToTrash(
   return results
 }
 
+/** Set `isHidden` on all variants of portfolio entries (published, draft, scheduled). */
+export async function bulkSetPortfolioHidden(
+  client: SanityClient,
+  publishedIds: string[],
+  hidden = true,
+): Promise<LifecycleResult[]> {
+  const results: LifecycleResult[] = []
+
+  for (const publishedId of publishedIds) {
+    try {
+      const inventory = await inventoryDocument(client, publishedId)
+      if (inventory.documentType !== 'portfolioEntry') {
+        results.push({
+          publishedId,
+          title: inventory.title,
+          ok: false,
+          error: 'Not a portfolio entry',
+        })
+        continue
+      }
+      if (inventory.isTrashed) {
+        results.push({
+          publishedId,
+          title: inventory.title,
+          ok: false,
+          error: 'Item is in Trash',
+        })
+        continue
+      }
+      if (inventory.variantIds.length === 0) {
+        results.push({
+          publishedId,
+          title: publishedId,
+          ok: false,
+          error: 'Document not found',
+        })
+        continue
+      }
+
+      const tx = client.transaction()
+      for (const variantId of inventory.variantIds) {
+        tx.patch(variantId, (p) => p.set({isHidden: hidden}))
+      }
+      await tx.commit({visibility: 'sync'})
+
+      results.push({publishedId, title: inventory.title, ok: true})
+    } catch (error) {
+      results.push({
+        publishedId,
+        title: publishedId,
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
+  return results
+}
+
 function restoreReferenceIntoDoc(
   doc: Record<string, unknown>,
   backup: RemovedReferenceBackup,

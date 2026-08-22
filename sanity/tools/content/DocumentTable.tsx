@@ -17,7 +17,7 @@ import {
   TextInput,
   useToast,
 } from '@sanity/ui'
-import {AddIcon, ChevronDownIcon, SearchIcon, TrashIcon} from '@sanity/icons'
+import {AddIcon, ChevronDownIcon, EyeClosedIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
   IDENTITY_USAGE_PORTFOLIOS_QUERY,
@@ -28,6 +28,7 @@ import type {ContentLeaf, ColumnId} from './sections'
 import {STUDIO_PAGE_LIST_GROQ_FILTER} from '../../lib/page-visibility'
 import {
   formatImpactSummary,
+  bulkSetPortfolioHidden,
   moveToTrash,
   permanentlyDelete,
   preflightTrash,
@@ -597,6 +598,8 @@ export function DocumentTable({
   const isTranslator = role === 'translator'
   const supportsTrash = Boolean(section.supportsTrash)
   const canMoveToTrash = supportsTrash && !isTranslator
+  const canBulkHide =
+    section.documentType === 'portfolioEntry' && !isTranslator
   const canPermanentlyDelete = supportsTrash && isAdmin
   const supportsStatusFilter = section.columns.some((col) => col.id === 'status')
   const statusFilterTabs = useMemo(() => {
@@ -619,7 +622,7 @@ export function DocumentTable({
   const [confirm, setConfirm] = useState<
     | null
     | {
-        kind: 'trash' | 'delete' | 'empty'
+        kind: 'trash' | 'delete' | 'empty' | 'hide'
         ids: string[]
         preflight?: TrashPreflightItem[]
         hints?: Record<
@@ -989,9 +992,17 @@ export function DocumentTable({
     }
   }, [client, hintsForIds, isAdmin, isTranslator, selected, toast])
 
+  const openHideConfirm = useCallback(() => {
+    if (!canBulkHide) return
+    const ids = [...selected]
+    if (ids.length === 0) return
+    setConfirm({kind: 'hide', ids})
+  }, [canBulkHide, selected])
+
   const runConfirm = useCallback(async () => {
     if (!confirm) return
     if (confirm.kind === 'trash' && isTranslator) return
+    if (confirm.kind === 'hide' && isTranslator) return
     if ((confirm.kind === 'delete' || confirm.kind === 'empty') && !isAdmin) return
     setBusy(true)
     try {
@@ -1017,6 +1028,16 @@ export function DocumentTable({
           title: failed.length
             ? `Deleted ${results.length - failed.length} (${failed.length} failed)`
             : `Permanently deleted ${results.length} item${results.length === 1 ? '' : 's'}`,
+          description: failed[0]?.error,
+        })
+      } else if (confirm.kind === 'hide') {
+        const results = await bulkSetPortfolioHidden(client, confirm.ids, true)
+        const failed = results.filter((r) => !r.ok)
+        toast.push({
+          status: failed.length ? 'warning' : 'success',
+          title: failed.length
+            ? `Hidden ${results.length - failed.length} (${failed.length} failed)`
+            : `Set ${results.length} item${results.length === 1 ? '' : 's'} to Hidden`,
           description: failed[0]?.error,
         })
       }
@@ -1216,7 +1237,7 @@ export function DocumentTable({
           ) : null}
         </Stack>
         <Flex gap={2} align="center" wrap="wrap">
-          {canMoveToTrash && selected.size > 0 ? (
+          {(canMoveToTrash || canBulkHide) && selected.size > 0 ? (
             !inTrash ? (
               <MenuButton
                 id={`${section.id}-bulk-actions`}
@@ -1230,13 +1251,23 @@ export function DocumentTable({
                 }
                 menu={
                   <Menu>
-                    <MenuItem
-                      icon={TrashIcon}
-                      text="Move to Trash"
-                      tone="critical"
-                      disabled={busy}
-                      onClick={openTrashConfirm}
-                    />
+                    {canBulkHide ? (
+                      <MenuItem
+                        icon={EyeClosedIcon}
+                        text="Set to Hidden"
+                        disabled={busy}
+                        onClick={openHideConfirm}
+                      />
+                    ) : null}
+                    {canMoveToTrash ? (
+                      <MenuItem
+                        icon={TrashIcon}
+                        text="Move to Trash"
+                        tone="critical"
+                        disabled={busy}
+                        onClick={openTrashConfirm}
+                      />
+                    ) : null}
                   </Menu>
                 }
               />
@@ -1461,9 +1492,11 @@ export function DocumentTable({
           header={
             confirm.kind === 'trash'
               ? 'Move to Trash'
-              : confirm.kind === 'empty'
-                ? 'Empty Trash'
-                : 'Delete permanently'
+              : confirm.kind === 'hide'
+                ? 'Set to Hidden'
+                : confirm.kind === 'empty'
+                  ? 'Empty Trash'
+                  : 'Delete permanently'
           }
           width={1}
           onClose={() => {
@@ -1471,7 +1504,14 @@ export function DocumentTable({
           }}
         >
           <Stack space={4} padding={4}>
-            {confirm.kind === 'trash' ? (
+            {confirm.kind === 'hide' ? (
+              <Text size={1}>
+                Set {confirm.ids.length} portfolio item
+                {confirm.ids.length === 1 ? '' : 's'} to Hidden? Hidden items
+                are excluded from the public /work/ portfolio and market
+                archives. You can unhide them from the document editor.
+              </Text>
+            ) : confirm.kind === 'trash' ? (
               <>
                 <Text size={1}>
                   Move {confirm.ids.length} item
@@ -1518,13 +1558,15 @@ export function DocumentTable({
                 onClick={() => setConfirm(null)}
               />
               <Button
-                tone="critical"
+                tone={confirm.kind === 'hide' ? 'default' : 'critical'}
                 text={
                   busy
                     ? 'Working…'
                     : confirm.kind === 'trash'
                       ? 'Move to Trash'
-                      : 'Delete permanently'
+                      : confirm.kind === 'hide'
+                        ? 'Set to Hidden'
+                        : 'Delete permanently'
                 }
                 disabled={busy}
                 onClick={runConfirm}
