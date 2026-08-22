@@ -13,6 +13,7 @@ import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
 import {OptionalField} from '../components/OptionalField'
 import {PreviewBoundsPairField} from '../components/PreviewBoundsInput'
+import {VimeoUrlInput} from '../components/video/VimeoUrlInput'
 import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
 import {NullField} from '../components/locale-pair/NullField'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
@@ -266,6 +267,7 @@ export const portfolioEntry = defineType({
       title: 'Video URL',
       type: 'url',
       group: 'media',
+      vimeoPicker: true,
       description:
         'Vimeo or YouTube for English (YouTube only when Vimeo cannot host). Xinpianchang for Chinese.',
       validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
@@ -284,7 +286,7 @@ export const portfolioEntry = defineType({
       description:
         'Vimeo URL for clean export (no burned-in text/logos), for carousel preview clips. This replaces the master video above for carousel playback only — single portfolio pages always use the master Video URL.',
       hidden: hiddenForTranslator,
-      components: {field: OptionalField},
+      components: {field: OptionalField, input: VimeoUrlInput},
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 

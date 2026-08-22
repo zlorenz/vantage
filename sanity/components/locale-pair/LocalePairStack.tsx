@@ -1,6 +1,7 @@
 import {Button, Flex, Stack, Text, TextArea, TextInput} from '@sanity/ui'
 import type {ChangeEvent, ReactNode} from 'react'
 
+import {VimeoUrlLocalePairControl} from '../video/VimeoUrlLocalePairControl'
 import {FieldLabel} from '../FieldLabel'
 import {FlagDecoratedControl} from './FlagDecoratedControl'
 import {shouldShowZh} from './shouldShowZh'
@@ -37,6 +38,8 @@ type LocalePairStackProps = {
   onGenerateZh?: () => void
   generateEnDisabled?: boolean
   generateZhDisabled?: boolean
+  /** EN Vimeo / YouTube URL with library picker (locale pair video URL fields). */
+  enVimeoPicker?: boolean
 }
 
 /** Presentational EN/ZH stacked pair with one label and in-field flags. */
@@ -67,32 +70,39 @@ export function LocalePairStack(props: LocalePairStackProps) {
     props.onZhChange(event.currentTarget.value)
   }
 
-  const enControl = (
-    <FlagDecoratedControl
-      locale="en"
-      align={isText ? 'start' : 'center'}
-      readOnly={props.enReadOnly}
-    >
-      {isText ? (
-        <TextArea
-          value={props.enValue}
-          readOnly={props.enReadOnly}
-          rows={props.rows}
-          onChange={handleEn}
-          placeholder={props.enPlaceholder}
-          style={INPUT_PAD}
-        />
-      ) : (
-        <TextInput
-          value={props.enValue}
-          readOnly={props.enReadOnly}
-          onChange={handleEn}
-          placeholder={props.enPlaceholder}
-          style={INPUT_PAD}
-        />
-      )}
-    </FlagDecoratedControl>
-  )
+  const enControl =
+    props.enVimeoPicker && !isText ? (
+      <VimeoUrlLocalePairControl
+        value={props.enValue}
+        readOnly={props.enReadOnly}
+        onChange={props.onEnChange}
+      />
+    ) : (
+      <FlagDecoratedControl
+        locale="en"
+        align={isText ? 'start' : 'center'}
+        readOnly={props.enReadOnly}
+      >
+        {isText ? (
+          <TextArea
+            value={props.enValue}
+            readOnly={props.enReadOnly}
+            rows={props.rows}
+            onChange={handleEn}
+            placeholder={props.enPlaceholder}
+            style={INPUT_PAD}
+          />
+        ) : (
+          <TextInput
+            value={props.enValue}
+            readOnly={props.enReadOnly}
+            onChange={handleEn}
+            placeholder={props.enPlaceholder}
+            style={INPUT_PAD}
+          />
+        )}
+      </FlagDecoratedControl>
+    )
 
   const zhControl = (
     <FlagDecoratedControl

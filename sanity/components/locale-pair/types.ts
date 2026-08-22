@@ -16,6 +16,8 @@ export type LocalePairOptions = {
   slugZhSource?: string
   /** Max slug length when generating (defaults to 96). */
   slugMaxLength?: number
+  /** When true, EN url control includes the Vimeo library picker. */
+  vimeoPicker?: boolean
 }
 
 export function getLocalePairOptions(

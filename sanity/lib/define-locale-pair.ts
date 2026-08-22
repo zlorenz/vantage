@@ -36,6 +36,8 @@ type DefineLocalePairConfig = {
   editorCanEditZh?: boolean
   /** When true, both EN and ZH fields are read-only in Studio. Opt-in per call site. */
   readOnly?: FieldDefinition['readOnly']
+  /** When true, EN url field shows the Vimeo library picker (LocalePairField wiring). */
+  vimeoPicker?: boolean
 }
 
 type HiddenContext = {
@@ -105,6 +107,7 @@ export function defineLocalePair(config: DefineLocalePairConfig): [FieldDefiniti
     ...(slugSource ? {slugSource} : {}),
     ...(slugZhSource ? {slugZhSource} : {}),
     ...(slugMaxLength != null ? {slugMaxLength} : {}),
+    ...(config.vimeoPicker ? {vimeoPicker: true} : {}),
   }
 
   const en = defineField({

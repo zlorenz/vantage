@@ -186,6 +186,7 @@ export function LocalePairField(props: FieldProps) {
           onGenerateZh={pair?.slugZhSource ? generateZh : undefined}
           generateEnDisabled={!enSourceText.trim()}
           generateZhDisabled={!zhSourceText.trim()}
+          enVimeoPicker={pair?.vimeoPicker === true && typeName === 'url'}
         />
         {errors.length > 0 ? (
           <Text size={0} style={{color: 'var(--card-badge-critical-fg-color)'}}>
