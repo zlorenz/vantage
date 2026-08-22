@@ -348,7 +348,6 @@ export function PortfolioIndexCarousel({
         <FunnelIcon />
       </button>
       <PortfolioIndexScrubber
-        activeIndex={activeIndex}
         snapCount={slideCount}
         emblaApi={emblaApi}
       />
