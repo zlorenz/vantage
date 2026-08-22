@@ -164,6 +164,13 @@ export function PortfolioIndexFilterSheet({
   const onTermActivate = (key: TaxonomyKey, value: string) => {
     // Radio within taxonomy: re-tap clears back to All.
     onChangeFilter(key, filters[key] === value ? '' : value);
+    // One term per taxonomy — return to parents so the next pick is clear.
+    setView('root');
+  };
+
+  const onSelectAll = (key: TaxonomyKey) => {
+    onChangeFilter(key, '');
+    setView('root');
   };
 
   const onHandlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
@@ -287,7 +294,7 @@ export function PortfolioIndexFilterSheet({
                   }`}
                   role="option"
                   aria-selected={!filters[view]}
-                  onClick={() => onChangeFilter(view, '')}
+                  onClick={() => onSelectAll(view)}
                 >
                   {t('all')}
                 </button>

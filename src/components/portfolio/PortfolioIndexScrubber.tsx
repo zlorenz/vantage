@@ -76,10 +76,14 @@ export function PortfolioIndexScrubber({
     if (snapCount <= 1 || !emblaApi) return;
     event.preventDefault();
     draggingRef.current = true;
-    event.currentTarget.setPointerCapture(event.pointerId);
     const next = progressFromClientX(event.clientX);
     setDragProgress(next);
     seekToProgress(next);
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Untrusted / synthetic events may reject capture; seek still applied above.
+    }
   };
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -92,8 +96,12 @@ export function PortfolioIndexScrubber({
   const endDrag = (event: PointerEvent<HTMLDivElement>) => {
     if (!draggingRef.current) return;
     draggingRef.current = false;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {
+      // ignore
     }
     setDragProgress(null);
   };

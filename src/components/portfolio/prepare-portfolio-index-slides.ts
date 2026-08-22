@@ -1,10 +1,11 @@
 /**
  * Server-side slide prep for the Full Portfolio Index carousel.
- * Resolves poster URLs and display titles before handing off to the client Embla shell.
+ * Resolves poster URLs and brand/campaign overlay copy before the client Embla shell.
  */
 
 import {phraseRecordToMap} from '@phrase-book';
-import {resolveEntryDisplayTitles} from '@/lib/display-titles';
+import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
+import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry} from '@/types/sanity';
@@ -14,7 +15,10 @@ export type PortfolioIndexSlide = {
   /** Locale-aware portfolio route slug. */
   hrefSlug: string;
   posterUrl: string;
-  titleHtml: string;
+  /** Brand + product (yellow eyebrow). */
+  brandLine: string;
+  /** Campaign title, or brand+product when campaign is absent. */
+  campaignLine: string;
   videoFormatSlugs: string[];
   industrySlugs: string[];
   marketSlugs: string[];
@@ -39,13 +43,15 @@ export function preparePortfolioIndexSlides(
       .fit('crop')
       .url();
 
-    const {thumbTitle} = resolveEntryDisplayTitles(entry, locale, phraseMap);
+    const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
+    const {brandLine, campaignLine} = composeOverlayCopy(parts);
 
     slides.push({
       id: entry._id,
       hrefSlug,
       posterUrl,
-      titleHtml: thumbTitle,
+      brandLine,
+      campaignLine,
       videoFormatSlugs: entry.videoFormatSlugs ?? [],
       industrySlugs: entry.industrySlugs ?? [],
       marketSlugs: entry.marketSlugs ?? [],
