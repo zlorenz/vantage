@@ -47,6 +47,7 @@ function previewAspectValue(video: HTMLVideoElement): string | null {
 }
 
 const DEFAULT_VIDEO_ASPECT = '16 / 9'
+const KEYFRAME_SEEK_EPS = 0.0001
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
@@ -57,6 +58,26 @@ function timeFromClientX(clientX: number, track: HTMLElement, duration: number):
   if (rect.width <= 0 || duration <= 0) return 0
   const ratio = clamp((clientX - rect.left) / rect.width, 0, 1)
   return ratio * duration
+}
+
+/** Previous or next keyframe relative to the current playhead (strictly before/after). */
+function adjacentKeyframeTime(
+  times: number[],
+  current: number,
+  direction: 'prev' | 'next',
+): number | null {
+  if (!times.length) return null
+  if (direction === 'next') {
+    for (const time of times) {
+      if (time > current + KEYFRAME_SEEK_EPS) return time
+    }
+    return null
+  }
+  for (let index = times.length - 1; index >= 0; index--) {
+    const time = times[index]
+    if (time < current - KEYFRAME_SEEK_EPS) return time
+  }
+  return null
 }
 
 type PreviewBoundsVisualPickerProps = {
@@ -84,7 +105,10 @@ export function PreviewBoundsVisualPicker({
   const draggingRef = useRef(false)
   const startRef = useRef(startSeconds)
   const endRef = useRef(endSeconds)
+  const keyframesRef = useRef(keyframes)
   const focusedWithinRef = useRef(false)
+
+  keyframesRef.current = keyframes
 
   const [mintStatus, setMintStatus] = useState<MintStatus>('loading')
   const [src, setSrc] = useState<string | null>(null)
@@ -216,12 +240,20 @@ export function PreviewBoundsVisualPicker({
       } else if (key === 'o') {
         event.preventDefault()
         applyPlayheadBound('end')
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        const video = videoRef.current
+        const times = keyframesRef.current
+        if (!video || !times.length) return
+        event.preventDefault()
+        const direction = event.key === 'ArrowRight' ? 'next' : 'prev'
+        const target = adjacentKeyframeTime(times, video.currentTime, direction)
+        if (target != null) seekTo(target)
       }
     }
 
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [applyPlayheadBound, readOnly])
+  }, [applyPlayheadBound, readOnly, seekTo])
 
   // Bounded loop — near-verbatim from CarouselNativeVideo.tsx timeupdate wrap.
   useEffect(() => {
@@ -472,7 +504,8 @@ export function PreviewBoundsVisualPicker({
         </Text>
       ) : (
         <Text size={0} muted>
-          Scrub bar or keyframe ticks to seek · <kbd>I</kbd> set Start · <kbd>O</kbd> set End
+          Scrub bar or keyframe ticks to seek · ←/→ previous/next keyframe · <kbd>I</kbd>{' '}
+          set Start · <kbd>O</kbd> set End
         </Text>
       )}
 
