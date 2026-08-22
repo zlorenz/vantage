@@ -346,7 +346,7 @@ export function PortfolioIndexCarousel({
       >
         <FunnelIcon />
       </button>
-      <PortfolioIndexScrubber />
+      <PortfolioIndexScrubber activeIndex={activeIndex} snapCount={slideCount} />
     </div>
   );
 

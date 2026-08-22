@@ -352,6 +352,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
   transform: translate(-50%, -50%);
   pointer-events: none;
+  will-change: left;
 }
 
 @media (min-width: 576px) {
