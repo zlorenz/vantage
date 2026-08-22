@@ -57,6 +57,7 @@ export function PortfolioIndexScrubber({
   const rafRef = useRef<number | null>(null);
 
   const [thumbPercent, setThumbPercent] = useState(NEUTRAL_THUMB_PERCENT);
+  const [isReturning, setIsReturning] = useState(false);
 
   const stopLoop = useCallback(() => {
     if (rafRef.current !== null) {
@@ -127,6 +128,7 @@ export function PortfolioIndexScrubber({
     if (!track) return;
     const d = deflectionFromClientX(clientX, track);
     deflectionRef.current = d;
+    setIsReturning(false);
     setThumbPercent(thumbPercentFromDeflection(d));
   }, []);
 
@@ -134,6 +136,7 @@ export function PortfolioIndexScrubber({
     if (snapCount <= 1 || !emblaApi) return;
     event.preventDefault();
     draggingRef.current = true;
+    setIsReturning(false);
     updateDeflection(event.clientX);
     startLoop();
     try {
@@ -160,6 +163,7 @@ export function PortfolioIndexScrubber({
     } catch {
       // ignore
     }
+    setIsReturning(true);
     setThumbPercent(NEUTRAL_THUMB_PERCENT);
   };
 
@@ -170,10 +174,9 @@ export function PortfolioIndexScrubber({
       className={`vp-portfolio-index__scrubber${
         snapCount <= 1 ? ' is-inert' : ''
       }`}
-      role="slider"
-      aria-label="Seek portfolio slides"
+      role="group"
+      aria-label="Scroll speed control"
       aria-disabled={snapCount <= 1 || !emblaApi}
-      tabIndex={snapCount <= 1 || !emblaApi ? -1 : 0}
     >
       <div
         ref={trackRef}
@@ -194,7 +197,9 @@ export function PortfolioIndexScrubber({
           ))}
         </div>
         <div
-          className="vp-portfolio-index__scrubber-thumb"
+          className={`vp-portfolio-index__scrubber-thumb${
+            isReturning ? ' is-returning' : ''
+          }`}
           style={{left: `${thumbPercent}%`}}
           aria-hidden
         />

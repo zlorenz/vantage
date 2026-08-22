@@ -331,6 +331,8 @@
   display: flex;
   align-items: center;
   pointer-events: auto;
+  box-sizing: border-box;
+  padding-inline: 0.825rem;
 }
 
 .vp-portfolio-index__scrubber-ticks {
@@ -370,9 +372,17 @@
   will-change: left;
 }
 
+.vp-portfolio-index__scrubber-thumb.is-returning {
+  transition: left 0.22s ease-out;
+}
+
 @media (min-width: 576px) {
   .vp-portfolio-index__bottom-bar {
     gap: 1.1rem;
+  }
+
+  .vp-portfolio-index__scrubber-track {
+    padding-inline: 0.925rem;
   }
 
   .vp-portfolio-index__scrubber-thumb {
@@ -382,6 +392,10 @@
 }
 
 @media (min-width: 992px) {
+  .vp-portfolio-index__scrubber-track {
+    padding-inline: 1rem;
+  }
+
   .vp-portfolio-index__scrubber-tick {
     height: 0.4rem;
   }
@@ -399,6 +413,10 @@
 @media (prefers-reduced-motion: reduce) {
   .vp-portfolio-index__card--styled {
     filter: none;
+    transition: none;
+  }
+
+  .vp-portfolio-index__scrubber-thumb.is-returning {
     transition: none;
   }
 }
