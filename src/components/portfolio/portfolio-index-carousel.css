@@ -3,10 +3,11 @@
  * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
  * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
- * viewport (safe-area aware), then flex-centers the card stage in the band
- * from nav bottom → top of the Phase 3 bottom bar (padding-bottom reserve).
- * Card HEIGHT still subtracts the bottom bar from the viewport calc; the
- * padding shifts optical center upward so the strip is not top-heavy.
+ * viewport (safe-area aware), then flex-centers the card stage column
+ * (counter + carousel + bottom chrome) as one unit. Bottom bar sits in
+ * document flow tight under the viewport — same gap as the counter above.
+ * Residual empty space lands below the scrubber band, not between carousel
+ * and controls. Card HEIGHT subtracts the bottom bar from the viewport calc.
  */
 
 .vp-portfolio-index {
@@ -25,9 +26,8 @@
   justify-content: center;
   width: 100%;
   box-sizing: border-box;
-  /* Reserve bottom-bar space so flex centering sits above the scrubber band. */
-  padding-bottom: var(--vp-index-bottom-bar-height, 5rem);
-  /* Band: nav bottom → viewport bottom (height includes padding above). */
+  /* Bias flex center upward so spare space sits below the bottom chrome. */
+  padding-bottom: max(1.25rem, 5vh);
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
     100vh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
@@ -248,17 +248,17 @@
   overflow-wrap: break-word;
 }
 
-/* Bottom chrome: filter trigger + scrubber track. */
+/* Bottom chrome: filter trigger + scrubber track (in stage flow under viewport). */
 .vp-portfolio-index__bottom-bar {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
+  position: relative;
+  flex-shrink: 0;
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 0.85rem;
   box-sizing: border-box;
+  width: 100%;
   height: var(--vp-index-bottom-bar-height, 5rem);
   padding: 0 var(--spacing-vp-gutter, 1rem);
   padding-bottom: env(safe-area-inset-bottom, 0px);

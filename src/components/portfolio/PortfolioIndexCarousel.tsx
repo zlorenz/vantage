@@ -393,8 +393,10 @@ export function PortfolioIndexCarousel({
   if (!slideCount) {
     return (
       <div className="vp-portfolio-index">
-        <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
-        {filterTrigger}
+        <div className="vp-portfolio-index__stage">
+          <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
+          {filterTrigger}
+        </div>
         {filterSheet}
       </div>
     );
@@ -489,8 +491,8 @@ export function PortfolioIndexCarousel({
             })}
           </div>
         </div>
+        {filterTrigger}
       </div>
-      {filterTrigger}
       {filterSheet}
     </div>
   );
