@@ -1,5 +1,5 @@
 /**
- * VideoEmbedInput — URL field + portfolio video picker + optional title.
+ * VideoEmbedInput — URL field + Vimeo library picker + optional title.
  */
 
 import {SearchIcon} from '@sanity/icons'
@@ -8,7 +8,10 @@ import {useCallback, useEffect, useRef, useState} from 'react'
 import {type ObjectInputProps, set, unset, useClient} from 'sanity'
 import {parseVideoUrl} from '@video-url'
 
-import {PortfolioVideoPicker, type PortfolioVideoSelection} from './PortfolioVideoPicker'
+import {
+  VimeoLibraryPicker,
+  type VimeoLibrarySelection,
+} from '../video/VimeoLibraryPicker'
 import {resolveVideoTitle} from './resolveVideoTitle'
 
 type VideoEmbedValue = {
@@ -26,11 +29,11 @@ export function VideoEmbedInput(props: ObjectInputProps) {
   const oEmbedForUrl = useRef<string | null>(null)
 
   const applySelection = useCallback(
-    (selection: PortfolioVideoSelection) => {
+    (selection: VimeoLibrarySelection) => {
       onChange([
-        set(selection.url, ['url']),
-        selection.title?.trim()
-          ? set(selection.title.trim(), ['title'])
+        set(selection.link, ['url']),
+        selection.name?.trim()
+          ? set(selection.name.trim(), ['title'])
           : unset(['title']),
       ])
       setPickerOpen(false)
@@ -73,7 +76,7 @@ export function VideoEmbedInput(props: ObjectInputProps) {
           <Button
             mode="ghost"
             icon={SearchIcon}
-            text="From portfolio"
+            text="Browse Vimeo library"
             onClick={() => setPickerOpen(true)}
             disabled={readOnly}
           />
@@ -85,14 +88,14 @@ export function VideoEmbedInput(props: ObjectInputProps) {
           </Text>
         ) : (
           <Text size={1} muted>
-            Paste a Vimeo/YouTube URL, or insert one from a portfolio item.
+            Paste a Vimeo/YouTube URL, or pick one from the Vimeo library.
           </Text>
         )}
       </Stack>
 
       {pickerOpen ? (
         <Box>
-          <PortfolioVideoPicker
+          <VimeoLibraryPicker
             onSelect={applySelection}
             onClose={() => setPickerOpen(false)}
           />

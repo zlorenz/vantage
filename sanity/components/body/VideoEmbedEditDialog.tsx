@@ -1,5 +1,5 @@
 /**
- * VideoEmbedEditDialog — Edit URL / title (and pick from portfolio) for a PT video block.
+ * VideoEmbedEditDialog — Edit URL / title (and pick from Vimeo library) for a PT video block.
  */
 
 import {SearchIcon} from '@sanity/icons'
@@ -9,7 +9,10 @@ import {PatchEvent, set, unset, useClient, useFormCallbacks, type Path} from 'sa
 import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 import {parseVideoUrl} from '@video-url'
 
-import {PortfolioVideoPicker, type PortfolioVideoSelection} from './PortfolioVideoPicker'
+import {
+  VimeoLibraryPicker,
+  type VimeoLibrarySelection,
+} from '../video/VimeoLibraryPicker'
 import {preserveBodyFocusScroll} from './preserveBodyScroll'
 import {resolveVideoTitle} from './resolveVideoTitle'
 
@@ -45,9 +48,9 @@ export function VideoEmbedEditDialog({
     preserveBodyFocusScroll(() => onClose())
   }, [onClose])
 
-  const applySelection = useCallback((selection: PortfolioVideoSelection) => {
-    setUrl(selection.url)
-    setTitle(selection.title?.trim() || '')
+  const applySelection = useCallback((selection: VimeoLibrarySelection) => {
+    setUrl(selection.link)
+    setTitle(selection.name?.trim() || '')
     setPickerOpen(false)
     setError(null)
   }, [])
@@ -171,7 +174,7 @@ export function VideoEmbedEditDialog({
               <Button
                 mode="ghost"
                 icon={SearchIcon}
-                text="From portfolio"
+                text="Browse Vimeo library"
                 onClick={() => setPickerOpen(true)}
               />
             </Flex>
@@ -186,7 +189,7 @@ export function VideoEmbedEditDialog({
       </Dialog>
 
       {pickerOpen ? (
-        <PortfolioVideoPicker
+        <VimeoLibraryPicker
           onSelect={applySelection}
           onClose={() => setPickerOpen(false)}
         />
