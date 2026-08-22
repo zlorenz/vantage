@@ -25,6 +25,7 @@ export const additionalVideo = defineType({
       zhName: 'xinpianchangUrl',
       title: 'Video URL',
       type: 'url',
+      vimeoPicker: true,
       description:
         'Vimeo or YouTube (EN; YouTube only when Vimeo cannot host) · optional Xinpianchang on /zh/ pages.',
       validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
