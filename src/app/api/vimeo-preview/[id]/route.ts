@@ -26,6 +26,36 @@ type RouteContext = {
   params: Promise<{id: string}>;
 };
 
+function isAllowedStudioOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+      return ['3333', '3000', '3001', ''].includes(url.port);
+    }
+    if (url.hostname === 'vantage-pictures.sanity.studio') return true;
+    if (url.hostname.endsWith('.sanity.studio')) return true;
+    if (url.hostname === 'vantage.pictures' || url.hostname === 'www.vantage.pictures') {
+      return true;
+    }
+    if (url.hostname.endsWith('.vercel.app') && url.hostname.includes('vantage')) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}
+
+function corsHeaders(request: Request): HeadersInit {
+  const origin = request.headers.get('origin') ?? '';
+  const allowed = origin && isAllowedStudioOrigin(origin);
+  return {
+    'Access-Control-Allow-Origin': allowed ? origin : '',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
+
 type PlaybackPayload = {
   url: string;
   expiresAt: string | null;
@@ -38,33 +68,38 @@ type CacheHit = {payload: PlaybackPayload; until: number};
 
 const successCache = new Map<string, CacheHit>();
 
-function errorJson(status: number, error: string, message: string) {
+function errorJson(request: Request, status: number, error: string, message: string) {
   return NextResponse.json(
     {error, message},
     {
       status,
-      headers: {'Cache-Control': 'no-store'},
+      headers: {...corsHeaders(request), 'Cache-Control': 'no-store'},
     },
   );
 }
 
-function successJson(payload: PlaybackPayload) {
+function successJson(request: Request, payload: PlaybackPayload) {
   return NextResponse.json(payload, {
     headers: {
+      ...corsHeaders(request),
       'Cache-Control': `public, s-maxage=${VIMEO_PREVIEW_CACHE_SECONDS}, stale-while-revalidate=120`,
     },
   });
 }
 
+export function OPTIONS(request: Request) {
+  return new NextResponse(null, {status: 204, headers: corsHeaders(request)});
+}
+
 export async function GET(request: Request, context: RouteContext) {
   const {id} = await context.params;
   if (!isVimeoVideoId(id)) {
-    return errorJson(400, 'invalid_id', 'A numeric Vimeo video ID is required.');
+    return errorJson(request, 400, 'invalid_id', 'A numeric Vimeo video ID is required.');
   }
 
   const token = process.env.VIMEO_ACCESS_TOKEN;
   if (!token) {
-    return errorJson(503, 'unconfigured', 'Vimeo preview is not configured.');
+    return errorJson(request, 503, 'unconfigured', 'Vimeo preview is not configured.');
   }
 
   const wantsHls = new URL(request.url).searchParams.get('format') === 'hls';
@@ -72,7 +107,7 @@ export async function GET(request: Request, context: RouteContext) {
   const cacheKey = wantsHls ? `${id}:hls` : `${id}:${PREFERRED_CAROUSEL_HEIGHT}`;
   const cached = successCache.get(cacheKey);
   if (cached && cached.until > Date.now()) {
-    return successJson(cached.payload);
+    return successJson(request, cached.payload);
   }
 
   try {
@@ -81,7 +116,7 @@ export async function GET(request: Request, context: RouteContext) {
     if (wantsHls) {
       const loaded = await loadHlsRendition(id, token);
       if (!loaded.ok) {
-        return errorJson(loaded.status, loaded.error, loaded.message);
+        return errorJson(request, loaded.status, loaded.error, loaded.message);
       }
       payload = {
         url: loaded.picked.url,
@@ -93,7 +128,7 @@ export async function GET(request: Request, context: RouteContext) {
     } else {
       const loaded = await loadProgressiveRendition(id, token, PREFERRED_CAROUSEL_HEIGHT);
       if (!loaded.ok) {
-        return errorJson(loaded.status, loaded.error, loaded.message);
+        return errorJson(request, loaded.status, loaded.error, loaded.message);
       }
       payload = {
         url: loaded.picked.url,
@@ -109,8 +144,8 @@ export async function GET(request: Request, context: RouteContext) {
       until: Date.now() + VIMEO_PREVIEW_CACHE_SECONDS * 1000,
     });
 
-    return successJson(payload);
+    return successJson(request, payload);
   } catch {
-    return errorJson(502, 'vimeo_error', 'Could not reach Vimeo.');
+    return errorJson(request, 502, 'vimeo_error', 'Could not reach Vimeo.');
   }
 }
