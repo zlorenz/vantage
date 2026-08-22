@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * NavSearch — expandable inline search in the desktop navbar.
+ * NavSearch — expandable inline search in the navbar.
  *
  * Default: icon click reveals an input. Pass `alwaysExpanded` to render the
- * input immediately (used inside the desktop hamburger dropdown).
+ * input immediately (used inside the hamburger nav panels).
  */
 
 import { FormEvent, useState } from 'react';
@@ -37,7 +37,7 @@ export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean
     <form
       className={
         alwaysExpanded
-          ? 'vp-search-form vp-desktop-nav-search w-full'
+          ? 'vp-search-form vp-nav-panel-search w-full'
           : 'vp-search-form ml-2 hidden md:block'
       }
       role="search"

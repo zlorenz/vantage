@@ -13,7 +13,7 @@ import type { Locale } from '@/i18n/routing';
 
 const FLAG_SRC: Record<Locale, string> = {
   en: '/flags/cn.svg',
-  zh: '/flags/gb.svg',
+  zh: '/flags/us.svg',
 };
 
 const TARGET_LOCALE: Record<Locale, Locale> = {
