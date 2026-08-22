@@ -7,7 +7,7 @@
  * stays in the form tree as NullField so sibling patches keep working.
  */
 
-import {Box, Flex, Grid, Select, Spinner, Stack, Text, TextInput} from '@sanity/ui'
+import {Box, Flex, Grid, Spinner, Stack, Text, TextInput} from '@sanity/ui'
 import {useCallback, useMemo, useState, type ChangeEvent, type ReactNode} from 'react'
 import {
   getPublishedId,
@@ -20,6 +20,10 @@ import {
 import {extractVimeoId, normalizeStoredVideoUrl} from '@video-url'
 
 import {FieldLabel} from './FieldLabel'
+import {
+  PreviewBoundsVisualPicker,
+  type PreviewBound,
+} from './video/PreviewBoundsVisualPicker'
 
 const DEFAULT_SITE_URL = 'https://vantage.pictures'
 
@@ -34,7 +38,6 @@ function getKeyframeApiBaseUrl(): string {
 }
 
 type LoadStatus = 'idle' | 'loading' | 'ready' | 'fallback'
-type Bound = 'start' | 'end'
 
 const successCache = new Map<string, number[]>()
 const inflight = new Map<string, Promise<number[] | null>>()
@@ -86,63 +89,29 @@ function asUrl(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-function formatSeconds(value: number): string {
-  return `${value}s`
-}
-
-function PreviewBoundControl(props: {
-  bound: Bound
+function PreviewBoundFallbackInput(props: {
+  bound: PreviewBound
   value: number | undefined
-  options: number[]
-  status: LoadStatus
-  keyframes: number[]
   readOnly?: boolean
-  onBeginLoad: () => void
-  onSelect: (bound: Bound, next: string) => void
+  onSelect: (bound: PreviewBound, next: string) => void
 }) {
-  const {bound, value, options, status, keyframes, readOnly, onBeginLoad, onSelect} = props
-
-  if (status === 'fallback') {
-    return (
-      <TextInput
-        type="number"
-        fontSize={1}
-        padding={3}
-        radius={1}
-        min={0}
-        step="any"
-        value={typeof value === 'number' ? String(value) : ''}
-        readOnly={readOnly}
-        onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          onSelect(bound, event.currentTarget.value)
-        }}
-      />
-    )
-  }
+  const {bound, value, readOnly, onSelect} = props
 
   return (
-    <Select
+    <TextInput
+      type="number"
       fontSize={1}
       padding={3}
       radius={1}
+      min={0}
+      step="any"
+      placeholder={bound === 'start' ? 'Play from start' : 'Play to end'}
       value={typeof value === 'number' ? String(value) : ''}
-      disabled={readOnly}
-      onPointerDown={onBeginLoad}
-      onFocus={onBeginLoad}
-      onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+      readOnly={readOnly}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => {
         onSelect(bound, event.currentTarget.value)
       }}
-    >
-      <option value="">{bound === 'start' ? 'Play from start' : 'Play to end'}</option>
-      {options.map((time) => (
-        <option key={time} value={String(time)}>
-          {formatSeconds(time)}
-          {status === 'ready' && typeof value === 'number' && time === value && !keyframes.includes(time)
-            ? ' (current)'
-            : ''}
-        </option>
-      ))}
-    </Select>
+    />
   )
 }
 
@@ -175,6 +144,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
 
   const [status, setStatus] = useState<LoadStatus>(videoId ? 'idle' : 'fallback')
   const [keyframes, setKeyframes] = useState<number[]>([])
+  const [mintFailed, setMintFailed] = useState(false)
 
   const beginLoad = useCallback(() => {
     if (status !== 'idle' || readOnly) return
@@ -182,6 +152,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
       setStatus('fallback')
       return
     }
+    setMintFailed(false)
     setStatus('loading')
     loadKeyframes(videoId).then((times) => {
       if (!times?.length) {
@@ -193,24 +164,8 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
     })
   }, [readOnly, status, videoId])
 
-  const startOptions = useMemo(() => {
-    if (typeof startSeconds === 'number' && !keyframes.some((time) => time === startSeconds)) {
-      return [startSeconds, ...keyframes]
-    }
-    return keyframes
-  }, [keyframes, startSeconds])
-
-  const endOptions = useMemo(() => {
-    const filtered =
-      startSeconds != null ? keyframes.filter((time) => time > startSeconds) : keyframes
-    if (typeof endSeconds === 'number' && !filtered.some((time) => time === endSeconds)) {
-      return [endSeconds, ...filtered]
-    }
-    return filtered
-  }, [endSeconds, keyframes, startSeconds])
-
   const handleSelect = useCallback(
-    (bound: Bound, next: string) => {
+    (bound: PreviewBound, next: string) => {
       if (!next) {
         if (bound === 'start') {
           startOnChange?.(unset())
@@ -242,9 +197,11 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
       ? 'End must be greater than Start'
       : null
 
+  const showFallbackInputs = status === 'fallback' || mintFailed
+
   return (
     <Box paddingY={1}>
-      <Stack space={2} onPointerDown={beginLoad} onFocusCapture={beginLoad}>
+      <Stack space={3} onPointerDown={beginLoad} onFocusCapture={beginLoad}>
         <FieldLabel optional size={1}>
           {title}
         </FieldLabel>
@@ -259,41 +216,53 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
               Loading keyframes...
             </Text>
           </Flex>
-        ) : (
-          <Grid columns={2} gap={2}>
-            <Stack space={2}>
-              <FieldLabel optional size={1}>
-                Start
-              </FieldLabel>
-              <PreviewBoundControl
-                bound="start"
-                value={startSeconds}
-                options={startOptions}
-                status={status}
-                keyframes={keyframes}
-                readOnly={readOnly}
-                onBeginLoad={beginLoad}
-                onSelect={handleSelect}
-              />
-            </Stack>
+        ) : null}
 
-            <Stack space={2}>
-              <FieldLabel optional size={1}>
-                End
-              </FieldLabel>
-              <PreviewBoundControl
-                bound="end"
-                value={endSeconds}
-                options={endOptions}
-                status={status}
-                keyframes={keyframes}
-                readOnly={readOnly}
-                onBeginLoad={beginLoad}
-                onSelect={handleSelect}
-              />
-            </Stack>
-          </Grid>
-        )}
+        {status === 'ready' && videoId && !showFallbackInputs ? (
+          <PreviewBoundsVisualPicker
+            videoId={videoId}
+            keyframes={keyframes}
+            startSeconds={startSeconds}
+            endSeconds={endSeconds}
+            readOnly={readOnly}
+            onSelect={handleSelect}
+            onMintError={() => setMintFailed(true)}
+          />
+        ) : null}
+
+        {showFallbackInputs ? (
+          <Stack space={2}>
+            {status === 'ready' && mintFailed ? (
+              <Text size={1} muted>
+                Preview video unavailable — set bounds manually (seconds).
+              </Text>
+            ) : null}
+            <Grid columns={2} gap={2}>
+              <Stack space={2}>
+                <FieldLabel optional size={1}>
+                  Start
+                </FieldLabel>
+                <PreviewBoundFallbackInput
+                  bound="start"
+                  value={startSeconds}
+                  readOnly={readOnly}
+                  onSelect={handleSelect}
+                />
+              </Stack>
+              <Stack space={2}>
+                <FieldLabel optional size={1}>
+                  End
+                </FieldLabel>
+                <PreviewBoundFallbackInput
+                  bound="end"
+                  value={endSeconds}
+                  readOnly={readOnly}
+                  onSelect={handleSelect}
+                />
+              </Stack>
+            </Grid>
+          </Stack>
+        ) : null}
 
         {errors.length > 0 || rangeError ? (
           <Text size={0} style={{color: 'var(--card-badge-critical-fg-color)'}}>
