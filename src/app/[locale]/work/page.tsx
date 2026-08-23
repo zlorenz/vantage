@@ -6,7 +6,12 @@ import {Suspense} from 'react';
 import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
 import {PortfolioIndexCarousel} from '@/components/portfolio/PortfolioIndexCarousel';
-import {preparePortfolioIndexSlides} from '@/components/portfolio/prepare-portfolio-index-slides';
+import {
+  appendFeaturedPortfolioIndexSlides,
+  preparePortfolioIndexSlides,
+  type FeaturedCarouselRef,
+} from '@/components/portfolio/prepare-portfolio-index-slides';
+import {HOME_REDESIGN_CAROUSEL_QUERY} from '@/components/prototype/carousel/query';
 import {routing, type Locale} from '@/i18n/routing';
 import {
   workPageTitle,
@@ -39,6 +44,29 @@ import type {
   WORK_PAGE_QUERY_RESULT,
 } from '@/sanity/sanity.types';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
+
+type HomeRedesignCarouselPage = {
+  carouselSlides?: Array<{
+    slug?: string | null;
+    slugZh?: string | null;
+  }> | null;
+};
+
+function featuredCarouselRefsFromPage(
+  page: HomeRedesignCarouselPage | null,
+  locale: Locale,
+): FeaturedCarouselRef[] {
+  const refs: FeaturedCarouselRef[] = [];
+  for (const entry of page?.carouselSlides ?? []) {
+    const slug = entry?.slug;
+    if (!slug) continue;
+    refs.push({
+      slug,
+      hrefSlug: locale === 'zh' ? entry.slugZh || slug : slug,
+    });
+  }
+  return refs;
+}
 
 type Props = {
   params: Promise<{locale: string}>;
@@ -81,6 +109,7 @@ export default async function WorkPage({params}: Props) {
     workPageResult,
     workMetaResult,
     entriesResult,
+    homeRedesignResult,
     videoFormatsResult,
     industriesResult,
     marketsResult,
@@ -90,6 +119,9 @@ export default async function WorkPage({params}: Props) {
     sanityFetch({query: WORK_PAGE_QUERY}),
     sanityFetch({query: WORK_PAGE_META_QUERY, stega: false}),
     sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
+    // Same GROQ as homepage carousel — light refs only (not loadFeaturedWorkSlides:
+    // that rebuilds PrototypeCarouselSlide + re-fetches phrases we already have).
+    sanityFetch({query: HOME_REDESIGN_CAROUSEL_QUERY, stega: false}),
     sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
     sanityFetch({query: INDUSTRIES_QUERY, stega: false}),
     sanityFetch({query: MARKETS_QUERY, stega: false}),
@@ -102,7 +134,22 @@ export default async function WorkPage({params}: Props) {
   const videoFormats = videoFormatsResult.data as TaxonomyTerm[];
   const industries = industriesResult.data as TaxonomyTerm[];
   const markets = marketsResult.data as TaxonomyTerm[];
-  const slides = preparePortfolioIndexSlides(entries, typedLocale, phrases);
+  const librarySlides = preparePortfolioIndexSlides(
+    entries,
+    typedLocale,
+    phrases,
+  );
+  const featuredRefs = featuredCarouselRefsFromPage(
+    homeRedesignResult.data as HomeRedesignCarouselPage | null,
+    typedLocale,
+  );
+  const slides = appendFeaturedPortfolioIndexSlides(
+    librarySlides,
+    entries,
+    featuredRefs,
+    typedLocale,
+    phrases,
+  );
 
   const heroTitle =
     typedLocale === 'zh' && workPage?.heroTitleZh

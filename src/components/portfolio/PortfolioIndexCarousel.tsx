@@ -156,15 +156,25 @@ export function PortfolioIndexCarousel({
   const gestureFiredRef = useRef(false);
   const filterSignatureRef = useRef<string | null>(null);
 
-  const filteredSlides = useMemo(
-    () => slides.filter((slide) => slideMatchesPublicFilters(slide, publicFilters)),
-    [slides, publicFilters],
-  );
-  const slideCount = filteredSlides.length;
-  const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}`;
   const hasActiveFilters = Boolean(
     publicFilters.format || publicFilters.industry || publicFilters.market,
   );
+  const filteredSlides = useMemo(
+    () =>
+      slides.filter((slide) => {
+        // Appended homepage duplicates are loop-bridge only — hide whenever any
+        // taxonomy filter is active (do not treat them as filterable facets).
+        if (hasActiveFilters && slide.isAppendedFeatured) return false;
+        return slideMatchesPublicFilters(slide, publicFilters);
+      }),
+    [slides, publicFilters, hasActiveFilters],
+  );
+  const librarySlides = useMemo(
+    () => slides.filter((slide) => !slide.isAppendedFeatured),
+    [slides],
+  );
+  const slideCount = filteredSlides.length;
+  const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}`;
 
   // axis: 'x' and align: 'center' are Embla 8.6.0 defaults — omit rather than override.
   // containScroll is a no-op when loop is true (Embla containSnaps = !loop && …).
@@ -373,7 +383,7 @@ export function PortfolioIndexCarousel({
           onClose={closeFilterSheet}
           locale={locale}
           phrases={phrases}
-          slides={slides}
+          slides={librarySlides}
           filters={publicFilters}
           onChangeFilter={updatePublicFilter}
           onClearAll={clearPublicFilters}
