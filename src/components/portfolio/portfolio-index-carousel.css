@@ -35,7 +35,8 @@
   height: calc(
     100svh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
   );
-  background: var(--vp-bg, #000000);
+  /* Transparent so /work page-level top glow shows in letterboxing. */
+  background: transparent;
   color: #fff;
 }
 

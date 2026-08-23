@@ -320,6 +320,23 @@
   --vp-file-block-button-gap: 1.25rem;
 }
 
+/* Soft top spotlight — /work only.
+ * Unlayered (outside @layer base): background-* decls inside @layer base
+ * were dropped by the CSS pipeline. Avoid color-mix here — Lightning CSS
+ * emits a full-opacity --vp-orange fallback. Use rgba matching --vp-orange
+ * (#f04e23) at 6%. Ellipse 130%×55% at top center; transparent by 70% of
+ * the gradient (≈ mid-viewport). Carousel root is transparent so letterboxing
+ * reveals this page layer. */
+html:has(.vp-work-index),
+body:has(.vp-work-index) {
+  background-color: var(--vp-bg);
+  background-image: radial-gradient(
+    ellipse 130% 55% at 50% 0%,
+    rgba(240, 78, 35, 0.06) 0%,
+    transparent 70%
+  );
+}
+
 /* ================================================================
  * Base document styles
  * Black background, Mona Sans at weight 400, white text.
