@@ -11,7 +11,6 @@ import {defineField, defineType} from 'sanity'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
-import {FeaturedImageHotspotInput} from '../components/featured-image/FeaturedImageHotspotInput'
 import {OptionalField} from '../components/OptionalField'
 import {PreviewBoundsPairField} from '../components/PreviewBoundsInput'
 import {VimeoUrlInput} from '../components/video/VimeoUrlInput'
@@ -257,10 +256,14 @@ export const portfolioEntry = defineType({
       title: 'Featured Image',
       type: 'image',
       group: 'media',
-      // hotspot UI is custom (FeaturedImageHotspotInput); keep stock upload via renderDefault.
-      // Data still writes standard hotspot/crop for urlForImage().
-      options: {hotspot: false},
-      components: {input: FeaturedImageHotspotInput},
+      options: {
+        hotspot: {
+          previews: [
+            {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5},
+            {title: 'Homepage Carousel', aspectRatio: 16 / 9},
+          ],
+        },
+      },
       validation: (rule) => rule.required(),
       hidden: hiddenForTranslator,
     }),
