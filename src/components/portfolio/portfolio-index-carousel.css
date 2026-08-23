@@ -248,7 +248,19 @@
   filter: blur(0);
 }
 
+.vp-portfolio-index__poster-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  margin: 0;
+}
+
 .vp-portfolio-index__poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Mobile: 16:9 crop in viewport-derived card; desktop: 4:5 crop via <picture> — cover is a safety net. */
   object-fit: cover;
 }
 

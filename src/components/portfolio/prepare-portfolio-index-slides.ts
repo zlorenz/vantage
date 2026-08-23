@@ -17,7 +17,10 @@ export type PortfolioIndexSlide = {
   id: string;
   /** Locale-aware portfolio route slug. */
   hrefSlug: string;
+  /** Mobile / default — 16:9 Sanity crop (viewport-derived card aspect on small screens). */
   posterUrl: string;
+  /** Desktop (≥576px) — 4:5 Sanity crop matching card layout; avoids CSS re-crop of 16:9. */
+  posterUrlDesktop: string;
   /** Brand + product (yellow eyebrow). */
   brandLine: string;
   /** Campaign title, or brand+product when campaign is absent. */
@@ -53,6 +56,12 @@ export function preparePortfolioIndexSlideFromEntry(
     .fit('crop')
     .url();
 
+  const posterUrlDesktop = urlForImage(entry.featuredImage)
+    .width(1200)
+    .height(1500)
+    .fit('crop')
+    .url();
+
   const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
   const {brandLine, campaignLine} = composeOverlayCopy(parts);
 
@@ -60,6 +69,7 @@ export function preparePortfolioIndexSlideFromEntry(
     id: entry._id,
     hrefSlug,
     posterUrl,
+    posterUrlDesktop,
     brandLine,
     campaignLine,
     videoFormatSlugs: entry.videoFormatSlugs ?? [],

@@ -13,7 +13,6 @@ import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
 import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
-import Image from 'next/image';
 import {Link} from '@/i18n/navigation';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
@@ -49,7 +48,7 @@ const WHEEL_GESTURE_THRESHOLD_PX = 30;
 
 /**
  * How many neighbors on each side of the active snap mount a real poster.
- * ±8 → up to 17 Images at once (fewer when slideCount is smaller).
+ * ±8 → up to 17 poster <picture> elements at once (fewer when slideCount is smaller).
  * Nested under the content window — posters only mount when the Link shell
  * is present, so the effective poster set is min(poster, content).
  */
@@ -491,14 +490,20 @@ export function PortfolioIndexCarousel({
                       aria-current={active ? 'true' : undefined}
                     >
                       {mountPoster ? (
-                        <Image
-                          src={slide.posterUrl}
-                          alt=""
-                          fill
-                          sizes="(max-width: 575px) 86vw, (max-width: 991px) 85vw, (max-width: 1399px) 40vw, 40vw"
-                          className="vp-portfolio-index__poster"
-                          priority={active}
-                        />
+                        <picture className="vp-portfolio-index__poster-wrap">
+                          <source
+                            media="(min-width: 576px)"
+                            srcSet={slide.posterUrlDesktop}
+                          />
+                          <img
+                            src={slide.posterUrl}
+                            alt=""
+                            className="vp-portfolio-index__poster"
+                            decoding="async"
+                            loading={active ? 'eager' : 'lazy'}
+                            fetchPriority={active ? 'high' : 'auto'}
+                          />
+                        </picture>
                       ) : null}
                       <div className="vp-portfolio-index__overlay">
                         <div
