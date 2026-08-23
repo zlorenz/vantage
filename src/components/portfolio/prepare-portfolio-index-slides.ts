@@ -8,7 +8,7 @@ import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
-import type {PortfolioGridEntry} from '@/types/sanity';
+import type {PortfolioGridEntry, SanityImage} from '@/types/sanity';
 
 /** Newest-first positions treated as already “featured-visible” for append exclusion. */
 const FEATURED_APPEND_EXCLUDE_HEAD = 12;
@@ -17,10 +17,16 @@ export type PortfolioIndexSlide = {
   id: string;
   /** Locale-aware portfolio route slug. */
   hrefSlug: string;
-  /** Mobile / default — 16:9 Sanity crop (viewport-derived card aspect on small screens). */
+  /**
+   * Mobile (<576px) — 16:9 Sanity crop. Card is taller (~0.512); CSS object-fit
+   * cover + objectPosition does the portrait window (avoids a hard tall CDN crop
+   * that reads as over-zoomed).
+   */
   posterUrl: string;
   /** Desktop (≥576px) — 4:5 Sanity crop matching card layout; avoids CSS re-crop of 16:9. */
   posterUrlDesktop: string;
+  /** CSS object-position from featuredImage hotspot (e.g. "42% 55%"). */
+  objectPosition: string;
   /** Brand + product (yellow eyebrow). */
   brandLine: string;
   /** Campaign title, or brand+product when campaign is absent. */
@@ -34,6 +40,18 @@ export type PortfolioIndexSlide = {
    */
   isAppendedFeatured?: boolean;
 };
+
+function objectPositionFromHotspot(hotspot: SanityImage['hotspot'] | undefined): string {
+  const x =
+    typeof hotspot?.x === 'number' && Number.isFinite(hotspot.x)
+      ? Math.min(1, Math.max(0, hotspot.x))
+      : 0.5;
+  const y =
+    typeof hotspot?.y === 'number' && Number.isFinite(hotspot.y)
+      ? Math.min(1, Math.max(0, hotspot.y))
+      : 0.5;
+  return `${x * 100}% ${y * 100}%`;
+}
 
 /** Homepage carouselSlides order refs — EN slug + locale-aware href slug. */
 export type FeaturedCarouselRef = {
@@ -70,6 +88,7 @@ export function preparePortfolioIndexSlideFromEntry(
     hrefSlug,
     posterUrl,
     posterUrlDesktop,
+    objectPosition: objectPositionFromHotspot(entry.featuredImage.hotspot),
     brandLine,
     campaignLine,
     videoFormatSlugs: entry.videoFormatSlugs ?? [],

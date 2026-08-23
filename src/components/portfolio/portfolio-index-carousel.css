@@ -260,7 +260,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  /* Mobile: 16:9 crop in viewport-derived card; desktop: 4:5 crop via <picture> — cover is a safety net. */
+  /* Mobile: 16:9 + object-position; desktop: 4:5 crop — cover is a safety net. */
   object-fit: cover;
 }
 

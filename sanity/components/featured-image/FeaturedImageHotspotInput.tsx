@@ -1,20 +1,22 @@
 /**
  * FeaturedImageHotspotInput — stock ImageInput (upload/replace/delete) plus a
- * custom dual-aspect focal-point editor for portfolio featured images.
+ * custom focal-point editor opened from the image preview crop button.
  *
  * Writes standard Sanity hotspot/crop so urlForImage() consumers stay unchanged.
  */
 
-import {Box, Card, Flex, Stack, Text} from '@sanity/ui'
+import {Box, Button, Dialog, Flex, Stack, Text} from '@sanity/ui'
 import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from 'react'
-import {set, useClient, type ObjectInputProps} from 'sanity'
+import {set, useClient, type ObjectInputProps, type Path} from 'sanity'
+import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 type ImageFieldValue = {
   _type?: 'image'
@@ -55,18 +57,20 @@ type GuideSpec = {
 
 type Center = {x: number; y: number}
 
+type GuideBox = {left: string; top: string; width: string; height: string}
+
 /** Crop aspect guides (width / height) for dual-/triple-surface art direction. */
 const GUIDES: GuideSpec[] = [
   {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5, color: 'rgba(249, 219, 36, 0.95)'},
   /**
    * /work mobile card is viewport-derived (not a locked CSS ratio).
    * Measured live at 390×844: card ≈286.52×559.19 → W/H ≈ 0.512.
-   * Tokens at measurement: --vp-header-height 65px, --vp-index-slide-basis 74%,
-   * --vp-index-bottom-bar-height 5rem, --vp-index-height-scale 0.80.
    */
   {title: 'Work Carousel (Mobile)', aspectRatio: 0.512, color: 'rgba(80, 220, 160, 0.95)'},
   {title: 'Homepage Carousel', aspectRatio: 16 / 9, color: 'rgba(100, 180, 255, 0.95)'},
 ]
+
+const GUIDE_OVERLAY = 'rgba(0, 0, 0, 0.8)'
 
 const DEFAULT_CENTER: Center = {x: 0.5, y: 0.5}
 
@@ -122,7 +126,7 @@ function guideBoxStyle(
   aspectRatio: number,
   cx: number,
   cy: number,
-): {left: string; top: string; width: string; height: string} {
+): GuideBox {
   const size = maxGuideSize(imageW, imageH, aspectRatio)
   const halfW = size.width / 2
   const halfH = size.height / 2
@@ -148,28 +152,67 @@ function hotspotValue(center: Center) {
   }
 }
 
-export function FeaturedImageHotspotInput(props: ObjectInputProps) {
-  const {value, readOnly, renderDefault, onChange} = props
-  const client = useClient({apiVersion: '2025-01-01'})
-  const assetId = assetIdFromValue(value)
-  const imageValue = (value ?? {}) as ImageFieldValue
+function GuideDimOverlay({box}: {box: GuideBox}) {
+  const band: CSSProperties = {
+    position: 'absolute',
+    background: GUIDE_OVERLAY,
+    pointerEvents: 'none',
+  }
 
-  const [asset, setAsset] = useState<AssetPreview | null>(null)
-  /** Natural pixel size from metadata, refined by img onLoad when needed. */
+  return (
+    <>
+      <Box aria-hidden style={{...band, left: 0, top: 0, right: 0, height: box.top}} />
+      <Box
+        aria-hidden
+        style={{
+          ...band,
+          left: 0,
+          top: `calc(${box.top} + ${box.height})`,
+          right: 0,
+          bottom: 0,
+        }}
+      />
+      <Box
+        aria-hidden
+        style={{...band, left: 0, top: box.top, width: box.left, height: box.height}}
+      />
+      <Box
+        aria-hidden
+        style={{
+          ...band,
+          left: `calc(${box.left} + ${box.width})`,
+          top: box.top,
+          right: 0,
+          height: box.height,
+        }}
+      />
+    </>
+  )
+}
+
+type FeaturedImageHotspotEditorProps = {
+  assetUrl: string
+  center: Center
+  readOnly?: boolean
+  onCommit: (center: Center) => void
+}
+
+function FeaturedImageHotspotEditor({
+  assetUrl,
+  center,
+  readOnly,
+  onCommit,
+}: FeaturedImageHotspotEditorProps) {
   const [naturalSize, setNaturalSize] = useState<{width: number; height: number} | null>(null)
+  const [activeGuideIndex, setActiveGuideIndex] = useState(0)
   const imgRef = useRef<HTMLImageElement | null>(null)
   const stageRef = useRef<HTMLDivElement | null>(null)
   const draggingRef = useRef(false)
   const draftCenterRef = useRef<Center | null>(null)
-
-  const storedCenter = useMemo(
-    () => centerFromHotspot(imageValue.hotspot),
-    [imageValue.hotspot],
-  )
-
-  /** Live center while dragging; falls back to saved hotspot. */
   const [draftCenter, setDraftCenter] = useState<Center | null>(null)
-  const center = draftCenter ?? storedCenter
+  const displayCenter = draftCenter ?? center
+
+  const activeGuide = GUIDES[activeGuideIndex] ?? GUIDES[0]
 
   const updateDraftCenter = useCallback((next: Center) => {
     draftCenterRef.current = next
@@ -177,46 +220,11 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
   }, [])
 
   useEffect(() => {
-    // Drop stale draft when the form value changes from outside (undo, remote).
     if (!draggingRef.current) {
       draftCenterRef.current = null
       setDraftCenter(null)
     }
-  }, [storedCenter.x, storedCenter.y])
-
-  useEffect(() => {
-    if (!assetId) {
-      setAsset(null)
-      setNaturalSize(null)
-      return
-    }
-    let cancelled = false
-    client
-      .fetch<AssetPreview>(
-        `*[_id == $id][0]{url, metadata{dimensions{width, height, aspectRatio}}}`,
-        {id: assetId},
-      )
-      .then((data) => {
-        if (cancelled) return
-        setAsset(data ?? null)
-        const w = data?.metadata?.dimensions?.width
-        const h = data?.metadata?.dimensions?.height
-        if (typeof w === 'number' && typeof h === 'number' && w > 0 && h > 0) {
-          setNaturalSize({width: w, height: h})
-        } else {
-          setNaturalSize(null)
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setAsset(null)
-          setNaturalSize(null)
-        }
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [assetId, client])
+  }, [center.x, center.y])
 
   const onImageLoad = () => {
     const img = imgRef.current
@@ -228,15 +236,6 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
       return {width: img.naturalWidth, height: img.naturalHeight}
     })
   }
-
-  const commitCenter = useCallback(
-    (next: Center) => {
-      if (readOnly) return
-      const hotspot = hotspotValue(next)
-      onChange([set(DEFAULT_CROP, ['crop']), set(hotspot, ['hotspot'])])
-    },
-    [onChange, readOnly],
-  )
 
   const centerFromClient = useCallback((clientX: number, clientY: number): Center | null => {
     const stage = stageRef.current
@@ -252,7 +251,6 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
   const onPointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       if (readOnly) return
-      // Primary button / touch only.
       if (event.button !== 0 && event.pointerType === 'mouse') return
       event.preventDefault()
       const next = centerFromClient(event.clientX, event.clientY)
@@ -291,125 +289,225 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
       const next =
         centerFromClient(event.clientX, event.clientY) ?? draftCenterRef.current
       if (next) {
-        // Keep draft until the form value catches up (avoids a one-frame snap-back).
         updateDraftCenter(next)
-        commitCenter(next)
+        onCommit(next)
       }
     },
-    [centerFromClient, commitCenter, updateDraftCenter],
+    [centerFromClient, onCommit, updateDraftCenter],
   )
+
+  const activeGuideBox =
+    naturalSize &&
+    guideBoxStyle(
+      naturalSize.width,
+      naturalSize.height,
+      activeGuide.aspectRatio,
+      displayCenter.x,
+      displayCenter.y,
+    )
 
   return (
     <Stack space={3}>
-      {renderDefault(props)}
-      {assetId && asset?.url ? (
-        <Card padding={3} radius={2} shadow={1} tone="transparent" border>
-          <Stack space={3}>
-            <Stack space={2}>
-              <Text size={1} weight="semibold">
-                Focal point
-              </Text>
-              <Text size={1} muted>
-                Drag on the image to set the shared center for Work desktop (4:5), Work mobile
-                (~0.512 W:H at 390×844), and Homepage (16:9) crops. Guides stay on-image; the
-                saved point can go edge-to-edge.
-              </Text>
-              <Flex gap={3} wrap="wrap">
-                {GUIDES.map((guide) => (
-                  <Flex key={guide.title} align="center" gap={2}>
-                    <Box
-                      style={{
-                        width: 12,
-                        height: 12,
-                        border: `2px solid ${guide.color}`,
-                        borderRadius: 2,
-                        flexShrink: 0,
-                      }}
-                    />
-                    <Text size={1} muted>
-                      {guide.title}
-                    </Text>
-                  </Flex>
-                ))}
-              </Flex>
-            </Stack>
+      <Text size={1} muted>
+        Drag on the image to set the shared focal center. Switch guides to preview each crop
+        surface; the dimmed area falls outside the active guide.
+      </Text>
 
-            <Box
-              ref={stageRef}
-              style={{
-                position: 'relative',
-                width: '100%',
-                lineHeight: 0,
-                userSelect: 'none',
-                cursor: readOnly ? 'default' : 'crosshair',
-                touchAction: 'none',
-              }}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={endDrag}
-              onPointerCancel={endDrag}
+      <Flex gap={2} wrap="wrap">
+        {GUIDES.map((guide, index) => {
+          const selected = index === activeGuideIndex
+          return (
+            <Button
+              key={guide.title}
+              mode={selected ? 'default' : 'ghost'}
+              tone={selected ? 'primary' : 'default'}
+              fontSize={1}
+              padding={2}
+              onClick={() => setActiveGuideIndex(index)}
             >
-              <img
-                ref={imgRef}
-                src={asset.url}
-                alt=""
-                draggable={false}
-                onLoad={onImageLoad}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  height: 'auto',
-                  pointerEvents: 'none',
-                }}
-              />
-              {naturalSize
-                ? GUIDES.map((guide) => {
-                    const box = guideBoxStyle(
-                      naturalSize.width,
-                      naturalSize.height,
-                      guide.aspectRatio,
-                      center.x,
-                      center.y,
-                    )
-                    return (
-                      <Box
-                        key={guide.title}
-                        aria-hidden
-                        style={{
-                          position: 'absolute',
-                          ...box,
-                          border: `2px solid ${guide.color}`,
-                          boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.35)`,
-                          pointerEvents: 'none',
-                          boxSizing: 'border-box',
-                        }}
-                      />
-                    )
-                  })
-                : null}
-              {naturalSize ? (
+              <Flex align="center" gap={2}>
                 <Box
-                  aria-hidden
                   style={{
-                    position: 'absolute',
-                    left: `${center.x * 100}%`,
-                    top: `${center.y * 100}%`,
                     width: 10,
                     height: 10,
-                    marginLeft: -5,
-                    marginTop: -5,
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.95)',
-                    border: '2px solid rgba(0,0,0,0.75)',
-                    pointerEvents: 'none',
-                    boxSizing: 'border-box',
+                    border: `2px solid ${guide.color}`,
+                    borderRadius: 2,
+                    flexShrink: 0,
                   }}
                 />
-              ) : null}
-            </Box>
-          </Stack>
-        </Card>
-      ) : null}
+                <Text size={1}>{guide.title}</Text>
+              </Flex>
+            </Button>
+          )
+        })}
+      </Flex>
+
+      <Box
+        ref={stageRef}
+        style={{
+          position: 'relative',
+          width: '100%',
+          lineHeight: 0,
+          userSelect: 'none',
+          cursor: readOnly ? 'default' : 'crosshair',
+          touchAction: 'none',
+        }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+      >
+        <img
+          ref={imgRef}
+          src={assetUrl}
+          alt=""
+          draggable={false}
+          onLoad={onImageLoad}
+          style={{
+            display: 'block',
+            width: '100%',
+            height: 'auto',
+            pointerEvents: 'none',
+          }}
+        />
+        {activeGuideBox ? (
+          <>
+            <GuideDimOverlay box={activeGuideBox} />
+            <Box
+              aria-hidden
+              style={{
+                position: 'absolute',
+                ...activeGuideBox,
+                border: `2px solid ${activeGuide.color}`,
+                boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.35)`,
+                pointerEvents: 'none',
+                boxSizing: 'border-box',
+              }}
+            />
+          </>
+        ) : null}
+        {naturalSize ? (
+          <Box
+            aria-hidden
+            style={{
+              position: 'absolute',
+              left: `${displayCenter.x * 100}%`,
+              top: `${displayCenter.y * 100}%`,
+              width: 10,
+              height: 10,
+              marginLeft: -5,
+              marginTop: -5,
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.95)',
+              border: '2px solid rgba(0,0,0,0.75)',
+              pointerEvents: 'none',
+              boxSizing: 'border-box',
+              zIndex: 1,
+            }}
+          />
+        ) : null}
+      </Box>
     </Stack>
+  )
+}
+
+export function FeaturedImageHotspotInput(props: ObjectInputProps) {
+  const {value, readOnly, renderDefault, onChange, onPathFocus, schemaType} = props
+  const client = useClient({apiVersion: '2025-01-01'})
+  const assetId = assetIdFromValue(value)
+  const imageValue = (value ?? {}) as ImageFieldValue
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [asset, setAsset] = useState<AssetPreview | null>(null)
+
+  const storedCenter = useMemo(
+    () => centerFromHotspot(imageValue.hotspot),
+    [imageValue.hotspot],
+  )
+
+  const openDialog = useCallback(() => {
+    if (!assetId || readOnly) return
+    setDialogOpen(true)
+  }, [assetId, readOnly])
+
+  const closeDialog = useCallback(() => {
+    setDialogOpen(false)
+  }, [])
+
+  useEffect(() => {
+    if (!assetId) {
+      setAsset(null)
+      return
+    }
+    let cancelled = false
+    client
+      .fetch<AssetPreview>(
+        `*[_id == $id][0]{url, metadata{dimensions{width, height, aspectRatio}}}`,
+        {id: assetId},
+      )
+      .then((data) => {
+        if (!cancelled) setAsset(data ?? null)
+      })
+      .catch(() => {
+        if (!cancelled) setAsset(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [assetId, client])
+
+  const commitCenter = useCallback(
+    (next: Center) => {
+      if (readOnly) return
+      const hotspot = hotspotValue(next)
+      onChange([set(DEFAULT_CROP, ['crop']), set(hotspot, ['hotspot'])])
+    },
+    [onChange, readOnly],
+  )
+
+  /** Show stock crop button (left of ⋯ menu) without enabling native hotspot UI. */
+  const defaultInputProps = useMemo(
+    () => ({
+      ...props,
+      schemaType: {
+        ...schemaType,
+        options: {
+          ...(schemaType.options ?? {}),
+          hotspot: true,
+        },
+      },
+      onPathFocus: (path: Path) => {
+        if (Array.isArray(path) && path[0] === 'hotspot') {
+          openDialog()
+          return
+        }
+        onPathFocus(path)
+      },
+    }),
+    [props, schemaType, onPathFocus, openDialog],
+  )
+
+  return (
+    <>
+      {renderDefault(defaultInputProps)}
+      {dialogOpen && asset?.url ? (
+        <Dialog
+          id="vp-featured-image-hotspot"
+          header="Focal point"
+          width={2}
+          onClose={closeDialog}
+          zOffset={STUDIO_OVERLAY_Z + 100}
+        >
+          <Box paddingX={4} paddingBottom={4} paddingTop={2}>
+            <FeaturedImageHotspotEditor
+              assetUrl={asset.url}
+              center={storedCenter}
+              readOnly={readOnly}
+              onCommit={commitCenter}
+            />
+          </Box>
+        </Dialog>
+      ) : null}
+    </>
   )
 }

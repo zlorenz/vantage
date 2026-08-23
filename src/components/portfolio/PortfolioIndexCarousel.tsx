@@ -502,6 +502,7 @@ export function PortfolioIndexCarousel({
                             decoding="async"
                             loading={active ? 'eager' : 'lazy'}
                             fetchPriority={active ? 'high' : 'auto'}
+                            style={{objectPosition: slide.objectPosition}}
                           />
                         </picture>
                       ) : null}
