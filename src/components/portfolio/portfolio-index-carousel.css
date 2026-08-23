@@ -166,8 +166,8 @@
   height: 100%;
   padding-left: var(--vp-index-slide-gap);
   box-sizing: border-box;
-  /* Hollow off-window shells — same pure black as site bg (not #111 gray). */
-  background: var(--vp-bg, #000000);
+  /* Transparent so page glow shows in gutters; card face keeps --vp-bg. */
+  background: transparent;
 }
 
 .vp-portfolio-index__card {
@@ -182,7 +182,7 @@
 
 /*
  * Compositing-heavy visuals only near the active snap (± STYLE_WINDOW_RADIUS).
- * Far Embla shells are hollow (#111 on the slide wrapper only).
+ * Far Embla shells stay empty (transparent slide wrapper).
  */
 .vp-portfolio-index__card--styled {
   overflow: hidden;

@@ -322,10 +322,9 @@
 
 /* Soft top spotlight — /work only.
  * Fixed ::before (not body background): body/html `background` shorthand in
- * @layer base fights page-level background-image on iOS, and 6% was
- * invisible on device. Isolation keeps the glow behind carousel content;
- * carousel root stays transparent so letterboxing shows this layer.
- * Opacity ~18% — intentionally readable for device QA; dial down after. */
+ * @layer base fights page-level background-image on iOS. Isolation keeps the
+ * glow behind carousel content; carousel/slides stay transparent so gutters
+ * reveal this layer. Brand orange via --vp-orange (#f04e23) at 18%. */
 .vp-work-index {
   position: relative;
   isolation: isolate;
@@ -338,7 +337,7 @@
   z-index: 0;
   pointer-events: none;
   background: radial-gradient(
-    ellipse 130% 55% at 50% 0%,
+    ellipse 130% 55% at 50% 0px,
     rgba(240, 78, 35, 0.18) 0%,
     transparent 70%
   );
@@ -503,6 +502,11 @@
   -webkit-mask-image: linear-gradient(to bottom, black, transparent);
   mask-image: linear-gradient(to bottom, black, transparent);
   pointer-events: none;
+}
+
+/* /work only: fully clear nav backdrop so the page top glow shows through. */
+body:has(.vp-work-index) #header.navbar::before {
+  opacity: 0;
 }
 
 /* Header chrome above the sliding panel (panel is a descendant of
