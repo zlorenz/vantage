@@ -296,6 +296,13 @@
   pointer-events: none;
 }
 
+/* Positions the desktop filter popout above the funnel (mobile sheet is fixed). */
+.vp-portfolio-index__filter-anchor {
+  position: relative;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
 .vp-portfolio-index__filter-trigger {
   pointer-events: auto;
   display: inline-flex;

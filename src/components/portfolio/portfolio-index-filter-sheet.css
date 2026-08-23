@@ -1,4 +1,10 @@
-/* /work index filter bottom sheet */
+/* /work index filter — mobile bottom sheet + desktop anchored popout.
+ *
+ * Mobile (default): fixed full-viewport sheet, scrim, drag handle.
+ * Desktop (min-width: 576px): absolute popout above .vp-portfolio-index__filter-anchor,
+ * max-content width, fade + translateY, no scrim / handle / drag.
+ * Keep these branches in sync mentally when changing shell behavior.
+ */
 
 .vp-index-filter-sheet {
   position: fixed;
@@ -199,5 +205,85 @@
 @media (prefers-reduced-motion: reduce) {
   .vp-index-filter-sheet__panel {
     transition: none;
+  }
+}
+
+/*
+ * Desktop: anchored popout above the filter trigger (see
+ * .vp-portfolio-index__filter-anchor). Mirrors #header .vp-desktop-nav-panel
+ * timing/sizing pattern, flipped vertically (opens upward).
+ */
+@media (min-width: 576px) {
+  .vp-index-filter-sheet {
+    position: absolute;
+    inset: auto;
+    bottom: calc(100% + 0.35rem);
+    left: 0;
+    z-index: 60;
+    display: block;
+    width: max-content;
+    /* Same cap as nav; 24rem fits taxonomy rows without feeling oversized. */
+    max-width: min(24rem, calc(100vw - 2rem));
+    min-width: 16rem;
+    pointer-events: none;
+    flex-direction: unset;
+    justify-content: unset;
+  }
+
+  .vp-index-filter-sheet.is-open {
+    pointer-events: auto;
+  }
+
+  .vp-index-filter-sheet__scrim {
+    display: none;
+    pointer-events: none;
+  }
+
+  .vp-index-filter-sheet__handle-hit {
+    display: none;
+  }
+
+  .vp-index-filter-sheet__panel {
+    width: 100%;
+    max-width: none;
+    max-height: min(70vh, 28rem);
+    padding-bottom: 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transform: translateY(0.5rem);
+    pointer-events: none;
+    will-change: opacity, transform;
+    transition:
+      opacity 0.18s ease-in,
+      transform 0.18s ease-in;
+  }
+
+  .vp-index-filter-sheet.is-open .vp-index-filter-sheet__panel {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.28s ease-out,
+      transform 0.28s ease-out;
+  }
+
+  .vp-index-filter-sheet:not(.is-open) .vp-index-filter-sheet__panel {
+    transition:
+      opacity 0.18s ease-in,
+      transform 0.18s ease-in;
+  }
+}
+
+@media (min-width: 576px) and (prefers-reduced-motion: reduce) {
+  .vp-index-filter-sheet__panel,
+  .vp-index-filter-sheet.is-open .vp-index-filter-sheet__panel,
+  .vp-index-filter-sheet:not(.is-open) .vp-index-filter-sheet__panel {
+    transition: none;
+    transform: none;
+  }
+
+  .vp-index-filter-sheet.is-open .vp-index-filter-sheet__panel {
+    opacity: 1;
   }
 }

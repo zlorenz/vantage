@@ -355,39 +355,38 @@ export function PortfolioIndexCarousel({
 
   const filterTrigger = (
     <div className="vp-portfolio-index__bottom-bar">
-      <button
-        type="button"
-        className={`vp-portfolio-index__filter-trigger${
-          hasActiveFilters ? ' is-active' : ''
-        }`}
-        aria-label={t('filter')}
-        aria-expanded={filterSheetOpen}
-        aria-pressed={hasActiveFilters}
-        onClick={() => setFilterSheetOpen(true)}
-      >
-        <FunnelIcon />
-      </button>
+      <div className="vp-portfolio-index__filter-anchor">
+        <button
+          type="button"
+          className={`vp-portfolio-index__filter-trigger${
+            hasActiveFilters ? ' is-active' : ''
+          }`}
+          aria-label={t('filter')}
+          aria-expanded={filterSheetOpen}
+          aria-pressed={hasActiveFilters}
+          onClick={() => setFilterSheetOpen((open) => !open)}
+        >
+          <FunnelIcon />
+        </button>
+        <PortfolioIndexFilterSheet
+          open={filterSheetOpen}
+          onClose={closeFilterSheet}
+          locale={locale}
+          phrases={phrases}
+          slides={slides}
+          filters={publicFilters}
+          onChangeFilter={updatePublicFilter}
+          onClearAll={clearPublicFilters}
+          videoFormats={videoFormats}
+          industries={industries}
+          markets={markets}
+        />
+      </div>
       <PortfolioIndexScrubber
         snapCount={slideCount}
         emblaApi={emblaApi}
       />
     </div>
-  );
-
-  const filterSheet = (
-    <PortfolioIndexFilterSheet
-      open={filterSheetOpen}
-      onClose={closeFilterSheet}
-      locale={locale}
-      phrases={phrases}
-      slides={slides}
-      filters={publicFilters}
-      onChangeFilter={updatePublicFilter}
-      onClearAll={clearPublicFilters}
-      videoFormats={videoFormats}
-      industries={industries}
-      markets={markets}
-    />
   );
 
   if (!slideCount) {
@@ -397,7 +396,6 @@ export function PortfolioIndexCarousel({
           <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
           {filterTrigger}
         </div>
-        {filterSheet}
       </div>
     );
   }
@@ -493,7 +491,6 @@ export function PortfolioIndexCarousel({
         </div>
         {filterTrigger}
       </div>
-      {filterSheet}
     </div>
   );
 }
