@@ -321,20 +321,32 @@
 }
 
 /* Soft top spotlight — /work only.
- * Unlayered (outside @layer base): background-* decls inside @layer base
- * were dropped by the CSS pipeline. Avoid color-mix here — Lightning CSS
- * emits a full-opacity --vp-orange fallback. Use rgba matching --vp-orange
- * (#f04e23) at 6%. Ellipse 130%×55% at top center; transparent by 70% of
- * the gradient (≈ mid-viewport). Carousel root is transparent so letterboxing
- * reveals this page layer. */
-html:has(.vp-work-index),
-body:has(.vp-work-index) {
-  background-color: var(--vp-bg);
-  background-image: radial-gradient(
+ * Fixed ::before (not body background): body/html `background` shorthand in
+ * @layer base fights page-level background-image on iOS, and 6% was
+ * invisible on device. Isolation keeps the glow behind carousel content;
+ * carousel root stays transparent so letterboxing shows this layer.
+ * Opacity ~18% — intentionally readable for device QA; dial down after. */
+.vp-work-index {
+  position: relative;
+  isolation: isolate;
+}
+
+.vp-work-index::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
     ellipse 130% 55% at 50% 0%,
-    rgba(240, 78, 35, 0.06) 0%,
+    rgba(240, 78, 35, 0.18) 0%,
     transparent 70%
   );
+}
+
+.vp-work-index > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ================================================================
