@@ -202,22 +202,17 @@ export function PortfolioIndexCarousel({
     setActiveIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
-  /** Keep counter/windowing aligned while Embla animates between snaps (scrub + swipe). */
+  /**
+   * Keep counter/windowing aligned while Embla animates between snaps.
+   * Use selectedScrollSnap — not linear distance on scrollProgress(). With
+   * loop: true, progress crawls 0.99→1 then jumps to 0 across the seam, so
+   * linear "nearest snap" stays on the last index for the whole settle and
+   * overwrites the select event (active styles lag ~1s on last→first only).
+   */
   const onScroll = useCallback(() => {
     if (!emblaApi) return;
-    const snaps = emblaApi.scrollSnapList();
-    if (snaps.length <= 1) return;
-    const progress = emblaApi.scrollProgress();
-    let nearest = 0;
-    let bestDist = Number.POSITIVE_INFINITY;
-    for (let i = 0; i < snaps.length; i++) {
-      const dist = Math.abs(snaps[i] - progress);
-      if (dist < bestDist) {
-        bestDist = dist;
-        nearest = i;
-      }
-    }
-    setActiveIndex((prev) => (prev === nearest ? prev : nearest));
+    const selected = emblaApi.selectedScrollSnap();
+    setActiveIndex((prev) => (prev === selected ? prev : selected));
   }, [emblaApi]);
 
   useEffect(() => {
