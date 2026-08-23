@@ -411,6 +411,12 @@
 @media (min-width: 576px) {
   .vp-portfolio-index__bottom-bar {
     gap: 1.1rem;
+    /*
+     * STARTING POINT — tune against rendered desktop card width.
+     * At 1920×1080 a 4:5 card is ~640px; 40rem ≈ that. Not final.
+     */
+    max-width: min(40rem, calc(100vw - 4rem));
+    margin-inline: auto;
   }
 
   .vp-portfolio-index__scrubber-track {
