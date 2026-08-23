@@ -21,6 +21,7 @@
  */
 
 import {useEffect, useRef, useState} from 'react';
+import {detectPillarboxContentAspect} from './detect-pillarbox-aspect';
 
 /** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
 const SEEK_TOLERANCE_S = 0.05;
@@ -101,12 +102,27 @@ function isHlsPreviewReady(video: HTMLVideoElement): boolean {
   return video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA;
 }
 
-/** Coded aspect as a CSS `width / height` expression, or null before metadata. */
-function previewAspectValue(video: HTMLVideoElement): string | null {
+/** Coded aspect as a unitless width/height ratio, or null before metadata. */
+function previewAspectValue(video: HTMLVideoElement): number | null {
   const width = video.videoWidth;
   const height = video.videoHeight;
   if (width <= 0 || height <= 0) return null;
-  return `${width} / ${height}`;
+  return width / height;
+}
+
+/**
+ * Cover aspect for the media stack: coded size, tightened by a poster
+ * pillarbox scan when the master has baked-in side bars.
+ */
+export function resolveCoverAspect(
+  codedAspect: number | null,
+  contentAspectHint: number | null | undefined,
+): number | null {
+  if (codedAspect == null && contentAspectHint == null) return null;
+  if (codedAspect == null) return contentAspectHint ?? null;
+  if (contentAspectHint == null) return codedAspect;
+  // Narrower aspect = taller relative frame = more side crop (pillarbox zoom).
+  return Math.min(codedAspect, contentAspectHint);
 }
 
 export type PlaybackFormat = 'progressive' | 'hls';
@@ -118,6 +134,11 @@ interface CarouselNativeVideoProps {
   playbackFormat?: PlaybackFormat;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
+  /**
+   * Content aspect from poster pillarbox scan (width/height). When narrower
+   * than the coded video aspect, cover-math zooms to crop baked-in side bars.
+   */
+  contentAspectHint?: number | null;
   onPlaybackError?: () => void;
   onReadyChange?: (ready: boolean) => void;
 }
@@ -128,12 +149,14 @@ export function CarouselNativeVideo({
   playbackFormat = 'progressive',
   previewStartSeconds,
   previewEndSeconds,
+  contentAspectHint = null,
   onPlaybackError,
   onReadyChange,
 }: CarouselNativeVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
-  const appliedAspectRef = useRef<string | null>(null);
+  const appliedAspectRef = useRef<number | null>(null);
+  const contentAspectHintRef = useRef(contentAspectHint);
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
   const activeRef = useRef(active);
@@ -145,6 +168,7 @@ export function CarouselNativeVideo({
   const boundedLoop = previewEndSeconds != null;
 
   onReadyChangeRef.current = onReadyChange;
+  contentAspectHintRef.current = contentAspectHint;
 
   useEffect(() => {
     startRef.current = previewStartSeconds;
@@ -159,13 +183,39 @@ export function CarouselNativeVideo({
     formatRef.current = playbackFormat;
   }, [playbackFormat]);
 
-  const applyPreviewAspect = (video: HTMLVideoElement) => {
+  const applyCoverAspect = (codedAspect: number | null) => {
     const player = playerRef.current;
-    if (!player) return;
-    const value = previewAspectValue(video);
+    const stack = player?.closest(
+      '.vp-proto-carousel__media-stack',
+    ) as HTMLElement | null;
+    const target = stack ?? player;
+    if (!target) return;
+    const value = resolveCoverAspect(
+      codedAspect,
+      contentAspectHintRef.current,
+    );
     if (value == null || value === appliedAspectRef.current) return;
     appliedAspectRef.current = value;
-    player.style.setProperty('--vp-preview-aspect', value);
+    target.style.setProperty('--vp-preview-aspect', String(value));
+  };
+
+  const applyPreviewAspect = (video: HTMLVideoElement) => {
+    const coded = previewAspectValue(video);
+    // Scan the decoded frame for baked-in side bars (poster stills are often
+    // already cropped and miss them). Requires crossOrigin on the element.
+    const fromFrame =
+      coded != null
+        ? detectPillarboxContentAspect(
+            video,
+            video.videoWidth,
+            video.videoHeight,
+          )
+        : null;
+    const hints = [contentAspectHintRef.current, fromFrame].filter(
+      (n): n is number => n != null && Number.isFinite(n) && n > 0,
+    );
+    const contentHint = hints.length > 0 ? Math.min(...hints) : null;
+    applyCoverAspect(resolveCoverAspect(coded, contentHint));
   };
 
   const reportReady = (video: HTMLVideoElement) => {
@@ -217,7 +267,10 @@ export function CarouselNativeVideo({
       }
       hasBeenReadyRef.current = false;
       appliedAspectRef.current = null;
-      player?.style.removeProperty('--vp-preview-aspect');
+      const stack = player?.closest(
+        '.vp-proto-carousel__media-stack',
+      ) as HTMLElement | null;
+      (stack ?? player)?.style.removeProperty('--vp-preview-aspect');
       if (lastReadyRef.current) {
         lastReadyRef.current = false;
         setReady(false);
@@ -225,6 +278,22 @@ export function CarouselNativeVideo({
       }
     };
   }, [src]);
+
+  // Poster pillarbox scan can finish after metadata — re-resolve cover aspect.
+  useEffect(() => {
+    const video = videoRef.current;
+    const coded = video ? previewAspectValue(video) : null;
+    const player = playerRef.current;
+    const stack = player?.closest(
+      '.vp-proto-carousel__media-stack',
+    ) as HTMLElement | null;
+    const target = stack ?? player;
+    if (!target) return;
+    const value = resolveCoverAspect(coded, contentAspectHint);
+    if (value == null) return;
+    appliedAspectRef.current = value;
+    target.style.setProperty('--vp-preview-aspect', String(value));
+  }, [contentAspectHint]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -483,6 +552,7 @@ export function CarouselNativeVideo({
             : 'vp-proto-carousel__video'
         }
         src={src}
+        crossOrigin="anonymous"
         muted
         playsInline
         loop={!boundedLoop}

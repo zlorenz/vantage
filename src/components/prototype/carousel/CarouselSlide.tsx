@@ -1,10 +1,16 @@
 'use client';
 
-import {forwardRef, useEffect, useState} from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useState,
+  type CSSProperties,
+} from 'react';
 import Image from 'next/image';
 import {useLocale, useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
 import {CarouselVimeo} from './CarouselVimeo';
+import {detectPillarboxContentAspect} from './detect-pillarbox-aspect';
 import type {PrototypeCarouselSlide} from './types';
 
 interface CarouselSlideProps {
@@ -22,6 +28,9 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
     const t = useTranslations('Home');
     const locale = useLocale();
     const [playerReady, setPlayerReady] = useState(false);
+    const [contentAspectHint, setContentAspectHint] = useState<number | null>(
+      null,
+    );
     const portfolioHref = slide.hrefSlug
       ? ({
           pathname: '/portfolio/[slug]' as const,
@@ -39,6 +48,60 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
       }
     }, [shouldMountVideo]);
 
+    // Scan the poster for baked-in side bars even if the video becomes ready
+    // before the visible <Image> fires onLoad (common on warm cache).
+    useEffect(() => {
+      if (!slide.posterUrl) {
+        setContentAspectHint(null);
+        return;
+      }
+
+      let cancelled = false;
+      const img = new window.Image();
+      img.decoding = 'async';
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        if (cancelled) return;
+        const aspect = detectPillarboxContentAspect(
+          img,
+          img.naturalWidth,
+          img.naturalHeight,
+        );
+        if (aspect != null) {
+          setContentAspectHint(aspect);
+        }
+      };
+      img.onerror = () => {
+        // Same-origin Next image optimizer as fallback when Sanity CORS fails.
+        if (cancelled || img.src.includes('/_next/image')) return;
+        const proxy = new window.Image();
+        proxy.onload = () => {
+          if (cancelled) return;
+          const aspect = detectPillarboxContentAspect(
+            proxy,
+            proxy.naturalWidth,
+            proxy.naturalHeight,
+          );
+          if (aspect != null) {
+            setContentAspectHint(aspect);
+          }
+        };
+        proxy.src = `/_next/image?url=${encodeURIComponent(slide.posterUrl!)}&w=960&q=75`;
+      };
+      img.src = slide.posterUrl;
+
+      return () => {
+        cancelled = true;
+      };
+    }, [slide.posterUrl]);
+
+    const mediaStackStyle =
+      contentAspectHint != null
+        ? ({
+            '--vp-preview-aspect': String(contentAspectHint),
+          } as CSSProperties)
+        : undefined;
+
     return (
       <article
         ref={ref}
@@ -47,17 +110,22 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         data-index={index}
       >
         <div className="vp-proto-carousel__media">
-          <div className="vp-proto-carousel__media-stack">
+          <div
+            className="vp-proto-carousel__media-stack"
+            style={mediaStackStyle}
+          >
             {slide.posterUrl && !playerReady ? (
-              <Image
-                src={slide.posterUrl}
-                alt=""
-                fill
-                loading="eager"
-                priority={index === 0}
-                className="vp-proto-carousel__poster"
-                sizes="100vw"
-              />
+              <div className="vp-proto-carousel__poster-shell">
+                <Image
+                  src={slide.posterUrl}
+                  alt=""
+                  fill
+                  loading="eager"
+                  priority={index === 0}
+                  className="vp-proto-carousel__poster"
+                  sizes="100vw"
+                />
+              </div>
             ) : null}
             {shouldMountVideo && slide.vimeoUrl ? (
               <CarouselVimeo
@@ -65,6 +133,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                 active={active}
                 previewStartSeconds={slide.previewStartSeconds}
                 previewEndSeconds={slide.previewEndSeconds}
+                contentAspectHint={contentAspectHint}
                 onReadyChange={setPlayerReady}
               />
             ) : null}

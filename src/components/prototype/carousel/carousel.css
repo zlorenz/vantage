@@ -61,6 +61,23 @@
   position: absolute;
   inset: 0;
   transform-origin: center center;
+  /* 16/9 until poster scan or native loadedmetadata writes the cover aspect.
+   * Unitless ratio — avoids `100vw / (w / h)` association bugs. */
+  --vp-preview-aspect: 1.77777778;
+}
+
+.vp-proto-carousel__poster-shell {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
+  height: max(100%, calc(100vw / var(--vp-preview-aspect)));
+  max-width: none;
+  max-height: none;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
 }
 
 .vp-proto-carousel__poster {
@@ -73,17 +90,23 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  /* 16/9 until native loadedmetadata writes the coded size. Iframe fallback
-   * never learns videoWidth — keep this default rather than a per-slug map. */
-  --vp-preview-aspect: 16 / 9;
 }
 
 .vp-proto-carousel__iframe {
   position: absolute;
   top: 50%;
   left: 50%;
+  /*
+   * Cover-math: size the replaced box to --vp-preview-aspect so it covers
+   * the viewport. Ultrawide (letterboxing) grows width; tall / pillarboxed
+   * content grows height. Unitless aspect keeps `100vw / aspect` correct
+   * (slash-token `w / h` used to parse as `100vw / w / h` and never grew).
+   * max-width/height: none undoes Tailwind preflight clamping.
+   */
   width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
   height: max(100%, calc(100vw / var(--vp-preview-aspect)));
+  max-width: none;
+  max-height: none;
   min-width: 100%;
   min-height: 100%;
   border: 0;
@@ -97,10 +120,12 @@
   left: 50%;
   width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
   height: max(100%, calc(100vw / var(--vp-preview-aspect)));
+  max-width: none;
+  max-height: none;
   min-width: 100%;
   min-height: 100%;
   transform: translate(-50%, -50%);
-  /* Cover-math sizes the box to the coded aspect; object-fit is a fallback
+  /* Cover-math sizes the box to the cover aspect; object-fit is a fallback
    * if WebKit ignores the box size, not the primary crop. */
   object-fit: cover;
   pointer-events: none;

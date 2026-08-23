@@ -21,6 +21,8 @@ interface CarouselVimeoProps {
   active: boolean;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
+  /** Poster pillarbox content aspect (width/height); see CarouselNativeVideo. */
+  contentAspectHint?: number | null;
   onReadyChange?: (ready: boolean) => void;
 }
 
@@ -34,6 +36,7 @@ export function CarouselVimeo({
   active,
   previewStartSeconds,
   previewEndSeconds,
+  contentAspectHint = null,
   onReadyChange,
 }: CarouselVimeoProps) {
   const videoId = extractVimeoId(normalizeStoredVideoUrl(vimeoUrl));
@@ -106,6 +109,7 @@ export function CarouselVimeo({
       active={active}
       previewStartSeconds={previewStartSeconds}
       previewEndSeconds={previewEndSeconds}
+      contentAspectHint={contentAspectHint}
       onPlaybackError={() => setUseIframe(true)}
       onReadyChange={onReadyChange}
     />
