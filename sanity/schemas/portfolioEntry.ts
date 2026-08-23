@@ -257,14 +257,9 @@ export const portfolioEntry = defineType({
       title: 'Featured Image',
       type: 'image',
       group: 'media',
-      options: {
-        hotspot: {
-          previews: [
-            {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5},
-            {title: 'Homepage Carousel', aspectRatio: 16 / 9},
-          ],
-        },
-      },
+      // hotspot UI is custom (FeaturedImageHotspotInput); keep stock upload via renderDefault.
+      // Data still writes standard hotspot/crop for urlForImage().
+      options: {hotspot: false},
       components: {input: FeaturedImageHotspotInput},
       validation: (rule) => rule.required(),
       hidden: hiddenForTranslator,
