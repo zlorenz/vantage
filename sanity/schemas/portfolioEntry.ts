@@ -11,6 +11,7 @@ import {defineField, defineType} from 'sanity'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
+import {FeaturedImageHotspotInput} from '../components/featured-image/FeaturedImageHotspotInput'
 import {OptionalField} from '../components/OptionalField'
 import {PreviewBoundsPairField} from '../components/PreviewBoundsInput'
 import {VimeoUrlInput} from '../components/video/VimeoUrlInput'
@@ -264,6 +265,7 @@ export const portfolioEntry = defineType({
           ],
         },
       },
+      components: {input: FeaturedImageHotspotInput},
       validation: (rule) => rule.required(),
       hidden: hiddenForTranslator,
     }),
