@@ -26,7 +26,7 @@ export function PreviewBoundsPickerDialog({
       onClose={onClose}
       zOffset={STUDIO_OVERLAY_Z + 100}
     >
-      <Stack space={3} padding={4}>
+      <Stack space={3} paddingX={4} paddingBottom={4} paddingTop={2}>
         {loading ? (
           <Flex align="center" gap={3} paddingY={4} justify="center">
             <Spinner muted />

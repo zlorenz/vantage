@@ -33,6 +33,15 @@ function formatTime(seconds: number): string {
   return `${seconds.toFixed(2)}s`
 }
 
+/** Playhead / duration counter — e.g. `0:03 / 0:45`. */
+function formatTimecode(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
+  const total = Math.floor(seconds)
+  const m = Math.floor(total / 60)
+  const s = total % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
 function percentAlong(duration: number, time: number): number {
   if (!Number.isFinite(duration) || duration <= 0) return 0
   return Math.min(100, Math.max(0, (time / duration) * 100))
@@ -346,6 +355,11 @@ export function PreviewBoundsVisualPicker({
       onFocusCapture={handleFocusIn}
       onBlurCapture={handleFocusOut}
     >
+      <Text size={1} muted>
+        Scrub bar or keyframe ticks to seek · ←/→ previous/next keyframe · <kbd>I</kbd>{' '}
+        set Start · <kbd>O</kbd> set End
+      </Text>
+
       <Box
         style={{
           borderRadius: 4,
@@ -496,18 +510,37 @@ export function PreviewBoundsVisualPicker({
             />
           ) : null}
         </Box>
+
+        <Box
+          aria-label={
+            timelineReady
+              ? `Playhead ${formatTimecode(playhead)} of ${formatTimecode(duration)}`
+              : 'Waiting for video duration'
+          }
+          style={{
+            flexShrink: 0,
+            padding: '6px 12px',
+            borderRadius: 999,
+            background: 'rgba(0, 0, 0, 0.55)',
+            color: '#fff',
+            fontSize: 13,
+            fontVariantNumeric: 'tabular-nums',
+            lineHeight: 1.2,
+            whiteSpace: 'nowrap',
+            fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          }}
+        >
+          {timelineReady
+            ? `${formatTimecode(playhead)} / ${formatTimecode(duration)}`
+            : '— / —'}
+        </Box>
       </Flex>
 
       {!timelineReady ? (
         <Text size={0} muted>
           Waiting for video duration...
         </Text>
-      ) : (
-        <Text size={0} muted>
-          Scrub bar or keyframe ticks to seek · ←/→ previous/next keyframe · <kbd>I</kbd>{' '}
-          set Start · <kbd>O</kbd> set End
-        </Text>
-      )}
+      ) : null}
 
       <Flex gap={2} wrap="wrap" align="center">
         <Button
@@ -539,22 +572,11 @@ export function PreviewBoundsVisualPicker({
         />
       </Flex>
 
-      <Flex gap={3} wrap="wrap">
+      <Flex gap={3} wrap="wrap" align="center">
         <Text size={1}>
           Start:{' '}
           {startSeconds != null ? (
-            <>
-              <strong>{formatTime(startSeconds)}</strong>{' '}
-              {!readOnly ? (
-                <Button
-                  text="Clear"
-                  mode="bleed"
-                  fontSize={0}
-                  padding={1}
-                  onClick={() => onSelect('start', '')}
-                />
-              ) : null}
-            </>
+            <strong>{formatTime(startSeconds)}</strong>
           ) : (
             <Text as="span" muted>
               Play from start
@@ -564,24 +586,25 @@ export function PreviewBoundsVisualPicker({
         <Text size={1}>
           End:{' '}
           {endSeconds != null ? (
-            <>
-              <strong>{formatTime(endSeconds)}</strong>{' '}
-              {!readOnly ? (
-                <Button
-                  text="Clear"
-                  mode="bleed"
-                  fontSize={0}
-                  padding={1}
-                  onClick={() => onSelect('end', '')}
-                />
-              ) : null}
-            </>
+            <strong>{formatTime(endSeconds)}</strong>
           ) : (
             <Text as="span" muted>
               Play to end
             </Text>
           )}
         </Text>
+        {!readOnly && (startSeconds != null || endSeconds != null) ? (
+          <Button
+            text="Clear"
+            mode="ghost"
+            tone="critical"
+            fontSize={1}
+            onClick={() => {
+              onSelect('start', '')
+              onSelect('end', '')
+            }}
+          />
+        ) : null}
       </Flex>
     </Stack>
   )
