@@ -248,7 +248,9 @@
   overflow-wrap: break-word;
 }
 
-/* Bottom chrome: filter trigger + scrubber track (in stage flow under viewport). */
+/* Bottom chrome: filter trigger + scrubber track (in stage flow under viewport).
+ * Invisible ::after spacer mirrors the funnel's 2.75rem footprint so the scrubber
+ * sits symmetrically between funnel and right gutter. */
 .vp-portfolio-index__bottom-bar {
   position: relative;
   flex-shrink: 0;
@@ -262,6 +264,15 @@
   height: var(--vp-index-bottom-bar-height, 5rem);
   padding: 0 var(--spacing-vp-gutter, 1rem);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  pointer-events: none;
+}
+
+.vp-portfolio-index__bottom-bar::after {
+  content: '';
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -306,7 +317,8 @@
   min-width: 0;
   max-width: 100%;
   height: 2.75rem;
-  margin-inline-start: 0.5rem;
+  /* Match breathing room on both sides of the scrubber (funnel ↔ scrubber ↔ spacer). */
+  margin-inline: 0.5rem;
   display: flex;
   align-items: center;
   pointer-events: auto;
