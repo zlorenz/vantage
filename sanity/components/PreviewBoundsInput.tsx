@@ -232,6 +232,10 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
     setPickerOpen(false)
   }, [])
 
+  // Stable — mint effect in PreviewBoundsVisualPicker depends on onMintError;
+  // an inline arrow would remount the <video> on every Start/End form patch.
+  const onMintError = useCallback(() => setMintFailed(true), [])
+
   const handleSelect = useCallback(
     (bound: PreviewBound, next: string) => {
       if (!next) {
@@ -329,7 +333,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
                 endSeconds={endSeconds}
                 readOnly={readOnly}
                 onSelect={handleSelect}
-                onMintError={() => setMintFailed(true)}
+                onMintError={onMintError}
               />
             ) : showDialogFallback ? (
               <PreviewBoundFallbackFields
