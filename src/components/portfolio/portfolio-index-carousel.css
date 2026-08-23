@@ -8,6 +8,9 @@
  * stage is bottom-anchored (flex-end) with a slightly shorter height-scale
  * so the reduction frees space above — bottom bar stays put. Card HEIGHT
  * subtracts the bottom bar from the viewport calc.
+ * Desktop (≥576px): card width derives from that height via aspect-ratio
+ * 4 / 5 (narrower peeks intentionally show more neighbors). Mobile keeps
+ * percentage flex-basis.
  */
 
 .vp-portfolio-index {
@@ -58,35 +61,41 @@
 
 @media (min-width: 576px) {
   .vp-portfolio-index {
+    /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
     --vp-index-slide-basis: 64%;
     --vp-index-slide-gap: 0.75rem;
   }
 
-  .vp-portfolio-index.is-sparse {
-    --vp-index-slide-basis: 78%;
+  /*
+   * Width from height: slide shrink-wraps the 4:5 card. flex-shrink: 0 so
+   * min-width: 0 on the base rule cannot collapse the auto-sized item;
+   * min-width: auto restores the intrinsic min so aspect-ratio wins.
+   */
+  .vp-portfolio-index__slide {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: auto;
+  }
+
+  .vp-portfolio-index__card {
+    width: auto;
+    aspect-ratio: 4 / 5;
   }
 }
 
 @media (min-width: 992px) {
   .vp-portfolio-index {
-    /* ~23% peek each side + gap — more neighbor cards visible. */
+    /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
     --vp-index-slide-basis: 54%;
     --vp-index-slide-gap: 1rem;
-  }
-
-  .vp-portfolio-index.is-sparse {
-    --vp-index-slide-basis: 72%;
   }
 }
 
 @media (min-width: 1400px) {
   .vp-portfolio-index {
+    /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
     --vp-index-slide-basis: 48%;
     --vp-index-slide-gap: 1.25rem;
-  }
-
-  .vp-portfolio-index.is-sparse {
-    --vp-index-slide-basis: 68%;
   }
 }
 
