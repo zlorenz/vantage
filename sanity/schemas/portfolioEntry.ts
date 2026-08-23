@@ -256,7 +256,14 @@ export const portfolioEntry = defineType({
       title: 'Featured Image',
       type: 'image',
       group: 'media',
-      options: {hotspot: true},
+      options: {
+        hotspot: {
+          previews: [
+            {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5},
+            {title: 'Homepage Carousel', aspectRatio: 16 / 9},
+          ],
+        },
+      },
       validation: (rule) => rule.required(),
       hidden: hiddenForTranslator,
     }),
