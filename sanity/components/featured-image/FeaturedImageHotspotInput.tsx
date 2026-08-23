@@ -6,8 +6,15 @@
  */
 
 import {Box, Card, Flex, Stack, Text} from '@sanity/ui'
-import {useEffect, useMemo, useRef, useState} from 'react'
-import {useClient, type ObjectInputProps} from 'sanity'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
+import {set, useClient, type ObjectInputProps} from 'sanity'
 
 type ImageFieldValue = {
   _type?: 'image'
@@ -46,13 +53,23 @@ type GuideSpec = {
   color: string
 }
 
+type Center = {x: number; y: number}
+
 /** Matches /work desktop card (4:5) and homepage carousel poster crop (16:9). */
 const GUIDES: GuideSpec[] = [
   {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5, color: 'rgba(249, 219, 36, 0.95)'},
   {title: 'Homepage Carousel', aspectRatio: 16 / 9, color: 'rgba(100, 180, 255, 0.95)'},
 ]
 
-const DEFAULT_CENTER = {x: 0.5, y: 0.5}
+const DEFAULT_CENTER: Center = {x: 0.5, y: 0.5}
+
+const DEFAULT_CROP = {
+  _type: 'sanity.imageCrop' as const,
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+}
 
 function assetIdFromValue(value: unknown): string | null {
   const ref = (value as ImageFieldValue | undefined)?.asset?._ref
@@ -61,6 +78,15 @@ function assetIdFromValue(value: unknown): string | null {
 
 function clamp01(n: number): number {
   return Math.min(1, Math.max(0, n))
+}
+
+function centerFromHotspot(hotspot: ImageFieldValue['hotspot']): Center {
+  const x = hotspot?.x
+  const y = hotspot?.y
+  return {
+    x: typeof x === 'number' && Number.isFinite(x) ? clamp01(x) : DEFAULT_CENTER.x,
+    y: typeof y === 'number' && Number.isFinite(y) ? clamp01(y) : DEFAULT_CENTER.y,
+  }
 }
 
 /** Largest rectangle of `aspectRatio` (w/h) that fits in an image of size W×H. */
@@ -74,10 +100,8 @@ function maxGuideSize(
   }
   const imageAspect = imageW / imageH
   if (imageAspect > aspectRatio) {
-    // Image wider than guide — height-limited.
     return {width: imageH * aspectRatio, height: imageH}
   }
-  // Image taller/narrower than guide — width-limited.
   return {width: imageW, height: imageW / aspectRatio}
 }
 
@@ -107,8 +131,18 @@ function guideBoxStyle(
   }
 }
 
+function hotspotValue(center: Center) {
+  return {
+    _type: 'sanity.imageHotspot' as const,
+    x: clamp01(center.x),
+    y: clamp01(center.y),
+    height: 1,
+    width: 1,
+  }
+}
+
 export function FeaturedImageHotspotInput(props: ObjectInputProps) {
-  const {value, renderDefault} = props
+  const {value, readOnly, renderDefault, onChange} = props
   const client = useClient({apiVersion: '2025-01-01'})
   const assetId = assetIdFromValue(value)
   const imageValue = (value ?? {}) as ImageFieldValue
@@ -117,15 +151,31 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
   /** Natural pixel size from metadata, refined by img onLoad when needed. */
   const [naturalSize, setNaturalSize] = useState<{width: number; height: number} | null>(null)
   const imgRef = useRef<HTMLImageElement | null>(null)
+  const stageRef = useRef<HTMLDivElement | null>(null)
+  const draggingRef = useRef(false)
+  const draftCenterRef = useRef<Center | null>(null)
 
-  const center = useMemo(() => {
-    const x = imageValue.hotspot?.x
-    const y = imageValue.hotspot?.y
-    return {
-      x: typeof x === 'number' && Number.isFinite(x) ? clamp01(x) : DEFAULT_CENTER.x,
-      y: typeof y === 'number' && Number.isFinite(y) ? clamp01(y) : DEFAULT_CENTER.y,
+  const storedCenter = useMemo(
+    () => centerFromHotspot(imageValue.hotspot),
+    [imageValue.hotspot],
+  )
+
+  /** Live center while dragging; falls back to saved hotspot. */
+  const [draftCenter, setDraftCenter] = useState<Center | null>(null)
+  const center = draftCenter ?? storedCenter
+
+  const updateDraftCenter = useCallback((next: Center) => {
+    draftCenterRef.current = next
+    setDraftCenter(next)
+  }, [])
+
+  useEffect(() => {
+    // Drop stale draft when the form value changes from outside (undo, remote).
+    if (!draggingRef.current) {
+      draftCenterRef.current = null
+      setDraftCenter(null)
     }
-  }, [imageValue.hotspot?.x, imageValue.hotspot?.y])
+  }, [storedCenter.x, storedCenter.y])
 
   useEffect(() => {
     if (!assetId) {
@@ -172,6 +222,76 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
     })
   }
 
+  const commitCenter = useCallback(
+    (next: Center) => {
+      if (readOnly) return
+      const hotspot = hotspotValue(next)
+      onChange([set(DEFAULT_CROP, ['crop']), set(hotspot, ['hotspot'])])
+    },
+    [onChange, readOnly],
+  )
+
+  const centerFromClient = useCallback((clientX: number, clientY: number): Center | null => {
+    const stage = stageRef.current
+    if (!stage) return null
+    const rect = stage.getBoundingClientRect()
+    if (rect.width <= 0 || rect.height <= 0) return null
+    return {
+      x: clamp01((clientX - rect.left) / rect.width),
+      y: clamp01((clientY - rect.top) / rect.height),
+    }
+  }, [])
+
+  const onPointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (readOnly) return
+      // Primary button / touch only.
+      if (event.button !== 0 && event.pointerType === 'mouse') return
+      event.preventDefault()
+      const next = centerFromClient(event.clientX, event.clientY)
+      if (!next) return
+      draggingRef.current = true
+      updateDraftCenter(next)
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId)
+      } catch {
+        // Untrusted / synthetic events may reject capture.
+      }
+    },
+    [centerFromClient, readOnly, updateDraftCenter],
+  )
+
+  const onPointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (!draggingRef.current || readOnly) return
+      const next = centerFromClient(event.clientX, event.clientY)
+      if (next) updateDraftCenter(next)
+    },
+    [centerFromClient, readOnly, updateDraftCenter],
+  )
+
+  const endDrag = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (!draggingRef.current) return
+      draggingRef.current = false
+      try {
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId)
+        }
+      } catch {
+        // ignore
+      }
+      const next =
+        centerFromClient(event.clientX, event.clientY) ?? draftCenterRef.current
+      if (next) {
+        // Keep draft until the form value catches up (avoids a one-frame snap-back).
+        updateDraftCenter(next)
+        commitCenter(next)
+      }
+    },
+    [centerFromClient, commitCenter, updateDraftCenter],
+  )
+
   return (
     <Stack space={3}>
       {renderDefault(props)}
@@ -183,8 +303,8 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
                 Focal point
               </Text>
               <Text size={1} muted>
-                Guides show how the image crops for Work (4:5) and Homepage (16:9). Drag coming
-                next.
+                Drag on the image to set the shared center for Work (4:5) and Homepage (16:9)
+                crops. Guides stay on-image; the saved point can go edge-to-edge.
               </Text>
               <Flex gap={3} wrap="wrap">
                 {GUIDES.map((guide) => (
@@ -207,22 +327,31 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
             </Stack>
 
             <Box
+              ref={stageRef}
               style={{
                 position: 'relative',
                 width: '100%',
                 lineHeight: 0,
                 userSelect: 'none',
+                cursor: readOnly ? 'default' : 'crosshair',
+                touchAction: 'none',
               }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
             >
               <img
                 ref={imgRef}
                 src={asset.url}
                 alt=""
+                draggable={false}
                 onLoad={onImageLoad}
                 style={{
                   display: 'block',
                   width: '100%',
                   height: 'auto',
+                  pointerEvents: 'none',
                 }}
               />
               {naturalSize
@@ -250,7 +379,6 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
                     )
                   })
                 : null}
-              {/* Shared center crosshair */}
               {naturalSize ? (
                 <Box
                   aria-hidden
