@@ -4,7 +4,6 @@ import {forwardRef, useEffect, useState} from 'react';
 import Image from 'next/image';
 import {useLocale, useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
-import {VpButton} from '@/components/ui/VpButton';
 import {CarouselVimeo} from './CarouselVimeo';
 import type {PrototypeCarouselSlide} from './types';
 
@@ -84,15 +83,31 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               </div>
               <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
               {portfolioHref ? (
-                <VpButton
+                <Link
                   href={portfolioHref}
-                  variant="ghost"
-                  className={`vp-proto-carousel__explore mt-2 w-fit ${
+                  className={`vp-proto-carousel__explore ${
                     interactive ? 'pointer-events-auto' : 'pointer-events-none'
                   }`}
+                  tabIndex={interactive ? undefined : -1}
                 >
                   {t('exploreButton')}
-                </VpButton>
+                  <span className="vp-proto-carousel__explore-caret" aria-hidden>
+                    <svg
+                      className="vp-proto-carousel__explore-caret-icon"
+                      viewBox="7 4 12 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 6L16 12L9 18"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="square"
+                        strokeLinejoin="miter"
+                      />
+                    </svg>
+                  </span>
+                </Link>
               ) : null}
             </div>
             <dl className="vp-proto-carousel__credits">
