@@ -3,12 +3,11 @@
  * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
  * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
- * viewport (safe-area aware), then bottom-anchors the card stage column
- * (counter + carousel + bottom chrome) with justify-content: flex-end.
- * Height-scale shrinks only remove space above the stage — bottom edge of
- * the carousel and bottom bar stay put. padding-bottom keeps the prior
- * optical gap below the stage (base gutter + half leftover from centering).
- * Card HEIGHT subtracts the bottom bar from the viewport calc.
+ * viewport (safe-area aware), then flex-centers the card stage column
+ * (counter + carousel + bottom chrome) on desktop. On mobile only, the
+ * stage is bottom-anchored (flex-end) with a slightly shorter height-scale
+ * so the reduction frees space above — bottom bar stays put. Card HEIGHT
+ * subtracts the bottom bar from the viewport calc.
  */
 
 .vp-portfolio-index {
@@ -18,20 +17,17 @@
   --vp-index-inactive-scale: 0.94;
   /* Placeholder for Phase 3 filter + scrubber — used in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
-  /* Independent card-stage height tune (does not change bottom-bar reservation).
-   * 0.75 ≈ 12.8% shorter than prior 0.86; with flex-end, only the top edge moves. */
-  --vp-index-height-scale: 0.75;
+  /* Desktop default; mobile override (~7% shorter) below. */
+  --vp-index-height-scale: 0.86;
 
   position: relative;
   display: flex;
   flex-direction: column;
-  /* Bottom-anchor the stage so height-scale reductions only free space above. */
-  justify-content: flex-end;
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
-  /* Preserve the pre-flex-end gap below the stage: prior padding + ~half leftover
-   * from justify-content:center (≈0.55rem on mobile). Keeps bottom edge put. */
-  padding-bottom: calc(max(1.25rem, 5vh) + 0.55rem);
+  /* Spare space below the bottom chrome (not between carousel and controls). */
+  padding-bottom: max(1.25rem, 5vh);
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
     100vh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
@@ -41,6 +37,17 @@
   );
   background: var(--vp-bg, #000000);
   color: #fff;
+}
+
+/* Mobile: modest height cut, bottom-anchored so only the top edge moves. */
+@media (max-width: 575px) {
+  .vp-portfolio-index {
+    /* 0.80 ≈ 7% shorter than 0.86 */
+    --vp-index-height-scale: 0.80;
+    justify-content: flex-end;
+    /* Prior padding + ~half leftover from centering — keeps bottom edge put. */
+    padding-bottom: calc(max(1.25rem, 5vh) + 0.55rem);
+  }
 }
 
 .vp-portfolio-index.is-sparse {
