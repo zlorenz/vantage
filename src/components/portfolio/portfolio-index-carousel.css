@@ -3,11 +3,12 @@
  * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
  * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
- * viewport (safe-area aware), then flex-centers the card stage column
- * (counter + carousel + bottom chrome) as one unit. Bottom bar sits in
- * document flow tight under the viewport — same gap as the counter above.
- * Residual empty space lands below the scrubber band, not between carousel
- * and controls. Card HEIGHT subtracts the bottom bar from the viewport calc.
+ * viewport (safe-area aware), then bottom-anchors the card stage column
+ * (counter + carousel + bottom chrome) with justify-content: flex-end.
+ * Height-scale shrinks only remove space above the stage — bottom edge of
+ * the carousel and bottom bar stay put. padding-bottom keeps the prior
+ * optical gap below the stage (base gutter + half leftover from centering).
+ * Card HEIGHT subtracts the bottom bar from the viewport calc.
  */
 
 .vp-portfolio-index {
@@ -17,17 +18,20 @@
   --vp-index-inactive-scale: 0.94;
   /* Placeholder for Phase 3 filter + scrubber — used in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
-  /* Independent card-stage height tune (does not change bottom-bar reservation). */
-  --vp-index-height-scale: 0.86;
+  /* Independent card-stage height tune (does not change bottom-bar reservation).
+   * 0.75 ≈ 12.8% shorter than prior 0.86; with flex-end, only the top edge moves. */
+  --vp-index-height-scale: 0.75;
 
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Bottom-anchor the stage so height-scale reductions only free space above. */
+  justify-content: flex-end;
   width: 100%;
   box-sizing: border-box;
-  /* Bias flex center upward so spare space sits below the bottom chrome. */
-  padding-bottom: max(1.25rem, 5vh);
+  /* Preserve the pre-flex-end gap below the stage: prior padding + ~half leftover
+   * from justify-content:center (≈0.55rem on mobile). Keeps bottom edge put. */
+  padding-bottom: calc(max(1.25rem, 5vh) + 0.55rem);
   margin-top: var(--vp-header-height, 4.5rem);
   height: calc(
     100vh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
