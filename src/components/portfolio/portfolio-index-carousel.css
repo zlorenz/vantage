@@ -8,9 +8,9 @@
  * stage is bottom-anchored (flex-end) with a slightly shorter height-scale
  * so the reduction frees space above — bottom bar stays put. Card HEIGHT
  * subtracts the bottom bar from the viewport calc.
- * Desktop (≥576px): card width derives from that height via aspect-ratio
- * 4 / 5 (narrower peeks intentionally show more neighbors). Mobile keeps
- * percentage flex-basis.
+ * Desktop (≥576px): slide width derives from height via aspect-ratio
+ * 4 / 5 on the flex item (narrower peeks intentionally show more
+ * neighbors). Mobile keeps percentage flex-basis.
  */
 
 .vp-portfolio-index {
@@ -64,22 +64,6 @@
     /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
     --vp-index-slide-basis: 64%;
     --vp-index-slide-gap: 0.75rem;
-  }
-
-  /*
-   * Width from height: slide shrink-wraps the 4:5 card. flex-shrink: 0 so
-   * min-width: 0 on the base rule cannot collapse the auto-sized item;
-   * min-width: auto restores the intrinsic min so aspect-ratio wins.
-   */
-  .vp-portfolio-index__slide {
-    flex: 0 0 auto;
-    width: auto;
-    min-width: auto;
-  }
-
-  .vp-portfolio-index__card {
-    width: auto;
-    aspect-ratio: 4 / 5;
   }
 }
 
@@ -187,6 +171,21 @@
   background: var(--vp-bg, #000000);
   color: #fff;
   text-decoration: none;
+}
+
+/*
+ * Desktop: width from height. Must follow the base slide rule above so
+ * flex/min-width win the cascade (same specificity). Aspect-ratio lives on
+ * the flex item — a block card with width:auto fills its parent, and
+ * aspect-ratio on non-replaced boxes only affects intrinsic sizes.
+ */
+@media (min-width: 576px) {
+  .vp-portfolio-index__slide {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: auto;
+    aspect-ratio: 4 / 5;
+  }
 }
 
 /*
