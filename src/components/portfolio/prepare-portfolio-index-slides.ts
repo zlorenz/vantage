@@ -11,7 +11,7 @@ import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry} from '@/types/sanity';
 
 /** Newest-first positions treated as already “featured-visible” for append exclusion. */
-const FEATURED_APPEND_EXCLUDE_HEAD = 8;
+const FEATURED_APPEND_EXCLUDE_HEAD = 12;
 
 export type PortfolioIndexSlide = {
   id: string;

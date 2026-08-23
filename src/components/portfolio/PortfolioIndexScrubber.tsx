@@ -68,6 +68,26 @@ function syncEngineToLocation(engine: EmblaEngine) {
   engine.target.set(engine.location.get());
 }
 
+/** Loop-aware nearest snap — linear |snap - progress| fails at the 0/1 seam. */
+function nearestSnapIndexFromProgress(
+  progress: number,
+  snaps: number[],
+): number {
+  if (snaps.length <= 1) return 0;
+  const norm = ((progress % 1) + 1) % 1;
+  let nearest = 0;
+  let bestDist = Number.POSITIVE_INFINITY;
+  for (let i = 0; i < snaps.length; i++) {
+    const dist = Math.abs(snaps[i] - norm);
+    const circular = Math.min(dist, 1 - dist);
+    if (circular < bestDist) {
+      bestDist = circular;
+      nearest = i;
+    }
+  }
+  return nearest;
+}
+
 function settleToNearestSnap(emblaApi: EmblaCarouselType) {
   const engine = emblaApi.internalEngine();
   engine.scrollBody.useFriction(0).useDuration(0);
@@ -76,18 +96,10 @@ function settleToNearestSnap(emblaApi: EmblaCarouselType) {
   const snaps = emblaApi.scrollSnapList();
   if (snaps.length <= 1) return;
 
-  const progress = emblaApi.scrollProgress();
-  let nearest = 0;
-  let bestDist = Number.POSITIVE_INFINITY;
-  for (let i = 0; i < snaps.length; i++) {
-    const dist = Math.abs(snaps[i] - progress);
-    if (dist < bestDist) {
-      bestDist = dist;
-      nearest = i;
-    }
-  }
-
-  emblaApi.scrollTo(nearest, false);
+  emblaApi.scrollTo(
+    nearestSnapIndexFromProgress(emblaApi.scrollProgress(), snaps),
+    false,
+  );
 }
 
 export function PortfolioIndexScrubber({

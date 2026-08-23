@@ -86,6 +86,33 @@ function isWithinCircularWindow(
   return Math.min(dist, slideCount - dist) <= radius;
 }
 
+/**
+ * Nearest snap for Embla scrollProgress under loop: true.
+ * Linear |snap - progress| fails at the seam (progress crawls 0.99→1 then
+ * jumps to 0) and keeps the last index selected for the whole settle.
+ * Circular distance on [0,1) picks the wrapped neighbor correctly.
+ * Also required while scrubbing: selectedScrollSnap() does not advance until
+ * settle, so progress-based nearest is what keeps is-active + windowing live.
+ */
+function nearestSnapIndexFromProgress(
+  progress: number,
+  snaps: number[],
+): number {
+  if (snaps.length <= 1) return 0;
+  const norm = ((progress % 1) + 1) % 1;
+  let nearest = 0;
+  let bestDist = Number.POSITIVE_INFINITY;
+  for (let i = 0; i < snaps.length; i++) {
+    const dist = Math.abs(snaps[i] - norm);
+    const circular = Math.min(dist, 1 - dist);
+    if (circular < bestDist) {
+      bestDist = circular;
+      nearest = i;
+    }
+  }
+  return nearest;
+}
+
 function shouldMountPortfolioIndexPoster(
   index: number,
   activeIndex: number,
@@ -203,16 +230,20 @@ export function PortfolioIndexCarousel({
   }, [emblaApi]);
 
   /**
-   * Keep counter/windowing aligned while Embla animates between snaps.
-   * Use selectedScrollSnap — not linear distance on scrollProgress(). With
-   * loop: true, progress crawls 0.99→1 then jumps to 0 across the seam, so
-   * linear "nearest snap" stays on the last index for the whole settle and
-   * overwrites the select event (active styles lag ~1s on last→first only).
+   * Keep counter/windowing aligned while Embla animates between snaps
+   * (scrub + swipe + loop seam). Progress-based circular nearest — not
+   * selectedScrollSnap (stale during scrub) and not linear snap distance
+   * (stuck on last index across the loop wrap).
    */
   const onScroll = useCallback(() => {
     if (!emblaApi) return;
-    const selected = emblaApi.selectedScrollSnap();
-    setActiveIndex((prev) => (prev === selected ? prev : selected));
+    const snaps = emblaApi.scrollSnapList();
+    if (snaps.length <= 1) return;
+    const nearest = nearestSnapIndexFromProgress(
+      emblaApi.scrollProgress(),
+      snaps,
+    );
+    setActiveIndex((prev) => (prev === nearest ? prev : nearest));
   }, [emblaApi]);
 
   useEffect(() => {
