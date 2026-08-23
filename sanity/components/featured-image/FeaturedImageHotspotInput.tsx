@@ -55,9 +55,16 @@ type GuideSpec = {
 
 type Center = {x: number; y: number}
 
-/** Matches /work desktop card (4:5) and homepage carousel poster crop (16:9). */
+/** Crop aspect guides (width / height) for dual-/triple-surface art direction. */
 const GUIDES: GuideSpec[] = [
   {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5, color: 'rgba(249, 219, 36, 0.95)'},
+  /**
+   * /work mobile card is viewport-derived (not a locked CSS ratio).
+   * Measured live at 390×844: card ≈286.52×559.19 → W/H ≈ 0.512.
+   * Tokens at measurement: --vp-header-height 65px, --vp-index-slide-basis 74%,
+   * --vp-index-bottom-bar-height 5rem, --vp-index-height-scale 0.80.
+   */
+  {title: 'Work Carousel (Mobile)', aspectRatio: 0.512, color: 'rgba(80, 220, 160, 0.95)'},
   {title: 'Homepage Carousel', aspectRatio: 16 / 9, color: 'rgba(100, 180, 255, 0.95)'},
 ]
 
@@ -303,8 +310,9 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
                 Focal point
               </Text>
               <Text size={1} muted>
-                Drag on the image to set the shared center for Work (4:5) and Homepage (16:9)
-                crops. Guides stay on-image; the saved point can go edge-to-edge.
+                Drag on the image to set the shared center for Work desktop (4:5), Work mobile
+                (~0.512 W:H at 390×844), and Homepage (16:9) crops. Guides stay on-image; the
+                saved point can go edge-to-edge.
               </Text>
               <Flex gap={3} wrap="wrap">
                 {GUIDES.map((guide) => (
