@@ -7,7 +7,7 @@ const LABELS: Record<LocaleCode, string> = {
   zh: 'Chinese',
 }
 
-function GbFlagSvg({size, clipId}: {size: number; clipId: string}) {
+function UsFlagSvg({size, clipId}: {size: number; clipId: string}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -21,19 +21,14 @@ function GbFlagSvg({size, clipId}: {size: number; clipId: string}) {
         <circle cx="30" cy="30" r="30" />
       </clipPath>
       <g clipPath={`url(#${clipId})`}>
-        <rect width="60" height="60" fill="#012169" />
-        <path d="M0 0 L60 36 L48 36 L0 8 Z" fill="#fff" />
-        <path d="M0 8 L48 36 L36 36 L0 14 Z" fill="#C8102E" />
-        <path d="M24 0 L60 0 L60 24 L36 0 Z" fill="#fff" />
-        <path d="M36 0 L60 0 L60 14 L48 0 Z" fill="#C8102E" />
-        <path d="M0 24 L60 60 L60 48 L12 24 Z" fill="#fff" />
-        <path d="M12 24 L60 48 L60 36 L24 24 Z" fill="#C8102E" />
-        <path d="M0 36 L24 60 L0 60 Z" fill="#fff" />
-        <path d="M0 48 L12 60 L0 60 Z" fill="#C8102E" />
-        <rect x="25" width="10" height="60" fill="#fff" />
-        <rect y="25" width="60" height="10" fill="#fff" />
-        <rect x="27" width="6" height="60" fill="#C8102E" />
-        <rect y="27" width="60" height="6" fill="#C8102E" />
+        <rect width="60" height="60" fill="#B22234" />
+        <rect y="4.62" width="60" height="4.62" fill="#fff" />
+        <rect y="13.85" width="60" height="4.62" fill="#fff" />
+        <rect y="23.08" width="60" height="4.62" fill="#fff" />
+        <rect y="32.31" width="60" height="4.62" fill="#fff" />
+        <rect y="41.54" width="60" height="4.62" fill="#fff" />
+        <rect y="50.77" width="60" height="4.62" fill="#fff" />
+        <rect width="30" height="32.31" fill="#3C3B6E" />
       </g>
     </svg>
   )
@@ -79,12 +74,12 @@ function CnFlagSvg({size, clipId}: {size: number; clipId: string}) {
   )
 }
 
-/** Circular GB / CN flag chip for locale affordance inside inputs. */
+/** Circular US / CN flag chip for locale affordance inside inputs. */
 export function LocaleFlag(props: {locale: LocaleCode; size?: number}) {
   const size = props.size ?? 18
   const clipId = useId().replace(/:/g, '')
   return props.locale === 'en' ? (
-    <GbFlagSvg size={size} clipId={`gb-${clipId}`} />
+    <UsFlagSvg size={size} clipId={`us-${clipId}`} />
   ) : (
     <CnFlagSvg size={size} clipId={`cn-${clipId}`} />
   )
