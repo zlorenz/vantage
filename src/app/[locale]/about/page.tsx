@@ -11,6 +11,7 @@ import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
+import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import {
   aboutContactPageTitle,
@@ -164,6 +165,24 @@ export default async function AboutPage({ params }: Props) {
               {t('productionServicesCta')}
             </VpButton>
           </div>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper variant="tight" borderTop fullBleed={true}>
+        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
+          <h2 className="mb-3 font-vp-heading text-xs font-normal uppercase tracking-vp-heading text-vp-text-soft">
+            {t('moreAboutVantage')}
+          </h2>
+          <ul className="m-0 flex list-none flex-col gap-2 p-0">
+            <li>
+              <Link
+                href="/vietnam-production-service"
+                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              >
+                {t('moreAboutVietnamProductionService')}
+              </Link>
+            </li>
+          </ul>
         </div>
       </SectionWrapper>
 
