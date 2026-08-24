@@ -94,6 +94,11 @@
     "marketsHeading": "Markets",
     "videoFormatsHeading": "Video Formats"
   },
+  "OurCompany": {
+    "leadershipHeading": "Leadership",
+    "corporateDetailsHeading": "Corporate Details",
+    "corporateDetailsBody": "Company registration, headquarters, and legal details — to be finalized."
+  },
   "Portfolio": {
     "noVideo": "No video embed found for this portfolio item."
   }

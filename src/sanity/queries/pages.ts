@@ -183,6 +183,34 @@ export const OUR_INDUSTRY_PAGE_QUERY = defineQuery(`
   }
 `)
 
+/** Our Company — meta + body (own doc). Leadership founders are read separately from about. */
+export const OUR_COMPANY_PAGE_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "our-company" && !defined(trash.trashedAt)][0]{
+    ${PAGE_META_FIELDS},
+    ${PAGE_CONTENT_FIELDS}
+  }
+`)
+
+/**
+ * Leadership section on Our Company — read-only founders[] from the existing
+ * about page. Does not write to about; our-company has no founders field.
+ */
+export const ABOUT_FOUNDERS_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{
+    founders[]{
+      name,
+      jobTitle,
+      jobTitleZh,
+      professionalTitle,
+      professionalTitleZh,
+      image,
+      bio,
+      bioZh,
+      sameAs
+    }
+  }
+`)
+
 /** Awards — meta, body, award entries (placeholder until real award data lands). */
 export const AWARDS_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "awards" && !defined(trash.trashedAt)][0]{

@@ -94,6 +94,11 @@
     "marketsHeading": "市场",
     "videoFormatsHeading": "视频格式"
   },
+  "OurCompany": {
+    "leadershipHeading": "领导团队",
+    "corporateDetailsHeading": "公司详情",
+    "corporateDetailsBody": "公司注册、总部与法律详情——待最终确定。"
+  },
   "Portfolio": {
     "noVideo": "未找到此作品的视频嵌入。"
   }
