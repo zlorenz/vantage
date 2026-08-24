@@ -24,15 +24,13 @@ import {
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { NavSearch } from './NavSearch';
-import { useContactModal } from './ContactModalContext';
 import type { Locale } from '@/i18n/routing';
 
 type LinkHref = ComponentProps<typeof Link>['href'];
 
 export interface NavItem {
   label: string;
-  href?: LinkHref;
-  isContact?: boolean;
+  href: LinkHref;
 }
 
 interface NavBarProps {
@@ -68,7 +66,6 @@ export function NavBar({
   const [panelMounted, setPanelMounted] = useState(false);
   const [panelVisible, setPanelVisible] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
-  const { openContact } = useContactModal();
   const togglerRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reopenSnapRef = useRef(false);
@@ -201,29 +198,6 @@ export function NavBar({
     let index = 0;
 
     for (const item of items) {
-      if (item.isContact) {
-        const i = index++;
-        nodes.push(
-          <li
-            key={item.label}
-            className="vp-mobile-nav-item nav-item"
-            style={staggerStyle(i)}
-          >
-            <button
-              type="button"
-              className={`${linkClass} w-full cursor-pointer border-0 bg-transparent p-0 text-left`}
-              onClick={() => {
-                openContact();
-                closeMenu();
-              }}
-            >
-              {item.label}
-            </button>
-          </li>,
-        );
-        continue;
-      }
-
       const i = index++;
       nodes.push(
         <li
@@ -232,7 +206,7 @@ export function NavBar({
           style={staggerStyle(i)}
         >
           <Link
-            href={item.href!}
+            href={item.href}
             className={linkClass}
             onClick={closeMenu}
           >

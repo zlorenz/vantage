@@ -55,7 +55,10 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
       label: news ? getNavLabel(news, locale) : t('news'),
       href: pagePath(locale, 'news', navPages) as LinkHref,
     },
-    { label: t('contact'), isContact: true },
+    {
+      label: t('contact'),
+      href: pagePath(locale, 'contact', navPages) as LinkHref,
+    },
   ];
 
   return (
