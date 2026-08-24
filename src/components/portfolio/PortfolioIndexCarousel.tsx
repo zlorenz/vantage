@@ -80,7 +80,7 @@ function portfolioIndexEmblaOptions(slideCount: number) {
     dragFree: false as const,
     loop,
     align: 'center' as const,
-    containScroll: loop ? ('trimSnaps' as const) : false,
+    containScroll: loop ? ('trimSnaps' as const) : (false as const),
   };
 }
 
