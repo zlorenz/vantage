@@ -18,10 +18,11 @@
     "submitAria": "Submit search",
     "openAria": "Open search",
     "hint": "Enter a search term above.",
-    "noResults": "No results for '{query}'",
+    "noResults": "No results for “{query}”",
     "portfolio": "PORTFOLIO",
     "news": "NEWS",
-    "loadingAria": "Loading search results"
+    "loadingAria": "Loading search results",
+    "closeAria": "Close search"
   },
   "Home": {
     "workSectionOutline": "A BIT OF",
@@ -77,7 +78,9 @@
     "backToFiltersAria": "Back to filter categories",
     "empty": "No portfolio items found.",
     "portfolioAria": "Portfolio filters",
-    "crewAria": "Portfolio crew filters"
+    "crewAria": "Portfolio crew filters",
+    "clearSearchAria": "Clear search",
+    "clearFiltersAria": "Clear filters"
   },
   "Blog": {
     "categories": "BLOG CATEGORIES",

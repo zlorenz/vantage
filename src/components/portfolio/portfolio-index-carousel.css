@@ -339,9 +339,9 @@
   overflow-wrap: break-word;
 }
 
-/* Bottom chrome: filter trigger + scrubber track (in stage flow under viewport).
- * Invisible ::after spacer mirrors the funnel's 2.75rem footprint so the scrubber
- * sits symmetrically between funnel and right gutter. */
+/* Bottom chrome: filter (left) · scrubber · search (right).
+ * Symmetrical bookends; tools are nudged inward so corner clear badges
+ * have gutter room without permanently reserving a flex sibling. */
 .vp-portfolio-index__bottom-bar {
   position: relative;
   flex-shrink: 0;
@@ -353,18 +353,25 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--vp-index-bottom-bar-height, 5rem);
-  padding: 0 var(--spacing-vp-gutter, 1rem);
+  /* Extra side inset vs scrubber — room for overhanging clear badges. */
+  padding: 0 max(var(--spacing-vp-gutter, 1rem), 1.35rem);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  overflow: visible;
   pointer-events: none;
 }
 
-.vp-portfolio-index__bottom-bar::after {
-  content: '';
-  flex: 0 0 2.75rem;
-  width: 2.75rem;
-  height: 2.75rem;
-  visibility: hidden;
-  pointer-events: none;
+.vp-portfolio-index__tool {
+  position: relative;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.vp-portfolio-index__tool--filter {
+  margin-inline-start: 0.35rem;
+}
+
+.vp-portfolio-index__tool--search {
+  margin-inline-end: 0.35rem;
 }
 
 /* Positions the desktop filter popout above the funnel (mobile sheet is fixed). */
@@ -409,13 +416,175 @@
   height: 1.25rem;
 }
 
+/* Small corner clear chips — only mounted when that side is active. */
+.vp-portfolio-index__clear-badge {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--vp-orange, #f04e23);
+  border-radius: 9999px;
+  background: var(--vp-orange, #f04e23);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  /* Expand hit target without growing the visual chip. */
+  box-shadow: 0 0 0 0.55rem transparent;
+}
+
+.vp-portfolio-index__clear-badge--filter {
+  top: -0.15rem;
+  left: -0.45rem;
+}
+
+.vp-portfolio-index__clear-badge--search {
+  top: -0.15rem;
+  right: -0.45rem;
+}
+
+.vp-portfolio-index__clear-badge:hover,
+.vp-portfolio-index__clear-badge:focus-visible {
+  filter: brightness(1.12);
+  outline: none;
+}
+
+.vp-portfolio-index__clear-badge-icon {
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+/* Centered search field — no panel chrome; scrim dismisses. */
+.vp-portfolio-index__search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  pointer-events: none;
+}
+
+.vp-portfolio-index__search-scrim {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-portfolio-index__search-stack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  width: min(36rem, calc(100vw - 2.5rem));
+  pointer-events: auto;
+}
+
+.vp-portfolio-index__search-no-results {
+  margin: 0;
+  padding: 0 0.25rem;
+  color: var(--vp-orange, #f04e23);
+  font-family: var(--vp-font-sans);
+  font-size: clamp(1.25rem, 3.2vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  pointer-events: none;
+}
+
+.vp-portfolio-index__search-field {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.vp-portfolio-index__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+  border-right: 0;
+  border-radius: 9999px 0 0 9999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-family: var(--vp-font-sans);
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.2;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.vp-portfolio-index__search-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.vp-portfolio-index__search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.vp-portfolio-index__search-input:focus {
+  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
+}
+
+.vp-portfolio-index__search-submit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.75rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+  border-left: 0;
+  border-radius: 0 9999px 9999px 0;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-portfolio-index__search-input:focus + .vp-portfolio-index__search-submit {
+  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
+}
+
+.vp-portfolio-index__search-submit:hover,
+.vp-portfolio-index__search-submit:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.vp-portfolio-index__search-submit-icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 /* Scrubber — Siena-like ticks + dark pill; decorative ticks (not 1:1 slides). */
 .vp-portfolio-index__scrubber {
   flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
   height: 2.75rem;
-  /* Match breathing room on both sides of the scrubber (funnel ↔ scrubber ↔ spacer). */
+  /* Breathing room between funnel/search and scrubber track. */
   margin-inline: 0.5rem;
   display: flex;
   align-items: center;

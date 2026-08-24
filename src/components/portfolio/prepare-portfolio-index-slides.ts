@@ -5,6 +5,7 @@
 
 import {phraseRecordToMap} from '@phrase-book';
 import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
+import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
@@ -36,6 +37,11 @@ export type PortfolioIndexSlide = {
   brandLine: string;
   /** Campaign title, or brand+product when campaign is absent. */
   campaignLine: string;
+  /**
+   * Lowercased brand + product + campaign + director names for /work search.
+   * Built once on the server so Enter-submit filtering stays sync.
+   */
+  searchHaystack: string;
   videoFormatSlugs: string[];
   industrySlugs: string[];
   marketSlugs: string[];
@@ -56,6 +62,19 @@ function objectPositionFromHotspot(hotspot: SanityImage['hotspot'] | undefined):
       ? Math.min(1, Math.max(0, hotspot.y))
       : 0.5;
   return `${x * 100}% ${y * 100}%`;
+}
+
+function buildSearchHaystack(
+  brandName: string | null | undefined,
+  productName: string | null | undefined,
+  campaignTitle: string | null | undefined,
+  directorNames: string[],
+): string {
+  return [brandName, productName, campaignTitle, ...directorNames]
+    .map((part) => (typeof part === 'string' ? part.trim() : ''))
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
 }
 
 /** Homepage carouselSlides order refs — EN slug + locale-aware href slug. */
@@ -87,6 +106,10 @@ export function preparePortfolioIndexSlideFromEntry(
 
   const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
   const {brandLine, campaignLine} = composeOverlayCopy(parts);
+  const directorNames = getStructuredRoleNames(
+    entry.crewCredits ?? [],
+    'director',
+  );
 
   return {
     id: entry._id,
@@ -96,11 +119,18 @@ export function preparePortfolioIndexSlideFromEntry(
     objectPosition: objectPositionFromHotspot(entry.featuredImage.hotspot),
     brandLine,
     campaignLine,
+    searchHaystack: buildSearchHaystack(
+      parts.brandName,
+      parts.productName,
+      parts.campaignTitle,
+      directorNames,
+    ),
     videoFormatSlugs: entry.videoFormatSlugs ?? [],
     industrySlugs: entry.industrySlugs ?? [],
     marketSlugs: entry.marketSlugs ?? [],
   };
 }
+
 
 export function preparePortfolioIndexSlides(
   entries: PortfolioGridEntry[],

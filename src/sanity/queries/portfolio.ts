@@ -105,7 +105,8 @@ const TAXONOMY_TERM_FIELDS = `
 export const ALL_PORTFOLIO_QUERY = `
   *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
     ${PORTFOLIO_CARD_FIELDS},
-    ${PORTFOLIO_FILTER_FIELDS}
+    ${PORTFOLIO_FILTER_FIELDS},
+    ${PORTFOLIO_CREDITS_FIELDS}
   }
 `;
 

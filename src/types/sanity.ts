@@ -121,6 +121,8 @@ export interface PortfolioGridEntry extends PortfolioCard {
   videoFormatSlugs?: string[];
   industrySlugs?: string[];
   marketSlugs?: string[];
+  /** Present on /work index fetch — used to build client-side search haystacks. */
+  crewCredits?: CrewCredit[];
 }
 
 /** Card + internal filter metadata for work-internal grid. */

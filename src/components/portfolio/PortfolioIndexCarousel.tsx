@@ -27,8 +27,10 @@ import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import {
   filterPortfolioIndexSlides,
   readWorkIndexItem,
+  readWorkIndexSearch,
   resolveWorkIndexStartIndex,
   workIndexItemQuery,
+  workIndexSearchQuery,
 } from './work-index-url';
 import './portfolio-index-carousel.css';
 
@@ -199,6 +201,54 @@ function FunnelIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index__filter-trigger-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M10.5 3.75a6.75 6.75 0 1 0 4.248 12.032l3.735 3.735a.75.75 0 1 0 1.06-1.06l-3.734-3.735A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z"
+      />
+    </svg>
+  );
+}
+
+function ClearBadgeIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index__clear-badge-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M6.22 6.22a.75.75 0 0 1 1.06 0L12 10.94l4.72-4.72a.75.75 0 1 1 1.06 1.06L13.06 12l4.72 4.72a.75.75 0 1 1-1.06 1.06L12 13.06l-4.72 4.72a.75.75 0 0 1-1.06-1.06L10.94 12 6.22 7.28a.75.75 0 0 1 0-1.06Z"
+      />
+    </svg>
+  );
+}
+
+function SearchSubmitIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index__search-submit-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M13.28 5.22a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06L18.44 12.75H3.75a.75.75 0 0 1 0-1.5h14.69l-5.16-5.03a.75.75 0 0 1 0-1.06Z"
+      />
+    </svg>
+  );
+}
+
 export function PortfolioIndexCarousel({
   slides,
   locale,
@@ -208,16 +258,25 @@ export function PortfolioIndexCarousel({
   markets,
 }: PortfolioIndexCarouselProps) {
   const t = useTranslations('Filters');
+  const tSearch = useTranslations('Search');
   const searchParams = useSearchParams();
   const [publicFilters, setPublicFilters] = useState(() =>
     readPublicFilters(searchParams),
   );
+  const [committedSearch, setCommittedSearch] = useState(() =>
+    readWorkIndexSearch(searchParams),
+  );
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [draftSearch, setDraftSearch] = useState('');
+  const [searchNoResultsQuery, setSearchNoResultsQuery] = useState('');
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [activeIndex, setActiveIndex] = useState(() =>
     resolveWorkIndexStartIndex(
       slides,
       readPublicFilters(searchParams),
       readWorkIndexItem(searchParams),
+      readWorkIndexSearch(searchParams),
     ),
   );
   const restoredStartIndexRef = useRef(activeIndex);
@@ -228,16 +287,17 @@ export function PortfolioIndexCarousel({
   const hasActiveFilters = Boolean(
     publicFilters.format || publicFilters.industry || publicFilters.market,
   );
+  const hasActiveSearch = Boolean(committedSearch.trim());
   const filteredSlides = useMemo(
-    () => filterPortfolioIndexSlides(slides, publicFilters),
-    [slides, publicFilters],
+    () => filterPortfolioIndexSlides(slides, publicFilters, committedSearch),
+    [slides, publicFilters, committedSearch],
   );
   const librarySlides = useMemo(
     () => slides.filter((slide) => !slide.isAppendedFeatured),
     [slides],
   );
   const slideCount = filteredSlides.length;
-  const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}`;
+  const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}|${committedSearch.trim().toLowerCase()}`;
 
   const emblaOptionsRef = useRef(
     portfolioIndexEmblaOptions(slideCount, restoredStartIndexRef.current),
@@ -247,24 +307,68 @@ export function PortfolioIndexCarousel({
   const activeItemSlugForUrl =
     activeIndex > 0 ? (filteredSlides[activeIndex]?.hrefSlug ?? '') : '';
 
+  const writeWorkIndexUrl = useCallback(
+    (
+      filters: PublicFilters,
+      search: string,
+      itemSlug: string,
+      index: number,
+    ) => {
+      replacePublicFiltersUrl(filters, EMPTY_PUBLIC_PRESETS, {
+        ...workIndexSearchQuery(search),
+        ...workIndexItemQuery(itemSlug, index),
+      });
+    },
+    [],
+  );
+
   useEffect(() => {
-    replacePublicFiltersUrl(
+    writeWorkIndexUrl(
       publicFilters,
-      EMPTY_PUBLIC_PRESETS,
-      workIndexItemQuery(activeItemSlugForUrl, activeIndex),
+      committedSearch,
+      activeItemSlugForUrl,
+      activeIndex,
     );
-  }, [publicFilters, activeItemSlugForUrl, activeIndex]);
+  }, [
+    publicFilters,
+    committedSearch,
+    activeItemSlugForUrl,
+    activeIndex,
+    writeWorkIndexUrl,
+  ]);
 
   useEffect(() => {
     function onPopState() {
-      setPublicFilters(
-        readPublicFilters(new URLSearchParams(window.location.search)),
-      );
+      const params = new URLSearchParams(window.location.search);
+      setPublicFilters(readPublicFilters(params));
+      setCommittedSearch(readWorkIndexSearch(params));
     }
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
+  useEffect(() => {
+    if (!searchOpen) return;
+    const id = window.requestAnimationFrame(() => {
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [searchOpen]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSearchOpen(false);
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [searchOpen]);
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setActiveIndex(emblaApi.selectedScrollSnap());
@@ -390,7 +494,7 @@ export function PortfolioIndexCarousel({
     if (!emblaApi) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (filterSheetOpen) return;
+      if (filterSheetOpen || searchOpen) return;
       if (event.repeat) return;
       const {key} = event;
       if (key !== 'ArrowLeft' && key !== 'ArrowRight') return;
@@ -417,11 +521,69 @@ export function PortfolioIndexCarousel({
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [emblaApi, filterSheetOpen]);
+  }, [emblaApi, filterSheetOpen, searchOpen]);
+
+  const openSearch = useCallback(() => {
+    setFilterSheetOpen(false);
+    setDraftSearch(committedSearch);
+    setSearchNoResultsQuery('');
+    setSearchOpen(true);
+  }, [committedSearch]);
+
+  const closeSearch = useCallback(() => {
+    setSearchNoResultsQuery('');
+    setSearchOpen(false);
+  }, []);
+
+  const submitSearch = useCallback(() => {
+    const next = draftSearch.trim();
+
+    // Empty submit clears any committed search and closes the overlay.
+    if (!next) {
+      setCommittedSearch('');
+      setSearchNoResultsQuery('');
+      setActiveIndex(0);
+      setSearchOpen(false);
+      return;
+    }
+
+    // Preview against the full library (search clears taxonomy filters on commit).
+    const matches = filterPortfolioIndexSlides(
+      slides,
+      EMPTY_PUBLIC_PRESETS,
+      next,
+    );
+    if (matches.length === 0) {
+      setSearchNoResultsQuery(next);
+      // Keep overlay + draft; leave carousel / committed search untouched.
+      window.requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+      });
+      return;
+    }
+
+    setSearchNoResultsQuery('');
+    setCommittedSearch(next);
+    setPublicFilters(EMPTY_PUBLIC_PRESETS);
+    setActiveIndex(0);
+    setSearchOpen(false);
+  }, [draftSearch, slides]);
+
+  const clearSearch = useCallback(() => {
+    setCommittedSearch('');
+    setDraftSearch('');
+    setSearchNoResultsQuery('');
+    setActiveIndex(0);
+    setSearchOpen(false);
+  }, []);
 
   const updatePublicFilter = useCallback(
     (key: keyof PublicFilters, value: string) => {
       setPublicFilters((prev) => ({...prev, [key]: value}));
+      // Activating a filter clears any committed search.
+      setCommittedSearch('');
+      setDraftSearch('');
       setActiveIndex(0);
     },
     [],
@@ -438,39 +600,131 @@ export function PortfolioIndexCarousel({
 
   const filterTrigger = (
     <div className="vp-portfolio-index__bottom-bar">
-      <div className="vp-portfolio-index__filter-anchor">
-        <button
-          type="button"
-          className={`vp-portfolio-index__filter-trigger${
-            hasActiveFilters ? ' is-active' : ''
-          }`}
-          aria-label={t('filter')}
-          aria-expanded={filterSheetOpen}
-          aria-pressed={hasActiveFilters}
-          onClick={() => setFilterSheetOpen((open) => !open)}
-        >
-          <FunnelIcon />
-        </button>
-        <PortfolioIndexFilterSheet
-          open={filterSheetOpen}
-          onClose={closeFilterSheet}
-          locale={locale}
-          phrases={phrases}
-          slides={librarySlides}
-          filters={publicFilters}
-          onChangeFilter={updatePublicFilter}
-          onClearAll={clearPublicFilters}
-          videoFormats={videoFormats}
-          industries={industries}
-          markets={markets}
-        />
+      <div className="vp-portfolio-index__tool vp-portfolio-index__tool--filter">
+        <div className="vp-portfolio-index__filter-anchor">
+          <button
+            type="button"
+            className={`vp-portfolio-index__filter-trigger${
+              hasActiveFilters ? ' is-active' : ''
+            }`}
+            aria-label={t('filter')}
+            aria-expanded={filterSheetOpen}
+            aria-pressed={hasActiveFilters}
+            onClick={() => {
+              setSearchOpen(false);
+              setFilterSheetOpen((open) => !open);
+            }}
+          >
+            <FunnelIcon />
+          </button>
+          <PortfolioIndexFilterSheet
+            open={filterSheetOpen}
+            onClose={closeFilterSheet}
+            locale={locale}
+            phrases={phrases}
+            slides={librarySlides}
+            filters={publicFilters}
+            onChangeFilter={updatePublicFilter}
+            onClearAll={clearPublicFilters}
+            videoFormats={videoFormats}
+            industries={industries}
+            markets={markets}
+          />
+        </div>
+        {hasActiveFilters ? (
+          <button
+            type="button"
+            className="vp-portfolio-index__clear-badge vp-portfolio-index__clear-badge--filter"
+            aria-label={t('clearFiltersAria')}
+            onClick={clearPublicFilters}
+          >
+            <ClearBadgeIcon />
+          </button>
+        ) : null}
       </div>
       <PortfolioIndexScrubber
         snapCount={slideCount}
         emblaApi={emblaApi}
       />
+      <div className="vp-portfolio-index__tool vp-portfolio-index__tool--search">
+        <button
+          type="button"
+          className={`vp-portfolio-index__filter-trigger${
+            hasActiveSearch ? ' is-active' : ''
+          }`}
+          aria-label={tSearch('openAria')}
+          aria-expanded={searchOpen}
+          aria-pressed={hasActiveSearch}
+          onClick={openSearch}
+        >
+          <SearchIcon />
+        </button>
+        {hasActiveSearch ? (
+          <button
+            type="button"
+            className="vp-portfolio-index__clear-badge vp-portfolio-index__clear-badge--search"
+            aria-label={t('clearSearchAria')}
+            onClick={clearSearch}
+          >
+            <ClearBadgeIcon />
+          </button>
+        ) : null}
+      </div>
     </div>
   );
+
+  const searchOverlay = searchOpen ? (
+    <div className="vp-portfolio-index__search-overlay" role="presentation">
+      <button
+        type="button"
+        className="vp-portfolio-index__search-scrim"
+        aria-label={tSearch('closeAria')}
+        tabIndex={-1}
+        onClick={closeSearch}
+      />
+      <div className="vp-portfolio-index__search-stack">
+        {searchNoResultsQuery ? (
+          <p
+            className="vp-portfolio-index__search-no-results"
+            role="status"
+            aria-live="polite"
+          >
+            {tSearch('noResults', {query: searchNoResultsQuery})}
+          </p>
+        ) : null}
+        <form
+          className="vp-portfolio-index__search-field"
+          role="search"
+          onSubmit={(event) => {
+            event.preventDefault();
+            submitSearch();
+          }}
+        >
+          <input
+            ref={searchInputRef}
+            type="search"
+            className="vp-portfolio-index__search-input"
+            value={draftSearch}
+            onChange={(event) => {
+              setDraftSearch(event.target.value);
+              if (searchNoResultsQuery) setSearchNoResultsQuery('');
+            }}
+            placeholder={tSearch('placeholder')}
+            aria-label={tSearch('placeholder')}
+            autoComplete="off"
+            enterKeyHint="search"
+          />
+          <button
+            type="submit"
+            className="vp-portfolio-index__search-submit"
+            aria-label={tSearch('submitAria')}
+          >
+            <SearchSubmitIcon />
+          </button>
+        </form>
+      </div>
+    </div>
+  ) : null;
 
   if (!slideCount) {
     return (
@@ -479,6 +733,7 @@ export function PortfolioIndexCarousel({
           <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
           {filterTrigger}
         </div>
+        {searchOverlay}
       </div>
     );
   }
@@ -545,10 +800,11 @@ export function PortfolioIndexCarousel({
                       tabIndex={active ? undefined : -1}
                       aria-current={active ? 'true' : undefined}
                       onClick={() => {
-                        replacePublicFiltersUrl(
+                        writeWorkIndexUrl(
                           publicFilters,
-                          EMPTY_PUBLIC_PRESETS,
-                          workIndexItemQuery(slide.hrefSlug, index),
+                          committedSearch,
+                          slide.hrefSlug,
+                          index,
                         );
                       }}
                     >
@@ -596,6 +852,7 @@ export function PortfolioIndexCarousel({
         </div>
         {filterTrigger}
       </div>
+      {searchOverlay}
     </div>
   );
 }
