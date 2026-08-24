@@ -73,7 +73,7 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
               alt="Vantage Pictures"
               width={220}
               height={36}
-              className="block h-5 w-auto sm:h-7 md:h-8"
+              className="block h-5 w-auto sm:h-7 md:h-7"
             />
           </Link>
 
