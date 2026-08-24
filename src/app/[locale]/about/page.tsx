@@ -5,11 +5,11 @@
  * Section order: Hero -> Body ("Who We Are") -> Production Services ->
  * AI Workflow -> Production Log CTA -> More About Vantage -> CtaSection.
  *
- * Note: the founders/team grid no longer renders here — it's moving to the
- * new "Our Company" page (later task). FounderCard and the `founders` GROQ
- * field/query are intentionally untouched; `page.founders` is still used
- * below for the Organization JSON-LD and to filter founder names out of the
- * "Who We Are" body copy.
+ * Note: the founders/team grid no longer renders here — it lives on
+ * /our-company. FounderCard and the `founders` GROQ field/query are
+ * intentionally untouched; `page.founders` is still used below for the
+ * Organization JSON-LD and to filter founder names out of the "Who We Are"
+ * body copy.
  */
 
 import type { Metadata } from 'next';
@@ -137,7 +137,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </SectionWrapper>
 
-      {/* Founders/team grid moved to /our-company (later task) — intentionally not rendered here. */}
+      {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 
       <SectionWrapper borderTop fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
@@ -202,6 +202,14 @@ export default async function AboutPage({ params }: Props) {
                 className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
               >
                 {t('moreAboutOurIndustry')}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/our-company"
+                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              >
+                {t('moreAboutOurCompany')}
               </Link>
             </li>
             <li>
