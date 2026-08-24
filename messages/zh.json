@@ -79,6 +79,11 @@
     "modalTitle": "联系",
     "closeAria": "关闭联系对话框"
   },
+  "OurIndustry": {
+    "industriesHeading": "行业",
+    "marketsHeading": "市场",
+    "videoFormatsHeading": "视频格式"
+  },
   "Portfolio": {
     "noVideo": "未找到此作品的视频嵌入。"
   }

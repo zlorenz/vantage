@@ -174,6 +174,14 @@ export const VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY = defineQuery(`
   }
 `)
 
+/** Our Industry — meta, body (hub page linking to taxonomy archives; no featuredWork). */
+export const OUR_INDUSTRY_PAGE_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "our-industry" && !defined(trash.trashedAt)][0]{
+    ${PAGE_META_FIELDS},
+    ${PAGE_CONTENT_FIELDS}
+  }
+`)
+
 /** Work index metadata (SEO / OG). Body still from WORK_PAGE_QUERY. */
 export const WORK_PAGE_META_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{

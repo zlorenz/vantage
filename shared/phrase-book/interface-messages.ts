@@ -42,6 +42,9 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'Vietnam.shotIn',
   'Vietnam.shotInOutline',
   'Blog.categories',
+  'OurIndustry.industriesHeading',
+  'OurIndustry.marketsHeading',
+  'OurIndustry.videoFormatsHeading',
 ])
 
 function categoryForMessagePath(path: string): PhraseCategoryId {

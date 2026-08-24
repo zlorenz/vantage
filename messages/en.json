@@ -79,6 +79,11 @@
     "modalTitle": "Contact",
     "closeAria": "Close contact dialog"
   },
+  "OurIndustry": {
+    "industriesHeading": "Industries",
+    "marketsHeading": "Markets",
+    "videoFormatsHeading": "Video Formats"
+  },
   "Portfolio": {
     "noVideo": "No video embed found for this portfolio item."
   }
