@@ -68,6 +68,13 @@ export const routing = defineRouting({
       en: '/vietnam-location-guide',
       zh: '/越南旅游指南',
     },
+    // PLACEHOLDER — no real Chinese translation for this route yet. Using the
+    // English slug under /zh/ so the route resolves; replace with a proper
+    // translated path once "Our Industry" content is finalized.
+    '/our-industry': {
+      en: '/our-industry',
+      zh: '/our-industry',
+    },
     '/video-campaign-brief': {
       en: '/video-campaign-brief',
       zh: '/视频活动简介',
