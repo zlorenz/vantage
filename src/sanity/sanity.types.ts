@@ -150,6 +150,11 @@ export type Page = {
     } & Founder
   >;
   pdfDownload?: PdfDownload;
+  awardItems?: Array<
+    {
+      _key: string;
+    } & AwardItem
+  >;
   trash?: TrashMetadata;
 };
 
@@ -316,136 +321,6 @@ export type PortableTextBody = Array<
     } & VideoEmbed)
 >;
 
-export type VideoFormatReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "videoFormat";
-};
-
-export type IndustryReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "industry";
-};
-
-export type MarketReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "market";
-};
-
-export type ClientReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "client";
-};
-
-export type CrewMemberReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "crewMember";
-};
-
-export type PlatformReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "platform";
-};
-
-export type PortfolioEntry = {
-  _id: string;
-  _type: "portfolioEntry";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  titleZh?: string;
-  displayTitleParts?: {
-    brandName?: string;
-    productName?: string;
-    campaignTitle?: string;
-    brandNameZh?: string;
-    productNameZh?: string;
-    campaignTitleZh?: string;
-  };
-  slug?: Slug;
-  slugZh?: Slug;
-  publishedAt?: string;
-  thumbTitleOverride?: string;
-  thumbTitleOverrideZh?: string;
-  headerTitleOverride?: string;
-  headerTitleOverrideZh?: string;
-  longTitleOverride?: string;
-  longTitleOverrideZh?: string;
-  excerpt?: string;
-  excerptZh?: string;
-  description?: string;
-  descriptionZh?: string;
-  videoFormats?: Array<
-    {
-      _key: string;
-    } & VideoFormatReference
-  >;
-  industries?: Array<
-    {
-      _key: string;
-    } & IndustryReference
-  >;
-  markets?: Array<
-    {
-      _key: string;
-    } & MarketReference
-  >;
-  isHidden?: boolean;
-  featuredImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  vimeoUrl?: string;
-  xinpianchangUrl?: string;
-  previewCleanVimeoUrl?: string;
-  previewStartSeconds?: number;
-  previewEndSeconds?: number;
-  heroFilmTitle?: string;
-  heroFilmTitleZh?: string;
-  additionalVideos?: Array<
-    {
-      _key: string;
-    } & AdditionalVideo
-  >;
-  clients?: Array<
-    {
-      _key: string;
-    } & ClientReference
-  >;
-  crewMembers?: Array<
-    {
-      _key: string;
-    } & CrewMemberReference
-  >;
-  platforms?: Array<
-    {
-      _key: string;
-    } & PlatformReference
-  >;
-  crewCredits?: Array<
-    {
-      _key: string;
-    } & CrewCredit
-  >;
-  seo?: SeoFields;
-  trash?: TrashMetadata;
-};
-
 export type Platform = {
   _id: string;
   _type: "platform";
@@ -488,6 +363,13 @@ export type Client = {
   slug?: Slug;
 };
 
+export type MarketReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "market";
+};
+
 export type Market = {
   _id: string;
   _type: "market";
@@ -503,6 +385,13 @@ export type Market = {
   parent?: MarketReference;
 };
 
+export type IndustryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "industry";
+};
+
 export type Industry = {
   _id: string;
   _type: "industry";
@@ -516,6 +405,13 @@ export type Industry = {
   description?: string;
   descriptionZh?: string;
   parent?: IndustryReference;
+};
+
+export type VideoFormatReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "videoFormat";
 };
 
 export type VideoFormat = {
@@ -681,6 +577,125 @@ export type BrandLogoItem = {
     | "westin"
     | "youtube"
     | "zhiyun";
+};
+
+export type AwardItem = {
+  _type: "awardItem";
+  title?: string;
+  titleZh?: string;
+  category?: string;
+  categoryZh?: string;
+  year?: number;
+  portfolioEntry?: PortfolioEntryReference;
+};
+
+export type ClientReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "client";
+};
+
+export type CrewMemberReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "crewMember";
+};
+
+export type PlatformReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "platform";
+};
+
+export type PortfolioEntry = {
+  _id: string;
+  _type: "portfolioEntry";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  titleZh?: string;
+  displayTitleParts?: {
+    brandName?: string;
+    productName?: string;
+    campaignTitle?: string;
+    brandNameZh?: string;
+    productNameZh?: string;
+    campaignTitleZh?: string;
+  };
+  slug?: Slug;
+  slugZh?: Slug;
+  publishedAt?: string;
+  thumbTitleOverride?: string;
+  thumbTitleOverrideZh?: string;
+  headerTitleOverride?: string;
+  headerTitleOverrideZh?: string;
+  longTitleOverride?: string;
+  longTitleOverrideZh?: string;
+  excerpt?: string;
+  excerptZh?: string;
+  description?: string;
+  descriptionZh?: string;
+  videoFormats?: Array<
+    {
+      _key: string;
+    } & VideoFormatReference
+  >;
+  industries?: Array<
+    {
+      _key: string;
+    } & IndustryReference
+  >;
+  markets?: Array<
+    {
+      _key: string;
+    } & MarketReference
+  >;
+  isHidden?: boolean;
+  featuredImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  vimeoUrl?: string;
+  xinpianchangUrl?: string;
+  previewCleanVimeoUrl?: string;
+  previewStartSeconds?: number;
+  previewEndSeconds?: number;
+  heroFilmTitle?: string;
+  heroFilmTitleZh?: string;
+  additionalVideos?: Array<
+    {
+      _key: string;
+    } & AdditionalVideo
+  >;
+  clients?: Array<
+    {
+      _key: string;
+    } & ClientReference
+  >;
+  crewMembers?: Array<
+    {
+      _key: string;
+    } & CrewMemberReference
+  >;
+  platforms?: Array<
+    {
+      _key: string;
+    } & PlatformReference
+  >;
+  crewCredits?: Array<
+    {
+      _key: string;
+    } & CrewCredit
+  >;
+  seo?: SeoFields;
+  trash?: TrashMetadata;
 };
 
 export type Founder = {
@@ -952,19 +967,15 @@ export type AllSanitySchemaTypes =
   | CategoryReference
   | BlogPost
   | PortableTextBody
-  | VideoFormatReference
-  | IndustryReference
-  | MarketReference
-  | ClientReference
-  | CrewMemberReference
-  | PlatformReference
-  | PortfolioEntry
   | Platform
   | TranslatedPhrase
   | CrewMember
   | Client
+  | MarketReference
   | Market
+  | IndustryReference
   | Industry
+  | VideoFormatReference
   | VideoFormat
   | Category
   | SiteSettings
@@ -974,6 +985,11 @@ export type AllSanitySchemaTypes =
   | CtaButton
   | ImageGallery
   | BrandLogoItem
+  | AwardItem
+  | ClientReference
+  | CrewMemberReference
+  | PlatformReference
+  | PortfolioEntry
   | Founder
   | AdditionalVideo
   | CrewCredit

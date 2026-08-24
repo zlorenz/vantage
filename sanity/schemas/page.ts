@@ -243,6 +243,17 @@ export const page = defineType({
     }),
 
     defineField({
+      name: 'awardItems',
+      title: 'Award Items',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'awardItem'}],
+      description:
+        'Awards page only. Entries are placeholder/invented until real award data is supplied.',
+      hidden: hideUnlessPageSlug('awards'),
+    }),
+
+    defineField({
       name: 'trash',
       type: 'trashMetadata',
       hidden: true,

@@ -27,6 +27,7 @@ import { crewPerson } from './objects/crewPerson';
 import { crewCredit } from './objects/crewCredit';
 import { additionalVideo } from './objects/additionalVideo';
 import { founder } from './objects/founder';
+import { awardItem } from './objects/awardItem';
 import { brandLogoItem } from './objects/brandLogoItem';
 import { campaignCta } from './objects/campaignCta';
 import { pdfDownload } from './objects/pdfDownload';
@@ -43,6 +44,7 @@ export const schemaTypes = [
   crewCredit,
   additionalVideo,
   founder,
+  awardItem,
   brandLogoItem,
   campaignCta,
   pdfDownload,
