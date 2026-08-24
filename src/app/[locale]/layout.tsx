@@ -14,7 +14,7 @@
 import '../globals.css';
 import type { Metadata, Viewport } from 'next';
 import { GoogleTagManager } from '@next/third-parties/google';
-import { draftMode } from 'next/headers';
+import { draftMode, headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
@@ -73,6 +73,14 @@ export default async function LocaleLayout({ children, params }: Props) {
     throw new Error('siteSettings document missing from Sanity dataset.');
   }
 
+  const host = (await headers()).get('host') ?? '';
+  // Sanity Live EventSource isn't CORS-allowlisted for LAN IPs and retries
+  // every 1s, which floods the terminal during phone-on-LAN preview.
+  const enableSanityLive =
+    process.env.NODE_ENV !== 'development' ||
+    host.startsWith('localhost') ||
+    host.startsWith('127.0.0.1');
+
   return (
     <html
       lang={locale}
@@ -92,7 +100,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             {children}
           </LayoutShell>
         </NextIntlClientProvider>
-        <SanityLive />
+        {enableSanityLive ? <SanityLive /> : null}
         {(await draftMode()).isEnabled && (
           <>
             <VisualEditing />

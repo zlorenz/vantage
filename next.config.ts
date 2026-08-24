@@ -1,3 +1,4 @@
+import os from 'node:os';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -6,9 +7,26 @@ import { legacyZhRedirects } from './src/lib/legacy-zh-redirects';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+/** LAN IPs + Bonjour hostname so phone preview works after switching Wi-Fi. */
+function lanDevOrigins(): string[] {
+  const origins = new Set<string>(['127.0.0.1']);
+  const hostname = os.hostname().replace(/\.local$/i, '');
+  if (hostname) origins.add(`${hostname}.local`);
+
+  for (const addrs of Object.values(os.networkInterfaces())) {
+    for (const addr of addrs ?? []) {
+      if (addr.internal) continue;
+      if (addr.family !== 'IPv4' && addr.family !== 4) continue;
+      origins.add(addr.address);
+    }
+  }
+
+  return [...origins];
+}
+
 const nextConfig: NextConfig = {
-  // Zach's Mac LAN IP for iPhone testing; update if DHCP reassigns it.
-  allowedDevOrigins: ['192.168.86.246'],
+  // Recomputed when `next dev` starts — restart after switching networks.
+  allowedDevOrigins: lanDevOrigins(),
   async redirects() {
     return [
       // WordPress migration redirects — Milestone 8, 2026-06-22
