@@ -15,9 +15,8 @@ import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import {Link} from '@/i18n/navigation';
 import type {Locale} from '@/i18n/routing';
-import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
+import type {TaxonomyTerm} from '@/types/sanity';
 import {
-  matchesPublicFilters,
   readPublicFilters,
   replacePublicFiltersUrl,
   type PublicFilters,
@@ -25,6 +24,12 @@ import {
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
+import {
+  filterPortfolioIndexSlides,
+  readWorkIndexItem,
+  resolveWorkIndexStartIndex,
+  workIndexItemQuery,
+} from './work-index-url';
 import './portfolio-index-carousel.css';
 
 interface PortfolioIndexCarouselProps {
@@ -74,13 +79,14 @@ const CONTENT_WINDOW_RADIUS = 2;
  * non-looping. Embla’s default containScroll: 'trimSnaps' then pins the first
  * snap to the start — a single card sits left instead of the active center.
  */
-function portfolioIndexEmblaOptions(slideCount: number) {
+function portfolioIndexEmblaOptions(slideCount: number, startIndex = 0) {
   const loop = slideCount > 3;
   return {
     dragFree: false as const,
     loop,
     align: 'center' as const,
     containScroll: loop ? ('trimSnaps' as const) : (false as const),
+    startIndex,
   };
 }
 
@@ -185,14 +191,6 @@ function FunnelIcon() {
   );
 }
 
-function slideMatchesPublicFilters(
-  slide: PortfolioIndexSlide,
-  filters: PublicFilters,
-): boolean {
-  // Helpers are typed against PortfolioGridEntry; slides carry the same slug arrays.
-  return matchesPublicFilters(slide as unknown as PortfolioGridEntry, filters);
-}
-
 export function PortfolioIndexCarousel({
   slides,
   locale,
@@ -207,7 +205,14 @@ export function PortfolioIndexCarousel({
     readPublicFilters(searchParams),
   );
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(() =>
+    resolveWorkIndexStartIndex(
+      slides,
+      readPublicFilters(searchParams),
+      readWorkIndexItem(searchParams),
+    ),
+  );
+  const restoredStartIndexRef = useRef(activeIndex);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
   const filterSignatureRef = useRef<string | null>(null);
@@ -216,14 +221,8 @@ export function PortfolioIndexCarousel({
     publicFilters.format || publicFilters.industry || publicFilters.market,
   );
   const filteredSlides = useMemo(
-    () =>
-      slides.filter((slide) => {
-        // Appended homepage duplicates are loop-bridge only — hide whenever any
-        // taxonomy filter is active (do not treat them as filterable facets).
-        if (hasActiveFilters && slide.isAppendedFeatured) return false;
-        return slideMatchesPublicFilters(slide, publicFilters);
-      }),
-    [slides, publicFilters, hasActiveFilters],
+    () => filterPortfolioIndexSlides(slides, publicFilters),
+    [slides, publicFilters],
   );
   const librarySlides = useMemo(
     () => slides.filter((slide) => !slide.isAppendedFeatured),
@@ -232,13 +231,21 @@ export function PortfolioIndexCarousel({
   const slideCount = filteredSlides.length;
   const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}`;
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    portfolioIndexEmblaOptions(slideCount),
+  const emblaOptionsRef = useRef(
+    portfolioIndexEmblaOptions(slideCount, restoredStartIndexRef.current),
   );
+  const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptionsRef.current);
+
+  const activeItemSlugForUrl =
+    activeIndex > 0 ? (filteredSlides[activeIndex]?.hrefSlug ?? '') : '';
 
   useEffect(() => {
-    replacePublicFiltersUrl(publicFilters, EMPTY_PUBLIC_PRESETS);
-  }, [publicFilters]);
+    replacePublicFiltersUrl(
+      publicFilters,
+      EMPTY_PUBLIC_PRESETS,
+      workIndexItemQuery(activeItemSlugForUrl, activeIndex),
+    );
+  }, [publicFilters, activeItemSlugForUrl, activeIndex]);
 
   useEffect(() => {
     function onPopState() {
@@ -275,7 +282,13 @@ export function PortfolioIndexCarousel({
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
+    const restored = restoredStartIndexRef.current;
+    if (restored > 0) {
+      emblaApi.scrollTo(restored, true);
+      setActiveIndex(restored);
+    } else {
+      onSelect();
+    }
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
     emblaApi.on('scroll', onScroll);
@@ -401,12 +414,14 @@ export function PortfolioIndexCarousel({
   const updatePublicFilter = useCallback(
     (key: keyof PublicFilters, value: string) => {
       setPublicFilters((prev) => ({...prev, [key]: value}));
+      setActiveIndex(0);
     },
     [],
   );
 
   const clearPublicFilters = useCallback(() => {
     setPublicFilters(EMPTY_PUBLIC_PRESETS);
+    setActiveIndex(0);
   }, []);
 
   const closeFilterSheet = useCallback(() => {
@@ -513,6 +528,13 @@ export function PortfolioIndexCarousel({
                       }`}
                       tabIndex={active ? undefined : -1}
                       aria-current={active ? 'true' : undefined}
+                      onClick={() => {
+                        replacePublicFiltersUrl(
+                          publicFilters,
+                          EMPTY_PUBLIC_PRESETS,
+                          workIndexItemQuery(slide.hrefSlug, index),
+                        );
+                      }}
                     >
                       {mountPoster ? (
                         <picture className="vp-portfolio-index__poster-wrap">

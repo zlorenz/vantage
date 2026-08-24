@@ -235,16 +235,24 @@ export function publicFiltersMatchPresets(
 
 /**
  * Mirror public filter state into the query string without App Router navigation.
- * When filters equal archive presets (or are empty on /work), write no query —
- * matching clearPublicFilters / initial archive URLs.
+ * When filters equal archive presets (or are empty on /work), write no filter
+ * query — matching clearPublicFilters / initial archive URLs.
+ * `extraQuery` is for route-specific params (e.g. /work `item=`); empty values
+ * are omitted so callers can drop a key by passing `{}`.
  */
 export function replacePublicFiltersUrl(
   filters: PublicFilters,
   preset: PublicFilters,
+  extraQuery?: Record<string, string>,
 ): void {
-  const query = publicFiltersMatchPresets(filters, preset)
+  const query: Record<string, string> = publicFiltersMatchPresets(filters, preset)
     ? {}
     : buildPublicQuery(filters);
+  if (extraQuery) {
+    for (const [key, value] of Object.entries(extraQuery)) {
+      if (value) query[key] = value;
+    }
+  }
   const params = new URLSearchParams(query);
   const qs = params.toString();
   const next = qs
