@@ -75,6 +75,13 @@ export const routing = defineRouting({
       en: '/our-industry',
       zh: '/our-industry',
     },
+    // PLACEHOLDER — no real Chinese translation for this route yet. Using the
+    // English slug under /zh/ so the route resolves; replace with a proper
+    // translated path once "Awards" content is finalized.
+    '/awards': {
+      en: '/awards',
+      zh: '/awards',
+    },
     '/video-campaign-brief': {
       en: '/video-campaign-brief',
       zh: '/视频活动简介',
