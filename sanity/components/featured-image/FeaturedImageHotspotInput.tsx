@@ -59,15 +59,33 @@ type Center = {x: number; y: number}
 
 type GuideBox = {left: string; top: string; width: string; height: string}
 
-/** Crop aspect guides (width / height) for dual-/triple-surface art direction. */
+/**
+ * Crop aspect guides (width / height) for homepage + /work, desktop + mobile.
+ * Work Mobile / Work Desktop / Homepage Mobile ratios are Zach’s direct
+ * screenshot pixel measurements (authoritative — do not recalculate from CSS).
+ */
 const GUIDES: GuideSpec[] = [
-  {title: 'Work Carousel (Desktop)', aspectRatio: 4 / 5, color: 'rgba(249, 219, 36, 0.95)'},
+  {title: 'Homepage Carousel (Desktop)', aspectRatio: 16 / 9, color: 'rgba(100, 180, 255, 0.95)'},
+  {
+    title: 'Homepage Carousel (Mobile)',
+    aspectRatio: 970 / 1562,
+    color: 'rgba(220, 120, 255, 0.95)',
+  },
+  {
+    title: 'Work Carousel (Desktop)',
+    aspectRatio: 520 / 673,
+    color: 'rgba(249, 219, 36, 0.95)',
+  },
   /**
-   * /work mobile card is viewport-derived (not a locked CSS ratio).
-   * Measured live at 390×844: card ≈286.52×559.19 → W/H ≈ 0.512.
+   * Direct device measurement (Zach): W:1320 H:2388 → 1320/2388.
+   * Older CSS-token estimate was ~0.512; measured ≈0.553 — left as context only,
+   * not something to reconcile back to the formula.
    */
-  {title: 'Work Carousel (Mobile)', aspectRatio: 0.512, color: 'rgba(80, 220, 160, 0.95)'},
-  {title: 'Homepage Carousel', aspectRatio: 16 / 9, color: 'rgba(100, 180, 255, 0.95)'},
+  {
+    title: 'Work Carousel (Mobile)',
+    aspectRatio: 1320 / 2388,
+    color: 'rgba(80, 220, 160, 0.95)',
+  },
 ]
 
 const GUIDE_OVERLAY = 'rgba(0, 0, 0, 0.8)'
