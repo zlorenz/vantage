@@ -204,6 +204,14 @@ export default async function AboutPage({ params }: Props) {
                 {t('moreAboutOurIndustry')}
               </Link>
             </li>
+            <li>
+              <Link
+                href="/awards"
+                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              >
+                {t('moreAboutAwards')}
+              </Link>
+            </li>
           </ul>
         </div>
       </SectionWrapper>

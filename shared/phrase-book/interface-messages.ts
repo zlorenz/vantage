@@ -40,6 +40,7 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'About.moreAboutVantage',
   'About.moreAboutVietnamProductionService',
   'About.moreAboutOurIndustry',
+  'About.moreAboutAwards',
   'About.aiWorkflowHeading',
   'About.aiWorkflowBody',
   'About.productionLogCtaHeading',
