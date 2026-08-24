@@ -70,6 +70,21 @@ const STYLE_WINDOW_RADIUS = 2;
 const CONTENT_WINDOW_RADIUS = 2;
 
 /**
+ * Loop needs enough slides to build clones. Sparse filtered sets (1–3) stay
+ * non-looping. Embla’s default containScroll: 'trimSnaps' then pins the first
+ * snap to the start — a single card sits left instead of the active center.
+ */
+function portfolioIndexEmblaOptions(slideCount: number) {
+  const loop = slideCount > 3;
+  return {
+    dragFree: false as const,
+    loop,
+    align: 'center' as const,
+    containScroll: loop ? ('trimSnaps' as const) : false,
+  };
+}
+
+/**
  * Loop-aware circular distance for /work index windowing.
  * Local to this file (not imported from homepage carousel types).
  */
@@ -202,12 +217,9 @@ export function PortfolioIndexCarousel({
   const slideCount = filteredSlides.length;
   const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}`;
 
-  // axis: 'x' and align: 'center' are Embla 8.6.0 defaults — omit rather than override.
-  // containScroll is a no-op when loop is true (Embla containSnaps = !loop && …).
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    dragFree: false,
-    loop: true,
-  });
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    portfolioIndexEmblaOptions(slideCount),
+  );
 
   useEffect(() => {
     replacePublicFiltersUrl(publicFilters, EMPTY_PUBLIC_PRESETS);
@@ -281,10 +293,7 @@ export function PortfolioIndexCarousel({
     // Prefer the reInit event so scrollTo runs after Embla finishes measuring
     // the new filtered slide nodes (sync scrollTo right after reInit can miss).
     emblaApi.on('reInit', resetToStart);
-    emblaApi.reInit({
-      dragFree: false,
-      loop: slideCount > 3,
-    });
+    emblaApi.reInit(portfolioIndexEmblaOptions(slideCount));
     return () => {
       emblaApi.off('reInit', resetToStart);
     };
