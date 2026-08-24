@@ -1,11 +1,20 @@
 /**
- * About page — hero, who we are, team grid, production services, CTA.
+ * About page — hero, who we are, production services, AI workflow,
+ * production log CTA, more-about links, campaign CTA.
+ *
+ * Section order: Hero -> Body ("Who We Are") -> Production Services ->
+ * AI Workflow -> Production Log CTA -> More About Vantage -> CtaSection.
+ *
+ * Note: the founders/team grid no longer renders here — it's moving to the
+ * new "Our Company" page (later task). FounderCard and the `founders` GROQ
+ * field/query are intentionally untouched; `page.founders` is still used
+ * below for the Organization JSON-LD and to filter founder names out of the
+ * "Who We Are" body copy.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { FounderCard } from '@/components/about/FounderCard';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
@@ -128,25 +137,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </SectionWrapper>
 
-      {page.founders?.length ? (
-        <SectionWrapper borderTop fullBleed={true}>
-          <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-            <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-              <span className="vp-outline">{t('teamOutline')}</span> {t('team')}
-            </h2>
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-              {page.founders.map((founder, index) => (
-                <FounderCard
-                  key={`founder-${index}`}
-                  founder={founder}
-                  locale={typedLocale}
-                  phrases={phrases}
-                />
-              ))}
-            </div>
-          </div>
-        </SectionWrapper>
-      ) : null}
+      {/* Founders/team grid moved to /our-company (later task) — intentionally not rendered here. */}
 
       <SectionWrapper borderTop fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
@@ -165,6 +156,29 @@ export default async function AboutPage({ params }: Props) {
               {t('productionServicesCta')}
             </VpButton>
           </div>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper borderTop fullBleed={true}>
+        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
+          <h2 className="mb-4 font-vp-heading text-xl font-bold uppercase leading-tight tracking-vp-heading">
+            {t('aiWorkflowHeading')}
+          </h2>
+          <p className="max-w-[700px] font-light leading-relaxed text-vp-text-muted">
+            {t('aiWorkflowBody')}
+          </p>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper borderTop fullBleed={true}>
+        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
+          <h2 className="mb-4 font-vp-heading text-xl font-bold uppercase leading-tight tracking-vp-heading">
+            {t('productionLogCtaHeading')}
+          </h2>
+          <p className="mb-6 max-w-[700px] font-light leading-relaxed text-vp-text-muted">
+            {t('productionLogCtaBody')}
+          </p>
+          <VpButton href="/news">{t('productionLogCtaLink')}</VpButton>
         </div>
       </SectionWrapper>
 

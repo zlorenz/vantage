@@ -47,7 +47,12 @@
     "productionServicesCta": "LEARN MORE",
     "moreAboutVantage": "More About Vantage",
     "moreAboutVietnamProductionService": "Vietnam Production Service",
-    "moreAboutOurIndustry": "Our Industry"
+    "moreAboutOurIndustry": "Our Industry",
+    "aiWorkflowHeading": "AI Workflow",
+    "aiWorkflowBody": "How we use AI across production — placeholder copy, to be finalized.",
+    "productionLogCtaHeading": "Production Log",
+    "productionLogCtaBody": "Behind-the-scenes stories from our productions — placeholder copy, to be finalized.",
+    "productionLogCtaLink": "READ THE PRODUCTION LOG"
   },
   "Vietnam": {
     "shotInOutline": "SHOT IN",
