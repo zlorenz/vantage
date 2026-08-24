@@ -39,6 +39,7 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'About.productionServicesCta',
   'About.moreAboutVantage',
   'About.moreAboutVietnamProductionService',
+  'About.moreAboutOurIndustry',
   'Vietnam.shotIn',
   'Vietnam.shotInOutline',
   'Blog.categories',

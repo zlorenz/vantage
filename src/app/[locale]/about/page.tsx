@@ -182,6 +182,14 @@ export default async function AboutPage({ params }: Props) {
                 {t('moreAboutVietnamProductionService')}
               </Link>
             </li>
+            <li>
+              <Link
+                href="/our-industry"
+                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              >
+                {t('moreAboutOurIndustry')}
+              </Link>
+            </li>
           </ul>
         </div>
       </SectionWrapper>
