@@ -9,11 +9,13 @@ import {Box, Button, Dialog, Flex, Stack, Text} from '@sanity/ui'
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type RefObject,
 } from 'react'
 import {set, useClient, type ObjectInputProps, type Path} from 'sanity'
 import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
@@ -59,6 +61,25 @@ type Center = {x: number; y: number}
 
 type GuideBox = {left: string; top: string; width: string; height: string}
 
+type NaturalSize = {width: number; height: number}
+
+/**
+ * Layout of the stock preview <img> relative to our wrapper, including the
+ * object-fit content rect (may extend outside the element for `cover`).
+ */
+type PreviewImgLayout = {
+  /** Overlay clipped to the visible img box (wrapper-relative px). */
+  overlayLeft: number
+  overlayTop: number
+  overlayWidth: number
+  overlayHeight: number
+  /** Full painted image content inside the overlay (may be negative / oversized). */
+  contentLeft: number
+  contentTop: number
+  contentWidth: number
+  contentHeight: number
+}
+
 /**
  * Crop aspect guides (width / height) for homepage + /work, desktop + mobile.
  * Work Mobile / Work Desktop / Homepage Mobile ratios are Zach’s direct
@@ -89,6 +110,8 @@ const GUIDES: GuideSpec[] = [
 ]
 
 const GUIDE_OVERLAY = 'rgba(0, 0, 0, 0.8)'
+
+const STOCK_PREVIEW_IMG_SELECTOR = 'img[data-testid="hotspot-image-input"]'
 
 const DEFAULT_CENTER: Center = {x: 0.5, y: 0.5}
 
@@ -170,6 +193,85 @@ function hotspotValue(center: Center) {
   }
 }
 
+/** Resolve one axis of CSS object-position to a content offset (px). */
+function objectPositionOffset(token: string | undefined, extra: number): number {
+  if (!token || extra === 0) return extra / 2
+  const value = token.trim()
+  if (value === 'center' || value === '50%') return extra / 2
+  if (value === 'left' || value === 'top') return 0
+  if (value === 'right' || value === 'bottom') return extra
+  if (value.endsWith('%')) {
+    const pct = Number.parseFloat(value)
+    return Number.isFinite(pct) ? (extra * pct) / 100 : extra / 2
+  }
+  if (value.endsWith('px')) {
+    const px = Number.parseFloat(value)
+    return Number.isFinite(px) ? px : extra / 2
+  }
+  return extra / 2
+}
+
+/**
+ * Map natural image coords onto the stock preview <img> box, respecting object-fit.
+ * Returned content offsets are relative to the img element’s border box.
+ */
+function measureObjectFitContent(
+  img: HTMLImageElement,
+  natural: NaturalSize,
+): {left: number; top: number; width: number; height: number} | null {
+  const elW = img.clientWidth
+  const elH = img.clientHeight
+  if (elW <= 0 || elH <= 0 || natural.width <= 0 || natural.height <= 0) return null
+
+  const style = getComputedStyle(img)
+  const fit = style.objectFit || 'fill'
+  const posParts = (style.objectPosition || '50% 50%').trim().split(/\s+/)
+  const posX = posParts[0]
+  const posY = posParts[1] ?? posParts[0]
+
+  if (fit === 'fill') {
+    return {left: 0, top: 0, width: elW, height: elH}
+  }
+
+  const scale =
+    fit === 'contain' || fit === 'scale-down'
+      ? Math.min(elW / natural.width, elH / natural.height)
+      : Math.max(elW / natural.width, elH / natural.height)
+
+  const contentW = natural.width * scale
+  const contentH = natural.height * scale
+  return {
+    left: objectPositionOffset(posX, elW - contentW),
+    top: objectPositionOffset(posY, elH - contentH),
+    width: contentW,
+    height: contentH,
+  }
+}
+
+function measurePreviewImgLayout(
+  container: HTMLElement,
+  img: HTMLImageElement,
+  natural: NaturalSize,
+): PreviewImgLayout | null {
+  const containerRect = container.getBoundingClientRect()
+  const imgRect = img.getBoundingClientRect()
+  if (imgRect.width <= 0 || imgRect.height <= 0) return null
+
+  const content = measureObjectFitContent(img, natural)
+  if (!content) return null
+
+  return {
+    overlayLeft: imgRect.left - containerRect.left + container.scrollLeft,
+    overlayTop: imgRect.top - containerRect.top + container.scrollTop,
+    overlayWidth: imgRect.width,
+    overlayHeight: imgRect.height,
+    contentLeft: content.left,
+    contentTop: content.top,
+    contentWidth: content.width,
+    contentHeight: content.height,
+  }
+}
+
 function GuideDimOverlay({box}: {box: GuideBox}) {
   const band: CSSProperties = {
     position: 'absolute',
@@ -208,6 +310,110 @@ function GuideDimOverlay({box}: {box: GuideBox}) {
   )
 }
 
+type StockPreviewGuidesProps = {
+  containerRef: RefObject<HTMLElement | null>
+  naturalSize: NaturalSize
+  center: Center
+}
+
+/** Read-only four-guide overlay aligned to Sanity’s stock image preview. */
+function StockPreviewGuides({containerRef, naturalSize, center}: StockPreviewGuidesProps) {
+  const [layout, setLayout] = useState<PreviewImgLayout | null>(null)
+
+  const syncLayout = useCallback(() => {
+    const container = containerRef.current
+    if (!container) {
+      setLayout(null)
+      return
+    }
+    const img = container.querySelector<HTMLImageElement>(STOCK_PREVIEW_IMG_SELECTOR)
+    if (!img) {
+      setLayout(null)
+      return
+    }
+    setLayout(measurePreviewImgLayout(container, img, naturalSize))
+  }, [containerRef, naturalSize])
+
+  useLayoutEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    syncLayout()
+
+    const img = container.querySelector<HTMLImageElement>(STOCK_PREVIEW_IMG_SELECTOR)
+    const onImgLoad = () => syncLayout()
+    img?.addEventListener('load', onImgLoad)
+
+    const resizeObserver = new ResizeObserver(() => syncLayout())
+    resizeObserver.observe(container)
+    if (img) resizeObserver.observe(img)
+
+    const mutationObserver = new MutationObserver(() => syncLayout())
+    mutationObserver.observe(container, {childList: true, subtree: true, attributes: true})
+
+    window.addEventListener('resize', syncLayout)
+
+    return () => {
+      img?.removeEventListener('load', onImgLoad)
+      resizeObserver.disconnect()
+      mutationObserver.disconnect()
+      window.removeEventListener('resize', syncLayout)
+    }
+  }, [containerRef, syncLayout, naturalSize.width, naturalSize.height])
+
+  if (!layout) return null
+
+  return (
+    <Box
+      aria-hidden
+      data-testid="featured-image-stock-preview-guides"
+      style={{
+        position: 'absolute',
+        left: layout.overlayLeft,
+        top: layout.overlayTop,
+        width: layout.overlayWidth,
+        height: layout.overlayHeight,
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 2,
+      }}
+    >
+      <Box
+        style={{
+          position: 'absolute',
+          left: layout.contentLeft,
+          top: layout.contentTop,
+          width: layout.contentWidth,
+          height: layout.contentHeight,
+        }}
+      >
+        {GUIDES.map((guide) => {
+          const box = guideBoxStyle(
+            naturalSize.width,
+            naturalSize.height,
+            guide.aspectRatio,
+            center.x,
+            center.y,
+          )
+          return (
+            <Box
+              key={guide.title}
+              title={guide.title}
+              style={{
+                position: 'absolute',
+                ...box,
+                border: `2px solid ${guide.color}`,
+                boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.35)`,
+                boxSizing: 'border-box',
+              }}
+            />
+          )
+        })}
+      </Box>
+    </Box>
+  )
+}
+
 type FeaturedImageHotspotEditorProps = {
   assetUrl: string
   center: Center
@@ -221,7 +427,7 @@ function FeaturedImageHotspotEditor({
   readOnly,
   onCommit,
 }: FeaturedImageHotspotEditorProps) {
-  const [naturalSize, setNaturalSize] = useState<{width: number; height: number} | null>(null)
+  const [naturalSize, setNaturalSize] = useState<NaturalSize | null>(null)
   const [activeGuideIndex, setActiveGuideIndex] = useState(0)
   const imgRef = useRef<HTMLImageElement | null>(null)
   const stageRef = useRef<HTMLDivElement | null>(null)
@@ -434,6 +640,7 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
   const client = useClient({apiVersion: '2025-01-01'})
   const assetId = assetIdFromValue(value)
   const imageValue = (value ?? {}) as ImageFieldValue
+  const wrapRef = useRef<HTMLDivElement | null>(null)
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [asset, setAsset] = useState<AssetPreview | null>(null)
@@ -442,6 +649,15 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
     () => centerFromHotspot(imageValue.hotspot),
     [imageValue.hotspot],
   )
+
+  const naturalSize = useMemo((): NaturalSize | null => {
+    const w = asset?.metadata?.dimensions?.width
+    const h = asset?.metadata?.dimensions?.height
+    if (typeof w === 'number' && typeof h === 'number' && w > 0 && h > 0) {
+      return {width: w, height: h}
+    }
+    return null
+  }, [asset])
 
   const openDialog = useCallback(() => {
     if (!assetId || readOnly) return
@@ -507,7 +723,16 @@ export function FeaturedImageHotspotInput(props: ObjectInputProps) {
 
   return (
     <>
-      {renderDefault(defaultInputProps)}
+      <Box ref={wrapRef} style={{position: 'relative'}}>
+        {renderDefault(defaultInputProps)}
+        {assetId && naturalSize ? (
+          <StockPreviewGuides
+            containerRef={wrapRef}
+            naturalSize={naturalSize}
+            center={storedCenter}
+          />
+        ) : null}
+      </Box>
       {dialogOpen && asset?.url ? (
         <Dialog
           id="vp-featured-image-hotspot"

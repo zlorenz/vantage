@@ -39,6 +39,8 @@ export const portfolioEntry = defineType({
     {name: 'slugAndDate', options: {columns: 2}},
     {name: 'copy', title: 'Description', options: {columns: 2}},
     {name: 'taxonomy', title: 'Formats / Industries / Markets', options: {columns: 3}},
+    // Untitled: Featured Image | Video URL (legend hidden via studio.css).
+    {name: 'featuredAndVideo', options: {columns: 2}},
     {name: 'carouselPreview', title: 'Carousel Preview', options: {columns: 2}},
   ],
 
@@ -257,6 +259,7 @@ export const portfolioEntry = defineType({
       title: 'Featured Image',
       type: 'image',
       group: 'media',
+      fieldset: 'featuredAndVideo',
       // hotspot UI is custom (FeaturedImageHotspotInput); keep stock upload via renderDefault.
       // Data still writes standard hotspot/crop for urlForImage().
       options: {hotspot: false},
@@ -271,6 +274,7 @@ export const portfolioEntry = defineType({
       title: 'Video URL',
       type: 'url',
       group: 'media',
+      fieldset: 'featuredAndVideo',
       vimeoPicker: true,
       description:
         'Vimeo or YouTube for English (YouTube only when Vimeo cannot host). Xinpianchang for Chinese.',
