@@ -21,7 +21,11 @@
  */
 
 import {useEffect, useRef, useState} from 'react';
-import {detectPillarboxContentAspect} from './detect-pillarbox-aspect';
+import {
+  detectPillarboxContentAspect,
+  isCarouselCoverMathEnabled,
+  scheduleIdleWork,
+} from './detect-pillarbox-aspect';
 
 /** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
 const SEEK_TOLERANCE_S = 0.05;
@@ -156,6 +160,9 @@ export function CarouselNativeVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
   const appliedAspectRef = useRef<number | null>(null);
+  const scannedFrameRef = useRef(false);
+  const scanScheduledRef = useRef(false);
+  const cancelIdleScanRef = useRef<(() => void) | null>(null);
   const contentAspectHintRef = useRef(contentAspectHint);
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
@@ -183,43 +190,64 @@ export function CarouselNativeVideo({
     formatRef.current = playbackFormat;
   }, [playbackFormat]);
 
-  const applyCoverAspect = (codedAspect: number | null) => {
+  const writeCoverAspect = (value: number | null) => {
+    if (!isCarouselCoverMathEnabled()) return;
     const player = playerRef.current;
     const stack = player?.closest(
       '.vp-proto-carousel__media-stack',
     ) as HTMLElement | null;
     const target = stack ?? player;
     if (!target) return;
-    const value = resolveCoverAspect(
-      codedAspect,
-      contentAspectHintRef.current,
-    );
     if (value == null || value === appliedAspectRef.current) return;
     appliedAspectRef.current = value;
     target.style.setProperty('--vp-preview-aspect', String(value));
   };
 
-  const applyPreviewAspect = (video: HTMLVideoElement) => {
+  const applyCodedAspect = (video: HTMLVideoElement) => {
+    writeCoverAspect(
+      resolveCoverAspect(
+        previewAspectValue(video),
+        contentAspectHintRef.current,
+      ),
+    );
+  };
+
+  const scanFrameOnce = (video: HTMLVideoElement) => {
+    if (scannedFrameRef.current || !isCarouselCoverMathEnabled()) return;
+    scannedFrameRef.current = true;
     const coded = previewAspectValue(video);
-    // Scan the decoded frame for baked-in side bars (poster stills are often
-    // already cropped and miss them). Requires crossOrigin on the element.
-    const fromFrame =
-      coded != null
-        ? detectPillarboxContentAspect(
-            video,
-            video.videoWidth,
-            video.videoHeight,
-          )
-        : null;
+    if (coded == null) return;
+    const fromFrame = detectPillarboxContentAspect(
+      video,
+      video.videoWidth,
+      video.videoHeight,
+    );
     const hints = [contentAspectHintRef.current, fromFrame].filter(
       (n): n is number => n != null && Number.isFinite(n) && n > 0,
     );
     const contentHint = hints.length > 0 ? Math.min(...hints) : null;
-    applyCoverAspect(resolveCoverAspect(coded, contentHint));
+    writeCoverAspect(resolveCoverAspect(coded, contentHint));
+  };
+
+  const scheduleFrameScan = (video: HTMLVideoElement) => {
+    if (
+      scanScheduledRef.current ||
+      scannedFrameRef.current ||
+      !isCarouselCoverMathEnabled()
+    ) {
+      return;
+    }
+    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+    scanScheduledRef.current = true;
+    cancelIdleScanRef.current = scheduleIdleWork(() => {
+      cancelIdleScanRef.current = null;
+      scanFrameOnce(video);
+    });
   };
 
   const reportReady = (video: HTMLVideoElement) => {
-    applyPreviewAspect(video);
+    applyCodedAspect(video);
+    scheduleFrameScan(video);
     const readyNow =
       formatRef.current === 'hls'
         ? isHlsPreviewReady(video)
@@ -265,6 +293,10 @@ export function CarouselNativeVideo({
       for (const event of READY_EVENTS) {
         video.removeEventListener(event, onReadyEvent);
       }
+      cancelIdleScanRef.current?.();
+      cancelIdleScanRef.current = null;
+      scannedFrameRef.current = false;
+      scanScheduledRef.current = false;
       hasBeenReadyRef.current = false;
       appliedAspectRef.current = null;
       const stack = player?.closest(
@@ -281,18 +313,10 @@ export function CarouselNativeVideo({
 
   // Poster pillarbox scan can finish after metadata — re-resolve cover aspect.
   useEffect(() => {
+    if (!isCarouselCoverMathEnabled()) return;
     const video = videoRef.current;
     const coded = video ? previewAspectValue(video) : null;
-    const player = playerRef.current;
-    const stack = player?.closest(
-      '.vp-proto-carousel__media-stack',
-    ) as HTMLElement | null;
-    const target = stack ?? player;
-    if (!target) return;
-    const value = resolveCoverAspect(coded, contentAspectHint);
-    if (value == null) return;
-    appliedAspectRef.current = value;
-    target.style.setProperty('--vp-preview-aspect', String(value));
+    writeCoverAspect(resolveCoverAspect(coded, contentAspectHint));
   }, [contentAspectHint]);
 
   useEffect(() => {

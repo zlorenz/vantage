@@ -66,17 +66,15 @@
   --vp-preview-aspect: 1.77777778;
 }
 
+/*
+ * Mobile: fill the 100svh slide. Cover-math + unclamped max-width is
+ * desktop-only (ultrawide / baked-in pillarbox). Mixing 100vh cover-math
+ * with a 100svh carousel crops top/bottom on Chrome iOS, and the oversized
+ * layer makes Embla drag + blur stutter.
+ */
 .vp-proto-carousel__poster-shell {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
-  height: max(100%, calc(100vw / var(--vp-preview-aspect)));
-  max-width: none;
-  max-height: none;
-  min-width: 100%;
-  min-height: 100%;
-  transform: translate(-50%, -50%);
+  inset: 0;
   overflow: hidden;
 }
 
@@ -94,39 +92,19 @@
 
 .vp-proto-carousel__iframe {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  /*
-   * Cover-math: size the replaced box to --vp-preview-aspect so it covers
-   * the viewport. Ultrawide (letterboxing) grows width; tall / pillarboxed
-   * content grows height. Unitless aspect keeps `100vw / aspect` correct
-   * (slash-token `w / h` used to parse as `100vw / w / h` and never grew).
-   * max-width/height: none undoes Tailwind preflight clamping.
-   */
-  width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
-  height: max(100%, calc(100vw / var(--vp-preview-aspect)));
-  max-width: none;
-  max-height: none;
-  min-width: 100%;
-  min-height: 100%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   border: 0;
-  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
 .vp-proto-carousel__video {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
-  height: max(100%, calc(100vw / var(--vp-preview-aspect)));
-  max-width: none;
-  max-height: none;
-  min-width: 100%;
-  min-height: 100%;
-  transform: translate(-50%, -50%);
-  /* Cover-math sizes the box to the cover aspect; object-fit is a fallback
-   * if WebKit ignores the box size, not the primary crop. */
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Fallback if WebKit ignores the box size. Desktop cover-math is primary. */
   object-fit: cover;
   pointer-events: none;
   /* Hard hide so an unready <video> cannot paint opaque black over the poster.
@@ -291,6 +269,29 @@
 }
 
 @media (min-width: 768px) {
+  /*
+   * Cover-math: size the replaced box to --vp-preview-aspect so it covers
+   * the viewport. Ultrawide (letterboxing) grows width; tall / pillarboxed
+   * content grows height. 100svh matches the carousel box (100vh leftover
+   * from the lvh→svh migration cropped top/bottom when toolbars stay up).
+   * max-width/height: none undoes Tailwind preflight clamping.
+   */
+  .vp-proto-carousel__poster-shell,
+  .vp-proto-carousel__iframe,
+  .vp-proto-carousel__video {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: max(100%, calc(var(--vp-preview-aspect) * 100vh));
+    width: max(100%, calc(var(--vp-preview-aspect) * 100svh));
+    height: max(100%, calc(100vw / var(--vp-preview-aspect)));
+    max-width: none;
+    max-height: none;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+  }
+
   .vp-proto-carousel__overlay-copy {
     flex-direction: row;
     justify-content: space-between;

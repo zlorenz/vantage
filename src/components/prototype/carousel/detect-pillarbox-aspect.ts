@@ -9,7 +9,31 @@
  * Conservative on purpose: dark-graded footage must not be mistaken for bars
  * (that over-zoomed Mammotion to ~0.59). Require bars on both sides, near-black
  * luma, and a modest max zoom relative to the full frame aspect.
+ *
+ * Desktop-only: mobile uses fill + object-fit cover on the 100svh slide.
+ * Cover-math + canvas scans there cropped top/bottom (100vh vs 100svh) and
+ * stuttered Embla drags.
  */
+
+/** Matches `.vp-proto-carousel` desktop overlay / cover-math breakpoint. */
+export const CAROUSEL_COVER_MATH_MQ = '(min-width: 768px)';
+
+export function isCarouselCoverMathEnabled(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia(CAROUSEL_COVER_MATH_MQ).matches
+  );
+}
+
+/** Defer canvas work off the gesture/animation frame. Returns a cancel fn. */
+export function scheduleIdleWork(fn: () => void): () => void {
+  if (typeof requestIdleCallback === 'function') {
+    const id = requestIdleCallback(() => fn(), {timeout: 600});
+    return () => cancelIdleCallback(id);
+  }
+  const id = window.setTimeout(fn, 0);
+  return () => window.clearTimeout(id);
+}
 
 const BLACK_LUMA = 8;
 /** Ignore tiny edge noise; require a bar on BOTH sides. */

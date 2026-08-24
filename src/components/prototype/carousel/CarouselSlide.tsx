@@ -10,7 +10,11 @@ import Image from 'next/image';
 import {useLocale, useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
 import {CarouselVimeo} from './CarouselVimeo';
-import {detectPillarboxContentAspect} from './detect-pillarbox-aspect';
+import {
+  detectPillarboxContentAspect,
+  isCarouselCoverMathEnabled,
+  scheduleIdleWork,
+} from './detect-pillarbox-aspect';
 import type {PrototypeCarouselSlide} from './types';
 
 interface CarouselSlideProps {
@@ -48,50 +52,48 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
       }
     }, [shouldMountVideo]);
 
-    // Scan the poster for baked-in side bars even if the video becomes ready
-    // before the visible <Image> fires onLoad (common on warm cache).
+    // Desktop-only: scan the poster for baked-in side bars. Mobile keeps
+    // fill + object-fit cover — canvas scans during swipe janked Embla.
     useEffect(() => {
-      if (!slide.posterUrl) {
+      if (!slide.posterUrl || !isCarouselCoverMathEnabled()) {
         setContentAspectHint(null);
         return;
       }
 
       let cancelled = false;
-      const img = new window.Image();
-      img.decoding = 'async';
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
+      let cancelIdle = () => {};
+
+      const scan = (source: HTMLImageElement) => {
         if (cancelled) return;
-        const aspect = detectPillarboxContentAspect(
-          img,
-          img.naturalWidth,
-          img.naturalHeight,
-        );
-        if (aspect != null) {
-          setContentAspectHint(aspect);
-        }
-      };
-      img.onerror = () => {
-        // Same-origin Next image optimizer as fallback when Sanity CORS fails.
-        if (cancelled || img.src.includes('/_next/image')) return;
-        const proxy = new window.Image();
-        proxy.onload = () => {
+        cancelIdle = scheduleIdleWork(() => {
           if (cancelled) return;
           const aspect = detectPillarboxContentAspect(
-            proxy,
-            proxy.naturalWidth,
-            proxy.naturalHeight,
+            source,
+            source.naturalWidth,
+            source.naturalHeight,
           );
           if (aspect != null) {
             setContentAspectHint(aspect);
           }
-        };
+        });
+      };
+
+      const img = new window.Image();
+      img.decoding = 'async';
+      img.crossOrigin = 'anonymous';
+      img.onload = () => scan(img);
+      img.onerror = () => {
+        // Same-origin Next image optimizer as fallback when Sanity CORS fails.
+        if (cancelled || img.src.includes('/_next/image')) return;
+        const proxy = new window.Image();
+        proxy.onload = () => scan(proxy);
         proxy.src = `/_next/image?url=${encodeURIComponent(slide.posterUrl!)}&w=960&q=75`;
       };
       img.src = slide.posterUrl;
 
       return () => {
         cancelled = true;
+        cancelIdle();
       };
     }, [slide.posterUrl]);
 
