@@ -1,16 +1,14 @@
 /**
  * LayoutShell — composes global site chrome around page content.
  *
- * Server component that wraps children with ContactModalProvider (client)
- * so interactive nav items can open the modal. SiteHeader and SiteFooter
- * are server components passed as siblings inside the provider boundary.
+ * Server component. SiteHeader and SiteFooter are server components
+ * rendered as siblings around the page content. Contact is a normal
+ * /contact route now — no modal provider/mount here anymore.
  */
 
 import type { ReactNode } from 'react';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
-import { ContactModal } from './ContactModal';
-import { ContactModalProvider } from './ContactModalContext';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
 
@@ -18,7 +16,6 @@ interface LayoutShellProps {
   locale: Locale;
   siteSettings: SiteSettings;
   navPages: NavPage[];
-  phrases?: Record<string, string>;
   children: ReactNode;
 }
 
@@ -26,17 +23,15 @@ export async function LayoutShell({
   locale,
   siteSettings,
   navPages,
-  phrases,
   children,
 }: LayoutShellProps) {
   return (
-    <ContactModalProvider>
+    <>
       <SiteHeader locale={locale} siteSettings={siteSettings} navPages={navPages} />
       <main id="main" className="site-main flex-1">
         {children}
       </main>
       <SiteFooter siteSettings={siteSettings} />
-      <ContactModal siteSettings={siteSettings} phrases={phrases} />
-    </ContactModalProvider>
+    </>
   );
 }

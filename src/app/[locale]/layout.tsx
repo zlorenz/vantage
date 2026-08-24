@@ -4,7 +4,7 @@
  * Data flow:
  * 1. Validates [locale] and enables static rendering (setRequestLocale)
  * 2. Fetches siteSettings + nav page slugs once from Sanity (server-side)
- * 3. Passes CMS data to LayoutShell → SiteHeader, SiteFooter, ContactModal
+ * 3. Passes CMS data to LayoutShell → SiteHeader, SiteFooter
  * 4. Wraps children in NextIntlClientProvider for client-side translations
  *
  * The <html lang> attribute is set here from the locale param so assistive
@@ -26,7 +26,6 @@ import { CjkOutlineFilter } from '@/components/layout/CjkOutlineFilter';
 import { routing } from '@/i18n/routing';
 import { delaGothicOne, monaSans, specialGothicExpandedOne } from '@/lib/fonts';
 import { METADATA_BASE } from '@/lib/metadata';
-import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import { SanityLive } from '@/sanity/lib/live';
 import { NAV_PAGES_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
@@ -63,10 +62,9 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   // Single server-side fetch for global layout data — no redundant per-page queries.
-  const [siteSettings, navPages, phrases] = await Promise.all([
+  const [siteSettings, navPages] = await Promise.all([
     sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
     sanityClient.fetch<NavPage[]>(NAV_PAGES_QUERY),
-    getPhraseRecord(),
   ]);
 
   if (!siteSettings) {
@@ -95,7 +93,6 @@ export default async function LocaleLayout({ children, params }: Props) {
             locale={locale as Locale}
             siteSettings={siteSettings}
             navPages={navPages}
-            phrases={phrases}
           >
             {children}
           </LayoutShell>

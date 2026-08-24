@@ -8,7 +8,7 @@
 /**
  * Fetches the singleton siteSettings document.
  *
- * Used by SiteHeader, SiteFooter, and ContactModal on every page via
+ * Used by SiteHeader, SiteFooter, and the /contact page on every page via
  * the locale layout — one server-side fetch, passed down as props.
  *
  * Returns null if the document has not been created yet (should not happen
