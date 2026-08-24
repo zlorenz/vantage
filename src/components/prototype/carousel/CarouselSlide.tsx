@@ -6,7 +6,6 @@ import {
   useState,
   type CSSProperties,
 } from 'react';
-import Image from 'next/image';
 import {useLocale, useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
 import {CarouselVimeo} from './CarouselVimeo';
@@ -118,15 +117,23 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
           >
             {slide.posterUrl && !playerReady ? (
               <div className="vp-proto-carousel__poster-shell">
-                <Image
-                  src={slide.posterUrl}
-                  alt=""
-                  fill
-                  loading="eager"
-                  priority={index === 0}
-                  className="vp-proto-carousel__poster"
-                  sizes="100vw"
-                />
+                <picture>
+                  {slide.posterUrlDesktop ? (
+                    <source
+                      media="(min-width: 768px)"
+                      srcSet={slide.posterUrlDesktop}
+                    />
+                  ) : null}
+                  <img
+                    src={slide.posterUrl}
+                    alt=""
+                    className="vp-proto-carousel__poster"
+                    decoding="async"
+                    loading="eager"
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    style={{objectPosition: slide.objectPosition}}
+                  />
+                </picture>
               </div>
             ) : null}
             {shouldMountVideo && slide.vimeoUrl ? (

@@ -7,6 +7,10 @@ export type PrototypeCarouselSlide = {
   dopNames: string;
   formatLine: string;
   posterUrl: string | null;
+  /** Desktop (≥768px) — 16:9 Sanity crop matching Homepage Cards (Desktop). */
+  posterUrlDesktop: string | null;
+  /** CSS object-position from featuredImage hotspot (e.g. "42% 55%"). */
+  objectPosition: string;
   vimeoUrl: string | null;
   previewStartSeconds: number | null;
   previewEndSeconds: number | null;

@@ -9,21 +9,26 @@ import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, SanityImage} from '@/types/sanity';
+import {CAROUSEL_RATIOS, posterSize} from '@carousel-ratios';
 
 /** Newest-first positions treated as already “featured-visible” for append exclusion. */
 const FEATURED_APPEND_EXCLUDE_HEAD = 12;
+
+/**
+ * Poster dimensions are derived from @carousel-ratios so Studio guides,
+ * CSS aspect-ratio, and CDN crops stay in lockstep. 2× DPR = crisp on
+ * retina without over-fetching. Fixed integers keep Sanity CDN cache warm.
+ */
+const WORK_MOBILE_POSTER = posterSize(CAROUSEL_RATIOS.workMobile);
+const WORK_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.workDesktop);
 
 export type PortfolioIndexSlide = {
   id: string;
   /** Locale-aware portfolio route slug. */
   hrefSlug: string;
-  /**
-   * Mobile (<576px) — 16:9 Sanity crop. Card is taller (~0.512); CSS object-fit
-   * cover + objectPosition does the portrait window (avoids a hard tall CDN crop
-   * that reads as over-zoomed).
-   */
+  /** Mobile (<576px) — ~2:3 Sanity crop matching the /work card. */
   posterUrl: string;
-  /** Desktop (≥576px) — 4:5 Sanity crop matching card layout; avoids CSS re-crop of 16:9. */
+  /** Desktop (≥576px) — ~520:673 Sanity crop matching the /work card. */
   posterUrlDesktop: string;
   /** CSS object-position from featuredImage hotspot (e.g. "42% 55%"). */
   objectPosition: string;
@@ -69,14 +74,14 @@ export function preparePortfolioIndexSlideFromEntry(
   if (!entry.featuredImage || !hrefSlug) return null;
 
   const posterUrl = urlForImage(entry.featuredImage)
-    .width(1920)
-    .height(1080)
+    .width(WORK_MOBILE_POSTER.width)
+    .height(WORK_MOBILE_POSTER.height)
     .fit('crop')
     .url();
 
   const posterUrlDesktop = urlForImage(entry.featuredImage)
-    .width(1200)
-    .height(1500)
+    .width(WORK_DESKTOP_POSTER.width)
+    .height(WORK_DESKTOP_POSTER.height)
     .fit('crop')
     .url();
 

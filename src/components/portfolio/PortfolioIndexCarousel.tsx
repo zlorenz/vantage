@@ -60,6 +60,14 @@ const WHEEL_GESTURE_THRESHOLD_PX = 30;
 const POSTER_WINDOW_RADIUS = 8;
 
 /**
+ * How many neighbors get loading="eager" so the browser starts decoding them
+ * before they enter the viewport. Prior behavior (active-only eager) meant
+ * quick swipes showed blank cards while lazy neighbors waited to intersect.
+ * ±3 mirrors what a user can realistically reach with one swipe momentum.
+ */
+const EAGER_LOAD_RADIUS = 3;
+
+/**
  * How many neighbors get radius/overflow/transform/transition styling.
  * Tighter than the image window: peek layout only shows ~3 cards on screen;
  * ±2 → 5 styled cards (active + peeks + one-step buffer). Restyling is a
@@ -509,6 +517,14 @@ export function PortfolioIndexCarousel({
               const mountPoster =
                 mountContent &&
                 shouldMountPortfolioIndexPoster(index, activeIndex, slideCount);
+              const eagerPoster =
+                mountPoster &&
+                isWithinCircularWindow(
+                  index,
+                  activeIndex,
+                  slideCount,
+                  EAGER_LOAD_RADIUS,
+                );
               const styleCard =
                 mountContent &&
                 shouldStylePortfolioIndexCard(index, activeIndex, slideCount);
@@ -547,7 +563,7 @@ export function PortfolioIndexCarousel({
                             alt=""
                             className="vp-portfolio-index__poster"
                             decoding="async"
-                            loading={active ? 'eager' : 'lazy'}
+                            loading={eagerPoster ? 'eager' : 'lazy'}
                             fetchPriority={active ? 'high' : 'auto'}
                             style={{objectPosition: slide.objectPosition}}
                           />

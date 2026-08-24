@@ -36,6 +36,8 @@
       "@trash-retention/*": ["./shared/trash-retention/*"],
       "@campaign-brief-retention": ["./shared/campaign-brief-retention"],
       "@campaign-brief-retention/*": ["./shared/campaign-brief-retention/*"],
+      "@carousel-ratios": ["./shared/carousel-ratios"],
+      "@carousel-ratios/*": ["./shared/carousel-ratios/*"],
       "@studio-overlay-z": ["./shared/studio-overlay-z"],
       "@studio-overlay-z/*": ["./shared/studio-overlay-z/*"],
       "@media-tags": ["./shared/media-tags"],

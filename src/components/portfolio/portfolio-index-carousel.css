@@ -8,15 +8,25 @@
  * stage is bottom-anchored (flex-end) with a slightly shorter height-scale
  * so the reduction frees space above — bottom bar stays put. Card HEIGHT
  * subtracts the bottom bar from the viewport calc.
- * Desktop (≥576px): uniform 4:5 slide width from viewport height (cqh).
- * Inactive peeks use opacity/blur/scale only. Mobile keeps percentage flex-basis.
+ * Slide width is height-driven at every breakpoint (100cqh × card aspect)
+ * so the slide box always hugs the aspect-locked card exactly — no blank
+ * gutter inside the slide from a mismatched box shape. Inactive peeks use
+ * opacity/blur/scale only.
  */
 
 .vp-portfolio-index {
-  --vp-index-slide-basis: 74%;
   --vp-index-slide-gap: 0.5rem;
   --vp-index-inactive-opacity: 0.45;
   --vp-index-inactive-scale: 0.94;
+  /*
+   * Card aspect matches Sanity CDN bake exactly (see @carousel-ratios).
+   * Mobile default = Full Portfolio Cards (Mobile) 2:3 (324:486).
+   * Locking this aspect stops object-fit: cover from re-cropping after the
+   * CDN already cropped to hotspot → hotspots stay honored on every device.
+   */
+  --vp-index-card-aspect: 2 / 3;
+  /* Multiplies the height-driven slide width; only touched by .is-sparse. */
+  --vp-index-slide-width-scale: 1;
   /* Placeholder for Phase 3 filter + scrubber — used in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
   /* Desktop default; mobile override (~7% shorter) below. */
@@ -54,30 +64,26 @@
 }
 
 .vp-portfolio-index.is-sparse {
-  /* Keep sparse filtered sets swipeable on wide viewports (2–3 peeks). */
-  --vp-index-slide-basis: 86%;
+  /* Keep sparse filtered sets (≤3, non-looping) swipeable with less peek —
+   * widen the slide track without changing the card's own locked aspect. */
+  --vp-index-slide-width-scale: 1.16;
 }
 
 @media (min-width: 576px) {
   .vp-portfolio-index {
-    /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
-    --vp-index-slide-basis: 64%;
     --vp-index-slide-gap: 0.75rem;
+    --vp-index-card-aspect: 520 / 673;
   }
 }
 
 @media (min-width: 992px) {
   .vp-portfolio-index {
-    /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
-    --vp-index-slide-basis: 54%;
     --vp-index-slide-gap: 1rem;
   }
 }
 
 @media (min-width: 1400px) {
   .vp-portfolio-index {
-    /* Unused at this tier (width from aspect-ratio); kept for parity/docs. */
-    --vp-index-slide-basis: 48%;
     --vp-index-slide-gap: 1.25rem;
   }
 }
@@ -132,7 +138,7 @@
       ) * var(--vp-index-height-scale, 0.86)
   );
   overflow: hidden;
-  /* Height unit for desktop slide width (4:5 × active/inactive scale). */
+  /* Height unit for slide width at every breakpoint (card aspect × scale). */
   container-type: size;
   container-name: vp-index-viewport;
   /* Horizontal Embla owns X; do NOT use pan-y — that lets iOS rubber-band
@@ -156,11 +162,27 @@
 
 .vp-portfolio-index__slide {
   position: relative;
-  flex: 0 0 var(--vp-index-slide-basis);
+  flex: 0 0 auto;
+  /*
+   * Height-driven width at every breakpoint: 100cqh × card aspect (+ gap for
+   * the leading padding) so the slide box is exactly card-shaped, with zero
+   * blank space inside it regardless of device dimensions. is-sparse widens
+   * the track (less peek) via --vp-index-slide-width-scale without touching
+   * the card's own locked aspect.
+   */
+  width: calc(
+    100cqh * var(--vp-index-card-aspect) * var(--vp-index-slide-width-scale, 1) +
+      var(--vp-index-slide-gap)
+  );
   min-width: 0;
   height: 100%;
   padding-left: var(--vp-index-slide-gap);
   box-sizing: border-box;
+  /* Center the fixed-aspect card horizontally when slide is a hair wider than
+   * the card. Vertical stretch lets height: 100% on the card fill first. */
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
   /* Transparent so page glow shows in gutters; card face keeps --vp-bg. */
   background: transparent;
 }
@@ -168,8 +190,12 @@
 .vp-portfolio-index__card {
   position: relative;
   display: block;
-  width: 100%;
+  /* Height-bound sizing: card fills viewport height, width follows aspect.
+   * max-width guards ultra-tall viewports where width would overflow slide. */
+  aspect-ratio: var(--vp-index-card-aspect);
   height: 100%;
+  width: auto;
+  max-width: 100%;
   background: var(--vp-bg, #000000);
   color: #fff;
   text-decoration: none;
@@ -181,18 +207,6 @@
 .vp-portfolio-index__slide.is-active .vp-portfolio-index__card {
   pointer-events: auto;
   cursor: pointer;
-}
-
-/*
- * Desktop: uniform 4:5 width from viewport height (cqh). Inactive peeks use
- * opacity/blur/scale only — no layout width change or scaleX (distorts media).
- */
-@media (min-width: 576px) {
-  .vp-portfolio-index__slide {
-    flex: 0 0 auto;
-    width: calc(100cqh * 4 / 5);
-    min-width: auto;
-  }
 }
 
 /*
@@ -260,7 +274,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  /* Mobile: 16:9 + object-position; desktop: 4:5 crop — cover is a safety net. */
+  /* CDN crop aspect matches card aspect exactly — cover is effectively a no-op.
+   * object-position is still applied as a subpixel safety net, but rounding
+   * differences alone shouldn't move focal points visibly anymore. */
   object-fit: cover;
 }
 

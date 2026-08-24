@@ -19,6 +19,7 @@ import {
 } from 'react'
 import {set, useClient, type ObjectInputProps, type Path} from 'sanity'
 import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
+import {CAROUSEL_RATIO_LIST, ratioValue, type CarouselRatio} from '@carousel-ratios'
 
 type ImageFieldValue = {
   _type?: 'image'
@@ -50,12 +51,7 @@ type AssetPreview = {
   }
 }
 
-type GuideSpec = {
-  title: string
-  /** Width / height */
-  aspectRatio: number
-  color: string
-}
+type GuideSpec = CarouselRatio
 
 type Center = {x: number; y: number}
 
@@ -81,38 +77,10 @@ type PreviewImgLayout = {
 }
 
 /**
- * Crop aspect guides (width / height) for homepage + full portfolio, mobile + desktop.
- * Order: narrowest crop first (default tab). Ratios are Zach’s direct screenshot
- * measurements (authoritative — do not recalculate from CSS).
+ * Guide list is the single source of truth from @carousel-ratios. Studio,
+ * frontend CDN URLs, and CSS aspect-ratio all read from the same table.
  */
-const GUIDES: GuideSpec[] = [
-  {
-    title: 'Homepage Cards (Mobile)',
-    /** Direct device measurement (Zach): W:1320 H:2388 → 1320/2388 (tallest mobile guide). */
-    aspectRatio: 1320 / 2388,
-    color: 'rgba(220, 120, 255, 0.95)',
-  },
-  {
-    title: 'Homepage Cards (Desktop)',
-    aspectRatio: 16 / 9,
-    color: 'rgba(100, 180, 255, 0.95)',
-  },
-  /**
-   * Direct device measurement (Zach): W:970 H:1562 → 970/1562.
-   * Older CSS-token estimate for /work mobile was ~0.512; measured 970/1562 ≈ 0.621 —
-   * left as context only, not something to reconcile back to the formula.
-   */
-  {
-    title: 'Full Portfolio Cards (Mobile)',
-    aspectRatio: 970 / 1562,
-    color: 'rgba(80, 220, 160, 0.95)',
-  },
-  {
-    title: 'Full Portfolio Cards (Desktop)',
-    aspectRatio: 520 / 673,
-    color: 'rgba(249, 219, 36, 0.95)',
-  },
-]
+const GUIDES: readonly GuideSpec[] = CAROUSEL_RATIO_LIST
 
 const GUIDE_OVERLAY = 'rgba(0, 0, 0, 0.8)'
 
@@ -424,7 +392,7 @@ function StockPreviewGuides({containerRef, naturalSize, center}: StockPreviewGui
           const box = guideBoxStyle(
             naturalSize.width,
             naturalSize.height,
-            guide.aspectRatio,
+            ratioValue(guide),
             center.x,
             center.y,
           )
@@ -602,7 +570,7 @@ function FeaturedImageHotspotEditor({
     guideBoxStyle(
       naturalSize.width,
       naturalSize.height,
-      activeGuide.aspectRatio,
+      ratioValue(activeGuide),
       displayCenter.x,
       displayCenter.y,
     )

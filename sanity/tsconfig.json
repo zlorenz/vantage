@@ -28,6 +28,8 @@
       "@trash-retention/*": ["../shared/trash-retention/*"],
       "@studio-overlay-z": ["../shared/studio-overlay-z"],
       "@studio-overlay-z/*": ["../shared/studio-overlay-z/*"],
+      "@carousel-ratios": ["../shared/carousel-ratios"],
+      "@carousel-ratios/*": ["../shared/carousel-ratios/*"],
       "@media-tags": ["../shared/media-tags"],
       "@media-tags/*": ["../shared/media-tags/*"]
     }
@@ -43,6 +45,7 @@
     "../shared/client-logos/**/*.ts",
     "../shared/trash-retention/**/*.ts",
     "../shared/studio-overlay-z/**/*.ts",
+    "../shared/carousel-ratios/**/*.ts",
     "../shared/media-tags/**/*.ts",
     "../messages/**/*.json",
     "../src/lib/campaign-brief-fields.ts",

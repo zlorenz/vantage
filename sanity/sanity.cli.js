@@ -11,6 +11,7 @@ const sharedVideoUrl = path.resolve(rootDir, '../shared/video-url')
 const sharedClientLogos = path.resolve(rootDir, '../shared/client-logos/index.ts')
 const sharedTrashRetention = path.resolve(rootDir, '../shared/trash-retention')
 const sharedStudioOverlayZ = path.resolve(rootDir, '../shared/studio-overlay-z')
+const sharedCarouselRatios = path.resolve(rootDir, '../shared/carousel-ratios')
 const sharedMediaTags = path.resolve(rootDir, '../shared/media-tags/index.ts')
 
 function mergeViteAliases(existing, extra) {
@@ -66,6 +67,7 @@ export default defineCliConfig({
         '@client-logos': sharedClientLogos,
         '@trash-retention': sharedTrashRetention,
         '@studio-overlay-z': sharedStudioOverlayZ,
+        '@carousel-ratios': sharedCarouselRatios,
         '@media-tags': sharedMediaTags,
       }),
     },

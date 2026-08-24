@@ -10,6 +10,26 @@ import type {CrewCredit, DisplayTitlePartsValue, SanityImage} from '@/types/sani
 import {composeOverlayCopy, joinOverlayList} from './overlay';
 import {HOME_REDESIGN_CAROUSEL_QUERY} from './query';
 import type {PrototypeCarouselSlide} from './types';
+import {CAROUSEL_RATIOS, posterSize} from '@carousel-ratios';
+
+/**
+ * Homepage carousel poster bakes match the Studio “Homepage Cards” guides so
+ * a hotspot placed in Studio previews the same crop that renders in-app.
+ */
+const HOME_MOBILE_POSTER = posterSize(CAROUSEL_RATIOS.homeMobile);
+const HOME_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.homeDesktop, 120);
+
+function objectPositionFromHotspot(hotspot: SanityImage['hotspot'] | undefined): string {
+  const x =
+    typeof hotspot?.x === 'number' && Number.isFinite(hotspot.x)
+      ? Math.min(1, Math.max(0, hotspot.x))
+      : 0.5;
+  const y =
+    typeof hotspot?.y === 'number' && Number.isFinite(hotspot.y)
+      ? Math.min(1, Math.max(0, hotspot.y))
+      : 0.5;
+  return `${x * 100}% ${y * 100}%`;
+}
 
 type CarouselFormat = {
   title?: string | null;
@@ -54,8 +74,20 @@ export async function loadFeaturedWorkSlides(
   return entries.map((entry) => {
     const slug = entry.slug;
     const posterUrl = entry.featuredImage
-      ? urlForImage(entry.featuredImage).width(1920).height(1080).fit('crop').url()
+      ? urlForImage(entry.featuredImage)
+          .width(HOME_MOBILE_POSTER.width)
+          .height(HOME_MOBILE_POSTER.height)
+          .fit('crop')
+          .url()
       : null;
+    const posterUrlDesktop = entry.featuredImage
+      ? urlForImage(entry.featuredImage)
+          .width(HOME_DESKTOP_POSTER.width)
+          .height(HOME_DESKTOP_POSTER.height)
+          .fit('crop')
+          .url()
+      : null;
+    const objectPosition = objectPositionFromHotspot(entry.featuredImage?.hotspot);
     const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
     const {brandLine, campaignLine} = composeOverlayCopy(parts);
     const formatLine = joinOverlayList(
@@ -73,6 +105,8 @@ export async function loadFeaturedWorkSlides(
       dopNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'dop')),
       formatLine,
       posterUrl,
+      posterUrlDesktop,
+      objectPosition,
       vimeoUrl: entry.previewCleanVimeoUrl?.trim() || entry.vimeoUrl?.trim() || null,
       previewStartSeconds: entry.previewStartSeconds ?? null,
       previewEndSeconds: entry.previewEndSeconds ?? null,
