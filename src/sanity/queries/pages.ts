@@ -183,6 +183,27 @@ export const OUR_INDUSTRY_PAGE_QUERY = defineQuery(`
   }
 `)
 
+/** Awards — meta, body, award entries (placeholder until real award data lands). */
+export const AWARDS_PAGE_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "awards" && !defined(trash.trashedAt)][0]{
+    ${PAGE_META_FIELDS},
+    ${PAGE_CONTENT_FIELDS},
+    awardItems[]{
+      _key,
+      title,
+      titleZh,
+      category,
+      categoryZh,
+      year,
+      portfolioEntry->{
+        _id,
+        "slug": slug.current,
+        "slugZh": slugZh.current
+      }
+    }
+  }
+`)
+
 /** Work index metadata (SEO / OG). Body still from WORK_PAGE_QUERY. */
 export const WORK_PAGE_META_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{
