@@ -81,31 +81,36 @@ type PreviewImgLayout = {
 }
 
 /**
- * Crop aspect guides (width / height) for homepage + /work, desktop + mobile.
- * Work Mobile / Work Desktop / Homepage Mobile ratios are Zach’s direct
- * screenshot pixel measurements (authoritative — do not recalculate from CSS).
+ * Crop aspect guides (width / height) for homepage + full portfolio, mobile + desktop.
+ * Order: narrowest crop first (default tab). Ratios are Zach’s direct screenshot
+ * measurements (authoritative — do not recalculate from CSS).
  */
 const GUIDES: GuideSpec[] = [
-  {title: 'Homepage Carousel (Desktop)', aspectRatio: 16 / 9, color: 'rgba(100, 180, 255, 0.95)'},
   {
-    title: 'Homepage Carousel (Mobile)',
-    aspectRatio: 970 / 1562,
+    title: 'Homepage Cards (Mobile)',
+    /** Direct device measurement (Zach): W:1320 H:2388 → 1320/2388 (tallest mobile guide). */
+    aspectRatio: 1320 / 2388,
     color: 'rgba(220, 120, 255, 0.95)',
   },
   {
-    title: 'Work Carousel (Desktop)',
-    aspectRatio: 520 / 673,
-    color: 'rgba(249, 219, 36, 0.95)',
+    title: 'Homepage Cards (Desktop)',
+    aspectRatio: 16 / 9,
+    color: 'rgba(100, 180, 255, 0.95)',
   },
   /**
-   * Direct device measurement (Zach): W:1320 H:2388 → 1320/2388.
-   * Older CSS-token estimate was ~0.512; measured ≈0.553 — left as context only,
-   * not something to reconcile back to the formula.
+   * Direct device measurement (Zach): W:970 H:1562 → 970/1562.
+   * Older CSS-token estimate for /work mobile was ~0.512; measured 970/1562 ≈ 0.621 —
+   * left as context only, not something to reconcile back to the formula.
    */
   {
-    title: 'Work Carousel (Mobile)',
-    aspectRatio: 1320 / 2388,
+    title: 'Full Portfolio Cards (Mobile)',
+    aspectRatio: 970 / 1562,
     color: 'rgba(80, 220, 160, 0.95)',
+  },
+  {
+    title: 'Full Portfolio Cards (Desktop)',
+    aspectRatio: 520 / 673,
+    color: 'rgba(249, 219, 36, 0.95)',
   },
 ]
 
@@ -310,6 +315,34 @@ function GuideDimOverlay({box}: {box: GuideBox}) {
   )
 }
 
+/** 1px white “+” at the geometric center of a guide (interactive editor only). */
+function GuideCenterCrosshair() {
+  const arm = 8
+  const line: CSSProperties = {
+    position: 'absolute',
+    background: '#fff',
+    pointerEvents: 'none',
+  }
+
+  return (
+    <Box
+      aria-hidden
+      style={{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        width: 0,
+        height: 0,
+        pointerEvents: 'none',
+        zIndex: 1,
+      }}
+    >
+      <Box style={{...line, left: -arm, top: 0, width: arm * 2, height: 1, transform: 'translateY(-0.5px)'}} />
+      <Box style={{...line, left: 0, top: -arm, width: 1, height: arm * 2, transform: 'translateX(-0.5px)'}} />
+    </Box>
+  )
+}
+
 type StockPreviewGuidesProps = {
   containerRef: RefObject<HTMLElement | null>
   naturalSize: NaturalSize
@@ -402,7 +435,7 @@ function StockPreviewGuides({containerRef, naturalSize, center}: StockPreviewGui
               style={{
                 position: 'absolute',
                 ...box,
-                border: `2px solid ${guide.color}`,
+                border: `1px solid ${guide.color}`,
                 boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.35)`,
                 boxSizing: 'border-box',
               }}
@@ -432,6 +465,8 @@ function FeaturedImageHotspotEditor({
   const imgRef = useRef<HTMLImageElement | null>(null)
   const stageRef = useRef<HTMLDivElement | null>(null)
   const draggingRef = useRef(false)
+  /** Normalized pointer−center offset at drag start (guide pan — no jump on grab). */
+  const panOffsetRef = useRef<Center>({x: 0, y: 0})
   const draftCenterRef = useRef<Center | null>(null)
   const [draftCenter, setDraftCenter] = useState<Center | null>(null)
   const displayCenter = draftCenter ?? center
@@ -472,7 +507,7 @@ function FeaturedImageHotspotEditor({
     }
   }, [])
 
-  const onPointerDown = useCallback(
+  const onStagePointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       if (readOnly) return
       if (event.button !== 0 && event.pointerType === 'mouse') return
@@ -490,11 +525,42 @@ function FeaturedImageHotspotEditor({
     [centerFromClient, readOnly, updateDraftCenter],
   )
 
+  const onGuidePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (readOnly) return
+      if (event.button !== 0 && event.pointerType === 'mouse') return
+      event.preventDefault()
+      event.stopPropagation()
+      const pointer = centerFromClient(event.clientX, event.clientY)
+      if (!pointer) return
+      const startCenter = draftCenterRef.current ?? center
+      panOffsetRef.current = {
+        x: pointer.x - startCenter.x,
+        y: pointer.y - startCenter.y,
+      }
+      draggingRef.current = true
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId)
+      } catch {
+        // Untrusted / synthetic events may reject capture.
+      }
+    },
+    [center, centerFromClient, readOnly],
+  )
+
   const onPointerMove = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       if (!draggingRef.current || readOnly) return
-      const next = centerFromClient(event.clientX, event.clientY)
-      if (next) updateDraftCenter(next)
+      const pointer = centerFromClient(event.clientX, event.clientY)
+      if (!pointer) return
+      if (event.currentTarget.dataset.vpHotspotDrag === 'guide') {
+        updateDraftCenter({
+          x: clamp01(pointer.x - panOffsetRef.current.x),
+          y: clamp01(pointer.y - panOffsetRef.current.y),
+        })
+        return
+      }
+      updateDraftCenter(pointer)
     },
     [centerFromClient, readOnly, updateDraftCenter],
   )
@@ -510,8 +576,19 @@ function FeaturedImageHotspotEditor({
       } catch {
         // ignore
       }
-      const next =
-        centerFromClient(event.clientX, event.clientY) ?? draftCenterRef.current
+      const pointer = centerFromClient(event.clientX, event.clientY)
+      let next: Center | null = null
+      if (pointer) {
+        next =
+          event.currentTarget.dataset.vpHotspotDrag === 'guide'
+            ? {
+                x: clamp01(pointer.x - panOffsetRef.current.x),
+                y: clamp01(pointer.y - panOffsetRef.current.y),
+              }
+            : pointer
+      } else {
+        next = draftCenterRef.current
+      }
       if (next) {
         updateDraftCenter(next)
         onCommit(next)
@@ -533,8 +610,9 @@ function FeaturedImageHotspotEditor({
   return (
     <Stack space={3}>
       <Text size={1} muted>
-        Drag on the image to set the shared focal center. Switch guides to preview each crop
-        surface; the dimmed area falls outside the active guide.
+        Drag the guide to reposition without jumping, or click elsewhere on the image to
+        move the focal center. Switch guides to preview each crop surface; the dimmed area
+        falls outside the active guide.
       </Text>
 
       <Flex gap={2} wrap="wrap">
@@ -554,7 +632,7 @@ function FeaturedImageHotspotEditor({
                   style={{
                     width: 10,
                     height: 10,
-                    border: `2px solid ${guide.color}`,
+                    border: `1px solid ${guide.color}`,
                     borderRadius: 2,
                     flexShrink: 0,
                   }}
@@ -576,7 +654,7 @@ function FeaturedImageHotspotEditor({
           cursor: readOnly ? 'default' : 'crosshair',
           touchAction: 'none',
         }}
-        onPointerDown={onPointerDown}
+        onPointerDown={onStagePointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
@@ -598,37 +676,27 @@ function FeaturedImageHotspotEditor({
           <>
             <GuideDimOverlay box={activeGuideBox} />
             <Box
-              aria-hidden
+              data-vp-hotspot-drag="guide"
+              aria-label="Drag to reposition focal guide"
               style={{
                 position: 'absolute',
                 ...activeGuideBox,
-                border: `2px solid ${activeGuide.color}`,
+                border: `1px solid ${activeGuide.color}`,
                 boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.35)`,
-                pointerEvents: 'none',
+                pointerEvents: readOnly ? 'none' : 'auto',
+                cursor: readOnly ? 'default' : 'grab',
                 boxSizing: 'border-box',
+                zIndex: 2,
+                touchAction: 'none',
               }}
-            />
+              onPointerDown={onGuidePointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+            >
+              <GuideCenterCrosshair />
+            </Box>
           </>
-        ) : null}
-        {naturalSize ? (
-          <Box
-            aria-hidden
-            style={{
-              position: 'absolute',
-              left: `${displayCenter.x * 100}%`,
-              top: `${displayCenter.y * 100}%`,
-              width: 10,
-              height: 10,
-              marginLeft: -5,
-              marginTop: -5,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.95)',
-              border: '2px solid rgba(0,0,0,0.75)',
-              pointerEvents: 'none',
-              boxSizing: 'border-box',
-              zIndex: 1,
-            }}
-          />
         ) : null}
       </Box>
     </Stack>
