@@ -83,7 +83,10 @@
   },
   "Contact": {
     "modalTitle": "联系",
-    "closeAria": "关闭联系对话框"
+    "closeAria": "关闭联系对话框",
+    "campaignBriefHeading": "开启您的项目",
+    "campaignBriefBody": "准备好开始您的下一部商业影片了吗？发送简介，让我们聊聊。",
+    "campaignBriefCta": "发送简介"
   },
   "OurIndustry": {
     "industriesHeading": "行业",

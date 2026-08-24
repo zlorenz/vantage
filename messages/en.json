@@ -83,7 +83,10 @@
   },
   "Contact": {
     "modalTitle": "Contact",
-    "closeAria": "Close contact dialog"
+    "closeAria": "Close contact dialog",
+    "campaignBriefHeading": "Start Your Project",
+    "campaignBriefBody": "Ready to bring your next commercial film to life? Send us your brief and let's talk.",
+    "campaignBriefCta": "Send a Brief"
   },
   "OurIndustry": {
     "industriesHeading": "Industries",

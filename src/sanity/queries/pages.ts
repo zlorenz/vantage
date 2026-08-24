@@ -129,10 +129,11 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
   }
 `)
 
-/** Contact — metadata only (page body opens ContactModal). */
+/** Contact — meta + optional hero/body; real contact fields come from siteSettings. */
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{
-    ${PAGE_META_FIELDS}
+    ${PAGE_META_FIELDS},
+    ${PAGE_CONTENT_FIELDS}
   }
 `)
 

@@ -51,6 +51,9 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'OurIndustry.industriesHeading',
   'OurIndustry.marketsHeading',
   'OurIndustry.videoFormatsHeading',
+  'Contact.campaignBriefHeading',
+  'Contact.campaignBriefBody',
+  'Contact.campaignBriefCta',
 ])
 
 function categoryForMessagePath(path: string): PhraseCategoryId {
