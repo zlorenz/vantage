@@ -42,7 +42,7 @@
 .vp-case-header__meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: last baseline;
   justify-content: space-between;
   gap: 1rem 1.5rem;
 }
