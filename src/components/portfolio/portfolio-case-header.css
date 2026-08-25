@@ -43,7 +43,8 @@
 .vp-case-header__meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  /* Align pill label baselines to credit name (dd) baselines. */
+  align-items: last baseline;
   justify-content: space-between;
   gap: 1rem 1.5rem;
 }
@@ -81,34 +82,17 @@
   font-size: 12px;
   font-weight: 300;
   color: #fff;
-  line-height: 1;
-}
-
-.vp-case-header__pills-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.45rem;
-  margin-left: auto;
-}
-
-.vp-case-header__pills-kicker {
-  display: block;
-  font-family: var(--font-vp-sans);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.3px;
-  line-height: 1;
-  visibility: hidden;
-  user-select: none;
+  /* Match the pill content line box so last-baseline lines up optically. */
+  line-height: 1.2;
 }
 
 .vp-case-header__pills {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: baseline;
   gap: 0.625rem;
-  margin: 0;
+  margin: 0 0 0 auto;
   padding: 0;
   list-style: none;
   max-width: 100%;
@@ -125,7 +109,7 @@
   font-size: 0.9375rem;
   font-weight: 400;
   letter-spacing: 0.04em;
-  line-height: 1;
+  line-height: 1.2;
   color: rgba(255, 255, 255, 0.85);
   white-space: nowrap;
 }
@@ -146,13 +130,9 @@
     letter-spacing: 1px;
   }
 
-  .vp-case-header__credit dt,
-  .vp-case-header__pills-kicker {
+  .vp-case-header__credit dt {
     font-size: 14px;
     letter-spacing: 1.4px;
-  }
-
-  .vp-case-header__credit dt {
     font-variant: small-caps;
   }
 

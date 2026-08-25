@@ -87,19 +87,13 @@ export function PortfolioCaseHeader({
 
   const pillsList =
     pills.length > 0 ? (
-      <div className="vp-case-header__pills-block">
-        {/* Invisible kicker matches credit dt height so pills sit on the name row. */}
-        <span className="vp-case-header__pills-kicker" aria-hidden>
-          &nbsp;
-        </span>
-        <ul className="vp-case-header__pills">
-          {pills.map((label, index) => (
-            <li key={`${index}-${label}`} className="vp-case-header__pill">
-              {label}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="vp-case-header__pills">
+        {pills.map((label, index) => (
+          <li key={`${index}-${label}`} className="vp-case-header__pill">
+            {label}
+          </li>
+        ))}
+      </ul>
     ) : null;
 
   return (
