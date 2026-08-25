@@ -160,7 +160,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
         fullBleed={true}
         className="!pt-[var(--vp-section-y-header-condensed)]"
       >
-        <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
+        <div className="mx-auto w-full max-w-[1680px] px-4 md:px-6 xl:px-8">
           <PortfolioCaseHeader
             locale={typedLocale}
             phrases={phrases}
@@ -170,13 +170,17 @@ export default async function PortfolioEntryPage({ params }: Props) {
             markets={entry.markets}
             crewCredits={entry.crewCredits}
           />
+        </div>
+        <div className="w-full">
           <PortfolioVideoEmbed
             locale={typedLocale}
             vimeoUrl={entry.vimeoUrl}
             xinpianchangUrl={entry.xinpianchangUrl}
             featuredImage={entry.featuredImage}
           />
-          <div className="mt-8 max-w-3xl">
+        </div>
+        <div className="mx-auto mt-8 w-full max-w-[1680px] px-4 md:px-6 xl:px-8">
+          <div className="max-w-3xl">
             <h2
               className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
               dangerouslySetInnerHTML={{ __html: longTitle }}

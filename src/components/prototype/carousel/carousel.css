@@ -238,7 +238,7 @@
 .vp-proto-carousel__credit {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
 }
 
@@ -460,7 +460,7 @@
   .vp-proto-carousel__credit {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.25rem;
+    gap: 0.45rem;
   }
 
   .vp-proto-carousel__brand,

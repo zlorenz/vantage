@@ -6,7 +6,8 @@
 .vp-case-header {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  /* Title block → meta row (credits + pills) */
+  gap: 3rem;
   margin-bottom: 2rem;
 }
 
@@ -20,9 +21,9 @@
 .vp-case-header__brand {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.3px;
   text-transform: uppercase;
   color: #fdb913;
 }
@@ -30,7 +31,7 @@
 .vp-case-header__campaign {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2.5rem, 5vw, 3.875rem);
   font-weight: 400;
   color: #fff;
   letter-spacing: 1px;
@@ -59,7 +60,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: 0.45rem;
   margin: 0;
 }
 
@@ -87,7 +88,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.25rem;
+  gap: 0.45rem;
   margin-left: auto;
 }
 
@@ -106,7 +107,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.625rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -117,11 +118,11 @@
   display: inline-flex;
   align-items: center;
   margin: 0;
-  padding: 0.35rem 0.75rem;
+  padding: 0.55rem 1.15rem;
   border: 1px solid var(--vp-border-soft);
   border-radius: 999px;
   font-family: var(--font-vp-sans);
-  font-size: 0.75rem;
+  font-size: 0.9375rem;
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -131,17 +132,17 @@
 
 @media (min-width: 768px) {
   .vp-case-header {
-    gap: 1.75rem;
+    gap: 3.5rem;
     margin-bottom: 2.5rem;
   }
 
   .vp-case-header__brand {
-    font-size: 16px;
-    letter-spacing: 1.6px;
+    font-size: 18px;
+    letter-spacing: 1.7px;
   }
 
   .vp-case-header__campaign {
-    font-size: clamp(2.5rem, 3.5vw, 3rem);
+    font-size: clamp(3.125rem, 4.5vw, 3.9rem);
     letter-spacing: 1px;
   }
 
@@ -157,5 +158,10 @@
 
   .vp-case-header__credit dd {
     font-size: 19px;
+  }
+
+  .vp-case-header__pill {
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
   }
 }
