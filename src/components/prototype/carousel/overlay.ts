@@ -18,7 +18,7 @@ export function composeOverlayCopy(parts: {
 
   return {
     brandLine: brand,
-    campaignLine: joinParts(brand, product),
+    campaignLine: product || brand,
   };
 }
 

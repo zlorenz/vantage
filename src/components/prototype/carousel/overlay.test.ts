@@ -25,14 +25,24 @@ function testCampaignPresentOmitsNullProduct() {
   assert.equal(result.campaignLine, "There's More to Discovery");
 }
 
-function testCampaignMissingUsesBrandOnlyKicker() {
+function testCampaignMissingUsesProductAsLargeTitle() {
   const result = composeOverlayCopy({
     brandName: 'TPBank',
     productName: 'App',
     campaignTitle: null,
   });
   assert.equal(result.brandLine, 'TPBank');
-  assert.equal(result.campaignLine, 'TPBank App');
+  assert.equal(result.campaignLine, 'App');
+}
+
+function testCampaignAndProductMissingFallsBackToBrand() {
+  const result = composeOverlayCopy({
+    brandName: 'Aquafina',
+    productName: null,
+    campaignTitle: null,
+  });
+  assert.equal(result.brandLine, 'Aquafina');
+  assert.equal(result.campaignLine, 'Aquafina');
 }
 
 function testJoinOverlayList() {
@@ -48,7 +58,8 @@ function testJoinOverlayList() {
 const tests = [
   testCampaignPresentJoinsBrandProduct,
   testCampaignPresentOmitsNullProduct,
-  testCampaignMissingUsesBrandOnlyKicker,
+  testCampaignMissingUsesProductAsLargeTitle,
+  testCampaignAndProductMissingFallsBackToBrand,
   testJoinOverlayList,
 ];
 
