@@ -81,3 +81,26 @@ export function posterSize(
     height: Math.round(r.h * scale),
   }
 }
+
+/**
+ * CSS object-position from a Sanity image hotspot (0–1 axes).
+ * Shared by homepage and /work slide prep so Studio hotspots map the same way.
+ */
+export type CarouselHotspot = {
+  x?: number
+  y?: number
+}
+
+export function objectPositionFromHotspot(
+  hotspot: CarouselHotspot | undefined,
+): string {
+  const x =
+    typeof hotspot?.x === 'number' && Number.isFinite(hotspot.x)
+      ? Math.min(1, Math.max(0, hotspot.x))
+      : 0.5
+  const y =
+    typeof hotspot?.y === 'number' && Number.isFinite(hotspot.y)
+      ? Math.min(1, Math.max(0, hotspot.y))
+      : 0.5
+  return `${x * 100}% ${y * 100}%`
+}

@@ -9,8 +9,8 @@ import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
-import type {PortfolioGridEntry, SanityImage} from '@/types/sanity';
-import {CAROUSEL_RATIOS, posterSize} from '@carousel-ratios';
+import type {PortfolioGridEntry} from '@/types/sanity';
+import {CAROUSEL_RATIOS, objectPositionFromHotspot, posterSize} from '@carousel-ratios';
 
 /** Newest-first positions treated as already “featured-visible” for append exclusion. */
 const FEATURED_APPEND_EXCLUDE_HEAD = 12;
@@ -51,18 +51,6 @@ export type PortfolioIndexSlide = {
    */
   isAppendedFeatured?: boolean;
 };
-
-function objectPositionFromHotspot(hotspot: SanityImage['hotspot'] | undefined): string {
-  const x =
-    typeof hotspot?.x === 'number' && Number.isFinite(hotspot.x)
-      ? Math.min(1, Math.max(0, hotspot.x))
-      : 0.5;
-  const y =
-    typeof hotspot?.y === 'number' && Number.isFinite(hotspot.y)
-      ? Math.min(1, Math.max(0, hotspot.y))
-      : 0.5;
-  return `${x * 100}% ${y * 100}%`;
-}
 
 function buildSearchHaystack(
   brandName: string | null | undefined,

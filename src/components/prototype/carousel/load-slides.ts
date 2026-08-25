@@ -10,7 +10,7 @@ import type {CrewCredit, DisplayTitlePartsValue, SanityImage} from '@/types/sani
 import {composeOverlayCopy, joinOverlayList} from './overlay';
 import {HOME_REDESIGN_CAROUSEL_QUERY} from './query';
 import type {PrototypeCarouselSlide} from './types';
-import {CAROUSEL_RATIOS, posterSize} from '@carousel-ratios';
+import {CAROUSEL_RATIOS, objectPositionFromHotspot, posterSize} from '@carousel-ratios';
 
 /**
  * Homepage carousel poster bakes match the Studio “Homepage Cards” guides so
@@ -18,18 +18,6 @@ import {CAROUSEL_RATIOS, posterSize} from '@carousel-ratios';
  */
 const HOME_MOBILE_POSTER = posterSize(CAROUSEL_RATIOS.homeMobile);
 const HOME_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.homeDesktop, 120);
-
-function objectPositionFromHotspot(hotspot: SanityImage['hotspot'] | undefined): string {
-  const x =
-    typeof hotspot?.x === 'number' && Number.isFinite(hotspot.x)
-      ? Math.min(1, Math.max(0, hotspot.x))
-      : 0.5;
-  const y =
-    typeof hotspot?.y === 'number' && Number.isFinite(hotspot.y)
-      ? Math.min(1, Math.max(0, hotspot.y))
-      : 0.5;
-  return `${x * 100}% ${y * 100}%`;
-}
 
 type CarouselFormat = {
   title?: string | null;
