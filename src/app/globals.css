@@ -70,7 +70,6 @@
   --color-vp-logo-grid-border: #5c5c5c;
   --color-vp-credits-text: #bfbfbf;
   --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --color-vp-hero-carousel-overlay: rgba(0, 0, 0, 0.2);
   --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
   --color-vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
   --color-vp-search-thumb-bg: #111111;
@@ -237,7 +236,6 @@
   --vp-logo-grid-border: #5c5c5c;
   --vp-credits-text: #bfbfbf;
   --vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --vp-hero-carousel-overlay: rgba(0, 0, 0, 0.2);
   --vp-dropdown-bg: rgba(0, 0, 0, 0.4);
   --vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
   --vp-search-thumb-bg: #111111;
@@ -421,16 +419,14 @@
  * per-contour stroke is never re-enabled here.
  */
 @media (max-width: 991.98px), (pointer: coarse) {
-  :lang(zh) .vp-outline,
-  :lang(zh) .vp-hero-carousel__title span {
+  :lang(zh) .vp-outline {
     color: #fff;
     -webkit-text-stroke: 0;
     text-shadow: none;
   }
 
   @supports (filter: blur(0px)) {
-    :lang(zh) .vp-outline,
-    :lang(zh) .vp-hero-carousel__title span {
+    :lang(zh) .vp-outline {
       /* Filter output is ring-only — fill itself is discarded */
       filter: url(#vp-cjk-outline);
     }
@@ -454,7 +450,6 @@
 
 :lang(zh) .font-vp-heading,
 :lang(zh) .vp-page-hero__title,
-:lang(zh) .vp-hero-carousel__title,
 :lang(zh) .vp-section-heading,
 :lang(zh) .vp-cta__heading,
 :lang(zh) .vp-post-card__title,
@@ -1212,21 +1207,6 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 }
 
-/* ==========================================================================
-   Homepage hero carousel
-   ========================================================================== */
-
-.vp-hero-carousel__title span {
-  color: transparent;
-  -webkit-text-stroke: 0.6px #fff;
-}
-
-@media (max-width: 767.98px) {
-  .vp-hero-carousel__arrow {
-    display: none;
-  }
-}
-
 /* Curated featured-work grids (home, VPS, search) — match /work edge-to-edge on mobile */
 @media (max-width: 575.98px) {
   .vp-curated-gallery {
@@ -1234,26 +1214,6 @@ body:has(.vp-work-index) #header.navbar::before {
     margin-left: -0.75rem;
     margin-right: -0.75rem;
   }
-}
-
-.vp-hero-carousel__desc {
-  text-wrap: balance;
-}
-
-.vp-hero-carousel__chevron {
-  display: block;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-top: 2px solid #fff;
-  border-right: 2px solid #fff;
-}
-
-.vp-hero-carousel__chevron--left {
-  transform: rotate(-135deg);
-}
-
-.vp-hero-carousel__chevron--right {
-  transform: rotate(45deg);
 }
 
 /* ==========================================================================
