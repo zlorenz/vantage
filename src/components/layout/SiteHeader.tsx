@@ -36,7 +36,6 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
   const home = pageBySlug(navPages, 'home');
   const about = pageBySlug(navPages, 'about');
   const work = pageBySlug(navPages, 'work');
-  const news = pageBySlug(navPages, 'news');
 
   const navItems: NavItem[] = [
     {
@@ -50,10 +49,6 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
     {
       label: about ? getNavLabel(about, locale) : t('about'),
       href: pagePath(locale, 'about', navPages) as LinkHref,
-    },
-    {
-      label: news ? getNavLabel(news, locale) : t('news'),
-      href: pagePath(locale, 'news', navPages) as LinkHref,
     },
     {
       label: t('contact'),
