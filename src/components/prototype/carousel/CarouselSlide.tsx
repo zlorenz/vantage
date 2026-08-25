@@ -48,10 +48,15 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
       }
     }, [shouldMountVideo]);
 
-    // Desktop-only: scan the poster for baked-in side bars. Mobile keeps
-    // fill + object-fit cover — canvas scans during swipe janked Embla.
+    // Desktop-only: scan the poster that desktop actually paints for baked-in
+    // side bars. Prefer posterUrlDesktop (16:9) — the mobile bake is a tall
+    // crop that already removes pillar bars, so scanning posterUrl alone made
+    // cover-math miss Realme-style masters after the dual-URL split.
+    // Mobile keeps fill + object-fit cover — canvas scans during swipe janked Embla.
     useEffect(() => {
-      if (!slide.posterUrl || !isCarouselCoverMathEnabled()) {
+      const scanUrl =
+        (slide.posterUrlDesktop || slide.posterUrl)?.trim() || null;
+      if (!scanUrl || !isCarouselCoverMathEnabled()) {
         setContentAspectHint(null);
         return;
       }
@@ -83,15 +88,15 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         if (cancelled || img.src.includes('/_next/image')) return;
         const proxy = new window.Image();
         proxy.onload = () => scan(proxy);
-        proxy.src = `/_next/image?url=${encodeURIComponent(slide.posterUrl!)}&w=960&q=75`;
+        proxy.src = `/_next/image?url=${encodeURIComponent(scanUrl)}&w=960&q=75`;
       };
-      img.src = slide.posterUrl;
+      img.src = scanUrl;
 
       return () => {
         cancelled = true;
         cancelIdle();
       };
-    }, [slide.posterUrl]);
+    }, [slide.posterUrl, slide.posterUrlDesktop]);
 
     const mediaStackStyle =
       contentAspectHint != null

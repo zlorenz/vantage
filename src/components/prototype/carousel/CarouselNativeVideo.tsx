@@ -164,6 +164,8 @@ export function CarouselNativeVideo({
   const scanScheduledRef = useRef(false);
   const cancelIdleScanRef = useRef<(() => void) | null>(null);
   const contentAspectHintRef = useRef(contentAspectHint);
+  /** Frame-scan hint — kept across ready events so applyCodedAspect cannot clobber it. */
+  const frameAspectHintRef = useRef<number | null>(null);
   const startRef = useRef(previewStartSeconds);
   const endRef = useRef(previewEndSeconds);
   const activeRef = useRef(active);
@@ -176,6 +178,13 @@ export function CarouselNativeVideo({
 
   onReadyChangeRef.current = onReadyChange;
   contentAspectHintRef.current = contentAspectHint;
+
+  const effectiveContentAspectHint = (): number | null => {
+    const hints = [contentAspectHintRef.current, frameAspectHintRef.current].filter(
+      (n): n is number => n != null && Number.isFinite(n) && n > 0,
+    );
+    return hints.length > 0 ? Math.min(...hints) : null;
+  };
 
   useEffect(() => {
     startRef.current = previewStartSeconds;
@@ -207,26 +216,26 @@ export function CarouselNativeVideo({
     writeCoverAspect(
       resolveCoverAspect(
         previewAspectValue(video),
-        contentAspectHintRef.current,
+        effectiveContentAspectHint(),
       ),
     );
   };
 
   const scanFrameOnce = (video: HTMLVideoElement) => {
     if (scannedFrameRef.current || !isCarouselCoverMathEnabled()) return;
-    scannedFrameRef.current = true;
     const coded = previewAspectValue(video);
+    // Wait for coded size — do not lock the one-shot flag on an empty frame.
     if (coded == null) return;
+    scannedFrameRef.current = true;
     const fromFrame = detectPillarboxContentAspect(
       video,
       video.videoWidth,
       video.videoHeight,
     );
-    const hints = [contentAspectHintRef.current, fromFrame].filter(
-      (n): n is number => n != null && Number.isFinite(n) && n > 0,
-    );
-    const contentHint = hints.length > 0 ? Math.min(...hints) : null;
-    writeCoverAspect(resolveCoverAspect(coded, contentHint));
+    if (fromFrame != null && Number.isFinite(fromFrame) && fromFrame > 0) {
+      frameAspectHintRef.current = fromFrame;
+    }
+    writeCoverAspect(resolveCoverAspect(coded, effectiveContentAspectHint()));
   };
 
   const scheduleFrameScan = (video: HTMLVideoElement) => {
@@ -297,6 +306,7 @@ export function CarouselNativeVideo({
       cancelIdleScanRef.current = null;
       scannedFrameRef.current = false;
       scanScheduledRef.current = false;
+      frameAspectHintRef.current = null;
       hasBeenReadyRef.current = false;
       appliedAspectRef.current = null;
       const stack = player?.closest(
@@ -316,7 +326,7 @@ export function CarouselNativeVideo({
     if (!isCarouselCoverMathEnabled()) return;
     const video = videoRef.current;
     const coded = video ? previewAspectValue(video) : null;
-    writeCoverAspect(resolveCoverAspect(coded, contentAspectHint));
+    writeCoverAspect(resolveCoverAspect(coded, effectiveContentAspectHint()));
   }, [contentAspectHint]);
 
   useEffect(() => {
