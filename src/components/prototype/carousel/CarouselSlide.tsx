@@ -20,14 +20,11 @@ interface CarouselSlideProps {
   slide: PrototypeCarouselSlide;
   index: number;
   active: boolean;
-  /** After a loop-wrap teleport, Explore (and desktop Watch) stay inert
-   *  briefly so a stray tap does not consume a touch meant as the next swipe. */
-  blockExplore?: boolean;
   mountPlayer: boolean;
 }
 
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
-  function CarouselSlide({slide, index, active, blockExplore = false, mountPlayer}, ref) {
+  function CarouselSlide({slide, index, active, mountPlayer}, ref) {
     const t = useTranslations('Home');
     const locale = useLocale();
     const [playerReady, setPlayerReady] = useState(false);
@@ -40,7 +37,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
           params: {slug: slide.hrefSlug},
         } as const)
       : null;
-    const interactive = active && !blockExplore;
+    const interactive = active;
     // ZH: static featuredImage poster only — no Vimeo/XPC preview (autoplay unreliable).
     const allowVideoPreview = locale !== 'zh';
     const shouldMountVideo = allowVideoPreview && mountPlayer && Boolean(slide.vimeoUrl);
