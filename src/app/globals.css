@@ -456,6 +456,7 @@
 :lang(zh) .vp-blog-widget__title,
 :lang(zh) .vp-search-empty__title,
 :lang(zh) .vp-founder-card__name,
+:lang(zh) .vp-credits__dept,
 :lang(zh) .entry-title,
 :lang(zh) h1,
 :lang(zh) h2,
@@ -1152,8 +1153,10 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-credits__dept {
+  font-family: var(--vp-font-heading);
   font-weight: 700;
   font-size: 1.125rem;
+  color: var(--color-vp-text);
   text-transform: uppercase;
 }
 
