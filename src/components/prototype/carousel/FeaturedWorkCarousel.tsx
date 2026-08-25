@@ -6,8 +6,8 @@
  * Embla moves the slide strip with a transform on its container (`loop: true`).
  * Wheel/trackpad paging uses `wheel-gestures` (`isStart` / `isMomentum`) plus an
  * in-gesture |deltaY| threshold. Keyboard nav (arrows, Page, Home, End) calls
- * Embla's scroll API directly. There is no nested scroll container and no
- * clone/teleport wrap.
+ * Embla's scroll API directly. There is no nested scroll container; Embla's
+ * `loop: true` owns wrap-around.
  */
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';

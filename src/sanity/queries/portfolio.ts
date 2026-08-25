@@ -1,7 +1,8 @@
 /**
  * Portfolio GROQ queries — Work index, single entries, taxonomy archives, work-internal.
  *
- * Public list queries exclude isHidden entries. Internal query includes all 141.
+ * Public list queries exclude isHidden entries. Internal query includes the
+ * full portfolio list (including hidden).
  * Taxonomy archive filtering resolves the term document first (by EN or ZH slug),
  * then filters portfolio entries by term _id via references($termId).
  */
@@ -152,7 +153,7 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
 `)
 
 /**
- * All portfolio slugs for generateStaticParams (141 entries × 2 locales).
+ * All portfolio slugs for generateStaticParams (each entry × 2 locales).
  */
 export const PORTFOLIO_SLUGS_QUERY = `
   *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(title asc) {

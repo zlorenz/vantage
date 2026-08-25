@@ -27,7 +27,7 @@
   --vp-index-card-aspect: 2 / 3;
   /* Multiplies the height-driven slide width; only touched by .is-sparse. */
   --vp-index-slide-width-scale: 1;
-  /* Placeholder for Phase 3 filter + scrubber — used in viewport height, not centering. */
+  /* Bottom chrome (filter + scrubber + search) — reserved in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
   /* Desktop default; mobile override (~7% shorter) below. */
   --vp-index-height-scale: 0.86;
