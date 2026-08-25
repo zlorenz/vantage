@@ -54,33 +54,32 @@ const EMPTY_PUBLIC_PRESETS: PublicFilters = {
 const WHEEL_GESTURE_THRESHOLD_PX = 30;
 
 /**
- * How many neighbors on each side of the active snap mount a real poster.
- * ±8 → up to 17 poster <picture> elements at once (fewer when slideCount is smaller).
- * Nested under the content window — posters only mount when the Link shell
- * is present, so the effective poster set is min(poster, content).
+ * How far from the active snap a decoded <picture>/<img> may remain in the DOM.
+ * Outside this radius the poster unmounts (memory bound). Inside it, the node
+ * stays mounted even when the slide leaves the ±2 content window — hidden via
+ * `.vp-portfolio-index__card--kept-inert` so scrubbing back does not rebuild
+ * the <img> (blank-tile / re-fetch bug). ±30 ≈ up to 61 posters; ~150–300MB
+ * decoded worst case depending on mobile vs desktop bake.
  */
-const POSTER_WINDOW_RADIUS = 8;
+const POSTER_KEEP_ALIVE_RADIUS = 30;
 
 /**
- * How many neighbors get loading="eager" so the browser starts decoding them
- * before they enter the viewport. Prior behavior (active-only eager) meant
- * quick swipes showed blank cards while lazy neighbors waited to intersect.
- * ±3 mirrors what a user can realistically reach with one swipe momentum.
+ * Neighbors of the active snap that get loading="eager" when their poster
+ * first mounts inside the keep-alive ring. Farther keep-alive posters use
+ * lazy until they near the viewport; once decoded they stay via keep-alive.
  */
 const EAGER_LOAD_RADIUS = 3;
 
 /**
  * How many neighbors get radius/overflow/transform/transition styling.
- * Tighter than the image window: peek layout only shows ~3 cards on screen;
- * ±2 → 5 styled cards (active + peeks + one-step buffer). Restyling is a
- * class toggle (cheap); image decode still uses the wider ±8 buffer.
+ * Peek layout shows ~3 cards; ±2 → 5 styled cards (active + peeks + buffer).
  */
 const STYLE_WINDOW_RADIUS = 2;
 
 /**
- * How many neighbors mount full slide content (Link + overlay + title).
- * Matches the style window so tappable peeks always have a real href, while
- * far Embla shells stay empty measured boxes (no Link/title/overlay nodes).
+ * How many neighbors mount interactive chrome: hit-target Link, overlay copy,
+ * and (with STYLE_WINDOW_RADIUS) --styled classes. Far keep-alive slides keep
+ * only a hidden poster shell — no Link/title — so Embla shells stay inert.
  */
 const CONTENT_WINDOW_RADIUS = 2;
 
@@ -158,11 +157,12 @@ function nearestSnapIndexFromProgress(
   return nearest;
 }
 
-function shouldMountPortfolioIndexPoster(
+/** True when the poster <picture> should exist in the DOM (may be CSS-hidden). */
+function shouldKeepAlivePortfolioIndexPoster(
   index: number,
   activeIndex: number,
   slideCount: number,
-  radius: number = POSTER_WINDOW_RADIUS,
+  radius: number = POSTER_KEEP_ALIVE_RADIUS,
 ): boolean {
   return isWithinCircularWindow(index, activeIndex, slideCount, radius);
 }
@@ -769,11 +769,15 @@ export function PortfolioIndexCarousel({
                 activeIndex,
                 slideCount,
               );
-              const mountPoster =
-                mountContent &&
-                shouldMountPortfolioIndexPoster(index, activeIndex, slideCount);
+              // Poster DOM lifetime is independent of mountContent (±2). Nested
+              // under content previously destroyed <img> on every scrub exit.
+              const keepAlivePoster = shouldKeepAlivePortfolioIndexPoster(
+                index,
+                activeIndex,
+                slideCount,
+              );
               const eagerPoster =
-                mountPoster &&
+                keepAlivePoster &&
                 isWithinCircularWindow(
                   index,
                   activeIndex,
@@ -783,67 +787,78 @@ export function PortfolioIndexCarousel({
               const styleCard =
                 mountContent &&
                 shouldStylePortfolioIndexCard(index, activeIndex, slideCount);
+              const cardClassName = [
+                'vp-portfolio-index__card',
+                styleCard ? 'vp-portfolio-index__card--styled' : '',
+                // Keep-alive outside ±2: hide the shell (same visual as empty
+                // Embla track) without unmounting the decoded <img>.
+                keepAlivePoster && !mountContent
+                  ? 'vp-portfolio-index__card--kept-inert'
+                  : '',
+              ]
+                .filter(Boolean)
+                .join(' ');
               return (
                 <div
                   key={slide.id}
                   className={`vp-portfolio-index__slide${active ? ' is-active' : ''}`}
                 >
-                  {mountContent ? (
-                    <Link
-                      href={{
-                        pathname: '/portfolio/[slug]',
-                        params: {slug: slide.hrefSlug},
-                      }}
-                      className={`vp-portfolio-index__card${
-                        styleCard ? ' vp-portfolio-index__card--styled' : ''
-                      }`}
-                      tabIndex={active ? undefined : -1}
-                      aria-current={active ? 'true' : undefined}
-                      onClick={() => {
-                        writeWorkIndexUrl(
-                          publicFilters,
-                          committedSearch,
-                          slide.hrefSlug,
-                          index,
-                        );
-                      }}
-                    >
-                      {mountPoster ? (
-                        <picture className="vp-portfolio-index__poster-wrap">
-                          <source
-                            media="(min-width: 576px)"
-                            srcSet={slide.posterUrlDesktop}
-                          />
-                          <img
-                            src={slide.posterUrl}
-                            alt=""
-                            className="vp-portfolio-index__poster"
-                            decoding="async"
-                            loading={eagerPoster ? 'eager' : 'lazy'}
-                            fetchPriority={active ? 'high' : 'auto'}
-                            style={{objectPosition: slide.objectPosition}}
-                          />
-                        </picture>
-                      ) : null}
-                      <div className="vp-portfolio-index__overlay">
-                        <div
-                          className="vp-portfolio-index__overlay-scrim"
-                          aria-hidden
+                  {keepAlivePoster ? (
+                    <div className={cardClassName}>
+                      <picture className="vp-portfolio-index__poster-wrap">
+                        <source
+                          media="(min-width: 576px)"
+                          srcSet={slide.posterUrlDesktop}
                         />
-                        <div className="vp-portfolio-index__overlay-copy">
-                          {slide.brandLine ? (
-                            <p className="vp-portfolio-index__brand">
-                              {slide.brandLine}
-                            </p>
-                          ) : null}
-                          {slide.campaignLine ? (
-                            <h2 className="vp-portfolio-index__campaign">
-                              {slide.campaignLine}
-                            </h2>
-                          ) : null}
-                        </div>
-                      </div>
-                    </Link>
+                        <img
+                          src={slide.posterUrl}
+                          alt=""
+                          className="vp-portfolio-index__poster"
+                          decoding="async"
+                          loading={eagerPoster ? 'eager' : 'lazy'}
+                          fetchPriority={active ? 'high' : 'auto'}
+                          style={{objectPosition: slide.objectPosition}}
+                        />
+                      </picture>
+                      {mountContent ? (
+                        <Link
+                          href={{
+                            pathname: '/portfolio/[slug]',
+                            params: {slug: slide.hrefSlug},
+                          }}
+                          className="vp-portfolio-index__card-link"
+                          tabIndex={active ? undefined : -1}
+                          aria-current={active ? 'true' : undefined}
+                          onClick={() => {
+                            writeWorkIndexUrl(
+                              publicFilters,
+                              committedSearch,
+                              slide.hrefSlug,
+                              index,
+                            );
+                          }}
+                        >
+                          <div className="vp-portfolio-index__overlay">
+                            <div
+                              className="vp-portfolio-index__overlay-scrim"
+                              aria-hidden
+                            />
+                            <div className="vp-portfolio-index__overlay-copy">
+                              {slide.brandLine ? (
+                                <p className="vp-portfolio-index__brand">
+                                  {slide.brandLine}
+                                </p>
+                              ) : null}
+                              {slide.campaignLine ? (
+                                <h2 className="vp-portfolio-index__campaign">
+                                  {slide.campaignLine}
+                                </h2>
+                              ) : null}
+                            </div>
+                          </div>
+                        </Link>
+                      ) : null}
+                    </div>
                   ) : null}
                 </div>
               );

@@ -198,8 +198,8 @@
   max-width: 100%;
   background: var(--vp-bg, #000000);
   color: #fff;
-  text-decoration: none;
-  /* Peeks stay visible but not tappable — only the centered active card links. */
+  /* Peeks stay visible but not tappable — only the centered active card links.
+   * Hit target is .vp-portfolio-index__card-link (mounted inside ± CONTENT window). */
   pointer-events: none;
   cursor: inherit;
 }
@@ -210,8 +210,33 @@
 }
 
 /*
+ * Keep-alive poster outside ± CONTENT_WINDOW_RADIUS: stay in the DOM (decoded
+ * <img> survives scrub re-entry) but match the old empty-shell look so far
+ * slides do not paint black cards in the track.
+ */
+.vp-portfolio-index__card--kept-inert {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * Stretch hit target over the card. Poster is a sibling under .__card so the
+ * <img> is not remounted when this Link mounts/unmounts with the content window.
+ */
+.vp-portfolio-index__card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  cursor: inherit;
+}
+
+/*
  * Compositing-heavy visuals only near the active snap (± STYLE_WINDOW_RADIUS).
- * Far Embla shells stay empty (transparent slide wrapper).
+ * Farther keep-alive shells use --kept-inert (hidden); beyond keep-alive the
+ * card is not mounted at all.
  */
 .vp-portfolio-index__card--styled {
   overflow: hidden;
