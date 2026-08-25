@@ -7,6 +7,7 @@
 
 import {useCallback, useEffect, useRef, useState, type PointerEvent} from 'react';
 import type {EmblaCarouselType} from 'embla-carousel';
+import {nearestSnapIndexFromProgress} from './nearest-snap-from-progress';
 
 const TICK_COUNT = 48;
 
@@ -66,44 +67,6 @@ function averageSnapDistance(engine: EmblaEngine): number {
 function syncEngineToLocation(engine: EmblaEngine) {
   engine.scrollBody.useFriction(0).useDuration(0);
   engine.target.set(engine.location.get());
-}
-
-/**
- * Nearest snap from Embla scrollProgress.
- * Loop: circular distance on [0,1). Non-loop: linear — wrapping progress=1
- * onto [0,1) would map the last snap back to 0.
- */
-function nearestSnapIndexFromProgress(
-  progress: number,
-  snaps: number[],
-  loop: boolean,
-): number {
-  if (snaps.length <= 1) return 0;
-  if (!loop) {
-    const clamped = Math.min(1, Math.max(0, progress));
-    let nearest = 0;
-    let bestDist = Number.POSITIVE_INFINITY;
-    for (let i = 0; i < snaps.length; i++) {
-      const dist = Math.abs(snaps[i] - clamped);
-      if (dist < bestDist) {
-        bestDist = dist;
-        nearest = i;
-      }
-    }
-    return nearest;
-  }
-  const norm = ((progress % 1) + 1) % 1;
-  let nearest = 0;
-  let bestDist = Number.POSITIVE_INFINITY;
-  for (let i = 0; i < snaps.length; i++) {
-    const dist = Math.abs(snaps[i] - norm);
-    const circular = Math.min(dist, 1 - dist);
-    if (circular < bestDist) {
-      bestDist = circular;
-      nearest = i;
-    }
-  }
-  return nearest;
 }
 
 function settleToNearestSnap(emblaApi: EmblaCarouselType) {
