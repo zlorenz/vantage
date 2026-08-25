@@ -151,7 +151,7 @@ export function LazyVimeoPlayer({
           alt={posterAlt}
           fill
           className="object-cover"
-          sizes="(max-width: 992px) 100vw, 60vw"
+          sizes="100vw"
         />
       ) : null}
       <span className="absolute inset-0 flex items-center justify-center bg-black/25 transition group-hover:bg-black/35">
