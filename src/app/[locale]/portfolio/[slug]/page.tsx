@@ -1,11 +1,12 @@
 /**
- * Single portfolio entry page — two-column layout, credits, additional videos.
+ * Single portfolio entry page — case header, full-width video, description, credits.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
+import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioDescription } from '@/components/portfolio/PortfolioDescription';
 import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
@@ -160,31 +161,37 @@ export default async function PortfolioEntryPage({ params }: Props) {
         className="!pt-[var(--vp-section-y-header-condensed)]"
       >
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
-            <div className="order-2 lg:order-1 lg:col-span-5">
-              <h2
-                className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
-                dangerouslySetInnerHTML={{ __html: longTitle }}
-              />
-              {description ? (
-                <PortfolioDescription text={description} />
-              ) : null}
-            </div>
-            <div className="order-1 lg:order-2 lg:col-span-7">
-              <PortfolioVideoEmbed
-                locale={typedLocale}
-                vimeoUrl={entry.vimeoUrl}
-                xinpianchangUrl={entry.xinpianchangUrl}
-                featuredImage={entry.featuredImage}
-              />
-            </div>
-            <div className="order-3 mt-8 lg:col-span-10">
-              <PortfolioCredits
-                crewCredits={entry.crewCredits}
-                locale={typedLocale}
-                phrases={phraseRecord}
-              />
-            </div>
+          <PortfolioCaseHeader
+            locale={typedLocale}
+            phrases={phrases}
+            displayTitleParts={entry.displayTitleParts}
+            publishedAt={entry.publishedAt}
+            videoFormats={entry.videoFormats}
+            industries={entry.industries}
+            markets={entry.markets}
+            crewCredits={entry.crewCredits}
+          />
+          <PortfolioVideoEmbed
+            locale={typedLocale}
+            vimeoUrl={entry.vimeoUrl}
+            xinpianchangUrl={entry.xinpianchangUrl}
+            featuredImage={entry.featuredImage}
+          />
+          <div className="mt-8 max-w-3xl">
+            <h2
+              className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
+              dangerouslySetInnerHTML={{ __html: longTitle }}
+            />
+            {description ? (
+              <PortfolioDescription text={description} />
+            ) : null}
+          </div>
+          <div className="mt-8">
+            <PortfolioCredits
+              crewCredits={entry.crewCredits}
+              locale={typedLocale}
+              phrases={phraseRecord}
+            />
           </div>
         </div>
       </SectionWrapper>
