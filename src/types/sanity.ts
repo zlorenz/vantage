@@ -258,6 +258,9 @@ export interface PortfolioEntry {
   publishedAt?: string;
   isHidden?: boolean;
   additionalVideos?: AdditionalVideo[];
+  videoFormats?: TaxonomyTerm[];
+  industries?: TaxonomyTerm[];
+  markets?: TaxonomyTerm[];
   crewCredits?: CrewCredit[];
   seo?: SeoFields;
 }

@@ -141,6 +141,24 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
       description,
       descriptionZh
     },
+    videoFormats[]->{
+      title,
+      titleZh,
+      "slug": slug.current,
+      "slugZh": slugZh.current
+    },
+    industries[]->{
+      title,
+      titleZh,
+      "slug": slug.current,
+      "slugZh": slugZh.current
+    },
+    markets[]->{
+      title,
+      titleZh,
+      "slug": slug.current,
+      "slugZh": slugZh.current
+    },
     ${PORTFOLIO_CREDITS_FIELDS},
     seo{
       metaDescription,
