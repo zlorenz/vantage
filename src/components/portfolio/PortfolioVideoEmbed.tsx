@@ -4,8 +4,9 @@
  * EN (and ZH fallback): Vimeo or YouTube from `vimeoUrl`.
  * ZH: Xinpianchang when set; otherwise same as EN.
  *
- * Vimeo posters use the video’s Vimeo thumbnail. YouTube uses YouTube posters.
- * Featured image is only a fallback for Xinpianchang embeds.
+ * When `featuredImage` is passed (main film only), it is preferred as the
+ * poster over the low-res Vimeo CDN thumb. Additional videos omit it and keep
+ * provider thumbnails.
  */
 
 import { getTranslations } from 'next-intl/server';
@@ -23,6 +24,7 @@ interface PortfolioVideoEmbedProps {
   locale: Locale;
   vimeoUrl: string;
   xinpianchangUrl?: string;
+  /** Main-film Sanity featured image — preferred poster when set. */
   featuredImage?: SanityImage;
 }
 
@@ -38,8 +40,10 @@ export async function PortfolioVideoEmbed({
   const vimeoPoster =
     parsed?.provider === 'vimeo' ? (vimeoThumbnailUrl(parsed.url) ?? undefined) : undefined;
   const featuredPoster = featuredImage
-    ? urlForImage(featuredImage).width(1280).height(720).fit('crop').url()
+    ? urlForImage(featuredImage).width(1920).height(1080).fit('crop').url()
     : undefined;
+  // Main film: Sanity featured image. Additional films: provider thumb only.
+  const posterUrl = featuredPoster ?? vimeoPoster;
 
   if (
     locale === 'zh' &&
@@ -49,7 +53,7 @@ export async function PortfolioVideoEmbed({
     return (
       <LazyXinpianchangPlayer
         embedUrl={xinpianchangUrl}
-        posterUrl={featuredPoster ?? vimeoPoster}
+        posterUrl={posterUrl}
       />
     );
   }
@@ -67,7 +71,7 @@ export async function PortfolioVideoEmbed({
   }
 
   if (parsed?.provider === 'vimeo') {
-    return <LazyVimeoPlayer vimeoUrl={parsed.url} posterUrl={vimeoPoster} />;
+    return <LazyVimeoPlayer vimeoUrl={parsed.url} posterUrl={posterUrl} />;
   }
 
   return (

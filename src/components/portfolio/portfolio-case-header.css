@@ -10,18 +10,9 @@
   margin-bottom: 2rem;
 }
 
-.vp-case-header__top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem 1.5rem;
-}
-
 .vp-case-header__title-block {
   display: flex;
   min-width: 0;
-  flex: 1 1 16rem;
   flex-direction: column;
   gap: 0.35rem;
 }
@@ -48,48 +39,12 @@
   overflow-wrap: break-word;
 }
 
-.vp-case-header__pills {
-  display: flex;
-  flex: 0 1 auto;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 100%;
-}
-
-.vp-case-header__pill {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid var(--vp-border-soft);
-  border-radius: 999px;
-  font-family: var(--font-vp-sans);
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-  color: rgba(255, 255, 255, 0.85);
-  white-space: nowrap;
-}
-
 .vp-case-header__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 1.25rem 2.5rem;
-}
-
-.vp-case-header__year {
-  margin: 0;
-  font-family: var(--font-vp-sans);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1;
-  color: #fff;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
 }
 
 .vp-case-header__credits {
@@ -128,6 +83,34 @@
   line-height: 1;
 }
 
+.vp-case-header__pills {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+  max-width: 100%;
+}
+
+.vp-case-header__pill {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--vp-border-soft);
+  border-radius: 999px;
+  font-family: var(--font-vp-sans);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
 @media (min-width: 768px) {
   .vp-case-header {
     gap: 1.75rem;
@@ -142,10 +125,6 @@
   .vp-case-header__campaign {
     font-size: clamp(2.5rem, 3.5vw, 3rem);
     letter-spacing: 1px;
-  }
-
-  .vp-case-header__year {
-    font-size: 19px;
   }
 
   .vp-case-header__credit dt {

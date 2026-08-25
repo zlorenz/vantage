@@ -165,7 +165,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
             locale={typedLocale}
             phrases={phrases}
             displayTitleParts={entry.displayTitleParts}
-            publishedAt={entry.publishedAt}
             videoFormats={entry.videoFormats}
             industries={entry.industries}
             markets={entry.markets}
