@@ -7,14 +7,20 @@
  * Desktop (≥576px): anchored popout above the filter trigger (nav-dropdown
  * pattern — max-content width, fade + translate, no scrim). Same drill-in
  * view state either way.
+ *
+ * Nested taxonomy views: compositor-only horizontal push/pop on the body
+ * (header/handle stay put). Menu height follows content when each view
+ * settles — no height tween (that dropped frames).
  */
 
 import {
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type PointerEvent,
+  type ReactNode,
 } from 'react';
 import {useTranslations} from 'next-intl';
 import type {Locale} from '@/i18n/routing';
@@ -28,6 +34,13 @@ import './portfolio-index-filter-sheet.css';
 
 type TaxonomyKey = keyof PublicFilters;
 type SheetView = 'root' | TaxonomyKey;
+type DrillDirection = 'forward' | 'back';
+
+interface DrillTransition {
+  from: SheetView;
+  to: SheetView;
+  direction: DrillDirection;
+}
 
 interface PortfolioIndexFilterSheetProps {
   open: boolean;
@@ -54,10 +67,18 @@ const TAXONOMY_LABEL_KEY: Record<TaxonomyKey, 'videoFormat' | 'industry' | 'mark
 
 /** Matches nav desktop panel close timing (`NavBar` CLOSE_MS). */
 const DESKTOP_CLOSE_MS = 180;
+/** Mobile sheet slide-down exit (enter is ~380ms — see CSS). */
+const MOBILE_CLOSE_MS = 280;
+/** Nested panel horizontal push/pop. */
+const DRILL_MS = 240;
 const DESKTOP_MQ = '(min-width: 576px)';
 
 function stripOptionChrome(label: string): string {
   return label.replace(/^\u00A0+/, '').replace(/ \(\d+\)$/, '');
+}
+
+function prefersReducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 function CloseIcon() {
@@ -96,13 +117,18 @@ export function PortfolioIndexFilterSheet({
   markets,
 }: PortfolioIndexFilterSheetProps) {
   const t = useTranslations('Filters');
-  const [view, setView] = useState<SheetView>('root');
+  const [activeView, setActiveView] = useState<SheetView>('root');
+  const [drill, setDrill] = useState<DrillTransition | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const drillTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const drillRunIdRef = useRef(0);
   const dragStartYRef = useRef<number | null>(null);
   const dragDeltaRef = useRef(0);
 
@@ -158,6 +184,26 @@ export function PortfolioIndexFilterSheet({
     filters.format || filters.industry || filters.market,
   );
 
+  /** Header follows the destination as soon as a drill starts. */
+  const chromeView = drill?.to ?? activeView;
+
+  const goToView = (next: SheetView) => {
+    if (drill) return;
+    if (next === activeView) return;
+
+    if (prefersReducedMotion()) {
+      setActiveView(next);
+      return;
+    }
+
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    const direction: DrillDirection = next === 'root' ? 'back' : 'forward';
+    setDrill({from: activeView, to: next, direction});
+  };
+
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_MQ);
     const sync = () => setIsDesktop(mq.matches);
@@ -166,7 +212,7 @@ export function PortfolioIndexFilterSheet({
     return () => mq.removeEventListener('change', sync);
   }, []);
 
-  // Mount / reveal / delayed unmount (desktop exit animation only).
+  // Mount / reveal / delayed unmount (exit animation on mobile + desktop).
   useEffect(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -181,46 +227,44 @@ export function PortfolioIndexFilterSheet({
     if (!mounted) return;
 
     setVisible(false);
-    if (!isDesktop) {
-      setMounted(false);
-      setView('root');
-      return;
-    }
 
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-    if (prefersReduced) {
+    const finishClose = () => {
+      if (drillTimerRef.current) {
+        clearTimeout(drillTimerRef.current);
+        drillTimerRef.current = null;
+      }
+      setDrill(null);
+      setActiveView('root');
+      drillRunIdRef.current += 1;
       setMounted(false);
-      setView('root');
-      return;
-    }
-
-    closeTimerRef.current = setTimeout(() => {
-      setMounted(false);
-      setView('root');
       closeTimerRef.current = null;
-    }, DESKTOP_CLOSE_MS);
+    };
+
+    if (prefersReducedMotion()) {
+      finishClose();
+      return;
+    }
+
+    const closeMs = isDesktop ? DESKTOP_CLOSE_MS : MOBILE_CLOSE_MS;
+    closeTimerRef.current = setTimeout(finishClose, closeMs);
   }, [open, mounted, isDesktop]);
 
   useEffect(() => {
     if (!open || !mounted) return;
 
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-    if (prefersReduced || !isDesktop) {
+    if (prefersReducedMotion()) {
       setVisible(true);
       return;
     }
 
-    const t = window.setTimeout(() => setVisible(true), 0);
-    return () => window.clearTimeout(t);
-  }, [open, mounted, isDesktop]);
+    const timer = window.setTimeout(() => setVisible(true), 0);
+    return () => window.clearTimeout(timer);
+  }, [open, mounted]);
 
   useEffect(() => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      if (drillTimerRef.current) clearTimeout(drillTimerRef.current);
     };
   }, []);
 
@@ -233,7 +277,6 @@ export function PortfolioIndexFilterSheet({
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  // Desktop has no scrim — close on outside pointer (exclude trigger anchor).
   useEffect(() => {
     if (!open || !isDesktop) return;
 
@@ -251,6 +294,46 @@ export function PortfolioIndexFilterSheet({
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [open, isDesktop, onClose]);
 
+  // Compositor-only swipe: pixel translate3d, no React state until settle.
+  // Forward: 0 → -width. Back: -width → 0.
+  useLayoutEffect(() => {
+    if (!drill) return;
+
+    const viewport = viewportRef.current;
+    const track = trackRef.current;
+    if (!viewport || !track) return;
+
+    const runId = ++drillRunIdRef.current;
+    const width = viewport.offsetWidth;
+    const startX = drill.direction === 'back' ? -width : 0;
+    const endX = drill.direction === 'back' ? 0 : -width;
+
+    track.style.transition = 'none';
+    track.style.transform = `translate3d(${startX}px,0,0)`;
+    void track.offsetWidth;
+
+    const raf = requestAnimationFrame(() => {
+      if (drillRunIdRef.current !== runId) return;
+      track.style.transition = `transform ${DRILL_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+      track.style.transform = `translate3d(${endX}px,0,0)`;
+    });
+
+    if (drillTimerRef.current) clearTimeout(drillTimerRef.current);
+    const toView = drill.to;
+    drillTimerRef.current = setTimeout(() => {
+      if (drillRunIdRef.current !== runId) return;
+      setActiveView(toView);
+      setDrill(null);
+      track.style.transition = '';
+      track.style.transform = '';
+      drillTimerRef.current = null;
+    }, DRILL_MS);
+
+    return () => {
+      cancelAnimationFrame(raf);
+    };
+  }, [drill]);
+
   if (!mounted) return null;
 
   const selectedLabel = (key: TaxonomyKey) => {
@@ -261,21 +344,22 @@ export function PortfolioIndexFilterSheet({
   };
 
   const onTermActivate = (key: TaxonomyKey, value: string) => {
-    // Radio within taxonomy: re-tap clears back to All.
     onChangeFilter(key, filters[key] === value ? '' : value);
-    // One term per taxonomy — return to parents so the next pick is clear.
-    setView('root');
+    goToView('root');
   };
 
   const onSelectAll = (key: TaxonomyKey) => {
     onChangeFilter(key, '');
-    setView('root');
+    goToView('root');
   };
 
   const onHandlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (isDesktop) return;
     dragStartYRef.current = event.clientY;
     dragDeltaRef.current = 0;
+    if (sheetRef.current) {
+      sheetRef.current.style.transition = 'none';
+    }
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -295,13 +379,76 @@ export function PortfolioIndexFilterSheet({
     dragStartYRef.current = null;
     dragDeltaRef.current = 0;
     if (sheetRef.current) {
+      sheetRef.current.style.transition = '';
       sheetRef.current.style.transform = '';
     }
     if (shouldClose) onClose();
   };
 
   const title =
-    view === 'root' ? t('filter') : t(TAXONOMY_LABEL_KEY[view]);
+    chromeView === 'root' ? t('filter') : t(TAXONOMY_LABEL_KEY[chromeView]);
+
+  const renderView = (view: SheetView): ReactNode => {
+    if (view === 'root') {
+      return (
+        <ul className="vp-index-filter-sheet__list">
+          {TAXONOMY_ORDER.map((key) => (
+            <li key={key}>
+              <button
+                type="button"
+                className="vp-index-filter-sheet__row"
+                onClick={() => goToView(key)}
+              >
+                <span className="vp-index-filter-sheet__row-label">
+                  {t(TAXONOMY_LABEL_KEY[key])}
+                </span>
+                <span className="vp-index-filter-sheet__row-value">
+                  {selectedLabel(key)}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    return (
+      <ul className="vp-index-filter-sheet__list" role="listbox">
+        <li>
+          <button
+            type="button"
+            className={`vp-index-filter-sheet__term${
+              !filters[view] ? ' is-selected' : ''
+            }`}
+            role="option"
+            aria-selected={!filters[view]}
+            onClick={() => onSelectAll(view)}
+          >
+            {t('all')}
+          </button>
+        </li>
+        {optionsByKey[view].map((opt) => {
+          const selected = filters[view] === opt.value;
+          return (
+            <li key={opt.value}>
+              <button
+                type="button"
+                className={`vp-index-filter-sheet__term${
+                  selected ? ' is-selected' : ''
+                }`}
+                role="option"
+                aria-selected={selected}
+                disabled={opt.disabled && !selected}
+                onClick={() => onTermActivate(view, opt.value)}
+              >
+                {opt.label}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
 
   return (
     <div
@@ -335,97 +482,92 @@ export function PortfolioIndexFilterSheet({
         </div>
 
         <div className="vp-index-filter-sheet__header">
-          {view === 'root' ? (
-            <span className="vp-index-filter-sheet__header-spacer" aria-hidden />
-          ) : (
+          <div className="vp-index-filter-sheet__header-start">
+            {chromeView === 'root' ? (
+              hasActiveFilters ? (
+                <button
+                  type="button"
+                  className="vp-index-filter-sheet__clear"
+                  onClick={onClearAll}
+                >
+                  {t('clearAll')}
+                </button>
+              ) : (
+                <span
+                  className="vp-index-filter-sheet__header-spacer"
+                  aria-hidden
+                />
+              )
+            ) : (
+              <button
+                type="button"
+                className="vp-index-filter-sheet__icon-btn"
+                aria-label={t('backToFiltersAria')}
+                onClick={() => goToView('root')}
+                disabled={Boolean(drill)}
+              >
+                <BackIcon />
+              </button>
+            )}
+          </div>
+          <h2 className="vp-index-filter-sheet__title">{title}</h2>
+          <div className="vp-index-filter-sheet__header-end">
             <button
               type="button"
               className="vp-index-filter-sheet__icon-btn"
-              aria-label={t('backToFiltersAria')}
-              onClick={() => setView('root')}
+              aria-label={t('closeFilterAria')}
+              onClick={onClose}
             >
-              <BackIcon />
-            </button>
-          )}
-          <h2 className="vp-index-filter-sheet__title">{title}</h2>
-          <button
-            type="button"
-            className="vp-index-filter-sheet__icon-btn"
-            aria-label={t('closeFilterAria')}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </button>
-        </div>
-
-        {hasActiveFilters ? (
-          <div className="vp-index-filter-sheet__clear-row">
-            <button
-              type="button"
-              className="vp-index-filter-sheet__clear"
-              onClick={onClearAll}
-            >
-              {t('clearAll')}
+              <CloseIcon />
             </button>
           </div>
-        ) : null}
+        </div>
 
-        <div className="vp-index-filter-sheet__body">
-          {view === 'root' ? (
-            <ul className="vp-index-filter-sheet__list">
-              {TAXONOMY_ORDER.map((key) => (
-                <li key={key}>
-                  <button
-                    type="button"
-                    className="vp-index-filter-sheet__row"
-                    onClick={() => setView(key)}
-                  >
-                    <span className="vp-index-filter-sheet__row-label">
-                      {t(TAXONOMY_LABEL_KEY[key])}
-                    </span>
-                    <span className="vp-index-filter-sheet__row-value">
-                      {selectedLabel(key)}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul className="vp-index-filter-sheet__list" role="listbox">
-              <li>
-                <button
-                  type="button"
-                  className={`vp-index-filter-sheet__term${
-                    !filters[view] ? ' is-selected' : ''
-                  }`}
-                  role="option"
-                  aria-selected={!filters[view]}
-                  onClick={() => onSelectAll(view)}
-                >
-                  {t('all')}
-                </button>
-              </li>
-              {optionsByKey[view].map((opt) => {
-                const selected = filters[view] === opt.value;
-                return (
-                  <li key={opt.value}>
-                    <button
-                      type="button"
-                      className={`vp-index-filter-sheet__term${
-                        selected ? ' is-selected' : ''
-                      }`}
-                      role="option"
-                      aria-selected={selected}
-                      disabled={opt.disabled && !selected}
-                      onClick={() => onTermActivate(view, opt.value)}
+        <div
+          className={`vp-index-filter-sheet__body${
+            drill ? ' is-drilling' : ''
+          }`}
+        >
+          <div ref={viewportRef} className="vp-index-filter-sheet__viewport">
+            <div
+              ref={trackRef}
+              className={`vp-index-filter-sheet__track${
+                drill ? ' is-sliding' : ''
+              }`}
+            >
+              {drill ? (
+                drill.direction === 'forward' ? (
+                  <>
+                    <div
+                      className="vp-index-filter-sheet__pane"
+                      aria-hidden
                     >
-                      {opt.label}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+                      {renderView(drill.from)}
+                    </div>
+                    <div className="vp-index-filter-sheet__pane vp-index-filter-sheet__pane--incoming">
+                      {renderView(drill.to)}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="vp-index-filter-sheet__pane vp-index-filter-sheet__pane--incoming">
+                      {renderView(drill.to)}
+                    </div>
+                    <div
+                      className="vp-index-filter-sheet__pane"
+                      aria-hidden
+                    >
+                      {renderView(drill.from)}
+                    </div>
+                  </>
+                )
+              ) : (
+                <div className="vp-index-filter-sheet__pane">
+                  {renderView(activeView)}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

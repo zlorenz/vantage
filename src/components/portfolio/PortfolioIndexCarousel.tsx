@@ -9,6 +9,7 @@
  */
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {flushSync} from 'react-dom';
 import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -53,6 +54,8 @@ const EMPTY_PUBLIC_PRESETS: PublicFilters = {
 
 /** In-gesture |delta| before paging; gesture bounds come from wheel-gestures. */
 const WHEEL_GESTURE_THRESHOLD_PX = 30;
+/** Search overlay fade/slide-out before unmount. */
+const SEARCH_CLOSE_MS = 220;
 
 /**
  * How far from the active snap a decoded <picture>/<img> may remain in the DOM.
@@ -226,10 +229,15 @@ export function PortfolioIndexCarousel({
     readWorkIndexSearch(searchParams),
   );
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchMounted, setSearchMounted] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
   const [draftSearch, setDraftSearch] = useState('');
   const [searchNoResultsQuery, setSearchNoResultsQuery] = useState('');
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const [activeIndex, setActiveIndex] = useState(() =>
     resolveWorkIndexStartIndex(
       slides,
@@ -307,13 +315,55 @@ export function PortfolioIndexCarousel({
   }, []);
 
   useEffect(() => {
-    if (!searchOpen) return;
-    const id = window.requestAnimationFrame(() => {
-      searchInputRef.current?.focus();
-      searchInputRef.current?.select();
-    });
+    if (searchCloseTimerRef.current) {
+      clearTimeout(searchCloseTimerRef.current);
+      searchCloseTimerRef.current = null;
+    }
+
+    if (searchOpen) {
+      setSearchMounted(true);
+      return;
+    }
+
+    if (!searchMounted) return;
+
+    setSearchVisible(false);
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    if (prefersReduced) {
+      setSearchMounted(false);
+      return;
+    }
+
+    searchCloseTimerRef.current = setTimeout(() => {
+      setSearchMounted(false);
+      searchCloseTimerRef.current = null;
+    }, SEARCH_CLOSE_MS);
+  }, [searchOpen, searchMounted]);
+
+  useEffect(() => {
+    if (!searchOpen || !searchMounted) return;
+
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    if (prefersReduced) {
+      setSearchVisible(true);
+      return;
+    }
+
+    const id = window.requestAnimationFrame(() => setSearchVisible(true));
     return () => window.cancelAnimationFrame(id);
-  }, [searchOpen]);
+  }, [searchOpen, searchMounted]);
+
+  useEffect(() => {
+    return () => {
+      if (searchCloseTimerRef.current) {
+        clearTimeout(searchCloseTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!searchOpen) return;
@@ -486,7 +536,13 @@ export function PortfolioIndexCarousel({
     setFilterSheetOpen(false);
     setDraftSearch(committedSearch);
     setSearchNoResultsQuery('');
-    setSearchOpen(true);
+    // Mount + focus in the same tap so iOS will raise the keyboard.
+    flushSync(() => {
+      setSearchMounted(true);
+      setSearchOpen(true);
+    });
+    searchInputRef.current?.focus({preventScroll: true});
+    searchInputRef.current?.select();
   }, [committedSearch]);
 
   const closeSearch = useCallback(() => {
@@ -632,8 +688,13 @@ export function PortfolioIndexCarousel({
     </div>
   );
 
-  const searchOverlay = searchOpen ? (
-    <div className="vp-portfolio-index__search-overlay" role="presentation">
+  const searchOverlay = searchMounted ? (
+    <div
+      className={`vp-portfolio-index__search-overlay${
+        searchVisible ? ' is-open' : ''
+      }`}
+      role="presentation"
+    >
       <button
         type="button"
         className="vp-portfolio-index__search-scrim"
