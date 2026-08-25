@@ -1,9 +1,10 @@
 /**
- * Hardcoded featured-work slugs for the /prototype/carousel route.
+ * Migration-seed only — not used by any live carousel component.
+ * Consumed by scripts/migration/patch/seed-home-redesign-carousel-slides.ts
+ * to populate page.carouselSlides; runtime carousels read CMS order via
+ * HOME_REDESIGN_CAROUSEL_QUERY / loadFeaturedWorkSlides instead.
  *
- * Placeholder: first 9 entries from the current homepage featured-work
- * gallery (WP vp/portfolio-gallery order). Swap this list when the
- * curated set is supplied — do not read homepage CMS order at runtime.
+ * Hardcoded featured-work slugs (WP vp/portfolio-gallery order snapshot).
  */
 export const PROTOTYPE_CAROUSEL_SLUGS = [
   'govee-halloween',
