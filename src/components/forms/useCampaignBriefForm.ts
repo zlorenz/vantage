@@ -11,6 +11,7 @@ import {
   CAMPAIGN_BRIEF_REQUIRED_FIELDS,
   CAMPAIGN_BRIEF_STEPS,
   budgetOptionsForCampaignType,
+  isValidEmail,
   type CampaignBriefArrayFieldKey,
   type CampaignBriefFieldKey,
   type CampaignBriefStepConfig,
@@ -157,10 +158,6 @@ function computeVisibility(values: CampaignBriefFormValues): CampaignBriefVisibi
     showPostProdDeadline:
       showDocumentaryBranch && values.production_scope === 'Filming + post-production',
   };
-}
-
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function getExtension(filename: string): string {

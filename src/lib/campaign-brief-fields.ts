@@ -283,6 +283,19 @@ export function emailFieldsForCampaignType(
   }
 }
 
+/**
+ * Practical email format check (not full RFC 5322).
+ * Rejects trailing punctuation typos like `user@gmail.com'` / `user@gmail.com*`.
+ */
+export function isValidEmail(email: string): boolean {
+  const trimmed = email.trim();
+  if (!trimmed) return false;
+  // local@label(.label)+ — domain labels are alphanumerics with optional internal hyphens
+  return /^[^\s@]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)+$/.test(
+    trimmed,
+  );
+}
+
 export const CAMPAIGN_BRIEF_MAX_FILES = 10;
 
 export const CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS = [

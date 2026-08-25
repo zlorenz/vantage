@@ -19,6 +19,7 @@ import {
   CAMPAIGN_BRIEF_MAX_FILES,
   CAMPAIGN_BRIEF_REQUIRED_FIELDS,
   emailFieldsForCampaignType,
+  isValidEmail,
   type CampaignBriefFieldKey,
 } from '@/lib/campaign-brief-fields';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
@@ -70,10 +71,6 @@ function asBoolFlag(value: unknown): string {
     if (v === 'true' || v === '1' || v === 'on') return 'true';
   }
   return '';
-}
-
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function isSanityCdnUrl(url: string): boolean {
