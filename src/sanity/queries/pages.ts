@@ -29,24 +29,6 @@ const PAGE_BASE_FIELDS = `
   noIndex
 `
 
-const HOME_HERO_SLIDE_FIELDS = `
-  "slug": slug.current,
-  "slugZh": slugZh.current,
-  displayTitleParts{
-    brandName,
-    productName,
-    campaignTitle,
-    brandNameZh,
-    productNameZh,
-    campaignTitleZh
-  },
-  headerTitleOverride,
-  headerTitleOverrideZh,
-  "description": coalesce(excerpt, seo.metaDescription),
-  "descriptionZh": coalesce(excerptZh, seo.metaDescriptionZh),
-  featuredImage
-`
-
 /** Card fields for curated featured-work grids (mirrors portfolio card shape). */
 const FEATURED_WORK_FIELDS = `
   _id,
@@ -90,20 +72,10 @@ const PAGE_CONTENT_FIELDS = `
   "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS}
 `
 
-/** Homepage — hero carousel slides, featured work grid, body copy, brand logos. */
+/** Homepage — SEO/meta fields, body copy, brand logos (carousel slides via HOME_REDESIGN_CAROUSEL_QUERY). */
 export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{
     ${PAGE_BASE_FIELDS},
-    "heroSlides": heroSlides[
-      !defined(@->trash.trashedAt)
-    ]->{
-      ${HOME_HERO_SLIDE_FIELDS}
-    },
-    "featuredWork": featuredWork[
-      !defined(@->trash.trashedAt) && @->isHidden != true
-    ]->{
-      ${FEATURED_WORK_FIELDS}
-    },
     brandLogos[]{
       logoId
     }
