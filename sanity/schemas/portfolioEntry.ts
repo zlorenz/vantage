@@ -361,7 +361,7 @@ export const portfolioEntry = defineType({
       ],
       group: 'media',
       description:
-        'Still-photography gallery, rendered as masonry below the crew credits block. Uses Media Library metadata (alt text, title, credit) — no per-item captions.',
+        'Still-photography gallery, rendered as masonry below the crew credits block. Uses Media Library metadata (alt text, title, credit) — no per-item captions. To add multiple photos at once, drag them directly onto this field area (below the existing thumbnails) — do NOT open an individual photo item and drop a batch inside its popup, which can cause upload errors.',
     }),
 
     defineField({
