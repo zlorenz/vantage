@@ -145,3 +145,36 @@
     font-size: 1rem;
   }
 }
+
+/*
+ * Main case video frame — matches /work carousel card chrome
+ * (.vp-portfolio-index__card--styled): soft lift + glass rim.
+ */
+.vp-case-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
+}
+
+.vp-case-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.22) 35%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  mix-blend-mode: soft-light;
+}

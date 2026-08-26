@@ -1,13 +1,15 @@
 'use client';
 
 /**
- * LazyVimeoPlayer — poster thumbnail until play; then loads a Vimeo iframe.
+ * LazyVimeoPlayer — custom poster until play; Vimeo iframe is preloaded underneath
+ * so mobile play/unmute/fullscreen can run inside the same user-gesture turn.
  *
- * Uses a static player.vimeo.com iframe (same pattern as LazyYouTubePlayer).
- * After the iframe mounts, dynamically imports `@vimeo/player` and attaches to
- * the existing iframe for GTM dataLayer play/progress/complete events.
- * Creating embeds via the SDK is avoided — its oEmbed fetch fails when blocked
- * (localhost, domain allowlists, some privacy settings).
+ * Why preload: iOS/Android drop the gesture if we only mount the iframe after
+ * click (autoplay muted was the old workaround). Vimeo requires the iframe to
+ * already be loaded before `play()` / `setMuted(false)` / `requestFullscreen()`
+ * will honor a tap.
+ *
+ * Carousel previews stay on their own muted path — not this component.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -24,6 +26,28 @@ interface LazyVimeoPlayerProps {
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
 const PROGRESS_MILESTONES = [25, 50, 75] as const;
+
+/** Touch phones/tablets (and narrow viewports): expand to fullscreen on first play. */
+function prefersMobileFullscreen(): boolean {
+  if (typeof window === 'undefined') return false;
+  return (
+    window.matchMedia('(hover: none) and (pointer: coarse)').matches ||
+    window.matchMedia('(max-width: 767px)').matches
+  );
+}
+
+function requestElementFullscreen(el: HTMLElement): void {
+  const anyEl = el as HTMLElement & {
+    webkitRequestFullscreen?: () => void;
+    webkitRequestFullScreen?: () => void;
+  };
+  if (typeof el.requestFullscreen === 'function') {
+    void el.requestFullscreen().catch(() => {});
+    return;
+  }
+  anyEl.webkitRequestFullscreen?.();
+  anyEl.webkitRequestFullScreen?.();
+}
 
 function pushVimeoDataLayerEvent(
   event: 'CE - Vimeo play' | 'CE - Vimeo progress' | 'CE - Vimeo complete',
@@ -47,15 +71,41 @@ export function LazyVimeoPlayer({
   posterAlt = '',
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
+  /** null until client mount — avoids wrong playsinline on SSR/hydration. */
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [playerReady, setPlayerReady] = useState(false);
+
+  const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const playerRef = useRef<Player | null>(null);
   const milestonesFiredRef = useRef(new Set<number>());
+  const startedFromGestureRef = useRef(false);
 
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
   const videoId = extractVimeoId(normalizedUrl);
-  const embedSrc = vimeoPlayerEmbedSrc(normalizedUrl, { autoplay: true });
+
+  // No autoplay/muted in the URL — we call play() + setMuted(false) from the tap.
+  const embedSrc =
+    isMobile === null
+      ? null
+      : vimeoPlayerEmbedSrc(normalizedUrl, {
+          playsinline: isMobile ? false : true,
+          // Warm enough of the stream that play() from the poster tap is immediate.
+          preload: 'auto',
+        });
 
   useEffect(() => {
-    if (!playing || !videoId) return;
+    setIsMobile(prefersMobileFullscreen());
+  }, []);
+
+  // Warm the SDK chunk early so the play tap does not wait on import.
+  useEffect(() => {
+    void import('@vimeo/player');
+  }, []);
+
+  // Attach SDK once the preloaded iframe is in the DOM.
+  useEffect(() => {
+    if (!embedSrc || !videoId) return;
 
     const iframe = iframeRef.current;
     if (!iframe) return;
@@ -68,7 +118,6 @@ export function LazyVimeoPlayer({
     };
 
     const onTimeUpdate = (data: { percent: number }) => {
-      // SDK ProportionPercent is 0–1; live GTM / WP used 0–100 (25/50/75/100).
       const progressPercent = Math.round(data.percent * 100);
       for (const milestone of PROGRESS_MILESTONES) {
         if (
@@ -96,14 +145,24 @@ export function LazyVimeoPlayer({
         return;
       }
 
+      playerRef.current = player;
       player.on('play', onPlay);
       player.on('timeupdate', onTimeUpdate);
       player.on('ended', onEnded);
+
+      try {
+        await player.ready();
+        if (!cancelled) setPlayerReady(true);
+      } catch {
+        // Still allow poster tap; startPlayback will no-op until ready.
+      }
     })();
 
     return () => {
       cancelled = true;
       milestonesFiredRef.current.clear();
+      setPlayerReady(false);
+      playerRef.current = null;
       if (player) {
         player.off('play', onPlay);
         player.off('timeupdate', onTimeUpdate);
@@ -112,9 +171,60 @@ export function LazyVimeoPlayer({
         player = null;
       }
     };
-  }, [playing, videoId]);
+  }, [embedSrc, videoId]);
 
-  if (!videoId || !embedSrc) {
+  const startPlayback = () => {
+    if (startedFromGestureRef.current) return;
+    startedFromGestureRef.current = true;
+    setPlaying(true);
+
+    const mobile = isMobile ?? prefersMobileFullscreen();
+    const wrap = wrapRef.current;
+    const player = playerRef.current;
+
+    // Element fullscreen must be kicked off synchronously in the gesture.
+    // Complements Vimeo playsinline=0 / player.requestFullscreen().
+    if (mobile && wrap) {
+      requestElementFullscreen(wrap);
+    }
+
+    if (!player) {
+      // Iframe still booting — ready() handler below cannot recover gesture;
+      // retry play once player becomes ready (sound/FS may be limited).
+      return;
+    }
+
+    // Do not await between these — awaiting yields and drops user activation.
+    void player.setMuted(false);
+    void player.setVolume(1);
+    if (mobile) {
+      void player.requestFullscreen().catch(() => {});
+    }
+    void player.play().catch(() => {});
+  };
+
+  // If the user tapped before the SDK finished ready(), start as soon as it is.
+  // Sound/fullscreen may still be blocked without a gesture — preload aims to
+  // avoid this path on real devices.
+  useEffect(() => {
+    if (!playing || !playerReady || !startedFromGestureRef.current) return;
+    const player = playerRef.current;
+    if (!player) return;
+
+    void (async () => {
+      try {
+        const paused = await player.getPaused();
+        if (!paused) return;
+        await player.setMuted(false);
+        await player.setVolume(1);
+        await player.play();
+      } catch {
+        // Ignore — user can tap Vimeo controls.
+      }
+    })();
+  }, [playing, playerReady]);
+
+  if (!videoId) {
     return (
       <div className="flex aspect-video items-center justify-center bg-black/50 text-vp-text-soft">
         Invalid Vimeo URL
@@ -122,43 +232,48 @@ export function LazyVimeoPlayer({
     );
   }
 
-  if (playing) {
-    return (
-      <div className="relative aspect-video w-full bg-black">
+  return (
+    <div
+      ref={wrapRef}
+      className="relative aspect-video w-full overflow-hidden bg-black"
+    >
+      {embedSrc ? (
         <iframe
           ref={iframeRef}
           src={embedSrc}
           title="Vimeo video"
-          className="h-full w-full border-0"
+          className={`absolute inset-0 h-full w-full border-0 ${
+            playing ? 'z-[1] opacity-100' : 'z-0 opacity-0'
+          }`}
           allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
         />
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      className="group relative block aspect-video w-full cursor-pointer border-0 bg-black p-0"
-      onClick={() => setPlaying(true)}
-      aria-label="Play video"
-    >
-      {posterUrl ? (
-        <Image
-          src={posterUrl}
-          alt={posterAlt}
-          fill
-          className="object-cover"
-          sizes="100vw"
-        />
       ) : null}
-      <span className="absolute inset-0 flex items-center justify-center bg-black/25 transition group-hover:bg-black/35">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40">
-          <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
-        </span>
-      </span>
-    </button>
+
+      {!playing ? (
+        <button
+          type="button"
+          className="group absolute inset-0 z-[2] block w-full cursor-pointer border-0 bg-black p-0"
+          onClick={startPlayback}
+          aria-label="Play video"
+        >
+          {posterUrl ? (
+            <Image
+              src={posterUrl}
+              alt={posterAlt}
+              fill
+              className="object-cover"
+              sizes="100vw"
+            />
+          ) : null}
+          <span className="absolute inset-0 flex items-center justify-center bg-black/25 transition group-hover:bg-black/35">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40">
+              <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+            </span>
+          </span>
+        </button>
+      ) : null}
+    </div>
   );
 }

@@ -27,7 +27,14 @@ export function extractVimeoPrivacyHash(url: string): string | null {
  */
 export function vimeoPlayerEmbedSrc(
   urlOrId: string,
-  options: { autoplay?: boolean } = {},
+  options: {
+    autoplay?: boolean;
+    /** Pass true for carousel/preview autoplay without a user gesture. */
+    muted?: boolean;
+    playsinline?: boolean;
+    /** Vimeo preload: metadata | auto | none (default metadata_on_hover). */
+    preload?: 'metadata' | 'auto' | 'none';
+  } = {},
 ): string | null {
   const id = /^\d+$/.test(urlOrId) ? urlOrId : extractVimeoId(urlOrId);
   if (!id) return null;
@@ -35,8 +42,19 @@ export function vimeoPlayerEmbedSrc(
   const params = new URLSearchParams();
   if (options.autoplay) {
     params.set('autoplay', '1');
-    // Browsers block unmuted autoplay; mute so playback can start after click-to-load.
+  }
+  if (options.muted) {
     params.set('muted', '1');
+  }
+  if (options.preload) {
+    params.set('preload', options.preload);
+  }
+
+  // `playsinline=0` asks Vimeo to enter native fullscreen on mobile when playback starts.
+  if (options.playsinline === false) {
+    params.set('playsinline', '0');
+  } else if (options.playsinline === true) {
+    params.set('playsinline', '1');
   }
 
   if (!/^\d+$/.test(urlOrId)) {

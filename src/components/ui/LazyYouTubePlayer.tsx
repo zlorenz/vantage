@@ -13,8 +13,18 @@ interface LazyYouTubePlayerProps {
   title?: string;
 }
 
+/** Touch phones/tablets (and narrow viewports): expand to fullscreen on first play. */
+function prefersMobileFullscreen(): boolean {
+  if (typeof window === 'undefined') return false;
+  return (
+    window.matchMedia('(hover: none) and (pointer: coarse)').matches ||
+    window.matchMedia('(max-width: 767px)').matches
+  );
+}
+
 export function LazyYouTubePlayer({ videoId, title = 'YouTube video' }: LazyYouTubePlayerProps) {
   const [playing, setPlaying] = useState(false);
+  const [mobileFullscreen, setMobileFullscreen] = useState(false);
   const [posterSrc, setPosterSrc] = useState(youTubePosterUrl(videoId, 'maxres'));
 
   if (!videoId) {
@@ -26,13 +36,17 @@ export function LazyYouTubePlayer({ videoId, title = 'YouTube video' }: LazyYouT
   }
 
   if (playing) {
+    const params = new URLSearchParams({ autoplay: '1' });
+    // iOS: playsinline=0 enters native fullscreen when playback starts.
+    if (mobileFullscreen) params.set('playsinline', '0');
+
     return (
       <div className="aspect-video w-full bg-black">
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+          src={`https://www.youtube.com/embed/${videoId}?${params.toString()}`}
           title={title}
           className="h-full w-full border-0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowFullScreen
         />
       </div>
@@ -43,7 +57,10 @@ export function LazyYouTubePlayer({ videoId, title = 'YouTube video' }: LazyYouT
     <button
       type="button"
       className="group relative block aspect-video w-full cursor-pointer border-0 bg-black p-0"
-      onClick={() => setPlaying(true)}
+      onClick={() => {
+        setMobileFullscreen(prefersMobileFullscreen());
+        setPlaying(true);
+      }}
       aria-label={`Play ${title}`}
     >
       <Image

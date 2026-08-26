@@ -12,10 +12,7 @@ import { PortfolioDescription } from '@/components/portfolio/PortfolioDescriptio
 import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
-import {
-  resolveAdditionalVideoTitle,
-  resolveEntryDisplayTitles,
-} from '@/lib/display-titles';
+import { resolveAdditionalVideoTitle } from '@/lib/display-titles';
 import { getPhraseMap, getPhraseRecord } from '@/lib/phrase-book';
 import { portfolioEntryMetadata } from '@/lib/metadata';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
@@ -124,12 +121,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
     phraseRecord,
   );
 
-  const { longTitle } = resolveEntryDisplayTitles(
-    entry,
-    typedLocale,
-    phrases,
-  );
-
   const breadcrumbItems = [
     homeBreadcrumb(typedLocale),
     workBreadcrumb(typedLocale),
@@ -170,7 +161,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
             markets={entry.markets}
             crewCredits={entry.crewCredits}
           />
-          <div className="vp-case-video overflow-hidden rounded-[1.75rem]">
+          <div className="vp-case-video">
             <PortfolioVideoEmbed
               locale={typedLocale}
               vimeoUrl={entry.vimeoUrl}
@@ -178,15 +169,11 @@ export default async function PortfolioEntryPage({ params }: Props) {
               featuredImage={entry.featuredImage}
             />
           </div>
-          <div className="mt-8 max-w-3xl">
-            <h2
-              className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
-              dangerouslySetInnerHTML={{ __html: longTitle }}
-            />
-            {description ? (
+          {description ? (
+            <div className="mt-8 max-w-3xl">
               <PortfolioDescription text={description} />
-            ) : null}
-          </div>
+            </div>
+          ) : null}
           <div className="mt-8">
             <PortfolioCredits
               crewCredits={entry.crewCredits}
