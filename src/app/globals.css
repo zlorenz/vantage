@@ -1338,6 +1338,60 @@ body:has(.vp-work-index) #header.navbar::before {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.4), transparent);
 }
 
+/* ==========================================================================
+   Key Visuals gallery (portfolio entry) — scoped; do not alter .vp-masonry-gallery
+   ========================================================================== */
+
+.vp-key-visuals__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.vp-key-visuals__title {
+  margin: 0;
+  font-family: var(--vp-font-heading);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  letter-spacing: 0.0625rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--color-vp-text);
+}
+
+.vp-key-visuals__rule {
+  height: 1px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.vp-key-visuals-gallery {
+  column-count: 3;
+  column-gap: 0.75rem;
+}
+
+/* Same viewport as .vp-masonry-gallery mobile override; 1 col instead of 2. */
+@media (max-width: 639px) {
+  .vp-key-visuals-gallery {
+    column-count: 1;
+  }
+}
+
+.vp-key-visuals-gallery__item {
+  position: relative;
+  display: block;
+  margin: 0 0 0.75rem;
+  break-inside: avoid;
+}
+
+.vp-key-visuals-gallery__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1.75rem;
+}
+
 .vp-pt-cta-button {
   margin: 2rem 0 3rem;
 }

@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
+import { KeyVisualsGallery } from '@/components/portfolio/KeyVisualsGallery';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioCaseCarousel } from '@/components/portfolio/PortfolioCaseCarousel';
 import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
@@ -35,6 +36,7 @@ import {
   PORTFOLIO_ENTRY_QUERY,
   PORTFOLIO_SLUGS_QUERY,
 } from '@/sanity/queries/portfolio';
+import type { PORTFOLIO_ENTRY_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { PortfolioEntry, PortfolioSlug, SiteSettings } from '@/types/sanity';
 
 type Props = {
@@ -122,7 +124,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
     phraseRecord,
   );
 
-  const caseCarouselSlides = buildPortfolioCaseSlides({
+  const caseCarouselSlides = await buildPortfolioCaseSlides({
     locale: typedLocale,
     phrases: phraseRecord,
     vimeoUrl: entry.vimeoUrl,
@@ -187,11 +189,20 @@ export default async function PortfolioEntryPage({ params }: Props) {
               />
             </div>
           )}
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col gap-16">
             <PortfolioCredits
               crewCredits={entry.crewCredits}
               locale={typedLocale}
               phrases={phraseRecord}
+            />
+            <KeyVisualsGallery
+              keyVisuals={
+                (entry as PortfolioEntry &
+                  Pick<
+                    NonNullable<PORTFOLIO_ENTRY_QUERY_RESULT>,
+                    'keyVisuals'
+                  >).keyVisuals
+              }
             />
           </div>
         </div>
