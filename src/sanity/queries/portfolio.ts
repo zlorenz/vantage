@@ -141,6 +141,19 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
       description,
       descriptionZh
     },
+    keyVisuals[]{
+      ...,
+      asset->{
+        _id,
+        _type,
+        url,
+        title,
+        altText,
+        description,
+        creditLine,
+        metadata { dimensions { width, height, aspectRatio } }
+      }
+    },
     videoFormats[]->{
       title,
       titleZh,
