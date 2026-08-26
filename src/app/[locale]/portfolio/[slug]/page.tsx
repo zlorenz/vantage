@@ -9,7 +9,9 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioDescription } from '@/components/portfolio/PortfolioDescription';
+import { PortfolioCaseCarousel } from '@/components/portfolio/PortfolioCaseCarousel';
 import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
+import { buildPortfolioCaseSlides } from '@/components/portfolio/prepare-portfolio-case-slides';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { resolveAdditionalVideoTitle } from '@/lib/display-titles';
@@ -121,6 +123,14 @@ export default async function PortfolioEntryPage({ params }: Props) {
     phraseRecord,
   );
 
+  const caseCarouselSlides = buildPortfolioCaseSlides({
+    locale: typedLocale,
+    vimeoUrl: entry.vimeoUrl,
+    xinpianchangUrl: entry.xinpianchangUrl,
+    featuredImage: entry.featuredImage,
+    additionalVideos: entry.additionalVideos,
+  });
+
   const breadcrumbItems = [
     homeBreadcrumb(typedLocale),
     workBreadcrumb(typedLocale),
@@ -161,14 +171,18 @@ export default async function PortfolioEntryPage({ params }: Props) {
             markets={entry.markets}
             crewCredits={entry.crewCredits}
           />
-          <div className="vp-case-video">
-            <PortfolioVideoEmbed
-              locale={typedLocale}
-              vimeoUrl={entry.vimeoUrl}
-              xinpianchangUrl={entry.xinpianchangUrl}
-              featuredImage={entry.featuredImage}
-            />
-          </div>
+          {caseCarouselSlides ? (
+            <PortfolioCaseCarousel slides={caseCarouselSlides} />
+          ) : (
+            <div className="vp-case-video">
+              <PortfolioVideoEmbed
+                locale={typedLocale}
+                vimeoUrl={entry.vimeoUrl}
+                xinpianchangUrl={entry.xinpianchangUrl}
+                featuredImage={entry.featuredImage}
+              />
+            </div>
+          )}
           {description ? (
             <div className="mt-8 max-w-3xl">
               <PortfolioDescription text={description} />
