@@ -3,34 +3,43 @@
  *
  * Slide 0 = main film (featuredImage preferred as poster).
  * Slides 1+ = playable additionalVideos (provider thumb only).
+ *
+ * Overlay titles are plain episode strings only (heroFilmTitle / videoTitle) —
+ * never the composed Brand+Product+Campaign long title.
  */
 
 import {urlForImage} from '@/lib/sanity';
+import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import {parseVideoUrl, youTubePosterUrl} from '@/lib/video-url';
 import {vimeoThumbnailUrl} from '@/lib/vimeo';
 import {xinpianchangToEmbedUrl} from '@/lib/xinpianchang';
 import type {Locale} from '@/i18n/routing';
 import type {AdditionalVideo, SanityImage} from '@/types/sanity';
 
-export type PortfolioCaseSlide =
-  | {
-      key: string;
-      kind: 'vimeo';
-      vimeoUrl: string;
-      posterUrl?: string;
-    }
-  | {
-      key: string;
-      kind: 'youtube';
-      videoId: string;
-      posterUrl: string;
-    }
-  | {
-      key: string;
-      kind: 'xinpianchang';
-      embedUrl: string;
-      posterUrl?: string;
-    };
+type SlideBase = {
+  key: string;
+  /** Plain film/episode title for card overlay; omit when empty. */
+  overlayTitle?: string;
+};
+
+export type PortfolioCaseSlide = SlideBase &
+  (
+    | {
+        kind: 'vimeo';
+        vimeoUrl: string;
+        posterUrl?: string;
+      }
+    | {
+        kind: 'youtube';
+        videoId: string;
+        posterUrl: string;
+      }
+    | {
+        kind: 'xinpianchang';
+        embedUrl: string;
+        posterUrl?: string;
+      }
+  );
 
 export function isPlayableAdditionalVideo(
   video: Pick<AdditionalVideo, 'vimeoUrl' | 'xinpianchangUrl'>,
@@ -54,8 +63,10 @@ function resolveSlide(args: {
   xinpianchangUrl?: string | null;
   /** Preferred poster (main film only). */
   featuredImage?: SanityImage;
+  overlayTitle?: string;
 }): PortfolioCaseSlide | null {
-  const {key, locale, vimeoUrl, xinpianchangUrl, featuredImage} = args;
+  const {key, locale, vimeoUrl, xinpianchangUrl, featuredImage, overlayTitle} =
+    args;
   const featured = featuredPosterUrl(featuredImage);
   const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null;
   const providerPoster =
@@ -65,6 +76,7 @@ function resolveSlide(args: {
         ? youTubePosterUrl(parsed.id, 'maxres')
         : undefined;
   const posterUrl = featured ?? providerPoster;
+  const title = overlayTitle?.trim() || undefined;
 
   if (
     locale === 'zh' &&
@@ -76,6 +88,7 @@ function resolveSlide(args: {
       kind: 'xinpianchang',
       embedUrl: xinpianchangUrl,
       posterUrl,
+      overlayTitle: title,
     };
   }
 
@@ -87,6 +100,7 @@ function resolveSlide(args: {
       kind: 'youtube',
       videoId: parsed.id,
       posterUrl: posterUrl ?? youTubePosterUrl(parsed.id, 'hq'),
+      overlayTitle: title,
     };
   }
 
@@ -96,6 +110,7 @@ function resolveSlide(args: {
       kind: 'vimeo',
       vimeoUrl: parsed.url,
       posterUrl,
+      overlayTitle: title,
     };
   }
 
@@ -108,16 +123,22 @@ function resolveSlide(args: {
  */
 export function buildPortfolioCaseSlides(args: {
   locale: Locale;
+  phrases?: Record<string, string> | null;
   vimeoUrl: string;
   xinpianchangUrl?: string | null;
   featuredImage?: SanityImage;
+  heroFilmTitle?: string | null;
+  heroFilmTitleZh?: string | null;
   additionalVideos?: AdditionalVideo[] | null;
 }): PortfolioCaseSlide[] | null {
   const {
     locale,
+    phrases,
     vimeoUrl,
     xinpianchangUrl,
     featuredImage,
+    heroFilmTitle,
+    heroFilmTitleZh,
     additionalVideos,
   } = args;
 
@@ -126,22 +147,37 @@ export function buildPortfolioCaseSlides(args: {
   );
   if (playableAdditional.length === 0) return null;
 
+  const mainOverlay = pickLocaleFieldWithPhrases(
+    locale,
+    heroFilmTitle,
+    heroFilmTitleZh,
+    phrases,
+  ).trim();
+
   const main = resolveSlide({
     key: 'main',
     locale,
     vimeoUrl,
     xinpianchangUrl,
     featuredImage,
+    overlayTitle: mainOverlay || undefined,
   });
   if (!main) return null;
 
   const extras: PortfolioCaseSlide[] = [];
   playableAdditional.forEach((video, index) => {
+    const episodeTitle = pickLocaleFieldWithPhrases(
+      locale,
+      video.videoTitle,
+      video.videoTitleZh,
+      phrases,
+    ).trim();
     const slide = resolveSlide({
       key: `additional-${index}`,
       locale,
       vimeoUrl: video.vimeoUrl,
       xinpianchangUrl: video.xinpianchangUrl,
+      overlayTitle: episodeTitle || undefined,
     });
     if (slide) extras.push(slide);
   });

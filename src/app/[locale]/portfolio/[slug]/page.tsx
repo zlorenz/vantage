@@ -1,5 +1,6 @@
 /**
- * Single portfolio entry page — case header, full-width video, description, credits.
+ * Single portfolio entry page — case header, video, credits.
+ * Campaign description/excerpt stay in Sanity for reuse later; not shown here.
  */
 
 import type { Metadata } from 'next';
@@ -8,13 +9,11 @@ import { setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
-import { PortfolioDescription } from '@/components/portfolio/PortfolioDescription';
 import { PortfolioCaseCarousel } from '@/components/portfolio/PortfolioCaseCarousel';
 import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
 import { buildPortfolioCaseSlides } from '@/components/portfolio/prepare-portfolio-case-slides';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
-import { resolveAdditionalVideoTitle } from '@/lib/display-titles';
 import { getPhraseMap, getPhraseRecord } from '@/lib/phrase-book';
 import { portfolioEntryMetadata } from '@/lib/metadata';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
@@ -125,9 +124,12 @@ export default async function PortfolioEntryPage({ params }: Props) {
 
   const caseCarouselSlides = buildPortfolioCaseSlides({
     locale: typedLocale,
+    phrases: phraseRecord,
     vimeoUrl: entry.vimeoUrl,
     xinpianchangUrl: entry.xinpianchangUrl,
     featuredImage: entry.featuredImage,
+    heroFilmTitle: entry.heroFilmTitle,
+    heroFilmTitleZh: entry.heroFilmTitleZh,
     additionalVideos: entry.additionalVideos,
   });
 
@@ -183,11 +185,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
               />
             </div>
           )}
-          {description ? (
-            <div className="mt-8 max-w-3xl">
-              <PortfolioDescription text={description} />
-            </div>
-          ) : null}
           <div className="mt-8">
             <PortfolioCredits
               crewCredits={entry.crewCredits}
@@ -197,55 +194,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
           </div>
         </div>
       </SectionWrapper>
-
-      {entry.additionalVideos?.map((video, index) => {
-        const hasVideo =
-          video.vimeoUrl?.trim() ||
-          (typedLocale === 'zh' && video.xinpianchangUrl?.trim());
-        if (!hasVideo) return null;
-
-        const videoTitle = resolveAdditionalVideoTitle(
-          entry,
-          video,
-          typedLocale,
-          phrases,
-        );
-        const videoDescription = pickLocaleFieldWithPhrases(
-          typedLocale,
-          video.description,
-          video.descriptionZh,
-          phraseRecord,
-        );
-
-        return (
-          <SectionWrapper
-            key={index}
-            borderTop
-            fullBleed={true}
-          >
-            <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
-                <div className="order-2 lg:order-1 lg:col-span-5">
-                  {videoTitle ? (
-                    <h2
-                      className="mb-3 font-vp-heading text-[clamp(1.375rem,1.1rem+1.2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading"
-                      dangerouslySetInnerHTML={{ __html: videoTitle }}
-                    />
-                  ) : null}
-                  <PortfolioDescription text={videoDescription} />
-                </div>
-                <div className="order-1 lg:order-2 lg:col-span-7">
-                  <PortfolioVideoEmbed
-                    locale={typedLocale}
-                    vimeoUrl={video.vimeoUrl}
-                    xinpianchangUrl={video.xinpianchangUrl}
-                  />
-                </div>
-              </div>
-            </div>
-          </SectionWrapper>
-        );
-      })}
     </>
   );
 }

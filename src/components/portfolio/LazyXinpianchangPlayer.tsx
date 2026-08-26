@@ -47,8 +47,8 @@ export function LazyXinpianchangPlayer({
             sizes="(max-width: 992px) 100vw, 60vw"
           />
         ) : null}
-        <span className="absolute inset-0 flex items-center justify-center bg-black/25 transition group-hover:bg-black/35">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40">
+        <span className="absolute inset-0 flex items-center justify-center bg-black/25">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40 transition duration-200 group-hover:scale-110 group-hover:border-white group-hover:bg-black/55">
             <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
           </span>
         </span>

@@ -1,7 +1,8 @@
 /**
  * Multi-video case study carousel — sparse Embla strip (no loop, no scrubber,
- * no vertical scroll lock). Centered slide reuses Lazy*Player (preloaded
- * iframe for Vimeo); peek taps only scrollTo.
+ * no vertical scroll lock). Active slide reuses Lazy*Player (preloaded iframe
+ * for Vimeo); peek taps only scrollTo. Desktop pages on horizontal-dominant
+ * trackpad/mouse-wheel without claiming vertical page scroll.
  */
 
 'use client';
@@ -16,21 +17,40 @@ import {
 } from 'react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
+import {WheelGestures} from 'wheel-gestures';
 import {LazyYouTubePlayer} from '@/components/ui/LazyYouTubePlayer';
 import {LazyVimeoPlayer} from './LazyVimeoPlayer';
 import {LazyXinpianchangPlayer} from './LazyXinpianchangPlayer';
 import type {PortfolioCaseSlide} from './prepare-portfolio-case-slides';
 import './portfolio-case-carousel.css';
 
-const CASE_EMBLA_OPTIONS = {
-  dragFree: false as const,
-  loop: false as const,
-  align: 'center' as const,
-  containScroll: false as const,
-};
+const CASE_DESKTOP_MQ = '(min-width: 768px)';
+/** In-gesture |deltaX| before paging; vertical page scroll is never claimed. */
+const WHEEL_GESTURE_THRESHOLD_PX = 30;
+
+function caseEmblaOptions(align: 'start' | 'center') {
+  return {
+    dragFree: false as const,
+    loop: false as const,
+    align,
+    containScroll: false as const,
+  };
+}
 
 interface PortfolioCaseCarouselProps {
   slides: PortfolioCaseSlide[];
+}
+
+function SlideTitleOverlay({title}: {title?: string}) {
+  if (!title) return null;
+  return (
+    <div className="vp-case-carousel__overlay">
+      <div className="vp-case-carousel__overlay-scrim" aria-hidden />
+      <div className="vp-case-carousel__overlay-copy">
+        <p className="vp-case-carousel__title">{title}</p>
+      </div>
+    </div>
+  );
 }
 
 function PeekPoster({
@@ -86,13 +106,20 @@ function ActiveSlidePlayer({slide}: {slide: PortfolioCaseSlide}) {
 
 export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const slideCount = slides.length;
-  const [emblaRef, emblaApi] = useEmblaCarousel(CASE_EMBLA_OPTIONS);
+  // Mobile-first center; desktop reInit switches to start (rail-aligned).
+  const [emblaRef, emblaApi] = useEmblaCarousel(caseEmblaOptions('center'));
   const [activeIndex, setActiveIndex] = useState(0);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
   const dragGuardRef = useRef<{x: number; y: number} | null>(null);
+  const gestureAccumRef = useRef(0);
+  const gestureFiredRef = useRef(false);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setActiveIndex(emblaApi.selectedScrollSnap());
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
   }, [emblaApi]);
 
   useEffect(() => {
@@ -105,6 +132,65 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
       emblaApi.off('reInit', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const mq = window.matchMedia(CASE_DESKTOP_MQ);
+    const syncAlign = () => {
+      emblaApi.reInit(caseEmblaOptions(mq.matches ? 'start' : 'center'));
+    };
+    syncAlign();
+    mq.addEventListener('change', syncAlign);
+    return () => mq.removeEventListener('change', syncAlign);
+  }, [emblaApi]);
+
+  // Horizontal-only wheel paging: leave vertical-dominant gestures to the page.
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const viewport = emblaApi.rootNode();
+    const wheelGestures = WheelGestures({
+      reverseSign: false,
+      preventWheelAction: false,
+    });
+
+    const unobserve = wheelGestures.observe(viewport);
+    const unsubscribe = wheelGestures.on('wheel', (wheelEventState) => {
+      const {isStart, isMomentum, axisDelta, event} = wheelEventState;
+      const [deltaX, deltaY] = axisDelta;
+
+      if (isStart) {
+        gestureAccumRef.current = 0;
+        gestureFiredRef.current = false;
+      }
+
+      if (event.ctrlKey) return;
+
+      // Horizontal-only: leave vertical-dominant gestures to the page.
+      if (Math.abs(deltaX) <= Math.abs(deltaY) || deltaX === 0) return;
+
+      event.preventDefault?.();
+
+      if (isMomentum) return;
+
+      gestureAccumRef.current += Math.abs(deltaX);
+      if (gestureFiredRef.current) return;
+      if (gestureAccumRef.current < WHEEL_GESTURE_THRESHOLD_PX) return;
+
+      gestureFiredRef.current = true;
+      if (deltaX > 0) {
+        emblaApi.scrollNext();
+      } else {
+        emblaApi.scrollPrev();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      unobserve();
+      wheelGestures.disconnect();
+    };
+  }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -135,6 +221,14 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
+  }, [emblaApi]);
+
+  const scrollPrev = useCallback(() => {
+    emblaApi?.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    emblaApi?.scrollNext();
   }, [emblaApi]);
 
   const scrollToIndex = useCallback(
@@ -179,35 +273,80 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
         </span>
         <span className="vp-case-carousel__counter-total">{slideCount}</span>
       </p>
-      <div
-        ref={emblaRef}
-        className="vp-case-carousel__viewport"
-        aria-label="Campaign videos"
-      >
-        <div className="vp-case-carousel__container">
-          {slides.map((slide, index) => {
-            const active = index === activeIndex;
-            return (
-              <div
-                key={slide.key}
-                className={`vp-case-carousel__slide${active ? ' is-active' : ''}`}
-                onPointerDown={onCardPointerDown}
-              >
-                <div className="vp-case-carousel__card">
-                  {active ? (
-                    <ActiveSlidePlayer slide={slide} />
-                  ) : (
-                    <PeekPoster
-                      posterUrl={slide.posterUrl}
-                      onActivate={(event) => onPeekActivate(index, event)}
-                    />
-                  )}
+      <div className="vp-case-carousel__stage">
+        <button
+          type="button"
+          className="vp-case-carousel__nav vp-case-carousel__nav--prev"
+          onClick={scrollPrev}
+          disabled={!canScrollPrev}
+          aria-label="Previous video"
+        >
+          <NavChevron direction="prev" />
+        </button>
+        <div
+          ref={emblaRef}
+          className="vp-case-carousel__viewport"
+          aria-label="Campaign videos"
+        >
+          <div className="vp-case-carousel__container">
+            {slides.map((slide, index) => {
+              const active = index === activeIndex;
+              return (
+                <div
+                  key={slide.key}
+                  className={`vp-case-carousel__slide${active ? ' is-active' : ''}`}
+                  onPointerDown={onCardPointerDown}
+                >
+                  <div className="vp-case-carousel__card">
+                    {active ? (
+                      <ActiveSlidePlayer slide={slide} />
+                    ) : (
+                      <PeekPoster
+                        posterUrl={slide.posterUrl}
+                        onActivate={(event) => onPeekActivate(index, event)}
+                      />
+                    )}
+                    <SlideTitleOverlay title={slide.overlayTitle} />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
+        <button
+          type="button"
+          className="vp-case-carousel__nav vp-case-carousel__nav--next"
+          onClick={scrollNext}
+          disabled={!canScrollNext}
+          aria-label="Next video"
+        >
+          <NavChevron direction="next" />
+        </button>
       </div>
     </div>
+  );
+}
+
+function NavChevron({direction}: {direction: 'prev' | 'next'}) {
+  return (
+    <svg
+      className="vp-case-carousel__nav-icon"
+      viewBox="0 0 24 24"
+      aria-hidden
+      focusable="false"
+    >
+      <path
+        d={
+          direction === 'prev'
+            ? 'M14.5 5.5 8 12l6.5 6.5'
+            : 'M9.5 5.5 16 12l-6.5 6.5'
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+    </svg>
   );
 }
