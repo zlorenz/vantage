@@ -2,6 +2,9 @@ import {extractVimeoId, vimeoThumbnailUrl} from '@video-url'
 
 export {extractVimeoId, vimeoThumbnailUrl};
 
+/** Cache Vimeo still URLs — picture assets change rarely. */
+const VIMEO_THUMB_REVALIDATE_SECONDS = 86400;
+
 /**
  * Privacy hash required for some unlisted/private embeds.
  * Supports `?h=…` and path form `vimeo.com/{id}/{hash}`.
@@ -19,6 +22,83 @@ export function extractVimeoPrivacyHash(url: string): string | null {
     const pathMatch = url.match(/vimeo\.com\/(?:video\/)?\d+\/([a-zA-Z0-9]+)/);
     return pathMatch?.[1] ?? null;
   }
+}
+
+/**
+ * Rewrite a Vimeo CDN still to the largest common preset (1920).
+ * Vimeo does not upscale — missing tiers fall back to the max available.
+ */
+export function upscaleVimeoCdnThumbnail(url: string): string {
+  const withPair = url.replace(/_\d+x\d+(?=\.\w+(?:\?|$))/, '_1920x1080');
+  if (withPair !== url) return withPair;
+  return url.replace(/_\d+(?=\.\w+(?:\?|$))/, '_1920');
+}
+
+type VimeoPicturesResponse = {
+  pictures?: {sizes?: Array<{width?: number; link?: string}>};
+};
+
+/**
+ * Highest-resolution Vimeo still for a video.
+ * Prefers authenticated `pictures.sizes` (works for team/unlisted), then
+ * oEmbed + CDN upscale, then the public vumbnail fallback.
+ */
+export async function fetchHighestVimeoThumbnailUrl(
+  urlOrId: string,
+): Promise<string | null> {
+  const id = /^\d+$/.test(urlOrId) ? urlOrId : extractVimeoId(urlOrId);
+  if (!id) return null;
+
+  const token = process.env.VIMEO_ACCESS_TOKEN;
+  if (token) {
+    try {
+      const res = await fetch(
+        `https://api.vimeo.com/videos/${id}?fields=pictures.sizes`,
+        {
+          headers: {
+            Authorization: `bearer ${token}`,
+            Accept: 'application/vnd.vimeo.*+json;version=3.4',
+          },
+          next: {revalidate: VIMEO_THUMB_REVALIDATE_SECONDS},
+        },
+      );
+      if (res.ok) {
+        const body = (await res.json()) as VimeoPicturesResponse;
+        const sizes = (body.pictures?.sizes ?? []).filter(
+          (size): size is {width: number; link: string} =>
+            typeof size.width === 'number' &&
+            typeof size.link === 'string' &&
+            size.link.startsWith('http'),
+        );
+        if (sizes.length > 0) {
+          const best = [...sizes].sort((a, b) => b.width - a.width)[0];
+          return best.link;
+        }
+      }
+    } catch {
+      // fall through to oEmbed / vumbnail
+    }
+  }
+
+  try {
+    const oembedTarget = /^\d+$/.test(urlOrId)
+      ? `https://vimeo.com/${urlOrId}`
+      : urlOrId;
+    const res = await fetch(
+      `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(oembedTarget)}`,
+      {next: {revalidate: VIMEO_THUMB_REVALIDATE_SECONDS}},
+    );
+    if (res.ok) {
+      const data = (await res.json()) as {thumbnail_url?: string};
+      if (typeof data.thumbnail_url === 'string' && data.thumbnail_url) {
+        return upscaleVimeoCdnThumbnail(data.thumbnail_url);
+      }
+    }
+  } catch {
+    // fall through
+  }
+
+  return vimeoThumbnailUrl(urlOrId);
 }
 
 /**

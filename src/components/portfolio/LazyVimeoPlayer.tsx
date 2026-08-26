@@ -22,6 +22,10 @@ interface LazyVimeoPlayerProps {
   vimeoUrl: string;
   posterUrl?: string;
   posterAlt?: string;
+  /** Fires once when the user starts playback from the poster. */
+  onPlay?: () => void;
+  /** Hide the centered play glyph (poster remains clickable). */
+  hidePlayButton?: boolean;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -69,6 +73,8 @@ export function LazyVimeoPlayer({
   vimeoUrl,
   posterUrl,
   posterAlt = '',
+  onPlay,
+  hidePlayButton = false,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
@@ -177,6 +183,7 @@ export function LazyVimeoPlayer({
     if (startedFromGestureRef.current) return;
     startedFromGestureRef.current = true;
     setPlaying(true);
+    onPlay?.();
 
     const mobile = isMobile ?? prefersMobileFullscreen();
     const wrap = wrapRef.current;
@@ -267,11 +274,13 @@ export function LazyVimeoPlayer({
               sizes="100vw"
             />
           ) : null}
-          <span className="absolute inset-0 flex items-center justify-center bg-black/25">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40 transition duration-200 group-hover:scale-110 group-hover:border-white group-hover:bg-black/55">
-              <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+          {!hidePlayButton ? (
+            <span className="absolute inset-0 flex items-center justify-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40 transition duration-200 group-hover:scale-110 group-hover:border-white group-hover:bg-black/55">
+                <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+              </span>
             </span>
-          </span>
+          ) : null}
         </button>
       ) : null}
     </div>

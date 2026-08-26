@@ -1,8 +1,8 @@
 /**
  * Build serializable slide props for PortfolioCaseCarousel.
  *
- * Slide 0 = main film (featuredImage preferred as poster).
- * Slides 1+ = playable additionalVideos (provider thumb only).
+ * Slide 0 = main film (full-resolution featuredImage as poster when set).
+ * Slides 1+ = playable additionalVideos (highest-res Vimeo still / YouTube maxres).
  *
  * Overlay titles are plain episode strings only (heroFilmTitle / videoTitle) —
  * never the composed Brand+Product+Campaign long title.
@@ -11,7 +11,7 @@
 import {urlForImage} from '@/lib/sanity';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import {parseVideoUrl, youTubePosterUrl} from '@/lib/video-url';
-import {vimeoThumbnailUrl} from '@/lib/vimeo';
+import {fetchHighestVimeoThumbnailUrl} from '@/lib/vimeo';
 import {xinpianchangToEmbedUrl} from '@/lib/xinpianchang';
 import type {Locale} from '@/i18n/routing';
 import type {AdditionalVideo, SanityImage} from '@/types/sanity';
@@ -53,21 +53,34 @@ export function isPlayableAdditionalVideo(
   );
 }
 
+/** Original Sanity upload — no width/height downscale. */
 function featuredPosterUrl(featuredImage?: SanityImage): string | undefined {
   if (!featuredImage) return undefined;
-  return urlForImage(featuredImage).width(1920).height(1080).fit('crop').url();
+  return urlForImage(featuredImage).url() ?? undefined;
 }
 
-function resolveSlide(args: {
+async function providerPosterUrl(
+  parsed: NonNullable<ReturnType<typeof parseVideoUrl>>,
+): Promise<string | undefined> {
+  if (parsed.provider === 'vimeo') {
+    return (await fetchHighestVimeoThumbnailUrl(parsed.url)) ?? undefined;
+  }
+  if (parsed.provider === 'youtube') {
+    return youTubePosterUrl(parsed.id, 'maxres');
+  }
+  return undefined;
+}
+
+async function resolveSlide(args: {
   key: string;
   locale: Locale;
   vimeoUrl?: string | null;
   xinpianchangUrl?: string | null;
-  /** Preferred poster (main film only). */
+  /** Preferred poster (main film only) — full-res Sanity featured image. */
   featuredImage?: SanityImage;
   overlayTitle?: string;
   description?: string;
-}): PortfolioCaseSlide | null {
+}): Promise<PortfolioCaseSlide | null> {
   const {
     key,
     locale,
@@ -80,11 +93,7 @@ function resolveSlide(args: {
   const featured = featuredPosterUrl(featuredImage);
   const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null;
   const providerPoster =
-    parsed?.provider === 'vimeo'
-      ? (vimeoThumbnailUrl(parsed.url) ?? undefined)
-      : parsed?.provider === 'youtube'
-        ? youTubePosterUrl(parsed.id, 'maxres')
-        : undefined;
+    featured || !parsed ? undefined : await providerPosterUrl(parsed);
   const posterUrl = featured ?? providerPoster;
   const title = overlayTitle?.trim() || undefined;
   const body = description?.trim() || undefined;
@@ -135,7 +144,7 @@ function resolveSlide(args: {
  * Returns slides for the case carousel, or null when the campaign should keep
  * the single PortfolioVideoEmbed (no playable additional videos).
  */
-export function buildPortfolioCaseSlides(args: {
+export async function buildPortfolioCaseSlides(args: {
   locale: Locale;
   phrases?: Record<string, string> | null;
   vimeoUrl: string;
@@ -146,7 +155,7 @@ export function buildPortfolioCaseSlides(args: {
   description?: string | null;
   descriptionZh?: string | null;
   additionalVideos?: AdditionalVideo[] | null;
-}): PortfolioCaseSlide[] | null {
+}): Promise<PortfolioCaseSlide[] | null> {
   const {
     locale,
     phrases,
@@ -178,7 +187,7 @@ export function buildPortfolioCaseSlides(args: {
     phrases,
   ).trim();
 
-  const main = resolveSlide({
+  const main = await resolveSlide({
     key: 'main',
     locale,
     vimeoUrl,
@@ -189,30 +198,32 @@ export function buildPortfolioCaseSlides(args: {
   });
   if (!main) return null;
 
-  const extras: PortfolioCaseSlide[] = [];
-  playableAdditional.forEach((video, index) => {
-    const episodeTitle = pickLocaleFieldWithPhrases(
-      locale,
-      video.videoTitle,
-      video.videoTitleZh,
-      phrases,
-    ).trim();
-    const episodeDescription = pickLocaleFieldWithPhrases(
-      locale,
-      video.description,
-      video.descriptionZh,
-      phrases,
-    ).trim();
-    const slide = resolveSlide({
-      key: `additional-${index}`,
-      locale,
-      vimeoUrl: video.vimeoUrl,
-      xinpianchangUrl: video.xinpianchangUrl,
-      overlayTitle: episodeTitle || undefined,
-      description: episodeDescription || undefined,
-    });
-    if (slide) extras.push(slide);
-  });
+  const extras = (
+    await Promise.all(
+      playableAdditional.map((video, index) => {
+        const episodeTitle = pickLocaleFieldWithPhrases(
+          locale,
+          video.videoTitle,
+          video.videoTitleZh,
+          phrases,
+        ).trim();
+        const episodeDescription = pickLocaleFieldWithPhrases(
+          locale,
+          video.description,
+          video.descriptionZh,
+          phrases,
+        ).trim();
+        return resolveSlide({
+          key: `additional-${index}`,
+          locale,
+          vimeoUrl: video.vimeoUrl,
+          xinpianchangUrl: video.xinpianchangUrl,
+          overlayTitle: episodeTitle || undefined,
+          description: episodeDescription || undefined,
+        });
+      }),
+    )
+  ).filter((slide): slide is PortfolioCaseSlide => slide != null);
 
   if (extras.length === 0) return null;
   return [main, ...extras];

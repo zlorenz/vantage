@@ -41,13 +41,28 @@ interface PortfolioCaseCarouselProps {
   slides: PortfolioCaseSlide[];
 }
 
-function SlideTitleOverlay({title}: {title?: string}) {
-  if (!title) return null;
+function SlideTitleOverlay({
+  title,
+  description,
+}: {
+  title?: string;
+  description?: string;
+}) {
+  if (!title && !description) return null;
   return (
-    <div className="vp-case-carousel__overlay">
+    <div
+      className={`vp-case-carousel__overlay${
+        description ? ' has-description' : ''
+      }`}
+    >
       <div className="vp-case-carousel__overlay-scrim" aria-hidden />
       <div className="vp-case-carousel__overlay-copy">
-        <p className="vp-case-carousel__title">{title}</p>
+        {description ? (
+          <p className="vp-case-carousel__info-text">{description}</p>
+        ) : null}
+        {title ? (
+          <p className="vp-case-carousel__title">{title}</p>
+        ) : null}
       </div>
     </div>
   );
@@ -87,19 +102,40 @@ function PeekPoster({
   );
 }
 
-function ActiveSlidePlayer({slide}: {slide: PortfolioCaseSlide}) {
+function ActiveSlidePlayer({
+  slide,
+  onPlay,
+  hidePlayButton,
+}: {
+  slide: PortfolioCaseSlide;
+  onPlay?: () => void;
+  hidePlayButton?: boolean;
+}) {
   if (slide.kind === 'vimeo') {
     return (
-      <LazyVimeoPlayer vimeoUrl={slide.vimeoUrl} posterUrl={slide.posterUrl} />
+      <LazyVimeoPlayer
+        vimeoUrl={slide.vimeoUrl}
+        posterUrl={slide.posterUrl}
+        onPlay={onPlay}
+        hidePlayButton={hidePlayButton}
+      />
     );
   }
   if (slide.kind === 'youtube') {
-    return <LazyYouTubePlayer videoId={slide.videoId} />;
+    return (
+      <LazyYouTubePlayer
+        videoId={slide.videoId}
+        onPlay={onPlay}
+        hidePlayButton={hidePlayButton}
+      />
+    );
   }
   return (
     <LazyXinpianchangPlayer
       embedUrl={slide.embedUrl}
       posterUrl={slide.posterUrl}
+      onPlay={onPlay}
+      hidePlayButton={hidePlayButton}
     />
   );
 }
@@ -112,6 +148,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const dragGuardRef = useRef<{x: number; y: number} | null>(null);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
@@ -122,6 +159,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
     setIsInfoOpen(false);
+    setIsPlaying(false);
   }, [emblaApi]);
 
   useEffect(() => {
@@ -272,24 +310,29 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setIsInfoOpen((open) => !open);
   };
 
+  const onSlidePlay = useCallback(() => {
+    setIsPlaying(true);
+    setIsInfoOpen(false);
+  }, []);
+
   if (slideCount < 2) return null;
 
   return (
     <div className="vp-case-carousel">
-      <p
-        className="vp-case-carousel__counter"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        <span className="vp-case-carousel__counter-current">
-          {activeIndex + 1}
-        </span>
-        <span className="vp-case-carousel__counter-sep" aria-hidden>
-          /
-        </span>
-        <span className="vp-case-carousel__counter-total">{slideCount}</span>
-      </p>
       <div className="vp-case-carousel__stage">
+        <p
+          className="vp-case-carousel__counter"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span className="vp-case-carousel__counter-current">
+            {activeIndex + 1}
+          </span>
+          <span className="vp-case-carousel__counter-sep" aria-hidden>
+            /
+          </span>
+          <span className="vp-case-carousel__counter-total">{slideCount}</span>
+        </p>
         <button
           type="button"
           className="vp-case-carousel__nav vp-case-carousel__nav--prev"
@@ -307,7 +350,9 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
           <div className="vp-case-carousel__container">
             {slides.map((slide, index) => {
               const active = index === activeIndex;
-              const showInfo = active && Boolean(slide.description?.trim());
+              const showChrome = active && !isPlaying;
+              const showInfo =
+                showChrome && Boolean(slide.description?.trim());
               return (
                 <div
                   key={slide.key}
@@ -316,45 +361,37 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
                 >
                   <div className="vp-case-carousel__card">
                     {active ? (
-                      <ActiveSlidePlayer slide={slide} />
+                      <ActiveSlidePlayer
+                        slide={slide}
+                        onPlay={onSlidePlay}
+                        hidePlayButton={isInfoOpen}
+                      />
                     ) : (
                       <PeekPoster
                         posterUrl={slide.posterUrl}
                         onActivate={(event) => onPeekActivate(index, event)}
                       />
                     )}
-                    <SlideTitleOverlay title={slide.overlayTitle} />
+                    <SlideTitleOverlay
+                      title={showChrome ? slide.overlayTitle : undefined}
+                      description={
+                        showChrome && isInfoOpen
+                          ? slide.description
+                          : undefined
+                      }
+                    />
                     {showInfo ? (
-                      <>
-                        {isInfoOpen ? (
-                          <div
-                            className="vp-case-carousel__info-panel"
-                            role="dialog"
-                            aria-label="Video description"
-                          >
-                            <div className="vp-case-carousel__info-panel-body">
-                              <p className="vp-case-carousel__info-text">
-                                {slide.description}
-                              </p>
-                            </div>
-                          </div>
-                        ) : null}
-                        <button
-                          type="button"
-                          className={`vp-case-carousel__info-btn${
-                            isInfoOpen ? ' is-open' : ''
-                          }`}
-                          onClick={onInfoToggle}
-                          aria-label={isInfoOpen ? 'Close info' : 'More info'}
-                          aria-expanded={isInfoOpen}
-                        >
-                          {isInfoOpen ? (
-                            <InfoCloseIcon />
-                          ) : (
-                            <InfoOpenIcon />
-                          )}
-                        </button>
-                      </>
+                      <button
+                        type="button"
+                        className={`vp-case-carousel__info-btn${
+                          isInfoOpen ? ' is-open' : ''
+                        }`}
+                        onClick={onInfoToggle}
+                        aria-label={isInfoOpen ? 'Close info' : 'More info'}
+                        aria-expanded={isInfoOpen}
+                      >
+                        {isInfoOpen ? <InfoCloseIcon /> : <InfoOpenIcon />}
+                      </button>
                     ) : null}
                   </div>
                 </div>
