@@ -456,7 +456,7 @@
 :lang(zh) .vp-blog-widget__title,
 :lang(zh) .vp-search-empty__title,
 :lang(zh) .vp-founder-card__name,
-:lang(zh) .vp-credits__dept,
+:lang(zh) .vp-credits__dept-name,
 :lang(zh) .entry-title,
 :lang(zh) h1,
 :lang(zh) h2,
@@ -1139,52 +1139,78 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-credits {
-  font-size: 0.9rem;
-  line-height: 1.325;
-  color: var(--color-vp-credits-text);
-}
-
-.vp-credits__row {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 0.5rem 1.5rem;
-  align-items: start;
-  padding: 0.25rem 0;
+  columns: 2;
+  column-gap: 4rem;
+  color: var(--color-vp-text);
+  font-family: var(--vp-font-sans);
 }
 
 .vp-credits__dept {
-  font-family: var(--vp-font-heading);
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--color-vp-text);
-  text-transform: uppercase;
+  break-inside: avoid;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
 }
 
-.vp-credits__content {
-  text-align: justify;
+.vp-credits__dept:last-child {
+  margin-bottom: 0;
+}
+
+.vp-credits__dept-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vp-credits__dept-name {
+  font-family: var(--vp-font-heading);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  letter-spacing: 0.0625rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--color-vp-text);
+}
+
+.vp-credits__rule {
+  height: 1px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.vp-credits__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .vp-credit-pair {
-  display: inline;
+  display: grid;
+  grid-template-columns: minmax(8rem, 13.75rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: baseline;
 }
 
 .vp-credit-role {
-  font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.08rem;
   text-transform: uppercase;
   color: var(--color-vp-credit-role-label);
-  letter-spacing: -0.0125rem;
 }
 
 .vp-credit-names {
+  font-size: 0.875rem;
   font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: -0.025rem;
+  line-height: 1.4;
+  color: var(--color-vp-text);
 }
 
 .vp-credit-names a {
   color: var(--color-vp-link);
-  font-weight: 500;
+  font-weight: 400;
   text-decoration: none;
   transition: color var(--vp-transition-fast);
 }
@@ -1194,15 +1220,17 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 @media (max-width: 767.98px) {
-  .vp-credits__row {
-    grid-template-columns: 1fr;
-    gap: 0.125rem;
-    padding: 0.75rem 0 0;
+  .vp-credits {
+    columns: 1;
   }
 
-  .vp-credits__content {
-    text-align: left;
-    text-align-last: left;
+  .vp-credits__dept {
+    margin-bottom: 1.5rem;
+  }
+
+  .vp-credit-pair {
+    grid-template-columns: minmax(6.5rem, 9rem) minmax(0, 1fr);
+    gap: 0.75rem;
   }
 
   .vp-filterbar__group {

@@ -1,5 +1,5 @@
 /**
- * PortfolioCredits — department grid with inline credit pairs from crewCredits.
+ * PortfolioCredits — two-column department blocks with role | name rows.
  */
 
 import { resolveCreditsForDisplay } from '@/lib/credits-config';
@@ -82,12 +82,15 @@ export function PortfolioCredits({
   return (
     <div className="vp-credits">
       {rows.map((row) => (
-        <div key={row.key} className="vp-credits__row">
-          <div className="vp-credits__dept">{row.label}</div>
-          <div className="vp-credits__content">
+        <div key={row.key} className="vp-credits__dept">
+          <div className="vp-credits__dept-head">
+            <div className="vp-credits__dept-name">{row.label}</div>
+            <div className="vp-credits__rule" aria-hidden="true" />
+          </div>
+          <div className="vp-credits__rows">
             {row.pairs.map((pair, index) => (
-              <span key={index} className="vp-credit-pair">
-                <span className="vp-credit-role">{pair.role} </span>
+              <div key={index} className="vp-credit-pair">
+                <span className="vp-credit-role">{pair.role}</span>
                 <span className="vp-credit-names">
                   <CreditNames
                     people={pair.people}
@@ -95,8 +98,7 @@ export function PortfolioCredits({
                     phrases={phrases}
                   />
                 </span>
-                {index < row.pairs.length - 1 ? ' ' : null}
-              </span>
+              </div>
             ))}
           </div>
         </div>
