@@ -350,6 +350,21 @@ export const portfolioEntry = defineType({
     }),
 
     defineField({
+      name: 'keyVisuals',
+      title: 'Key Visuals',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: false},
+        },
+      ],
+      group: 'media',
+      description:
+        'Still-photography gallery, rendered as masonry below the crew credits block. Uses Media Library metadata (alt text, title, credit) — no per-item captions.',
+    }),
+
+    defineField({
       name: 'clients',
       title: 'Clients (legacy)',
       type: 'array',

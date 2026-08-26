@@ -674,6 +674,14 @@ export type PortfolioEntry = {
       _key: string;
     } & AdditionalVideo
   >;
+  keyVisuals?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
   clients?: Array<
     {
       _key: string;
