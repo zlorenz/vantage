@@ -20,6 +20,8 @@ type SlideBase = {
   key: string;
   /** Plain film/episode title for card overlay; omit when empty. */
   overlayTitle?: string;
+  /** Locale-resolved description for desktop “more info” panel; omit when empty. */
+  description?: string;
 };
 
 export type PortfolioCaseSlide = SlideBase &
@@ -64,9 +66,17 @@ function resolveSlide(args: {
   /** Preferred poster (main film only). */
   featuredImage?: SanityImage;
   overlayTitle?: string;
+  description?: string;
 }): PortfolioCaseSlide | null {
-  const {key, locale, vimeoUrl, xinpianchangUrl, featuredImage, overlayTitle} =
-    args;
+  const {
+    key,
+    locale,
+    vimeoUrl,
+    xinpianchangUrl,
+    featuredImage,
+    overlayTitle,
+    description,
+  } = args;
   const featured = featuredPosterUrl(featuredImage);
   const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null;
   const providerPoster =
@@ -77,6 +87,7 @@ function resolveSlide(args: {
         : undefined;
   const posterUrl = featured ?? providerPoster;
   const title = overlayTitle?.trim() || undefined;
+  const body = description?.trim() || undefined;
 
   if (
     locale === 'zh' &&
@@ -89,6 +100,7 @@ function resolveSlide(args: {
       embedUrl: xinpianchangUrl,
       posterUrl,
       overlayTitle: title,
+      description: body,
     };
   }
 
@@ -101,6 +113,7 @@ function resolveSlide(args: {
       videoId: parsed.id,
       posterUrl: posterUrl ?? youTubePosterUrl(parsed.id, 'hq'),
       overlayTitle: title,
+      description: body,
     };
   }
 
@@ -111,6 +124,7 @@ function resolveSlide(args: {
       vimeoUrl: parsed.url,
       posterUrl,
       overlayTitle: title,
+      description: body,
     };
   }
 
@@ -129,6 +143,8 @@ export function buildPortfolioCaseSlides(args: {
   featuredImage?: SanityImage;
   heroFilmTitle?: string | null;
   heroFilmTitleZh?: string | null;
+  description?: string | null;
+  descriptionZh?: string | null;
   additionalVideos?: AdditionalVideo[] | null;
 }): PortfolioCaseSlide[] | null {
   const {
@@ -139,6 +155,8 @@ export function buildPortfolioCaseSlides(args: {
     featuredImage,
     heroFilmTitle,
     heroFilmTitleZh,
+    description,
+    descriptionZh,
     additionalVideos,
   } = args;
 
@@ -153,6 +171,12 @@ export function buildPortfolioCaseSlides(args: {
     heroFilmTitleZh,
     phrases,
   ).trim();
+  const mainDescription = pickLocaleFieldWithPhrases(
+    locale,
+    description,
+    descriptionZh,
+    phrases,
+  ).trim();
 
   const main = resolveSlide({
     key: 'main',
@@ -161,6 +185,7 @@ export function buildPortfolioCaseSlides(args: {
     xinpianchangUrl,
     featuredImage,
     overlayTitle: mainOverlay || undefined,
+    description: mainDescription || undefined,
   });
   if (!main) return null;
 
@@ -172,12 +197,19 @@ export function buildPortfolioCaseSlides(args: {
       video.videoTitleZh,
       phrases,
     ).trim();
+    const episodeDescription = pickLocaleFieldWithPhrases(
+      locale,
+      video.description,
+      video.descriptionZh,
+      phrases,
+    ).trim();
     const slide = resolveSlide({
       key: `additional-${index}`,
       locale,
       vimeoUrl: video.vimeoUrl,
       xinpianchangUrl: video.xinpianchangUrl,
       overlayTitle: episodeTitle || undefined,
+      description: episodeDescription || undefined,
     });
     if (slide) extras.push(slide);
   });

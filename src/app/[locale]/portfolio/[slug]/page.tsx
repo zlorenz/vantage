@@ -130,6 +130,8 @@ export default async function PortfolioEntryPage({ params }: Props) {
     featuredImage: entry.featuredImage,
     heroFilmTitle: entry.heroFilmTitle,
     heroFilmTitleZh: entry.heroFilmTitleZh,
+    description: entry.description,
+    descriptionZh: entry.descriptionZh,
     additionalVideos: entry.additionalVideos,
   });
 

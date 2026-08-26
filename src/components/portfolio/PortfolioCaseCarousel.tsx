@@ -111,6 +111,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const dragGuardRef = useRef<{x: number; y: number} | null>(null);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
@@ -120,6 +121,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setActiveIndex(emblaApi.selectedScrollSnap());
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
+    setIsInfoOpen(false);
   }, [emblaApi]);
 
   useEffect(() => {
@@ -198,6 +200,13 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.repeat) return;
       const {key} = event;
+
+      if (key === 'Escape' && isInfoOpen) {
+        event.preventDefault();
+        setIsInfoOpen(false);
+        return;
+      }
+
       if (key !== 'ArrowLeft' && key !== 'ArrowRight') return;
 
       const target = event.target as HTMLElement | null;
@@ -221,7 +230,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [emblaApi]);
+  }, [emblaApi, isInfoOpen]);
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
@@ -254,6 +263,13 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
       return;
     }
     scrollToIndex(index);
+  };
+
+  /** Same as Lazy* play: plain click; stopPropagation so Embla/play ignore it. */
+  const onInfoToggle = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setIsInfoOpen((open) => !open);
   };
 
   if (slideCount < 2) return null;
@@ -291,6 +307,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
           <div className="vp-case-carousel__container">
             {slides.map((slide, index) => {
               const active = index === activeIndex;
+              const showInfo = active && Boolean(slide.description?.trim());
               return (
                 <div
                   key={slide.key}
@@ -307,6 +324,38 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
                       />
                     )}
                     <SlideTitleOverlay title={slide.overlayTitle} />
+                    {showInfo ? (
+                      <>
+                        {isInfoOpen ? (
+                          <div
+                            className="vp-case-carousel__info-panel"
+                            role="dialog"
+                            aria-label="Video description"
+                          >
+                            <div className="vp-case-carousel__info-panel-body">
+                              <p className="vp-case-carousel__info-text">
+                                {slide.description}
+                              </p>
+                            </div>
+                          </div>
+                        ) : null}
+                        <button
+                          type="button"
+                          className={`vp-case-carousel__info-btn${
+                            isInfoOpen ? ' is-open' : ''
+                          }`}
+                          onClick={onInfoToggle}
+                          aria-label={isInfoOpen ? 'Close info' : 'More info'}
+                          aria-expanded={isInfoOpen}
+                        >
+                          {isInfoOpen ? (
+                            <InfoCloseIcon />
+                          ) : (
+                            <InfoOpenIcon />
+                          )}
+                        </button>
+                      </>
+                    ) : null}
                   </div>
                 </div>
               );
@@ -324,6 +373,52 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
         </button>
       </div>
     </div>
+  );
+}
+
+function InfoOpenIcon() {
+  return (
+    <svg
+      className="vp-case-carousel__info-icon"
+      viewBox="0 0 24 24"
+      aria-hidden
+      focusable="false"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="9.25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M12 10.75v5.5M12 7.75h.01"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function InfoCloseIcon() {
+  return (
+    <svg
+      className="vp-case-carousel__info-icon"
+      viewBox="0 0 24 24"
+      aria-hidden
+      focusable="false"
+    >
+      <path
+        d="M7.5 7.5 16.5 16.5M16.5 7.5 7.5 16.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+    </svg>
   );
 }
 
