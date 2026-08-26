@@ -1,0 +1,159 @@
+/**
+ * Multi-video case study carousel styles — card chrome matches .vp-case-video /
+ * .vp-portfolio-index__card--styled. No vertical scroll lock (unlike /work).
+ */
+
+.vp-case-carousel {
+  position: relative;
+  width: 100%;
+}
+
+.vp-case-carousel__counter {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.4em;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  font-family: var(--vp-font-sans);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  user-select: none;
+}
+
+.vp-case-carousel__counter-sep {
+  opacity: 0.7;
+}
+
+.vp-case-carousel__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.vp-case-carousel__container {
+  display: flex;
+  /* Horizontal drag; keep vertical page scroll (do not use pinch-zoom-only). */
+  touch-action: pan-y;
+}
+
+.vp-case-carousel__slide {
+  position: relative;
+  flex: 0 0 88%;
+  min-width: 0;
+  padding-left: 0.75rem;
+  box-sizing: border-box;
+}
+
+.vp-case-carousel__slide:first-child {
+  /* Embla center-align with leading gap parity */
+  margin-left: 0;
+}
+
+.vp-case-carousel__card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-radius: 1.75rem;
+  background: #000;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
+  transform: scale(0.94);
+  opacity: 0.72;
+  transition:
+    opacity 280ms ease,
+    transform 280ms ease;
+}
+
+.vp-case-carousel__slide.is-active .vp-case-carousel__card {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Glass rim — same treatment as .vp-case-video::after */
+.vp-case-carousel__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.22) 35%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  mix-blend-mode: soft-light;
+}
+
+.vp-case-carousel__peek {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: #000;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-case-carousel__peek-img {
+  object-fit: cover;
+}
+
+.vp-case-carousel__peek-fallback {
+  position: absolute;
+  inset: 0;
+  background: #111;
+}
+
+.vp-case-carousel__play-affordance {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.vp-case-carousel__play-circle {
+  display: flex;
+  width: 4rem;
+  height: 4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.vp-case-carousel__play-triangle {
+  display: block;
+  margin-left: 0.25rem;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 16px;
+  border-color: transparent transparent transparent #fff;
+}
+
+@media (max-width: 767px) {
+  .vp-case-carousel__slide {
+    flex-basis: 92%;
+    padding-left: 0.5rem;
+  }
+}
