@@ -3,7 +3,7 @@
 /**
  * Filter UI for the /work PortfolioIndexCarousel.
  *
- * Mobile (<576px): full-viewport bottom sheet with scrim + drag-to-dismiss.
+ * Mobile (<576px): shared BottomSheet shell (scrim + drag-to-dismiss).
  * Desktop (≥576px): anchored popout above the filter trigger (nav-dropdown
  * pattern — max-content width, fade + translate, no scrim). Same drill-in
  * view state either way.
@@ -14,15 +14,16 @@
  */
 
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
-  type PointerEvent,
   type ReactNode,
 } from 'react';
 import {useTranslations} from 'next-intl';
+import {BottomSheet} from '@/components/ui/BottomSheet';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 import {
@@ -67,8 +68,6 @@ const TAXONOMY_LABEL_KEY: Record<TaxonomyKey, 'videoFormat' | 'industry' | 'mark
 
 /** Matches nav desktop panel close timing (`NavBar` CLOSE_MS). */
 const DESKTOP_CLOSE_MS = 180;
-/** Mobile sheet slide-down exit (enter is ~380ms — see CSS). */
-const MOBILE_CLOSE_MS = 280;
 /** Nested panel horizontal push/pop. */
 const DRILL_MS = 240;
 const DESKTOP_MQ = '(min-width: 576px)';
@@ -122,15 +121,12 @@ export function PortfolioIndexFilterSheet({
   const [isDesktop, setIsDesktop] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
-  const sheetRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drillTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drillRunIdRef = useRef(0);
-  const dragStartYRef = useRef<number | null>(null);
-  const dragDeltaRef = useRef(0);
 
   const filterEntries = slides as unknown as PortfolioGridEntry[];
 
@@ -187,6 +183,16 @@ export function PortfolioIndexFilterSheet({
   /** Header follows the destination as soon as a drill starts. */
   const chromeView = drill?.to ?? activeView;
 
+  const resetFilterView = useCallback(() => {
+    if (drillTimerRef.current) {
+      clearTimeout(drillTimerRef.current);
+      drillTimerRef.current = null;
+    }
+    setDrill(null);
+    setActiveView('root');
+    drillRunIdRef.current += 1;
+  }, []);
+
   const goToView = (next: SheetView) => {
     if (drill) return;
     if (next === activeView) return;
@@ -212,8 +218,19 @@ export function PortfolioIndexFilterSheet({
     return () => mq.removeEventListener('change', sync);
   }, []);
 
-  // Mount / reveal / delayed unmount (exit animation on mobile + desktop).
+  // Desktop popout: mount / reveal / delayed unmount (exit animation).
+  // Mobile sheet mount lifecycle lives in BottomSheet.
   useEffect(() => {
+    if (!isDesktop) {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setMounted(false);
+      setVisible(false);
+      return;
+    }
+
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
@@ -229,13 +246,7 @@ export function PortfolioIndexFilterSheet({
     setVisible(false);
 
     const finishClose = () => {
-      if (drillTimerRef.current) {
-        clearTimeout(drillTimerRef.current);
-        drillTimerRef.current = null;
-      }
-      setDrill(null);
-      setActiveView('root');
-      drillRunIdRef.current += 1;
+      resetFilterView();
       setMounted(false);
       closeTimerRef.current = null;
     };
@@ -245,12 +256,11 @@ export function PortfolioIndexFilterSheet({
       return;
     }
 
-    const closeMs = isDesktop ? DESKTOP_CLOSE_MS : MOBILE_CLOSE_MS;
-    closeTimerRef.current = setTimeout(finishClose, closeMs);
-  }, [open, mounted, isDesktop]);
+    closeTimerRef.current = setTimeout(finishClose, DESKTOP_CLOSE_MS);
+  }, [open, mounted, isDesktop, resetFilterView]);
 
   useEffect(() => {
-    if (!open || !mounted) return;
+    if (!isDesktop || !open || !mounted) return;
 
     if (prefersReducedMotion()) {
       setVisible(true);
@@ -259,7 +269,7 @@ export function PortfolioIndexFilterSheet({
 
     const timer = window.setTimeout(() => setVisible(true), 0);
     return () => window.clearTimeout(timer);
-  }, [open, mounted]);
+  }, [open, mounted, isDesktop]);
 
   useEffect(() => {
     return () => {
@@ -269,13 +279,13 @@ export function PortfolioIndexFilterSheet({
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !isDesktop) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose();
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, isDesktop, onClose]);
 
   useEffect(() => {
     if (!open || !isDesktop) return;
@@ -334,8 +344,6 @@ export function PortfolioIndexFilterSheet({
     };
   }, [drill]);
 
-  if (!mounted) return null;
-
   const selectedLabel = (key: TaxonomyKey) => {
     const value = filters[key];
     if (!value) return t('all');
@@ -351,38 +359,6 @@ export function PortfolioIndexFilterSheet({
   const onSelectAll = (key: TaxonomyKey) => {
     onChangeFilter(key, '');
     goToView('root');
-  };
-
-  const onHandlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (isDesktop) return;
-    dragStartYRef.current = event.clientY;
-    dragDeltaRef.current = 0;
-    if (sheetRef.current) {
-      sheetRef.current.style.transition = 'none';
-    }
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const onHandlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (isDesktop || dragStartYRef.current == null) return;
-    const delta = Math.max(0, event.clientY - dragStartYRef.current);
-    dragDeltaRef.current = delta;
-    if (sheetRef.current) {
-      sheetRef.current.style.transform = `translateY(${delta}px)`;
-    }
-  };
-
-  const onHandlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
-    if (isDesktop || dragStartYRef.current == null) return;
-    event.currentTarget.releasePointerCapture(event.pointerId);
-    const shouldClose = dragDeltaRef.current > 96;
-    dragStartYRef.current = null;
-    dragDeltaRef.current = 0;
-    if (sheetRef.current) {
-      sheetRef.current.style.transition = '';
-      sheetRef.current.style.transform = '';
-    }
-    if (shouldClose) onClose();
   };
 
   const title =
@@ -450,37 +426,107 @@ export function PortfolioIndexFilterSheet({
     );
   };
 
+  const headerStart =
+    chromeView === 'root' ? (
+      hasActiveFilters ? (
+        <button
+          type="button"
+          className="vp-index-filter-sheet__clear"
+          onClick={onClearAll}
+        >
+          {t('clearAll')}
+        </button>
+      ) : (
+        <span className="vp-bottom-sheet__header-spacer" aria-hidden />
+      )
+    ) : (
+      <button
+        type="button"
+        className="vp-bottom-sheet__icon-btn vp-index-filter-sheet__icon-btn"
+        aria-label={t('backToFiltersAria')}
+        onClick={() => goToView('root')}
+        disabled={Boolean(drill)}
+      >
+        <BackIcon />
+      </button>
+    );
+
+  const drillBody = (
+    <div
+      className={`vp-index-filter-sheet__viewport-wrap${
+        drill ? ' is-drilling' : ''
+      }`}
+    >
+      <div ref={viewportRef} className="vp-index-filter-sheet__viewport">
+        <div
+          ref={trackRef}
+          className={`vp-index-filter-sheet__track${
+            drill ? ' is-sliding' : ''
+          }`}
+        >
+          {drill ? (
+            drill.direction === 'forward' ? (
+              <>
+                <div className="vp-index-filter-sheet__pane" aria-hidden>
+                  {renderView(drill.from)}
+                </div>
+                <div className="vp-index-filter-sheet__pane vp-index-filter-sheet__pane--incoming">
+                  {renderView(drill.to)}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="vp-index-filter-sheet__pane vp-index-filter-sheet__pane--incoming">
+                  {renderView(drill.to)}
+                </div>
+                <div className="vp-index-filter-sheet__pane" aria-hidden>
+                  {renderView(drill.from)}
+                </div>
+              </>
+            )
+          ) : (
+            <div className="vp-index-filter-sheet__pane">
+              {renderView(activeView)}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Mobile: shared BottomSheet shell.
+  if (!isDesktop) {
+    return (
+      <BottomSheet
+        open={open}
+        onClose={onClose}
+        title={title}
+        closeAriaLabel={t('closeFilterAria')}
+        headerStart={headerStart}
+        bodyClassName={drill ? 'is-drilling' : undefined}
+        onClosed={resetFilterView}
+      >
+        {drillBody}
+      </BottomSheet>
+    );
+  }
+
+  // Desktop: anchored popout (unchanged visual path).
+  if (!mounted) return null;
+
   return (
     <div
       ref={rootRef}
       className={`vp-index-filter-sheet${visible ? ' is-open' : ''}`}
       role="presentation"
     >
-      <button
-        type="button"
-        className="vp-index-filter-sheet__scrim"
-        aria-label={t('closeFilterAria')}
-        onClick={onClose}
-        tabIndex={isDesktop ? -1 : undefined}
-      />
       <div
-        ref={sheetRef}
         className="vp-index-filter-sheet__panel"
         role="dialog"
-        aria-modal={!isDesktop}
+        aria-modal={false}
         aria-label={t('filter')}
         aria-hidden={!visible}
       >
-        <div
-          className="vp-index-filter-sheet__handle-hit"
-          onPointerDown={onHandlePointerDown}
-          onPointerMove={onHandlePointerMove}
-          onPointerUp={onHandlePointerUp}
-          onPointerCancel={onHandlePointerUp}
-        >
-          <div className="vp-index-filter-sheet__handle" aria-hidden />
-        </div>
-
         <div className="vp-index-filter-sheet__header">
           <div className="vp-index-filter-sheet__header-start">
             {chromeView === 'root' ? (
@@ -528,46 +574,7 @@ export function PortfolioIndexFilterSheet({
             drill ? ' is-drilling' : ''
           }`}
         >
-          <div ref={viewportRef} className="vp-index-filter-sheet__viewport">
-            <div
-              ref={trackRef}
-              className={`vp-index-filter-sheet__track${
-                drill ? ' is-sliding' : ''
-              }`}
-            >
-              {drill ? (
-                drill.direction === 'forward' ? (
-                  <>
-                    <div
-                      className="vp-index-filter-sheet__pane"
-                      aria-hidden
-                    >
-                      {renderView(drill.from)}
-                    </div>
-                    <div className="vp-index-filter-sheet__pane vp-index-filter-sheet__pane--incoming">
-                      {renderView(drill.to)}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="vp-index-filter-sheet__pane vp-index-filter-sheet__pane--incoming">
-                      {renderView(drill.to)}
-                    </div>
-                    <div
-                      className="vp-index-filter-sheet__pane"
-                      aria-hidden
-                    >
-                      {renderView(drill.from)}
-                    </div>
-                  </>
-                )
-              ) : (
-                <div className="vp-index-filter-sheet__pane">
-                  {renderView(activeView)}
-                </div>
-              )}
-            </div>
-          </div>
+          {drillBody}
         </div>
       </div>
     </div>

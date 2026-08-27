@@ -19,6 +19,7 @@ import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import {LazyYouTubePlayer} from '@/components/ui/LazyYouTubePlayer';
+import {BottomSheet} from '@/components/ui/BottomSheet';
 import {LazyVimeoPlayer} from './LazyVimeoPlayer';
 import {LazyXinpianchangPlayer} from './LazyXinpianchangPlayer';
 import type {PortfolioCaseSlide} from './prepare-portfolio-case-slides';
@@ -148,6 +149,9 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  /** Mobile (<768px): description BottomSheet — separate from desktop overlay. */
+  const [descSheetOpen, setDescSheetOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const dragGuardRef = useRef<{x: number; y: number} | null>(null);
   const gestureAccumRef = useRef(0);
@@ -159,6 +163,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
     setIsInfoOpen(false);
+    setDescSheetOpen(false);
     setIsPlaying(false);
   }, [emblaApi]);
 
@@ -177,7 +182,15 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     if (!emblaApi) return;
     const mq = window.matchMedia(CASE_DESKTOP_MQ);
     const syncAlign = () => {
-      emblaApi.reInit(caseEmblaOptions(mq.matches ? 'start' : 'center'));
+      const desktop = mq.matches;
+      setIsDesktop(desktop);
+      emblaApi.reInit(caseEmblaOptions(desktop ? 'start' : 'center'));
+      // Crossing to desktop: drop mobile sheet; crossing to mobile: drop overlay.
+      if (desktop) {
+        setDescSheetOpen(false);
+      } else {
+        setIsInfoOpen(false);
+      }
     };
     syncAlign();
     mq.addEventListener('change', syncAlign);
@@ -245,6 +258,12 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
         return;
       }
 
+      if (key === 'Escape' && descSheetOpen) {
+        event.preventDefault();
+        setDescSheetOpen(false);
+        return;
+      }
+
       if (key !== 'ArrowLeft' && key !== 'ArrowRight') return;
 
       const target = event.target as HTMLElement | null;
@@ -268,7 +287,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [emblaApi, isInfoOpen]);
+  }, [emblaApi, isInfoOpen, descSheetOpen]);
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
@@ -307,15 +326,28 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const onInfoToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    setIsInfoOpen((open) => !open);
+    // Live MQ — avoid wrong branch before isDesktop state hydrates.
+    if (window.matchMedia(CASE_DESKTOP_MQ).matches) {
+      setIsInfoOpen((open) => !open);
+      return;
+    }
+    setDescSheetOpen((open) => !open);
   };
+
+  const closeDescSheet = useCallback(() => {
+    setDescSheetOpen(false);
+  }, []);
 
   const onSlidePlay = useCallback(() => {
     setIsPlaying(true);
     setIsInfoOpen(false);
+    setDescSheetOpen(false);
   }, []);
 
   if (slideCount < 2) return null;
+
+  const activeSlide = slides[activeIndex];
+  const activeDescription = activeSlide?.description?.trim() || '';
 
   return (
     <div className="vp-case-carousel">
@@ -353,6 +385,11 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
               const showChrome = active && !isPlaying;
               const showInfo =
                 showChrome && Boolean(slide.description?.trim());
+              // Desktop overlay only — mobile uses BottomSheet.
+              const overlayDescription =
+                showChrome && isDesktop && isInfoOpen
+                  ? slide.description
+                  : undefined;
               return (
                 <div
                   key={slide.key}
@@ -364,7 +401,9 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
                       <ActiveSlidePlayer
                         slide={slide}
                         onPlay={onSlidePlay}
-                        hidePlayButton={isInfoOpen}
+                        hidePlayButton={
+                          isDesktop ? isInfoOpen : descSheetOpen
+                        }
                       />
                     ) : (
                       <PeekPoster
@@ -374,23 +413,31 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
                     )}
                     <SlideTitleOverlay
                       title={showChrome ? slide.overlayTitle : undefined}
-                      description={
-                        showChrome && isInfoOpen
-                          ? slide.description
-                          : undefined
-                      }
+                      description={overlayDescription}
                     />
                     {showInfo ? (
                       <button
                         type="button"
                         className={`vp-case-carousel__info-btn${
-                          isInfoOpen ? ' is-open' : ''
+                          (isDesktop ? isInfoOpen : descSheetOpen)
+                            ? ' is-open'
+                            : ''
                         }`}
                         onClick={onInfoToggle}
-                        aria-label={isInfoOpen ? 'Close info' : 'More info'}
-                        aria-expanded={isInfoOpen}
+                        aria-label={
+                          (isDesktop ? isInfoOpen : descSheetOpen)
+                            ? 'Close info'
+                            : 'More info'
+                        }
+                        aria-expanded={
+                          isDesktop ? isInfoOpen : descSheetOpen
+                        }
                       >
-                        {isInfoOpen ? <InfoCloseIcon /> : <InfoOpenIcon />}
+                        {(isDesktop ? isInfoOpen : descSheetOpen) ? (
+                          <InfoCloseIcon />
+                        ) : (
+                          <InfoOpenIcon />
+                        )}
                       </button>
                     ) : null}
                   </div>
@@ -409,6 +456,19 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
           <NavChevron direction="next" />
         </button>
       </div>
+
+      {!isDesktop ? (
+        <BottomSheet
+          open={descSheetOpen && Boolean(activeDescription)}
+          onClose={closeDescSheet}
+          ariaLabel="Video description"
+          closeAriaLabel="Close info"
+        >
+          <p className="vp-case-carousel__desc-sheet-text">
+            {activeDescription}
+          </p>
+        </BottomSheet>
+      ) : null}
     </div>
   );
 }
