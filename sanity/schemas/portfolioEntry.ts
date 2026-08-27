@@ -8,6 +8,10 @@
  */
 
 import {defineField, defineType} from 'sanity'
+import {createElement, useEffect} from 'react'
+import {AutoTagInput} from 'sanity-plugin-media'
+import {useClient, type ObjectInputProps} from 'sanity'
+import {ensureKeyVisualTag, KEY_VISUAL_TAG_NAME} from '@media-tags'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
@@ -21,6 +25,21 @@ import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
 import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
 import {defineLocalePair, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {hiddenForTranslator} from '../lib/studio-roles'
+
+/** Ensures deterministic tag doc exists, then delegates to plugin AutoTagInput. */
+function KeyVisualImageInput(props: ObjectInputProps) {
+  const client = useClient({apiVersion: '2024-01-01'})
+  useEffect(() => {
+    // Studio bundles @sanity/client v8; shared helpers type against v7 — same cast as DocumentEditor.
+    void ensureKeyVisualTag(
+      client as unknown as Parameters<typeof ensureKeyVisualTag>[0],
+    )
+  }, [client])
+  return createElement(AutoTagInput, {
+    ...props,
+    mediaTags: [KEY_VISUAL_TAG_NAME],
+  })
+}
 
 export const portfolioEntry = defineType({
   name: 'portfolioEntry',
@@ -357,6 +376,7 @@ export const portfolioEntry = defineType({
         {
           type: 'image',
           options: {hotspot: false},
+          components: {input: KeyVisualImageInput},
         },
       ],
       group: 'media',

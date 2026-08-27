@@ -11,11 +11,20 @@ import type {SanityClient} from '@sanity/client'
 /** Deterministic document id — stable GROQ `references("…")` filters. */
 export const EXTERNAL_UPLOAD_TAG_ID = 'mediaTag-external-upload'
 
+/** Deterministic id for portfolio Key Visuals stills (`portfolioEntry.keyVisuals`). */
+export const KEY_VISUAL_TAG_ID = 'mediaTag-key-visual'
+
 /**
  * Display label in sanity-plugin-media's Tags sidebar (`media.tag.name.current`).
  * Tagging / GROQ filters use {@link EXTERNAL_UPLOAD_TAG_ID}, not this string.
  */
 export const EXTERNAL_UPLOAD_TAG_NAME = 'Client Upload (Campaign Brief)'
+
+/**
+ * Display label for Key Visuals assets. {@link AutoTagInput} resolves tags by this
+ * name; {@link ensureKeyVisualTag} creates the doc at {@link KEY_VISUAL_TAG_ID}.
+ */
+export const KEY_VISUAL_TAG_NAME = 'Key Visual'
 
 /** Surfaced in sanity-plugin-media's asset detail "Credit" field. */
 export const EXTERNAL_UPLOAD_CREDIT_LINE =
@@ -35,41 +44,52 @@ export const EDITORIAL_ASSETS_GROQ_FILTER =
 export const ALL_ASSETS_GROQ_FILTER =
   `_type in ["sanity.imageAsset", "sanity.fileAsset"]` + ` && !(_id in path("drafts.**"))`
 
-export async function ensureExternalUploadTag(client: SanityClient): Promise<string> {
+async function ensureMediaTag(
+  client: SanityClient,
+  tagId: string,
+  tagName: string,
+): Promise<string> {
   await client.createIfNotExists({
-    _id: EXTERNAL_UPLOAD_TAG_ID,
+    _id: tagId,
     _type: 'media.tag',
     name: {
       _type: 'slug',
-      current: EXTERNAL_UPLOAD_TAG_NAME,
+      current: tagName,
     },
   })
   // Keep display label in sync (createIfNotExists will not update an existing doc).
   await client
-    .patch(EXTERNAL_UPLOAD_TAG_ID)
+    .patch(tagId)
     .set({
       name: {
         _type: 'slug',
-        current: EXTERNAL_UPLOAD_TAG_NAME,
+        current: tagName,
       },
     })
     .commit()
-  return EXTERNAL_UPLOAD_TAG_ID
+  return tagId
+}
+
+export async function ensureExternalUploadTag(client: SanityClient): Promise<string> {
+  return ensureMediaTag(client, EXTERNAL_UPLOAD_TAG_ID, EXTERNAL_UPLOAD_TAG_NAME)
+}
+
+export async function ensureKeyVisualTag(client: SanityClient): Promise<string> {
+  return ensureMediaTag(client, KEY_VISUAL_TAG_ID, KEY_VISUAL_TAG_NAME)
 }
 
 /**
  * Append a weak media.tag ref at opt.media.tags (same shape as sanity-plugin-media).
  * Idempotent when the asset already references the tag.
  */
-export async function tagAssetAsExternalUpload(
+async function tagAssetWithMediaTag(
   client: SanityClient,
   assetId: string,
+  tagId: string,
 ): Promise<void> {
-  await ensureExternalUploadTag(client)
-
   const alreadyTagged = await client.fetch<boolean>(
     `count(*[_id == $assetId && references($tagId)]) > 0`,
-    {assetId, tagId: EXTERNAL_UPLOAD_TAG_ID},
+    {assetId, tagId},
   )
   if (alreadyTagged) return
 
@@ -85,11 +105,27 @@ export async function tagAssetAsExternalUpload(
       {
         _key: key,
         _type: 'reference',
-        _ref: EXTERNAL_UPLOAD_TAG_ID,
+        _ref: tagId,
         _weak: true,
       },
     ])
     .commit()
+}
+
+export async function tagAssetAsExternalUpload(
+  client: SanityClient,
+  assetId: string,
+): Promise<void> {
+  await ensureExternalUploadTag(client)
+  await tagAssetWithMediaTag(client, assetId, EXTERNAL_UPLOAD_TAG_ID)
+}
+
+export async function tagAssetAsKeyVisual(
+  client: SanityClient,
+  assetId: string,
+): Promise<void> {
+  await ensureKeyVisualTag(client)
+  await tagAssetWithMediaTag(client, assetId, KEY_VISUAL_TAG_ID)
 }
 
 /** Set the Credit field used by sanity-plugin-media for visual recognition. */
