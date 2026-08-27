@@ -26,7 +26,7 @@ import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInp
 import {defineLocalePair, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {hiddenForTranslator} from '../lib/studio-roles'
 
-/** Ensures deterministic tag doc exists, then delegates to plugin AutoTagInput. */
+/** Ensures tag doc exists; AutoTagInput tags single-item selects — bulk tagging is handled by the key-visual-tag Sanity Function. */
 function KeyVisualImageInput(props: ObjectInputProps) {
   const client = useClient({apiVersion: '2024-01-01'})
   useEffect(() => {
@@ -381,7 +381,7 @@ export const portfolioEntry = defineType({
       ],
       group: 'media',
       description:
-        'Still-photography gallery, rendered as masonry below the crew credits block. Uses Media Library metadata (alt text, title, credit) — no per-item captions. To add multiple photos at once, drag them directly onto this field area (below the existing thumbnails) — do NOT open an individual photo item and drop a batch inside its popup, which can cause upload errors.',
+        'Still-photography gallery, rendered as masonry below the crew credits block. Uses Media Library metadata (alt text, title, credit) — no per-item captions. Bulk uploads are auto-tagged via the key-visual-tag Function (tags appear within a few seconds). To add multiple photos at once, drag them directly onto this field area (below the existing thumbnails) — do NOT open an individual photo item and drop a batch inside its popup, which can cause upload errors.',
     }),
 
     defineField({
