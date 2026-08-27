@@ -55,6 +55,8 @@ export const portfolioEntry = defineType({
   ],
 
   fieldsets: [
+    // Untitled: Title | Hidden toggle (legend hidden via studio.css).
+    {name: 'titleAndHidden', options: {columns: 2}},
     // Untitled layout row (legend hidden via studio.css — Sanity auto-titles from name).
     {name: 'slugAndDate', options: {columns: 2}},
     {name: 'copy', title: 'Description', options: {columns: 2}},
@@ -70,6 +72,7 @@ export const portfolioEntry = defineType({
       title: 'Title',
       type: 'string',
       group: 'content',
+      fieldset: 'titleAndHidden',
       // Not readOnly: programmatic sync from Portfolio Details must be allowed.
       // The custom field renders heading text only (no editable input).
       options: {localePair: {zhName: 'titleZh'}} as never,
@@ -82,7 +85,18 @@ export const portfolioEntry = defineType({
       title: 'Title (Chinese)',
       type: 'string',
       group: 'content',
+      // Omit fieldset so NullField does not consume a column in titleAndHidden.
       components: {field: NullField},
+    }),
+
+    defineField({
+      name: 'isHidden',
+      title: 'Hidden from Public Portfolio',
+      type: 'boolean',
+      group: 'content',
+      fieldset: 'titleAndHidden',
+      initialValue: false,
+      hidden: hiddenForTranslator,
     }),
 
     defineField({
@@ -312,16 +326,6 @@ export const portfolioEntry = defineType({
       fieldset: 'taxonomy',
       of: [{ type: 'reference', to: [{ type: 'market' }] }],
       components: { input: TaxonomyCheckboxInput },
-      hidden: hiddenForTranslator,
-    }),
-
-    defineField({
-      name: 'isHidden',
-      title: 'Hidden from Public Portfolio',
-      type: 'boolean',
-      group: 'content',
-      description: 'Excluded from public /work/ and market archives when true.',
-      initialValue: false,
       hidden: hiddenForTranslator,
     }),
 
