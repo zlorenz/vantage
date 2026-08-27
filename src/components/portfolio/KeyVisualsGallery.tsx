@@ -48,12 +48,12 @@ export function KeyVisualsGallery({keyVisuals}: KeyVisualsGalleryProps) {
 
   return (
     <section className="vp-key-visuals" aria-labelledby="key-visuals-heading">
-      <div className="vp-key-visuals__head">
-        <h2 id="key-visuals-heading" className="vp-key-visuals__title">
-          Key Visuals
-        </h2>
-        <div className="vp-key-visuals__rule" aria-hidden="true" />
-      </div>
+      <h2
+        id="key-visuals-heading"
+        className="vp-key-visuals__title mb-10 font-vp-heading text-[clamp(2.125rem,3.5vw,2.875rem)] font-bold uppercase leading-tight tracking-vp-heading text-vp-text"
+      >
+        Key Visuals
+      </h2>
       <div className="vp-key-visuals-gallery">
         {items.map((item) => {
           const {asset} = item;

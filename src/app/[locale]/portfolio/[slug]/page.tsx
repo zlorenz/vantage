@@ -189,7 +189,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
               />
             </div>
           )}
-          <div className="mt-24 flex flex-col gap-16">
+          <div className="mt-24 flex flex-col gap-28">
             <PortfolioCredits
               crewCredits={entry.crewCredits}
               locale={typedLocale}

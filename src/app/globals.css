@@ -1368,31 +1368,9 @@ body:has(.vp-work-index) #header.navbar::before {
 
 /* ==========================================================================
    Key Visuals gallery (portfolio entry) — scoped; do not alter .vp-masonry-gallery
+   Title size/spacing: Tailwind utilities on KeyVisualsGallery h2 (site section-
+   heading pattern). Keep gallery layout rules here only.
    ========================================================================== */
-
-.vp-key-visuals__head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.vp-key-visuals__title {
-  margin: 0;
-  font-family: var(--vp-font-heading);
-  font-size: 1.0625rem;
-  font-weight: 400;
-  letter-spacing: 0.0625rem;
-  line-height: 1.2;
-  text-transform: uppercase;
-  color: var(--color-vp-text);
-}
-
-.vp-key-visuals__rule {
-  height: 1px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.22);
-}
 
 .vp-key-visuals-gallery {
   column-count: 3;
