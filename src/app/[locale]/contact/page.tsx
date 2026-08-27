@@ -1,18 +1,18 @@
 /**
- * Contact page — real static page (no modal). Hero + Contact Info (from
- * siteSettings, same fields ContactModal has always shown) + Campaign Brief CTA.
+ * Contact page — centered display statement + contact info (from
+ * siteSettings) + Campaign Brief CTA.
  *
- * Page doc (CONTACT_PAGE_QUERY) supplies hero/SEO fields only; the actual
- * contact details (title, intro, email, WhatsApp, address, body copy, CTA)
- * come from the `siteSettings` singleton via SITE_SETTINGS_QUERY — same
- * source ContactModal has always read, read-only here.
+ * Page doc (CONTACT_PAGE_QUERY) supplies the big statement via
+ * heroTitle / heroTitleZh (repurposed from the old page-header title —
+ * update the CMS values in Studio after this ships) plus SEO fields.
+ * Contact details come from the `siteSettings` singleton via
+ * SITE_SETTINGS_QUERY.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PortableText } from '@portabletext/react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
@@ -40,6 +40,11 @@ import type { SiteSettings } from '@/types/sanity';
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+const STATEMENT_FALLBACK_EN =
+  'Let\'s craft your <span class="vp-outline">story</span>.';
+const STATEMENT_FALLBACK_ZH =
+  '一起讲述你的<span class="vp-outline">故事</span>。';
 
 function whatsappHref(value: string): string {
   const digits = value.replace(/[^\d]/g, '');
@@ -95,10 +100,13 @@ export default async function ContactPage({ params }: Props) {
 
   const t = await getTranslations('Contact');
 
-  const heroTitle =
+  const statementRaw =
     typedLocale === 'zh' && pageData.heroTitleZh
       ? pageData.heroTitleZh
-      : pageData.heroTitle || 'Contact <span class="vp-outline">Us</span>';
+      : pageData.heroTitle ||
+        (typedLocale === 'zh' ? STATEMENT_FALLBACK_ZH : STATEMENT_FALLBACK_EN);
+  // NFC for page-local statement that may bypass display-title / phrase resolvers.
+  const statementHtml = statementRaw.normalize('NFC');
 
   const title =
     pickLocaleFieldWithPhrases(
@@ -142,7 +150,13 @@ export default async function ContactPage({ params }: Props) {
           typedLocale,
         )}
       />
-      <PageHero title={heroTitle} backgroundImage={pageData.featuredImage ?? undefined} />
+
+      <section className="vp-contact-statement flex min-h-[70vh] items-center justify-center px-4 py-[clamp(6rem,9vw,10rem)] pt-[clamp(8rem,12vw,13rem)]">
+        <h1
+          className="m-0 max-w-[18ch] text-center font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading"
+          dangerouslySetInnerHTML={{ __html: statementHtml }}
+        />
+      </section>
 
       <SectionWrapper fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
