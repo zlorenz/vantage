@@ -59,9 +59,29 @@ export function portfolioTaxonomyDescription(
   locale: Locale = 'en',
 ): string {
   if (locale === 'zh') {
-    return `探索 Vantage Pictures 在「${termTitle}」领域的商业影像作品 — 品牌影片、产品广告与活动内容，由越南团队制作。`;
+    return `探索 Vantage Pictures 的「${termTitle}」作品 — 品牌影片、产品广告、活动内容与静物影像，由越南团队制作。`;
   }
-  return `Explore our ${termTitle} commercial video work — brand films, product commercials, and campaigns produced by Vantage Pictures in Vietnam.`;
+  return `Explore Vantage Pictures ${termTitle} work — brand films, product campaigns, key visuals, and commercial productions from Vietnam.`;
+}
+
+/**
+ * Prefer the taxonomy document's locale description for archive meta when set
+ * (e.g. Key Visual stills copy). Fall back to {@link portfolioTaxonomyDescription}.
+ */
+export function taxonomyArchiveMetaDescription(
+  term: {
+    title?: string | null;
+    description?: string | null;
+    descriptionZh?: string | null;
+  },
+  locale: Locale = 'en',
+): string {
+  const fromDoc =
+    locale === 'zh'
+      ? term.descriptionZh?.trim() || term.description?.trim()
+      : term.description?.trim() || term.descriptionZh?.trim();
+  if (fromDoc) return fromDoc;
+  return portfolioTaxonomyDescription(term.title ?? '', locale);
 }
 
 export function blogCategoryDescription(

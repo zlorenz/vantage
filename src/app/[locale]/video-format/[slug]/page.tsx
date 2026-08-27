@@ -13,7 +13,7 @@ import { routing, type Locale } from '@/i18n/routing';
 import { permanentRedirect } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
-import { taxonomyArchiveTitle, portfolioTaxonomyDescription, buildPageMetadata } from '@/lib/metadata';
+import { taxonomyArchiveTitle, taxonomyArchiveMetaDescription, buildPageMetadata } from '@/lib/metadata';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import { getPhraseRecord } from '@/lib/phrase-book';
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     enPath: `/video-format/${term.slug}`,
     zhPath: `/zh/视频格式/${term.slugZh || term.slug}`,
     title: taxonomyArchiveTitle(title),
-    description: portfolioTaxonomyDescription(title, locale as Locale),
+    description: taxonomyArchiveMetaDescription(term, locale as Locale),
     type: 'website',
   });
 }
@@ -145,7 +145,7 @@ export default async function VideoFormatArchivePage({ params }: Props) {
       <JsonLd
         data={buildCollectionPage({
           name: heroTitle,
-          description: portfolioTaxonomyDescription(heroTitle, typedLocale),
+          description: taxonomyArchiveMetaDescription(term, typedLocale),
           image: heroImage ?? undefined,
           url: pageUrl,
           locale: typedLocale,
