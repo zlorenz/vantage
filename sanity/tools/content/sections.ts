@@ -141,7 +141,7 @@ export const NAV_ITEMS: ContentNavItem[] = [
       {
         kind: 'leaf',
         id: 'video-formats',
-        title: 'Video Formats',
+        title: 'Formats',
         documentType: 'videoFormat',
         icon: TiersIcon,
         columns: taxonomyTitleColumns,

@@ -63,7 +63,7 @@
     "download": "下载"
   },
   "Filters": {
-    "videoFormat": "视频格式",
+    "videoFormat": "格式",
     "industry": "行业",
     "market": "市场",
     "client": "客户",
@@ -96,7 +96,7 @@
   "OurIndustry": {
     "industriesHeading": "行业",
     "marketsHeading": "市场",
-    "videoFormatsHeading": "视频格式"
+    "videoFormatsHeading": "格式"
   },
   "OurCompany": {
     "leadershipHeading": "领导团队",

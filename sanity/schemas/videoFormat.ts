@@ -15,7 +15,7 @@ import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const videoFormat = defineType({
   name: 'videoFormat',
-  title: 'Video Formats',
+  title: 'Formats',
   type: 'document',
 
   fields: [
@@ -47,13 +47,13 @@ export const videoFormat = defineType({
       title: 'Description',
       type: 'text',
       rows: 5,
-      description: 'Intro paragraph on the archive page.',
+      description: 'Intro paragraph on the archive page (also used for SEO meta when set).',
       optional: true,
     }),
 
     defineField({
       name: 'parent',
-      title: 'Parent Video Format',
+      title: 'Parent Format',
       type: 'reference',
       to: [{type: 'videoFormat'}],
       description: 'Optional parent category for nested filter dropdowns.',

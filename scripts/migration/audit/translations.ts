@@ -74,7 +74,7 @@ const UI_CHROME_STRINGS: { id: string; text: string; location: string }[] = [
   { id: 'home.cta.about', text: 'LEARN MORE ABOUT US', location: 'page.tsx' },
   { id: 'home.section.brands', text: 'BRANDS', location: 'page.tsx' },
   { id: 'home.section.brands2', text: 'WE WORK WITH', location: 'page.tsx' },
-  { id: 'filter.videoFormat', text: 'Video Format', location: 'PortfolioGrid' },
+  { id: 'filter.videoFormat', text: 'Formats', location: 'PortfolioGrid' },
   { id: 'filter.industry', text: 'Industry', location: 'PortfolioGrid' },
   { id: 'filter.market', text: 'Market', location: 'PortfolioGrid' },
   { id: 'filter.all', text: 'All', location: 'PortfolioGrid' },

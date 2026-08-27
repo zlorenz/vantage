@@ -63,7 +63,7 @@
     "download": "DOWNLOAD"
   },
   "Filters": {
-    "videoFormat": "Video Format",
+    "videoFormat": "Formats",
     "industry": "Industry",
     "market": "Market",
     "client": "Client",
@@ -96,7 +96,7 @@
   "OurIndustry": {
     "industriesHeading": "Industries",
     "marketsHeading": "Markets",
-    "videoFormatsHeading": "Video Formats"
+    "videoFormatsHeading": "Formats"
   },
   "OurCompany": {
     "leadershipHeading": "Leadership",
