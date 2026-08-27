@@ -161,10 +161,13 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
       "slugZh": slugZh.current
     },
     industries[]->{
+      _id,
       title,
       titleZh,
       "slug": slug.current,
-      "slugZh": slugZh.current
+      "slugZh": slugZh.current,
+      "parentId": parent._ref,
+      parent->{ title, titleZh }
     },
     markets[]->{
       title,

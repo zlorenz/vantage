@@ -50,7 +50,8 @@
 }
 
 .vp-case-header__credits {
-  display: flex;
+  /* Mobile: hide key-crew block so only taxonomy pills sit under the title. */
+  display: none;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 1.25rem 2.5rem;
@@ -89,10 +90,11 @@
 .vp-case-header__pills {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  /* Mobile: left-align under title; desktop re-asserts end/auto beside credits. */
+  justify-content: flex-start;
   align-items: baseline;
-  gap: 0.625rem;
-  margin: 0 0 0 auto;
+  gap: 0.5rem;
+  margin: 0;
   padding: 0;
   list-style: none;
   max-width: 100%;
@@ -102,11 +104,11 @@
   display: inline-flex;
   align-items: center;
   margin: 0;
-  padding: 0.55rem 1.15rem;
+  padding: 0.4rem 0.85rem;
   border: 1px solid var(--vp-border-soft);
   border-radius: 999px;
   font-family: var(--font-vp-sans);
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1.2;
@@ -130,6 +132,10 @@
     letter-spacing: 1px;
   }
 
+  .vp-case-header__credits {
+    display: flex;
+  }
+
   .vp-case-header__credit dt {
     font-size: 14px;
     letter-spacing: 1.4px;
@@ -138,6 +144,12 @@
 
   .vp-case-header__credit dd {
     font-size: 19px;
+  }
+
+  .vp-case-header__pills {
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin: 0 0 0 auto;
   }
 
   .vp-case-header__pill {

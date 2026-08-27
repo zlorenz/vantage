@@ -17,12 +17,19 @@ import './portfolio-case-header.css';
 
 type TaxonomyRef = Pick<TaxonomyTerm, 'title' | 'titleZh' | 'slug' | 'slugZh'>;
 
+/** Industry refs for pill collapse — parent fields from PORTFOLIO_ENTRY_QUERY. */
+type IndustryPillTerm = TaxonomyRef & {
+  _id?: string;
+  parentId?: string | null;
+  parent?: Pick<TaxonomyTerm, 'title' | 'titleZh'> | null;
+};
+
 type PortfolioCaseHeaderProps = {
   locale: Locale;
   phrases?: PhraseLookup | null;
   displayTitleParts?: DisplayTitlePartsValue | null;
   videoFormats?: TaxonomyRef[] | null;
-  industries?: TaxonomyRef[] | null;
+  industries?: IndustryPillTerm[] | null;
   markets?: TaxonomyRef[] | null;
   crewCredits?: CrewCredit[] | null;
 };
@@ -34,6 +41,21 @@ const CREDIT_ROLES = [
   {roleKey: 'art_director', label: 'Art Director'},
 ] as const;
 
+function termLabel(
+  term: Pick<TaxonomyTerm, 'title' | 'titleZh'> | null | undefined,
+  locale: Locale,
+  phrases?: PhraseLookup | null,
+): string {
+  if (!term) return '';
+  return pickLocaleFieldWithPhrases(
+    locale,
+    term.title,
+    term.titleZh,
+    phrases,
+  ).trim();
+}
+
+/** Flat pills — used for videoFormats / markets (no hierarchy in this pass). */
 function taxonomyPillLabels(
   terms: TaxonomyRef[] | null | undefined,
   locale: Locale,
@@ -41,14 +63,65 @@ function taxonomyPillLabels(
 ): string[] {
   const labels: string[] = [];
   for (const term of terms ?? []) {
-    const label = pickLocaleFieldWithPhrases(
-      locale,
-      term.title,
-      term.titleZh,
-      phrases,
-    ).trim();
+    const label = termLabel(term, locale, phrases);
     if (label) labels.push(label);
   }
+  return labels;
+}
+
+/**
+ * Industry pills with parent+child collapse.
+ * When BOTH a parent and its child are tagged on the entry → one pill
+ * "Parent: Child". Parent-only / child-only (parent not tagged) stay flat.
+ * Parent + N children → N pills ("Parent: Child1", "Parent: Child2").
+ *
+ * Markets / videoFormats stay on taxonomyPillLabels; extend this helper
+ * later if those taxonomies gain a real parent/child hierarchy in Studio.
+ */
+function industryPillLabels(
+  terms: IndustryPillTerm[] | null | undefined,
+  locale: Locale,
+  phrases?: PhraseLookup | null,
+): string[] {
+  const list = terms ?? [];
+  const taggedIds = new Set(
+    list.map((term) => term._id).filter((id): id is string => Boolean(id)),
+  );
+
+  // Parents that have ≥1 tagged child — omit as standalone pills.
+  const parentsWithTaggedChildren = new Set<string>();
+  for (const term of list) {
+    if (term.parentId && taggedIds.has(term.parentId)) {
+      parentsWithTaggedChildren.add(term.parentId);
+    }
+  }
+
+  // Resolve parent titles from the tagged list when parent->{…} is thin.
+  const termById = new Map(
+    list.filter((term) => term._id).map((term) => [term._id as string, term]),
+  );
+
+  const labels: string[] = [];
+  for (const term of list) {
+    if (term._id && parentsWithTaggedChildren.has(term._id)) {
+      continue;
+    }
+
+    const ownLabel = termLabel(term, locale, phrases);
+    if (!ownLabel) continue;
+
+    if (term.parentId && taggedIds.has(term.parentId)) {
+      const parentTerm = term.parent ?? termById.get(term.parentId);
+      const parentLabel = termLabel(parentTerm, locale, phrases);
+      if (parentLabel) {
+        labels.push(`${parentLabel}: ${ownLabel}`);
+        continue;
+      }
+    }
+
+    labels.push(ownLabel);
+  }
+
   return labels;
 }
 
@@ -70,7 +143,7 @@ export function PortfolioCaseHeader({
 
   const pills = [
     ...taxonomyPillLabels(videoFormats, locale, phrases),
-    ...taxonomyPillLabels(industries, locale, phrases),
+    ...industryPillLabels(industries, locale, phrases),
     ...taxonomyPillLabels(markets, locale, phrases),
   ];
 
