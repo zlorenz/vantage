@@ -379,8 +379,14 @@ export function DocumentEditor({
 
     setViewOnSiteLoading(true)
     try {
+      // Dual @sanity/client majors (7.x under sanity-plugin-media/SDK, 8.x
+      // under Studio 6.11) — TS sees them as distinct nominal types even
+      // though createPreviewSecret only needs withConfig/patch/transaction/
+      // delete, present on both. Remove this cast if @sanity/preview-url-secret
+      // ever types createPreviewSecret with its own SanityClientLike (already
+      // used elsewhere in that package for validatePreviewUrl).
       const {secret} = await createPreviewSecret(
-        client,
+        client as unknown as Parameters<typeof createPreviewSecret>[0],
         'vantage/content-tool',
         typeof window !== 'undefined' ? window.location.href : '',
         currentUser?.id,

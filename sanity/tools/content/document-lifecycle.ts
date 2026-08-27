@@ -5,7 +5,7 @@
  * trashRecord audit docs (string IDs only — never strong refs).
  */
 
-import type {SanityClient} from '@sanity/client'
+import type {SanityClient} from 'sanity'
 import {TRASH_RETENTION_DAYS} from '../../../shared/trash-retention'
 
 export const TRASHABLE_TYPES = ['portfolioEntry', 'blogPost', 'page'] as const
