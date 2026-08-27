@@ -81,6 +81,8 @@ export const handler = documentEventHandler<KeyVisualTagEventData>(
       ...context.clientOptions,
       apiVersion: '2025-05-08',
       useCdn: false,
+      // Draft portfolioEntry mutations must be readable for videoFormats add/remove.
+      perspective: 'raw',
     })
 
     if (newRefs.length > 0) {

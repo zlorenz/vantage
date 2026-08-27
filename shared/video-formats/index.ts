@@ -75,6 +75,25 @@ function newRefKey(): string {
   )
 }
 
+/**
+ * Read videoFormats refs for a concrete document id (draft or published).
+ * Uses getDocument — GROQ `*[…]` defaults to the published perspective and
+ * silently misses `drafts.*` ids, which caused duplicate Key Visual refs.
+ */
+async function readVideoFormatRefs(
+  client: SanityClient,
+  portfolioEntryId: string,
+): Promise<string[]> {
+  const doc = await client.getDocument(portfolioEntryId)
+  const formats = (
+    doc as {videoFormats?: Array<{_ref?: string} | null> | null} | undefined
+  )?.videoFormats
+  if (!Array.isArray(formats)) return []
+  return formats
+    .map((item) => item?._ref)
+    .filter((ref): ref is string => typeof ref === 'string' && ref.length > 0)
+}
+
 /** Append Key Visual format ref if missing. Idempotent. */
 export async function addKeyVisualVideoFormatRef(
   client: SanityClient,
@@ -82,10 +101,7 @@ export async function addKeyVisualVideoFormatRef(
 ): Promise<'added' | 'already-present'> {
   await ensureKeyVisualVideoFormat(client)
 
-  const existing = await client.fetch<string[]>(
-    `coalesce(*[_id == $id][0].videoFormats[]._ref, [])`,
-    {id: portfolioEntryId},
-  )
+  const existing = await readVideoFormatRefs(client, portfolioEntryId)
   if (existing.some((ref) => isKeyVisualVideoFormatId(ref))) {
     return 'already-present'
   }
@@ -105,19 +121,17 @@ export async function addKeyVisualVideoFormatRef(
   return 'added'
 }
 
-/** Remove only the Key Visual format ref. Leaves other formats untouched. */
+/** Remove only the Key Visual format ref(s). Leaves other formats untouched. */
 export async function removeKeyVisualVideoFormatRef(
   client: SanityClient,
   portfolioEntryId: string,
 ): Promise<'removed' | 'absent'> {
-  const existing = await client.fetch<string[]>(
-    `coalesce(*[_id == $id][0].videoFormats[]._ref, [])`,
-    {id: portfolioEntryId},
-  )
+  const existing = await readVideoFormatRefs(client, portfolioEntryId)
   if (!existing.some((ref) => isKeyVisualVideoFormatId(ref))) {
     return 'absent'
   }
 
+  // Unset matches every array item with this _ref (clears accidental duplicates).
   await client
     .patch(portfolioEntryId)
     .unset([`videoFormats[_ref=="${KEY_VISUAL_VIDEO_FORMAT_ID}"]`])
