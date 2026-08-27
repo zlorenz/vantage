@@ -31,7 +31,9 @@
       "@carousel-ratios": ["../shared/carousel-ratios"],
       "@carousel-ratios/*": ["../shared/carousel-ratios/*"],
       "@media-tags": ["../shared/media-tags"],
-      "@media-tags/*": ["../shared/media-tags/*"]
+      "@media-tags/*": ["../shared/media-tags/*"],
+      "@video-formats": ["../shared/video-formats"],
+      "@video-formats/*": ["../shared/video-formats/*"]
     }
   },
   "include": [
@@ -47,6 +49,7 @@
     "../shared/studio-overlay-z/**/*.ts",
     "../shared/carousel-ratios/**/*.ts",
     "../shared/media-tags/**/*.ts",
+    "../shared/video-formats/**/*.ts",
     "../messages/**/*.json",
     "../src/lib/campaign-brief-fields.ts",
     "../src/lib/campaign-brief-i18n.ts"

@@ -41,7 +41,9 @@
       "@studio-overlay-z": ["./shared/studio-overlay-z"],
       "@studio-overlay-z/*": ["./shared/studio-overlay-z/*"],
       "@media-tags": ["./shared/media-tags"],
-      "@media-tags/*": ["./shared/media-tags/*"]
+      "@media-tags/*": ["./shared/media-tags/*"],
+      "@video-formats": ["./shared/video-formats"],
+      "@video-formats/*": ["./shared/video-formats/*"]
     }
   },
   "include": [

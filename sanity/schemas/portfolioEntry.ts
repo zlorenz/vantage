@@ -12,6 +12,7 @@ import {createElement, useEffect} from 'react'
 import {AutoTagInput} from 'sanity-plugin-media'
 import {useClient, type ObjectInputProps} from 'sanity'
 import {ensureKeyVisualTag, KEY_VISUAL_TAG_NAME} from '@media-tags'
+import {isKeyVisualVideoFormatId, KEY_VISUAL_VIDEO_FORMAT_ID} from '@video-formats'
 
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
@@ -232,13 +233,64 @@ export const portfolioEntry = defineType({
 
     defineField({
       name: 'videoFormats',
-      title: 'Video Formats',
+      title: 'Formats',
       type: 'array',
       group: 'content',
       fieldset: 'taxonomy',
-      of: [{ type: 'reference', to: [{ type: 'videoFormat' }] }],
-      components: { input: TaxonomyCheckboxInput },
+      of: [
+        {
+          type: 'reference',
+          to: [{type: 'videoFormat'}],
+          options: {
+            filter: `!(_id in [$keyVisualFormatId, $keyVisualFormatDraftId])`,
+            filterParams: {
+              keyVisualFormatId: KEY_VISUAL_VIDEO_FORMAT_ID,
+              keyVisualFormatDraftId: `drafts.${KEY_VISUAL_VIDEO_FORMAT_ID}`,
+            },
+          },
+        },
+      ],
+      components: {input: TaxonomyCheckboxInput},
       hidden: hiddenForTranslator,
+      validation: (rule) =>
+        rule.custom(async (formats, context) => {
+          // Key Visual format is system-managed by key-visual-tag (not sticky).
+          // TaxonomyCheckboxInput hides it; this blocks Vision / stale-form
+          // manual add or remove. API Function patches skip Studio validation.
+          const nextRefs = new Set(
+            (formats ?? [])
+              .map((item) =>
+                typeof item === 'object' && item && '_ref' in item
+                  ? String((item as {_ref?: string})._ref ?? '').replace(/^drafts\./, '')
+                  : '',
+              )
+              .filter(Boolean),
+          )
+          const hasNext = nextRefs.has(KEY_VISUAL_VIDEO_FORMAT_ID)
+
+          const docId = context.document?._id
+          if (!docId) return true
+
+          const client = context.getClient({apiVersion: '2025-01-01'})
+          const prevRefs = await client.fetch<string[]>(
+            `coalesce(*[_id == $id][0].videoFormats[]._ref, [])`,
+            {id: docId},
+          )
+          const hadPrev = prevRefs.some((ref) => isKeyVisualVideoFormatId(ref))
+
+          const keyVisuals = (
+            context.document as {keyVisuals?: unknown[] | null} | undefined
+          )?.keyVisuals
+          const hasKeyVisuals = Array.isArray(keyVisuals) && keyVisuals.length > 0
+
+          if (hasNext && !hadPrev) {
+            return '“Key Visual” is assigned automatically when Key Visuals are added — it cannot be selected manually.'
+          }
+          if (!hasNext && hadPrev && hasKeyVisuals) {
+            return '“Key Visual” is removed automatically when all Key Visuals are cleared — it cannot be unchecked manually.'
+          }
+          return true
+        }),
     }),
 
     defineField({

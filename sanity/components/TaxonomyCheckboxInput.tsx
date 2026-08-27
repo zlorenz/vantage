@@ -2,6 +2,8 @@ import {useCallback, useEffect, useMemo, useState} from 'react'
 import {set, type ArrayOfObjectsInputProps, type Reference, useClient} from 'sanity'
 import {Box, Checkbox, Flex, Spinner, Stack, Text} from '@sanity/ui'
 
+import {isKeyVisualVideoFormatId} from '@video-formats'
+
 type TaxonomyDoc = {
   _id: string
   title: string
@@ -100,7 +102,13 @@ export function TaxonomyCheckboxInput(props: ArrayOfObjectsInputProps) {
       )
       .then((docs) => {
         if (!cancelled) {
-          setOptions(docs)
+          // Key Visual videoFormat is system-managed (key-visual-tag Function) —
+          // never offer it as a manual checkbox on portfolioEntry.videoFormats.
+          const visible =
+            refType === 'videoFormat'
+              ? docs.filter((doc) => !isKeyVisualVideoFormatId(doc._id))
+              : docs
+          setOptions(visible)
           setError(null)
         }
       })
@@ -129,6 +137,8 @@ export function TaxonomyCheckboxInput(props: ArrayOfObjectsInputProps) {
   const toggle = useCallback(
     (docId: string, checked: boolean) => {
       if (readOnly) return
+      // Defense in depth — system-managed Key Visual format is not toggleable.
+      if (refType === 'videoFormat' && isKeyVisualVideoFormatId(docId)) return
 
       const current = (value as RefValue[] | undefined) ?? []
 
@@ -145,7 +155,7 @@ export function TaxonomyCheckboxInput(props: ArrayOfObjectsInputProps) {
 
       onChange(set(current.filter((item) => item._ref !== docId)))
     },
-    [onChange, readOnly, selectedIds, value],
+    [onChange, readOnly, refType, selectedIds, value],
   )
 
   if (loading) {
