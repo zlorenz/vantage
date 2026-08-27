@@ -1,8 +1,8 @@
 /**
- * About page — hero, who we are, production services, AI workflow,
+ * About page — who we are, production services, AI workflow,
  * production log CTA, more-about links, campaign CTA.
  *
- * Section order: Hero -> Body ("Who We Are") -> Production Services ->
+ * Section order: Body ("Who We Are") -> Production Services ->
  * AI Workflow -> Production Log CTA -> More About Vantage -> CtaSection.
  *
  * Note: the founders/team grid no longer renders here — it lives on
@@ -10,13 +10,15 @@
  * intentionally untouched; `page.founders` is still used below for the
  * Organization JSON-LD and to filter founder names out of the "Who We Are"
  * body copy.
+ *
+ * PageHero was removed for the redesign; featuredImage stays in
+ * ABOUT_PAGE_QUERY for OG image fallback via resolveMetadataImage.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CtaSection } from '@/components/ui/CtaSection';
-import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
@@ -93,11 +95,6 @@ export default async function AboutPage({ params }: Props) {
 
   if (!page) notFound();
 
-  const heroTitle =
-    typedLocale === 'zh' && page.heroTitleZh
-      ? page.heroTitleZh
-      : page.heroTitle || 'About <span class="vp-outline">Us</span>';
-
   const bodyBlocks = filterAboutBodyBlocks(
     typedLocale === 'zh' && page.bodyZh?.length
       ? mergeChineseBodyWithEnglishMedia(page.bodyZh, page.body ?? undefined)
@@ -129,7 +126,6 @@ export default async function AboutPage({ params }: Props) {
           { name: pageTitleLabel, url: aboutBreadcrumb(typedLocale).url },
         ])}
       />
-      <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
       <SectionWrapper fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
