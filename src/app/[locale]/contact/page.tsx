@@ -11,7 +11,6 @@
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { PortableText } from '@portabletext/react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
@@ -23,8 +22,6 @@ import {
   seoDescription,
   seoMetaTitle,
 } from '@/lib/metadata';
-import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
-import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
 import {
   buildBreadcrumbs,
@@ -90,10 +87,9 @@ export default async function ContactPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageData, siteSettings, phrases] = await Promise.all([
+  const [pageData, siteSettings] = await Promise.all([
     sanityClient.fetch<CONTACT_PAGE_QUERY_RESULT>(CONTACT_PAGE_QUERY),
     sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY),
-    getPhraseRecord(),
   ]);
 
   if (!pageData) notFound();
@@ -108,39 +104,9 @@ export default async function ContactPage({ params }: Props) {
   // NFC for page-local statement that may bypass display-title / phrase resolvers.
   const statementHtml = statementRaw.normalize('NFC');
 
-  const title =
-    pickLocaleFieldWithPhrases(
-      typedLocale,
-      siteSettings?.contactModalTitle,
-      siteSettings?.contactModalTitleZh,
-      phrases,
-    ).trim() || t('modalTitle');
-  const intro = pickLocaleFieldWithPhrases(
-    typedLocale,
-    siteSettings?.contactModalIntro,
-    siteSettings?.contactModalIntroZh,
-    phrases,
-  ).trim();
   const email = siteSettings?.contactEmail?.trim();
   const whatsapp = siteSettings?.contactWhatsapp?.trim();
   const waLink = whatsapp ? whatsappHref(whatsapp) : '';
-  const address = pickLocaleFieldWithPhrases(
-    typedLocale,
-    siteSettings?.contactAddress,
-    siteSettings?.contactAddressZh,
-    phrases,
-  ).trim();
-  const ctaText = pickLocaleFieldWithPhrases(
-    typedLocale,
-    siteSettings?.contactCtaText,
-    siteSettings?.contactCtaTextZh,
-    phrases,
-  ).trim();
-  const ctaUrl = siteSettings?.contactCtaUrl?.trim();
-  const bodyContent =
-    typedLocale === 'zh' && siteSettings?.contactModalContentZh?.length
-      ? siteSettings.contactModalContentZh
-      : siteSettings?.contactModalContent;
 
   return (
     <>
@@ -160,17 +126,7 @@ export default async function ContactPage({ params }: Props) {
 
       <SectionWrapper fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h2 className="mb-4 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-            {title}
-          </h2>
-
-          {intro ? (
-            <p className="mb-6 whitespace-pre-wrap font-light leading-relaxed text-vp-text-muted">
-              {intro}
-            </p>
-          ) : null}
-
-          <ul className="mb-6 list-none p-0">
+          <ul className="mb-0 list-none p-0">
             {email ? (
               <li className="mb-2">
                 <h3 className="m-0 text-xl font-bold">
@@ -209,34 +165,6 @@ export default async function ContactPage({ params }: Props) {
               </li>
             ) : null}
           </ul>
-
-          {address ? (
-            <address className="m-0 mb-6 text-base font-normal not-italic leading-snug">
-              {address.split('\n').map((line, i) => (
-                <span key={i}>
-                  {line}
-                  {i < address.split('\n').length - 1 ? <br /> : null}
-                </span>
-              ))}
-            </address>
-          ) : null}
-
-          {bodyContent?.length ? (
-            <div className="mb-6 prose prose-invert max-w-none font-light">
-              {/* Known NFC gap (matches ContactModal): raw PortableText, not PortableTextContent. */}
-              <PortableText
-                value={bodyContent as unknown as Parameters<typeof PortableText>[0]['value']}
-              />
-            </div>
-          ) : null}
-
-          {ctaText && ctaUrl ? (
-            <p className="m-0">
-              <a href={ctaUrl} className="font-bold uppercase text-vp-link hover:text-vp-link-hover">
-                {ctaText}
-              </a>
-            </p>
-          ) : null}
         </div>
       </SectionWrapper>
 
