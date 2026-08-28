@@ -37,6 +37,7 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'About.statementLine3',
   'About.statementLine4',
   'About.statementLine5',
+  'About.statementLine6',
   'About.productionServices',
   'About.productionServicesOutline',
   'About.productionServicesBody',

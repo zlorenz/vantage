@@ -8,40 +8,35 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import './about-statement.css';
 
+export type AboutStatementMarkerImage = {
+  src: string;
+  alt: string;
+};
+
 export type AboutStatementLines = {
   line1: string;
   line2: string;
   line3: string;
   line4: string;
   line5: string;
+  line6: string;
+  markers: ReadonlyArray<AboutStatementMarkerImage>;
 };
 
 type AboutStatementAnimatedProps = AboutStatementLines;
 
-const HEADING_CLASS =
-  'm-0 font-vp-heading text-[clamp(2.375rem,5.5vw,4.5rem)] uppercase leading-[0.95] tracking-vp-heading';
-
 const IO_ROOT_MARGIN = '0px 0px -25% 0px';
 const IO_THRESHOLD = 0.2;
-
-/** Swap in portfolio still URLs when ready — one entry per inline marker slot. */
-export const ABOUT_STATEMENT_MARKER_IMAGES: ReadonlyArray<{
-  src?: string;
-  alt: string;
-}> = [
-  { alt: 'Campaign still placeholder' },
-  { alt: 'Content still placeholder' },
-];
 
 /** Body line index (0-based) → word index after which to insert a marker. */
 const MARKER_AFTER_WORD_INDEX: Partial<Record<number, number>> = {
   1: 0,
-  3: 2,
+  4: 2,
 };
 
 const LINE_TO_MARKER_SLOT: Partial<Record<number, 0 | 1>> = {
   1: 0,
-  3: 1,
+  4: 1,
 };
 
 function splitLine(line: string): string[] {
@@ -51,11 +46,12 @@ function splitLine(line: string): string[] {
 type StatementMarkerProps = {
   slot: 0 | 1;
   staggerIndex: number;
+  markers: ReadonlyArray<AboutStatementMarkerImage>;
 };
 
-function StatementMarker({ slot, staggerIndex }: StatementMarkerProps) {
+function StatementMarker({ slot, staggerIndex, markers }: StatementMarkerProps) {
   const markerRef = useRef<HTMLSpanElement>(null);
-  const { src, alt } = ABOUT_STATEMENT_MARKER_IMAGES[slot];
+  const image = markers[slot];
 
   useEffect(() => {
     const marker = markerRef.current;
@@ -63,9 +59,23 @@ function StatementMarker({ slot, staggerIndex }: StatementMarkerProps) {
 
     const measure = () => {
       const media = marker.querySelector('.vp-about-statement__marker-media');
-      if (media instanceof HTMLElement && media.offsetWidth > 0) {
-        marker.style.setProperty('--marker-w', `${media.offsetWidth}px`);
+      if (!(media instanceof HTMLElement)) return;
+
+      const prevWidth = marker.style.width;
+      const prevMaxWidth = marker.style.maxWidth;
+      const prevOverflow = marker.style.overflow;
+      marker.style.width = 'auto';
+      marker.style.maxWidth = 'none';
+      marker.style.overflow = 'visible';
+
+      const w = media.getBoundingClientRect().width;
+      if (w > 0) {
+        marker.style.setProperty('--marker-w', `${w}px`);
       }
+
+      marker.style.width = prevWidth;
+      marker.style.maxWidth = prevMaxWidth;
+      marker.style.overflow = prevOverflow;
     };
 
     measure();
@@ -73,9 +83,10 @@ function StatementMarker({ slot, staggerIndex }: StatementMarkerProps) {
     if (img && !img.complete) {
       img.addEventListener('load', measure, { once: true });
     }
+    void document.fonts.ready.then(measure);
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
-  }, [src]);
+  }, [image?.src]);
 
   return (
     <span
@@ -83,13 +94,12 @@ function StatementMarker({ slot, staggerIndex }: StatementMarkerProps) {
       className="vp-about-statement__marker"
       style={{ '--i': staggerIndex } as CSSProperties}
     >
-      {src ? (
+      {image?.src ? (
         <img
-          src={src}
-          alt={alt}
+          src={image.src}
+          alt={image.alt}
           className="vp-about-statement__marker-media"
-          width={585}
-          height={328}
+          decoding="async"
         />
       ) : (
         <span
@@ -106,6 +116,7 @@ type StatementLineProps = {
   words: string[];
   accent?: boolean;
   reducedMotion: boolean;
+  markers: ReadonlyArray<AboutStatementMarkerImage>;
 };
 
 function StatementLine({
@@ -113,6 +124,7 @@ function StatementLine({
   words,
   accent = false,
   reducedMotion,
+  markers,
 }: StatementLineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
   const markerAfterWord = MARKER_AFTER_WORD_INDEX[lineIndex];
@@ -126,9 +138,7 @@ function StatementLine({
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('in-view');
-          io.unobserve(entry.target);
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
         });
       },
       { root: null, rootMargin: IO_ROOT_MARGIN, threshold: IO_THRESHOLD },
@@ -178,6 +188,7 @@ function StatementLine({
           key={`m-${wordIndex}`}
           slot={markerSlot}
           staggerIndex={staggerIndex}
+          markers={markers}
         />,
       );
       staggerIndex++;
@@ -197,6 +208,8 @@ export function AboutStatementAnimated({
   line3,
   line4,
   line5,
+  line6,
+  markers,
 }: AboutStatementAnimatedProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -215,7 +228,8 @@ export function AboutStatementAnimated({
     { words: splitLine(line2), accent: false },
     { words: splitLine(line3), accent: false },
     { words: splitLine(line4), accent: false },
-    { words: splitLine(line5), accent: true },
+    { words: splitLine(line5), accent: false },
+    { words: splitLine(line6), accent: true },
   ];
 
   const sectionClass = [
@@ -232,8 +246,8 @@ export function AboutStatementAnimated({
 
   return (
     <section className={sectionClass}>
-      <div className="mx-auto max-w-[1400px] text-center">
-        <h1 className={HEADING_CLASS}>
+      <div className="vp-about-statement__inner mx-auto w-full max-w-[1680px] px-4 text-center md:px-6 xl:px-8">
+        <h1 className="vp-about-statement__heading">
           {lines.map((line, lineIndex) => (
             <StatementLine
               key={lineIndex}
@@ -241,6 +255,7 @@ export function AboutStatementAnimated({
               words={line.words}
               accent={line.accent}
               reducedMotion={reducedMotion}
+              markers={markers}
             />
           ))}
         </h1>

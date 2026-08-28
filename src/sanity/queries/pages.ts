@@ -101,6 +101,15 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
   }
 `)
 
+/** About statement inline markers — two recent portfolio featured images. */
+export const ABOUT_STATEMENT_MARKERS_QUERY = defineQuery(`
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
+  | order(publishedAt desc) [0..1] {
+    title,
+    featuredImage
+  }
+`)
+
 /** Contact — meta + optional hero/body; real contact fields come from siteSettings. */
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{

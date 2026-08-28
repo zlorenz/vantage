@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="715 699 2074 1083" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <defs>
+        <linearGradient id="vap-brand-gradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#F37021"/>
+            <stop offset="1" stop-color="#FDB913"/>
+        </linearGradient>
+    </defs>
+    <g transform="matrix(24.061901,0,0,24.061901,-31222.684952,-12270.628674)">
+        <g transform="matrix(1,0,0,1,-100.502738,69)">
+            <rect x="1428" y="485" width="15" height="15" fill="url(#vap-brand-gradient)"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-62.573071,54.002395)">
+            <rect x="1428" y="485" width="15" height="15" style="fill:#fff;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-29.514982,83.997603)">
+            <rect x="1428" y="485" width="15" height="15" fill="url(#vap-brand-gradient)"/>
+        </g>
+        <g transform="matrix(1,0,0,1.892109,-86.462039,-365.48687)">
+            <path d="M1443.959,493.886L1436.887,501.814L1421.887,501.814L1428.959,493.886L1443.959,493.886Z" style="fill:#fff;"/>
+        </g>
+        <g transform="matrix(-1,0,0,1.892109,2794.387272,-380.48687)">
+            <path d="M1443.959,493.886L1436.887,501.814L1421.887,501.814L1428.959,493.886L1443.959,493.886Z" style="fill:rgb(172,170,170);"/>
+        </g>
+        <g transform="matrix(0.220413,0,-0,0.220413,933.391685,316.174118)">
+            <path d="M2110.097,1079L2110.097,1147.049C2072.515,1147.049 2042.049,1177.515 2042.049,1215.097L1974,1215.097C1974,1139.933 2034.933,1079 2110.097,1079Z" style="fill:#fff;"/>
+        </g>
+    </g>
+</svg>

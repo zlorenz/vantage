@@ -3559,6 +3559,13 @@
         },
         "optional": true
       },
+      "isHidden": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
       "displayTitleParts": {
         "type": "objectAttribute",
         "value": {
@@ -3766,13 +3773,6 @@
               "name": "market.reference"
             }
           }
-        },
-        "optional": true
-      },
-      "isHidden": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
         },
         "optional": true
       },

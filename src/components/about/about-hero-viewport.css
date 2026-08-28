@@ -1,0 +1,42 @@
+/* About hero — full-viewport symbol + corner VAP pattern (see AboutHeroViewport.tsx). */
+
+.vp-about-hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+  background-color: var(--color-vp-bg);
+}
+
+.vp-about-hero__symbol {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.vp-about-hero__symbol-img {
+  display: block;
+  width: clamp(12rem, 48vmin, 28rem);
+  height: auto;
+}
+
+.vp-about-hero__pattern {
+  position: absolute;
+  bottom: 0;
+  width: auto;
+  height: clamp(5rem, 14vh, 9.375rem);
+  pointer-events: none;
+}
+
+.vp-about-hero__pattern--right {
+  right: 0;
+}
+
+.vp-about-hero__pattern--left {
+  left: 0;
+  transform: scaleX(-1);
+}
