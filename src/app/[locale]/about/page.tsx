@@ -2,14 +2,13 @@
  * About page — statement, who we are, production services, AI workflow,
  * production log CTA, more-about links, campaign CTA.
  *
- * Section order: Statement -> Body ("Who We Are") -> Production Services ->
+ * Section order: Statement -> Who We Are -> Production Services ->
  * AI Workflow -> Production Log CTA -> More About Vantage -> CtaSection.
  *
  * Note: the founders/team grid no longer renders here — it lives on
  * /our-company. FounderCard and the `founders` GROQ field/query are
- * intentionally untouched; `page.founders` is still used below for the
- * Organization JSON-LD and to filter founder names out of the "Who We Are"
- * body copy.
+ * intentionally untouched; `page.founders` is still used below for
+ * Organization JSON-LD.
  *
  * PageHero was removed for the redesign; featuredImage stays in
  * ABOUT_PAGE_QUERY for OG image fallback via resolveMetadataImage.
@@ -20,7 +19,6 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AboutStatementSection } from '@/components/about/AboutStatementSection';
 import { CtaSection } from '@/components/ui/CtaSection';
-import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { Link } from '@/i18n/navigation';
@@ -32,9 +30,7 @@ import {
   buildPageMetadata,
   seoMetaTitle,
 } from '@/lib/metadata';
-import { filterAboutBodyBlocks } from '@/lib/about-content';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
-import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
   aboutBreadcrumb,
@@ -96,14 +92,6 @@ export default async function AboutPage({ params }: Props) {
 
   if (!page) notFound();
 
-  const bodyBlocks = filterAboutBodyBlocks(
-    typedLocale === 'zh' && page.bodyZh?.length
-      ? mergeChineseBodyWithEnglishMedia(page.bodyZh, page.body ?? undefined)
-      : page.body ?? undefined,
-    page.founders?.map((founder) => founder.name).filter((name): name is string => Boolean(name)) ??
-      [],
-  );
-
   const pageTitleLabel = pickLocaleFieldWithPhrases(
     typedLocale,
     page.title,
@@ -129,12 +117,6 @@ export default async function AboutPage({ params }: Props) {
       />
 
       <AboutStatementSection />
-
-      <SectionWrapper fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <PortableTextContent blocks={bodyBlocks} />
-        </div>
-      </SectionWrapper>
 
       {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 
