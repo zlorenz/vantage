@@ -79,6 +79,203 @@
   },
   {
     "type": "type",
+    "name": "portfolioEntry.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "portfolioEntry"
+    }
+  },
+  {
+    "name": "videoEvent",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "videoEvent"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "eventType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "view_start"
+            },
+            {
+              "type": "string",
+              "value": "milestone"
+            },
+            {
+              "type": "string",
+              "value": "complete"
+            },
+            {
+              "type": "string",
+              "value": "click_play"
+            },
+            {
+              "type": "string",
+              "value": "impression"
+            },
+            {
+              "type": "string",
+              "value": "click_through"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "milestonePercent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "number",
+              "value": 25
+            },
+            {
+              "type": "number",
+              "value": 50
+            },
+            {
+              "type": "number",
+              "value": 75
+            },
+            {
+              "type": "number",
+              "value": 90
+            },
+            {
+              "type": "number",
+              "value": 100
+            }
+          ]
+        },
+        "optional": true
+      },
+      "source": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "vimeo"
+            },
+            {
+              "type": "string",
+              "value": "native_carousel"
+            },
+            {
+              "type": "string",
+              "value": "xinpianchang"
+            },
+            {
+              "type": "string",
+              "value": "youtube"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "videoId": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "portfolioEntryRef": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "portfolioEntry.reference"
+        },
+        "optional": true
+      },
+      "pagePath": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "locale": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "sessionId": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "type": "type",
     "name": "sanity.fileAsset.reference",
     "value": {
       "type": "object",
@@ -440,36 +637,6 @@
         },
         "optional": true
       }
-    }
-  },
-  {
-    "type": "type",
-    "name": "portfolioEntry.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "portfolioEntry"
     }
   },
   {

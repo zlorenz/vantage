@@ -8,6 +8,9 @@ import {
 } from 'react';
 import {useLocale, useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
+import {trackImpressionOnce, trackVideoEvent} from '@/lib/video-events';
+import {normalizeStoredVideoUrl} from '@/lib/video-url';
+import {extractVimeoId} from '@/lib/vimeo';
 import {CarouselVimeo} from './CarouselVimeo';
 import {
   detectPillarboxContentAspect,
@@ -37,6 +40,15 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
           params: {slug: slide.hrefSlug},
         } as const)
       : null;
+    const slideKey = slide.portfolioEntryRef || slide.slug;
+    const videoId = slide.vimeoUrl
+      ? extractVimeoId(normalizeStoredVideoUrl(slide.vimeoUrl)) ?? undefined
+      : undefined;
+    const carouselEventBase = {
+      source: 'native_carousel' as const,
+      videoId,
+      portfolioEntryRef: slide.portfolioEntryRef,
+    };
     const interactive = active;
     // ZH: static featuredImage poster only — no Vimeo/XPC preview (autoplay unreliable).
     const allowVideoPreview = locale !== 'zh';
@@ -47,6 +59,18 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         setPlayerReady(false);
       }
     }, [shouldMountVideo]);
+
+    useEffect(() => {
+      if (!active) return;
+      trackImpressionOnce(slideKey, carouselEventBase);
+    }, [active, slideKey, videoId, slide.portfolioEntryRef]);
+
+    const trackCarouselClickThrough = () => {
+      trackVideoEvent({
+        eventType: 'click_through',
+        ...carouselEventBase,
+      });
+    };
 
     // Desktop-only: scan the poster that desktop actually paints for baked-in
     // side bars. Prefer posterUrlDesktop (16:9) — the mobile bake is a tall
@@ -169,6 +193,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                     interactive ? 'pointer-events-auto' : 'pointer-events-none'
                   }`}
                   tabIndex={interactive ? undefined : -1}
+                  onClick={trackCarouselClickThrough}
                 >
                   {t('exploreButton')}
                   <span className="vp-proto-carousel__explore-caret" aria-hidden>
@@ -210,6 +235,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               }`}
               aria-label="Watch"
               tabIndex={interactive ? undefined : -1}
+              onClick={trackCarouselClickThrough}
             >
               <span className="vp-proto-carousel__watch-cluster">
                 <span className="vp-proto-carousel__watch-label-mask">

@@ -85,6 +85,7 @@ export async function loadFeaturedWorkSlides(
     );
 
     return {
+      portfolioEntryRef: entry._id,
       slug,
       hrefSlug: locale === 'zh' ? entry.slugZh || slug : slug,
       brandLine,

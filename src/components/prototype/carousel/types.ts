@@ -1,4 +1,6 @@
 export type PrototypeCarouselSlide = {
+  /** Sanity portfolioEntry document id — weak ref for video events. */
+  portfolioEntryRef: string;
   slug: string;
   hrefSlug: string;
   brandLine: string;

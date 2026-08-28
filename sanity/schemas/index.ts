@@ -20,6 +20,7 @@ import { blogPost } from './blogPost';
 import { page } from './page';
 import { trashRecord } from './trashRecord';
 import { campaignBriefAttachment } from './campaignBriefAttachment';
+import { videoEvent } from './videoEvent';
 
 import { seoFields } from './objects/seoFields';
 import { trashMetadata } from './objects/trashMetadata';
@@ -71,4 +72,5 @@ export const schemaTypes = [
   page,
   trashRecord,
   campaignBriefAttachment,
+  videoEvent,
 ];

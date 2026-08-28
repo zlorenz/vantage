@@ -30,6 +30,36 @@ export type GalleryImageImage = {
   _type: "image";
 };
 
+export type PortfolioEntryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "portfolioEntry";
+};
+
+export type VideoEvent = {
+  _id: string;
+  _type: "videoEvent";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  eventType?:
+    | "view_start"
+    | "milestone"
+    | "complete"
+    | "click_play"
+    | "impression"
+    | "click_through";
+  milestonePercent?: 25 | 50 | 75 | 90 | 100;
+  source?: "vimeo" | "native_carousel" | "xinpianchang" | "youtube";
+  videoId?: string;
+  portfolioEntryRef?: PortfolioEntryReference;
+  pagePath?: string;
+  locale?: string;
+  sessionId?: string;
+  createdAt?: string;
+};
+
 export type SanityFileAssetReference = {
   _ref: string;
   _type: "reference";
@@ -87,13 +117,6 @@ export type TrashRecord = {
     valueJson?: string;
     _key: string;
   }>;
-};
-
-export type PortfolioEntryReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "portfolioEntry";
 };
 
 export type Page = {
@@ -960,10 +983,11 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | GalleryImageImage
+  | PortfolioEntryReference
+  | VideoEvent
   | SanityFileAssetReference
   | CampaignBriefAttachment
   | TrashRecord
-  | PortfolioEntryReference
   | Page
   | TrashMetadata
   | PdfDownload
