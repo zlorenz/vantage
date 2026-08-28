@@ -18,6 +18,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AboutStatementSection } from '@/components/about/AboutStatementSection';
+import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
@@ -117,6 +118,8 @@ export default async function AboutPage({ params }: Props) {
       />
 
       <AboutStatementSection />
+
+      <AboutWhoWeAreSection />
 
       {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 
