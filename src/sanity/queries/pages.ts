@@ -110,6 +110,15 @@ export const ABOUT_STATEMENT_MARKERS_QUERY = defineQuery(`
   }
 `)
 
+/** About Who We Are panel — four recent portfolio featured images (placeholder). */
+export const ABOUT_WHO_WE_ARE_IMAGES_QUERY = defineQuery(`
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
+  | order(publishedAt desc) [0..3] {
+    title,
+    featuredImage
+  }
+`)
+
 /** Contact — meta + optional hero/body; real contact fields come from siteSettings. */
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{
