@@ -1,0 +1,74 @@
+/* About statement — scroll-triggered word reveal (see AboutStatementAnimated.tsx). */
+
+.vp-about-statement {
+  --vp-about-reveal-duration: 0.6s;
+  --vp-about-reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --vp-about-stagger-step: 45ms;
+  --vp-about-blur-amount: 6px;
+  --vp-about-ink-dim: rgba(255, 255, 255, 0.16);
+  --vp-about-ink-lit: #ffffff;
+  /* Redesign orange #F37021 (design/.pen) — not --vp-orange (#f04e23). */
+  --vp-about-ink-accent: #f37021;
+}
+
+.vp-about-statement__line {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.vp-about-statement__word {
+  display: inline-block;
+  color: var(--vp-about-ink-dim);
+  filter: blur(var(--vp-about-blur-amount));
+  opacity: 0.8;
+  transform: translateY(0.06em);
+  transition:
+    color var(--vp-about-reveal-duration) var(--vp-about-reveal-ease),
+    filter var(--vp-about-reveal-duration) var(--vp-about-reveal-ease),
+    opacity var(--vp-about-reveal-duration) var(--vp-about-reveal-ease),
+    transform var(--vp-about-reveal-duration) var(--vp-about-reveal-ease);
+  transition-delay: calc(var(--i, 0) * var(--vp-about-stagger-step));
+  will-change: color, filter, opacity, transform;
+}
+
+.vp-about-statement__line.in-view .vp-about-statement__word {
+  color: var(--vp-about-ink-lit);
+  filter: blur(0);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vp-about-statement__line--accent.in-view .vp-about-statement__word {
+  color: var(--vp-about-ink-accent);
+}
+
+/* Reduced motion — final state immediately (JS adds .in-view + this class). */
+.vp-about-statement--reduced-motion .vp-about-statement__word,
+.vp-about-statement__line.in-view .vp-about-statement__word {
+  filter: blur(0);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vp-about-statement--reduced-motion .vp-about-statement__line--accent .vp-about-statement__word {
+  color: var(--vp-about-ink-accent);
+}
+
+.vp-about-statement--reduced-motion .vp-about-statement__line:not(.vp-about-statement__line--accent) .vp-about-statement__word {
+  color: var(--vp-about-ink-lit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-about-statement__word {
+    transition: none;
+    color: var(--vp-about-ink-lit);
+    filter: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .vp-about-statement__line--accent .vp-about-statement__word {
+    color: var(--vp-about-ink-accent);
+  }
+}
