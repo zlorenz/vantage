@@ -5,6 +5,8 @@
   --vp-about-reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --vp-about-stagger-step: 45ms;
   --vp-about-blur-amount: 6px;
+  --vp-about-marker-duration: 0.7s;
+  --vp-about-marker-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --vp-about-ink-dim: rgba(255, 255, 255, 0.16);
   --vp-about-ink-lit: #ffffff;
   /* Redesign orange #F37021 (design/.pen) — not --vp-orange (#f04e23). */
@@ -43,6 +45,48 @@
   color: var(--vp-about-ink-accent);
 }
 
+.vp-about-statement__marker {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  max-width: 0;
+  overflow: hidden;
+  vertical-align: middle;
+  margin: 0 0.15em;
+  transition:
+    width var(--vp-about-marker-duration) var(--vp-about-marker-ease),
+    max-width var(--vp-about-marker-duration) var(--vp-about-marker-ease);
+  transition-delay: calc(var(--i, 0) * var(--vp-about-stagger-step));
+}
+
+.vp-about-statement__line.in-view .vp-about-statement__marker {
+  width: var(--marker-w, 180px);
+  max-width: var(--marker-w, 180px);
+}
+
+.vp-about-statement__marker-media {
+  display: block;
+  height: 0.85em;
+  width: auto;
+  aspect-ratio: 585 / 328;
+  border-radius: 10px;
+  opacity: 0;
+  transform: scale(1.08);
+  transition:
+    opacity var(--vp-about-marker-duration) ease,
+    transform var(--vp-about-marker-duration) var(--vp-about-marker-ease);
+  transition-delay: calc(var(--i, 0) * var(--vp-about-stagger-step) + 0.05s);
+}
+
+.vp-about-statement__marker-placeholder {
+  background: var(--color-vp-search-thumb-bg);
+}
+
+.vp-about-statement__line.in-view .vp-about-statement__marker-media {
+  opacity: 1;
+  transform: scale(1);
+}
+
 /* Reduced motion — final state immediately (JS adds .in-view + this class). */
 .vp-about-statement--reduced-motion .vp-about-statement__word,
 .vp-about-statement__line.in-view .vp-about-statement__word {
@@ -59,6 +103,18 @@
   color: var(--vp-about-ink-lit);
 }
 
+.vp-about-statement--reduced-motion .vp-about-statement__marker,
+.vp-about-statement__line.in-view .vp-about-statement__marker {
+  width: var(--marker-w, 180px);
+  max-width: var(--marker-w, 180px);
+}
+
+.vp-about-statement--reduced-motion .vp-about-statement__marker-media,
+.vp-about-statement__line.in-view .vp-about-statement__marker-media {
+  opacity: 1;
+  transform: scale(1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vp-about-statement__word {
     transition: none;
@@ -70,5 +126,17 @@
 
   .vp-about-statement__line--accent .vp-about-statement__word {
     color: var(--vp-about-ink-accent);
+  }
+
+  .vp-about-statement__marker {
+    width: var(--marker-w, 180px);
+    max-width: var(--marker-w, 180px);
+    transition: none;
+  }
+
+  .vp-about-statement__marker-media {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
