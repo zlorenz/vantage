@@ -30,16 +30,19 @@ export type PortfolioCaseSlide = SlideBase &
         kind: 'vimeo';
         vimeoUrl: string;
         posterUrl?: string;
+        portfolioEntryRef?: string;
       }
     | {
         kind: 'youtube';
         videoId: string;
         posterUrl: string;
+        portfolioEntryRef?: string;
       }
     | {
         kind: 'xinpianchang';
         embedUrl: string;
         posterUrl?: string;
+        portfolioEntryRef?: string;
       }
   );
 
@@ -80,6 +83,7 @@ async function resolveSlide(args: {
   featuredImage?: SanityImage;
   overlayTitle?: string;
   description?: string;
+  portfolioEntryRef?: string;
 }): Promise<PortfolioCaseSlide | null> {
   const {
     key,
@@ -89,6 +93,7 @@ async function resolveSlide(args: {
     featuredImage,
     overlayTitle,
     description,
+    portfolioEntryRef,
   } = args;
   const featured = featuredPosterUrl(featuredImage);
   const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null;
@@ -108,6 +113,7 @@ async function resolveSlide(args: {
       kind: 'xinpianchang',
       embedUrl: xinpianchangUrl,
       posterUrl,
+      portfolioEntryRef,
       overlayTitle: title,
       description: body,
     };
@@ -121,6 +127,7 @@ async function resolveSlide(args: {
       kind: 'youtube',
       videoId: parsed.id,
       posterUrl: posterUrl ?? youTubePosterUrl(parsed.id, 'hq'),
+      portfolioEntryRef,
       overlayTitle: title,
       description: body,
     };
@@ -132,6 +139,7 @@ async function resolveSlide(args: {
       kind: 'vimeo',
       vimeoUrl: parsed.url,
       posterUrl,
+      portfolioEntryRef,
       overlayTitle: title,
       description: body,
     };
@@ -147,6 +155,7 @@ async function resolveSlide(args: {
 export async function buildPortfolioCaseSlides(args: {
   locale: Locale;
   phrases?: Record<string, string> | null;
+  portfolioEntryRef?: string;
   vimeoUrl: string;
   xinpianchangUrl?: string | null;
   featuredImage?: SanityImage;
@@ -159,6 +168,7 @@ export async function buildPortfolioCaseSlides(args: {
   const {
     locale,
     phrases,
+    portfolioEntryRef,
     vimeoUrl,
     xinpianchangUrl,
     featuredImage,
@@ -195,6 +205,7 @@ export async function buildPortfolioCaseSlides(args: {
     featuredImage,
     overlayTitle: mainOverlay || undefined,
     description: mainDescription || undefined,
+    portfolioEntryRef,
   });
   if (!main) return null;
 
@@ -220,6 +231,7 @@ export async function buildPortfolioCaseSlides(args: {
           xinpianchangUrl: video.xinpianchangUrl,
           overlayTitle: episodeTitle || undefined,
           description: episodeDescription || undefined,
+          portfolioEntryRef,
         });
       }),
     )

@@ -127,6 +127,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
   const caseCarouselSlides = await buildPortfolioCaseSlides({
     locale: typedLocale,
     phrases: phraseRecord,
+    portfolioEntryRef: entry._id,
     vimeoUrl: entry.vimeoUrl,
     xinpianchangUrl: entry.xinpianchangUrl,
     featuredImage: entry.featuredImage,
@@ -185,6 +186,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 locale={typedLocale}
                 vimeoUrl={entry.vimeoUrl}
                 xinpianchangUrl={entry.xinpianchangUrl}
+                portfolioEntryRef={entry._id}
                 featuredImage={entry.featuredImage}
               />
             </div>

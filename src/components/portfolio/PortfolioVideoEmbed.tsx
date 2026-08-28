@@ -24,6 +24,8 @@ interface PortfolioVideoEmbedProps {
   locale: Locale;
   vimeoUrl: string;
   xinpianchangUrl?: string;
+  /** Sanity portfolioEntry document id (weak ref on analytics write). */
+  portfolioEntryRef?: string;
   /** Main-film Sanity featured image — preferred poster when set. */
   featuredImage?: SanityImage;
 }
@@ -32,6 +34,7 @@ export async function PortfolioVideoEmbed({
   locale,
   vimeoUrl,
   xinpianchangUrl,
+  portfolioEntryRef,
   featuredImage,
 }: PortfolioVideoEmbedProps) {
   const t = await getTranslations('Portfolio');
@@ -54,6 +57,7 @@ export async function PortfolioVideoEmbed({
       <LazyXinpianchangPlayer
         embedUrl={xinpianchangUrl}
         posterUrl={posterUrl}
+        portfolioEntryRef={portfolioEntryRef}
       />
     );
   }
@@ -67,11 +71,22 @@ export async function PortfolioVideoEmbed({
   }
 
   if (parsed?.provider === 'youtube') {
-    return <LazyYouTubePlayer videoId={parsed.id} />;
+    return (
+      <LazyYouTubePlayer
+        videoId={parsed.id}
+        portfolioEntryRef={portfolioEntryRef}
+      />
+    );
   }
 
   if (parsed?.provider === 'vimeo') {
-    return <LazyVimeoPlayer vimeoUrl={parsed.url} posterUrl={posterUrl} />;
+    return (
+      <LazyVimeoPlayer
+        vimeoUrl={parsed.url}
+        posterUrl={posterUrl}
+        portfolioEntryRef={portfolioEntryRef}
+      />
+    );
   }
 
   return (

@@ -117,6 +117,7 @@ function ActiveSlidePlayer({
       <LazyVimeoPlayer
         vimeoUrl={slide.vimeoUrl}
         posterUrl={slide.posterUrl}
+        portfolioEntryRef={slide.portfolioEntryRef}
         onPlay={onPlay}
         hidePlayButton={hidePlayButton}
       />
@@ -126,6 +127,7 @@ function ActiveSlidePlayer({
     return (
       <LazyYouTubePlayer
         videoId={slide.videoId}
+        portfolioEntryRef={slide.portfolioEntryRef}
         onPlay={onPlay}
         hidePlayButton={hidePlayButton}
       />
@@ -135,6 +137,7 @@ function ActiveSlidePlayer({
     <LazyXinpianchangPlayer
       embedUrl={slide.embedUrl}
       posterUrl={slide.posterUrl}
+      portfolioEntryRef={slide.portfolioEntryRef}
       onPlay={onPlay}
       hidePlayButton={hidePlayButton}
     />

@@ -17,11 +17,14 @@ import Image from 'next/image';
 import type Player from '@vimeo/player';
 import { extractVimeoId, vimeoPlayerEmbedSrc } from '@/lib/vimeo';
 import { normalizeStoredVideoUrl } from '@/lib/video-url';
+import { trackVideoEvent } from '@/lib/video-events';
 
 interface LazyVimeoPlayerProps {
   vimeoUrl: string;
   posterUrl?: string;
   posterAlt?: string;
+  /** Sanity portfolioEntry document id (weak ref on analytics write). */
+  portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
@@ -29,7 +32,7 @@ interface LazyVimeoPlayerProps {
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
-const PROGRESS_MILESTONES = [25, 50, 75] as const;
+const PROGRESS_MILESTONES = [25, 50, 75, 90, 100] as const;
 
 /** Touch phones/tablets (and narrow viewports): expand to fullscreen on first play. */
 function prefersMobileFullscreen(): boolean {
@@ -73,6 +76,7 @@ export function LazyVimeoPlayer({
   vimeoUrl,
   posterUrl,
   posterAlt = '',
+  portfolioEntryRef,
   onPlay,
   hidePlayButton = false,
 }: LazyVimeoPlayerProps) {
@@ -121,6 +125,12 @@ export function LazyVimeoPlayer({
 
     const onPlay = () => {
       pushVimeoDataLayerEvent('CE - Vimeo play', videoId, 0);
+      trackVideoEvent({
+        eventType: 'view_start',
+        source: 'vimeo',
+        videoId,
+        portfolioEntryRef,
+      });
     };
 
     const onTimeUpdate = (data: { percent: number }) => {
@@ -132,12 +142,25 @@ export function LazyVimeoPlayer({
         ) {
           milestonesFiredRef.current.add(milestone);
           pushVimeoDataLayerEvent('CE - Vimeo progress', videoId, milestone);
+          trackVideoEvent({
+            eventType: 'milestone',
+            milestonePercent: milestone,
+            source: 'vimeo',
+            videoId,
+            portfolioEntryRef,
+          });
         }
       }
     };
 
     const onEnded = () => {
       pushVimeoDataLayerEvent('CE - Vimeo complete', videoId, 100);
+      trackVideoEvent({
+        eventType: 'complete',
+        source: 'vimeo',
+        videoId,
+        portfolioEntryRef,
+      });
     };
 
     void (async () => {
@@ -177,7 +200,7 @@ export function LazyVimeoPlayer({
         player = null;
       }
     };
-  }, [embedSrc, videoId]);
+  }, [embedSrc, videoId, portfolioEntryRef]);
 
   const startPlayback = () => {
     if (startedFromGestureRef.current) return;

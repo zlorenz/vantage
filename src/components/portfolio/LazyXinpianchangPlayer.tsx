@@ -6,12 +6,15 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { xinpianchangToEmbedUrl } from '@/lib/xinpianchang';
+import { extractXinpianchangMid, xinpianchangToEmbedUrl } from '@/lib/xinpianchang';
+import { trackVideoEvent } from '@/lib/video-events';
 
 interface LazyXinpianchangPlayerProps {
   embedUrl: string;
   posterUrl?: string;
   posterAlt?: string;
+  /** Sanity portfolioEntry document id (weak ref on analytics write). */
+  portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
@@ -22,6 +25,7 @@ export function LazyXinpianchangPlayer({
   embedUrl,
   posterUrl,
   posterAlt = '',
+  portfolioEntryRef,
   onPlay,
   hidePlayButton = false,
 }: LazyXinpianchangPlayerProps) {
@@ -42,6 +46,12 @@ export function LazyXinpianchangPlayer({
         type="button"
         className="group relative block aspect-video w-full cursor-pointer border-0 bg-black p-0"
         onClick={() => {
+          trackVideoEvent({
+            eventType: 'click_play',
+            source: 'xinpianchang',
+            videoId: extractXinpianchangMid(embedUrl) ?? undefined,
+            portfolioEntryRef,
+          });
           setPlaying(true);
           onPlay?.();
         }}

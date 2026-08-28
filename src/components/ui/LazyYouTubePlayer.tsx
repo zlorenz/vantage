@@ -7,10 +7,13 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { youTubePosterUrl } from '@/lib/youtube';
+import { trackVideoEvent } from '@/lib/video-events';
 
 interface LazyYouTubePlayerProps {
   videoId: string;
   title?: string;
+  /** Sanity portfolioEntry document id (weak ref on analytics write). */
+  portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
@@ -29,6 +32,7 @@ function prefersMobileFullscreen(): boolean {
 export function LazyYouTubePlayer({
   videoId,
   title = 'YouTube video',
+  portfolioEntryRef,
   onPlay,
   hidePlayButton = false,
 }: LazyYouTubePlayerProps) {
@@ -67,6 +71,12 @@ export function LazyYouTubePlayer({
       type="button"
       className="group relative block aspect-video w-full cursor-pointer border-0 bg-black p-0"
       onClick={() => {
+        trackVideoEvent({
+          eventType: 'click_play',
+          source: 'youtube',
+          videoId,
+          portfolioEntryRef,
+        });
         setMobileFullscreen(prefersMobileFullscreen());
         setPlaying(true);
         onPlay?.();
