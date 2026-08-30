@@ -2,9 +2,10 @@
  * Multi-video case study carousel styles — card chrome matches .vp-case-video /
  * .vp-portfolio-index__card--styled. No vertical scroll lock (unlike /work).
  *
- * Full-bleed breakout: peeks reach the viewport edges. Desktop snaps active
- * card to the content-rail left edge (align:start + viewport pad); mobile
- * keeps center snap. Inactive peeks match /work (dim + blur + hide overlay).
+ * Full-bleed breakout: peeks reach the viewport edges. Active card snaps to
+ * the content-rail left edge (align:start + viewport pad) at every breakpoint
+ * so the next slide peeks on the right. Inactive peeks match /work
+ * (dim + blur + hide overlay). Mobile cards use 4:5; desktop keeps 16:9.
  */
 
 .vp-case-carousel {
@@ -12,7 +13,8 @@
   --vp-case-rail-pad: 1rem;
   --vp-case-rail-inset: var(--vp-case-rail-pad);
   --vp-case-slide-gap: 0.75rem;
-  --vp-case-card-scale: 1;
+  /* Mobile: leave room for a right-edge peek of the next slide */
+  --vp-case-card-scale: 0.85;
   --vp-case-card-width: calc(
     min(
         calc(100vw - 2 * var(--vp-case-rail-pad)),
@@ -25,7 +27,7 @@
   --vp-case-overlay-pad-x: 1.25rem;
   --vp-case-overlay-pad-bottom: 1.2rem;
   /* Viewport X of the active card’s left edge (fixed; does not track slides) */
-  --vp-case-active-left: calc((100vw - var(--vp-case-card-width)) / 2);
+  --vp-case-active-left: var(--vp-case-rail-inset);
 
   position: relative;
   width: 100vw;
@@ -46,7 +48,6 @@
     /* Desktop: ~65% of rail card (middle of 60–70%). Height follows 16:9. */
     --vp-case-card-scale: 0.65;
     --vp-case-overlay-pad-bottom: 1.35rem;
-    --vp-case-active-left: var(--vp-case-rail-inset);
   }
 }
 
@@ -91,17 +92,12 @@
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-  .vp-case-carousel__viewport {
-    /* Embla align:start snaps into this padded content box → rail left edge */
-    padding-left: var(--vp-case-rail-inset);
-    padding-right: max(
-      var(--vp-case-rail-inset),
-      calc(100vw - var(--vp-case-rail-inset) - var(--vp-case-card-width))
-    );
-  }
+  /* Embla align:start snaps into this padded content box → rail left edge */
+  padding-left: var(--vp-case-rail-inset);
+  padding-right: max(
+    var(--vp-case-rail-inset),
+    calc(100vw - var(--vp-case-rail-inset) - var(--vp-case-card-width))
+  );
 }
 
 /* Desktop-only edge arrows — hidden on touch / narrow viewports */
@@ -179,7 +175,8 @@
 .vp-case-carousel__card {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
+  /* Mobile-first taller frame; desktop restores 16:9 below */
+  aspect-ratio: 4 / 5;
   width: 100%;
   border-radius: 1.75rem;
   /* iOS Safari: overflow+radius fails to clip when a transform is present
@@ -192,10 +189,62 @@
   transform: scale(var(--vp-case-inactive-scale));
   opacity: var(--vp-case-inactive-opacity);
   filter: blur(4px);
+  /* Do not transition filter — iOS Safari composites blur→none as a black flash */
   transition:
     opacity 280ms ease,
-    transform 280ms ease,
-    filter 280ms ease;
+    transform 280ms ease;
+}
+
+@media (min-width: 768px) {
+  .vp-case-carousel__card {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Players ship with Tailwind aspect-video — fill the card frame instead */
+.vp-case-carousel__card > .aspect-video {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+  /* PeekPoster underlay stays painted; avoid black shell while player mounts */
+  background: transparent !important;
+}
+
+.vp-case-carousel__card > .aspect-video button {
+  background: transparent !important;
+}
+
+/* Hide duplicate poster on the player — underlay Image is the stable paint */
+.vp-case-carousel__card > .aspect-video img {
+  opacity: 0;
+}
+
+/* Playing: opaque frame (letterbox, not poster bleed) + catcher above iframe */
+.vp-case-carousel__slide.is-playing .vp-case-carousel__card > .aspect-video {
+  background: #000 !important;
+}
+
+.vp-case-carousel__slide.is-playing .vp-case-carousel__peek {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vp-case-carousel__drag-catcher {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: grab;
+  /* Let Embla see horizontal drags; vertical page scroll still works */
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  /* Transparent — only exists to own pointer/wheel events over the iframe */
+  background: transparent;
 }
 
 .vp-case-carousel__slide.is-active .vp-case-carousel__card {
@@ -203,6 +252,11 @@
   transform: none;
   opacity: 1;
   filter: none;
+}
+
+/* Underlay peek is visual-only while the active player handles hits */
+.vp-case-carousel__slide.is-active .vp-case-carousel__peek {
+  pointer-events: none;
 }
 
 /* Ensure poster/player fill inherits the round clip on mobile WebKit */
@@ -270,10 +324,7 @@
   transition: opacity 280ms ease;
 }
 
-/* Play glyph only on the active card (peeks stay chrome-quiet like /work) */
-.vp-case-carousel__slide.is-active .vp-case-carousel__play-affordance {
-  opacity: 1;
-}
+/* Peek play glyph stays hidden — active slide uses the Lazy*Player control */
 
 .vp-case-carousel__play-circle {
   display: flex;
