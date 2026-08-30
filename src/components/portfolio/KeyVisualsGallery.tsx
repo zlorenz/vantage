@@ -5,6 +5,7 @@
 
 import Image from 'next/image';
 import {urlForImage} from '@/lib/sanity';
+import {snapNextImageWidth} from '../../../shared/next-image-sizes';
 
 export type KeyVisualAsset = {
   _id: string;
@@ -59,11 +60,13 @@ export function KeyVisualsGallery({keyVisuals}: KeyVisualsGalleryProps) {
           const {asset} = item;
           const width = asset.metadata?.dimensions?.width || FALLBACK_WIDTH;
           const height = asset.metadata?.dimensions?.height || FALLBACK_HEIGHT;
+          const displayWidth = snapNextImageWidth(Math.min(width, 1600));
+          const displayHeight = Math.round((height / width) * displayWidth);
           const imageUrl = urlForImage({
             _type: 'image',
             asset: {_type: 'reference', _ref: asset._id},
           })
-            .width(Math.min(width, 1600))
+            .width(displayWidth)
             .url();
 
           return (
@@ -71,8 +74,8 @@ export function KeyVisualsGallery({keyVisuals}: KeyVisualsGalleryProps) {
               <Image
                 src={imageUrl}
                 alt={asset.altText?.trim() || ''}
-                width={width}
-                height={height}
+                width={displayWidth}
+                height={displayHeight}
                 className="vp-key-visuals-gallery__img"
                 sizes="(max-width: 639px) 100vw, 33vw"
               />

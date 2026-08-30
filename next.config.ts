@@ -4,6 +4,10 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 import { encodeRedirectRule } from './shared/redirect-encoding';
 import { legacyZhRedirects } from './src/lib/legacy-zh-redirects';
+import {
+  NEXT_IMAGE_DEVICE_SIZES,
+  NEXT_IMAGE_SIZES,
+} from './shared/next-image-sizes';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -101,10 +105,14 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    qualities: [75],
+    deviceSizes: [...NEXT_IMAGE_DEVICE_SIZES],
+    imageSizes: [...NEXT_IMAGE_SIZES],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
+        pathname: '/images/7oesp86l/**',
       },
       {
         protocol: 'https',
