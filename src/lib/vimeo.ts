@@ -5,6 +5,23 @@ export {extractVimeoId, vimeoThumbnailUrl};
 /** Cache Vimeo still URLs — picture assets change rarely. */
 const VIMEO_THUMB_REVALIDATE_SECONDS = 86400;
 
+/** Cap upstream Vimeo API/oEmbed latency during RSC render (prevents 503 timeouts). */
+const VIMEO_THUMB_FETCH_TIMEOUT_MS = 2500;
+
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit & {next?: {revalidate?: number}},
+  timeoutMs: number,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, {...init, signal: controller.signal});
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * Privacy hash required for some unlisted/private embeds.
  * Supports `?h=…` and path form `vimeo.com/{id}/{hash}`.
@@ -52,7 +69,7 @@ export async function fetchHighestVimeoThumbnailUrl(
   const token = process.env.VIMEO_ACCESS_TOKEN;
   if (token) {
     try {
-      const res = await fetch(
+      const res = await fetchWithTimeout(
         `https://api.vimeo.com/videos/${id}?fields=pictures.sizes`,
         {
           headers: {
@@ -61,6 +78,7 @@ export async function fetchHighestVimeoThumbnailUrl(
           },
           next: {revalidate: VIMEO_THUMB_REVALIDATE_SECONDS},
         },
+        VIMEO_THUMB_FETCH_TIMEOUT_MS,
       );
       if (res.ok) {
         const body = (await res.json()) as VimeoPicturesResponse;
@@ -84,9 +102,10 @@ export async function fetchHighestVimeoThumbnailUrl(
     const oembedTarget = /^\d+$/.test(urlOrId)
       ? `https://vimeo.com/${urlOrId}`
       : urlOrId;
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(oembedTarget)}`,
       {next: {revalidate: VIMEO_THUMB_REVALIDATE_SECONDS}},
+      VIMEO_THUMB_FETCH_TIMEOUT_MS,
     );
     if (res.ok) {
       const data = (await res.json()) as {thumbnail_url?: string};

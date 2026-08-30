@@ -6,7 +6,7 @@
 
 import Image from 'next/image';
 import type { SanityImageSource } from '@sanity/image-url';
-import { Link } from '@/i18n/navigation';
+import { PortfolioEntryLink } from '@/components/navigation/PortfolioEntryLink';
 import { phraseRecordToMap } from '@phrase-book';
 import { resolveEntryDisplayTitles } from '@/lib/display-titles';
 import { urlForImage } from '@/lib/sanity';
@@ -68,11 +68,8 @@ export function PortfolioCard({
       className="vp-card vp-card-reveal"
       style={{ animationDelay: `${revealIndex * 40}ms` }}
     >
-      <Link
-        href={{
-          pathname: '/portfolio/[slug]',
-          params: { slug: slugParam },
-        }}
+      <PortfolioEntryLink
+        slug={slugParam}
         className="vp-card__link block text-white no-underline"
       >
         <div className="vp-card__media relative aspect-video w-full overflow-hidden">
@@ -89,7 +86,7 @@ export function PortfolioCard({
             dangerouslySetInnerHTML={{ __html: thumbTitle }}
           />
         </div>
-      </Link>
+      </PortfolioEntryLink>
     </article>
   );
 }

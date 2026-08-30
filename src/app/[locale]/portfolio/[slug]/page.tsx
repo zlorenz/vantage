@@ -10,9 +10,7 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
 import { KeyVisualsGallery } from '@/components/portfolio/KeyVisualsGallery';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
-import { PortfolioCaseCarousel } from '@/components/portfolio/PortfolioCaseCarousel';
-import { PortfolioVideoEmbed } from '@/components/portfolio/PortfolioVideoEmbed';
-import { buildPortfolioCaseSlides } from '@/components/portfolio/prepare-portfolio-case-slides';
+import { PortfolioCaseMedia } from '@/components/portfolio/PortfolioCaseMedia';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { getPhraseMap, getPhraseRecord } from '@/lib/phrase-book';
@@ -124,20 +122,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
     phraseRecord,
   );
 
-  const caseCarouselSlides = await buildPortfolioCaseSlides({
-    locale: typedLocale,
-    phrases: phraseRecord,
-    portfolioEntryRef: entry._id,
-    vimeoUrl: entry.vimeoUrl,
-    xinpianchangUrl: entry.xinpianchangUrl,
-    featuredImage: entry.featuredImage,
-    heroFilmTitle: entry.heroFilmTitle,
-    heroFilmTitleZh: entry.heroFilmTitleZh,
-    description: entry.description,
-    descriptionZh: entry.descriptionZh,
-    additionalVideos: entry.additionalVideos,
-  });
-
   const breadcrumbItems = [
     homeBreadcrumb(typedLocale),
     workBreadcrumb(typedLocale),
@@ -178,19 +162,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
             markets={entry.markets}
             crewCredits={entry.crewCredits}
           />
-          {caseCarouselSlides ? (
-            <PortfolioCaseCarousel slides={caseCarouselSlides} />
-          ) : (
-            <div className="vp-case-video">
-              <PortfolioVideoEmbed
-                locale={typedLocale}
-                vimeoUrl={entry.vimeoUrl}
-                xinpianchangUrl={entry.xinpianchangUrl}
-                portfolioEntryRef={entry._id}
-                featuredImage={entry.featuredImage}
-              />
-            </div>
-          )}
+          <PortfolioCaseMedia locale={typedLocale} entry={entry} />
           <div className="mt-24 flex flex-col gap-28">
             <PortfolioCredits
               crewCredits={entry.crewCredits}

@@ -7,7 +7,7 @@ import {
   type CSSProperties,
 } from 'react';
 import {useLocale, useTranslations} from 'next-intl';
-import {Link} from '@/i18n/navigation';
+import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink';
 import {trackImpressionOnce, trackVideoEvent} from '@/lib/video-events';
 import {normalizeStoredVideoUrl} from '@/lib/video-url';
 import {extractVimeoId} from '@/lib/vimeo';
@@ -34,12 +34,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
     const [contentAspectHint, setContentAspectHint] = useState<number | null>(
       null,
     );
-    const portfolioHref = slide.hrefSlug
-      ? ({
-          pathname: '/portfolio/[slug]' as const,
-          params: {slug: slide.hrefSlug},
-        } as const)
-      : null;
+    const portfolioSlug = slide.hrefSlug?.trim() || null;
     const slideKey = slide.portfolioEntryRef || slide.slug;
     const videoId = slide.vimeoUrl
       ? extractVimeoId(normalizeStoredVideoUrl(slide.vimeoUrl)) ?? undefined
@@ -186,14 +181,15 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                 ) : null}
               </div>
               <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
-              {portfolioHref ? (
-                <Link
-                  href={portfolioHref}
+              {portfolioSlug ? (
+                <PortfolioEntryLink
+                  slug={portfolioSlug}
                   className={`vp-proto-carousel__explore ${
                     interactive ? 'pointer-events-auto' : 'pointer-events-none'
                   }`}
                   tabIndex={interactive ? undefined : -1}
                   onClick={trackCarouselClickThrough}
+                  showPendingHint
                 >
                   {t('exploreButton')}
                   <span className="vp-proto-carousel__explore-caret" aria-hidden>
@@ -212,7 +208,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                       />
                     </svg>
                   </span>
-                </Link>
+                </PortfolioEntryLink>
               ) : null}
             </div>
             <dl className="vp-proto-carousel__credits">
@@ -227,15 +223,16 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
             </dl>
           </div>
 
-          {portfolioHref ? (
-            <Link
-              href={portfolioHref}
+          {portfolioSlug ? (
+            <PortfolioEntryLink
+              slug={portfolioSlug}
               className={`vp-proto-carousel__watch ${
                 interactive ? 'pointer-events-auto' : 'pointer-events-none'
               }`}
               aria-label="Watch"
               tabIndex={interactive ? undefined : -1}
               onClick={trackCarouselClickThrough}
+              showPendingHint
             >
               <span className="vp-proto-carousel__watch-cluster">
                 <span className="vp-proto-carousel__watch-label-mask">
@@ -258,7 +255,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                   </svg>
                 </span>
               </span>
-            </Link>
+            </PortfolioEntryLink>
           ) : null}
         </div>
       </article>

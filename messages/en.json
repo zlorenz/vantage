@@ -24,6 +24,14 @@
     "loadingAria": "Loading search results",
     "closeAria": "Close search"
   },
+  "Navigation": {
+    "portfolioLoadErrorTitle": "This project couldn't load",
+    "portfolioLoadErrorBody": "The page failed to load — this is usually temporary. Try again, or return to the work index.",
+    "tryAgain": "Try again",
+    "backToWork": "Back to work",
+    "navigationFailed": "Navigation is taking longer than expected. Check your connection and try again.",
+    "dismiss": "Dismiss"
+  },
   "Home": {
     "workSectionOutline": "A BIT OF",
     "workSection": "OUR WORK",

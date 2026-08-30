@@ -24,6 +24,14 @@
     "loadingAria": "正在加载搜索结果",
     "closeAria": "关闭搜索"
   },
+  "Navigation": {
+    "portfolioLoadErrorTitle": "无法加载此项目",
+    "portfolioLoadErrorBody": "页面加载失败，通常是暂时性问题。请重试或返回作品索引。",
+    "tryAgain": "重试",
+    "backToWork": "返回作品",
+    "navigationFailed": "导航耗时超出预期。请检查网络连接后重试。",
+    "dismiss": "关闭"
+  },
   "Home": {
     "workSectionOutline": "精选",
     "workSection": "作品",

@@ -14,7 +14,7 @@ import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
 import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
-import {Link} from '@/i18n/navigation';
+import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink';
 import type {Locale} from '@/i18n/routing';
 import type {TaxonomyTerm} from '@/types/sanity';
 import {
@@ -841,11 +841,8 @@ export function PortfolioIndexCarousel({
                         />
                       </picture>
                       {mountContent ? (
-                        <Link
-                          href={{
-                            pathname: '/portfolio/[slug]',
-                            params: {slug: slide.hrefSlug},
-                          }}
+                        <PortfolioEntryLink
+                          slug={slide.hrefSlug}
                           className="vp-portfolio-index__card-link"
                           tabIndex={active ? undefined : -1}
                           aria-current={active ? 'true' : undefined}
@@ -876,7 +873,7 @@ export function PortfolioIndexCarousel({
                               ) : null}
                             </div>
                           </div>
-                        </Link>
+                        </PortfolioEntryLink>
                       ) : null}
                     </div>
                   ) : null}

@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
+import { PortfolioEntryLink } from '@/components/navigation/PortfolioEntryLink';
 import { Link } from '@/i18n/navigation';
 import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
@@ -144,8 +145,8 @@ function SearchCard({
 
   return (
     <article className="vp-card vp-card-reveal">
-      <Link
-        href={{ pathname: '/portfolio/[slug]', params: { slug: slugParam } }}
+      <PortfolioEntryLink
+        slug={slugParam}
         className="vp-card__link block text-white no-underline"
       >
         <div className="vp-card__media relative aspect-video w-full overflow-hidden">
@@ -155,7 +156,7 @@ function SearchCard({
           <div className="vp-card__overlay" aria-hidden />
           <h3 className="vp-card__title">{title}</h3>
         </div>
-      </Link>
+      </PortfolioEntryLink>
     </article>
   );
 }

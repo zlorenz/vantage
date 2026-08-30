@@ -1,0 +1,115 @@
+.vp-route-transition__bar {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 120;
+  width: 100%;
+  height: 3px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(253, 185, 19, 0.35) 20%,
+    #fdb913 50%,
+    rgba(253, 185, 19, 0.35) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  transition: opacity 120ms ease;
+}
+
+.vp-route-transition__bar.is-active {
+  opacity: 1;
+  animation: vp-route-transition-bar 1.1s ease-in-out infinite;
+}
+
+.vp-route-transition__veil {
+  position: fixed;
+  inset: 0;
+  z-index: 119;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.18);
+  transition: opacity 150ms ease;
+}
+
+.vp-route-transition__veil.is-active {
+  opacity: 1;
+}
+
+.vp-route-transition__toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 121;
+  display: flex;
+  max-width: min(24rem, calc(100vw - 2rem));
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  background: rgba(18, 18, 18, 0.96);
+  padding: 0.875rem 1rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.vp-route-transition__toast-text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.vp-route-transition__toast-dismiss {
+  align-self: flex-start;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.vp-route-transition__toast-dismiss:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@keyframes vp-route-transition-bar {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-route-transition__bar.is-active {
+    animation: none;
+    background: #fdb913;
+  }
+
+  .vp-route-transition__bar,
+  .vp-route-transition__veil {
+    transition: none;
+  }
+}
+
+.vp-link-pending-hint {
+  display: none;
+}
+
+.vp-proto-carousel__explore:has(.vp-link-pending-hint.is-pending),
+.vp-proto-carousel__watch:has(.vp-link-pending-hint.is-pending) {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.vp-proto-carousel__explore:has(.vp-link-pending-hint.is-pending) .vp-proto-carousel__explore-caret,
+.vp-proto-carousel__watch:has(.vp-link-pending-hint.is-pending) .vp-proto-carousel__watch-caret {
+  animation: vp-route-transition-bar 0.9s ease-in-out infinite;
+}

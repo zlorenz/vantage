@@ -9,6 +9,7 @@
 import type { ReactNode } from 'react';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
+import { RouteTransitionOverlay } from '@/components/navigation/RouteTransitionOverlay';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
 
@@ -27,6 +28,7 @@ export async function LayoutShell({
 }: LayoutShellProps) {
   return (
     <>
+      <RouteTransitionOverlay />
       <SiteHeader locale={locale} siteSettings={siteSettings} navPages={navPages} />
       <main id="main" className="site-main flex-1">
         {children}
