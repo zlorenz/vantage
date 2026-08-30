@@ -16,16 +16,22 @@
  *   in-point so WebKit buffers to HAVE_ENOUGH_DATA before activation.
  *   None of the progressive seek-gating runs on the HLS path.
  *
+ * Preload: active slide is always `auto`. Inactive neighbors use `auto`
+ * on desktop and `metadata` on mobile (<768px) to avoid multi-slide 720p
+ * downloads on first paint.
+ *
  * Everything else — the element setup, the ready latch, the active/inactive
  * pause, and the bounded in/out loop — is shared by both.
  */
 
 import {useEffect, useRef, useState} from 'react';
+import {carouselVideoPreload} from './carousel-preload';
 import {
   detectPillarboxContentAspect,
   isCarouselCoverMathEnabled,
   scheduleIdleWork,
 } from './detect-pillarbox-aspect';
+import {useCarouselDesktopViewport} from './use-carousel-desktop-viewport';
 
 /** Skip currentTime assignment when already at the in-point (avoids a seek that cancels play()). */
 const SEEK_TOLERANCE_S = 0.05;
@@ -175,6 +181,8 @@ export function CarouselNativeVideo({
   const hasBeenReadyRef = useRef(false);
   const [ready, setReady] = useState(false);
   const boundedLoop = previewEndSeconds != null;
+  const desktopViewport = useCarouselDesktopViewport();
+  const preload = carouselVideoPreload(active, desktopViewport);
 
   onReadyChangeRef.current = onReadyChange;
   contentAspectHintRef.current = contentAspectHint;
@@ -590,7 +598,7 @@ export function CarouselNativeVideo({
         muted
         playsInline
         loop={!boundedLoop}
-        preload="auto"
+        preload={preload}
         disablePictureInPicture
         onLoadedMetadata={handleLoadedMetadata}
         onError={() => onPlaybackError?.()}
