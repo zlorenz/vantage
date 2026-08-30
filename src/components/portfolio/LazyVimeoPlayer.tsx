@@ -16,6 +16,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import Image from 'next/image';
 import type Player from '@vimeo/player';
 import { extractVimeoId, vimeoPlayerEmbedSrc } from '@/lib/vimeo';
@@ -51,6 +52,8 @@ interface LazyVimeoPlayerProps {
   priority?: boolean;
   /** Carousel: open fullscreen on play; exit restores poster on all viewports. */
   fullscreenOnPlay?: boolean;
+  /** Hidden iframe warm-up for inactive carousel slides (no poster UI). */
+  prefetch?: boolean;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -85,6 +88,26 @@ function requestElementFullscreen(el: HTMLElement): void {
   anyEl.webkitRequestFullScreen?.();
 }
 
+function exitDocumentFullscreen(): void {
+  const doc = document as Document & {
+    webkitExitFullscreen?: () => void;
+  };
+  if (getFullscreenElement()) {
+    void document.exitFullscreen?.().catch(() => {});
+    doc.webkitExitFullscreen?.();
+  }
+}
+
+async function exitVimeoFullscreen(player: Player): Promise<void> {
+  try {
+    if (await player.getFullscreen()) {
+      await player.exitFullscreen();
+    }
+  } catch {
+    // Ignore — player may already be inline.
+  }
+}
+
 function pushVimeoDataLayerEvent(
   event: 'CE - Vimeo play' | 'CE - Vimeo progress' | 'CE - Vimeo complete',
   vimeoVideoId: string,
@@ -112,11 +135,15 @@ export function LazyVimeoPlayer({
   posterSizes = CASE_VIDEO_POSTER_SIZES,
   priority = false,
   fullscreenOnPlay = false,
+  prefetch = false,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [playerReady, setPlayerReady] = useState(false);
+  /** SDK was not ready on first tap — need a fresh gesture to play. */
+  const [awaitingTapToPlay, setAwaitingTapToPlay] = useState(false);
+  const awaitingTapToPlayRef = useRef(false);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -127,6 +154,11 @@ export function LazyVimeoPlayer({
   const enteredFullscreenRef = useRef(false);
   /** Set on play when this session should be fullscreen-only (mobile or carousel). */
   const fullscreenPlaybackRef = useRef(false);
+  /** Tap started playback before the Vimeo SDK was ready — show tap-to-play. */
+  const pendingStartRef = useRef(false);
+  /** Whether player.ready() was true at poster-tap time. */
+  const playerReadyAtTapRef = useRef(false);
+  const playbackWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onStopRef = useRef(onStop);
   onStopRef.current = onStop;
 
@@ -144,6 +176,10 @@ export function LazyVimeoPlayer({
         });
 
   useEffect(() => {
+    awaitingTapToPlayRef.current = awaitingTapToPlay;
+  }, [awaitingTapToPlay]);
+
+  useEffect(() => {
     setIsMobile(prefersMobileFullscreen());
   }, []);
 
@@ -152,18 +188,55 @@ export function LazyVimeoPlayer({
     void import('@vimeo/player');
   }, []);
 
-  const stopPlayback = useCallback(() => {
-    if (!startedFromGestureRef.current) return;
+  const clearPlaybackWatchdog = useCallback(() => {
+    if (playbackWatchdogRef.current) {
+      clearTimeout(playbackWatchdogRef.current);
+      playbackWatchdogRef.current = null;
+    }
+  }, []);
+
+  const resetToPoster = useCallback(() => {
+    clearPlaybackWatchdog();
     startedFromGestureRef.current = false;
     enteredFullscreenRef.current = false;
     fullscreenPlaybackRef.current = false;
+    pendingStartRef.current = false;
+    playerReadyAtTapRef.current = false;
+    awaitingTapToPlayRef.current = false;
+    setAwaitingTapToPlay(false);
     setPlaying(false);
     const player = playerRef.current;
     if (player) {
-      void player.pause().catch(() => {});
+      void exitVimeoFullscreen(player).finally(() => {
+        void player.pause().catch(() => {});
+      });
     }
+    exitDocumentFullscreen();
     onStopRef.current?.();
-  }, []);
+  }, [clearPlaybackWatchdog]);
+
+  /** Keep session alive but ask for a fresh tap — do not call onStop. */
+  const promptTapToPlay = useCallback(() => {
+    clearPlaybackWatchdog();
+    pendingStartRef.current = false;
+    awaitingTapToPlayRef.current = true;
+    setAwaitingTapToPlay(true);
+    // Stay in playing/FS session so carousel + iframe remain active.
+    setPlaying(true);
+  }, [clearPlaybackWatchdog]);
+
+  const stopPlayback = useCallback(() => {
+    if (!startedFromGestureRef.current && !playing) return;
+    resetToPoster();
+  }, [playing, resetToPoster]);
+
+  // Inactive carousel slides switch to prefetch — stop any in-flight session.
+  useEffect(() => {
+    if (!prefetch) return;
+    if (playing || startedFromGestureRef.current || awaitingTapToPlay) {
+      resetToPoster();
+    }
+  }, [prefetch, playing, awaitingTapToPlay, resetToPoster]);
 
   // Attach SDK once the preloaded iframe is in the DOM.
   useEffect(() => {
@@ -285,6 +358,8 @@ export function LazyVimeoPlayer({
         return;
       }
       if (!enteredFullscreenRef.current) return;
+      // We exit Vimeo FS on purpose to show our tap-to-play overlay.
+      if (awaitingTapToPlayRef.current) return;
       stopPlayback();
     };
     if (player) {
@@ -300,75 +375,145 @@ export function LazyVimeoPlayer({
     };
   }, [playing, playerReady, stopPlayback]);
 
+  useEffect(() => clearPlaybackWatchdog, [clearPlaybackWatchdog]);
+
+  const attemptPlayback = useCallback(
+    async (player: Player, wantsFullscreen: boolean) => {
+      clearPlaybackWatchdog();
+      const wrap = wrapRef.current;
+
+      try {
+        // Keep FS + play in one gesture — awaiting requestFullscreen before
+        // play() drops iOS user activation and leaves Vimeo paused in FS.
+        void player.setMuted(false);
+        void player.setVolume(1);
+        if (wantsFullscreen) {
+          void player.requestFullscreen().catch(() => {});
+        }
+        await player.play();
+
+        pendingStartRef.current = false;
+        awaitingTapToPlayRef.current = false;
+        setAwaitingTapToPlay(false);
+
+        // Only prompt for a second tap if still paused after buffer time.
+        playbackWatchdogRef.current = setTimeout(() => {
+          void (async () => {
+            if (!startedFromGestureRef.current || awaitingTapToPlayRef.current) {
+              return;
+            }
+            try {
+              if (!(await player.getPaused())) return;
+              const time = await player.getCurrentTime();
+              if (time > 0.1) return;
+
+              await exitVimeoFullscreen(player);
+              if (fullscreenPlaybackRef.current && wrapRef.current) {
+                requestElementFullscreen(wrapRef.current);
+              }
+              promptTapToPlay();
+            } catch {
+              // Ignore — user can exit FS manually.
+            }
+          })();
+        }, 1500);
+      } catch {
+        if (wantsFullscreen && wrap) {
+          requestElementFullscreen(wrap);
+        }
+        promptTapToPlay();
+      }
+    },
+    [clearPlaybackWatchdog, promptTapToPlay],
+  );
+
   const startPlayback = () => {
     if (startedFromGestureRef.current) return;
     startedFromGestureRef.current = true;
-    setPlaying(true);
-    onPlay?.();
+    setAwaitingTapToPlay(false);
 
     const mobile = isMobile ?? prefersMobileFullscreen();
     const wantsFullscreen = fullscreenOnPlay || mobile;
     fullscreenPlaybackRef.current = wantsFullscreen;
     const wrap = wrapRef.current;
     const player = playerRef.current;
+    const readyNow = playerReady && !!player;
+    playerReadyAtTapRef.current = readyNow;
 
-    // Element fullscreen must be kicked off synchronously in the gesture.
-    // Complements Vimeo playsinline=0 / player.requestFullscreen().
+    flushSync(() => setPlaying(true));
+
     if (wantsFullscreen && wrap) {
-      enteredFullscreenRef.current = true;
       requestElementFullscreen(wrap);
     }
 
-    if (!player) {
-      // Iframe still booting — ready() handler below cannot recover gesture;
-      // retry play once player becomes ready (sound/FS may be limited).
-      return;
-    }
+    onPlay?.();
 
-    // Do not await between these — awaiting yields and drops user activation.
-    void player.setMuted(false);
-    void player.setVolume(1);
-    if (wantsFullscreen) {
-      void player.requestFullscreen().catch(() => {});
+    if (readyNow) {
+      pendingStartRef.current = false;
+      void attemptPlayback(player!, wantsFullscreen);
+    } else {
+      pendingStartRef.current = true;
     }
-    void player.play().catch(() => {});
   };
 
-  // If the user tapped before the SDK finished ready(), start as soon as it is.
-  // Sound/fullscreen may still be blocked without a gesture — preload aims to
-  // avoid this path on real devices.
-  useEffect(() => {
-    if (!playing || !playerReady || !startedFromGestureRef.current) return;
+  /** Second tap when SDK finished loading after the first gesture expired. */
+  const confirmTapToPlay = () => {
     const player = playerRef.current;
-    if (!player) return;
+    if (!player || !playerReady) return;
 
-    void (async () => {
-      try {
-        const paused = await player.getPaused();
-        if (!paused) return;
-        await player.setMuted(false);
-        await player.setVolume(1);
-        if (fullscreenPlaybackRef.current) {
-          try {
-            const fs = await player.getFullscreen();
-            if (!fs) {
-              await player.requestFullscreen();
-            }
-          } catch {
-            // FS may be blocked; exit handler still applies if it opens later.
-          }
-        }
-        await player.play();
-      } catch {
-        // Ignore — user can tap Vimeo controls.
-      }
-    })();
+    awaitingTapToPlayRef.current = false;
+    setAwaitingTapToPlay(false);
+
+    const wantsFullscreen = fullscreenPlaybackRef.current;
+    const wrap = wrapRef.current;
+    if (wantsFullscreen && wrap) {
+      requestElementFullscreen(wrap);
+    }
+
+    void attemptPlayback(player, wantsFullscreen);
+  };
+
+  // SDK became ready after poster tap — ask for a fresh gesture instead of
+  // auto-playing (iOS blocks play/FS without user activation).
+  useEffect(() => {
+    if (!playing || !playerReady || !pendingStartRef.current) return;
+    if (playerReadyAtTapRef.current) return;
+
+    pendingStartRef.current = false;
+    setAwaitingTapToPlay(true);
   }, [playing, playerReady]);
+
+  const wantsFsSession = fullscreenOnPlay || isMobile === true;
+  const showFsLoading = playing && wantsFsSession && !playerReady && !awaitingTapToPlay;
+  const showTapToPlay = playing && awaitingTapToPlay && playerReady;
 
   if (!videoId) {
     return (
       <div className="flex aspect-video items-center justify-center bg-black/50 text-vp-text-soft">
         Invalid Vimeo URL
+      </div>
+    );
+  }
+
+  if (prefetch) {
+    return (
+      <div
+        ref={wrapRef}
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-0"
+        aria-hidden
+      >
+        {embedSrc ? (
+          <iframe
+            ref={iframeRef}
+            src={embedSrc}
+            title=""
+            tabIndex={-1}
+            className="absolute inset-0 h-full w-full border-0 opacity-0"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        ) : null}
       </div>
     );
   }
@@ -390,6 +535,33 @@ export function LazyVimeoPlayer({
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
         />
+      ) : null}
+
+      {showFsLoading ? (
+        <div
+          className="absolute inset-0 z-[3] flex items-center justify-center bg-black"
+          aria-hidden
+        >
+          <span className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        </div>
+      ) : null}
+
+      {showTapToPlay ? (
+        <button
+          type="button"
+          className="absolute inset-0 z-[4] flex items-center justify-center border-0 bg-black/90 p-4 text-center text-white"
+          onClick={confirmTapToPlay}
+          aria-label="Tap to play video"
+        >
+          <span className="flex flex-col items-center gap-4">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-white/10">
+              <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+            </span>
+            <span className="font-sans text-sm tracking-wide text-white/90">
+              Tap to play
+            </span>
+          </span>
+        </button>
       ) : null}
 
       {!playing ? (

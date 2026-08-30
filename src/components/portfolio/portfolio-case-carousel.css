@@ -222,7 +222,7 @@
   opacity: 0;
 }
 
-/* Playing: opaque frame (letterbox, not poster bleed) + catcher above iframe */
+/* Playing: opaque frame (letterbox, not poster bleed) */
 .vp-case-carousel__slide.is-playing .vp-case-carousel__card > .aspect-video {
   background: #000 !important;
 }
@@ -230,21 +230,6 @@
 .vp-case-carousel__slide.is-playing .vp-case-carousel__peek {
   opacity: 0;
   pointer-events: none;
-}
-
-.vp-case-carousel__drag-catcher {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  cursor: grab;
-  /* Let Embla see horizontal drags; vertical page scroll still works */
-  touch-action: pan-y;
-  -webkit-tap-highlight-color: transparent;
-  /* Transparent — only exists to own pointer/wheel events over the iframe */
-  background: transparent;
 }
 
 .vp-case-carousel__slide.is-active .vp-case-carousel__card {

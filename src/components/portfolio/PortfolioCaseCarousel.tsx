@@ -105,12 +105,14 @@ function PeekPoster({
 
 function ActiveSlidePlayer({
   slide,
+  prefetch = false,
   onPlay,
   onStop,
   hidePlayButton,
   posterPriority = false,
 }: {
   slide: PortfolioCaseSlide;
+  prefetch?: boolean;
   onPlay?: () => void;
   onStop?: () => void;
   hidePlayButton?: boolean;
@@ -122,12 +124,13 @@ function ActiveSlidePlayer({
         vimeoUrl={slide.vimeoUrl}
         posterUrl={slide.posterUrl}
         portfolioEntryRef={slide.portfolioEntryRef}
-        onPlay={onPlay}
-        onStop={onStop}
+        onPlay={prefetch ? undefined : onPlay}
+        onStop={prefetch ? undefined : onStop}
         hidePlayButton={hidePlayButton}
         posterSizes={CASE_CAROUSEL_POSTER_SIZES}
         priority={posterPriority}
         fullscreenOnPlay
+        prefetch={prefetch}
       />
     );
   }
@@ -168,8 +171,6 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const [descSheetOpen, setDescSheetOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  /** Bump to remount the active player (drag-catcher tap → back to poster). */
-  const [playerEpoch, setPlayerEpoch] = useState(0);
   const dragGuardRef = useRef<{x: number; y: number} | null>(null);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
@@ -182,7 +183,6 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setIsInfoOpen(false);
     setDescSheetOpen(false);
     setIsPlaying(false);
-    setPlayerEpoch((n) => n + 1);
   }, [emblaApi]);
 
   useEffect(() => {
@@ -367,20 +367,6 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setIsPlaying(false);
   }, []);
 
-  /** Transparent layer above the cross-origin iframe so Embla can drag/wheel.
-   * Short tap remounts the player back to poster (pause without Vimeo chrome). */
-  const onDragCatcherClick = (event: MouseEvent<HTMLDivElement>) => {
-    const start = dragGuardRef.current;
-    if (
-      start &&
-      Math.hypot(event.clientX - start.x, event.clientY - start.y) > 10
-    ) {
-      return;
-    }
-    setIsPlaying(false);
-    setPlayerEpoch((n) => n + 1);
-  };
-
   if (slideCount < 2) return null;
 
   const activeSlide = slides[activeIndex];
@@ -443,23 +429,16 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
                       posterUrl={slide.posterUrl}
                       onActivate={(event) => onPeekActivate(index, event)}
                     />
-                    {active ? (
+                    {(active || slide.kind === 'vimeo') ? (
                       <ActiveSlidePlayer
-                        key={playerEpoch}
                         slide={slide}
-                        onPlay={onSlidePlay}
-                        onStop={onSlideStop}
+                        prefetch={!active && slide.kind === 'vimeo'}
+                        onPlay={active ? onSlidePlay : undefined}
+                        onStop={active ? onSlideStop : undefined}
                         hidePlayButton={
-                          isDesktop ? isInfoOpen : descSheetOpen
+                          active && (isDesktop ? isInfoOpen : descSheetOpen)
                         }
                         posterPriority={index === 0}
-                      />
-                    ) : null}
-                    {active && isPlaying ? (
-                      <div
-                        className="vp-case-carousel__drag-catcher"
-                        onClick={onDragCatcherClick}
-                        aria-hidden
                       />
                     ) : null}
                     <SlideTitleOverlay

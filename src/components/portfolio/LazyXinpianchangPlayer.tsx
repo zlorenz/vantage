@@ -3,11 +3,12 @@
 /**
  * LazyXinpianchangPlayer — poster until play; then loads validated embed iframe.
  *
- * Carousel cards (`fullscreenOnPlay`): element fullscreen on play; exit restores
- * the poster.
+ * Carousel cards (`fullscreenOnPlay`): element fullscreen on play (sync in
+ * gesture); exit restores the poster.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import Image from 'next/image';
 import { extractXinpianchangMid, xinpianchangToEmbedUrl } from '@/lib/xinpianchang';
 import { trackVideoEvent } from '@/lib/video-events';
@@ -59,11 +60,11 @@ export function LazyXinpianchangPlayer({
   fullscreenOnPlay = false,
 }: LazyXinpianchangPlayerProps) {
   const [playing, setPlaying] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const playingRef = useRef(false);
   const enteredFullscreenRef = useRef(false);
   const fullscreenPlaybackRef = useRef(false);
-  const pendingElementFsRef = useRef(false);
   const onStopRef = useRef(onStop);
   onStopRef.current = onStop;
   playingRef.current = playing;
@@ -74,18 +75,13 @@ export function LazyXinpianchangPlayer({
     if (!playingRef.current) return;
     enteredFullscreenRef.current = false;
     fullscreenPlaybackRef.current = false;
-    pendingElementFsRef.current = false;
     setPlaying(false);
+    setIframeLoaded(false);
     onStopRef.current?.();
   }, []);
 
   useEffect(() => {
-    if (!playing || !pendingElementFsRef.current) return;
-    pendingElementFsRef.current = false;
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    enteredFullscreenRef.current = true;
-    requestElementFullscreen(wrap);
+    if (playing) setIframeLoaded(false);
   }, [playing]);
 
   useEffect(() => {
@@ -109,6 +105,27 @@ export function LazyXinpianchangPlayer({
     };
   }, [playing, stopPlayback]);
 
+  const startPlayback = () => {
+    trackVideoEvent({
+      eventType: 'click_play',
+      source: 'xinpianchang',
+      videoId: extractXinpianchangMid(embedUrl) ?? undefined,
+      portfolioEntryRef,
+    });
+    if (fullscreenOnPlay) {
+      fullscreenPlaybackRef.current = true;
+    }
+
+    flushSync(() => setPlaying(true));
+
+    const wrap = wrapRef.current;
+    if (fullscreenOnPlay && wrap) {
+      requestElementFullscreen(wrap);
+    }
+
+    onPlay?.();
+  };
+
   if (!src) {
     return (
       <div className="flex aspect-video items-center justify-center bg-black/50 text-vp-text-soft">
@@ -116,6 +133,8 @@ export function LazyXinpianchangPlayer({
       </div>
     );
   }
+
+  const showFsLoading = playing && fullscreenOnPlay && !iframeLoaded;
 
   return (
     <div ref={wrapRef} className="relative aspect-video w-full bg-black">
@@ -126,25 +145,13 @@ export function LazyXinpianchangPlayer({
           className="h-full w-full border-0"
           allow="autoplay; fullscreen"
           allowFullScreen
+          onLoad={() => setIframeLoaded(true)}
         />
       ) : (
         <button
           type="button"
           className="group absolute inset-0 block w-full cursor-pointer border-0 bg-black p-0"
-          onClick={() => {
-            trackVideoEvent({
-              eventType: 'click_play',
-              source: 'xinpianchang',
-              videoId: extractXinpianchangMid(embedUrl) ?? undefined,
-              portfolioEntryRef,
-            });
-            if (fullscreenOnPlay) {
-              fullscreenPlaybackRef.current = true;
-              pendingElementFsRef.current = true;
-            }
-            setPlaying(true);
-            onPlay?.();
-          }}
+          onClick={startPlayback}
           aria-label="Play video"
         >
           {posterUrl ? (
@@ -165,6 +172,14 @@ export function LazyXinpianchangPlayer({
           ) : null}
         </button>
       )}
+      {showFsLoading ? (
+        <div
+          className="absolute inset-0 z-[3] flex items-center justify-center bg-black"
+          aria-hidden
+        >
+          <span className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        </div>
+      ) : null}
     </div>
   );
 }

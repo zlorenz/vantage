@@ -3,11 +3,12 @@
 /**
  * LazyYouTubePlayer — YouTube poster until play; then loads embed iframe.
  *
- * Mobile (and carousel cards via `fullscreenOnPlay`): playsinline=0 / element
- * fullscreen on play. Exiting fullscreen restores the poster.
+ * Mobile (and carousel cards via `fullscreenOnPlay`): element fullscreen on
+ * play (sync in gesture). Exiting fullscreen restores the poster.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import Image from 'next/image';
 import { youTubePosterUrl } from '@/lib/youtube';
 import { trackVideoEvent } from '@/lib/video-events';
@@ -67,12 +68,12 @@ export function LazyYouTubePlayer({
 }: LazyYouTubePlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [nativeFullscreen, setNativeFullscreen] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
   const [posterSrc, setPosterSrc] = useState(youTubePosterUrl(videoId, 'maxres'));
   const wrapRef = useRef<HTMLDivElement>(null);
   const playingRef = useRef(false);
   const enteredFullscreenRef = useRef(false);
   const fullscreenPlaybackRef = useRef(false);
-  const pendingElementFsRef = useRef(false);
   const onStopRef = useRef(onStop);
   onStopRef.current = onStop;
   playingRef.current = playing;
@@ -81,20 +82,14 @@ export function LazyYouTubePlayer({
     if (!playingRef.current) return;
     enteredFullscreenRef.current = false;
     fullscreenPlaybackRef.current = false;
-    pendingElementFsRef.current = false;
     setPlaying(false);
     setNativeFullscreen(false);
+    setIframeLoaded(false);
     onStopRef.current?.();
   }, []);
 
-  // Carousel / mobile: element fullscreen right after the iframe mounts.
   useEffect(() => {
-    if (!playing || !pendingElementFsRef.current) return;
-    pendingElementFsRef.current = false;
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    enteredFullscreenRef.current = true;
-    requestElementFullscreen(wrap);
+    if (playing) setIframeLoaded(false);
   }, [playing]);
 
   // FS-on-play: exiting fullscreen returns to poster browse.
@@ -119,6 +114,30 @@ export function LazyYouTubePlayer({
     };
   }, [playing, stopPlayback]);
 
+  const startPlayback = () => {
+    trackVideoEvent({
+      eventType: 'click_play',
+      source: 'youtube',
+      videoId,
+      portfolioEntryRef,
+    });
+    const mobile = prefersMobileFullscreen();
+    const wantsFullscreen = fullscreenOnPlay || mobile;
+    fullscreenPlaybackRef.current = wantsFullscreen;
+
+    flushSync(() => {
+      setNativeFullscreen(wantsFullscreen);
+      setPlaying(true);
+    });
+
+    const wrap = wrapRef.current;
+    if (wantsFullscreen && wrap) {
+      requestElementFullscreen(wrap);
+    }
+
+    onPlay?.();
+  };
+
   if (!videoId) {
     return (
       <div className="flex aspect-video items-center justify-center bg-black/50 text-vp-text-soft">
@@ -126,6 +145,8 @@ export function LazyYouTubePlayer({
       </div>
     );
   }
+
+  const showFsLoading = playing && nativeFullscreen && !iframeLoaded;
 
   return (
     <div ref={wrapRef} className="relative aspect-video w-full bg-black">
@@ -139,28 +160,13 @@ export function LazyYouTubePlayer({
           className="h-full w-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowFullScreen
+          onLoad={() => setIframeLoaded(true)}
         />
       ) : (
         <button
           type="button"
           className="group absolute inset-0 block w-full cursor-pointer border-0 bg-black p-0"
-          onClick={() => {
-            trackVideoEvent({
-              eventType: 'click_play',
-              source: 'youtube',
-              videoId,
-              portfolioEntryRef,
-            });
-            const mobile = prefersMobileFullscreen();
-            const wantsFullscreen = fullscreenOnPlay || mobile;
-            fullscreenPlaybackRef.current = wantsFullscreen;
-            if (wantsFullscreen) {
-              pendingElementFsRef.current = true;
-            }
-            setNativeFullscreen(wantsFullscreen);
-            setPlaying(true);
-            onPlay?.();
-          }}
+          onClick={startPlayback}
           aria-label={`Play ${title}`}
         >
           <Image
@@ -180,6 +186,14 @@ export function LazyYouTubePlayer({
           ) : null}
         </button>
       )}
+      {showFsLoading ? (
+        <div
+          className="absolute inset-0 z-[3] flex items-center justify-center bg-black"
+          aria-hidden
+        >
+          <span className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        </div>
+      ) : null}
     </div>
   );
 }
