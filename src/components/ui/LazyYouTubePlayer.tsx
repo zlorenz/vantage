@@ -2,9 +2,12 @@
 
 /**
  * LazyYouTubePlayer — YouTube poster until play; then loads embed iframe.
+ *
+ * Mobile: playsinline=0 aims for native fullscreen. Exiting document
+ * fullscreen restores the poster (same browse/watch split as Vimeo).
  */
 
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { youTubePosterUrl } from '@/lib/youtube';
 import { trackVideoEvent } from '@/lib/video-events';
@@ -16,6 +19,8 @@ interface LazyYouTubePlayerProps {
   portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
+  /** Fires when playback stops (mobile fullscreen exit, etc.). */
+  onStop?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
   hidePlayButton?: boolean;
 }
@@ -29,16 +34,59 @@ function prefersMobileFullscreen(): boolean {
   );
 }
 
+function getFullscreenElement(): Element | null {
+  const doc = document as Document & {
+    webkitFullscreenElement?: Element | null;
+  };
+  return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
+}
+
 export function LazyYouTubePlayer({
   videoId,
   title = 'YouTube video',
   portfolioEntryRef,
   onPlay,
+  onStop,
   hidePlayButton = false,
 }: LazyYouTubePlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [mobileFullscreen, setMobileFullscreen] = useState(false);
   const [posterSrc, setPosterSrc] = useState(youTubePosterUrl(videoId, 'maxres'));
+  const playingRef = useRef(false);
+  const enteredFullscreenRef = useRef(false);
+  const onStopRef = useRef(onStop);
+  onStopRef.current = onStop;
+  playingRef.current = playing;
+
+  const stopPlayback = useCallback(() => {
+    if (!playingRef.current) return;
+    enteredFullscreenRef.current = false;
+    setPlaying(false);
+    setMobileFullscreen(false);
+    onStopRef.current?.();
+  }, []);
+
+  // Mobile: exiting fullscreen returns to poster browse.
+  useEffect(() => {
+    if (!playing || !mobileFullscreen) return;
+
+    const onDocFsChange = () => {
+      const fsEl = getFullscreenElement();
+      if (fsEl) {
+        enteredFullscreenRef.current = true;
+        return;
+      }
+      if (!enteredFullscreenRef.current) return;
+      stopPlayback();
+    };
+
+    document.addEventListener('fullscreenchange', onDocFsChange);
+    document.addEventListener('webkitfullscreenchange', onDocFsChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', onDocFsChange);
+      document.removeEventListener('webkitfullscreenchange', onDocFsChange);
+    };
+  }, [playing, mobileFullscreen, stopPlayback]);
 
   if (!videoId) {
     return (
@@ -77,7 +125,9 @@ export function LazyYouTubePlayer({
           videoId,
           portfolioEntryRef,
         });
-        setMobileFullscreen(prefersMobileFullscreen());
+        const mobile = prefersMobileFullscreen();
+        if (mobile) enteredFullscreenRef.current = true;
+        setMobileFullscreen(mobile);
         setPlaying(true);
         onPlay?.();
       }}

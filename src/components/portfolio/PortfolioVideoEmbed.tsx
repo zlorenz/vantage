@@ -85,6 +85,7 @@ export async function PortfolioVideoEmbed({
         vimeoUrl={parsed.url}
         posterUrl={posterUrl}
         portfolioEntryRef={portfolioEntryRef}
+        priority
       />
     );
   }

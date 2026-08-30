@@ -4,7 +4,7 @@
  * PortableTextVideoEmbed — lazy Vimeo/YouTube player for blog body URLs.
  */
 
-import { LazyVimeoPlayer } from '@/components/portfolio/LazyVimeoPlayer';
+import { LazyVimeoPlayer, PROSE_VIDEO_POSTER_SIZES } from '@/components/portfolio/LazyVimeoPlayer';
 import { vimeoThumbnailUrl } from '@/lib/vimeo';
 import { parseVideoUrl } from '@/lib/video-url';
 import { LazyYouTubePlayer } from '@/components/ui/LazyYouTubePlayer';
@@ -32,6 +32,7 @@ export function PortableTextVideoEmbed({ url }: PortableTextVideoEmbedProps) {
     <LazyVimeoPlayer
       vimeoUrl={parsed.url}
       posterUrl={vimeoThumbnailUrl(parsed.url) ?? undefined}
+      posterSizes={PROSE_VIDEO_POSTER_SIZES}
     />
   );
 }

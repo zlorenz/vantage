@@ -9,15 +9,29 @@
  * already be loaded before `play()` / `setMuted(false)` / `requestFullscreen()`
  * will honor a tap.
  *
+ * Mobile: watch is fullscreen-only. Exiting fullscreen stops playback and
+ * restores the poster (no inline 16:9-in-4:5 hybrid).
+ *
  * Carousel previews stay on their own muted path — not this component.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import type Player from '@vimeo/player';
 import { extractVimeoId, vimeoPlayerEmbedSrc } from '@/lib/vimeo';
 import { normalizeStoredVideoUrl } from '@/lib/video-url';
 import { trackVideoEvent } from '@/lib/video-events';
+
+/** Poster `sizes` for case-study carousel cards (~85vw mobile / ~70vw desktop). */
+export const CASE_CAROUSEL_POSTER_SIZES =
+  '(max-width: 992px) 85vw, 70vw';
+
+/** Poster `sizes` for full-width case video inside the 1680px content rail. */
+export const CASE_VIDEO_POSTER_SIZES =
+  '(max-width: 992px) 100vw, min(1680px, 100vw)';
+
+/** Poster `sizes` for in-body video embeds (prose column). */
+export const PROSE_VIDEO_POSTER_SIZES = '(max-width: 992px) 100vw, 900px';
 
 interface LazyVimeoPlayerProps {
   vimeoUrl: string;
@@ -27,8 +41,14 @@ interface LazyVimeoPlayerProps {
   portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
+  /** Fires when playback stops (mobile fullscreen exit, etc.). */
+  onStop?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
   hidePlayButton?: boolean;
+  /** Hint for responsive poster srcset width (must match rendered width). */
+  posterSizes?: string;
+  /** Eager-load poster when above the fold (LCP hero). */
+  priority?: boolean;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -41,6 +61,13 @@ function prefersMobileFullscreen(): boolean {
     window.matchMedia('(hover: none) and (pointer: coarse)').matches ||
     window.matchMedia('(max-width: 767px)').matches
   );
+}
+
+function getFullscreenElement(): Element | null {
+  const doc = document as Document & {
+    webkitFullscreenElement?: Element | null;
+  };
+  return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
 }
 
 function requestElementFullscreen(el: HTMLElement): void {
@@ -78,7 +105,10 @@ export function LazyVimeoPlayer({
   posterAlt = '',
   portfolioEntryRef,
   onPlay,
+  onStop,
   hidePlayButton = false,
+  posterSizes = CASE_VIDEO_POSTER_SIZES,
+  priority = false,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
@@ -90,6 +120,10 @@ export function LazyVimeoPlayer({
   const playerRef = useRef<Player | null>(null);
   const milestonesFiredRef = useRef(new Set<number>());
   const startedFromGestureRef = useRef(false);
+  /** Mobile: only restore poster after we actually entered fullscreen once. */
+  const enteredFullscreenRef = useRef(false);
+  const onStopRef = useRef(onStop);
+  onStopRef.current = onStop;
 
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
   const videoId = extractVimeoId(normalizedUrl);
@@ -113,6 +147,18 @@ export function LazyVimeoPlayer({
     void import('@vimeo/player');
   }, []);
 
+  const stopPlayback = useCallback(() => {
+    if (!startedFromGestureRef.current) return;
+    startedFromGestureRef.current = false;
+    enteredFullscreenRef.current = false;
+    setPlaying(false);
+    const player = playerRef.current;
+    if (player) {
+      void player.pause().catch(() => {});
+    }
+    onStopRef.current?.();
+  }, []);
+
   // Attach SDK once the preloaded iframe is in the DOM.
   useEffect(() => {
     if (!embedSrc || !videoId) return;
@@ -123,7 +169,7 @@ export function LazyVimeoPlayer({
     let cancelled = false;
     let player: Player | null = null;
 
-    const onPlay = () => {
+    const onPlayEvent = () => {
       pushVimeoDataLayerEvent('CE - Vimeo play', videoId, 0);
       trackVideoEvent({
         eventType: 'view_start',
@@ -175,7 +221,7 @@ export function LazyVimeoPlayer({
       }
 
       playerRef.current = player;
-      player.on('play', onPlay);
+      player.on('play', onPlayEvent);
       player.on('timeupdate', onTimeUpdate);
       player.on('ended', onEnded);
 
@@ -193,7 +239,7 @@ export function LazyVimeoPlayer({
       setPlayerReady(false);
       playerRef.current = null;
       if (player) {
-        player.off('play', onPlay);
+        player.off('play', onPlayEvent);
         player.off('timeupdate', onTimeUpdate);
         player.off('ended', onEnded);
         void player.destroy();
@@ -201,6 +247,52 @@ export function LazyVimeoPlayer({
       }
     };
   }, [embedSrc, videoId, portfolioEntryRef]);
+
+  // Mobile: exiting fullscreen returns to poster browse (no inline hybrid).
+  useEffect(() => {
+    if (!playing) return;
+
+    const stopIfLeftFullscreen = () => {
+      if (!prefersMobileFullscreen()) return;
+      if (!enteredFullscreenRef.current) return;
+      if (getFullscreenElement()) return;
+      stopPlayback();
+    };
+
+    const onDocFsChange = () => {
+      const fsEl = getFullscreenElement();
+      if (fsEl) {
+        enteredFullscreenRef.current = true;
+        return;
+      }
+      stopIfLeftFullscreen();
+    };
+
+    document.addEventListener('fullscreenchange', onDocFsChange);
+    document.addEventListener('webkitfullscreenchange', onDocFsChange);
+
+    const player = playerRef.current;
+    const onVimeoFs = (data: { fullscreen: boolean }) => {
+      if (!prefersMobileFullscreen()) return;
+      if (data.fullscreen) {
+        enteredFullscreenRef.current = true;
+        return;
+      }
+      if (!enteredFullscreenRef.current) return;
+      stopPlayback();
+    };
+    if (player) {
+      player.on('fullscreenchange', onVimeoFs);
+    }
+
+    return () => {
+      document.removeEventListener('fullscreenchange', onDocFsChange);
+      document.removeEventListener('webkitfullscreenchange', onDocFsChange);
+      if (player) {
+        player.off('fullscreenchange', onVimeoFs);
+      }
+    };
+  }, [playing, playerReady, stopPlayback]);
 
   const startPlayback = () => {
     if (startedFromGestureRef.current) return;
@@ -215,6 +307,7 @@ export function LazyVimeoPlayer({
     // Element fullscreen must be kicked off synchronously in the gesture.
     // Complements Vimeo playsinline=0 / player.requestFullscreen().
     if (mobile && wrap) {
+      enteredFullscreenRef.current = true;
       requestElementFullscreen(wrap);
     }
 
@@ -247,6 +340,16 @@ export function LazyVimeoPlayer({
         if (!paused) return;
         await player.setMuted(false);
         await player.setVolume(1);
+        if (prefersMobileFullscreen()) {
+          try {
+            const fs = await player.getFullscreen();
+            if (!fs) {
+              await player.requestFullscreen();
+            }
+          } catch {
+            // FS may be blocked; mobile exit handler still applies if it opens later.
+          }
+        }
         await player.play();
       } catch {
         // Ignore — user can tap Vimeo controls.
@@ -294,7 +397,8 @@ export function LazyVimeoPlayer({
               alt={posterAlt}
               fill
               className="object-cover"
-              sizes="100vw"
+              sizes={posterSizes}
+              priority={priority}
             />
           ) : null}
           {!hidePlayButton ? (

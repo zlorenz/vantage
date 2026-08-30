@@ -20,7 +20,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import {LazyYouTubePlayer} from '@/components/ui/LazyYouTubePlayer';
 import {BottomSheet} from '@/components/ui/BottomSheet';
-import {LazyVimeoPlayer} from './LazyVimeoPlayer';
+import {LazyVimeoPlayer, CASE_CAROUSEL_POSTER_SIZES} from './LazyVimeoPlayer';
 import {LazyXinpianchangPlayer} from './LazyXinpianchangPlayer';
 import type {PortfolioCaseSlide} from './prepare-portfolio-case-slides';
 import './portfolio-case-carousel.css';
@@ -89,7 +89,7 @@ function PeekPoster({
           alt=""
           fill
           className="vp-case-carousel__peek-img"
-          sizes="(max-width: 992px) 85vw, 70vw"
+          sizes={CASE_CAROUSEL_POSTER_SIZES}
         />
       ) : (
         <span className="vp-case-carousel__peek-fallback" aria-hidden />
@@ -106,11 +106,15 @@ function PeekPoster({
 function ActiveSlidePlayer({
   slide,
   onPlay,
+  onStop,
   hidePlayButton,
+  posterPriority = false,
 }: {
   slide: PortfolioCaseSlide;
   onPlay?: () => void;
+  onStop?: () => void;
   hidePlayButton?: boolean;
+  posterPriority?: boolean;
 }) {
   if (slide.kind === 'vimeo') {
     return (
@@ -119,7 +123,10 @@ function ActiveSlidePlayer({
         posterUrl={slide.posterUrl}
         portfolioEntryRef={slide.portfolioEntryRef}
         onPlay={onPlay}
+        onStop={onStop}
         hidePlayButton={hidePlayButton}
+        posterSizes={CASE_CAROUSEL_POSTER_SIZES}
+        priority={posterPriority}
       />
     );
   }
@@ -129,6 +136,7 @@ function ActiveSlidePlayer({
         videoId={slide.videoId}
         portfolioEntryRef={slide.portfolioEntryRef}
         onPlay={onPlay}
+        onStop={onStop}
         hidePlayButton={hidePlayButton}
       />
     );
@@ -139,6 +147,7 @@ function ActiveSlidePlayer({
       posterUrl={slide.posterUrl}
       portfolioEntryRef={slide.portfolioEntryRef}
       onPlay={onPlay}
+      onStop={onStop}
       hidePlayButton={hidePlayButton}
     />
   );
@@ -146,8 +155,8 @@ function ActiveSlidePlayer({
 
 export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const slideCount = slides.length;
-  // Mobile-first center; desktop reInit switches to start (rail-aligned).
-  const [emblaRef, emblaApi] = useEmblaCarousel(caseEmblaOptions('center'));
+  // Rail-aligned start at every breakpoint so the next card peeks on the right.
+  const [emblaRef, emblaApi] = useEmblaCarousel(caseEmblaOptions('start'));
   const [activeIndex, setActiveIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -156,6 +165,8 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const [descSheetOpen, setDescSheetOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  /** Bump to remount the active player (drag-catcher tap → back to poster). */
+  const [playerEpoch, setPlayerEpoch] = useState(0);
   const dragGuardRef = useRef<{x: number; y: number} | null>(null);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
@@ -168,6 +179,7 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setIsInfoOpen(false);
     setDescSheetOpen(false);
     setIsPlaying(false);
+    setPlayerEpoch((n) => n + 1);
   }, [emblaApi]);
 
   useEffect(() => {
@@ -187,7 +199,8 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     const syncAlign = () => {
       const desktop = mq.matches;
       setIsDesktop(desktop);
-      emblaApi.reInit(caseEmblaOptions(desktop ? 'start' : 'center'));
+      // ReInit so Embla picks up CSS card-scale / aspect changes at the breakpoint.
+      emblaApi.reInit(caseEmblaOptions('start'));
       // Crossing to desktop: drop mobile sheet; crossing to mobile: drop overlay.
       if (desktop) {
         setDescSheetOpen(false);
@@ -347,6 +360,24 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
     setDescSheetOpen(false);
   }, []);
 
+  const onSlideStop = useCallback(() => {
+    setIsPlaying(false);
+  }, []);
+
+  /** Transparent layer above the cross-origin iframe so Embla can drag/wheel.
+   * Short tap remounts the player back to poster (pause without Vimeo chrome). */
+  const onDragCatcherClick = (event: MouseEvent<HTMLDivElement>) => {
+    const start = dragGuardRef.current;
+    if (
+      start &&
+      Math.hypot(event.clientX - start.x, event.clientY - start.y) > 10
+    ) {
+      return;
+    }
+    setIsPlaying(false);
+    setPlayerEpoch((n) => n + 1);
+  };
+
   if (slideCount < 2) return null;
 
   const activeSlide = slides[activeIndex];
@@ -396,24 +427,38 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
               return (
                 <div
                   key={slide.key}
-                  className={`vp-case-carousel__slide${active ? ' is-active' : ''}`}
+                  className={`vp-case-carousel__slide${active ? ' is-active' : ''}${
+                    active && isPlaying ? ' is-playing' : ''
+                  }`}
                   onPointerDown={onCardPointerDown}
                 >
                   <div className="vp-case-carousel__card">
+                    {/* Persistent poster — never unmount on active change.
+                     * Swapping PeekPoster ↔ player remounts Next/Image and
+                     * flashes black on iOS WebKit mid-swipe. */}
+                    <PeekPoster
+                      posterUrl={slide.posterUrl}
+                      onActivate={(event) => onPeekActivate(index, event)}
+                    />
                     {active ? (
                       <ActiveSlidePlayer
+                        key={playerEpoch}
                         slide={slide}
                         onPlay={onSlidePlay}
+                        onStop={onSlideStop}
                         hidePlayButton={
                           isDesktop ? isInfoOpen : descSheetOpen
                         }
+                        posterPriority={index === 0}
                       />
-                    ) : (
-                      <PeekPoster
-                        posterUrl={slide.posterUrl}
-                        onActivate={(event) => onPeekActivate(index, event)}
+                    ) : null}
+                    {active && isPlaying ? (
+                      <div
+                        className="vp-case-carousel__drag-catcher"
+                        onClick={onDragCatcherClick}
+                        aria-hidden
                       />
-                    )}
+                    ) : null}
                     <SlideTitleOverlay
                       title={showChrome ? slide.overlayTitle : undefined}
                       description={overlayDescription}

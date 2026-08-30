@@ -17,6 +17,8 @@ interface LazyXinpianchangPlayerProps {
   portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
+  /** Fires when playback stops (parent remount / carousel drag-catcher). */
+  onStop?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
   hidePlayButton?: boolean;
 }
