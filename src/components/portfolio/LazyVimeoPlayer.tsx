@@ -9,8 +9,8 @@
  * already be loaded before `play()` / `setMuted(false)` / `requestFullscreen()`
  * will honor a tap.
  *
- * Mobile: watch is fullscreen-only. Exiting fullscreen stops playback and
- * restores the poster (no inline 16:9-in-4:5 hybrid).
+ * Mobile (and carousel cards via `fullscreenOnPlay`): watch is fullscreen-only.
+ * Exiting fullscreen stops playback and restores the poster (no inline hybrid).
  *
  * Carousel previews stay on their own muted path — not this component.
  */
@@ -49,6 +49,8 @@ interface LazyVimeoPlayerProps {
   posterSizes?: string;
   /** Eager-load poster when above the fold (LCP hero). */
   priority?: boolean;
+  /** Carousel: open fullscreen on play; exit restores poster on all viewports. */
+  fullscreenOnPlay?: boolean;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -109,6 +111,7 @@ export function LazyVimeoPlayer({
   hidePlayButton = false,
   posterSizes = CASE_VIDEO_POSTER_SIZES,
   priority = false,
+  fullscreenOnPlay = false,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
@@ -120,8 +123,10 @@ export function LazyVimeoPlayer({
   const playerRef = useRef<Player | null>(null);
   const milestonesFiredRef = useRef(new Set<number>());
   const startedFromGestureRef = useRef(false);
-  /** Mobile: only restore poster after we actually entered fullscreen once. */
+  /** FS-on-play: only restore poster after we actually entered fullscreen once. */
   const enteredFullscreenRef = useRef(false);
+  /** Set on play when this session should be fullscreen-only (mobile or carousel). */
+  const fullscreenPlaybackRef = useRef(false);
   const onStopRef = useRef(onStop);
   onStopRef.current = onStop;
 
@@ -130,10 +135,10 @@ export function LazyVimeoPlayer({
 
   // No autoplay/muted in the URL — we call play() + setMuted(false) from the tap.
   const embedSrc =
-    isMobile === null
+    isMobile === null && !fullscreenOnPlay
       ? null
       : vimeoPlayerEmbedSrc(normalizedUrl, {
-          playsinline: isMobile ? false : true,
+          playsinline: !(fullscreenOnPlay || isMobile),
           // Warm enough of the stream that play() from the poster tap is immediate.
           preload: 'auto',
         });
@@ -151,6 +156,7 @@ export function LazyVimeoPlayer({
     if (!startedFromGestureRef.current) return;
     startedFromGestureRef.current = false;
     enteredFullscreenRef.current = false;
+    fullscreenPlaybackRef.current = false;
     setPlaying(false);
     const player = playerRef.current;
     if (player) {
@@ -248,12 +254,12 @@ export function LazyVimeoPlayer({
     };
   }, [embedSrc, videoId, portfolioEntryRef]);
 
-  // Mobile: exiting fullscreen returns to poster browse (no inline hybrid).
+  // FS-on-play: exiting fullscreen returns to poster browse (no inline hybrid).
   useEffect(() => {
     if (!playing) return;
 
     const stopIfLeftFullscreen = () => {
-      if (!prefersMobileFullscreen()) return;
+      if (!fullscreenPlaybackRef.current) return;
       if (!enteredFullscreenRef.current) return;
       if (getFullscreenElement()) return;
       stopPlayback();
@@ -273,7 +279,7 @@ export function LazyVimeoPlayer({
 
     const player = playerRef.current;
     const onVimeoFs = (data: { fullscreen: boolean }) => {
-      if (!prefersMobileFullscreen()) return;
+      if (!fullscreenPlaybackRef.current) return;
       if (data.fullscreen) {
         enteredFullscreenRef.current = true;
         return;
@@ -301,12 +307,14 @@ export function LazyVimeoPlayer({
     onPlay?.();
 
     const mobile = isMobile ?? prefersMobileFullscreen();
+    const wantsFullscreen = fullscreenOnPlay || mobile;
+    fullscreenPlaybackRef.current = wantsFullscreen;
     const wrap = wrapRef.current;
     const player = playerRef.current;
 
     // Element fullscreen must be kicked off synchronously in the gesture.
     // Complements Vimeo playsinline=0 / player.requestFullscreen().
-    if (mobile && wrap) {
+    if (wantsFullscreen && wrap) {
       enteredFullscreenRef.current = true;
       requestElementFullscreen(wrap);
     }
@@ -320,7 +328,7 @@ export function LazyVimeoPlayer({
     // Do not await between these — awaiting yields and drops user activation.
     void player.setMuted(false);
     void player.setVolume(1);
-    if (mobile) {
+    if (wantsFullscreen) {
       void player.requestFullscreen().catch(() => {});
     }
     void player.play().catch(() => {});
@@ -340,14 +348,14 @@ export function LazyVimeoPlayer({
         if (!paused) return;
         await player.setMuted(false);
         await player.setVolume(1);
-        if (prefersMobileFullscreen()) {
+        if (fullscreenPlaybackRef.current) {
           try {
             const fs = await player.getFullscreen();
             if (!fs) {
               await player.requestFullscreen();
             }
           } catch {
-            // FS may be blocked; mobile exit handler still applies if it opens later.
+            // FS may be blocked; exit handler still applies if it opens later.
           }
         }
         await player.play();

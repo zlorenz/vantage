@@ -127,6 +127,7 @@ function ActiveSlidePlayer({
         hidePlayButton={hidePlayButton}
         posterSizes={CASE_CAROUSEL_POSTER_SIZES}
         priority={posterPriority}
+        fullscreenOnPlay
       />
     );
   }
@@ -138,6 +139,7 @@ function ActiveSlidePlayer({
         onPlay={onPlay}
         onStop={onStop}
         hidePlayButton={hidePlayButton}
+        fullscreenOnPlay
       />
     );
   }
@@ -149,6 +151,7 @@ function ActiveSlidePlayer({
       onPlay={onPlay}
       onStop={onStop}
       hidePlayButton={hidePlayButton}
+      fullscreenOnPlay
     />
   );
 }

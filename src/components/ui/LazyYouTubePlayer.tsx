@@ -3,8 +3,8 @@
 /**
  * LazyYouTubePlayer — YouTube poster until play; then loads embed iframe.
  *
- * Mobile: playsinline=0 aims for native fullscreen. Exiting document
- * fullscreen restores the poster (same browse/watch split as Vimeo).
+ * Mobile (and carousel cards via `fullscreenOnPlay`): playsinline=0 / element
+ * fullscreen on play. Exiting fullscreen restores the poster.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -19,10 +19,12 @@ interface LazyYouTubePlayerProps {
   portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
   onPlay?: () => void;
-  /** Fires when playback stops (mobile fullscreen exit, etc.). */
+  /** Fires when playback stops (fullscreen exit, etc.). */
   onStop?: () => void;
   /** Hide the centered play glyph (poster remains clickable). */
   hidePlayButton?: boolean;
+  /** Carousel: open fullscreen on play; exit restores poster on all viewports. */
+  fullscreenOnPlay?: boolean;
 }
 
 /** Touch phones/tablets (and narrow viewports): expand to fullscreen on first play. */
@@ -41,6 +43,19 @@ function getFullscreenElement(): Element | null {
   return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
 }
 
+function requestElementFullscreen(el: HTMLElement): void {
+  const anyEl = el as HTMLElement & {
+    webkitRequestFullscreen?: () => void;
+    webkitRequestFullScreen?: () => void;
+  };
+  if (typeof el.requestFullscreen === 'function') {
+    void el.requestFullscreen().catch(() => {});
+    return;
+  }
+  anyEl.webkitRequestFullscreen?.();
+  anyEl.webkitRequestFullScreen?.();
+}
+
 export function LazyYouTubePlayer({
   videoId,
   title = 'YouTube video',
@@ -48,12 +63,16 @@ export function LazyYouTubePlayer({
   onPlay,
   onStop,
   hidePlayButton = false,
+  fullscreenOnPlay = false,
 }: LazyYouTubePlayerProps) {
   const [playing, setPlaying] = useState(false);
-  const [mobileFullscreen, setMobileFullscreen] = useState(false);
+  const [nativeFullscreen, setNativeFullscreen] = useState(false);
   const [posterSrc, setPosterSrc] = useState(youTubePosterUrl(videoId, 'maxres'));
+  const wrapRef = useRef<HTMLDivElement>(null);
   const playingRef = useRef(false);
   const enteredFullscreenRef = useRef(false);
+  const fullscreenPlaybackRef = useRef(false);
+  const pendingElementFsRef = useRef(false);
   const onStopRef = useRef(onStop);
   onStopRef.current = onStop;
   playingRef.current = playing;
@@ -61,14 +80,26 @@ export function LazyYouTubePlayer({
   const stopPlayback = useCallback(() => {
     if (!playingRef.current) return;
     enteredFullscreenRef.current = false;
+    fullscreenPlaybackRef.current = false;
+    pendingElementFsRef.current = false;
     setPlaying(false);
-    setMobileFullscreen(false);
+    setNativeFullscreen(false);
     onStopRef.current?.();
   }, []);
 
-  // Mobile: exiting fullscreen returns to poster browse.
+  // Carousel / mobile: element fullscreen right after the iframe mounts.
   useEffect(() => {
-    if (!playing || !mobileFullscreen) return;
+    if (!playing || !pendingElementFsRef.current) return;
+    pendingElementFsRef.current = false;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    enteredFullscreenRef.current = true;
+    requestElementFullscreen(wrap);
+  }, [playing]);
+
+  // FS-on-play: exiting fullscreen returns to poster browse.
+  useEffect(() => {
+    if (!playing || !fullscreenPlaybackRef.current) return;
 
     const onDocFsChange = () => {
       const fsEl = getFullscreenElement();
@@ -86,7 +117,7 @@ export function LazyYouTubePlayer({
       document.removeEventListener('fullscreenchange', onDocFsChange);
       document.removeEventListener('webkitfullscreenchange', onDocFsChange);
     };
-  }, [playing, mobileFullscreen, stopPlayback]);
+  }, [playing, stopPlayback]);
 
   if (!videoId) {
     return (
@@ -96,58 +127,59 @@ export function LazyYouTubePlayer({
     );
   }
 
-  if (playing) {
-    const params = new URLSearchParams({ autoplay: '1' });
-    // iOS: playsinline=0 enters native fullscreen when playback starts.
-    if (mobileFullscreen) params.set('playsinline', '0');
-
-    return (
-      <div className="aspect-video w-full bg-black">
+  return (
+    <div ref={wrapRef} className="relative aspect-video w-full bg-black">
+      {playing ? (
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?${params.toString()}`}
+          src={`https://www.youtube.com/embed/${videoId}?${new URLSearchParams({
+            autoplay: '1',
+            ...(nativeFullscreen ? { playsinline: '0' } : {}),
+          }).toString()}`}
           title={title}
           className="h-full w-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowFullScreen
         />
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      className="group relative block aspect-video w-full cursor-pointer border-0 bg-black p-0"
-      onClick={() => {
-        trackVideoEvent({
-          eventType: 'click_play',
-          source: 'youtube',
-          videoId,
-          portfolioEntryRef,
-        });
-        const mobile = prefersMobileFullscreen();
-        if (mobile) enteredFullscreenRef.current = true;
-        setMobileFullscreen(mobile);
-        setPlaying(true);
-        onPlay?.();
-      }}
-      aria-label={`Play ${title}`}
-    >
-      <Image
-        src={posterSrc}
-        alt=""
-        fill
-        className="object-cover"
-        sizes="(max-width: 992px) 100vw, 60vw"
-        onError={() => setPosterSrc(youTubePosterUrl(videoId, 'hq'))}
-      />
-      {!hidePlayButton ? (
-        <span className="absolute inset-0 flex items-center justify-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40 transition duration-200 group-hover:scale-110 group-hover:border-white group-hover:bg-black/55">
-            <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
-          </span>
-        </span>
-      ) : null}
-    </button>
+      ) : (
+        <button
+          type="button"
+          className="group absolute inset-0 block w-full cursor-pointer border-0 bg-black p-0"
+          onClick={() => {
+            trackVideoEvent({
+              eventType: 'click_play',
+              source: 'youtube',
+              videoId,
+              portfolioEntryRef,
+            });
+            const mobile = prefersMobileFullscreen();
+            const wantsFullscreen = fullscreenOnPlay || mobile;
+            fullscreenPlaybackRef.current = wantsFullscreen;
+            if (wantsFullscreen) {
+              pendingElementFsRef.current = true;
+            }
+            setNativeFullscreen(wantsFullscreen);
+            setPlaying(true);
+            onPlay?.();
+          }}
+          aria-label={`Play ${title}`}
+        >
+          <Image
+            src={posterSrc}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="(max-width: 992px) 100vw, 60vw"
+            onError={() => setPosterSrc(youTubePosterUrl(videoId, 'hq'))}
+          />
+          {!hidePlayButton ? (
+            <span className="absolute inset-0 flex items-center justify-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40 transition duration-200 group-hover:scale-110 group-hover:border-white group-hover:bg-black/55">
+                <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+              </span>
+            </span>
+          ) : null}
+        </button>
+      )}
+    </div>
   );
 }
