@@ -12,9 +12,11 @@
  * - `hls` (iOS WebKit) waits for metadata, then always re-assigns the
  *   in-point immediately before play(). It does not trust a seek that
  *   ran while the slide was an inactive neighbor, and it does not wait
- *   for `seeked`. Inactive HLS neighbors still muted-play briefly to the
- *   in-point so WebKit buffers to HAVE_ENOUGH_DATA before activation.
- *   None of the progressive seek-gating runs on the HLS path.
+ *   for `seeked`. Inactive HLS neighbors on desktop (≥768px) still
+ *   muted-play briefly to the in-point so WebKit buffers to
+ *   HAVE_ENOUGH_DATA before activation; mobile skips that kick and
+ *   buffers on first swipe. None of the progressive seek-gating runs on
+ *   the HLS path.
  *
  * Preload: active slide is always `auto`. Inactive neighbors use `auto`
  * on desktop and `metadata` on mobile (<768px) to avoid multi-slide 720p
@@ -25,7 +27,7 @@
  */
 
 import {useEffect, useRef, useState} from 'react';
-import {carouselVideoPreload} from './carousel-preload';
+import {carouselVideoPreload, shouldKickInactiveHlsBuffer} from './carousel-preload';
 import {
   detectPillarboxContentAspect,
   isCarouselCoverMathEnabled,
@@ -357,41 +359,43 @@ export function CarouselNativeVideo({
         video.pause();
         reportReady(video);
 
-        // iOS WebKit will not buffer paused HLS toward HAVE_ENOUGH_DATA.
-        // Seek to the in-point, muted-play briefly, then pause so neighbors
-        // latch ready before activation (poster can skip). Video stays
-        // opacity:0 until ready; muted for the whole kick.
-        const kickBuffer = () => {
-          if (cancelled || activeRef.current) return;
-          video.muted = true;
-          const start = startRef.current;
-          if (!needsNoSeek(start)) {
-            video.currentTime = start;
-          }
-          void video
-            .play()
-            .then(() => {
-              if (cancelled) return;
-              if (!activeRef.current) {
-                video.pause();
-              }
-              reportReady(video);
-            })
-            .catch(() => {
-              // Autoplay can be blocked until the first gesture; swipe is enough.
-            });
-        };
-
-        if (hasVideoMetadata(video)) {
-          kickBuffer();
-        } else {
-          const onMetadata = () => {
-            video.removeEventListener('loadedmetadata', onMetadata);
-            metadataListener = null;
-            kickBuffer();
+        if (shouldKickInactiveHlsBuffer(isCarouselCoverMathEnabled())) {
+          // iOS WebKit will not buffer paused HLS toward HAVE_ENOUGH_DATA.
+          // Seek to the in-point, muted-play briefly, then pause so desktop
+          // neighbors latch ready before activation (poster can skip). Video
+          // stays opacity:0 until ready; muted for the whole kick.
+          const kickBuffer = () => {
+            if (cancelled || activeRef.current) return;
+            video.muted = true;
+            const start = startRef.current;
+            if (!needsNoSeek(start)) {
+              video.currentTime = start;
+            }
+            void video
+              .play()
+              .then(() => {
+                if (cancelled) return;
+                if (!activeRef.current) {
+                  video.pause();
+                }
+                reportReady(video);
+              })
+              .catch(() => {
+                // Autoplay can be blocked until the first gesture; swipe is enough.
+              });
           };
-          metadataListener = onMetadata;
-          video.addEventListener('loadedmetadata', onMetadata);
+
+          if (hasVideoMetadata(video)) {
+            kickBuffer();
+          } else {
+            const onMetadata = () => {
+              video.removeEventListener('loadedmetadata', onMetadata);
+              metadataListener = null;
+              kickBuffer();
+            };
+            metadataListener = onMetadata;
+            video.addEventListener('loadedmetadata', onMetadata);
+          }
         }
 
         return cleanup;

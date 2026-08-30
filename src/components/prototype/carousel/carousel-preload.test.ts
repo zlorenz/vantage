@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {carouselVideoPreload} from './carousel-preload';
+import {carouselVideoPreload, shouldKickInactiveHlsBuffer} from './carousel-preload';
 
 test('carouselVideoPreload: active slide is always auto', () => {
   assert.equal(carouselVideoPreload(true, true), 'auto');
@@ -13,4 +13,9 @@ test('carouselVideoPreload: inactive desktop stays auto', () => {
 
 test('carouselVideoPreload: inactive mobile uses metadata', () => {
   assert.equal(carouselVideoPreload(false, false), 'metadata');
+});
+
+test('shouldKickInactiveHlsBuffer: desktop only', () => {
+  assert.equal(shouldKickInactiveHlsBuffer(true), true);
+  assert.equal(shouldKickInactiveHlsBuffer(false), false);
 });

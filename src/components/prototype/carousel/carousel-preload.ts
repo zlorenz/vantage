@@ -11,3 +11,11 @@ export function carouselVideoPreload(
   if (active) return 'auto';
   return desktopViewport ? 'auto' : 'metadata';
 }
+
+/**
+ * iOS HLS muted play()/pause buffer kick on inactive neighbors — desktop only.
+ * Mobile skips the kick so neighbors do not download full segments pre-swipe.
+ */
+export function shouldKickInactiveHlsBuffer(desktopViewport: boolean): boolean {
+  return desktopViewport;
+}
