@@ -133,6 +133,11 @@ export function vimeoPlayerEmbedSrc(
     playsinline?: boolean;
     /** Vimeo preload: metadata | auto | none (default metadata_on_hover). */
     preload?: 'metadata' | 'auto' | 'none';
+    /**
+     * Hide title, byline, portrait, badge, and Vimeo logo — keeps progress bar
+     * and play controls. For custom-poster embeds (LazyVimeoPlayer).
+     */
+    minimalUi?: boolean;
   } = {},
 ): string | null {
   const id = /^\d+$/.test(urlOrId) ? urlOrId : extractVimeoId(urlOrId);
@@ -154,6 +159,14 @@ export function vimeoPlayerEmbedSrc(
     params.set('playsinline', '0');
   } else if (options.playsinline === true) {
     params.set('playsinline', '1');
+  }
+
+  if (options.minimalUi) {
+    params.set('title', '0');
+    params.set('byline', '0');
+    params.set('portrait', '0');
+    params.set('badge', '0');
+    params.set('vimeo_logo', '0');
   }
 
   if (!/^\d+$/.test(urlOrId)) {

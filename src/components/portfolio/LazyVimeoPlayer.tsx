@@ -173,6 +173,7 @@ export function LazyVimeoPlayer({
           playsinline: !(fullscreenOnPlay || isMobile),
           // Warm enough of the stream that play() from the poster tap is immediate.
           preload: 'auto',
+          minimalUi: true,
         });
 
   useEffect(() => {
