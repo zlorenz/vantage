@@ -1581,6 +1581,20 @@ export type ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT = Array<{
 }>;
 
 // Source: ../src/sanity/queries/pages.ts
+// Variable: ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY
+// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [4..7] {    title,    featuredImage  }
+export type ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT = Array<{
+  title: string | null;
+  featuredImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+}>;
+
+// Source: ../src/sanity/queries/pages.ts
 // Variable: CONTACT_PAGE_QUERY
 // Query: *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{      title,  titleZh,  "slugZh": slugZh.current,  featuredImage,  seo{    metaDescription,    metaDescriptionZh,    metaTitle,    metaTitleZh,    ogImage  },  noIndex,      heroTitle,  heroTitleZh,  "body": body[]{  ...,  asset->{    _id,    _type,    url,    altText,    description,    metadata  }},  "bodyZh": bodyZh[]{  ...,  asset->{    _id,    _type,    url,    altText,    description,    metadata  }}  }
 export type CONTACT_PAGE_QUERY_RESULT = {
@@ -3196,6 +3210,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n}\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      professionalTitle,\n      professionalTitleZh,\n      image,\n      bio,\n      bioZh,\n      sameAs\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..1] {\n    title,\n    featuredImage\n  }\n': ABOUT_STATEMENT_MARKERS_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..3] {\n    title,\n    featuredImage\n  }\n': ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [4..7] {\n    title,\n    featuredImage\n  }\n': ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n}\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "news" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n}\n\n  }\n': NEWS_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n}\n,\n    pdfDownload{\n      label,\n      file{\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT;

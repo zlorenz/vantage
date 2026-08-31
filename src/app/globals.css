@@ -131,7 +131,7 @@
 
   /* Spacing & Layout — Section vertical padding */
 
-  --spacing-vp-section-y: 5.5rem;
+  --spacing-vp-section-y: 7rem;
   --spacing-vp-section-y-tight: 3.5rem;
   --spacing-vp-section-y-loose: 6.5rem;
   --spacing-vp-section-y-header-condensed: 9.5rem;
@@ -139,7 +139,8 @@
   /* Spacing & Layout — Shared content column */
 
   --spacing-vp-gutter: 1.25rem;
-  --container-vp-content: 1320px;
+  /* Outer rail max-width; with xl padding (2rem/side) content ≈ 1616px — matches /about statement. */
+  --container-vp-content: 1680px;
 
   /* Form & File Block Tokens — Campaign Brief Form */
 
@@ -279,7 +280,7 @@
 
   /* Spacing & Layout — Section vertical padding */
 
-  --vp-section-y: 5.5rem;
+  --vp-section-y: 7rem;
   --vp-section-y-tight: 3.5rem;
   --vp-section-y-loose: 6.5rem;
   --vp-section-y-header-condensed: 9.5rem;
@@ -890,6 +891,26 @@ body:has(.vp-work-index) #header.navbar::before {
   padding-inline: var(--spacing-vp-gutter);
 }
 
+/* Wide content rail — 1680px outer max; responsive padding matches portfolio/about statement rails. */
+.vp-content-rail {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1680px;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 768px) {
+  .vp-content-rail {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .vp-content-rail {
+    padding-inline: 2rem;
+  }
+}
+
 @media (max-width: 575.98px) {
   /*
    * SectionWrapper uses py-[var(--vp-section-y)], so mobile spacing must
@@ -897,8 +918,8 @@ body:has(.vp-work-index) #header.navbar::before {
    * loses to the Tailwind utility.
    */
   :root {
-    --vp-section-y: 4rem;
-    --spacing-vp-section-y: 4rem;
+    --vp-section-y: 5rem;
+    --spacing-vp-section-y: 5rem;
   }
 }
 

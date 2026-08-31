@@ -236,8 +236,6 @@ export function AboutStatementAnimated({
     'vp-about-statement',
     'bg-vp-bg',
     'px-[var(--spacing-vp-gutter)]',
-    'pb-[var(--vp-section-y)]',
-    'pt-[var(--vp-section-y-header-condensed)]',
     'text-vp-text',
     reducedMotion ? 'vp-about-statement--reduced-motion' : '',
   ]
@@ -246,7 +244,7 @@ export function AboutStatementAnimated({
 
   return (
     <section className={sectionClass}>
-      <div className="vp-about-statement__inner mx-auto w-full max-w-[1680px] px-4 text-center md:px-6 xl:px-8">
+      <div className="vp-content-rail vp-about-statement__inner text-center">
         <h1 className="vp-about-statement__heading">
           {lines.map((line, lineIndex) => (
             <StatementLine

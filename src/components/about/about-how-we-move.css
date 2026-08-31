@@ -1,0 +1,148 @@
+/* About How We Move — light-mode workflow accordion (see AboutHowWeMoveAccordion.tsx). */
+
+.vp-how-we-move__intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 992px) {
+  .vp-how-we-move__intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    align-items: start;
+    gap: 2rem;
+    margin-bottom: 3.5rem;
+  }
+}
+
+.vp-how-we-move__subtitle {
+  margin: 0;
+  font-family: var(--font-vp-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-vp-uppercase);
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.vp-how-we-move__heading {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: clamp(2.5rem, 4.375vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-vp-heading);
+  text-transform: uppercase;
+  text-align: left;
+  color: #000;
+}
+
+@media (min-width: 992px) {
+  .vp-how-we-move__heading {
+    text-align: right;
+    justify-self: end;
+  }
+}
+
+.vp-how-we-move__list {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.vp-how-we-move__item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.vp-how-we-move__item-heading {
+  margin: 0;
+}
+
+.vp-how-we-move__trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 1.35rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.vp-how-we-move__trigger-label {
+  font-family: var(--font-vp-heading);
+  font-size: clamp(1.375rem, 2.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-vp-heading);
+  text-transform: uppercase;
+}
+
+.vp-how-we-move__toggle {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.vp-how-we-move__toggle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vp-how-we-move__panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  padding: 0 0 2rem;
+}
+
+@media (min-width: 992px) {
+  .vp-how-we-move__panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.vp-how-we-move__headline {
+  margin: 0;
+  font-family: var(--font-vp-sans);
+  font-size: clamp(1.125rem, 1.35vw, 1.375rem);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #000;
+}
+
+.vp-how-we-move__bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-vp-sans);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.vp-how-we-move__bullets li {
+  position: relative;
+  margin: 0 0 0.85rem;
+  padding-left: 1.1rem;
+}
+
+.vp-how-we-move__bullets li:last-child {
+  margin-bottom: 0;
+}
+
+.vp-how-we-move__bullets li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: rgba(0, 0, 0, 0.55);
+}

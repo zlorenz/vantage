@@ -2,8 +2,9 @@
  * About page — statement, who we are, production services, AI workflow,
  * production log CTA, more-about links, campaign CTA.
  *
- * Section order: Statement -> Who We Are -> Production Services ->
- * AI Workflow -> Production Log CTA -> More About Vantage -> CtaSection.
+ * Section order: Statement -> Who We Are -> Production House ->
+ * How We Move -> Production Services -> AI Workflow -> Production Log CTA ->
+ * More About Vantage -> CtaSection.
  *
  * Note: the founders/team grid no longer renders here — it lives on
  * /our-company. FounderCard and the `founders` GROQ field/query are
@@ -19,6 +20,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AboutStatementSection } from '@/components/about/AboutStatementSection';
 import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
+import { AboutProductionHouseSection } from '@/components/about/AboutProductionHouseSection';
+import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
@@ -120,6 +123,10 @@ export default async function AboutPage({ params }: Props) {
       <AboutStatementSection />
 
       <AboutWhoWeAreSection />
+
+      <AboutProductionHouseSection />
+
+      <AboutHowWeMoveSection />
 
       {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 

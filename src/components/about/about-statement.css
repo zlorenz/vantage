@@ -10,6 +10,8 @@
   --vp-about-ink-lit: #ffffff;
   /* Redesign orange #F37021 (design/.pen) — not --vp-orange (#f04e23). */
   --vp-about-ink-accent: #f37021;
+  padding-top: calc(var(--vp-section-y-header-condensed) * 1.5);
+  padding-bottom: calc(var(--vp-section-y) * 1.5);
 }
 
 .vp-about-statement__inner {
