@@ -10,21 +10,29 @@ import {
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 
 const ITEM_KEYS = ['discover', 'develop', 'produce', 'deliver'] as const;
+const BULLET_COUNTS: Record<(typeof ITEM_KEYS)[number], number> = {
+  discover: 4,
+  develop: 5,
+  produce: 4,
+  deliver: 5,
+};
 
 export async function AboutHowWeMoveSection() {
   const t = await getTranslations('About');
 
-  const items: HowWeMoveAccordionItem[] = ITEM_KEYS.map((key, index) => ({
-    id: key,
-    label: t(`howWeMoveItem${index + 1}Label`),
-    headline: t(`howWeMoveItem${index + 1}Headline`),
-    bullets: [
-      t(`howWeMoveItem${index + 1}Bullet1`),
-      t(`howWeMoveItem${index + 1}Bullet2`),
-      t(`howWeMoveItem${index + 1}Bullet3`),
-      t(`howWeMoveItem${index + 1}Bullet4`),
-    ],
-  }));
+  const items: HowWeMoveAccordionItem[] = ITEM_KEYS.map((key, index) => {
+    const itemNumber = index + 1;
+    const bulletCount = BULLET_COUNTS[key];
+
+    return {
+      id: key,
+      label: t(`howWeMoveItem${itemNumber}Label`),
+      headline: t(`howWeMoveItem${itemNumber}Headline`),
+      bullets: Array.from({ length: bulletCount }, (_, bulletIndex) =>
+        t(`howWeMoveItem${itemNumber}Bullet${bulletIndex + 1}`),
+      ),
+    };
+  });
 
   return (
     <SectionWrapper fullBleed className="bg-white text-black">
