@@ -185,24 +185,21 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper variant="tight" borderTop fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h2 className="mb-3 font-vp-heading text-xs font-normal uppercase tracking-vp-heading text-vp-text-soft">
+      <SectionWrapper borderTop>
+        <div className="text-center">
+          <h2 className="mb-3 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading text-white">
             {t('moreAboutVantage')}
           </h2>
-          <p className="m-0 max-w-[42rem] text-sm font-light leading-relaxed text-vp-text-muted">
+          <p className="m-0 font-light leading-relaxed text-vp-text-muted">
             {t('moreAboutVantageBody')}
           </p>
-          <p className="m-0 mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-normal">
+          <p className="m-0 mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-normal">
             <Link
               href="/our-company"
               className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
             >
               {t('moreAboutOurCompany')}
             </Link>
-            <span aria-hidden="true" className="text-vp-text-soft">
-              ·
-            </span>
             {/* Temporary — these point to the first existing category page per taxonomy as a placeholder. Will be replaced with links to consolidated taxonomy hub pages (see project notes) once those are built. */}
             <Link
               href={{ pathname: '/video-format/[slug]', params: { slug: 'brand-film' } }}
@@ -210,27 +207,18 @@ export default async function AboutPage({ params }: Props) {
             >
               {t('moreAboutFormats')}
             </Link>
-            <span aria-hidden="true" className="text-vp-text-soft">
-              ·
-            </span>
             <Link
               href={{ pathname: '/industry/[slug]', params: { slug: 'ai-robotics' } }}
               className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
             >
               {t('moreAboutIndustries')}
             </Link>
-            <span aria-hidden="true" className="text-vp-text-soft">
-              ·
-            </span>
             <Link
               href={{ pathname: '/market/[slug]', params: { slug: 'china' } }}
               className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
             >
               {t('moreAboutMarkets')}
             </Link>
-            <span aria-hidden="true" className="text-vp-text-soft">
-              ·
-            </span>
             <Link
               href="/awards"
               className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
