@@ -113,7 +113,7 @@ type CrewRoleFilter = 'all' | string
 
 /**
  * Identity-linked standard roles per department (live data scope).
- * Casting / G&E and other departments stay empty until their link apply.
+ * Other departments stay empty until their link apply.
  */
 const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
   production: ['brand', 'director'],
@@ -134,7 +134,7 @@ const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
     'stunt_coordinator',
     'talent',
   ],
-  ge: [],
+  ge: ['electrician', 'gaffer', 'grip', 'key_grip', 'rental_house'],
 }
 
 /** Role keys passed to resolveUsageForIdentities for Crew Members "Used by". */
