@@ -9,6 +9,13 @@
  *
  * Used by Sanity Studio Crew Members "Used by" so it stays aligned with
  * the Work Library filters.
+ *
+ * **Not a raw `references()` count.** GROQ `references(identityId)` totals
+ * every weak ref on any role (including hidden/trashed portfolios). This
+ * module counts only FILTER_CREDIT_ROLE_KEYS matches on the public facet
+ * portfolio set — identity link, display-name fallback, and (for art
+ * director) production-designer name alias. Studio "Used by" will therefore
+ * differ from an unfiltered references() audit by design.
  */
 
 import {
@@ -192,6 +199,9 @@ export function portfolioMatchesIdentityRole(
  *
  * Callers must pass the same portfolio set as /work-internal's default
  * public facet counts: published (no `drafts.*`), not trashed, not hidden.
+ *
+ * Output is intentionally lower or higher than a raw `references()` count
+ * (hidden portfolios excluded; name-only credits on filter roles included).
  */
 export function resolveUsageForIdentities(
   identities: Array<{_id: string; name: string}>,
