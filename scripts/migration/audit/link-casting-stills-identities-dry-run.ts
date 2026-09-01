@@ -1,8 +1,9 @@
 /**
- * Phase 1: link Casting / Stills crew credits to creditIdentity refs.
+ * Phase 1: link Casting / Stills / G&E crew credits to creditIdentity refs.
  *
- * Dry-run by default (both departments). Apply requires explicit flags:
+ * Dry-run by default (all target departments). Apply requires explicit flags:
  *   npx tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts
+ *   npx tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --department ge
  *   npx tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department stills
  *
  * Dataset backup required before any --apply run.
@@ -24,7 +25,7 @@ import {
 import {getWriteClient} from '../lib/sanity-client'
 import '../config'
 
-const TARGET_DEPARTMENTS = ['stills', 'casting'] as const satisfies readonly CrewDepartmentKey[]
+const TARGET_DEPARTMENTS = ['stills', 'casting', 'ge'] as const satisfies readonly CrewDepartmentKey[]
 
 type TargetDepartment = (typeof TARGET_DEPARTMENTS)[number]
 
@@ -337,7 +338,7 @@ function findCrossDepartmentVariantGroups(
 }
 
 function printDepartmentReport(report: DepartmentDryRunReport) {
-  const title = report.department === 'stills' ? 'STILLS' : 'CASTING'
+  const title = report.department.toUpperCase()
   console.log('')
   console.log('='.repeat(72))
   console.log(`${title} — identity link dry-run (Phase 1)`)
@@ -486,7 +487,7 @@ async function main() {
   if (APPLY) {
     if (!applyDepartmentArg || !TARGET_DEPARTMENTS.includes(applyDepartmentArg)) {
       console.error(
-        'Apply requires exactly one --department stills|casting (one department per run).',
+        'Apply requires exactly one --department stills|casting|ge (one department per run).',
       )
       process.exit(1)
     }
@@ -518,45 +519,54 @@ async function main() {
     return
   }
 
+  const dryRunDepartmentArg = parseDepartmentArg()
   if (process.argv.includes('--department')) {
-    console.error('Dry-run reports all departments; omit --department unless using --apply.')
-    process.exit(1)
+    if (!dryRunDepartmentArg || !TARGET_DEPARTMENTS.includes(dryRunDepartmentArg)) {
+      console.error(
+        'Dry-run --department must be one of: stills, casting, ge (or omit for all departments).',
+      )
+      process.exit(1)
+    }
   }
 
-  console.log('creditIdentity linking dry-run — Casting / Stills (Phase 1)')
+  console.log('creditIdentity linking dry-run — Casting / Stills / G&E (Phase 1)')
   console.log(`Live creditIdentity documents: ${(liveIdentities ?? []).length}`)
   console.log(`Portfolio documents scanned: ${(docs ?? []).length}`)
   console.log('Mode: DRY RUN ONLY — no writes performed')
 
-  const stillsReport = dryRunDepartment('stills', docs ?? [], liveIdentities ?? [])
-  const castingReport = dryRunDepartment('casting', docs ?? [], liveIdentities ?? [])
+  const departmentsToRun = dryRunDepartmentArg
+    ? [dryRunDepartmentArg]
+    : [...TARGET_DEPARTMENTS]
 
-  printDepartmentReport(stillsReport)
-  printDepartmentReport(castingReport)
+  for (const department of departmentsToRun) {
+    printDepartmentReport(dryRunDepartment(department, docs ?? [], liveIdentities ?? []))
+  }
 
-  const castingNames = collectUnlinkedSlots(
-    docs ?? [],
-    'casting',
-    identityLinkPolicyForDepartments(['casting']).roleKeys,
-  ).map((slot) => slot.name)
-  const stillsNames = collectUnlinkedSlots(
-    docs ?? [],
-    'stills',
-    identityLinkPolicyForDepartments(['stills']).roleKeys,
-  ).map((slot) => slot.name)
-  const crossDepartment = findCrossDepartmentVariantGroups(castingNames, stillsNames)
+  if (!dryRunDepartmentArg) {
+    const castingNames = collectUnlinkedSlots(
+      docs ?? [],
+      'casting',
+      identityLinkPolicyForDepartments(['casting']).roleKeys,
+    ).map((slot) => slot.name)
+    const stillsNames = collectUnlinkedSlots(
+      docs ?? [],
+      'stills',
+      identityLinkPolicyForDepartments(['stills']).roleKeys,
+    ).map((slot) => slot.name)
+    const crossDepartment = findCrossDepartmentVariantGroups(castingNames, stillsNames)
 
-  console.log('')
-  console.log('='.repeat(72))
-  console.log('CROSS-DEPARTMENT spelling variant flags (Casting ↔ Stills)')
-  console.log('='.repeat(72))
-  if (!crossDepartment.length) {
-    console.log('(none flagged)')
-  } else {
-    for (const row of crossDepartment) {
-      console.log(
-        `  • Casting "${row.castingName}" ↔ Stills "${row.stillsName}" — ${formatMatchReasons(row.reasons)}`,
-      )
+    console.log('')
+    console.log('='.repeat(72))
+    console.log('CROSS-DEPARTMENT spelling variant flags (Casting ↔ Stills)')
+    console.log('='.repeat(72))
+    if (!crossDepartment.length) {
+      console.log('(none flagged)')
+    } else {
+      for (const row of crossDepartment) {
+        console.log(
+          `  • Casting "${row.castingName}" ↔ Stills "${row.stillsName}" — ${formatMatchReasons(row.reasons)}`,
+        )
+      }
     }
   }
 

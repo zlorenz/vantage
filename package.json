@@ -41,6 +41,7 @@
     "migrate:audit:casting-stills-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts",
     "migrate:apply:stills-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department stills",
     "migrate:apply:casting-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department casting",
+    "migrate:apply:ge-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department ge",
     "migrate:audit:wp-credit-links": "tsx scripts/migration/audit/wp-credit-links.ts",
     "migrate:audit:crew-name-variants": "tsx scripts/migration/audit/crew-name-variants.ts",
     "migrate:audit:crew-role-inventory": "tsx scripts/migration/audit/crew-role-inventory.ts",
