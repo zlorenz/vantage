@@ -90,8 +90,8 @@
 
   --font-vp-sans: "Mona Sans", system-ui, -apple-system, "Segoe UI", Roboto,
     Arial, sans-serif;
-  /* Dela Gothic One (--font-vp-heading-fallback) covers Vietnamese glyphs
-   * missing from Special Gothic Expanded One. */
+  /* Zalando Sans Expanded (--font-vp-heading-fallback) covers Vietnamese
+   * glyphs missing from Special Gothic Expanded One. */
   --font-vp-heading: var(--font-vp-heading-raw),
     var(--font-vp-heading-fallback), system-ui, -apple-system, "Segoe UI",
     Roboto, Arial, sans-serif;
@@ -101,6 +101,10 @@
   --tracking-vp-navbar: 0.125rem;
   --tracking-vp-uppercase: 0.08em;
   --tracking-vp-heading: 0.01em;
+  /* Requested weight for display heading stack. Special Gothic only ships 400
+   * but reads heavy; Zalando Sans Expanded (variable fallback) needs ~900 to
+   * match. Latin glyphs still resolve to Special Gothic 400. */
+  --font-vp-heading-weight: 900;
 
   /* Transitions & Animation */
 
@@ -247,6 +251,7 @@
     Arial, sans-serif;
   /* Alias of @theme --font-vp-heading — single source of truth for the stack. */
   --vp-font-heading: var(--font-vp-heading);
+  --vp-font-heading-weight: var(--font-vp-heading-weight);
 
   /* Typography — Letter Spacing */
 
@@ -435,12 +440,11 @@
 }
 
 /*
- * Chinese heading stack — omit Dela Gothic One.
+ * Chinese heading stack — omit the Vietnamese Latin fallback.
  *
- * Dela is the Vietnamese Latin fallback for Special Gothic, but it also
- * ships CJK glyphs. On :lang(zh) it wins ahead of PingFang and, with only
- * a 400 file, gets synthetically bolded at font-bold (700) → smeared
- * Chinese headings. Keep the base --font-vp-heading stack for EN/VI.
+ * After Special Gothic (no CJK glyphs), use PingFang SC / Noto Sans SC /
+ * Microsoft YaHei explicitly. Keep the base --font-vp-heading stack with
+ * --font-vp-heading-fallback for EN/VI Latin display type.
  */
 :lang(zh) {
   --font-vp-heading: var(--font-vp-heading-raw), "PingFang SC", "Noto Sans SC",
@@ -465,6 +469,33 @@
 :lang(zh) h4,
 :lang(zh) .navbar .nav-link,
 :lang(zh) .navbar .dropdown-item {
+  font-synthesis: none;
+}
+
+/*
+ * Vietnamese fallback weight — see --font-vp-heading-weight in @theme.
+ * Applied to display heading typography (not nav chrome at 400).
+ */
+.font-vp-heading.font-bold,
+.font-vp-heading.font-semibold,
+.vp-page-hero__title,
+.vp-cta__heading,
+.vp-post-card__title,
+.vp-blog-widget__title,
+.vp-search-empty__title,
+.vp-founder-card__name,
+.entry-title,
+.vp-card__title,
+.vp-portfolio-index__brand,
+.vp-portfolio-index__campaign,
+.vp-case-carousel__title,
+.vp-case-header__brand,
+.vp-case-header__campaign,
+.vp-about-statement__heading,
+.vp-how-we-move__heading,
+.vp-how-we-move__trigger-label,
+.vp-credits__dept-name {
+  font-weight: var(--font-vp-heading-weight);
   font-synthesis: none;
 }
 
@@ -1093,7 +1124,7 @@ body:has(.vp-work-index) #header.navbar::before {
   padding: 1.25em 1em 0.75em;
   color: #fff;
   font-family: var(--vp-font-heading);
-  font-weight: 700;
+  font-weight: var(--font-vp-heading-weight);
   line-height: 1.1;
   letter-spacing: 0.0625rem;
   text-align: center;
@@ -1187,7 +1218,7 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credits__dept-name {
   font-family: var(--vp-font-heading);
   font-size: 1.0625rem;
-  font-weight: 400;
+  font-weight: var(--font-vp-heading-weight);
   letter-spacing: 0.0625rem;
   line-height: 1.2;
   text-transform: uppercase;

@@ -1606,7 +1606,7 @@
                   "fill": "#645A5A",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Display: locale-swapped via $font-vp-heading (EN=Special Gothic Expanded One, VN=Dela Gothic One fallback, ZH=Noto Sans SC preview for PingFang SC). Body/UI: Mona Sans. Sizes here are indicative — the source doc specifies print minimums, not web px.",
+                  "content": "Display: locale-swapped via $font-vp-heading (EN=Special Gothic Expanded One, VN=Zalando Sans Expanded fallback, ZH=Noto Sans SC preview for PingFang SC). Body/UI: Mona Sans. Sizes here are indicative — the source doc specifies print minimums, not web px.",
                   "fontFamily": "Mona Sans",
                   "fontSize": 13,
                   "fontWeight": "300"
@@ -2102,7 +2102,7 @@
                       "fill": "#645A5A",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Preview above renders in Dela Gothic One (the real fallback the browser picks for VN glyphs) — Special Gothic Expanded One has no VN glyph coverage.\n\nLive font-family stack:\n  \"Special Gothic Expanded One\", \"Dela Gothic One\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif\n  font-weight: 400\n\nSanity-check: every diacritic (ả, ấ, ệ, ế, ự) should appear on the character it belongs to, not as a missing-glyph square or dropped mark.",
+                      "content": "Preview above renders in Zalando Sans Expanded (the real fallback the browser picks for VN glyphs) — Special Gothic Expanded One has no VN glyph coverage.\n\nLive font-family stack:\n  \"Special Gothic Expanded One\", \"Zalando Sans Expanded\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif\n  font-weight: 400\n\nSanity-check: every diacritic (ả, ấ, ệ, ế, ự) should appear on the character it belongs to, not as a missing-glyph square or dropped mark.",
                       "lineHeight": 1.4,
                       "fontFamily": "Mona Sans",
                       "fontSize": 11,
@@ -2167,7 +2167,7 @@
                       "fill": "#645A5A",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Preview above renders in Noto Sans SC @ 800 as a stand-in — Pencil cannot render PingFang SC (Apple-proprietary system font). Real Apple visitors see PingFang SC; other platforms fall through to Noto Sans SC, then Microsoft YaHei, then system.\n\nLive font-family stack (copied verbatim from computed CSS):\n  \"Special Gothic Expanded One\", \"PingFang SC\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif\n  font-weight: 800\n  font-synthesis: none\n\nDela Gothic One is deliberately EXCLUDED from this stack — it caused synthetic-bold glyph corruption on CJK characters. Do not add it back.",
+                      "content": "Preview above renders in Noto Sans SC @ 800 as a stand-in — Pencil cannot render PingFang SC (Apple-proprietary system font). Real Apple visitors see PingFang SC; other platforms fall through to Noto Sans SC, then Microsoft YaHei, then system.\n\nLive font-family stack (copied verbatim from computed CSS):\n  \"Special Gothic Expanded One\", \"PingFang SC\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif\n  font-weight: 800\n  font-synthesis: none\n\nZalando Sans Expanded is deliberately EXCLUDED from this stack — use the explicit PingFang / Noto / YaHei CJK stack instead.",
                       "lineHeight": 1.4,
                       "fontFamily": "Mona Sans",
                       "fontSize": 11,
@@ -10652,7 +10652,7 @@
           }
         },
         {
-          "value": "Dela Gothic One",
+          "value": "Zalando Sans Expanded",
           "theme": {
             "locale": "vn"
           }

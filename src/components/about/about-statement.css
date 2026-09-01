@@ -23,6 +23,7 @@
   font-family: var(--font-vp-heading);
   /* Scale to portfolio rail width (1680px − xl padding ≈ 1616px content) without wrapping lines. */
   font-size: clamp(2.75rem, 5.6cqi, 6.125rem);
+  font-weight: var(--font-vp-heading-weight);
   line-height: 1.2;
   letter-spacing: var(--tracking-vp-heading);
   text-transform: uppercase;

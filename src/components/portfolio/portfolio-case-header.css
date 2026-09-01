@@ -22,7 +22,7 @@
   margin: 0;
   font-family: var(--font-vp-heading);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: var(--font-vp-heading-weight);
   letter-spacing: 1.3px;
   text-transform: uppercase;
   color: #fdb913;
@@ -32,7 +32,7 @@
   margin: 0;
   font-family: var(--font-vp-heading);
   font-size: clamp(2.5rem, 5vw, 3.875rem);
-  font-weight: 400;
+  font-weight: var(--font-vp-heading-weight);
   color: #fff;
   letter-spacing: 1px;
   line-height: 1;

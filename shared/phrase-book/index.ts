@@ -161,7 +161,7 @@ export type ResolveLocalizedArgs = {
  * - fallback → raw `en`
  * Lookup keys go through normalizePhraseKey (stegaClean + NFC + collapse).
  * Display returns are NFC-normalized so Vietnamese diacritics render as
- * precomposed glyphs (Dela Gothic One subsets lack standalone U+0302/U+031B).
+ * precomposed glyphs (heading fallback subsets lack standalone U+0302/U+031B).
  */
 export function resolveLocalizedString(args: ResolveLocalizedArgs): string {
   const en = args.en ?? ''

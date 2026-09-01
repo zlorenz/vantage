@@ -417,7 +417,7 @@
   flex-shrink: 0;
   font-family: var(--font-vp-heading);
   font-size: clamp(1.25rem, 2.5vw, 2rem);
-  font-weight: 400;
+  font-weight: var(--font-vp-heading-weight);
   color: #fff;
   letter-spacing: 1px;
   line-height: 1;

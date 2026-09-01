@@ -9,9 +9,11 @@
  * Special Gothic Expanded One is the display/heading face (Regular 400
  * only — no Bold/Italic files exist). next/font exposes it as
  * `--font-vp-heading-raw` so it does not collide with the @theme stack
- * token `--font-vp-heading`. It has no Vietnamese coverage, so Dela
- * Gothic One is loaded as `--font-vp-heading-fallback` and slotted
- * second in that stack (after the raw face, before system-ui).
+ * token `--font-vp-heading`. It has no Vietnamese coverage, so Zalando
+ * Sans Expanded is loaded as `--font-vp-heading-fallback` and slotted
+ * second in that stack (after the raw face, before system-ui). Variable
+ * 200–900; display typography requests --font-vp-heading-weight (900) so VN
+ * glyphs match Special Gothic’s heavy 400 cut.
  *
  * The heading @theme stack composes from the next/font CSS variables
  * (`--font-vp-heading-raw`, `--font-vp-heading-fallback`) with
@@ -24,11 +26,8 @@
  * loads and the browser falls back to system-ui.
  */
 
-import {
-  Dela_Gothic_One,
-  Mona_Sans,
-  Special_Gothic_Expanded_One,
-} from 'next/font/google';
+import localFont from 'next/font/local';
+import { Mona_Sans, Special_Gothic_Expanded_One } from 'next/font/google';
 
 export const specialGothicExpandedOne = Special_Gothic_Expanded_One({
   subsets: ['latin', 'latin-ext'],
@@ -38,12 +37,13 @@ export const specialGothicExpandedOne = Special_Gothic_Expanded_One({
   adjustFontFallback: false,
 });
 
-export const delaGothicOne = Dela_Gothic_One({
-  subsets: ['latin', 'latin-ext', 'vietnamese'],
-  weight: '400',
+/** Vietnamese Latin fallback for Special Gothic Expanded One (variable 200–900). */
+export const zalandoSansExpanded = localFont({
+  src: '../assets/fonts/zalando-sans-expanded.woff2',
   variable: '--font-vp-heading-fallback',
   display: 'swap',
   adjustFontFallback: false,
+  weight: '200 900',
 });
 
 export const monaSans = Mona_Sans({
