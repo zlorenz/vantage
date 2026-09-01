@@ -37,6 +37,7 @@ import {
   type TrashPreflightItem,
 } from './document-lifecycle'
 import {getStudioRole} from '../../lib/studio-roles'
+import {IdentityMergeDialog} from './IdentityMergeDialog'
 
 type DisplayTitlePartsDoc = {
   brandName?: string
@@ -633,6 +634,9 @@ export function DocumentTable({
         >
       }
   >(null)
+  const [mergeSource, setMergeSource] = useState<{_id: string; name: string} | null>(
+    null,
+  )
 
   const inTrash = statusFilter === 'trash'
 
@@ -797,6 +801,7 @@ export function DocumentTable({
   )
 
   const isCrewMembersSection = section.documentType === 'creditIdentity'
+  const canMergeIdentities = isCrewMembersSection && isAdmin && !inTrash
 
   const statusCounts = useMemo(() => {
     const counts: Record<Exclude<StatusFilter, 'trash'>, number> = {
@@ -1089,7 +1094,8 @@ export function DocumentTable({
 
   // Translators translate existing docs — never create. Admin/Editor unchanged.
   const canCreate = section.canCreate !== false && !inTrash && !isTranslator
-  const colSpan = section.columns.length + (supportsTrash ? 1 : 0)
+  const colSpan =
+    section.columns.length + (supportsTrash ? 1 : 0) + (canMergeIdentities ? 1 : 0)
 
   // Keep columns readable on narrow viewports: the table never shrinks below
   // the sum of its column widths; the wrapping Card scrolls horizontally.
@@ -1402,6 +1408,15 @@ export function DocumentTable({
                     </Text>
                   </th>
                 ))}
+                {canMergeIdentities ? (
+                  <th
+                    style={{
+                      width: 120,
+                      padding: '10px 12px',
+                      borderBottom: '1px solid var(--card-border-color)',
+                    }}
+                  />
+                ) : null}
               </tr>
             </thead>
             <tbody>
@@ -1479,6 +1494,25 @@ export function DocumentTable({
                           )}
                         </td>
                       ))}
+                      {canMergeIdentities ? (
+                        <td
+                          style={{
+                            padding: '10px 12px',
+                            borderBottom: '1px solid var(--card-border-color)',
+                            verticalAlign: 'middle',
+                          }}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <Button
+                            fontSize={0}
+                            mode="bleed"
+                            text="Merge into…"
+                            onClick={() =>
+                              setMergeSource({_id: row._id, name: row.title})
+                            }
+                          />
+                        </td>
+                      ) : null}
                     </tr>
                   )
                 })
@@ -1486,6 +1520,14 @@ export function DocumentTable({
             </tbody>
           </table>
         </Card>
+      ) : null}
+
+      {mergeSource ? (
+        <IdentityMergeDialog
+          source={mergeSource}
+          onClose={() => setMergeSource(null)}
+          onComplete={loadRows}
+        />
       ) : null}
 
       {confirm ? (
