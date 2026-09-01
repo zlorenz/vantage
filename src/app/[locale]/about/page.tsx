@@ -16,6 +16,7 @@
  */
 
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AboutStatementSection } from '@/components/about/AboutStatementSection';
@@ -24,7 +25,6 @@ import { AboutProductionHouseSection } from '@/components/about/AboutProductionH
 import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
-import { VpButton } from '@/components/ui/VpButton';
 import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import {
@@ -157,15 +157,32 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper borderTop fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h2 className="mb-4 font-vp-heading text-xl font-bold uppercase leading-tight tracking-vp-heading">
-            {t('productionLogCtaHeading')}
-          </h2>
-          <p className="mb-6 max-w-[700px] font-light leading-relaxed text-vp-text-muted">
-            {t('productionLogCtaBody')}
-          </p>
-          <VpButton href="/news">{t('productionLogCtaLink')}</VpButton>
+      <SectionWrapper borderTop>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-center lg:gap-x-12 lg:gap-y-0">
+          <div className="relative aspect-video w-full overflow-hidden rounded-[1.75rem] bg-[var(--color-vp-search-thumb-bg)]">
+            {/* PLACEHOLDER — swap src for a Sanity behind-the-scenes production photo */}
+            <Image
+              src="/placeholders/about-production-log-bts.svg"
+              alt=""
+              fill
+              sizes="(max-width: 992px) 100vw, 42vw"
+              className="object-cover"
+            />
+          </div>
+          <div>
+            <h2 className="m-0 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading">
+              {t('productionLogCtaHeading')}
+            </h2>
+            <p className="m-0 mt-6 text-[clamp(1.125rem,1.35vw,1.375rem)] font-light leading-relaxed text-vp-text-muted">
+              {t('productionLogCtaBody')}
+            </p>
+            <Link
+              href="/news"
+              className="mt-8 inline-block font-vp-heading text-[clamp(1.125rem,1.35vw,1.375rem)] uppercase tracking-vp-heading text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
+            >
+              {t('productionLogCtaLink')}
+            </Link>
+          </div>
         </div>
       </SectionWrapper>
 
