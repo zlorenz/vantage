@@ -306,7 +306,8 @@ function buildQuery(documentType: string): string {
       return `*[_type == "creditIdentity" && !(_id in path("versions.**"))] | order(name asc) {
         _id,
         _type,
-        "title": name
+        "title": name,
+        nameZh
       }`
     case 'translatedPhrase':
       return `*[_type == "translatedPhrase" && !(_id in path("versions.**"))] | order(en asc) {
@@ -398,7 +399,11 @@ function normalizeRows(
       _id: publishedId,
       _type: String(doc._type),
       title: titleFromDoc(doc),
-      titleZh: doc.titleZh ? String(doc.titleZh) : undefined,
+      titleZh: doc.titleZh
+        ? String(doc.titleZh)
+        : doc.nameZh
+          ? String(doc.nameZh)
+          : undefined,
       slug: doc.slug ? String(doc.slug) : undefined,
       publishedAt: doc.publishedAt
         ? String(doc.publishedAt)

@@ -177,7 +177,7 @@ export const NAV_ITEMS: ContentNavItem[] = [
         createLabel: 'New Crew Member',
         columns: creditIdentityColumns,
         defaultSort: {field: 'title', direction: 'asc'},
-        searchFields: ['title', 'name'],
+        searchFields: ['title', 'titleZh'],
       },
     ],
   },
