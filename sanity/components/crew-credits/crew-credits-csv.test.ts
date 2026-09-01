@@ -28,6 +28,7 @@ import {
   slugifyPersonName,
 } from './sync-taxonomies-from-credits'
 import {
+  identityLinkPolicyForDepartments,
   planIdentitySyncFromCredits,
   resolveIdentityLinksOnCredits,
 } from './sync-credit-identities'
@@ -897,5 +898,47 @@ assert.equal(
   identityLinks.nextCredits[1].people[0].identity?._ref,
   identityLinks.createIdentities[0]._id,
 )
+
+const castingPolicyLinks = resolveIdentityLinksOnCredits(
+  [
+    {
+      _type: 'crewCredit',
+      department: 'casting',
+      roleKey: 'casting_director',
+      role: 'Casting Director',
+      people: [{_type: 'crewPerson', name: 'Casting Lead'}],
+    },
+    {
+      _type: 'crewCredit',
+      department: 'camera',
+      roleKey: 'dop',
+      role: 'DOP',
+      people: [{_type: 'crewPerson', name: 'Ignored DOP'}],
+    },
+  ],
+  [],
+  identityLinkPolicyForDepartments(['casting']),
+)
+assert.equal(castingPolicyLinks.createIdentities.length, 1)
+assert.equal(castingPolicyLinks.createIdentities[0]?.name, 'Casting Lead')
+assert.equal(castingPolicyLinks.links.length, 1)
+assert.equal(castingPolicyLinks.nextCredits[1].people[0].identity?._ref, undefined)
+
+const customRoleSkipped = resolveIdentityLinksOnCredits(
+  [
+    {
+      _type: 'crewCredit',
+      department: 'casting',
+      roleKey: 'casting_director',
+      role: 'Casting Assistant',
+      isCustomRole: true,
+      people: [{_type: 'crewPerson', name: 'Custom Casting Name'}],
+    },
+  ],
+  [],
+  identityLinkPolicyForDepartments(['casting']),
+)
+assert.equal(customRoleSkipped.createIdentities.length, 0)
+assert.equal(customRoleSkipped.links.length, 0)
 
 console.log('crew-credits-csv.test.ts: all assertions passed')

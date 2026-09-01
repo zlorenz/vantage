@@ -6,9 +6,11 @@
 
 import {
   creditIdentityId,
-  isFilterCreditRoleKey,
+  CREW_DEPARTMENTS,
+  FILTER_CREDIT_ROLE_KEYS,
   normalizeCreditToken,
   type CrewCreditValue,
+  type CrewDepartmentKey,
   type CrewPersonValue,
   type FilterCreditRoleKey,
 } from '@crew-credits'
@@ -17,6 +19,35 @@ export interface CreditIdentityDoc {
   _id: string
   name: string
   url?: string
+}
+
+/** Which standard (non-custom) roleKeys may receive creditIdentity links. */
+export type IdentityLinkPolicy = {
+  roleKeys: ReadonlySet<string>
+}
+
+export const FILTER_CREDIT_IDENTITY_LINK_POLICY: IdentityLinkPolicy = {
+  roleKeys: new Set<string>(FILTER_CREDIT_ROLE_KEYS),
+}
+
+/** Standard catalog roleKeys for the given departments (excludes custom roles at apply time). */
+export function identityLinkPolicyForDepartments(
+  departments: readonly CrewDepartmentKey[],
+): IdentityLinkPolicy {
+  const deptSet = new Set(departments)
+  const roleKeys = CREW_DEPARTMENTS.filter((dept) => deptSet.has(dept.key)).flatMap((dept) =>
+    dept.roles.map((role) => role.key),
+  )
+  return {roleKeys: new Set(roleKeys)}
+}
+
+export function creditMatchesIdentityLinkPolicy(
+  credit: CrewCreditValue,
+  policy: IdentityLinkPolicy,
+): boolean {
+  if (credit.isCustomRole) return false
+  const roleKey = credit.roleKey
+  return Boolean(roleKey && policy.roleKeys.has(roleKey))
 }
 
 
@@ -80,6 +111,7 @@ function namesForRoleKey(
   if (!credits?.length) return []
   const names: string[] = []
   for (const credit of credits) {
+    if (credit.isCustomRole) continue
     if (credit.roleKey !== roleKey) continue
     for (const person of credit.people ?? []) {
       const name = person.name?.trim()
@@ -89,24 +121,47 @@ function namesForRoleKey(
   return names
 }
 
+function planNamesByRoleForPolicy(
+  credits: CrewCreditValue[] | undefined,
+  policy: IdentityLinkPolicy,
+): Record<string, string[]> {
+  const out: Record<string, string[]> = {}
+  for (const roleKey of policy.roleKeys) {
+    out[roleKey] = uniqueNames(namesForRoleKey(credits, roleKey))
+  }
+  return out
+}
+
 /** Collect unique names per filter role from crewCredits. */
 export function planIdentitySyncFromCredits(
   credits: CrewCreditValue[] | undefined,
 ): IdentitySyncPlan {
+  const namesByRole = planNamesByRoleForPolicy(
+    credits,
+    FILTER_CREDIT_IDENTITY_LINK_POLICY,
+  )
   return {
     namesByRole: {
-      brand: uniqueNames(namesForRoleKey(credits, 'brand')),
-      director: uniqueNames(namesForRoleKey(credits, 'director')),
-      dop: uniqueNames(namesForRoleKey(credits, 'dop')),
-      art_director: uniqueNames(namesForRoleKey(credits, 'art_director')),
-      editor: uniqueNames(namesForRoleKey(credits, 'editor')),
+      brand: namesByRole.brand ?? [],
+      director: namesByRole.director ?? [],
+      dop: namesByRole.dop ?? [],
+      art_director: namesByRole.art_director ?? [],
+      editor: namesByRole.editor ?? [],
     },
   }
 }
 
+/** Collect unique names per roleKey for an arbitrary link policy. */
+export function planIdentityNamesByRole(
+  credits: CrewCreditValue[] | undefined,
+  policy: IdentityLinkPolicy,
+): Record<string, string[]> {
+  return planNamesByRoleForPolicy(credits, policy)
+}
+
 export interface LinkedPersonPatch {
   personKey?: string
-  roleKey: FilterCreditRoleKey
+  roleKey: string
   name: string
   identityId: string
   created?: boolean
@@ -133,6 +188,7 @@ export interface ResolvedIdentityLinkPlan {
 export function resolveIdentityLinksOnCredits(
   credits: CrewCreditValue[] | undefined,
   existing: CreditIdentityDoc[],
+  policy: IdentityLinkPolicy = FILTER_CREDIT_IDENTITY_LINK_POLICY,
 ): ResolvedIdentityLinkPlan {
   const createIdentities: ResolvedIdentityLinkPlan['createIdentities'] = []
   const links: LinkedPersonPatch[] = []
@@ -155,11 +211,11 @@ export function resolveIdentityLinksOnCredits(
   }
 
   const nextCredits: CrewCreditValue[] = (credits ?? []).map((credit) => {
-    const roleKey = credit.roleKey
-    if (!isFilterCreditRoleKey(roleKey)) {
+    if (!creditMatchesIdentityLinkPolicy(credit, policy)) {
       return credit
     }
 
+    const roleKey = credit.roleKey!
     const people = (credit.people ?? []).map((person) => {
       const name = person.name?.trim()
       if (!name) return person
