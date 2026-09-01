@@ -44,8 +44,18 @@ export type IdentityUsageResult = {
   roleKeys: IdentityUsageRoleKey[]
 }
 
+const FILTER_ROLE_SET = new Set<string>(FILTER_CREDIT_ROLE_KEYS)
+
+function publishedPortfolioId(id: string): string {
+  return id.replace(/^drafts\./, '')
+}
+
+function normalizeName(name: string): string {
+  return name.trim().toLowerCase()
+}
+
 function namesEqual(a: string, b: string): boolean {
-  return a.trim().toLowerCase() === b.trim().toLowerCase()
+  return normalizeName(a) === normalizeName(b)
 }
 
 function peopleForRole(
@@ -70,6 +80,76 @@ function structuredRoleNames(
     }
   }
   return names
+}
+
+type UsageIndex = {
+  byIdentityRef: Map<string, Map<IdentityUsageRoleKey, Set<string>>>
+  byNameAndRole: Map<string, Map<string, Set<string>>>
+  productionDesignerNames: Map<string, Set<string>>
+}
+
+function buildUsageIndex(portfolios: IdentityUsagePortfolio[]): UsageIndex {
+  const byIdentityRef = new Map<string, Map<IdentityUsageRoleKey, Set<string>>>()
+  const byNameAndRole = new Map<string, Map<string, Set<string>>>()
+  const productionDesignerNames = new Map<string, Set<string>>()
+
+  for (const entry of portfolios) {
+    const portfolioId = publishedPortfolioId(entry._id)
+
+    for (const credit of entry.crewCredits ?? []) {
+      const roleKey = credit.roleKey
+      if (!roleKey) continue
+
+      for (const person of credit.people ?? []) {
+        const name = person.name?.trim()
+
+        if (
+          !credit.isCustomRole &&
+          FILTER_ROLE_SET.has(roleKey) &&
+          person.identityId
+        ) {
+          let roleMap = byIdentityRef.get(person.identityId)
+          if (!roleMap) {
+            roleMap = new Map()
+            byIdentityRef.set(person.identityId, roleMap)
+          }
+          let portfoliosForRole = roleMap.get(roleKey as IdentityUsageRoleKey)
+          if (!portfoliosForRole) {
+            portfoliosForRole = new Set()
+            roleMap.set(roleKey as IdentityUsageRoleKey, portfoliosForRole)
+          }
+          portfoliosForRole.add(portfolioId)
+        }
+
+        if (FILTER_ROLE_SET.has(roleKey) && name) {
+          const normalized = normalizeName(name)
+          let roleMap = byNameAndRole.get(normalized)
+          if (!roleMap) {
+            roleMap = new Map()
+            byNameAndRole.set(normalized, roleMap)
+          }
+          let portfoliosForRole = roleMap.get(roleKey)
+          if (!portfoliosForRole) {
+            portfoliosForRole = new Set()
+            roleMap.set(roleKey, portfoliosForRole)
+          }
+          portfoliosForRole.add(portfolioId)
+        }
+
+        if (roleKey === 'production_designer' && name) {
+          const normalized = normalizeName(name)
+          let portfoliosForName = productionDesignerNames.get(normalized)
+          if (!portfoliosForName) {
+            portfoliosForName = new Set()
+            productionDesignerNames.set(normalized, portfoliosForName)
+          }
+          portfoliosForName.add(portfolioId)
+        }
+      }
+    }
+  }
+
+  return {byIdentityRef, byNameAndRole, productionDesignerNames}
 }
 
 /**
@@ -117,29 +197,43 @@ export function resolveUsageForIdentities(
   identities: Array<{_id: string; name: string}>,
   portfolios: IdentityUsagePortfolio[],
 ): Map<string, IdentityUsageResult> {
+  const {byIdentityRef, byNameAndRole, productionDesignerNames} =
+    buildUsageIndex(portfolios)
   const results = new Map<string, IdentityUsageResult>()
 
   for (const identity of identities) {
-    const identityId = identity._id.replace(/^drafts\./, '')
+    const identityId = publishedPortfolioId(identity._id)
     const displayName = identity.name?.trim() ?? ''
     const usageByRole: Partial<Record<IdentityUsageRoleKey, number>> = {}
     const allPortfolioIds = new Set<string>()
     const roleKeys: IdentityUsageRoleKey[] = []
 
+    const identityRoles = byIdentityRef.get(identityId)
+    const nameRoles = displayName
+      ? byNameAndRole.get(normalizeName(displayName))
+      : undefined
+    const productionDesignerPortfolios = displayName
+      ? productionDesignerNames.get(normalizeName(displayName))
+      : undefined
+
     for (const roleKey of FILTER_CREDIT_ROLE_KEYS) {
       const matched = new Set<string>()
-      for (const entry of portfolios) {
-        const portfolioId = entry._id.replace(/^drafts\./, '')
-        if (
-          portfolioMatchesIdentityRole(entry, identityId, displayName, roleKey)
-        ) {
-          matched.add(portfolioId)
-          allPortfolioIds.add(portfolioId)
+
+      identityRoles?.get(roleKey)?.forEach((portfolioId) => matched.add(portfolioId))
+
+      if (displayName) {
+        nameRoles?.get(roleKey)?.forEach((portfolioId) => matched.add(portfolioId))
+        if (roleKey === 'art_director') {
+          productionDesignerPortfolios?.forEach((portfolioId) =>
+            matched.add(portfolioId),
+          )
         }
       }
+
       if (matched.size > 0) {
         usageByRole[roleKey] = matched.size
         roleKeys.push(roleKey)
+        matched.forEach((portfolioId) => allPortfolioIds.add(portfolioId))
       }
     }
 
