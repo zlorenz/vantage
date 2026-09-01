@@ -126,7 +126,14 @@ const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
     'photography_producer',
     'kv_art_director',
   ],
-  casting: [],
+  casting: [
+    'animal_wrangler',
+    'casting_director',
+    'casting_manager',
+    'choreographer',
+    'stunt_coordinator',
+    'talent',
+  ],
   ge: [],
 }
 
