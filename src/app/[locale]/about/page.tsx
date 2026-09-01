@@ -144,6 +144,9 @@ export default async function AboutPage({ params }: Props) {
             <p className="m-0 text-[clamp(1.125rem,1.35vw,1.375rem)] font-light leading-relaxed text-vp-text-muted">
               {t('productionServicesBody')}
             </p>
+            <p className="m-0 mt-4 text-[clamp(1.125rem,1.35vw,1.375rem)] font-light leading-relaxed text-vp-text-muted">
+              {t('productionServicesBody2')}
+            </p>
             <Link
               href="/vietnam-production-service"
               className="mt-8 inline-block font-vp-heading text-[clamp(1.125rem,1.35vw,1.375rem)] uppercase tracking-vp-heading text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
