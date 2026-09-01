@@ -59,71 +59,8 @@ export function AboutTabbedPanelInteractive({
   const descriptionId = `about-${sectionId}-description`;
   const menuOnRight = imagePosition === 'left';
   const themeClasses = THEME_CLASSES[theme];
-
-  const menuColumn = (
-    <div
-      className={`flex min-w-0 w-full flex-col gap-6 lg:col-span-5 lg:row-start-1 lg:h-full ${
-        menuOnRight ? 'lg:col-start-8' : 'lg:col-start-1'
-      }`}
-    >
-      <ul className="m-0 flex list-none flex-col gap-0.5 p-0" role="tablist">
-        {items.map((item, index) => {
-          const selected = activeIndex === index;
-          return (
-            <li key={item.label} role="presentation">
-              <button
-                type="button"
-                role="tab"
-                id={`about-${sectionId}-tab-${index}`}
-                aria-controls={panelId}
-                aria-selected={selected}
-                className={`w-full px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading${
-                  selected ? themeClasses.tabSelected : themeClasses.tabDefault
-                }`}
-                onClick={() => setActiveIndex(index)}
-                onMouseEnter={() => setActiveIndex(index)}
-                onFocus={() => setActiveIndex(index)}
-              >
-                {item.label}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <p
-        id={descriptionId}
-        aria-live="polite"
-        className={`m-0 font-light leading-relaxed lg:mt-auto${themeClasses.description}`}
-      >
-        {activeItem.description}
-      </p>
-    </div>
-  );
-
-  const imageColumn = (
-    <div
-      id={panelId}
-      role="tabpanel"
-      aria-labelledby={`about-${sectionId}-tab-${activeIndex}`}
-      className={`min-w-0 w-full lg:col-span-7 lg:row-start-1 ${
-        menuOnRight ? 'lg:col-start-1' : 'lg:col-start-6'
-      }`}
-    >
-      {activeItem.imageSrc ? (
-        <div className="relative aspect-video w-full overflow-hidden rounded-[1.75rem]">
-          <Image
-            src={activeItem.imageSrc}
-            alt={activeItem.imageAlt}
-            fill
-            sizes="(max-width: 992px) 100vw, 58vw"
-            className="object-cover"
-            priority={activeIndex === 0}
-          />
-        </div>
-      ) : null}
-    </div>
-  );
+  const menuColumnClasses = menuOnRight ? 'lg:col-start-8' : 'lg:col-start-1';
+  const imageColumnClasses = menuOnRight ? 'lg:col-start-1' : 'lg:col-start-6';
 
   return (
     <div aria-labelledby={headingId}>
@@ -135,8 +72,61 @@ export function AboutTabbedPanelInteractive({
       </h2>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-x-12 lg:gap-y-10">
-        {menuColumn}
-        {imageColumn}
+        <ul
+          className={`m-0 flex list-none flex-col gap-0.5 p-0 lg:col-span-5 lg:row-start-1 lg:self-start ${menuColumnClasses}`}
+          role="tablist"
+        >
+          {items.map((item, index) => {
+            const selected = activeIndex === index;
+            return (
+              <li key={item.label} role="presentation">
+                <button
+                  type="button"
+                  role="tab"
+                  id={`about-${sectionId}-tab-${index}`}
+                  aria-controls={panelId}
+                  aria-selected={selected}
+                  className={`w-full px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading${
+                    selected ? themeClasses.tabSelected : themeClasses.tabDefault
+                  }`}
+                  onClick={() => setActiveIndex(index)}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onFocus={() => setActiveIndex(index)}
+                >
+                  {item.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <p
+          id={descriptionId}
+          aria-live="polite"
+          className={`m-0 font-light leading-relaxed lg:col-span-5 lg:row-start-1 lg:self-end ${menuColumnClasses}${themeClasses.description}`}
+        >
+          {activeItem.description}
+        </p>
+
+        <div
+          id={panelId}
+          role="tabpanel"
+          aria-labelledby={`about-${sectionId}-tab-${activeIndex}`}
+          className={`min-w-0 w-full lg:col-span-7 lg:row-start-1 ${imageColumnClasses}`}
+        >
+          {activeItem.imageSrc ? (
+            <div className="relative aspect-video w-full overflow-hidden rounded-[1.75rem]">
+              <Image
+                src={activeItem.imageSrc}
+                alt={activeItem.imageAlt}
+                fill
+                sizes="(max-width: 992px) 100vw, 58vw"
+                className="object-cover"
+                priority={activeIndex === 0}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
