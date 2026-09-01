@@ -131,21 +131,27 @@ export default async function AboutPage({ params }: Props) {
       {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 
       <SectionWrapper borderTop>
-        <p className="m-0 mb-4 font-vp-sans text-xs font-semibold uppercase tracking-vp-uppercase text-vp-text-soft">
-          {t('productionServicesOutline')}
-        </p>
-        <h2 className="m-0 mb-6 font-vp-heading text-[clamp(2.5rem,4.375vw,3.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
-          {t('productionServices')}
-        </h2>
-        <p className="m-0 max-w-[42rem] text-[clamp(1.125rem,1.35vw,1.375rem)] font-light leading-relaxed text-vp-text-muted">
-          {t('productionServicesBody')}
-        </p>
-        <Link
-          href="/vietnam-production-service"
-          className="mt-8 inline-block text-[clamp(1.125rem,1.35vw,1.375rem)] text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover hover:underline"
-        >
-          {t('productionServicesCta')} →
-        </Link>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-start lg:gap-x-12 lg:gap-y-0">
+          <div>
+            <p className="m-0 mb-4 font-vp-sans text-xs font-semibold uppercase tracking-vp-uppercase text-vp-text-soft">
+              {t('productionServicesOutline')}
+            </p>
+            <h2 className="m-0 font-vp-heading text-[clamp(2.5rem,4.375vw,3.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
+              {t('productionServices')}
+            </h2>
+          </div>
+          <div>
+            <p className="m-0 text-[clamp(1.125rem,1.35vw,1.375rem)] font-light leading-relaxed text-vp-text-muted">
+              {t('productionServicesBody')}
+            </p>
+            <Link
+              href="/vietnam-production-service"
+              className="mt-8 inline-block text-[clamp(1.125rem,1.35vw,1.375rem)] text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover hover:underline"
+            >
+              {t('productionServicesCta')} →
+            </Link>
+          </div>
+        </div>
       </SectionWrapper>
 
       <SectionWrapper borderTop fullBleed={true}>
