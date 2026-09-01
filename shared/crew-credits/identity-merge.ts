@@ -6,6 +6,7 @@
  */
 
 import {PROPAGATION_CHUNK_SIZE} from '../phrase-book/propagate'
+import {applyPersonRenameToCredits} from './rename-credits'
 import type {CrewCreditValue} from './types'
 
 export type PortfolioVariant = 'published' | 'draft' | 'scheduled'
@@ -234,18 +235,19 @@ export function computeIdentityFieldDiff(
   return diff
 }
 
-/** Repoint every crewPerson.identity._ref from duplicateId → canonicalId. */
+/** Repoint every crewPerson.identity._ref from duplicateId → canonicalId and sync person.name. */
 export function repointIdentityInCredits(
   credits: CrewCreditValue[] | undefined,
   duplicateId: string,
   canonicalId: string,
+  canonicalName: string,
 ): {credits: CrewCreditValue[]; repointedPeople: number} {
   if (!credits?.length) {
     return {credits: credits ?? [], repointedPeople: 0}
   }
 
   let repointedPeople = 0
-  const next = credits.map((credit) => {
+  const repointed = credits.map((credit) => {
     const people = (credit.people ?? []).map((person) => {
       if (!identityRefMatches(person.identity?._ref, duplicateId)) return person
       repointedPeople += 1
@@ -261,7 +263,17 @@ export function repointIdentityInCredits(
     return {...credit, people}
   })
 
-  return {credits: next, repointedPeople}
+  if (!repointedPeople) {
+    return {credits: repointed, repointedPeople: 0}
+  }
+
+  const {credits: synced} = applyPersonRenameToCredits(repointed, {
+    fromName: '',
+    toName: canonicalName.trim(),
+    identityId: canonicalId,
+  })
+
+  return {credits: synced, repointedPeople}
 }
 
 function buildRepointActions(
@@ -269,6 +281,7 @@ function buildRepointActions(
   portfoliosById: Map<string, MergeScanPortfolio>,
   duplicateId: string,
   canonicalId: string,
+  canonicalName: string,
 ): {repointActions: MergeRepointAction[]; trashedReferences: MergeReferenceHit[]} {
   const repointActions: MergeRepointAction[] = []
   const trashedReferences: MergeReferenceHit[] = []
@@ -284,6 +297,7 @@ function buildRepointActions(
       doc.crewCredits,
       duplicateId,
       canonicalId,
+      canonicalName,
     )
     if (!repointedPeople) continue
     repointActions.push({
@@ -339,6 +353,7 @@ export async function planMerge(
     portfoliosById,
     duplicateId,
     canonicalId,
+    canonical.name,
   )
 
   return {

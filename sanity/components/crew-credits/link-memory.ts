@@ -6,7 +6,15 @@
  * (e.g. "Vantage Pictures", "Govee").
  */
 
-import {normalizeCreditToken, type CrewCreditValue, type CrewPersonValue} from '@crew-credits'
+import {
+  applyPersonRenameToCredits,
+  normalizePersonName,
+  type CrewCreditValue,
+  type CrewPersonValue,
+  type PropagatePersonRenameInput,
+} from '@crew-credits'
+
+export {applyPersonRenameToCredits, normalizePersonName, type PropagatePersonRenameInput}
 
 export interface KnownPersonLink {
   url: string
@@ -15,11 +23,6 @@ export interface KnownPersonLink {
 
 interface LinkCandidate extends KnownPersonLink {
   count: number
-}
-
-/** Normalize a credit name for link-memory lookup. */
-export function normalizePersonName(name: string): string {
-  return normalizeCreditToken(name)
 }
 
 function collectPeople(
@@ -284,53 +287,6 @@ export async function propagatePersonLinkAcrossPortfolio(
   }
 
   return {documentsUpdated, peopleUpdated, viaIdentity: false}
-}
-
-export interface PropagatePersonRenameInput {
-  fromName: string
-  toName: string
-  /** When set, rename by identity ref (preferred) and patch the identity document name. */
-  identityId?: string
-}
-
-/**
- * Rename every person slot that matches fromName (normalized) or identityId.
- * Preserves url and linkTitle on renamed slots.
- */
-export function applyPersonRenameToCredits(
-  credits: CrewCreditValue[] | undefined,
-  rename: PropagatePersonRenameInput,
-): {credits: CrewCreditValue[]; peopleUpdated: number} {
-  const fromName = rename.fromName.trim()
-  const toName = rename.toName.trim()
-  const identityId = rename.identityId?.trim()
-  const fromKey = normalizePersonName(fromName)
-  if (!toName || !credits?.length) {
-    return {credits: credits ?? [], peopleUpdated: 0}
-  }
-  if (!identityId && (!fromKey || fromName === toName)) {
-    return {credits: credits ?? [], peopleUpdated: 0}
-  }
-  if (identityId && fromName === toName) {
-    return {credits: credits ?? [], peopleUpdated: 0}
-  }
-
-  let peopleUpdated = 0
-  const next = credits.map((credit) => {
-    const people = (credit.people ?? []).map((person) => {
-      const matchesIdentity =
-        Boolean(identityId) && person.identity?._ref === identityId
-      const matchesName =
-        !identityId && Boolean(fromKey) && normalizePersonName(person.name ?? '') === fromKey
-      if (!matchesIdentity && !matchesName) return person
-      if (person.name === toName) return person
-      peopleUpdated += 1
-      return {...person, name: toName}
-    })
-    return {...credit, people}
-  })
-
-  return {credits: next, peopleUpdated}
 }
 
 /**

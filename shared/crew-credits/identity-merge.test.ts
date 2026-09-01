@@ -140,9 +140,26 @@ function testTrashedSeparatedFromRepointActions() {
     live!.matches.length ? docs[0]!.crewCredits : [],
     DUPLICATE,
     CANONICAL,
+    'Canonical Brand',
   )
   assert.equal(repointedPeople, 1)
   assert.equal(credits[0]!.people[0]!.identity?._ref, CANONICAL)
+  assert.equal(credits[0]!.people[0]!.name, 'Canonical Brand')
+}
+
+function testRepointSyncsPersonNameToCanonical() {
+  const credits = [
+    credit('brand', 'Brand', [person('Acme Duplicate', DUPLICATE)]),
+  ]
+  const {credits: next, repointedPeople} = repointIdentityInCredits(
+    credits,
+    DUPLICATE,
+    CANONICAL,
+    'Acme Canonical',
+  )
+  assert.equal(repointedPeople, 1)
+  assert.equal(next[0]!.people[0]!.identity?._ref, CANONICAL)
+  assert.equal(next[0]!.people[0]!.name, 'Acme Canonical')
 }
 
 function createMockClient(
@@ -210,6 +227,7 @@ async function testPlanMergeBuildsRepointActions() {
   assert.equal(plan.repointActions.length, 1)
   assert.equal(plan.repointActions[0]!.documentId, 'p1')
   assert.equal(plan.repointActions[0]!.crewCredits[0]!.people[0]!.identity?._ref, CANONICAL)
+  assert.equal(plan.repointActions[0]!.crewCredits[0]!.people[0]!.name, 'Acme Canonical')
   assert.deepEqual(plan.fieldDiff, {nameZh: '亚克米'})
   assert.equal(plan.trashedReferences.length, 0)
 }
@@ -256,6 +274,10 @@ async function testExecuteMergeApplyRepointsVerifiesAndDeletes() {
   assert.equal(result.repointedDocuments, 1)
   assert.equal(result.canonicalFieldsPatched, true)
   assert.equal(patches.length, 2)
+  assert.equal(
+    patches[0]!.set.crewCredits?.[0]?.people?.[0]?.name,
+    'Acme Canonical',
+  )
   assert.deepEqual(deletes, [DUPLICATE])
 }
 
@@ -292,6 +314,7 @@ async function main() {
   testCanonicalUrlNotOverwritten()
   testCanonicalNameZhFilledFromDuplicate()
   testTrashedSeparatedFromRepointActions()
+  testRepointSyncsPersonNameToCanonical()
   await testPlanMergeBuildsRepointActions()
   await testExecuteMergeDryRunWritesNothing()
   await testExecuteMergeApplyRepointsVerifiesAndDeletes()
