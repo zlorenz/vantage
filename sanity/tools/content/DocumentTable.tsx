@@ -20,8 +20,12 @@ import {
 import {AddIcon, ChevronDownIcon, EyeClosedIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
+  CREW_DEPARTMENTS,
+  CREW_ROLE_BY_KEY,
+  FILTER_CREDIT_ROLE_KEYS,
   IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY,
   resolveUsageForIdentities,
+  type CrewDepartmentKey,
   type IdentityUsagePortfolio,
 } from '@crew-credits'
 import type {ContentLeaf, ColumnId} from './sections'
@@ -83,10 +87,10 @@ type Row = {
   parent?: string
   usage?: number
   role?: string
-  /** Filter-role keys this creditIdentity appears in (brand, director, …). */
+  /** Role keys this creditIdentity appears in (from usage resolution). */
   roleKeys?: string[]
-  /** Portfolio-entry counts per filter roleKey for creditIdentity rows. */
-  usageByRole?: Partial<Record<Exclude<CrewRoleTab, 'all'>, number>>
+  /** Portfolio-entry counts per roleKey for creditIdentity rows. */
+  usageByRole?: Partial<Record<string, number>>
 }
 
 type StatusFilter =
@@ -100,22 +104,67 @@ type StatusFilter =
 
 type DocumentStatus = Exclude<StatusFilter, 'all' | 'trash'>
 
-type CrewRoleTab =
-  | 'all'
-  | 'brand'
-  | 'director'
-  | 'dop'
-  | 'art_director'
-  | 'editor'
+/** Department tab: all linked departments or one catalog department. */
+type CrewDeptTab = 'all' | CrewDepartmentKey
 
-const CREW_ROLE_TABS: Array<{id: CrewRoleTab; label: string}> = [
-  {id: 'all', label: 'All'},
-  {id: 'brand', label: 'Clients'},
-  {id: 'director', label: 'Directors'},
-  {id: 'dop', label: 'DOPs'},
-  {id: 'art_director', label: 'Art Directors'},
-  {id: 'editor', label: 'Editors'},
+/** Role sub-tab: all roles in scope, or one catalog role.key string. */
+type CrewRoleFilter = 'all' | string
+
+/**
+ * Identity-linked standard roles per department (live data scope).
+ * Casting / G&E and other departments stay empty until their link apply.
+ */
+const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
+  production: ['brand', 'director'],
+  camera: ['dop'],
+  art: ['art_director'],
+  post: ['editor'],
+  stills: [
+    'photographer',
+    'photography_assistant',
+    'photography_producer',
+    'kv_art_director',
+  ],
+  casting: [],
+  ge: [],
+}
+
+/** Role keys passed to resolveUsageForIdentities for Crew Members "Used by". */
+const CREW_USAGE_ROLE_KEYS: readonly string[] = [
+  ...new Set(Object.values(LINKED_DEPT_ROLE_KEYS).flat()),
 ]
+
+/** Legacy filter-tab labels preserved for the five Work Library roles. */
+const FILTER_ROLE_TAB_LABELS: Partial<Record<(typeof FILTER_CREDIT_ROLE_KEYS)[number], string>> =
+  {
+    brand: 'Clients',
+    director: 'Directors',
+    dop: 'DOPs',
+    art_director: 'Art Directors',
+    editor: 'Editors',
+  }
+
+function crewRoleTabLabel(roleKey: string): string {
+  const filterLabel = FILTER_ROLE_TAB_LABELS[roleKey as (typeof FILTER_CREDIT_ROLE_KEYS)[number]]
+  if (filterLabel) return filterLabel
+  return CREW_ROLE_BY_KEY.get(roleKey)?.role.label ?? roleKey
+}
+
+function linkedRolesForDept(dept: CrewDeptTab): readonly string[] {
+  if (dept === 'all') return CREW_USAGE_ROLE_KEYS
+  return LINKED_DEPT_ROLE_KEYS[dept]
+}
+
+function deptHasLinkedRoles(dept: CrewDepartmentKey): boolean {
+  return LINKED_DEPT_ROLE_KEYS[dept].length > 0
+}
+
+function rowMatchesDept(row: Row, dept: CrewDeptTab): boolean {
+  if (dept === 'all') return true
+  const linked = LINKED_DEPT_ROLE_KEYS[dept]
+  if (!linked.length) return false
+  return linked.some((roleKey) => row.roleKeys?.includes(roleKey))
+}
 
 const STATUS_FILTER_TABS: Array<{id: Exclude<StatusFilter, 'trash'>; label: string}> = [
   {id: 'all', label: 'All'},
@@ -450,15 +499,15 @@ function statusStyle(row: Row): CSSProperties | undefined {
   return undefined
 }
 
-function usageForTab(row: Row, tab: CrewRoleTab): number {
-  if (tab === 'all') return row.usage ?? 0
-  return row.usageByRole?.[tab] ?? 0
+function usageForTab(row: Row, roleFilter: CrewRoleFilter): number {
+  if (roleFilter === 'all') return row.usage ?? 0
+  return row.usageByRole?.[roleFilter] ?? 0
 }
 
 function sortValue(
   row: Row,
   field: string,
-  crewRoleTab: CrewRoleTab = 'all',
+  roleFilter: CrewRoleFilter = 'all',
 ): string | number {
   switch (field) {
     case 'title':
@@ -476,7 +525,7 @@ function sortValue(
     case 'slug':
       return (row.slug || '').toLowerCase()
     case 'usage':
-      return usageForTab(row, crewRoleTab)
+      return usageForTab(row, roleFilter)
     case 'parent':
       return (row.parent || '').toLowerCase()
     case 'role':
@@ -489,11 +538,11 @@ function sortValue(
 function CellContent({
   columnId,
   row,
-  crewRoleTab = 'all',
+  crewRoleFilter = 'all',
 }: {
   columnId: ColumnId
   row: Row
-  crewRoleTab?: CrewRoleTab
+  crewRoleFilter?: CrewRoleFilter
 }) {
   switch (columnId) {
     case 'thumbnail':
@@ -569,7 +618,7 @@ function CellContent({
     case 'parent':
       return <Text size={1}>{row.parent || '—'}</Text>
     case 'usage':
-      return <Text size={1}>{usageForTab(row, crewRoleTab)}</Text>
+      return <Text size={1}>{usageForTab(row, crewRoleFilter)}</Text>
     case 'role':
       return <Text size={1}>{ROLE_LABELS[row.role || ''] || row.role || '—'}</Text>
     default:
@@ -617,7 +666,8 @@ export function DocumentTable({
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState(section.defaultSort)
-  const [crewRoleTab, setCrewRoleTab] = useState<CrewRoleTab>('all')
+  const [crewDeptTab, setCrewDeptTab] = useState<CrewDeptTab>('all')
+  const [crewRoleFilter, setCrewRoleFilter] = useState<CrewRoleFilter>('all')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [reloadKey, setReloadKey] = useState(0)
@@ -643,14 +693,15 @@ export function DocumentTable({
   useEffect(() => {
     setSort(section.defaultSort)
     setSearch('')
-    setCrewRoleTab('all')
+    setCrewDeptTab('all')
+    setCrewRoleFilter('all')
     setStatusFilter('all')
     setSelected(new Set())
   }, [section.id, section.defaultSort])
 
   useEffect(() => {
     setSelected(new Set())
-  }, [crewRoleTab, statusFilter])
+  }, [crewDeptTab, crewRoleFilter, statusFilter])
 
   // Drop Hidden when leaving portfolio; keep a valid tab.
   useEffect(() => {
@@ -756,6 +807,7 @@ export function DocumentTable({
               name: row.title,
             })),
             usagePortfolios,
+            {roleKeys: CREW_USAGE_ROLE_KEYS},
           )
           normalized = normalized.map((row) => {
             const usage = usageById.get(baseId(row._id))
@@ -821,24 +873,52 @@ export function DocumentTable({
     return counts
   }, [rows, supportsStatusFilter])
 
-  const crewRoleCounts = useMemo(() => {
-    const counts: Record<CrewRoleTab, number> = {
+  const linkedRolesInScope = useMemo(
+    () => linkedRolesForDept(crewDeptTab),
+    [crewDeptTab],
+  )
+
+  const showCrewNotLinkedState =
+    isCrewMembersSection &&
+    crewDeptTab !== 'all' &&
+    !deptHasLinkedRoles(crewDeptTab)
+
+  const crewDeptCounts = useMemo(() => {
+    const counts = {
       all: 0,
-      brand: 0,
-      director: 0,
-      dop: 0,
-      art_director: 0,
-      editor: 0,
-    }
+      ...Object.fromEntries(CREW_DEPARTMENTS.map((dept) => [dept.key, 0])),
+    } as Record<CrewDeptTab, number>
     if (!isCrewMembersSection) return counts
     for (const row of rows) {
+      if (row.isTrashed) continue
       counts.all += 1
-      for (const key of row.roleKeys ?? []) {
-        if (key in counts) counts[key as CrewRoleTab] += 1
+      for (const dept of CREW_DEPARTMENTS) {
+        if (rowMatchesDept(row, dept.key)) counts[dept.key] += 1
       }
     }
     return counts
   }, [isCrewMembersSection, rows])
+
+  const crewRoleCounts = useMemo(() => {
+    const counts: Record<string, number> = {all: 0}
+    for (const roleKey of linkedRolesInScope) {
+      counts[roleKey] = 0
+    }
+    if (!isCrewMembersSection) return counts
+    for (const row of rows) {
+      if (row.isTrashed) continue
+      if (crewDeptTab !== 'all' && !rowMatchesDept(row, crewDeptTab)) continue
+      const rolesInScope = row.roleKeys?.filter((key) =>
+        linkedRolesInScope.includes(key),
+      )
+      if (!rolesInScope?.length) continue
+      counts.all += 1
+      for (const key of rolesInScope) {
+        if (key in counts) counts[key] += 1
+      }
+    }
+    return counts
+  }, [crewDeptTab, isCrewMembersSection, linkedRolesInScope, rows])
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -852,8 +932,13 @@ export function DocumentTable({
     ) {
       next = next.filter((row) => documentStatus(row) === statusFilter)
     }
-    if (isCrewMembersSection && crewRoleTab !== 'all') {
-      next = next.filter((row) => row.roleKeys?.includes(crewRoleTab))
+    if (isCrewMembersSection && !showCrewNotLinkedState) {
+      if (crewDeptTab !== 'all') {
+        next = next.filter((row) => rowMatchesDept(row, crewDeptTab))
+      }
+      if (crewRoleFilter !== 'all') {
+        next = next.filter((row) => row.roleKeys?.includes(crewRoleFilter))
+      }
     }
     if (q) {
       next = next.filter((row) =>
@@ -879,8 +964,8 @@ export function DocumentTable({
 
     const dir = sort.direction === 'asc' ? 1 : -1
     return [...next].sort((a, b) => {
-      const av = sortValue(a, sort.field, crewRoleTab)
-      const bv = sortValue(b, sort.field, crewRoleTab)
+      const av = sortValue(a, sort.field, crewRoleFilter)
+      const bv = sortValue(b, sort.field, crewRoleFilter)
       if (typeof av === 'string' && typeof bv === 'string') {
         // Diacritic-insensitive (Álvaro → A…, Nguyễn → N…)
         const cmp = av.localeCompare(bv, undefined, {sensitivity: 'base'})
@@ -891,7 +976,9 @@ export function DocumentTable({
       return 0
     })
   }, [
-    crewRoleTab,
+    crewDeptTab,
+    crewRoleFilter,
+    showCrewNotLinkedState,
     inTrash,
     isCrewMembersSection,
     rows,
@@ -1221,27 +1308,90 @@ export function DocumentTable({
             </Flex>
           ) : null}
           {isCrewMembersSection ? (
-            <Flex gap={3} align="center" wrap="wrap">
-              {CREW_ROLE_TABS.map((tab) => (
+            <Stack space={2}>
+              <Flex gap={3} align="center" wrap="wrap">
                 <button
-                  key={tab.id}
                   type="button"
-                  onClick={() => setCrewRoleTab(tab.id)}
+                  onClick={() => {
+                    setCrewDeptTab('all')
+                    setCrewRoleFilter('all')
+                  }}
                   style={{
                     all: 'unset',
                     cursor: 'pointer',
                     color:
-                      crewRoleTab === tab.id
+                      crewDeptTab === 'all'
                         ? 'var(--card-fg-color)'
                         : 'var(--card-muted-fg-color)',
-                    fontWeight: crewRoleTab === tab.id ? 600 : 400,
+                    fontWeight: crewDeptTab === 'all' ? 600 : 400,
                     fontSize: 13,
                   }}
                 >
-                  {tab.label} ({crewRoleCounts[tab.id]})
+                  All ({crewDeptCounts.all})
                 </button>
-              ))}
-            </Flex>
+                {CREW_DEPARTMENTS.map((dept) => (
+                  <button
+                    key={dept.key}
+                    type="button"
+                    onClick={() => {
+                      setCrewDeptTab(dept.key)
+                      setCrewRoleFilter('all')
+                    }}
+                    style={{
+                      all: 'unset',
+                      cursor: 'pointer',
+                      color:
+                        crewDeptTab === dept.key
+                          ? 'var(--card-fg-color)'
+                          : 'var(--card-muted-fg-color)',
+                      fontWeight: crewDeptTab === dept.key ? 600 : 400,
+                      fontSize: 13,
+                    }}
+                  >
+                    {dept.label} ({crewDeptCounts[dept.key]})
+                  </button>
+                ))}
+              </Flex>
+              {!showCrewNotLinkedState ? (
+                <Flex gap={3} align="center" wrap="wrap">
+                  <button
+                    type="button"
+                    onClick={() => setCrewRoleFilter('all')}
+                    style={{
+                      all: 'unset',
+                      cursor: 'pointer',
+                      color:
+                        crewRoleFilter === 'all'
+                          ? 'var(--card-fg-color)'
+                          : 'var(--card-muted-fg-color)',
+                      fontWeight: crewRoleFilter === 'all' ? 600 : 400,
+                      fontSize: 13,
+                    }}
+                  >
+                    All ({crewRoleCounts.all ?? 0})
+                  </button>
+                  {linkedRolesInScope.map((roleKey) => (
+                    <button
+                      key={roleKey}
+                      type="button"
+                      onClick={() => setCrewRoleFilter(roleKey)}
+                      style={{
+                        all: 'unset',
+                        cursor: 'pointer',
+                        color:
+                          crewRoleFilter === roleKey
+                            ? 'var(--card-fg-color)'
+                            : 'var(--card-muted-fg-color)',
+                        fontWeight: crewRoleFilter === roleKey ? 600 : 400,
+                        fontSize: 13,
+                      }}
+                    >
+                      {crewRoleTabLabel(roleKey)} ({crewRoleCounts[roleKey] ?? 0})
+                    </button>
+                  ))}
+                </Flex>
+              ) : null}
+            </Stack>
           ) : null}
         </Stack>
         <Flex gap={2} align="center" wrap="wrap">
@@ -1355,7 +1505,23 @@ export function DocumentTable({
         </Card>
       ) : null}
 
-      {!loading && !error ? (
+      {!loading && !error && showCrewNotLinkedState ? (
+        <Card padding={4} radius={2} shadow={1}>
+          <Stack space={3}>
+            <Text size={1} weight="semibold">
+              {CREW_DEPARTMENTS.find((dept) => dept.key === crewDeptTab)?.label ?? crewDeptTab}{' '}
+              — not linked yet
+            </Text>
+            <Text size={1} muted>
+              Crew credits in this department are still plain names on portfolio entries — no{' '}
+              creditIdentity links exist yet. Identity linking for this department will be enabled
+              after a dedicated migration apply (same process as Stills).
+            </Text>
+          </Stack>
+        </Card>
+      ) : null}
+
+      {!loading && !error && !showCrewNotLinkedState ? (
         <Card radius={2} shadow={1} style={{overflowX: 'auto'}}>
           <table
             style={{
@@ -1479,7 +1645,7 @@ export function DocumentTable({
                               <CellContent
                                 columnId={col.id}
                                 row={row}
-                                crewRoleTab={crewRoleTab}
+                                crewRoleFilter={crewRoleFilter}
                               />
                               <Text size={0} muted>
                                 Purges {formatDate(row.purgeAfter)}
@@ -1489,7 +1655,7 @@ export function DocumentTable({
                             <CellContent
                               columnId={col.id}
                               row={row}
-                              crewRoleTab={crewRoleTab}
+                              crewRoleFilter={crewRoleFilter}
                             />
                           )}
                         </td>
