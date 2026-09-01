@@ -190,32 +190,54 @@ export default async function AboutPage({ params }: Props) {
           <h2 className="mb-3 font-vp-heading text-xs font-normal uppercase tracking-vp-heading text-vp-text-soft">
             {t('moreAboutVantage')}
           </h2>
-          <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            <li>
-              <Link
-                href="/our-industry"
-                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
-              >
-                {t('moreAboutOurIndustry')}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/our-company"
-                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
-              >
-                {t('moreAboutOurCompany')}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/awards"
-                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
-              >
-                {t('moreAboutAwards')}
-              </Link>
-            </li>
-          </ul>
+          <p className="m-0 max-w-[42rem] text-sm font-light leading-relaxed text-vp-text-muted">
+            {t('moreAboutVantageBody')}
+          </p>
+          <p className="m-0 mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-normal">
+            <Link
+              href="/our-company"
+              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+            >
+              {t('moreAboutOurCompany')}
+            </Link>
+            <span aria-hidden="true" className="text-vp-text-soft">
+              ·
+            </span>
+            {/* Temporary — these point to the first existing category page per taxonomy as a placeholder. Will be replaced with links to consolidated taxonomy hub pages (see project notes) once those are built. */}
+            <Link
+              href={{ pathname: '/video-format/[slug]', params: { slug: 'brand-film' } }}
+              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+            >
+              {t('moreAboutFormats')}
+            </Link>
+            <span aria-hidden="true" className="text-vp-text-soft">
+              ·
+            </span>
+            <Link
+              href={{ pathname: '/industry/[slug]', params: { slug: 'ai-robotics' } }}
+              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+            >
+              {t('moreAboutIndustries')}
+            </Link>
+            <span aria-hidden="true" className="text-vp-text-soft">
+              ·
+            </span>
+            <Link
+              href={{ pathname: '/market/[slug]', params: { slug: 'china' } }}
+              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+            >
+              {t('moreAboutMarkets')}
+            </Link>
+            <span aria-hidden="true" className="text-vp-text-soft">
+              ·
+            </span>
+            <Link
+              href="/awards"
+              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+            >
+              {t('moreAboutAwards')}
+            </Link>
+          </p>
         </div>
       </SectionWrapper>
     </>
