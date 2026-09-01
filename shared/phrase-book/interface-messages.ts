@@ -94,8 +94,6 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'About.moreAboutOurIndustry',
   'About.moreAboutOurCompany',
   'About.moreAboutAwards',
-  'About.aiWorkflowHeading',
-  'About.aiWorkflowBody',
   'About.productionLogCtaHeading',
   'About.productionLogCtaBody',
   'About.productionLogCtaLink',

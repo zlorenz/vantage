@@ -1,9 +1,9 @@
 /**
- * About page — statement, who we are, production services, AI workflow,
- * production log CTA, more-about links, campaign CTA.
+ * About page — statement, who we are, production services, production log CTA,
+ * more-about links, campaign CTA.
  *
  * Section order: Statement -> Who We Are -> Production House ->
- * How We Move -> Production Services -> AI Workflow -> Production Log CTA ->
+ * How We Move -> Production Services -> Production Log CTA ->
  * More About Vantage -> CtaSection.
  *
  * Note: the founders/team grid no longer renders here — it lives on
@@ -146,17 +146,6 @@ export default async function AboutPage({ params }: Props) {
         >
           {t('productionServicesCta')} →
         </Link>
-      </SectionWrapper>
-
-      <SectionWrapper borderTop fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h2 className="mb-4 font-vp-heading text-xl font-bold uppercase leading-tight tracking-vp-heading">
-            {t('aiWorkflowHeading')}
-          </h2>
-          <p className="max-w-[700px] font-light leading-relaxed text-vp-text-muted">
-            {t('aiWorkflowBody')}
-          </p>
-        </div>
       </SectionWrapper>
 
       <SectionWrapper borderTop fullBleed={true}>
