@@ -69,6 +69,7 @@ type Row = {
   titleZh?: string
   slug?: string
   publishedAt?: string
+  createdAt?: string
   updatedAt?: string
   metaDescription?: string
   isHidden?: boolean
@@ -307,7 +308,8 @@ function buildQuery(documentType: string): string {
         _id,
         _type,
         "title": name,
-        nameZh
+        nameZh,
+        "_createdAt": _createdAt
       }`
     case 'translatedPhrase':
       return `*[_type == "translatedPhrase" && !(_id in path("versions.**"))] | order(en asc) {
@@ -410,6 +412,7 @@ function normalizeRows(
         : doc._createdAt
           ? String(doc._createdAt)
           : undefined,
+      createdAt: doc._createdAt ? String(doc._createdAt) : undefined,
       updatedAt: doc._updatedAt ? String(doc._updatedAt) : undefined,
       metaDescription: doc.metaDescription ? String(doc.metaDescription) : undefined,
       isHidden: Boolean(doc.isHidden),
@@ -523,6 +526,8 @@ function sortValue(
         : row.publishedAt
           ? new Date(row.publishedAt).getTime()
           : 0
+    case 'createdAt':
+      return row.createdAt ? new Date(row.createdAt).getTime() : 0
     case 'updatedAt':
       return row.updatedAt ? new Date(row.updatedAt).getTime() : 0
     case 'status':
@@ -591,6 +596,8 @@ function CellContent({
               : formatDateTime(row.publishedAt)}
         </Text>
       )
+    case 'createdAt':
+      return <Text size={1}>{formatDate(row.createdAt)}</Text>
     case 'updatedAt':
       return <Text size={1}>{formatDate(row.updatedAt)}</Text>
     case 'metaDescription':

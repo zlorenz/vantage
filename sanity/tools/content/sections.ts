@@ -20,6 +20,7 @@ export type ColumnId =
   | 'title'
   | 'status'
   | 'publishedAt'
+  | 'createdAt'
   | 'updatedAt'
   | 'metaDescription'
   | 'slug'
@@ -115,6 +116,7 @@ const namedTaxonomyColumns: TableColumn[] = [
 const creditIdentityColumns: TableColumn[] = [
   {id: 'title', header: 'Name', minWidth: '240px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
+  {id: 'createdAt', header: 'Added', width: '140px', sortable: true},
 ]
 
 export const SITE_NAME = 'Vantage Pictures'
