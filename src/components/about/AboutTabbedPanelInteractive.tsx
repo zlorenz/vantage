@@ -62,8 +62,8 @@ export function AboutTabbedPanelInteractive({
 
   const menuColumn = (
     <div
-      className={`flex flex-col gap-6 lg:col-span-5 lg:h-full${
-        menuOnRight ? ' lg:order-2' : ' lg:order-1'
+      className={`flex min-w-0 w-full flex-col gap-6 lg:col-span-5 lg:row-start-1 lg:h-full ${
+        menuOnRight ? 'lg:col-start-8' : 'lg:col-start-1'
       }`}
     >
       <ul className="m-0 flex list-none flex-col gap-0.5 p-0" role="tablist">
@@ -106,7 +106,9 @@ export function AboutTabbedPanelInteractive({
       id={panelId}
       role="tabpanel"
       aria-labelledby={`about-${sectionId}-tab-${activeIndex}`}
-      className={`lg:col-span-7${menuOnRight ? ' lg:order-1' : ' lg:order-2'}`}
+      className={`min-w-0 w-full lg:col-span-7 lg:row-start-1 ${
+        menuOnRight ? 'lg:col-start-1' : 'lg:col-start-6'
+      }`}
     >
       {activeItem.imageSrc ? (
         <div className="relative aspect-video w-full overflow-hidden rounded-[1.75rem]">
