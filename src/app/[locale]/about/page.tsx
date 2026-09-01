@@ -131,12 +131,12 @@ export default async function AboutPage({ params }: Props) {
       {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 
       <SectionWrapper borderTop>
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-start lg:gap-x-12 lg:gap-y-0">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-center lg:gap-x-12 lg:gap-y-0">
           <div>
             <p className="m-0 mb-4 font-vp-sans text-xs font-semibold uppercase tracking-vp-uppercase text-vp-text-soft">
               {t('productionServicesOutline')}
             </p>
-            <h2 className="m-0 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+            <h2 className="m-0 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {t('productionServices')}
             </h2>
           </div>
@@ -146,9 +146,9 @@ export default async function AboutPage({ params }: Props) {
             </p>
             <Link
               href="/vietnam-production-service"
-              className="mt-8 inline-block text-[clamp(1.125rem,1.35vw,1.375rem)] text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover hover:underline"
+              className="mt-8 inline-block font-vp-heading text-[clamp(1.125rem,1.35vw,1.375rem)] uppercase tracking-vp-heading text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             >
-              {t('productionServicesCta')} →
+              {t('productionServicesCta')}
             </Link>
           </div>
         </div>

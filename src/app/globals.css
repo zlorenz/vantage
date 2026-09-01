@@ -105,6 +105,7 @@
    * but reads heavy; Zalando Sans Expanded (variable fallback) needs ~900 to
    * match. Latin glyphs still resolve to Special Gothic 400. */
   --font-vp-heading-weight: 900;
+  --leading-tight: 1.1;
 
   /* Transitions & Animation */
 
