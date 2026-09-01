@@ -1,10 +1,11 @@
 /**
- * Phase 1 dry-run: link Casting + Stills crew credits to creditIdentity refs.
+ * Phase 1: link Casting / Stills crew credits to creditIdentity refs.
  *
- * Reporting only — never writes. Dataset backup + explicit review required
- * before any future apply step.
- *
+ * Dry-run by default (both departments). Apply requires explicit flags:
  *   npx tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts
+ *   npx tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department stills
+ *
+ * Dataset backup required before any --apply run.
  */
 
 import type {CrewCreditValue, CrewDepartmentKey} from '../../../shared/crew-credits'
@@ -26,6 +27,46 @@ import '../config'
 const TARGET_DEPARTMENTS = ['stills', 'casting'] as const satisfies readonly CrewDepartmentKey[]
 
 type TargetDepartment = (typeof TARGET_DEPARTMENTS)[number]
+
+const APPLY = process.argv.includes('--apply')
+
+function parseDepartmentArg(): TargetDepartment | null {
+  const eq = process.argv.find((arg) => arg.startsWith('--department='))
+  if (eq) return eq.split('=')[1]?.trim() as TargetDepartment
+  const idx = process.argv.indexOf('--department')
+  if (idx >= 0 && process.argv[idx + 1]) {
+    return process.argv[idx + 1]!.trim() as TargetDepartment
+  }
+  return null
+}
+
+function creditsNeedLink(
+  before: CrewCreditValue[] | undefined,
+  after: CrewCreditValue[],
+): boolean {
+  const left = before ?? []
+  if (left.length !== after.length) return true
+  for (let i = 0; i < left.length; i++) {
+    const lp = left[i]?.people ?? []
+    const rp = after[i]?.people ?? []
+    if (lp.length !== rp.length) return true
+    for (let j = 0; j < lp.length; j++) {
+      if ((lp[j]?.identity?._ref ?? '') !== (rp[j]?.identity?._ref ?? '')) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+type ApplyDepartmentResult = {
+  department: TargetDepartment
+  identitiesCreated: number
+  portfoliosPatched: number
+  refsAdded: number
+  portfoliosSkipped: number
+  errors: Array<{documentId: string; label: string; error: string}>
+}
 
 interface PortfolioDoc {
   _id: string
@@ -353,12 +394,102 @@ function printDepartmentReport(report: DepartmentDryRunReport) {
   }
 }
 
-async function main() {
-  if (process.argv.includes('--apply')) {
-    console.error(
-      'This audit script is dry-run only. Remove --apply; live writes are not implemented here.',
+async function applyDepartment(
+  department: TargetDepartment,
+  docs: PortfolioDoc[],
+  liveIdentities: CreditIdentityDoc[],
+): Promise<ApplyDepartmentResult> {
+  const client = getWriteClient()
+  const policy = identityLinkPolicyForDepartments([department])
+  const existing = [...liveIdentities]
+
+  let identitiesCreated = 0
+  let portfoliosPatched = 0
+  let refsAdded = 0
+  let portfoliosSkipped = 0
+  const errors: ApplyDepartmentResult['errors'] = []
+
+  console.log('')
+  console.log('='.repeat(72))
+  console.log(`${department.toUpperCase()} — identity link APPLY (live writes)`)
+  console.log('='.repeat(72))
+
+  for (const doc of docs) {
+    const scopedCredits = collectScopedCredits(doc.crewCredits, department)
+    if (!scopedCredits.length) continue
+
+    const hasUnlinked = scopedCredits.some(
+      (credit) =>
+        credit.roleKey &&
+        policy.roleKeys.has(credit.roleKey) &&
+        (credit.people ?? []).some((person) => person.name?.trim() && !person.identity?._ref),
     )
-    process.exit(1)
+    if (!hasUnlinked) continue
+
+    const label = portfolioLabel(doc)
+    const resolved = resolveIdentityLinksOnCredits(doc.crewCredits, existing, policy)
+
+    for (const created of resolved.createIdentities) {
+      existing.push({_id: created._id, name: created.name, url: created.url})
+    }
+
+    const newRefs = resolved.links.filter((link) => {
+      const original = findOriginalPerson(doc.crewCredits, link)
+      return !original?.hadIdentity
+    }).length
+
+    if (!creditsNeedLink(doc.crewCredits, resolved.nextCredits)) {
+      portfoliosSkipped += 1
+      continue
+    }
+
+    try {
+      for (const identity of resolved.createIdentities) {
+        await client.createIfNotExists(identity)
+        identitiesCreated += 1
+      }
+      await client
+        .patch(doc._id)
+        .set({crewCredits: resolved.nextCredits})
+        .commit({returnDocuments: false})
+
+      portfoliosPatched += 1
+      refsAdded += newRefs
+      console.log(
+        `PATCH ${label} — create=${resolved.createIdentities.length} refsAdded=${newRefs}`,
+      )
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      errors.push({documentId: doc._id, label, error: message})
+      console.error(`ERROR ${label} (${doc._id}): ${message}`)
+    }
+  }
+
+  console.log('')
+  console.log(
+    `Apply complete: identitiesCreated=${identitiesCreated}, portfoliosPatched=${portfoliosPatched}, refsAdded=${refsAdded}, skipped=${portfoliosSkipped}, errors=${errors.length}`,
+  )
+
+  return {
+    department,
+    identitiesCreated,
+    portfoliosPatched,
+    refsAdded,
+    portfoliosSkipped,
+    errors,
+  }
+}
+
+async function main() {
+  const applyDepartmentArg = parseDepartmentArg()
+
+  if (APPLY) {
+    if (!applyDepartmentArg || !TARGET_DEPARTMENTS.includes(applyDepartmentArg)) {
+      console.error(
+        'Apply requires exactly one --department stills|casting (one department per run).',
+      )
+      process.exit(1)
+    }
   }
 
   const client = getWriteClient()
@@ -373,6 +504,24 @@ async function main() {
       }`,
     ),
   ])
+
+  if (APPLY) {
+    console.log('creditIdentity linking APPLY — live production dataset')
+    console.log(`Department scope: ${applyDepartmentArg}`)
+    console.log(`Live creditIdentity documents (before): ${(liveIdentities ?? []).length}`)
+    console.log(`Portfolio documents scanned: ${(docs ?? []).length}`)
+
+    const result = await applyDepartment(applyDepartmentArg!, docs ?? [], liveIdentities ?? [])
+    if (result.errors.length) {
+      process.exit(1)
+    }
+    return
+  }
+
+  if (process.argv.includes('--department')) {
+    console.error('Dry-run reports all departments; omit --department unless using --apply.')
+    process.exit(1)
+  }
 
   console.log('creditIdentity linking dry-run — Casting / Stills (Phase 1)')
   console.log(`Live creditIdentity documents: ${(liveIdentities ?? []).length}`)
