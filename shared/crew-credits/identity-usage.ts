@@ -11,15 +11,12 @@
  *
  * **Not a raw `references()` count.** GROQ `references(identityId)` totals
  * every weak ref on any role (including trashed portfolios). These queries
- * count only FILTER_CREDIT_ROLE_KEYS matches on the chosen portfolio set.
+ * count only the caller's role-key set (default: FILTER_CREDIT_ROLE_KEYS).
  */
 
-import {
-  FILTER_CREDIT_ROLE_KEYS,
-  type FilterCreditRoleKey,
-} from './types'
+import {FILTER_CREDIT_ROLE_KEYS} from './types'
 
-export type IdentityUsageRoleKey = FilterCreditRoleKey
+export type IdentityUsageRoleKey = string
 
 export type IdentityUsagePerson = {
   name?: string
@@ -39,15 +36,18 @@ export type IdentityUsagePortfolio = {
 }
 
 export type IdentityUsageResult = {
-  /** Unique portfolios matching any filter role. */
+  /** Unique portfolios matching any counted role. */
   usage: number
-  /** Unique portfolios matching each filter role. */
+  /** Unique portfolios matching each role. */
   usageByRole: Partial<Record<IdentityUsageRoleKey, number>>
   /** Roles where this identity appears (for Studio tab filters). */
   roleKeys: IdentityUsageRoleKey[]
 }
 
-const FILTER_ROLE_SET = new Set<string>(FILTER_CREDIT_ROLE_KEYS)
+export type ResolveUsageForIdentitiesOptions = {
+  /** Role keys to index and aggregate; defaults to FILTER_CREDIT_ROLE_KEYS. */
+  roleKeys?: readonly string[]
+}
 
 function publishedPortfolioId(id: string): string {
   return id.replace(/^drafts\./, '')
@@ -91,10 +91,14 @@ type UsageIndex = {
   productionDesignerNames: Map<string, Set<string>>
 }
 
-function buildUsageIndex(portfolios: IdentityUsagePortfolio[]): UsageIndex {
+function buildUsageIndex(
+  portfolios: IdentityUsagePortfolio[],
+  roleSet: ReadonlySet<string>,
+): UsageIndex {
   const byIdentityRef = new Map<string, Map<IdentityUsageRoleKey, Set<string>>>()
   const byNameAndRole = new Map<string, Map<string, Set<string>>>()
   const productionDesignerNames = new Map<string, Set<string>>()
+  const trackProductionDesignerAlias = roleSet.has('art_director')
 
   for (const entry of portfolios) {
     const portfolioId = publishedPortfolioId(entry._id)
@@ -108,7 +112,7 @@ function buildUsageIndex(portfolios: IdentityUsagePortfolio[]): UsageIndex {
 
         if (
           !credit.isCustomRole &&
-          FILTER_ROLE_SET.has(roleKey) &&
+          roleSet.has(roleKey) &&
           person.identityId
         ) {
           let roleMap = byIdentityRef.get(person.identityId)
@@ -116,15 +120,15 @@ function buildUsageIndex(portfolios: IdentityUsagePortfolio[]): UsageIndex {
             roleMap = new Map()
             byIdentityRef.set(person.identityId, roleMap)
           }
-          let portfoliosForRole = roleMap.get(roleKey as IdentityUsageRoleKey)
+          let portfoliosForRole = roleMap.get(roleKey)
           if (!portfoliosForRole) {
             portfoliosForRole = new Set()
-            roleMap.set(roleKey as IdentityUsageRoleKey, portfoliosForRole)
+            roleMap.set(roleKey, portfoliosForRole)
           }
           portfoliosForRole.add(portfolioId)
         }
 
-        if (FILTER_ROLE_SET.has(roleKey) && name) {
+        if (roleSet.has(roleKey) && name) {
           const normalized = normalizeName(name)
           let roleMap = byNameAndRole.get(normalized)
           if (!roleMap) {
@@ -139,7 +143,7 @@ function buildUsageIndex(portfolios: IdentityUsagePortfolio[]): UsageIndex {
           portfoliosForRole.add(portfolioId)
         }
 
-        if (roleKey === 'production_designer' && name) {
+        if (trackProductionDesignerAlias && roleKey === 'production_designer' && name) {
           const normalized = normalizeName(name)
           let portfoliosForName = productionDesignerNames.get(normalized)
           if (!portfoliosForName) {
@@ -199,9 +203,15 @@ export function portfolioMatchesIdentityRole(
 export function resolveUsageForIdentities(
   identities: Array<{_id: string; name: string}>,
   portfolios: IdentityUsagePortfolio[],
+  options?: ResolveUsageForIdentitiesOptions,
 ): Map<string, IdentityUsageResult> {
-  const {byIdentityRef, byNameAndRole, productionDesignerNames} =
-    buildUsageIndex(portfolios)
+  const roleKeys = options?.roleKeys ?? FILTER_CREDIT_ROLE_KEYS
+  const roleSet = new Set(roleKeys)
+  const trackProductionDesignerAlias = roleSet.has('art_director')
+  const {byIdentityRef, byNameAndRole, productionDesignerNames} = buildUsageIndex(
+    portfolios,
+    roleSet,
+  )
   const results = new Map<string, IdentityUsageResult>()
 
   for (const identity of identities) {
@@ -209,17 +219,18 @@ export function resolveUsageForIdentities(
     const displayName = identity.name?.trim() ?? ''
     const usageByRole: Partial<Record<IdentityUsageRoleKey, number>> = {}
     const allPortfolioIds = new Set<string>()
-    const roleKeys: IdentityUsageRoleKey[] = []
+    const matchedRoleKeys: IdentityUsageRoleKey[] = []
 
     const identityRoles = byIdentityRef.get(identityId)
     const nameRoles = displayName
       ? byNameAndRole.get(normalizeName(displayName))
       : undefined
-    const productionDesignerPortfolios = displayName
-      ? productionDesignerNames.get(normalizeName(displayName))
-      : undefined
+    const productionDesignerPortfolios =
+      trackProductionDesignerAlias && displayName
+        ? productionDesignerNames.get(normalizeName(displayName))
+        : undefined
 
-    for (const roleKey of FILTER_CREDIT_ROLE_KEYS) {
+    for (const roleKey of roleKeys) {
       const matched = new Set<string>()
 
       identityRoles?.get(roleKey)?.forEach((portfolioId) => matched.add(portfolioId))
@@ -235,7 +246,7 @@ export function resolveUsageForIdentities(
 
       if (matched.size > 0) {
         usageByRole[roleKey] = matched.size
-        roleKeys.push(roleKey)
+        matchedRoleKeys.push(roleKey)
         matched.forEach((portfolioId) => allPortfolioIds.add(portfolioId))
       }
     }
@@ -243,7 +254,7 @@ export function resolveUsageForIdentities(
     results.set(identityId, {
       usage: allPortfolioIds.size,
       usageByRole,
-      roleKeys,
+      roleKeys: matchedRoleKeys,
     })
   }
 

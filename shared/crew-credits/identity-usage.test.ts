@@ -211,6 +211,54 @@ function testCaseInsensitiveNameMatch() {
   )
 }
 
+function testStillsPhotographerWhenRoleKeysIncludeStills() {
+  const GERALD = 'ci_gerald'
+  const STILLS_ROLE_KEYS = [
+    ...(['brand', 'director', 'dop', 'art_director', 'editor'] as const),
+    'photographer',
+    'photography_assistant',
+    'photography_producer',
+    'kv_art_director',
+  ]
+
+  const portfolios = [
+    entry('stills-1', {
+      crewCredits: [
+        {
+          roleKey: 'photographer',
+          people: [{name: 'Gerald Goh', identityId: GERALD}],
+        },
+      ],
+    }),
+    entry('stills-2', {
+      crewCredits: [
+        {
+          roleKey: 'photographer',
+          people: [{name: 'Gerald Goh', identityId: GERALD}],
+        },
+      ],
+    }),
+  ]
+
+  const usageDefault = resolveUsageForIdentities(
+    [{_id: GERALD, name: 'Gerald Goh'}],
+    portfolios,
+  ).get(GERALD)!
+
+  assert.equal(usageDefault.usage, 0)
+  assert.deepEqual(usageDefault.roleKeys, [])
+
+  const usage = resolveUsageForIdentities(
+    [{_id: GERALD, name: 'Gerald Goh'}],
+    portfolios,
+    {roleKeys: STILLS_ROLE_KEYS},
+  ).get(GERALD)!
+
+  assert.equal(usage.usage, 2)
+  assert.equal(usage.usageByRole.photographer, 2)
+  assert.deepEqual(usage.roleKeys, ['photographer'])
+}
+
 function testCustomRolesAreIgnoredForIdentityLink() {
   // Identity on a custom-role row is ignored (peopleForRole excludes isCustomRole).
   // Use a denormalized name that does not equal the identity display name so
@@ -245,6 +293,7 @@ const tests = [
   testAllTabUnionsRolesWithoutDoubleCounting,
   testArtDirectorMatchesProductionDesignerByName,
   testCaseInsensitiveNameMatch,
+  testStillsPhotographerWhenRoleKeysIncludeStills,
   testCustomRolesAreIgnoredForIdentityLink,
 ]
 
