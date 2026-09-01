@@ -22,6 +22,7 @@ import { AboutStatementSection } from '@/components/about/AboutStatementSection'
 import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
 import { AboutProductionHouseSection } from '@/components/about/AboutProductionHouseSection';
 import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
+import { AboutProductionServicesSection } from '@/components/about/AboutProductionServicesSection';
 import { CtaSection } from '@/components/ui/CtaSection';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
@@ -46,8 +47,11 @@ import {
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
-import { ABOUT_PAGE_QUERY } from '@/sanity/queries/pages';
-import type { ABOUT_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
+import { ABOUT_PAGE_QUERY, ABOUT_PRODUCTION_SERVICES_IMAGE_QUERY } from '@/sanity/queries/pages';
+import type {
+  ABOUT_PAGE_QUERY_RESULT,
+  ABOUT_PRODUCTION_SERVICES_IMAGE_QUERY_RESULT,
+} from '@/sanity/sanity.types';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -87,12 +91,17 @@ export default async function AboutPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageResult, phrases, organization] = await Promise.all([
+  const [pageResult, phrases, organization, productionServicesImageResult] =
+    await Promise.all([
     sanityFetch({query: ABOUT_PAGE_QUERY}),
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
+    sanityFetch({ query: ABOUT_PRODUCTION_SERVICES_IMAGE_QUERY, stega: false }),
   ]);
   const page = pageResult.data as ABOUT_PAGE_QUERY_RESULT;
+  const productionServicesImage = (
+    productionServicesImageResult.data ?? null
+  ) as ABOUT_PRODUCTION_SERVICES_IMAGE_QUERY_RESULT | null;
 
   if (!page) notFound();
 
@@ -130,25 +139,9 @@ export default async function AboutPage({ params }: Props) {
 
       {/* Founders/team grid renders on /our-company — intentionally not rendered here. */}
 
-      <SectionWrapper borderTop fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h2 className="mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-            <span className="vp-outline">{t('productionServicesOutline')}</span>{' '}
-            {t('productionServices')}
-          </h2>
-          <div className="font-light text-vp-text-muted">
-            <p className="mb-4 leading-relaxed">{t('productionServicesBody')}</p>
-            <p className="mb-4 leading-relaxed last:mb-0">
-              {t('productionServicesBody2')}
-            </p>
-          </div>
-          <div className="mt-8">
-            <VpButton href="/vietnam-production-service">
-              {t('productionServicesCta')}
-            </VpButton>
-          </div>
-        </div>
-      </SectionWrapper>
+      <AboutProductionServicesSection
+        backgroundImage={productionServicesImage?.featuredImage}
+      />
 
       <SectionWrapper borderTop fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">

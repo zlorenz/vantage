@@ -161,6 +161,13 @@ export const VIETNAM_LOCATION_GUIDE_PAGE_QUERY = defineQuery(`
   }
 `)
 
+/** About Production Services band — featured image from Vietnam production page. */
+export const ABOUT_PRODUCTION_SERVICES_IMAGE_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{
+    featuredImage
+  }
+`)
+
 /** Vietnam Production Service — meta, body, curated featured work. */
 export const VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{
