@@ -73,7 +73,12 @@ export function AboutHowWeMoveAccordion({
                   aria-controls={panelId}
                   onClick={() => toggleItem(index)}
                 >
-                  <span className="vp-how-we-move__trigger-label">{item.label}</span>
+                  <span className="vp-how-we-move__trigger-label">
+                    <span className="vp-how-we-move__trigger-number" aria-hidden="true">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    {item.label}
+                  </span>
                   <ExpandToggle expanded={expanded} />
                 </button>
               </h3>

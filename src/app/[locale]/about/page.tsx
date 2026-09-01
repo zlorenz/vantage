@@ -1,10 +1,10 @@
 /**
  * About page — statement, who we are, production services, production log CTA,
- * more-about links, campaign CTA.
+ * more-about links.
  *
  * Section order: Statement -> Who We Are -> Production House ->
  * How We Move -> Production Services -> Production Log CTA ->
- * More About Vantage -> CtaSection.
+ * More About Vantage.
  *
  * Note: the founders/team grid no longer renders here — it lives on
  * /our-company. FounderCard and the `founders` GROQ field/query are
@@ -23,7 +23,6 @@ import { AboutStatementSection } from '@/components/about/AboutStatementSection'
 import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
 import { AboutProductionHouseSection } from '@/components/about/AboutProductionHouseSection';
 import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
-import { CtaSection } from '@/components/ui/CtaSection';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
@@ -160,9 +159,9 @@ export default async function AboutPage({ params }: Props) {
       <SectionWrapper borderTop>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-center lg:gap-x-12 lg:gap-y-0">
           <div className="relative aspect-video w-full overflow-hidden rounded-[1.75rem] bg-[var(--color-vp-search-thumb-bg)]">
-            {/* PLACEHOLDER — swap src for a Sanity behind-the-scenes production photo */}
+            {/* PLACEHOLDER — swap for CMS-driven BTS photo when wired */}
             <Image
-              src="/placeholders/about-production-log-bts.svg"
+              src="https://cdn.sanity.io/images/7oesp86l/production/b2887f5288c958358c17df2f070e8ef3ece16d49-1132x756.jpg"
               alt=""
               fill
               sizes="(max-width: 992px) 100vw, 42vw"
@@ -170,10 +169,10 @@ export default async function AboutPage({ params }: Props) {
             />
           </div>
           <div>
-            <h2 className="m-0 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading">
+            <h2 className="m-0 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {t('productionLogCtaHeading')}
             </h2>
-            <p className="m-0 mt-6 text-[clamp(1.125rem,1.35vw,1.375rem)] font-light leading-relaxed text-vp-text-muted">
+            <p className="m-0 mt-6 font-light leading-relaxed text-vp-text-muted">
               {t('productionLogCtaBody')}
             </p>
             <Link
@@ -192,14 +191,6 @@ export default async function AboutPage({ params }: Props) {
             {t('moreAboutVantage')}
           </h2>
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            <li>
-              <Link
-                href="/vietnam-production-service"
-                className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
-              >
-                {t('moreAboutVietnamProductionService')}
-              </Link>
-            </li>
             <li>
               <Link
                 href="/our-industry"
@@ -227,8 +218,6 @@ export default async function AboutPage({ params }: Props) {
           </ul>
         </div>
       </SectionWrapper>
-
-      <CtaSection locale={typedLocale} />
     </>
   );
 }

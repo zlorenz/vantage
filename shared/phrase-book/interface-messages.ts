@@ -90,7 +90,6 @@ const PAGES_NEWS_MESSAGE_PATHS = new Set([
   'About.productionServicesBody2',
   'About.productionServicesCta',
   'About.moreAboutVantage',
-  'About.moreAboutVietnamProductionService',
   'About.moreAboutOurIndustry',
   'About.moreAboutOurCompany',
   'About.moreAboutAwards',

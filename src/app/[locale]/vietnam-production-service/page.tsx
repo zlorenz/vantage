@@ -1,12 +1,11 @@
 /**
- * Vietnam Production Service page — hero, rich body, Shot in Vietnam grid, CTA.
+ * Vietnam Production Service page — hero, rich body, Shot in Vietnam grid.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PortfolioCard } from '@/components/portfolio/PortfolioCard';
-import { CtaSection } from '@/components/ui/CtaSection';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
@@ -163,8 +162,6 @@ export default async function VietnamProductionServicePage({ params }: Props) {
           </div>
         </SectionWrapper>
       ) : null}
-
-      <CtaSection locale={typedLocale} />
     </>
   );
 }
