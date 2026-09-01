@@ -136,7 +136,7 @@ export default async function AboutPage({ params }: Props) {
             <p className="m-0 mb-4 font-vp-sans text-xs font-semibold uppercase tracking-vp-uppercase text-vp-text-soft">
               {t('productionServicesOutline')}
             </p>
-            <h2 className="m-0 font-vp-heading text-[clamp(2.5rem,4.375vw,3.75rem)] font-bold uppercase leading-tight tracking-vp-heading">
+            <h2 className="m-0 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
               {t('productionServices')}
             </h2>
           </div>
