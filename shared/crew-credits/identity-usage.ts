@@ -1,21 +1,17 @@
 /**
  * Portfolio usage counts for creditIdentity documents.
  *
- * Mirrors /work-internal default facet matching (`matchesRoleFilter` +
- * `visibility: 'public'`):
- * - Count unique published, non-trashed, non-hidden portfolio entries
- * - Match by linked identity **or** same display name (transitional)
- * - Art Director also matches Production Designer by name
- *
- * Used by Sanity Studio Crew Members "Used by" so it stays aligned with
- * the Work Library filters.
+ * Matching rules (identity ref, display-name fallback, art-director /
+ * production-designer alias) are shared by `portfolioMatchesIdentityRole`
+ * and `resolveUsageForIdentities`. Which portfolios are in scope is
+ * determined by the GROQ query the caller fetches — see
+ * `IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY` (Studio "Used by") vs
+ * `IDENTITY_USAGE_PORTFOLIOS_PUBLIC_QUERY` (public facet / work-internal
+ * `visibility: 'public'` parity).
  *
  * **Not a raw `references()` count.** GROQ `references(identityId)` totals
- * every weak ref on any role (including hidden/trashed portfolios). This
- * module counts only FILTER_CREDIT_ROLE_KEYS matches on the public facet
- * portfolio set — identity link, display-name fallback, and (for art
- * director) production-designer name alias. Studio "Used by" will therefore
- * differ from an unfiltered references() audit by design.
+ * every weak ref on any role (including trashed portfolios). These queries
+ * count only FILTER_CREDIT_ROLE_KEYS matches on the chosen portfolio set.
  */
 
 import {
@@ -197,11 +193,8 @@ export function portfolioMatchesIdentityRole(
 /**
  * Compute usage for a known set of creditIdentity rows against portfolios.
  *
- * Callers must pass the same portfolio set as /work-internal's default
- * public facet counts: published (no `drafts.*`), not trashed, not hidden.
- *
- * Output is intentionally lower or higher than a raw `references()` count
- * (hidden portfolios excluded; name-only credits on filter roles included).
+ * Callers choose the portfolio set via GROQ (Studio vs public facet query).
+ * Matching logic is identical either way; only the input array differs.
  */
 export function resolveUsageForIdentities(
   identities: Array<{_id: string; name: string}>,
@@ -271,12 +264,24 @@ export const IDENTITY_USAGE_PORTFOLIO_PROJECTION = `{
 }`
 
 /**
- * Published public library rows — matches /work-internal default facet counts
- * (`visibility: 'public'`). Excludes drafts, trash, and hidden entries.
+ * Published public-facet rows — matches /work-internal `visibility: 'public'`
+ * (excludes drafts, trash, and hidden). Not used by Studio today; kept for
+ * audits or future parity checks.
  */
-export const IDENTITY_USAGE_PORTFOLIOS_QUERY = `*[
+export const IDENTITY_USAGE_PORTFOLIOS_PUBLIC_QUERY = `*[
   _type == "portfolioEntry"
   && !(_id in path("drafts.**"))
   && !defined(trash.trashedAt)
   && isHidden != true
+]${IDENTITY_USAGE_PORTFOLIO_PROJECTION}`
+
+/**
+ * Studio Crew Members "Used by" — all published, non-trashed portfolios
+ * including hidden (`isHidden: true`). Intentionally broader than the public
+ * facet query above; hidden projects are real credits, just unlisted.
+ */
+export const IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY = `*[
+  _type == "portfolioEntry"
+  && !(_id in path("drafts.**"))
+  && !defined(trash.trashedAt)
 ]${IDENTITY_USAGE_PORTFOLIO_PROJECTION}`

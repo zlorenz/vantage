@@ -20,7 +20,7 @@ import {
 import {AddIcon, ChevronDownIcon, EyeClosedIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
-  IDENTITY_USAGE_PORTFOLIOS_QUERY,
+  IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY,
   resolveUsageForIdentities,
   type IdentityUsagePortfolio,
 } from '@crew-credits'
@@ -249,8 +249,10 @@ function buildQuery(documentType: string): string {
         "usage": count(*[references(^._id)])
       }`
     case 'creditIdentity':
-      // Usage is computed client-side via resolveUsageForIdentities so it
-      // matches /work-internal facet counts (identity or display name).
+      // Usage is computed client-side via resolveUsageForIdentities on
+      // IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY — all non-trashed published
+      // portfolios including hidden. Intentionally not limited to the
+      // work-internal public facet (hidden projects still count as credits).
       return `*[_type == "creditIdentity" && !(_id in path("versions.**"))] | order(name asc) {
         _id,
         _type,
@@ -690,7 +692,7 @@ export function DocumentTable({
     const identityUsagePromise =
       section.documentType === 'creditIdentity'
         ? client
-            .fetch<IdentityUsagePortfolio[]>(IDENTITY_USAGE_PORTFOLIOS_QUERY)
+            .fetch<IdentityUsagePortfolio[]>(IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY)
             .catch(() => [] as IdentityUsagePortfolio[])
         : Promise.resolve([] as IdentityUsagePortfolio[])
 
