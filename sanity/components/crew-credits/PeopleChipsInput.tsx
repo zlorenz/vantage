@@ -33,9 +33,12 @@ import {
 import {createPortal} from 'react-dom'
 
 import {
+  evaluateIdentityLinkConfidence,
   formatMatchReasons,
+  isAutoLinkConfidence,
   isFilterCreditRoleKey,
   searchNameSuggestions,
+  type CrewDepartmentKey,
   type CrewPersonValue,
   type NameCatalogEntry,
   type NameSuggestion,
@@ -48,9 +51,14 @@ import {
   enrichPersonWithLinkMemory,
   type KnownPersonLink,
 } from './link-memory'
-import {identityRef} from './sync-credit-identities'
+import {identityRef, type CreditIdentityDoc} from './sync-credit-identities'
 
 const SUGGEST_DEBOUNCE_MS = 200
+
+type GatedNameSuggestion = NameSuggestion & {
+  reviewFlagged?: boolean
+  blockedIdentityId?: string
+}
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -61,9 +69,11 @@ function isValidHttpUrl(value: string): boolean {
   }
 }
 
-function suggestionMeta(suggestion: NameSuggestion): string {
+function suggestionMeta(suggestion: NameSuggestion, reviewFlagged?: boolean): string {
   const parts = [`${suggestion.count} use${suggestion.count === 1 ? '' : 's'}`]
-  if (suggestion.reasons?.length) {
+  if (reviewFlagged) {
+    parts.push('possible match — confirm before linking')
+  } else if (suggestion.reasons?.length) {
     parts.push(formatMatchReasons(suggestion.reasons))
   }
   return parts.join(' · ')
@@ -308,10 +318,10 @@ function PersonPill(props: {
 
 function SuggestionDropdown(props: {
   anchorRef: React.RefObject<HTMLInputElement | null>
-  suggestions: NameSuggestion[]
+  suggestions: GatedNameSuggestion[]
   highlightedIndex: number
   loading?: boolean
-  onSelect: (suggestion: NameSuggestion) => void
+  onSelect: (suggestion: GatedNameSuggestion) => void
   onHighlight: (index: number) => void
 }) {
   const {anchorRef, suggestions, highlightedIndex, loading, onSelect, onHighlight} = props
@@ -381,9 +391,11 @@ function SuggestionDropdown(props: {
                 width: '100%',
                 textAlign: 'left',
                 background:
-                  index === highlightedIndex
-                    ? 'var(--card-link-fg-color, rgba(0,0,0,0.08))'
-                    : 'transparent',
+                  suggestion.reviewFlagged
+                    ? 'var(--card-badge-caution-bg-color, rgba(255, 193, 7, 0.12))'
+                    : index === highlightedIndex
+                      ? 'var(--card-link-fg-color, rgba(0,0,0,0.08))'
+                      : 'transparent',
                 border: 'none',
                 borderRadius: 4,
                 padding: '6px 8px',
@@ -398,7 +410,7 @@ function SuggestionDropdown(props: {
                     {suggestion.name}
                   </Text>
                   <Text size={0} muted>
-                    {suggestionMeta(suggestion)}
+                    {suggestionMeta(suggestion, suggestion.reviewFlagged)}
                     {suggestion.inRole ? ' · this role' : ''}
                   </Text>
                 </Stack>
@@ -438,6 +450,15 @@ export function PeopleChipsInput(props: {
   }) => void
   /** creditIdentity._id → default url (for chips that inherit from identity). */
   identityUrlById?: ReadonlyMap<string, string>
+  /** Department of the credit row — enables confidence-gated identity linking. */
+  slotDepartment?: CrewDepartmentKey
+  identityDepartmentsById?: ReadonlyMap<string, ReadonlySet<CrewDepartmentKey>>
+  creditIdentities?: readonly CreditIdentityDoc[]
+  onIdentityLinkReviewSkipped?: (info: {
+    slotName: string
+    candidateName: string
+    candidateId: string
+  }) => void
 }) {
   const {
     people,
@@ -452,15 +473,50 @@ export function PeopleChipsInput(props: {
     onLinkApplied,
     onRenameApplied,
     identityUrlById,
+    slotDepartment,
+    identityDepartmentsById,
+    creditIdentities,
+    onIdentityLinkReviewSkipped,
   } = props
   const [draft, setDraft] = useState('')
-  const [suggestions, setSuggestions] = useState<NameSuggestion[]>([])
+  const [suggestions, setSuggestions] = useState<GatedNameSuggestion[]>([])
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const [menuOpen, setMenuOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const selectingRef = useRef(false)
 
   const linkIdentities = isFilterCreditRoleKey(roleKey)
+
+  const gateSuggestionIdentity = useCallback(
+    (query: string, suggestion: NameSuggestion): GatedNameSuggestion => {
+      if (
+        !linkIdentities ||
+        !suggestion.identityId ||
+        !slotDepartment ||
+        !identityDepartmentsById ||
+        !creditIdentities?.length
+      ) {
+        return suggestion
+      }
+
+      const confidence = evaluateIdentityLinkConfidence(
+        query.trim() || suggestion.name,
+        suggestion.identityId,
+        creditIdentities,
+        {slotDepartment, identityDepartmentsById},
+      )
+      if (confidence && !isAutoLinkConfidence(confidence)) {
+        return {
+          ...suggestion,
+          identityId: undefined,
+          reviewFlagged: true,
+          blockedIdentityId: suggestion.identityId,
+        }
+      }
+      return suggestion
+    },
+    [creditIdentities, identityDepartmentsById, linkIdentities, slotDepartment],
+  )
 
   const existingNames = useMemo(
     () => people.map((person) => person.name.trim()),
@@ -525,8 +581,18 @@ export function PeopleChipsInput(props: {
   )
 
   const selectSuggestion = useCallback(
-    (suggestion: NameSuggestion) => {
+    (suggestion: GatedNameSuggestion) => {
       selectingRef.current = true
+      const typedName = draft.trim()
+
+      if (suggestion.reviewFlagged && suggestion.blockedIdentityId) {
+        onIdentityLinkReviewSkipped?.({
+          slotName: typedName || suggestion.name,
+          candidateName: suggestion.name,
+          candidateId: suggestion.blockedIdentityId,
+        })
+      }
+
       const person = buildPerson(suggestion.name, {
         url: suggestion.url,
         linkTitle: suggestion.linkTitle,
@@ -542,7 +608,7 @@ export function PeopleChipsInput(props: {
         inputRef.current?.focus()
       })
     },
-    [addPerson, buildPerson],
+    [addPerson, buildPerson, draft, onIdentityLinkReviewSkipped],
   )
 
   useEffect(() => {
@@ -565,14 +631,14 @@ export function PeopleChipsInput(props: {
         siteCatalog: nameCatalog,
         roleCatalog,
         excludeNames,
-      })
+      }).map((suggestion) => gateSuggestionIdentity(trimmed, suggestion))
       setSuggestions(next)
       setHighlightedIndex(next.length ? 0 : -1)
       setMenuOpen(next.length > 0)
     }, SUGGEST_DEBOUNCE_MS)
 
     return () => window.clearTimeout(timer)
-  }, [catalogReady, draft, excludeNames, nameCatalog, readOnly, roleCatalog])
+  }, [catalogReady, draft, excludeNames, gateSuggestionIdentity, nameCatalog, readOnly, roleCatalog])
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)

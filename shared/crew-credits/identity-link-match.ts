@@ -113,3 +113,18 @@ export function findIdentityByNameWithConfidence(
   )
   return {identity: found, confidence}
 }
+
+/**
+ * Evaluate link confidence for a specific identity candidate and slot name.
+ * Returns null when the candidate is not a normalized-name match for the slot.
+ */
+export function evaluateIdentityLinkConfidence(
+  slotName: string,
+  candidateId: string,
+  existing: readonly IdentityLinkCandidateDoc[],
+  context: IdentityLinkMatchContext,
+): IdentityMatchConfidence | null {
+  const match = findIdentityByNameWithConfidence(slotName, existing, context)
+  if (!match || match.identity._id !== candidateId) return null
+  return match.confidence
+}

@@ -45,7 +45,10 @@ import {
   CREW_DEPARTMENTS,
   CREW_DEPARTMENT_BY_KEY,
   CREW_ROLE_BY_KEY,
+  buildIdentityDepartmentUsageFromCredits,
+  findIdentityByNameWithConfidence,
   getDepartmentLabel,
+  isAutoLinkConfidence,
   isFilterCreditRoleKey,
   normalizeCreditToken,
   resolveStandardRole,
@@ -94,7 +97,6 @@ import {
   skipRoleSuggestion,
 } from './role-suggestions'
 import {
-  findIdentityByName,
   identityRef,
   newCreditIdentityDoc,
   type CreditIdentityDoc,
@@ -265,6 +267,10 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
   const [identityUrlById, setIdentityUrlById] = useState<Map<string, string>>(
     () => new Map(),
   )
+  const [creditIdentities, setCreditIdentities] = useState<CreditIdentityDoc[]>([])
+  const [identityDepartmentsById, setIdentityDepartmentsById] = useState<
+    Map<string, Set<CrewDepartmentKey>>
+  >(() => new Map())
   const [roleCatalogIndexes, setRoleCatalogIndexes] = useState<RoleCatalogIndexes>(() => ({
     roleCatalogByKey: new Map(),
     deptCatalogByKey: new Map(),
@@ -407,6 +413,17 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
     [client, documentId, readOnly, toast],
   )
 
+  const handleIdentityLinkReviewSkipped = useCallback(
+    (info: {slotName: string; candidateName: string; candidateId: string}) => {
+      toast.push({
+        status: 'warning',
+        title: 'Possible identity match — not linked',
+        description: `“${info.slotName}” looks similar to existing “${info.candidateName}” in another department. Added without an identity link — confirm manually if they are the same person.`,
+      })
+    },
+    [toast],
+  )
+
   // Load site-wide name catalog + credit identities + link memory once.
   useEffect(() => {
     let cancelled = false
@@ -457,6 +474,14 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
           if (doc.url?.trim()) urlMap.set(doc._id, doc.url.trim())
         }
         setIdentityUrlById(urlMap)
+        setCreditIdentities(identities ?? [])
+        setIdentityDepartmentsById(
+          buildIdentityDepartmentUsageFromCredits(
+            (docs ?? []).map((doc) => ({
+              crewCredits: (doc.crewCredits ?? []) as CrewCreditValue[],
+            })),
+          ),
+        )
         setSiteNameCatalog(mergeNameCatalogs(fromIdentities, fromCredits))
         setRoleCatalogIndexes(buildRoleCatalogIndexes(creditRows))
         setSiteLinkMemory(
@@ -523,7 +548,10 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
   )
 
   const ensureIdentitiesOnPeople = useCallback(
-    async (people: CrewPersonValue[]): Promise<CrewPersonValue[]> => {
+    async (
+      people: CrewPersonValue[],
+      slotDepartment: CrewDepartmentKey,
+    ): Promise<CrewPersonValue[]> => {
       if (!people.length) return people
       const existing = await client.fetch<CreditIdentityDoc[]>(
         `*[_type == "creditIdentity"]{ _id, name, url }`,
@@ -531,6 +559,12 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
       const known = [...(existing ?? [])]
       const pendingByName = new Map<string, string>()
       const next: CrewPersonValue[] = []
+      const reviewSkipped: Array<{slotName: string; candidateName: string}> = []
+
+      const linkContext = {
+        slotDepartment,
+        identityDepartmentsById,
+      }
 
       for (const person of people) {
         if (person.identity?._ref || !person.name?.trim()) {
@@ -539,30 +573,59 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
         }
         const name = person.name.trim()
         const key = normalizeCreditToken(name)
-        const found = findIdentityByName(name, known)
-        let id = found?._id ?? pendingByName.get(key)
-        if (!id) {
-          const doc = newCreditIdentityDoc(name, {url: person.url})
-          await client.createIfNotExists(doc)
-          known.push({_id: doc._id, name: doc.name, url: doc.url})
-          pendingByName.set(key, doc._id)
-          id = doc._id
-          setSiteNameCatalog((prev) =>
-            mergeNameCatalogs(prev, [
-              {
-                name: doc.name,
-                count: 1,
-                identityId: doc._id,
-                ...(doc.url ? {url: doc.url} : {}),
-              },
-            ]),
-          )
+        const match = findIdentityByNameWithConfidence(name, known, linkContext)
+
+        if (match && isAutoLinkConfidence(match.confidence)) {
+          next.push({...person, identity: identityRef(match.identity._id)})
+          continue
         }
-        next.push({...person, identity: identityRef(id)})
+
+        if (match?.confidence === 'review') {
+          reviewSkipped.push({slotName: name, candidateName: match.identity.name})
+          next.push(person)
+          continue
+        }
+
+        const pending = pendingByName.get(key)
+        if (pending) {
+          next.push({...person, identity: identityRef(pending)})
+          continue
+        }
+
+        const doc = newCreditIdentityDoc(name, {url: person.url})
+        await client.createIfNotExists(doc)
+        known.push({_id: doc._id, name: doc.name, url: doc.url})
+        pendingByName.set(key, doc._id)
+        next.push({...person, identity: identityRef(doc._id)})
+        setSiteNameCatalog((prev) =>
+          mergeNameCatalogs(prev, [
+            {
+              name: doc.name,
+              count: 1,
+              identityId: doc._id,
+              ...(doc.url ? {url: doc.url} : {}),
+            },
+          ]),
+        )
       }
+
+      if (reviewSkipped.length) {
+        const summary = reviewSkipped
+          .map(
+            (row) =>
+              `“${row.slotName}” (similar to existing “${row.candidateName}” in another department)`,
+          )
+          .join('; ')
+        toast.push({
+          status: 'warning',
+          title: 'Identity link needs review',
+          description: `${summary} — saved without linking. Confirm manually if they are the same person.`,
+        })
+      }
+
       return next
     },
-    [client],
+    [client, identityDepartmentsById, toast],
   )
 
   const commitStandardPeople = useCallback(
@@ -573,7 +636,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
       let linkedPeople = people
       if (people.length && isFilterCreditRoleKey(role.key)) {
         try {
-          linkedPeople = await ensureIdentitiesOnPeople(people)
+          linkedPeople = await ensureIdentitiesOnPeople(people, dept)
         } catch (error) {
           toast.push({
             status: 'warning',
@@ -996,6 +1059,14 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                         roleCatalog={roleCatalogIndexes.roleCatalogByKey.get(role.key)}
                         catalogReady={catalogReady}
                         identityUrlById={identityUrlById}
+                        {...(isFilterCreditRoleKey(role.key)
+                          ? {
+                              slotDepartment: dept.key,
+                              identityDepartmentsById,
+                              creditIdentities,
+                              onIdentityLinkReviewSkipped: handleIdentityLinkReviewSkipped,
+                            }
+                          : {})}
                         onCommit={(people) => {
                           void commitStandardPeople(dept.key, role, people)
                         }}

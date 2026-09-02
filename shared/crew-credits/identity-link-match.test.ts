@@ -8,6 +8,7 @@ import assert from 'node:assert/strict'
 
 import {
   buildIdentityDepartmentUsageFromCredits,
+  evaluateIdentityLinkConfidence,
   findIdentityByNameWithConfidence,
 } from './identity-link-match'
 import {
@@ -242,6 +243,14 @@ const minhCongTrangResolved = resolveIdentityLinksOnCredits(
 )
 assert.equal(minhCongTrangResolved.reviewLinks.length, 0)
 assert.equal(minhCongTrangResolved.nextCredits[0]?.people[0]?.identity?._ref, 'ci_minh')
+
+const evaluateCrossDept = evaluateIdentityLinkConfidence(
+  'Lê Thanh Tùng',
+  'ci_le_thanh',
+  existing,
+  {slotDepartment: 'camera', identityDepartmentsById: usage},
+)
+assert.equal(evaluateCrossDept, 'review')
 
 // buildIdentityDepartmentUsageFromCredits collects departments per identity
 const minhDepts = usage.get('ci_minh')
