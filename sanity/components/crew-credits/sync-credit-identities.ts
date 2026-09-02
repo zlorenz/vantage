@@ -43,6 +43,7 @@ export const FULL_IDENTITY_LINK_DEPARTMENTS: readonly CrewDepartmentKey[] = [
   'casting',
   'ge',
   'camera',
+  'art',
 ]
 
 /**
