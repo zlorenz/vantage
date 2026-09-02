@@ -28,7 +28,7 @@ import {
 import {getWriteClient} from '../lib/sanity-client'
 import '../config'
 
-const TARGET_DEPARTMENTS = ['stills', 'casting', 'ge', 'camera', 'art', 'post'] as const satisfies readonly CrewDepartmentKey[]
+const TARGET_DEPARTMENTS = ['stills', 'casting', 'ge', 'camera', 'art', 'post', 'production'] as const satisfies readonly CrewDepartmentKey[]
 
 type TargetDepartment = (typeof TARGET_DEPARTMENTS)[number]
 
@@ -538,7 +538,7 @@ async function main() {
   if (APPLY) {
     if (!applyDepartmentArg || !TARGET_DEPARTMENTS.includes(applyDepartmentArg)) {
       console.error(
-        'Apply requires exactly one --department stills|casting|ge|camera|art|post (one department per run).',
+        'Apply requires exactly one --department stills|casting|ge|camera|art|post|production (one department per run).',
       )
       process.exit(1)
     }
@@ -581,7 +581,7 @@ async function main() {
   if (process.argv.includes('--department')) {
     if (!dryRunDepartmentArg || !TARGET_DEPARTMENTS.includes(dryRunDepartmentArg)) {
       console.error(
-        'Dry-run --department must be one of: stills, casting, ge, camera, art, post (or omit for all departments).',
+        'Dry-run --department must be one of: stills, casting, ge, camera, art, post, production (or omit for all departments).',
       )
       process.exit(1)
     }
