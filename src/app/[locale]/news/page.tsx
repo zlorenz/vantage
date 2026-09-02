@@ -1,12 +1,11 @@
 /**
- * News index page — hero, intro, blog post grid with sidebar.
+ * News index page — hero, intro, three-column masonry post grid.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { BlogPostCard } from '@/components/blog/BlogPostCard';
-import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
@@ -23,10 +22,10 @@ import {
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
-import { ALL_CATEGORIES_QUERY, ALL_POSTS_QUERY } from '@/sanity/queries/blog';
+import { ALL_POSTS_QUERY } from '@/sanity/queries/blog';
 import { NEWS_PAGE_QUERY } from '@/sanity/queries/pages';
 import type { NEWS_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
-import type { BlogPostCard as BlogPostCardData, CategoryTerm } from '@/types/sanity';
+import type { BlogPostCard as BlogPostCardData } from '@/types/sanity';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -60,16 +59,14 @@ export default async function NewsPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageResult, postsResult, categoriesResult, phrases, organization] = await Promise.all([
+  const [pageResult, postsResult, phrases, organization] = await Promise.all([
     sanityFetch({query: NEWS_PAGE_QUERY}),
     sanityFetch({query: ALL_POSTS_QUERY, stega: false}),
-    sanityFetch({query: ALL_CATEGORIES_QUERY, stega: false}),
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
   ]);
   const page = pageResult.data as NEWS_PAGE_QUERY_RESULT;
   const posts = postsResult.data as BlogPostCardData[];
-  const categories = categoriesResult.data as CategoryTerm[];
 
   if (!page) notFound();
 
@@ -100,27 +97,19 @@ export default async function NewsPage({ params }: Props) {
 
       <SectionWrapper className="vp-news-page" fullBleed={true}>
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <div className="vp-news-intro mb-12 max-w-[900px] font-light text-vp-text-muted">
-                <PortableTextIntro blocks={introBlocks ?? undefined} />
-              </div>
+          <div className="vp-news-intro mb-12 max-w-[900px] font-light text-vp-text-muted">
+            <PortableTextIntro blocks={introBlocks ?? undefined} />
+          </div>
 
-              <div className="vp-news-posts flex flex-col gap-16">
-                {posts.map((post) => (
-                  <BlogPostCard
-                    key={post._id}
-                    post={post}
-                    locale={typedLocale}
-                    phrases={phrases}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="lg:col-span-4">
-              <BlogSidebar categories={categories} locale={typedLocale} phrases={phrases} />
-            </div>
+          <div className="vp-news-masonry">
+            {posts.map((post) => (
+              <BlogPostCard
+                key={post._id}
+                post={post}
+                locale={typedLocale}
+                phrases={phrases}
+              />
+            ))}
           </div>
         </div>
       </SectionWrapper>

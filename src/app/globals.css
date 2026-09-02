@@ -1361,6 +1361,32 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /* ==========================================================================
+   News index — multi-column post grid
+   ========================================================================== */
+
+.vp-news-masonry {
+  column-count: 1;
+  column-gap: 0;
+}
+
+@media (min-width: 768px) {
+  .vp-news-masonry {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .vp-news-masonry {
+    column-count: 3;
+  }
+}
+
+.vp-news-masonry > * {
+  break-inside: avoid;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
    Masonry image gallery (Vietnam pages)
    ========================================================================== */
 
