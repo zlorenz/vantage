@@ -126,6 +126,12 @@ const sameDeptHomonymReview = findIdentityByNameWithConfidence('Tú Nguyễn', e
 })
 assert.equal(sameDeptHomonymReview?.confidence, 'review')
 
+const asciiFirstHomonymReview = findIdentityByNameWithConfidence('Tu Nguyen', existing, {
+  slotDepartment: 'stills',
+  identityDepartmentsById: usage,
+})
+assert.equal(asciiFirstHomonymReview?.confidence, 'review')
+
 const crossDeptNormReview = findIdentityByNameWithConfidence('Lê Thanh Tùng', existing, {
   slotDepartment: 'camera',
   identityDepartmentsById: usage,
@@ -252,6 +258,22 @@ const evaluateCrossDept = evaluateIdentityLinkConfidence(
   {slotDepartment: 'camera', identityDepartmentsById: usage},
 )
 assert.equal(evaluateCrossDept, 'review')
+
+const evaluateAsciiTuStills = evaluateIdentityLinkConfidence(
+  'Tu Nguyen',
+  'ci_tu_nguyen',
+  existing,
+  {slotDepartment: 'stills', identityDepartmentsById: usage},
+)
+assert.equal(evaluateAsciiTuStills, 'review')
+
+const evaluateCastingCrossDeptTu = evaluateIdentityLinkConfidence(
+  'Tu Nguyen',
+  'ci_tu_nguyen',
+  existing,
+  {slotDepartment: 'casting', identityDepartmentsById: usage},
+)
+assert.equal(evaluateCastingCrossDeptTu, 'review')
 
 // --- studio inline identity-link scope (all linked departments) ---------------
 

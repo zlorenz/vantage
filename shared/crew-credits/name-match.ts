@@ -225,19 +225,31 @@ export function confidenceForReasons(
 
   let confidence: MatchConfidence = hasHigh ? 'high' : 'medium'
 
-  // Demote only when multiple accented first names fold to the same ASCII token
-  // (e.g. Tú vs Tự). Plain ASCII vs accented (Tuyen vs Tuyển) stays high.
+  // Demote when first names fold to the same ASCII token but could be different
+  // people: accented-vs-accented homonyms (Tú vs Tự) or ASCII query vs accented
+  // identity (Tu vs Tự). Short tokens only — full-name diacritic variants like
+  // Tùng Bùi / Tung Bui stay high (norm length > 3).
   if (reasons.includes('diacritic') && variants.length >= 2) {
     const firstNames = variants.map((v) => v.name.trim().split(/\s+/)[0] ?? '')
     const distinctFirstTokens = new Set(firstNames.map((name) => normName(name)))
     const rawFirstTokens = new Set(firstNames.map((name) => name.toLowerCase()))
     const accentedFirstNames = firstNames.filter((name) => /[^\u0000-\u007f]/.test(name))
-    if (
-      rawFirstTokens.size > 1 &&
-      distinctFirstTokens.size === 1 &&
-      accentedFirstNames.length >= 2
-    ) {
-      confidence = 'review'
+    const asciiFirstNames = firstNames.filter(
+      (name) => name.trim().length > 0 && !/[^\u0000-\u007f]/.test(name),
+    )
+    const firstToken = [...distinctFirstTokens][0] ?? ''
+    const firstNameHomonymCollision =
+      rawFirstTokens.size > 1 && distinctFirstTokens.size === 1 && firstToken.length > 0
+
+    if (firstNameHomonymCollision) {
+      const accentedHomonymPair = accentedFirstNames.length >= 2
+      const asciiVsAccentedShortFirst =
+        accentedFirstNames.length >= 1 &&
+        asciiFirstNames.length >= 1 &&
+        firstToken.length <= 3
+      if (accentedHomonymPair || asciiVsAccentedShortFirst) {
+        confidence = 'review'
+      }
     }
   }
 
