@@ -132,6 +132,7 @@ export const CREDIT_LABEL_ZH: Record<string, string> = {
   'On-Set Editors': '现场剪辑师',
   Editor: '剪辑师',
   Editors: '剪辑师',
+  'Assistant Editor': '剪辑助理',
   'Assistant Editors': '剪辑助理',
   Colorist: '调色师',
   Colorists: '调色师',

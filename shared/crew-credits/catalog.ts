@@ -506,7 +506,7 @@ export const CREW_DEPARTMENTS: CrewDepartmentDefinition[] = [
       },
       {
         key: 'assistant_editors',
-        label: 'Assistant Editors',
+        label: 'Assistant Editor',
         pluralLabel: 'Assistant Editors',
         legacyField: 'post_assistant_editor',
         aliases: ['assistant editor'],

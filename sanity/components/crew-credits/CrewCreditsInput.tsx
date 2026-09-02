@@ -48,6 +48,7 @@ import {
   buildIdentityDepartmentUsageFromCredits,
   findIdentityByNameWithConfidence,
   getDepartmentLabel,
+  getRoleDisplayLabel,
   isAutoLinkConfidence,
   normalizeCreditToken,
   resolveStandardRole,
@@ -1049,10 +1050,13 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
               <Grid columns={[1, 1, 2]} gap={3}>
                 {dept.roles.map((role) => {
                   const existing = findStandard(dept.key, role.key)
+                  const peopleCount = (existing?.people ?? []).filter((person) =>
+                    person.name?.trim(),
+                  ).length
                   return (
                     <Stack key={role.key} space={2}>
                       <Text size={1} weight="semibold">
-                        {role.label}
+                        {getRoleDisplayLabel(role.key, role.label, peopleCount)}
                       </Text>
                       <PeopleChipsInput
                         people={existing?.people ?? []}
