@@ -1366,7 +1366,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-news-masonry {
   column-count: 1;
-  column-gap: 0;
+  column-gap: 0.75rem;
 }
 
 @media (min-width: 768px) {
@@ -1383,7 +1383,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-news-masonry > * {
   break-inside: avoid;
-  margin-bottom: 0;
+  margin-bottom: 0.75rem;
 }
 
 /* ==========================================================================
