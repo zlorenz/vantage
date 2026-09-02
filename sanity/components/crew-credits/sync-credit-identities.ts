@@ -8,11 +8,14 @@ import {
   creditIdentityId,
   CREW_DEPARTMENTS,
   FILTER_CREDIT_ROLE_KEYS,
+  findIdentityByNameWithConfidence,
+  isAutoLinkConfidence,
   normalizeCreditToken,
   type CrewCreditValue,
   type CrewDepartmentKey,
   type CrewPersonValue,
   type FilterCreditRoleKey,
+  type IdentityMatchConfidence,
 } from '@crew-credits'
 
 export interface CreditIdentityDoc {
@@ -165,6 +168,27 @@ export interface LinkedPersonPatch {
   name: string
   identityId: string
   created?: boolean
+  confidence?: IdentityMatchConfidence
+}
+
+export interface ReviewLinkPersonPatch {
+  personKey?: string
+  roleKey: string
+  department: CrewDepartmentKey
+  name: string
+  portfolioId?: string
+  portfolioLabel?: string
+  candidateIdentityId: string
+  candidateIdentityName: string
+  candidateIdentityDepartments: CrewDepartmentKey[]
+  confidence: 'review'
+}
+
+export interface ResolveIdentityLinksOptions {
+  /** Departments each identity is already linked in — from buildIdentityDepartmentUsageFromCredits. */
+  identityDepartmentsById?: ReadonlyMap<string, ReadonlySet<CrewDepartmentKey>>
+  portfolioId?: string
+  portfolioLabel?: string
 }
 
 export interface ResolvedIdentityLinkPlan {
@@ -177,6 +201,8 @@ export interface ResolvedIdentityLinkPlan {
   }>
   /** People slots that need an identity ref (and maybe name sync). */
   links: LinkedPersonPatch[]
+  /** Normalized matches that were skipped pending manual review. */
+  reviewLinks: ReviewLinkPersonPatch[]
   /** Updated crewCredits with identity refs attached where missing. */
   nextCredits: CrewCreditValue[]
 }
@@ -189,25 +215,64 @@ export function resolveIdentityLinksOnCredits(
   credits: CrewCreditValue[] | undefined,
   existing: CreditIdentityDoc[],
   policy: IdentityLinkPolicy = FILTER_CREDIT_IDENTITY_LINK_POLICY,
+  options: ResolveIdentityLinksOptions = {},
 ): ResolvedIdentityLinkPlan {
   const createIdentities: ResolvedIdentityLinkPlan['createIdentities'] = []
   const links: LinkedPersonPatch[] = []
+  const reviewLinks: ReviewLinkPersonPatch[] = []
   const known = [...existing]
   const pendingByName = new Map<string, string>()
+  const identityDepartmentsById = options.identityDepartmentsById ?? new Map()
 
-  function resolveId(name: string, url?: string): {id: string; created: boolean} {
+  type ResolveIdResult =
+    | {kind: 'linked'; id: string; created: boolean; confidence?: IdentityMatchConfidence}
+    | {kind: 'review'; candidate: Omit<ReviewLinkPersonPatch, 'personKey' | 'roleKey' | 'name' | 'department'>}
+
+  function resolveId(
+    name: string,
+    url: string | undefined,
+    slotDepartment: CrewDepartmentKey,
+  ): ResolveIdResult {
     const key = normalizeCreditToken(name)
-    const found = findIdentityByName(name, known)
-    if (found) return {id: found._id, created: false}
+    const match = findIdentityByNameWithConfidence(name, known, {
+      slotDepartment,
+      identityDepartmentsById,
+    })
+
+    if (match && isAutoLinkConfidence(match.confidence)) {
+      return {
+        kind: 'linked',
+        id: match.identity._id,
+        created: false,
+        confidence: match.confidence,
+      }
+    }
+
+    if (match?.confidence === 'review') {
+      const candidateDepartments = [
+        ...(identityDepartmentsById.get(match.identity._id) ?? []),
+      ].sort()
+      return {
+        kind: 'review',
+        candidate: {
+          portfolioId: options.portfolioId,
+          portfolioLabel: options.portfolioLabel,
+          candidateIdentityId: match.identity._id,
+          candidateIdentityName: match.identity.name,
+          candidateIdentityDepartments: candidateDepartments,
+          confidence: 'review',
+        },
+      }
+    }
 
     const pending = pendingByName.get(key)
-    if (pending) return {id: pending, created: true}
+    if (pending) return {kind: 'linked', id: pending, created: true}
 
     const doc = newCreditIdentityDoc(name, {url})
     createIdentities.push(doc)
     known.push({_id: doc._id, name: doc.name, url: doc.url})
     pendingByName.set(key, doc._id)
-    return {id: doc._id, created: true}
+    return {kind: 'linked', id: doc._id, created: true}
   }
 
   const nextCredits: CrewCreditValue[] = (credits ?? []).map((credit) => {
@@ -216,6 +281,7 @@ export function resolveIdentityLinksOnCredits(
     }
 
     const roleKey = credit.roleKey!
+    const slotDepartment = credit.department
     const people = (credit.people ?? []).map((person) => {
       const name = person.name?.trim()
       if (!name) return person
@@ -231,13 +297,26 @@ export function resolveIdentityLinksOnCredits(
         return person
       }
 
-      const {id, created} = resolveId(name, person.url)
+      const resolved = resolveId(name, person.url, slotDepartment)
+      if (resolved.kind === 'review') {
+        reviewLinks.push({
+          personKey: person._key,
+          roleKey,
+          department: slotDepartment,
+          name,
+          ...resolved.candidate,
+        })
+        return person
+      }
+
+      const {id, created, confidence} = resolved
       links.push({
         personKey: person._key,
         roleKey,
         name,
         identityId: id,
         created,
+        ...(confidence ? {confidence} : {}),
       })
 
       const next: CrewPersonValue = {
@@ -250,7 +329,7 @@ export function resolveIdentityLinksOnCredits(
     return {...credit, people}
   })
 
-  return {createIdentities, links, nextCredits}
+  return {createIdentities, links, reviewLinks, nextCredits}
 }
 
 function creditsEqualForIdentity(
