@@ -111,13 +111,18 @@ type CrewDeptTab = 'all' | CrewDepartmentKey
 /** Role sub-tab: all roles in scope, or one catalog role.key string. */
 type CrewRoleFilter = 'all' | string
 
+/** All standard Camera role keys (identity-linked after Camera apply). */
+const CAMERA_LINKED_ROLE_KEYS: readonly string[] = CREW_DEPARTMENTS.find(
+  (dept) => dept.key === 'camera',
+)!.roles.map((role) => role.key)
+
 /**
  * Identity-linked standard roles per department (live data scope).
  * Other departments stay empty until their link apply.
  */
 const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
   production: ['brand', 'director'],
-  camera: ['dop'],
+  camera: CAMERA_LINKED_ROLE_KEYS,
   art: ['art_director'],
   post: ['editor'],
   stills: [
