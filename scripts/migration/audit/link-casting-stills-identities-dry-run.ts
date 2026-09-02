@@ -11,6 +11,7 @@
 
 import type {CrewCreditValue, CrewDepartmentKey} from '../../../shared/crew-credits'
 import {
+  buildIdentityDepartmentUsageFromCredits,
   CREW_ROLE_BY_KEY,
   formatMatchReasons,
   matchReasonsBetween,
@@ -21,6 +22,7 @@ import {
   resolveIdentityLinksOnCredits,
   type CreditIdentityDoc,
   type LinkedPersonPatch,
+  type ReviewLinkPersonPatch,
 } from '../../../sanity/components/crew-credits/sync-credit-identities'
 import {getWriteClient} from '../lib/sanity-client'
 import '../config'
@@ -65,6 +67,7 @@ type ApplyDepartmentResult = {
   identitiesCreated: number
   portfoliosPatched: number
   refsAdded: number
+  reviewSlotsSkipped: number
   portfoliosSkipped: number
   errors: Array<{documentId: string; label: string; error: string}>
 }
@@ -93,6 +96,7 @@ type DepartmentDryRunReport = {
   portfoliosWithScope: number
   wouldCreateIdentities: Array<{name: string; _id: string}>
   wouldMatchExisting: Array<{name: string; _id: string; identityName: string}>
+  reviewQueue: ReviewLinkPersonPatch[]
   refsWouldAdd: number
   refsByRoleKey: Record<string, number>
   withinDepartmentVariantGroups: Array<{names: string[]; reasons: string[]}>
@@ -202,10 +206,12 @@ function dryRunDepartment(
   department: TargetDepartment,
   docs: PortfolioDoc[],
   liveIdentities: CreditIdentityDoc[],
+  identityDepartmentsById: ReadonlyMap<string, ReadonlySet<CrewDepartmentKey>>,
 ): DepartmentDryRunReport {
   const policy = identityLinkPolicyForDepartments([department])
   const existing = [...liveIdentities]
   const initialLiveIds = new Set(liveIdentities.map((row) => row._id))
+  const reviewQueue: ReviewLinkPersonPatch[] = []
 
   const resolutionByNormName = new Map<
     string,
@@ -238,7 +244,16 @@ function dryRunDepartment(
       0,
     )
 
-    const resolved = resolveIdentityLinksOnCredits(doc.crewCredits, existing, policy)
+    const resolved = resolveIdentityLinksOnCredits(doc.crewCredits, existing, policy, {
+      identityDepartmentsById,
+      portfolioId: doc._id,
+      portfolioLabel: portfolioLabel(doc),
+    })
+
+    for (const review of resolved.reviewLinks) {
+      if (review.department !== department) continue
+      reviewQueue.push(review)
+    }
 
     let docTouched = false
     for (const created of resolved.createIdentities) {
@@ -311,6 +326,7 @@ function dryRunDepartment(
     portfoliosWithScope: portfoliosWithScope.size,
     wouldCreateIdentities,
     wouldMatchExisting,
+    reviewQueue,
     refsWouldAdd,
     refsByRoleKey,
     withinDepartmentVariantGroups: findVariantGroups(unlinkedNames),
@@ -374,6 +390,23 @@ function printDepartmentReport(report: DepartmentDryRunReport) {
   }
   console.log('')
 
+  console.log(`REVIEW QUEUE (${report.reviewQueue.length} slot(s) — not linked, not created):`)
+  if (!report.reviewQueue.length) {
+    console.log('  (none)')
+  } else {
+    for (const row of report.reviewQueue) {
+      const candidateDepts =
+        row.candidateIdentityDepartments.length > 0
+          ? row.candidateIdentityDepartments.join(', ')
+          : '(no linked usage yet)'
+      console.log(
+        `  • "${row.name}" [${row.department}/${row.roleKey}] on ${row.portfolioLabel ?? row.portfolioId ?? '?'} ` +
+          `→ candidate "${row.candidateIdentityName}" (${row.candidateIdentityId}, depts: ${candidateDepts})`,
+      )
+    }
+  }
+  console.log('')
+
   console.log(`Would ADD ${report.refsWouldAdd} crewPerson.identity ref(s):`)
   const roleKeys = Object.keys(report.refsByRoleKey).sort()
   if (!roleKeys.length) {
@@ -399,6 +432,7 @@ async function applyDepartment(
   department: TargetDepartment,
   docs: PortfolioDoc[],
   liveIdentities: CreditIdentityDoc[],
+  identityDepartmentsById: ReadonlyMap<string, ReadonlySet<CrewDepartmentKey>>,
 ): Promise<ApplyDepartmentResult> {
   const client = getWriteClient()
   const policy = identityLinkPolicyForDepartments([department])
@@ -407,6 +441,7 @@ async function applyDepartment(
   let identitiesCreated = 0
   let portfoliosPatched = 0
   let refsAdded = 0
+  let reviewSlotsSkipped = 0
   let portfoliosSkipped = 0
   const errors: ApplyDepartmentResult['errors'] = []
 
@@ -428,7 +463,15 @@ async function applyDepartment(
     if (!hasUnlinked) continue
 
     const label = portfolioLabel(doc)
-    const resolved = resolveIdentityLinksOnCredits(doc.crewCredits, existing, policy)
+    const resolved = resolveIdentityLinksOnCredits(doc.crewCredits, existing, policy, {
+      identityDepartmentsById,
+      portfolioId: doc._id,
+      portfolioLabel: label,
+    })
+
+    reviewSlotsSkipped += resolved.reviewLinks.filter(
+      (review) => review.department === department,
+    ).length
 
     for (const created of resolved.createIdentities) {
       existing.push({_id: created._id, name: created.name, url: created.url})
@@ -468,7 +511,7 @@ async function applyDepartment(
 
   console.log('')
   console.log(
-    `Apply complete: identitiesCreated=${identitiesCreated}, portfoliosPatched=${portfoliosPatched}, refsAdded=${refsAdded}, skipped=${portfoliosSkipped}, errors=${errors.length}`,
+    `Apply complete: identitiesCreated=${identitiesCreated}, portfoliosPatched=${portfoliosPatched}, refsAdded=${refsAdded}, reviewSkipped=${reviewSlotsSkipped}, skipped=${portfoliosSkipped}, errors=${errors.length}`,
   )
 
   return {
@@ -476,6 +519,7 @@ async function applyDepartment(
     identitiesCreated,
     portfoliosPatched,
     refsAdded,
+    reviewSlotsSkipped,
     portfoliosSkipped,
     errors,
   }
@@ -506,13 +550,20 @@ async function main() {
     ),
   ])
 
+  const identityDepartmentsById = buildIdentityDepartmentUsageFromCredits(docs ?? [])
+
   if (APPLY) {
     console.log('creditIdentity linking APPLY — live production dataset')
     console.log(`Department scope: ${applyDepartmentArg}`)
     console.log(`Live creditIdentity documents (before): ${(liveIdentities ?? []).length}`)
     console.log(`Portfolio documents scanned: ${(docs ?? []).length}`)
 
-    const result = await applyDepartment(applyDepartmentArg!, docs ?? [], liveIdentities ?? [])
+    const result = await applyDepartment(
+      applyDepartmentArg!,
+      docs ?? [],
+      liveIdentities ?? [],
+      identityDepartmentsById,
+    )
     if (result.errors.length) {
       process.exit(1)
     }
@@ -539,7 +590,9 @@ async function main() {
     : [...TARGET_DEPARTMENTS]
 
   for (const department of departmentsToRun) {
-    printDepartmentReport(dryRunDepartment(department, docs ?? [], liveIdentities ?? []))
+    printDepartmentReport(
+      dryRunDepartment(department, docs ?? [], liveIdentities ?? [], identityDepartmentsById),
+    )
   }
 
   if (!dryRunDepartmentArg) {
