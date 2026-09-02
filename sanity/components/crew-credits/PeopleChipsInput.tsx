@@ -58,6 +58,10 @@ import {
 
 const SUGGEST_DEBOUNCE_MS = 200
 
+/** Subtle at-rest tint for saved chips backed by creditIdentity (matches review-flag token). */
+const IDENTITY_LINKED_CHIP_BG =
+  'var(--card-badge-caution-bg-color, rgba(255, 193, 7, 0.12))'
+
 type GatedNameSuggestion = NameSuggestion & {
   reviewFlagged?: boolean
   blockedIdentityId?: string
@@ -104,6 +108,7 @@ function PersonPill(props: {
 }) {
   const {person, identityUrl, readOnly, onUpdate, onRenameApplied, onRemove} = props
   const effectiveUrl = person.url?.trim() || identityUrl?.trim() || ''
+  const hasIdentityLink = Boolean(person.identity?._ref)
   const [open, setOpen] = useState(false)
   const [draftName, setDraftName] = useState(person.name)
   const [draftUrl, setDraftUrl] = useState(effectiveUrl)
@@ -272,12 +277,13 @@ function PersonPill(props: {
     >
       <Card
         ref={pillRef}
-        tone={effectiveUrl ? 'primary' : 'transparent'}
+        tone={hasIdentityLink ? 'transparent' : effectiveUrl ? 'primary' : 'transparent'}
         border
         radius={6}
         paddingLeft={2}
         paddingRight={1}
         paddingY={1}
+        style={hasIdentityLink ? {background: IDENTITY_LINKED_CHIP_BG} : undefined}
       >
         <Flex align="center" gap={1}>
           <Box
@@ -395,7 +401,7 @@ function SuggestionDropdown(props: {
                 textAlign: 'left',
                 background:
                   suggestion.reviewFlagged
-                    ? 'var(--card-badge-caution-bg-color, rgba(255, 193, 7, 0.12))'
+                    ? IDENTITY_LINKED_CHIP_BG
                     : index === highlightedIndex
                       ? 'var(--card-link-fg-color, rgba(0,0,0,0.08))'
                       : 'transparent',
