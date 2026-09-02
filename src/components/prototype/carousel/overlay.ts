@@ -1,4 +1,4 @@
-import {joinParts, trimPart} from '@display-titles';
+import {dedupedBrandProduct, trimPart} from '@display-titles';
 
 export function composeOverlayCopy(parts: {
   brandName?: string | null;
@@ -11,7 +11,7 @@ export function composeOverlayCopy(parts: {
 
   if (campaign) {
     return {
-      brandLine: joinParts(brand, product),
+      brandLine: dedupedBrandProduct(brand, product),
       campaignLine: campaign,
     };
   }

@@ -15,6 +15,21 @@ export function joinParts(...parts: Array<string | null | undefined>): string {
     .join(' ')
 }
 
+export function dedupedBrandProduct(
+  brand: string | null | undefined,
+  product: string | null | undefined,
+): string {
+  const b = trimPart(brand)
+  const p = trimPart(product)
+  if (!b) return p
+  if (!p) return b
+  const firstWord = p.split(/\s+/)[0]
+  if (firstWord.toLowerCase() === b.toLowerCase()) {
+    return p
+  }
+  return joinParts(b, p)
+}
+
 function outlineSpan(text: string): string {
   return `<span class="vp-outline"> ${trimPart(text)} </span>`
 }
@@ -62,10 +77,12 @@ export function compileDisplayTitles(
   const headerSecondary = campaign || product
   const thumbSecondary = thumbSecondLine(product, campaign)
 
+  const dedupedBrandProductStr = dedupedBrandProduct(brand, product)
+
   let longTitle = brand
   if (hero) {
     // Multi-video: series name stays solid; first-film episode is outlined.
-    const solid = joinParts(brand, product, campaign) || brand
+    const solid = joinParts(dedupedBrandProductStr, campaign) || brand
     longTitle = `${solid}${outlineSpan(hero)}`
   } else if (campaign) {
     longTitle = `${brandProduct}${outlineSpan(campaign)}`
@@ -82,9 +99,9 @@ export function compileDisplayTitles(
     ? joinParts(brand, thumbSecondary)
     : brand
 
-  let documentTitle = brandProduct || brand
+  let documentTitle = dedupedBrandProductStr || brand
   if (campaign) {
-    const head = brandProduct || brand
+    const head = dedupedBrandProductStr || brand
     documentTitle = head
       ? `${head} ${DOCUMENT_TITLE_DASH} ${campaign}`
       : campaign
