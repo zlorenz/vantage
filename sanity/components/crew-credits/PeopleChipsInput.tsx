@@ -33,12 +33,14 @@ import {
 import {createPortal} from 'react-dom'
 
 import {
-  evaluateIdentityLinkConfidence,
+  findIdentityByNameWithConfidence,
+  formatIdentityLinkReviewMessage,
   formatMatchReasons,
   isAutoLinkConfidence,
   searchNameSuggestions,
   type CrewDepartmentKey,
   type CrewPersonValue,
+  type IdentityMatchReviewReason,
   type NameCatalogEntry,
   type NameSuggestion,
 } from '@crew-credits'
@@ -65,6 +67,8 @@ const IDENTITY_LINKED_CHIP_BG =
 type GatedNameSuggestion = NameSuggestion & {
   reviewFlagged?: boolean
   blockedIdentityId?: string
+  reviewReason?: IdentityMatchReviewReason
+  candidateDepartments?: CrewDepartmentKey[]
 }
 
 function isValidHttpUrl(value: string): boolean {
@@ -76,10 +80,16 @@ function isValidHttpUrl(value: string): boolean {
   }
 }
 
-function suggestionMeta(suggestion: NameSuggestion, reviewFlagged?: boolean): string {
+function suggestionMeta(suggestion: GatedNameSuggestion): string {
   const parts = [`${suggestion.count} use${suggestion.count === 1 ? '' : 's'}`]
-  if (reviewFlagged) {
-    parts.push('possible match — confirm before linking')
+  if (suggestion.reviewFlagged) {
+    parts.push(
+      formatIdentityLinkReviewMessage(suggestion.reviewReason, {
+        slotName: suggestion.name,
+        candidateName: suggestion.name,
+        candidateDepartments: suggestion.candidateDepartments ?? [],
+      }),
+    )
   } else if (suggestion.reasons?.length) {
     parts.push(formatMatchReasons(suggestion.reasons))
   }
@@ -419,7 +429,7 @@ function SuggestionDropdown(props: {
                     {suggestion.name}
                   </Text>
                   <Text size={0} muted>
-                    {suggestionMeta(suggestion, suggestion.reviewFlagged)}
+                    {suggestionMeta(suggestion)}
                     {suggestion.inRole ? ' · this role' : ''}
                   </Text>
                 </Stack>
@@ -467,6 +477,8 @@ export function PeopleChipsInput(props: {
     slotName: string
     candidateName: string
     candidateId: string
+    reviewReason?: IdentityMatchReviewReason
+    candidateDepartments?: CrewDepartmentKey[]
   }) => void
 }) {
   const {
@@ -508,18 +520,26 @@ export function PeopleChipsInput(props: {
         return suggestion
       }
 
-      const confidence = evaluateIdentityLinkConfidence(
+      const match = findIdentityByNameWithConfidence(
         query.trim() || suggestion.name,
-        suggestion.identityId,
         creditIdentities,
         {slotDepartment, identityDepartmentsById},
       )
-      if (confidence && !isAutoLinkConfidence(confidence)) {
+      if (
+        match &&
+        match.identity._id === suggestion.identityId &&
+        !isAutoLinkConfidence(match.confidence)
+      ) {
+        const candidateDepartments = [
+          ...(identityDepartmentsById.get(match.identity._id) ?? []),
+        ]
         return {
           ...suggestion,
           identityId: undefined,
           reviewFlagged: true,
           blockedIdentityId: suggestion.identityId,
+          reviewReason: match.reviewReason,
+          candidateDepartments,
         }
       }
       return suggestion
@@ -599,6 +619,8 @@ export function PeopleChipsInput(props: {
           slotName: typedName || suggestion.name,
           candidateName: suggestion.name,
           candidateId: suggestion.blockedIdentityId,
+          reviewReason: suggestion.reviewReason,
+          candidateDepartments: suggestion.candidateDepartments,
         })
       }
 

@@ -13,6 +13,7 @@ import type {CrewCreditValue, CrewDepartmentKey} from '../../../shared/crew-cred
 import {
   buildIdentityDepartmentUsageFromCredits,
   CREW_ROLE_BY_KEY,
+  formatIdentityLinkReviewMessage,
   formatMatchReasons,
   matchReasonsBetween,
   normName,
@@ -399,10 +400,16 @@ function printDepartmentReport(report: DepartmentDryRunReport) {
         row.candidateIdentityDepartments.length > 0
           ? row.candidateIdentityDepartments.join(', ')
           : '(no linked usage yet)'
+      const reviewNote = formatIdentityLinkReviewMessage(row.reviewReason, {
+        slotName: row.name,
+        candidateName: row.candidateIdentityName,
+        candidateDepartments: row.candidateIdentityDepartments,
+      })
       console.log(
         `  • "${row.name}" [${row.department}/${row.roleKey}] on ${row.portfolioLabel ?? row.portfolioId ?? '?'} ` +
           `→ candidate "${row.candidateIdentityName}" (${row.candidateIdentityId}, depts: ${candidateDepts})`,
       )
+      console.log(`      ${reviewNote}`)
     }
   }
   console.log('')

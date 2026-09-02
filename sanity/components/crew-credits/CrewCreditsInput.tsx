@@ -47,6 +47,7 @@ import {
   CREW_ROLE_BY_KEY,
   buildIdentityDepartmentUsageFromCredits,
   findIdentityByNameWithConfidence,
+  formatIdentityLinkReviewMessage,
   getDepartmentLabel,
   getRoleDisplayLabel,
   isAutoLinkConfidence,
@@ -56,6 +57,7 @@ import {
   type CrewDepartmentKey,
   type CrewPersonValue,
   type CrewRoleDefinition,
+  type IdentityMatchReviewReason,
   type NameCatalogEntry,
   buildNameCatalogFromCredits,
   mergeNameCatalogs,
@@ -415,11 +417,21 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
   )
 
   const handleIdentityLinkReviewSkipped = useCallback(
-    (info: {slotName: string; candidateName: string; candidateId: string}) => {
+    (info: {
+      slotName: string
+      candidateName: string
+      candidateId: string
+      reviewReason?: IdentityMatchReviewReason
+      candidateDepartments?: CrewDepartmentKey[]
+    }) => {
       toast.push({
         status: 'warning',
-        title: 'Possible identity match — not linked',
-        description: `“${info.slotName}” looks similar to existing “${info.candidateName}” in another department. Added without an identity link — confirm manually if they are the same person.`,
+        title: 'Identity match held for review — not linked',
+        description: formatIdentityLinkReviewMessage(info.reviewReason, {
+          slotName: info.slotName,
+          candidateName: info.candidateName,
+          candidateDepartments: info.candidateDepartments ?? [],
+        }),
       })
     },
     [toast],
