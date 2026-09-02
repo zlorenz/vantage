@@ -576,7 +576,11 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
         const match = findIdentityByNameWithConfidence(name, known, linkContext)
 
         if (match && isAutoLinkConfidence(match.confidence)) {
-          next.push({...person, identity: identityRef(match.identity._id)})
+          next.push({
+            ...person,
+            identity: identityRef(match.identity._id),
+            name: match.identity.name,
+          })
           continue
         }
 

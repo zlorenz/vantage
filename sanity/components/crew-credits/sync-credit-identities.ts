@@ -5,6 +5,7 @@
  */
 
 import {
+  applyPersonRenameToCredits,
   creditIdentityId,
   CREW_DEPARTMENTS,
   FILTER_CREDIT_ROLE_KEYS,
@@ -351,9 +352,20 @@ export function resolveIdentityLinksOnCredits(
         ...(confidence ? {confidence} : {}),
       })
 
-      const next: CrewPersonValue = {
+      let next: CrewPersonValue = {
         ...person,
         identity: identityRef(id),
+      }
+      if (!created) {
+        const identity = known.find((row) => row._id === id)
+        if (identity?.name) {
+          const {credits: renamed} = applyPersonRenameToCredits(
+            [{...credit, people: [next]}],
+            {fromName: '', toName: identity.name, identityId: id},
+          )
+          const renamedPerson = renamed[0]?.people?.[0]
+          if (renamedPerson) next = renamedPerson
+        }
       }
       return next
     })

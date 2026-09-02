@@ -176,6 +176,7 @@ const casingResolved = resolveIdentityLinksOnCredits(
 )
 assert.equal(casingResolved.reviewLinks.length, 0)
 assert.equal(casingResolved.nextCredits[0]?.people[0]?.identity?._ref, 'ci_duy')
+assert.equal(casingResolved.nextCredits[0]?.people[0]?.name, 'Duy Vk')
 
 const sameDeptNormResolved = resolveIdentityLinksOnCredits(
   [
@@ -192,6 +193,44 @@ const sameDeptNormResolved = resolveIdentityLinksOnCredits(
 )
 assert.equal(sameDeptNormResolved.reviewLinks.length, 0)
 assert.equal(sameDeptNormResolved.nextCredits[0]?.people[0]?.identity?._ref, 'ci_tung_bui')
+assert.equal(sameDeptNormResolved.nextCredits[0]?.people[0]?.name, 'Tung Bui')
+
+const alreadyLinkedUnchanged = resolveIdentityLinksOnCredits(
+  [
+    {
+      department: 'camera',
+      roleKey: 'dop',
+      role: 'DOP',
+      people: [
+        {
+          name: 'Tùng Bùi',
+          identity: {_type: 'reference', _ref: 'ci_tung_bui', _weak: true},
+        },
+      ],
+    },
+  ],
+  existing,
+  cameraPolicy,
+  {identityDepartmentsById: usage},
+)
+assert.equal(alreadyLinkedUnchanged.nextCredits[0]?.people[0]?.name, 'Tùng Bùi')
+assert.equal(alreadyLinkedUnchanged.links[0]?.created, false)
+
+const newIdentityKeepsSlotName = resolveIdentityLinksOnCredits(
+  [
+    {
+      department: 'camera',
+      roleKey: 'dop',
+      role: 'DOP',
+      people: [{name: 'Brand New Person'}],
+    },
+  ],
+  existing,
+  cameraPolicy,
+  {identityDepartmentsById: usage},
+)
+assert.equal(newIdentityKeepsSlotName.createIdentities.length, 1)
+assert.equal(newIdentityKeepsSlotName.nextCredits[0]?.people[0]?.name, 'Brand New Person')
 
 const homonymSameDeptResolved = resolveIdentityLinksOnCredits(
   [
