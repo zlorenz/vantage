@@ -27,7 +27,7 @@ import {
 import {getWriteClient} from '../lib/sanity-client'
 import '../config'
 
-const TARGET_DEPARTMENTS = ['stills', 'casting', 'ge'] as const satisfies readonly CrewDepartmentKey[]
+const TARGET_DEPARTMENTS = ['stills', 'casting', 'ge', 'camera'] as const satisfies readonly CrewDepartmentKey[]
 
 type TargetDepartment = (typeof TARGET_DEPARTMENTS)[number]
 
