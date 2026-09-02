@@ -120,6 +120,10 @@ const ART_LINKED_ROLE_KEYS: readonly string[] = CREW_DEPARTMENTS.find(
   (dept) => dept.key === 'art',
 )!.roles.map((role) => role.key)
 
+const POST_LINKED_ROLE_KEYS: readonly string[] = CREW_DEPARTMENTS.find(
+  (dept) => dept.key === 'post',
+)!.roles.map((role) => role.key)
+
 /**
  * Identity-linked standard roles per department (live data scope).
  * Other departments stay empty until their link apply.
@@ -128,7 +132,7 @@ const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
   production: ['brand', 'director'],
   camera: CAMERA_LINKED_ROLE_KEYS,
   art: ART_LINKED_ROLE_KEYS,
-  post: ['editor'],
+  post: POST_LINKED_ROLE_KEYS,
   stills: [
     'photographer',
     'photography_assistant',
