@@ -36,7 +36,6 @@ import {
   evaluateIdentityLinkConfidence,
   formatMatchReasons,
   isAutoLinkConfidence,
-  isFilterCreditRoleKey,
   searchNameSuggestions,
   type CrewDepartmentKey,
   type CrewPersonValue,
@@ -51,7 +50,11 @@ import {
   enrichPersonWithLinkMemory,
   type KnownPersonLink,
 } from './link-memory'
-import {identityRef, type CreditIdentityDoc} from './sync-credit-identities'
+import {
+  identityRef,
+  isStudioIdentityLinkedRoleKey,
+  type CreditIdentityDoc,
+} from './sync-credit-identities'
 
 const SUGGEST_DEBOUNCE_MS = 200
 
@@ -485,7 +488,7 @@ export function PeopleChipsInput(props: {
   const inputRef = useRef<HTMLInputElement>(null)
   const selectingRef = useRef(false)
 
-  const linkIdentities = isFilterCreditRoleKey(roleKey)
+  const linkIdentities = isStudioIdentityLinkedRoleKey(roleKey)
 
   const gateSuggestionIdentity = useCallback(
     (query: string, suggestion: NameSuggestion): GatedNameSuggestion => {

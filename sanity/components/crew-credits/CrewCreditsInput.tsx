@@ -49,7 +49,6 @@ import {
   findIdentityByNameWithConfidence,
   getDepartmentLabel,
   isAutoLinkConfidence,
-  isFilterCreditRoleKey,
   normalizeCreditToken,
   resolveStandardRole,
   type CrewCreditValue,
@@ -98,6 +97,7 @@ import {
 } from './role-suggestions'
 import {
   identityRef,
+  isStudioIdentityLinkedRoleKey,
   newCreditIdentityDoc,
   type CreditIdentityDoc,
 } from './sync-credit-identities'
@@ -634,7 +634,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
       const next = credits.filter((credit) => credit !== existing)
 
       let linkedPeople = people
-      if (people.length && isFilterCreditRoleKey(role.key)) {
+      if (people.length && isStudioIdentityLinkedRoleKey(role.key)) {
         try {
           linkedPeople = await ensureIdentitiesOnPeople(people, dept)
         } catch (error) {
@@ -1059,7 +1059,7 @@ export function CrewCreditsInput(props: ArrayOfObjectsInputProps) {
                         roleCatalog={roleCatalogIndexes.roleCatalogByKey.get(role.key)}
                         catalogReady={catalogReady}
                         identityUrlById={identityUrlById}
-                        {...(isFilterCreditRoleKey(role.key)
+                        {...(isStudioIdentityLinkedRoleKey(role.key)
                           ? {
                               slotDepartment: dept.key,
                               identityDepartmentsById,

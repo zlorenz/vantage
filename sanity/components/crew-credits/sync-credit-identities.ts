@@ -33,6 +33,37 @@ export const FILTER_CREDIT_IDENTITY_LINK_POLICY: IdentityLinkPolicy = {
   roleKeys: new Set<string>(FILTER_CREDIT_ROLE_KEYS),
 }
 
+/**
+ * Departments whose standard (non-custom) roles all receive creditIdentity links
+ * after batch apply. Studio inline linking + confidence gating use the same scope
+ * via studioInlineIdentityLinkPolicy() — add a department here when its apply ships.
+ */
+export const FULL_IDENTITY_LINK_DEPARTMENTS: readonly CrewDepartmentKey[] = [
+  'stills',
+  'casting',
+  'ge',
+  'camera',
+]
+
+/**
+ * Role keys that receive Studio inline identity linking and confidence gating:
+ * filter-five Work Library roles (partial production/camera/art/post) plus every
+ * standard role in FULL_IDENTITY_LINK_DEPARTMENTS.
+ */
+export function studioInlineIdentityLinkPolicy(): IdentityLinkPolicy {
+  const roleKeys = new Set<string>(FILTER_CREDIT_ROLE_KEYS)
+  for (const department of FULL_IDENTITY_LINK_DEPARTMENTS) {
+    for (const key of identityLinkPolicyForDepartments([department]).roleKeys) {
+      roleKeys.add(key)
+    }
+  }
+  return {roleKeys}
+}
+
+export function isStudioIdentityLinkedRoleKey(roleKey: string | undefined): boolean {
+  return Boolean(roleKey && studioInlineIdentityLinkPolicy().roleKeys.has(roleKey))
+}
+
 /** Standard catalog roleKeys for the given departments (excludes custom roles at apply time). */
 export function identityLinkPolicyForDepartments(
   departments: readonly CrewDepartmentKey[],

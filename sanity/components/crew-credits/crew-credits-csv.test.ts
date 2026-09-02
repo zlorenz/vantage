@@ -774,6 +774,19 @@ const roleIndexes = buildRoleCatalogIndexes([
 assert.ok(roleIndexes.roleCatalogByKey.get('dop')?.some((entry) => entry.name === 'Tóth Widamon Máté'))
 assert.ok(roleIndexes.deptCatalogByKey.get('camera')?.some((entry) => entry.name === 'Paul Moore'))
 
+const roleIndexesWithIdentity = buildRoleCatalogIndexes([
+  {
+    department: 'stills',
+    roleKey: 'photographer',
+    role: 'Photographer',
+    people: [{name: 'Jane Photo', identity: {_ref: 'ci_jane_photo'}}],
+  },
+])
+assert.equal(
+  roleIndexesWithIdentity.roleCatalogByKey.get('photographer')?.[0]?.identityId,
+  'ci_jane_photo',
+)
+
 // --- taxonomy sync from Brand / Director / DOP / Art Director ---------------
 
 assert.equal(slugifyPersonName('Zacharia Lorenz'), 'zacharia-lorenz')

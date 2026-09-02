@@ -13,6 +13,7 @@ import {
 } from './identity-link-match'
 import {
   identityLinkPolicyForDepartments,
+  isStudioIdentityLinkedRoleKey,
   resolveIdentityLinksOnCredits,
 } from '../../sanity/components/crew-credits/sync-credit-identities'
 
@@ -251,6 +252,37 @@ const evaluateCrossDept = evaluateIdentityLinkConfidence(
   {slotDepartment: 'camera', identityDepartmentsById: usage},
 )
 assert.equal(evaluateCrossDept, 'review')
+
+// --- studio inline identity-link scope (all linked departments) ---------------
+
+assert.ok(isStudioIdentityLinkedRoleKey('dop'))
+assert.ok(isStudioIdentityLinkedRoleKey('photographer'))
+assert.ok(isStudioIdentityLinkedRoleKey('casting_director'))
+assert.ok(isStudioIdentityLinkedRoleKey('gaffer'))
+assert.ok(isStudioIdentityLinkedRoleKey('steadicam_op'))
+assert.ok(!isStudioIdentityLinkedRoleKey('producer'))
+assert.ok(!isStudioIdentityLinkedRoleKey(undefined))
+
+const gePolicy = identityLinkPolicyForDepartments(['ge'])
+const geLeThanhStillsOnly = new Map<string, Set<string>>([
+  ['ci_le_thanh', new Set(['stills'])],
+])
+const geCrossDeptReview = resolveIdentityLinksOnCredits(
+  [
+    {
+      department: 'ge',
+      roleKey: 'gaffer',
+      role: 'Gaffer',
+      people: [{name: 'Lê Thanh Tùng'}],
+    },
+  ],
+  existing,
+  gePolicy,
+  {identityDepartmentsById: geLeThanhStillsOnly},
+)
+assert.equal(geCrossDeptReview.reviewLinks.length, 1)
+assert.equal(geCrossDeptReview.reviewLinks[0]?.roleKey, 'gaffer')
+assert.equal(geCrossDeptReview.nextCredits[0]?.people[0]?.identity?._ref, undefined)
 
 // buildIdentityDepartmentUsageFromCredits collects departments per identity
 const minhDepts = usage.get('ci_minh')
