@@ -17,6 +17,7 @@ import {
   type CrewPersonValue,
   type FilterCreditRoleKey,
   type IdentityMatchConfidence,
+  type IdentityMatchReviewReason,
 } from '@crew-credits'
 
 export interface CreditIdentityDoc {
@@ -215,6 +216,7 @@ export interface ReviewLinkPersonPatch {
   candidateIdentityName: string
   candidateIdentityDepartments: CrewDepartmentKey[]
   confidence: 'review'
+  reviewReason?: IdentityMatchReviewReason
 }
 
 export interface ResolveIdentityLinksOptions {
@@ -259,7 +261,13 @@ export function resolveIdentityLinksOnCredits(
 
   type ResolveIdResult =
     | {kind: 'linked'; id: string; created: boolean; confidence?: IdentityMatchConfidence}
-    | {kind: 'review'; candidate: Omit<ReviewLinkPersonPatch, 'personKey' | 'roleKey' | 'name' | 'department'>}
+    | {
+        kind: 'review'
+        candidate: Omit<
+          ReviewLinkPersonPatch,
+          'personKey' | 'roleKey' | 'name' | 'department'
+        >
+      }
 
   function resolveId(
     name: string,
@@ -294,6 +302,7 @@ export function resolveIdentityLinksOnCredits(
           candidateIdentityName: match.identity.name,
           candidateIdentityDepartments: candidateDepartments,
           confidence: 'review',
+          ...(match.reviewReason ? {reviewReason: match.reviewReason} : {}),
         },
       }
     }

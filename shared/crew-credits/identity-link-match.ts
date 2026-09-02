@@ -6,11 +6,18 @@
  * silently merged.
  */
 
+import {getDepartmentLabel} from './catalog'
 import {normalizeCreditToken} from './normalize'
 import {confidenceForReasons, matchReasonsBetween} from './name-match'
 import type {CrewCreditValue, CrewDepartmentKey} from './types'
 
 export type IdentityMatchConfidence = 'exact' | 'safe_casing' | 'safe_norm' | 'review'
+
+/** Why a match was held for manual review (confidence is always `review`). */
+export type IdentityMatchReviewReason =
+  | 'cross_department_exact'
+  | 'cross_department_spelling'
+  | 'same_department_homonym'
 
 export interface IdentityLinkCandidateDoc {
   _id: string
@@ -25,6 +32,8 @@ export interface IdentityLinkMatchContext {
 export interface IdentityMatchResult {
   identity: IdentityLinkCandidateDoc
   confidence: IdentityMatchConfidence
+  /** Set when confidence is `review` — distinguishes department crossover from spelling ambiguity. */
+  reviewReason?: IdentityMatchReviewReason
 }
 
 /** True when a match should receive an identity ref automatically. */
@@ -58,23 +67,82 @@ export function buildIdentityDepartmentUsageFromCredits(
   return usage
 }
 
+/** Orphan identities (no linked usage yet) may auto-link; otherwise slot dept must match. */
+function departmentAllowsAutoLink(
+  slotDepartment: CrewDepartmentKey,
+  identityDepartments: ReadonlySet<CrewDepartmentKey> | undefined,
+): boolean {
+  const knownDepartments = identityDepartments ?? new Set<CrewDepartmentKey>()
+  if (knownDepartments.size === 0) return true
+  return knownDepartments.has(slotDepartment)
+}
+
+function classifyExactMatch(
+  slotDepartment: CrewDepartmentKey,
+  identityDepartments: ReadonlySet<CrewDepartmentKey> | undefined,
+): Pick<IdentityMatchResult, 'confidence' | 'reviewReason'> {
+  if (departmentAllowsAutoLink(slotDepartment, identityDepartments)) {
+    return {confidence: 'exact'}
+  }
+  return {confidence: 'review', reviewReason: 'cross_department_exact'}
+}
+
 function classifyNormalizedMatch(
   slotName: string,
   identityName: string,
   slotDepartment: CrewDepartmentKey,
   identityDepartments: ReadonlySet<CrewDepartmentKey> | undefined,
-): IdentityMatchConfidence {
+): Pick<IdentityMatchResult, 'confidence' | 'reviewReason'> {
   const knownDepartments = identityDepartments ?? new Set<CrewDepartmentKey>()
   const sameDepartment = knownDepartments.size > 0 && knownDepartments.has(slotDepartment)
-  if (!sameDepartment) return 'review'
+  if (!sameDepartment) {
+    return {confidence: 'review', reviewReason: 'cross_department_spelling'}
+  }
 
   const reasons = matchReasonsBetween(slotName, identityName)
   const matchConfidence = confidenceForReasons(reasons, [
     {name: slotName},
     {name: identityName},
   ])
-  if (matchConfidence === 'review') return 'review'
-  return 'safe_norm'
+  if (matchConfidence === 'review') {
+    return {confidence: 'review', reviewReason: 'same_department_homonym'}
+  }
+  return {confidence: 'safe_norm'}
+}
+
+/** User-facing copy for review-queue rows and Studio inline link warnings. */
+export function formatIdentityLinkReviewMessage(
+  reviewReason: IdentityMatchReviewReason | undefined,
+  options: {
+    slotName: string
+    candidateName: string
+    candidateDepartments: readonly CrewDepartmentKey[]
+  },
+): string {
+  if (reviewReason === 'cross_department_exact') {
+    const deptLabels =
+      options.candidateDepartments.length > 0
+        ? options.candidateDepartments.map((dept) => getDepartmentLabel(dept)).join(', ')
+        : 'another department'
+    return (
+      `Exact name match found in ${deptLabels} — confirm “${options.slotName}” ` +
+      `is the same person as “${options.candidateName}” before linking`
+    )
+  }
+  if (reviewReason === 'cross_department_spelling') {
+    const deptLabels =
+      options.candidateDepartments.length > 0
+        ? options.candidateDepartments.map((dept) => getDepartmentLabel(dept)).join(', ')
+        : 'another department'
+    return (
+      `Similar spelling to “${options.candidateName}” (${deptLabels}) — ` +
+      'confirm before linking'
+    )
+  }
+  return (
+    `“${options.slotName}” looks similar to existing “${options.candidateName}” ` +
+    '— confirm before linking'
+  )
 }
 
 /**
@@ -96,22 +164,25 @@ export function findIdentityByNameWithConfidence(
   if (!found) return null
 
   const identityName = found.name.trim()
+  const identityDepartments = context.identityDepartmentsById.get(found._id)
+
   if (trimmed === identityName) {
-    return {identity: found, confidence: 'exact'}
+    return {identity: found, ...classifyExactMatch(context.slotDepartment, identityDepartments)}
   }
 
   if (trimmed.toLowerCase() === identityName.toLowerCase()) {
     return {identity: found, confidence: 'safe_casing'}
   }
 
-  const identityDepartments = context.identityDepartmentsById.get(found._id)
-  const confidence = classifyNormalizedMatch(
-    trimmed,
-    identityName,
-    context.slotDepartment,
-    identityDepartments,
-  )
-  return {identity: found, confidence}
+  return {
+    identity: found,
+    ...classifyNormalizedMatch(
+      trimmed,
+      identityName,
+      context.slotDepartment,
+      identityDepartments,
+    ),
+  }
 }
 
 /**

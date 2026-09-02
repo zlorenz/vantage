@@ -106,7 +106,37 @@ const exactCrossDept = findIdentityByNameWithConfidence('Zacharia Lorenz', exist
   slotDepartment: 'camera',
   identityDepartmentsById: usage,
 })
-assert.equal(exactCrossDept?.confidence, 'exact')
+assert.equal(exactCrossDept?.confidence, 'review')
+assert.equal(exactCrossDept?.reviewReason, 'cross_department_exact')
+
+const exactSameDept = findIdentityByNameWithConfidence('Zacharia Lorenz', existing, {
+  slotDepartment: 'post',
+  identityDepartmentsById: usage,
+})
+assert.equal(exactSameDept?.confidence, 'exact')
+
+const orphanExact = findIdentityByNameWithConfidence(
+  'Andrew Pigott',
+  [{_id: 'ci_andrew', name: 'Andrew Pigott'}],
+  {slotDepartment: 'post', identityDepartmentsById: new Map()},
+)
+assert.equal(orphanExact?.confidence, 'exact')
+
+const alexCastingUsage = new Map<string, Set<string>>([['ci_alex', new Set(['casting'])]])
+const alexPostExactReview = findIdentityByNameWithConfidence(
+  'Alex',
+  [{_id: 'ci_alex', name: 'Alex'}],
+  {slotDepartment: 'post', identityDepartmentsById: alexCastingUsage},
+)
+assert.equal(alexPostExactReview?.confidence, 'review')
+assert.equal(alexPostExactReview?.reviewReason, 'cross_department_exact')
+
+const alexCasingCrossDept = findIdentityByNameWithConfidence(
+  'alex',
+  [{_id: 'ci_alex', name: 'Alex'}],
+  {slotDepartment: 'post', identityDepartmentsById: alexCastingUsage},
+)
+assert.equal(alexCasingCrossDept?.confidence, 'safe_casing')
 
 const casingOnly = findIdentityByNameWithConfidence('Duy VK', existing, {
   slotDepartment: 'camera',
@@ -155,11 +185,9 @@ const exactCrossDeptResolved = resolveIdentityLinksOnCredits(
   cameraPolicy,
   {identityDepartmentsById: usage},
 )
-assert.equal(exactCrossDeptResolved.reviewLinks.length, 0)
-assert.equal(
-  exactCrossDeptResolved.nextCredits[0]?.people[0]?.identity?._ref,
-  'ci_zach',
-)
+assert.equal(exactCrossDeptResolved.reviewLinks.length, 1)
+assert.equal(exactCrossDeptResolved.reviewLinks[0]?.reviewReason, 'cross_department_exact')
+assert.equal(exactCrossDeptResolved.nextCredits[0]?.people[0]?.identity?._ref, undefined)
 
 const casingResolved = resolveIdentityLinksOnCredits(
   [
@@ -247,6 +275,7 @@ const homonymSameDeptResolved = resolveIdentityLinksOnCredits(
 )
 assert.equal(homonymSameDeptResolved.reviewLinks.length, 1)
 assert.equal(homonymSameDeptResolved.reviewLinks[0]?.candidateIdentityId, 'ci_tu_nguyen')
+assert.equal(homonymSameDeptResolved.reviewLinks[0]?.reviewReason, 'same_department_homonym')
 assert.equal(homonymSameDeptResolved.nextCredits[0]?.people[0]?.identity?._ref, undefined)
 assert.equal(homonymSameDeptResolved.createIdentities.length, 0)
 
@@ -268,6 +297,7 @@ const crossDeptNormResolved = resolveIdentityLinksOnCredits(
   },
 )
 assert.equal(crossDeptNormResolved.reviewLinks.length, 1)
+assert.equal(crossDeptNormResolved.reviewLinks[0]?.reviewReason, 'cross_department_spelling')
 assert.equal(crossDeptNormResolved.reviewLinks[0]?.name, 'Lê Thanh Tùng')
 assert.equal(crossDeptNormResolved.reviewLinks[0]?.candidateIdentityName, 'Le Thanh Tung')
 assert.equal(crossDeptNormResolved.reviewLinks[0]?.portfolioLabel, 'herbalife-nutrition')
