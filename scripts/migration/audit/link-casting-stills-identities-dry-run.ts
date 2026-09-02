@@ -541,7 +541,7 @@ async function main() {
   const [liveIdentities, docs] = await Promise.all([
     client.fetch<CreditIdentityDoc[]>(`*[_type == "creditIdentity"]{ _id, name, url }`),
     client.fetch<PortfolioDoc[]>(
-      `*[_type == "portfolioEntry" && defined(crewCredits) && count(crewCredits) > 0]{
+      `*[_type == "portfolioEntry" && defined(crewCredits) && count(crewCredits) > 0 && !(_id in path("drafts.**"))]{
         _id,
         title,
         "slug": slug.current,
