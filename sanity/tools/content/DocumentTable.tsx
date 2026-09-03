@@ -184,6 +184,40 @@ function crewRoleTabLabel(roleKey: string): string {
   return CREW_ROLE_BY_KEY.get(roleKey)?.role.label ?? roleKey
 }
 
+/** Group an identity's roleKeys by catalog department for the Roles column. */
+function rolesGroupedByDepartment(
+  roleKeys: string[] | undefined,
+): Array<{departmentLabel: string; roleLabels: string[]}> {
+  if (!roleKeys?.length) return []
+
+  const byDept = new Map<
+    string,
+    {sortIndex: number; departmentLabel: string; roleLabels: string[]}
+  >()
+
+  for (const roleKey of roleKeys) {
+    const resolved = CREW_ROLE_BY_KEY.get(roleKey)
+    const departmentKey = resolved?.department ?? 'other'
+    const departmentLabel = resolved?.departmentLabel ?? 'Other'
+    const sortIndex = resolved?.sortIndex ?? 99999
+    const roleLabel = crewRoleTabLabel(roleKey)
+    const existing = byDept.get(departmentKey)
+    if (existing) {
+      existing.roleLabels.push(roleLabel)
+    } else {
+      byDept.set(departmentKey, {
+        sortIndex,
+        departmentLabel,
+        roleLabels: [roleLabel],
+      })
+    }
+  }
+
+  return [...byDept.values()]
+    .sort((a, b) => a.sortIndex - b.sortIndex)
+    .map(({departmentLabel, roleLabels}) => ({departmentLabel, roleLabels}))
+}
+
 function linkedRolesForDept(dept: CrewDeptTab): readonly string[] {
   if (dept === 'all') return CREW_USAGE_ROLE_KEYS
   return LINKED_DEPT_ROLE_KEYS[dept]
@@ -609,9 +643,16 @@ function CellContent({
       )
     case 'title':
       return (
-        <Text size={1} weight="semibold">
-          {row.title || 'Untitled'}
-        </Text>
+        <Stack space={1}>
+          <Text size={1} weight="semibold">
+            {row.title || 'Untitled'}
+          </Text>
+          {row.titleZh ? (
+            <Text size={0} muted>
+              {row.titleZh}
+            </Text>
+          ) : null}
+        </Stack>
       )
     case 'status':
       return (
@@ -666,6 +707,29 @@ function CellContent({
       return <Text size={1}>{usageForTab(row, crewRoleFilter)}</Text>
     case 'role':
       return <Text size={1}>{ROLE_LABELS[row.role || ''] || row.role || '—'}</Text>
+    case 'roles': {
+      // No new GROQ — uses roleKeys already attached via resolveUsageForIdentities.
+      const groups = rolesGroupedByDepartment(row.roleKeys)
+      if (!groups.length) {
+        return (
+          <Text size={1} muted>
+            —
+          </Text>
+        )
+      }
+      return (
+        <Stack space={2}>
+          {groups.map((group) => (
+            <Stack key={group.departmentLabel} space={1}>
+              <Text size={0} muted weight="semibold">
+                {group.departmentLabel}
+              </Text>
+              <Text size={1}>{group.roleLabels.join(', ')}</Text>
+            </Stack>
+          ))}
+        </Stack>
+      )
+    }
     default:
       return <Text size={1}>—</Text>
   }
@@ -1457,22 +1521,16 @@ export function DocumentTable({
           {isCrewMembersSection &&
           !showCrewNotLinkedState &&
           crewRoleFilter !== 'all' ? (
-            <Badge
+            <Button
+              mode="ghost"
               tone="primary"
               fontSize={1}
-              mode="outline"
-              style={{cursor: 'pointer', paddingRight: 4}}
-              onClick={() => setCrewRoleFilter('all')}
+              padding={2}
+              iconRight={CloseIcon}
+              text={`${crewRoleTabLabel(crewRoleFilter)} (${crewRoleCounts[crewRoleFilter] ?? 0})`}
               title="Clear role filter"
-            >
-              <Flex align="center" gap={1}>
-                <span>
-                  {crewRoleTabLabel(crewRoleFilter)} (
-                  {crewRoleCounts[crewRoleFilter] ?? 0})
-                </span>
-                <CloseIcon style={{fontSize: 12}} />
-              </Flex>
-            </Badge>
+              onClick={() => setCrewRoleFilter('all')}
+            />
           ) : null}
           {(canMoveToTrash || canBulkHide) && selected.size > 0 ? (
             !inTrash ? (

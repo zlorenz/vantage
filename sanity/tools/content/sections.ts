@@ -28,6 +28,7 @@ export type ColumnId =
   | 'parent'
   | 'usage'
   | 'role'
+  | 'roles'
   | 'thumbnail'
 
 export type TableColumn = {
@@ -114,7 +115,8 @@ const namedTaxonomyColumns: TableColumn[] = [
 ]
 
 const creditIdentityColumns: TableColumn[] = [
-  {id: 'title', header: 'Name', minWidth: '240px', sortable: true},
+  {id: 'title', header: 'Name', minWidth: '200px', sortable: true},
+  {id: 'roles', header: 'Roles', minWidth: '220px'},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
   {id: 'createdAt', header: 'Added', width: '140px', sortable: true},
 ]
