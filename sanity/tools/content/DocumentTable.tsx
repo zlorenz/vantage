@@ -31,7 +31,6 @@ import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
   CREW_DEPARTMENTS,
   CREW_ROLE_BY_KEY,
-  FILTER_CREDIT_ROLE_KEYS,
   IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY,
   resolveUsageForIdentities,
   type CrewDepartmentKey,
@@ -706,6 +705,7 @@ function CellContent({
       return <Text size={1}>{ROLE_LABELS[row.role || ''] || row.role || '—'}</Text>
     case 'roles': {
       // No new GROQ — uses roleKeys already attached via resolveUsageForIdentities.
+      // Horizontal dept groups at normal widths; wrap/stack when the cell is narrow.
       const groups = rolesGroupedByDepartment(row.roleKeys)
       if (!groups.length) {
         return (
@@ -715,16 +715,25 @@ function CellContent({
         )
       }
       return (
-        <Stack space={2}>
+        <Flex
+          gap={4}
+          align="flex-start"
+          wrap="wrap"
+          style={{rowGap: 8}}
+        >
           {groups.map((group) => (
-            <Stack key={group.departmentLabel} space={1}>
+            <Stack
+              key={group.departmentLabel}
+              space={1}
+              style={{minWidth: 100, maxWidth: 200, flex: '1 1 100px'}}
+            >
               <Text size={0} muted weight="semibold">
                 {group.departmentLabel}
               </Text>
               <Text size={1}>{group.roleLabels.join(', ')}</Text>
             </Stack>
           ))}
-        </Stack>
+        </Flex>
       )
     }
     default:
