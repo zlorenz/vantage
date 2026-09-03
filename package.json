@@ -39,6 +39,7 @@
     "test:identity-usage": "tsx shared/crew-credits/identity-usage.test.ts",
     "test:identity-merge": "tsx shared/crew-credits/identity-merge.test.ts",
     "test:identity-link-match": "tsx shared/crew-credits/identity-link-match.test.ts",
+    "test:duplicate-detect": "tsx shared/crew-credits/duplicate-detect.test.ts",
     "migrate:audit:casting-stills-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts",
     "migrate:apply:stills-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department stills",
     "migrate:apply:casting-identity-link": "tsx scripts/migration/audit/link-casting-stills-identities-dry-run.ts --apply --department casting",
