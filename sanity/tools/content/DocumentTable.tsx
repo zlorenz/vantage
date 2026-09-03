@@ -50,6 +50,13 @@ import {
   type TrashPreflightItem,
 } from './document-lifecycle'
 import {getStudioRole} from '../../lib/studio-roles'
+import {
+  countPendingIdentityReviewItems,
+  IDENTITY_REVIEW_QUEUE_IDENTITIES_QUERY,
+  IDENTITY_REVIEW_QUEUE_PORTFOLIOS_QUERY,
+  type ReviewQueuePortfolio,
+} from './identity-review-queue'
+import type {CreditIdentityDoc} from '../../components/crew-credits/sync-credit-identities'
 
 type DisplayTitlePartsDoc = {
   brandName?: string
@@ -776,6 +783,7 @@ export function DocumentTable({
   const [sort, setSort] = useState(section.defaultSort)
   const [crewDeptTab, setCrewDeptTab] = useState<CrewDeptTab>('all')
   const [crewRoleFilter, setCrewRoleFilter] = useState<CrewRoleFilter>('all')
+  const [pendingReviewCount, setPendingReviewCount] = useState(0)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [reloadKey, setReloadKey] = useState(0)
@@ -856,6 +864,21 @@ export function DocumentTable({
             .catch(() => [] as IdentityUsagePortfolio[])
         : Promise.resolve([] as IdentityUsagePortfolio[])
 
+    const identityReviewPromise =
+      section.documentType === 'creditIdentity'
+        ? Promise.all([
+            client
+              .fetch<ReviewQueuePortfolio[]>(IDENTITY_REVIEW_QUEUE_PORTFOLIOS_QUERY)
+              .catch(() => [] as ReviewQueuePortfolio[]),
+            client
+              .fetch<CreditIdentityDoc[]>(IDENTITY_REVIEW_QUEUE_IDENTITIES_QUERY)
+              .catch(() => [] as CreditIdentityDoc[]),
+          ])
+        : Promise.resolve([
+            [] as ReviewQueuePortfolio[],
+            [] as CreditIdentityDoc[],
+          ] as const)
+
     Promise.all([
       client.fetch<Record<string, unknown>[]>(query, params),
       client
@@ -900,8 +923,9 @@ export function DocumentTable({
             .catch(() => [] as TrashRecordRow[])
         : Promise.resolve([] as TrashRecordRow[]),
       identityUsagePromise,
+      identityReviewPromise,
     ])
-      .then(([docs, scheduledReleases, trashRecords, usagePortfolios]) => {
+      .then(([docs, scheduledReleases, trashRecords, usagePortfolios, reviewInputs]) => {
         if (cancelled) return
         let normalized = normalizeRows(docs, scheduledReleases)
 
@@ -923,6 +947,13 @@ export function DocumentTable({
               usageByRole: usage?.usageByRole ?? {},
             }
           })
+
+          const [reviewPortfolios, reviewIdentities] = reviewInputs
+          setPendingReviewCount(
+            countPendingIdentityReviewItems(reviewPortfolios, reviewIdentities),
+          )
+        } else {
+          setPendingReviewCount(0)
         }
 
         setRows(
