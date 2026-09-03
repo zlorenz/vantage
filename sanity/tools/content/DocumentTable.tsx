@@ -26,18 +26,23 @@ import {
   FilterIcon,
   SearchIcon,
   TrashIcon,
+  WarningOutlineIcon,
 } from '@sanity/icons'
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
   CREW_DEPARTMENTS,
   CREW_ROLE_BY_KEY,
   IDENTITY_USAGE_PORTFOLIOS_STUDIO_QUERY,
+  findPotentialDuplicates,
   resolveUsageForIdentities,
   type CrewDepartmentKey,
+  type DuplicateFlag,
   type IdentityUsagePortfolio,
 } from '@crew-credits'
 import type {ContentLeaf, ColumnId} from './sections'
 import {searchTextIncludes} from './search-normalize'
+import {DuplicateReviewDialog} from './DuplicateReviewDialog'
+import {IdentityMergeDialog} from './IdentityMergeDialog'
 import {STUDIO_PAGE_LIST_GROQ_FILTER} from '../../lib/page-visibility'
 import {
   formatImpactSummary,
@@ -83,6 +88,7 @@ type Row = {
   _type: string
   title: string
   titleZh?: string
+  url?: string
   slug?: string
   publishedAt?: string
   createdAt?: string
@@ -373,6 +379,7 @@ function buildQuery(documentType: string): string {
         _type,
         "title": name,
         nameZh,
+        url,
         "_createdAt": _createdAt
       }`
     case 'translatedPhrase':
@@ -470,6 +477,7 @@ function normalizeRows(
         : doc.nameZh
           ? String(doc.nameZh)
           : undefined,
+      url: doc.url ? String(doc.url) : undefined,
       slug: doc.slug ? String(doc.slug) : undefined,
       publishedAt: doc.publishedAt
         ? String(doc.publishedAt)
@@ -785,6 +793,16 @@ export function DocumentTable({
   const [crewDeptTab, setCrewDeptTab] = useState<CrewDeptTab>('all')
   const [crewRoleFilter, setCrewRoleFilter] = useState<CrewRoleFilter>('all')
   const [pendingReviewCount, setPendingReviewCount] = useState(0)
+  const [dismissedPairKeys, setDismissedPairKeys] = useState<Set<string>>(
+    () => new Set(),
+  )
+  const [duplicateReview, setDuplicateReview] = useState<{
+    sourceId: string
+  } | null>(null)
+  const [duplicateMerge, setDuplicateMerge] = useState<{
+    sourceId: string
+    targetId: string
+  } | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [reloadKey, setReloadKey] = useState(0)
@@ -880,6 +898,15 @@ export function DocumentTable({
             [] as CreditIdentityDoc[],
           ] as const)
 
+    const dismissalPromise =
+      section.documentType === 'creditIdentity'
+        ? client
+            .fetch<Array<{pairKey?: string}>>(
+              `*[_type == "duplicateDismissal" && !(_id in path("drafts.**"))]{pairKey}`,
+            )
+            .catch(() => [] as Array<{pairKey?: string}>)
+        : Promise.resolve([] as Array<{pairKey?: string}>)
+
     Promise.all([
       client.fetch<Record<string, unknown>[]>(query, params),
       client
@@ -925,8 +952,17 @@ export function DocumentTable({
         : Promise.resolve([] as TrashRecordRow[]),
       identityUsagePromise,
       identityReviewPromise,
+      dismissalPromise,
     ])
-      .then(([docs, scheduledReleases, trashRecords, usagePortfolios, reviewInputs]) => {
+      .then(
+        ([
+          docs,
+          scheduledReleases,
+          trashRecords,
+          usagePortfolios,
+          reviewInputs,
+          dismissals,
+        ]) => {
         if (cancelled) return
         let normalized = normalizeRows(docs, scheduledReleases)
 
@@ -958,14 +994,23 @@ export function DocumentTable({
           setPendingReviewCount(
             countPendingIdentityReviewItems(reviewPortfolios, reviewIdentities),
           )
+          setDismissedPairKeys(
+            new Set(
+              dismissals
+                .map((row) => row.pairKey?.trim())
+                .filter((key): key is string => Boolean(key)),
+            ),
+          )
         } else {
           setPendingReviewCount(0)
+          setDismissedPairKeys(new Set())
         }
 
         setRows(
           supportsTrash ? mergeTrashRecords(normalized, trashRecords) : normalized,
         )
-      })
+      },
+      )
       .catch((err: Error) => {
         if (!cancelled) setError(err.message)
       })
@@ -995,6 +1040,56 @@ export function DocumentTable({
   )
 
   const isCrewMembersSection = section.documentType === 'creditIdentity'
+
+  const duplicateFlagsById = useMemo(() => {
+    if (!isCrewMembersSection) return new Map<string, DuplicateFlag>()
+    const t0 =
+      typeof performance !== 'undefined' ? performance.now() : Date.now()
+    const flags = findPotentialDuplicates(
+      rows
+        .filter((row) => !row.isTrashed)
+        .map((row) => ({_id: baseId(row._id), name: row.title})),
+      {dismissedPairKeys},
+    )
+    const elapsed =
+      (typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0
+    if (elapsed > 50) {
+      console.info(
+        `[crew-duplicates] detect ${flags.size} flagged / ${rows.length} rows in ${Math.round(elapsed)}ms`,
+      )
+    }
+    return flags
+  }, [dismissedPairKeys, isCrewMembersSection, rows])
+
+  const duplicatePeerRowMap = useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        _id: string
+        name: string
+        nameZh?: string
+        url?: string
+        roleKeys?: string[]
+      }
+    >()
+    for (const row of rows) {
+      map.set(baseId(row._id), {
+        _id: baseId(row._id),
+        name: row.title,
+        nameZh: row.titleZh,
+        url: row.url,
+        roleKeys: row.roleKeys,
+      })
+    }
+    return map
+  }, [rows])
+
+  useEffect(() => {
+    if (!duplicateReview) return
+    if (!duplicateFlagsById.has(duplicateReview.sourceId)) {
+      setDuplicateReview(null)
+    }
+  }, [duplicateFlagsById, duplicateReview])
 
   const statusCounts = useMemo(() => {
     const counts: Record<Exclude<StatusFilter, 'trash'>, number> = {
@@ -1825,6 +1920,31 @@ export function DocumentTable({
                                 Purges {formatDate(row.purgeAfter)}
                               </Text>
                             </Stack>
+                          ) : col.id === 'title' &&
+                            isCrewMembersSection &&
+                            duplicateFlagsById.has(baseId(row._id)) ? (
+                            <Flex align="flex-start" gap={2}>
+                              <Box style={{minWidth: 0, flex: 1}}>
+                                <CellContent
+                                  columnId={col.id}
+                                  row={row}
+                                  crewRoleFilter={crewRoleFilter}
+                                />
+                              </Box>
+                              <Button
+                                icon={WarningOutlineIcon}
+                                mode="bleed"
+                                tone="caution"
+                                padding={2}
+                                fontSize={1}
+                                title="Potential duplicate"
+                                aria-label="Potential duplicate"
+                                onClick={(event) => {
+                                  event.stopPropagation()
+                                  setDuplicateReview({sourceId: baseId(row._id)})
+                                }}
+                              />
+                            </Flex>
                           ) : (
                             <CellContent
                               columnId={col.id}
@@ -1931,6 +2051,53 @@ export function DocumentTable({
             </Flex>
           </Stack>
         </Dialog>
+      ) : null}
+
+      {duplicateReview && isCrewMembersSection ? (
+        <DuplicateReviewDialog
+          source={
+            duplicatePeerRowMap.get(duplicateReview.sourceId) ?? {
+              _id: duplicateReview.sourceId,
+              name:
+                rows.find((row) => baseId(row._id) === duplicateReview.sourceId)
+                  ?.title ?? 'Untitled',
+            }
+          }
+          peers={
+            duplicateFlagsById.get(duplicateReview.sourceId)?.peers ?? []
+          }
+          peerRows={duplicatePeerRowMap}
+          onClose={() => setDuplicateReview(null)}
+          onDismissed={(pairKey) => {
+            setDismissedPairKeys((prev) => new Set([...prev, pairKey]))
+          }}
+          onMerge={(targetId) => {
+            setDuplicateMerge({
+              sourceId: duplicateReview.sourceId,
+              targetId,
+            })
+            setDuplicateReview(null)
+          }}
+        />
+      ) : null}
+
+      {duplicateMerge && isCrewMembersSection ? (
+        <IdentityMergeDialog
+          source={{
+            _id: duplicateMerge.sourceId,
+            name:
+              duplicatePeerRowMap.get(duplicateMerge.sourceId)?.name ??
+              rows.find((row) => baseId(row._id) === duplicateMerge.sourceId)
+                ?.title ??
+              'Untitled',
+          }}
+          initialTargetId={duplicateMerge.targetId}
+          onClose={() => setDuplicateMerge(null)}
+          onComplete={() => {
+            setDuplicateMerge(null)
+            loadRows()
+          }}
+        />
       ) : null}
     </Stack>
   )

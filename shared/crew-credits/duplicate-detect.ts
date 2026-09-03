@@ -56,7 +56,10 @@ function firstToken(norm: string): string {
 
 export type FindPotentialDuplicatesOptions = {
   dismissedPairKeys?: ReadonlySet<string>
-  /** Optional dept usage map — adds cross-bucket pairs that share a department. */
+  /**
+   * Reserved for a future department-scoped near-miss pass.
+   * v1 scopes near-miss by first normalized name token only.
+   */
   identityDepartmentsById?: ReadonlyMap<string, ReadonlySet<CrewDepartmentKey>>
 }
 
@@ -69,7 +72,7 @@ export function findPotentialDuplicates(
   options: FindPotentialDuplicatesOptions = {},
 ): Map<string, DuplicateFlag> {
   const dismissed = options.dismissedPairKeys ?? new Set<string>()
-  const deptById = options.identityDepartmentsById
+  void options.identityDepartmentsById
 
   const cleaned = identities
     .map((row) => ({
@@ -174,30 +177,8 @@ export function findPotentialDuplicates(
     }
   }
 
-  // Extra pairs: same department, different first token (still scoped — not full n²)
-  if (deptById?.size) {
-    const byDept = new Map<CrewDepartmentKey, typeof rows>()
-    for (const row of rows) {
-      const depts = deptById.get(row._id)
-      if (!depts?.size) continue
-      for (const dept of depts) {
-        const group = byDept.get(dept) ?? []
-        group.push(row)
-        byDept.set(dept, group)
-      }
-    }
-    for (const group of byDept.values()) {
-      if (group.length < 2) continue
-      for (let i = 0; i < group.length; i++) {
-        for (let j = i + 1; j < group.length; j++) {
-          const left = group[i]!
-          const right = group[j]!
-          if (firstToken(left.norm) === firstToken(right.norm)) continue
-          considerPair(left, right)
-        }
-      }
-    }
-  }
+  // Department-scoped cross-token near-miss is intentionally omitted in v1 —
+  // first-token buckets catch nickname/diacritic cases at ~O(bucket²) cost.
 
   // --- Build per-identity flags --------------------------------------------
   const flags = new Map<string, DuplicateFlag>()

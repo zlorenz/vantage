@@ -108,10 +108,13 @@ function IdentityField({
 
 export function IdentityMergeDialog({
   source,
+  initialTargetId,
   onClose,
   onComplete,
 }: {
   source: MergeSource
+  /** When set, skip the picker and open the merge preview for this target. */
+  initialTargetId?: string
   onClose: () => void
   onComplete: () => void
 }) {
@@ -186,6 +189,11 @@ export function IdentityMergeDialog({
     },
     [client, source._id],
   )
+
+  useEffect(() => {
+    if (!initialTargetId) return
+    void selectTarget(initialTargetId)
+  }, [initialTargetId, selectTarget])
 
   const runMerge = useCallback(async () => {
     if (!plan) return
