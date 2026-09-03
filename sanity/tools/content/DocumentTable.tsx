@@ -157,6 +157,7 @@ const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
     'photography_assistant',
     'photography_producer',
     'kv_art_director',
+    'photo_talent',
   ],
   casting: [
     'animal_wrangler',
@@ -1651,6 +1652,20 @@ export function DocumentTable({
           ) : null}
         </Flex>
       </Flex>
+
+      {!loading &&
+      !error &&
+      isCrewMembersSection &&
+      pendingReviewCount > 0 ? (
+        <Card padding={3} radius={2} tone="caution" border>
+          <Text size={1}>
+            {pendingReviewCount} pending identity review{' '}
+            {pendingReviewCount === 1 ? 'item' : 'items'} — unlinked credit
+            slots that need a manual same-person decision before linking
+            (same queue as migration dry-runs).
+          </Text>
+        </Card>
+      ) : null}
 
       {loading ? (
         <Flex align="center" gap={2} paddingY={5}>
