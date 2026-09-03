@@ -725,7 +725,7 @@ function CellContent({
             <Stack
               key={group.departmentLabel}
               space={1}
-              style={{minWidth: 100, maxWidth: 200, flex: '1 1 100px'}}
+              style={{minWidth: 140, maxWidth: 280, flex: '1 1 160px'}}
             >
               <Text size={0} muted weight="semibold">
                 {group.departmentLabel}

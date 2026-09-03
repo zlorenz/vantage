@@ -115,8 +115,8 @@ const namedTaxonomyColumns: TableColumn[] = [
 ]
 
 const creditIdentityColumns: TableColumn[] = [
-  {id: 'title', header: 'Name', minWidth: '200px', sortable: true},
-  {id: 'roles', header: 'Roles', minWidth: '220px'},
+  {id: 'title', header: 'Name', width: '220px', sortable: true},
+  {id: 'roles', header: 'Roles', minWidth: '420px'},
   {id: 'usage', header: 'Credits', width: '90px', sortable: true},
   {id: 'createdAt', header: 'Added', width: '140px', sortable: true},
 ]
