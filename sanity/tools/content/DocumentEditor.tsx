@@ -792,6 +792,17 @@ export function DocumentEditor({
           </Stack>
         </Dialog>
       ) : null}
+
+      {mergeOpen && canMergeIdentity ? (
+        <IdentityMergeDialog
+          source={{_id: publishedId, name: headerTitle}}
+          onClose={() => setMergeOpen(false)}
+          onComplete={() => {
+            setMergeOpen(false)
+            onBack()
+          }}
+        />
+      ) : null}
     </Flex>
   )
 }
