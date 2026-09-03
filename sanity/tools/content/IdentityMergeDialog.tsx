@@ -20,6 +20,7 @@ import {
   type MergePlan,
   type MergeReferenceHit,
 } from '@crew-credits'
+import {searchTextIncludes} from './search-normalize'
 
 type IdentityRow = {
   _id: string
@@ -154,14 +155,15 @@ export function IdentityMergeDialog({
   }, [client])
 
   const filteredIdentities = useMemo(() => {
-    const q = search.trim().toLowerCase()
+    const q = search.trim()
     return identities
       .filter((row) => row._id !== source._id)
       .filter((row) => {
         if (!q) return true
+        // Same search-only diacritic fold as DocumentTable (incl. Đ→d).
         return (
-          row.name.toLowerCase().includes(q) ||
-          (row.nameZh ?? '').toLowerCase().includes(q)
+          searchTextIncludes(row.name, q) ||
+          searchTextIncludes(row.nameZh ?? '', q)
         )
       })
   }, [identities, search, source._id])
