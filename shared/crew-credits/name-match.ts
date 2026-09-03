@@ -16,6 +16,7 @@ export type MatchReason =
   | 'nickname_prefix'
   | 'nickname_suffix'
   | 'hyphen_spacing'
+  | 'spacing'
 
 export type MatchConfidence = 'high' | 'medium' | 'review'
 
@@ -60,6 +61,11 @@ export function wordKey(name: string): string {
 
 export function hyphenSpacingKey(name: string): string {
   return normName(name.replace(/-/g, ' '))
+}
+
+/** Collapse all spaces after normalize — catches "HK Film" / "HKFilm", "N Team" / "NTeam". */
+export function spacingKey(name: string): string {
+  return normName(name).replace(/ /g, '')
 }
 
 export function normalizeUrl(url: string): string {
@@ -181,6 +187,11 @@ export function matchReasonsBetween(
     }
   }
 
+  // Full space-collapse (stronger than hyphen→space): "NTeam" vs "N Team"
+  if (aNorm !== bNorm && spacingKey(left) === spacingKey(right) && spacingKey(left)) {
+    reasons.push('spacing')
+  }
+
   const aUrls = opts?.aUrls ?? []
   const bUrls = opts?.bUrls ?? []
   for (const url of aUrls) {
@@ -220,7 +231,7 @@ export function confidenceForReasons(
   if (!reasons.length) return 'review'
 
   const hasHigh = reasons.some((r) =>
-    ['diacritic', 'word_order', 'shared_url', 'hyphen_spacing'].includes(r),
+    ['diacritic', 'word_order', 'shared_url', 'hyphen_spacing', 'spacing'].includes(r),
   )
 
   let confidence: MatchConfidence = hasHigh ? 'high' : 'medium'
@@ -560,6 +571,8 @@ export function formatMatchReasons(reasons: MatchReason[]): string {
           return 'word order'
         case 'hyphen_spacing':
           return 'hyphen/spacing'
+        case 'spacing':
+          return 'spacing'
         case 'shared_url':
           return 'shared URL'
         case 'nickname_prefix':

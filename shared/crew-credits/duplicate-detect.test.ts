@@ -85,14 +85,59 @@ function testDismissedPairExcluded() {
   assert.ok(flags.get('ci_grace')!.peers.some((p) => p.identityId === 'ci_grace_full'))
 }
 
-function testTypoNotFlaggedV1() {
+function testSpacingNearMiss() {
+  const flags = findPotentialDuplicates([
+    {_id: 'ci_nteam', name: 'NTeam'},
+    {_id: 'ci_n_team', name: 'N Team'},
+    {_id: 'ci_too', name: 'TooAwake'},
+    {_id: 'ci_too_colon', name: 'Too:Awake'},
+    {_id: 'ci_lamoi', name: 'Lamoi'},
+    {_id: 'ci_lam_oi', name: 'Lam Ơi'},
+    // Different names that only share letters if spaces removed incorrectly
+    {_id: 'ci_an', name: 'An'},
+    {_id: 'ci_anne', name: 'Anne'},
+  ])
+
+  const assertSpacing = (a: string, b: string) => {
+    const peers = flags.get(a)?.peers ?? []
+    const peer = peers.find((p) => p.identityId === b)
+    assert.ok(peer, `expected ${a} ↔ ${b}`)
+    assert.equal(peer!.kind, 'near_miss')
+    assert.ok(peer!.reasons.includes('spacing'))
+    assert.equal(peer!.confidence, 'high')
+  }
+
+  assertSpacing('ci_nteam', 'ci_n_team')
+  assertSpacing('ci_too', 'ci_too_colon')
+  assertSpacing('ci_lamoi', 'ci_lam_oi')
+
+  // Space-strip alone must not invent matches between distinct names
+  assert.equal(
+    flags.get('ci_an')?.peers.some((p) => p.identityId === 'ci_anne'),
+    undefined,
+  )
+  assert.equal(flags.has('ci_an'), false)
+  assert.equal(flags.has('ci_anne'), false)
+}
+
+function testTypoStillNotFlagged() {
+  // Typo detection deferred to a follow-up commit
   const flags = findPotentialDuplicates([
     {_id: 'ci_a', name: 'Alex Gornastaev'},
     {_id: 'ci_b', name: 'Alex Gornostaev'},
+  ])
+  assert.equal(flags.size, 0)
+}
+
+function testHkFilmSpacing() {
+  const flags = findPotentialDuplicates([
     {_id: 'ci_c', name: 'HK Film'},
     {_id: 'ci_d', name: 'HKFilm'},
   ])
-  assert.equal(flags.size, 0)
+  const peer = flags.get('ci_c')?.peers.find((p) => p.identityId === 'ci_d')
+  assert.ok(peer)
+  assert.ok(peer!.reasons.includes('spacing'))
+  assert.equal(peer!.confidence, 'high')
 }
 
 const tests = [
@@ -100,7 +145,9 @@ const tests = [
   testExactNameClusters,
   testNearMissNicknameAndExactDiacritic,
   testDismissedPairExcluded,
-  testTypoNotFlaggedV1,
+  testSpacingNearMiss,
+  testHkFilmSpacing,
+  testTypoStillNotFlagged,
 ]
 
 for (const test of tests) {

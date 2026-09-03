@@ -1,14 +1,15 @@
 /**
  * Potential-duplicate detection for Crew Members (creditIdentity).
  *
- * Two paths:
+ * Paths:
  * 1. Exact-name clusters — same normalizeCreditToken, 2+ distinct ids
- * 2. Scoped near-miss — matchReasonsBetween within first-token buckets
- *    (and optional overlapping-department pairs), never full O(n²)
+ * 2. Spacing clusters — same space-stripped norm, different norms
+ *    (first-token buckets miss these: "nteam" vs "n team")
+ * 3. Scoped near-miss — matchReasonsBetween within first-token buckets
+ *    (never full O(n²))
  *
  * Dismissals (duplicateDismissal.pairKey) permanently suppress a pair.
- * Typo / space-collapse variants (HKFilm, Gornostaev) are intentionally
- * out of scope for v1.
+ * Single-character typo detection (Gornostaev) is still out of scope here.
  */
 
 import {normalizeCreditToken} from './normalize'
@@ -124,6 +125,46 @@ export function findPotentialDuplicates(
           b: group[j]!._id,
           kind: 'exact_name',
           reasons: [],
+        })
+      }
+    }
+  }
+
+  // --- Spacing clusters (O(n) buckets; not first-token) --------------------
+  // "NTeam"/"N Team" normalize to different first tokens, so near-miss
+  // bucketing never compares them — cluster by space-stripped norm instead.
+  const bySpacing = new Map<string, typeof rows>()
+  for (const row of rows) {
+    const key = row.norm.replace(/ /g, '')
+    if (!key) continue
+    const group = bySpacing.get(key) ?? []
+    group.push(row)
+    bySpacing.set(key, group)
+  }
+  for (const group of bySpacing.values()) {
+    if (group.length < 2) continue
+    for (let i = 0; i < group.length; i++) {
+      for (let j = i + 1; j < group.length; j++) {
+        const left = group[i]!
+        const right = group[j]!
+        if (left.norm === right.norm) continue // exact path already covers
+        const reasons = matchReasonsBetween(left.name, right.name, {
+          aCount: 1,
+          bCount: 1,
+          aUrls: [],
+          bUrls: [],
+        })
+        if (!reasons.includes('spacing')) continue
+        const confidence = confidenceForReasons(reasons, [
+          {name: left.name},
+          {name: right.name},
+        ])
+        addEdge({
+          a: left._id,
+          b: right._id,
+          kind: 'near_miss',
+          reasons,
+          confidence,
         })
       }
     }
