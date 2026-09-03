@@ -351,7 +351,10 @@ assert.ok(isStudioIdentityLinkedRoleKey('photographer'))
 assert.ok(isStudioIdentityLinkedRoleKey('casting_director'))
 assert.ok(isStudioIdentityLinkedRoleKey('gaffer'))
 assert.ok(isStudioIdentityLinkedRoleKey('steadicam_op'))
-assert.ok(!isStudioIdentityLinkedRoleKey('producer'))
+assert.ok(isStudioIdentityLinkedRoleKey('producer'))
+// After Production joined FULL_IDENTITY_LINK_DEPARTMENTS, every standard
+// catalog role key is in studio inline scope — use a fake key as negative.
+assert.ok(!isStudioIdentityLinkedRoleKey('not_a_real_role'))
 assert.ok(!isStudioIdentityLinkedRoleKey(undefined))
 
 const gePolicy = identityLinkPolicyForDepartments(['ge'])
