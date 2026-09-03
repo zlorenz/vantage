@@ -936,7 +936,12 @@ export function DocumentTable({
               name: row.title,
             })),
             usagePortfolios,
-            {roleKeys: CREW_USAGE_ROLE_KEYS},
+            {
+              roleKeys: CREW_USAGE_ROLE_KEYS,
+              // Strict refs only — name fallback double-counts when two
+              // identities share a display name (e.g. two "Alex" docs).
+              matchMode: 'identityRef',
+            },
           )
           normalized = normalized.map((row) => {
             const usage = usageById.get(baseId(row._id))

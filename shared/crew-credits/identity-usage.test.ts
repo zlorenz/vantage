@@ -286,6 +286,110 @@ function testCustomRolesAreIgnoredForIdentityLink() {
   )
 }
 
+function testIdentityRefModeIsolatesSameNameIdentities() {
+  // Two "Alex" identities, different real credits — nameFallback contaminates;
+  // identityRef keeps each count/role set distinct (Studio Credits fix).
+  const ALEX_CASTING = 'ci_alex_casting'
+  const ALEX_POST = 'ci_alex_post'
+  const ROLE_KEYS = ['talent', 'motion_graphics'] as const
+
+  const portfolios = [
+    entry('brinc', {
+      crewCredits: [
+        {
+          roleKey: 'talent',
+          people: [{name: 'Alex', identityId: ALEX_CASTING}],
+        },
+      ],
+    }),
+    entry('govee', {
+      crewCredits: [
+        {
+          roleKey: 'talent',
+          people: [{name: 'Alex', identityId: ALEX_CASTING}],
+        },
+      ],
+    }),
+    entry('youtube', {
+      crewCredits: [
+        {
+          roleKey: 'motion_graphics',
+          people: [{name: 'Alex', identityId: ALEX_POST}],
+        },
+      ],
+    }),
+  ]
+
+  const identities = [
+    {_id: ALEX_CASTING, name: 'Alex'},
+    {_id: ALEX_POST, name: 'Alex'},
+  ]
+
+  const legacy = resolveUsageForIdentities(identities, portfolios, {
+    roleKeys: ROLE_KEYS,
+  })
+  assert.equal(legacy.get(ALEX_CASTING)!.usage, 3)
+  assert.equal(legacy.get(ALEX_POST)!.usage, 3)
+  assert.deepEqual(legacy.get(ALEX_CASTING)!.roleKeys, ['talent', 'motion_graphics'])
+  assert.deepEqual(legacy.get(ALEX_POST)!.roleKeys, ['talent', 'motion_graphics'])
+
+  const legacyExplicit = resolveUsageForIdentities(identities, portfolios, {
+    roleKeys: ROLE_KEYS,
+    matchMode: 'nameFallback',
+  })
+  assert.equal(legacyExplicit.get(ALEX_CASTING)!.usage, 3)
+  assert.equal(legacyExplicit.get(ALEX_POST)!.usage, 3)
+
+  const strict = resolveUsageForIdentities(identities, portfolios, {
+    roleKeys: ROLE_KEYS,
+    matchMode: 'identityRef',
+  })
+  assert.equal(strict.get(ALEX_CASTING)!.usage, 2)
+  assert.equal(strict.get(ALEX_CASTING)!.usageByRole.talent, 2)
+  assert.equal(strict.get(ALEX_CASTING)!.usageByRole.motion_graphics, undefined)
+  assert.deepEqual(strict.get(ALEX_CASTING)!.roleKeys, ['talent'])
+
+  assert.equal(strict.get(ALEX_POST)!.usage, 1)
+  assert.equal(strict.get(ALEX_POST)!.usageByRole.motion_graphics, 1)
+  assert.equal(strict.get(ALEX_POST)!.usageByRole.talent, undefined)
+  assert.deepEqual(strict.get(ALEX_POST)!.roleKeys, ['motion_graphics'])
+}
+
+function testIdentityRefModeIgnoresUnlinkedNameMatches() {
+  const portfolios = [
+    entry('linked', {
+      crewCredits: [
+        {
+          roleKey: 'director',
+          people: [{name: 'Kelvin Chew', identityId: KELVIN}],
+        },
+      ],
+    }),
+    entry('name-only', {
+      crewCredits: [
+        {
+          roleKey: 'director',
+          people: [{name: 'Kelvin Chew'}],
+        },
+      ],
+    }),
+  ]
+
+  const fallback = resolveUsageForIdentities(
+    [{_id: KELVIN, name: 'Kelvin Chew'}],
+    portfolios,
+  ).get(KELVIN)!
+  assert.equal(fallback.usage, 2)
+
+  const strict = resolveUsageForIdentities(
+    [{_id: KELVIN, name: 'Kelvin Chew'}],
+    portfolios,
+    {matchMode: 'identityRef'},
+  ).get(KELVIN)!
+  assert.equal(strict.usage, 1)
+  assert.deepEqual(strict.roleKeys, ['director'])
+}
+
 const tests = [
   testIdentityLinkCounts,
   testNameFallbackCountsUnlinkedCredits,
@@ -295,6 +399,8 @@ const tests = [
   testCaseInsensitiveNameMatch,
   testStillsPhotographerWhenRoleKeysIncludeStills,
   testCustomRolesAreIgnoredForIdentityLink,
+  testIdentityRefModeIsolatesSameNameIdentities,
+  testIdentityRefModeIgnoresUnlinkedNameMatches,
 ]
 
 for (const test of tests) {

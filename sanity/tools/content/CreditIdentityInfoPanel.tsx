@@ -2,10 +2,10 @@
  * Read-only creditIdentity usage panel for the Crew Members document page.
  *
  * Intentionally uses MERGE_REFERENCE_SCAN_QUERY / scanMergeReferences
- * (identity-ref-only hits). This differs from the Crew Members table "Credits"
- * / Roles column, which use resolveUsageForIdentities and also count
- * display-name fallback matches plus the production_designer → art_director
- * alias. Do not "fix" this panel to match table counts.
+ * (identity-ref-only hits). The Crew Members table Credits/Roles column now
+ * also uses resolveUsageForIdentities with matchMode: 'identityRef' — same
+ * ref-only semantics for counts/roles (no name-fallback cross-contamination).
+ * This panel still differs by listing per-project role detail, not just totals.
  */
 
 import {useEffect, useMemo, useState} from 'react'

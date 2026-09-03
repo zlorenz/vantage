@@ -44,9 +44,19 @@ export type IdentityUsageResult = {
   roleKeys: IdentityUsageRoleKey[]
 }
 
+export type ResolveUsageMatchMode = 'nameFallback' | 'identityRef'
+
 export type ResolveUsageForIdentitiesOptions = {
   /** Role keys to index and aggregate; defaults to FILTER_CREDIT_ROLE_KEYS. */
   roleKeys?: readonly string[]
+  /**
+   * How people slots match an identity.
+   * - `nameFallback` (default): identity ref OR display-name match (legacy /
+   *   Work Library–style; can cross-contaminate when two identities share a name).
+   * - `identityRef`: only slots with a direct identity._ref — Studio Crew
+   *   Members Credits/Roles use this so name-collision twins stay distinct.
+   */
+  matchMode?: ResolveUsageMatchMode
 }
 
 function publishedPortfolioId(id: string): string {
@@ -199,6 +209,7 @@ export function portfolioMatchesIdentityRole(
  *
  * Callers choose the portfolio set via GROQ (Studio vs public facet query).
  * Matching logic is identical either way; only the input array differs.
+ * Pass `matchMode: 'identityRef'` for Studio Credits/Roles (no name fallback).
  */
 export function resolveUsageForIdentities(
   identities: Array<{_id: string; name: string}>,
@@ -206,8 +217,11 @@ export function resolveUsageForIdentities(
   options?: ResolveUsageForIdentitiesOptions,
 ): Map<string, IdentityUsageResult> {
   const roleKeys = options?.roleKeys ?? FILTER_CREDIT_ROLE_KEYS
+  const matchMode = options?.matchMode ?? 'nameFallback'
+  const useNameFallback = matchMode === 'nameFallback'
   const roleSet = new Set(roleKeys)
-  const trackProductionDesignerAlias = roleSet.has('art_director')
+  const trackProductionDesignerAlias =
+    useNameFallback && roleSet.has('art_director')
   const {byIdentityRef, byNameAndRole, productionDesignerNames} = buildUsageIndex(
     portfolios,
     roleSet,
@@ -222,9 +236,10 @@ export function resolveUsageForIdentities(
     const matchedRoleKeys: IdentityUsageRoleKey[] = []
 
     const identityRoles = byIdentityRef.get(identityId)
-    const nameRoles = displayName
-      ? byNameAndRole.get(normalizeName(displayName))
-      : undefined
+    const nameRoles =
+      useNameFallback && displayName
+        ? byNameAndRole.get(normalizeName(displayName))
+        : undefined
     const productionDesignerPortfolios =
       trackProductionDesignerAlias && displayName
         ? productionDesignerNames.get(normalizeName(displayName))
@@ -235,7 +250,7 @@ export function resolveUsageForIdentities(
 
       identityRoles?.get(roleKey)?.forEach((portfolioId) => matched.add(portfolioId))
 
-      if (displayName) {
+      if (useNameFallback && displayName) {
         nameRoles?.get(roleKey)?.forEach((portfolioId) => matched.add(portfolioId))
         if (roleKey === 'art_director') {
           productionDesignerPortfolios?.forEach((portfolioId) =>
