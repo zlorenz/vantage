@@ -17,6 +17,7 @@ export type MatchReason =
   | 'nickname_suffix'
   | 'hyphen_spacing'
   | 'spacing'
+  | 'typo'
 
 export type MatchConfidence = 'high' | 'medium' | 'review'
 
@@ -233,6 +234,9 @@ export function confidenceForReasons(
   const hasHigh = reasons.some((r) =>
     ['diacritic', 'word_order', 'shared_url', 'hyphen_spacing', 'spacing'].includes(r),
   )
+
+  // Typo-only (or typo + nickname) stays review — higher FP risk than exact/spacing.
+  if (!hasHigh && reasons.includes('typo')) return 'review'
 
   let confidence: MatchConfidence = hasHigh ? 'high' : 'medium'
 
@@ -573,6 +577,8 @@ export function formatMatchReasons(reasons: MatchReason[]): string {
           return 'hyphen/spacing'
         case 'spacing':
           return 'spacing'
+        case 'typo':
+          return 'typo'
         case 'shared_url':
           return 'shared URL'
         case 'nickname_prefix':

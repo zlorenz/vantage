@@ -120,11 +120,39 @@ function testSpacingNearMiss() {
   assert.equal(flags.has('ci_anne'), false)
 }
 
-function testTypoStillNotFlagged() {
-  // Typo detection deferred to a follow-up commit
+function testTypoConservative() {
   const flags = findPotentialDuplicates([
     {_id: 'ci_a', name: 'Alex Gornastaev'},
     {_id: 'ci_b', name: 'Alex Gornostaev'},
+    // Short dist≤1 surname near-miss — length gate must suppress
+    {_id: 'ci_phan', name: 'Eric Phan'},
+    {_id: 'ci_chan', name: 'Eric Chan'},
+    {_id: 'ci_bao_tran', name: 'Bao Tran'},
+    {_id: 'ci_bao_tan', name: 'Bao Tan'},
+  ])
+
+  const gorn = flags.get('ci_a')?.peers.find((p) => p.identityId === 'ci_b')
+  assert.ok(gorn)
+  assert.equal(gorn!.kind, 'near_miss')
+  assert.ok(gorn!.reasons.includes('typo'))
+  assert.equal(gorn!.confidence, 'review')
+
+  assert.equal(flags.has('ci_phan'), false)
+  assert.equal(flags.has('ci_chan'), false)
+  assert.equal(flags.has('ci_bao_tran'), false)
+  assert.equal(flags.has('ci_bao_tan'), false)
+}
+
+function testTypoLengthGateBlocksShortNearMisses() {
+  // Investigation dist≤1 FPs under the min-length cutoff (14). Note:
+  // Christina Zhang/Chang are also dist≤1 but norms are length 15 — same
+  // band as Gornastaev — so they remain a review-confidence residual risk
+  // by design (not blocked by length alone).
+  const flags = findPotentialDuplicates([
+    {_id: 'ci_sang_phan', name: 'Sang Phan'},
+    {_id: 'ci_sang_pham', name: 'Sang Pham'},
+    {_id: 'ci_nguyen_tran', name: 'Nguyen Tran'},
+    {_id: 'ci_nguyen_tuan', name: 'Nguyen Tuan'},
   ])
   assert.equal(flags.size, 0)
 }
@@ -147,7 +175,8 @@ const tests = [
   testDismissedPairExcluded,
   testSpacingNearMiss,
   testHkFilmSpacing,
-  testTypoStillNotFlagged,
+  testTypoConservative,
+  testTypoLengthGateBlocksShortNearMisses,
 ]
 
 for (const test of tests) {

@@ -5,13 +5,15 @@
  * 1. Exact-name clusters — same normalizeCreditToken, 2+ distinct ids
  * 2. Spacing clusters — same space-stripped norm, different norms
  *    (first-token buckets miss these: "nteam" vs "n team")
- * 3. Scoped near-miss — matchReasonsBetween within first-token buckets
+ * 3. Scoped near-miss — matchReasonsBetween + conservative typo
+ *    (edit distance ≤1, min norm length ≥14) within first-token buckets
  *    (never full O(n²))
  *
  * Dismissals (duplicateDismissal.pairKey) permanently suppress a pair.
- * Single-character typo detection (Gornostaev) is still out of scope here.
+ * Role/vendor-append matching is intentionally out of scope.
  */
 
+import {levenshtein} from './edit-distance'
 import {normalizeCreditToken} from './normalize'
 import {
   confidenceForReasons,
@@ -20,6 +22,9 @@ import {
   type MatchReason,
 } from './name-match'
 import type {CrewDepartmentKey} from './types'
+
+/** Min normalized length for typo (edit-distance ≤1) near-miss. */
+const TYPO_MIN_NORM_LENGTH = 14
 
 export type DuplicateIdentityInput = {
   _id: string
@@ -189,12 +194,23 @@ export function findPotentialDuplicates(
     if (considered.has(pair)) return
     considered.add(pair)
 
-    const reasons = matchReasonsBetween(left.name, right.name, {
+    const reasons: MatchReason[] = matchReasonsBetween(left.name, right.name, {
       aCount: 1,
       bCount: 1,
       aUrls: [],
       bUrls: [],
     })
+
+    // Conservative typo: dist ≤1 on long names only (scoped bucket already).
+    const minLen = Math.min(left.norm.length, right.norm.length)
+    if (
+      minLen >= TYPO_MIN_NORM_LENGTH &&
+      levenshtein(left.norm, right.norm) <= 1 &&
+      !reasons.includes('typo')
+    ) {
+      reasons.push('typo')
+    }
+
     if (!reasons.length) return
     const confidence = confidenceForReasons(reasons, [
       {name: left.name},
