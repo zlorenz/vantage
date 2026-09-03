@@ -37,6 +37,7 @@ import {
   type IdentityUsagePortfolio,
 } from '@crew-credits'
 import type {ContentLeaf, ColumnId} from './sections'
+import {searchTextIncludes} from './search-normalize'
 import {STUDIO_PAGE_LIST_GROQ_FILTER} from '../../lib/page-visibility'
 import {
   formatImpactSummary,
@@ -1061,7 +1062,8 @@ export function DocumentTable({
   }, [crewDeptTab, isCrewMembersSection, linkedRolesInScope, rows])
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase()
+    // Search-only diacritic fold (incl. Vietnamese Đ→d). Not linking normalize.
+    const q = search.trim()
     let next = rows.filter((row) =>
       supportsTrash ? (inTrash ? row.isTrashed : !row.isTrashed) : true,
     )
@@ -1097,7 +1099,7 @@ export function DocumentTable({
                         : field === 'titleZh'
                           ? row.titleZh
                           : row.title
-          return (value || '').toLowerCase().includes(q)
+          return searchTextIncludes(value || '', q)
         }),
       )
     }
