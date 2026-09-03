@@ -170,7 +170,7 @@ const LINKED_DEPT_ROLE_KEYS: Record<CrewDepartmentKey, readonly string[]> = {
   ge: ['electrician', 'gaffer', 'grip', 'key_grip', 'rental_house'],
 }
 
-/** Role keys passed to resolveUsageForIdentities for Crew Members "Used by". */
+/** Role keys passed to resolveUsageForIdentities for Crew Members "Credits". */
 const CREW_USAGE_ROLE_KEYS: readonly string[] = [
   ...new Set(Object.values(LINKED_DEPT_ROLE_KEYS).flat()),
 ]

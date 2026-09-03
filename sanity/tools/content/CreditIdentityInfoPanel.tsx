@@ -2,7 +2,7 @@
  * Read-only creditIdentity usage panel for the Crew Members document page.
  *
  * Intentionally uses MERGE_REFERENCE_SCAN_QUERY / scanMergeReferences
- * (identity-ref-only hits). This differs from the Crew Members table "Used by"
+ * (identity-ref-only hits). This differs from the Crew Members table "Credits"
  * / Roles column, which use resolveUsageForIdentities and also count
  * display-name fallback matches plus the production_designer → art_director
  * alias. Do not "fix" this panel to match table counts.
@@ -178,7 +178,7 @@ export function CreditIdentityInfoPanel({
         {!loading && !error ? (
           <Stack space={4}>
             <Text size={1}>
-              <strong>Used by</strong> {projectCount}{' '}
+              <strong>Credits:</strong> {projectCount}{' '}
               {projectCount === 1 ? 'project' : 'projects'}
             </Text>
 
