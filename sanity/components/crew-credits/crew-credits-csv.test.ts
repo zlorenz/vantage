@@ -759,6 +759,25 @@ const rolePriority = searchNameSuggestions('jane', {
 assert.equal(rolePriority[0]?.name, 'Jane Director')
 assert.equal(rolePriority[0]?.inRole, true)
 
+// Search-only Đ/đ fold (must not change normalizeCreditToken / normName)
+const strokeDCatalog = buildNameCatalog([
+  {name: 'Cam Đg'},
+  {name: 'Nguyễn Thúc Thùy Tiên'},
+  {name: 'Chú Hải PS'},
+])
+const camDgHits = searchNameSuggestions('Cam Dg', {siteCatalog: strokeDCatalog})
+assert.ok(camDgHits.some((hit) => hit.name === 'Cam Đg'))
+assert.equal(camDgHits[0]?.matchKind, 'exact')
+const camStrokeHits = searchNameSuggestions('Cam Đg', {siteCatalog: strokeDCatalog})
+assert.ok(camStrokeHits.some((hit) => hit.name === 'Cam Đg'))
+const nguyenHits = searchNameSuggestions('Nguyen', {siteCatalog: strokeDCatalog})
+assert.ok(nguyenHits.some((hit) => hit.name === 'Nguyễn Thúc Thùy Tiên'))
+const chuHaiHits = searchNameSuggestions('Chu Hai', {siteCatalog: strokeDCatalog})
+assert.ok(chuHaiHits.some((hit) => hit.name === 'Chú Hải PS'))
+assert.equal(normalizeCreditToken('Cam Đg'), 'cam g')
+assert.equal(normalizeCreditToken('Cam Dg'), 'cam dg')
+assert.notEqual(normalizeCreditToken('Cam Đg'), normalizeCreditToken('Cam Dg'))
+
 const roleIndexes = buildRoleCatalogIndexes([
   {
     department: 'camera',

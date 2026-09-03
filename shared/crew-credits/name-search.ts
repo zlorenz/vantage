@@ -1,5 +1,9 @@
 /**
  * Typeahead search over crew name catalogs for Studio autocomplete.
+ *
+ * Search-only Vietnamese Đ/đ → d fold is applied here before normName.
+ * Do NOT push that fold into normName / normalizeCreditToken — those are
+ * identity-linking equality helpers (same boundary as Studio search-normalize).
  */
 
 import {
@@ -34,6 +38,16 @@ const MATCH_KIND_RANK: Record<NameSuggestionMatchKind, number> = {
   word_prefix: 2,
   substring: 3,
   fuzzy: 4,
+}
+
+/** Fold Vietnamese Đ/đ (U+0110 / U+0111) → d, then linking normName (NFKD etc.). */
+function normalizeSuggestionText(value: string): string {
+  return normName(value.replace(/\u0110/g, 'D').replace(/\u0111/g, 'd'))
+}
+
+/** Đ-fold only — for fuzzy matchReasonsBetween, which applies normName itself. */
+function foldVietnameseDStroke(value: string): string {
+  return value.replace(/\u0110/g, 'D').replace(/\u0111/g, 'd')
 }
 
 function classifySubstringMatch(
@@ -87,11 +101,13 @@ function scanCatalog(
   inRole: boolean,
   results: Map<string, NameSuggestion>,
 ) {
+  const queryForFuzzy = foldVietnameseDStroke(query)
+
   for (const entry of catalog) {
     const name = entry.name.trim()
     if (!name) continue
 
-    const nameNorm = normName(name)
+    const nameNorm = normalizeSuggestionText(name)
     const words = nameNorm.split(/\s+/).filter(Boolean)
 
     const substringKind = classifySubstringMatch(queryNorm, nameNorm, words)
@@ -107,7 +123,8 @@ function scanCatalog(
       continue
     }
 
-    const reasons = matchReasonsBetween(query, name, {
+    const nameForFuzzy = foldVietnameseDStroke(name)
+    const reasons = matchReasonsBetween(queryForFuzzy, nameForFuzzy, {
       aCount: 1,
       bCount: entry.count,
       aUrls: [],
@@ -115,7 +132,10 @@ function scanCatalog(
     })
     if (!reasons.length) continue
 
-    const confidence = confidenceForReasons(reasons, [{name: query}, {name}])
+    const confidence = confidenceForReasons(reasons, [
+      {name: queryForFuzzy},
+      {name: nameForFuzzy},
+    ])
     if (confidence === 'review') continue
 
     const key = nameNorm
@@ -147,8 +167,8 @@ export function searchNameSuggestions(
   const {siteCatalog, roleCatalog, excludeNames = [], limit = 8} = opts
   if (!siteCatalog.length && !roleCatalog?.length) return []
 
-  const queryNorm = normName(trimmed)
-  const excluded = new Set(excludeNames.map((name) => normName(name)))
+  const queryNorm = normalizeSuggestionText(trimmed)
+  const excluded = new Set(excludeNames.map((name) => normalizeSuggestionText(name)))
 
   const results = new Map<string, NameSuggestion>()
 
@@ -158,7 +178,7 @@ export function searchNameSuggestions(
   scanCatalog(siteCatalog, trimmed, queryNorm, false, results)
 
   return [...results.values()]
-    .filter((suggestion) => !excluded.has(normName(suggestion.name)))
+    .filter((suggestion) => !excluded.has(normalizeSuggestionText(suggestion.name)))
     .sort((a, b) => {
       if (a.inRole !== b.inRole) return a.inRole ? -1 : 1
       const kindDiff = MATCH_KIND_RANK[a.matchKind] - MATCH_KIND_RANK[b.matchKind]
