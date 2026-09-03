@@ -19,6 +19,7 @@ import { portfolioEntry } from './portfolioEntry';
 import { blogPost } from './blogPost';
 import { page } from './page';
 import { trashRecord } from './trashRecord';
+import { duplicateDismissal } from './duplicateDismissal';
 import { campaignBriefAttachment } from './campaignBriefAttachment';
 import { videoEvent } from './videoEvent';
 
@@ -71,6 +72,7 @@ export const schemaTypes = [
   blogPost,
   page,
   trashRecord,
+  duplicateDismissal,
   campaignBriefAttachment,
   videoEvent,
 ];

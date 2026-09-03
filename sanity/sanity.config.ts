@@ -106,6 +106,7 @@ export default defineConfig({
           t.templateId !== 'crewMember' &&
           t.templateId !== 'siteSettings' &&
           t.templateId !== 'trashRecord' &&
+          t.templateId !== 'duplicateDismissal' &&
           t.templateId !== 'campaignBriefAttachment' &&
           t.templateId !== 'videoEvent',
       ),
