@@ -13,12 +13,12 @@ import {useClient} from 'sanity'
 import {Box, Card, Flex, Spinner, Stack, Text} from '@sanity/ui'
 import {
   CREW_DEPARTMENTS,
-  CREW_ROLE_BY_KEY,
   getDepartmentLabel,
   scanMergeReferences,
   type CrewDepartmentKey,
   type MergeReferenceHit,
 } from '@crew-credits'
+import {studioRoleLabel} from './crew-member-labels'
 
 type DeptProjectRow = {
   publishedId: string
@@ -34,11 +34,8 @@ type DeptGroup = {
 }
 
 function roleLabelForMatch(roleKey: string | undefined, role: string): string {
-  if (roleKey) {
-    const catalog = CREW_ROLE_BY_KEY.get(roleKey)
-    if (catalog) return catalog.role.label
-  }
-  return role?.trim() || roleKey || 'Credit'
+  if (roleKey) return studioRoleLabel(roleKey, role)
+  return role?.trim() || 'Credit'
 }
 
 function buildDeptGroups(hits: MergeReferenceHit[]): {

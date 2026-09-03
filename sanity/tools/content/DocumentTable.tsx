@@ -50,6 +50,7 @@ import {
   type TrashPreflightItem,
 } from './document-lifecycle'
 import {getStudioRole} from '../../lib/studio-roles'
+import {studioRoleLabel} from './crew-member-labels'
 import {
   countPendingIdentityReviewItems,
   IDENTITY_REVIEW_QUEUE_IDENTITIES_QUERY,
@@ -175,20 +176,9 @@ const CREW_USAGE_ROLE_KEYS: readonly string[] = [
   ...new Set(Object.values(LINKED_DEPT_ROLE_KEYS).flat()),
 ]
 
-/** Legacy filter-tab labels preserved for the five Work Library roles. */
-const FILTER_ROLE_TAB_LABELS: Partial<Record<(typeof FILTER_CREDIT_ROLE_KEYS)[number], string>> =
-  {
-    brand: 'Clients',
-    director: 'Directors',
-    dop: 'DOPs',
-    art_director: 'Art Directors',
-    editor: 'Editors',
-  }
-
+/** Legacy Work Library filter-five labels are singularized via studioRoleLabel. */
 function crewRoleTabLabel(roleKey: string): string {
-  const filterLabel = FILTER_ROLE_TAB_LABELS[roleKey as (typeof FILTER_CREDIT_ROLE_KEYS)[number]]
-  if (filterLabel) return filterLabel
-  return CREW_ROLE_BY_KEY.get(roleKey)?.role.label ?? roleKey
+  return studioRoleLabel(roleKey)
 }
 
 /** Group an identity's roleKeys by catalog department for the Roles column. */
