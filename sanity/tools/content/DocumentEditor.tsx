@@ -317,7 +317,9 @@ export function DocumentEditor({
     Boolean(editState.published) &&
     Boolean(editState.draft)
   // Admin + Editor only (not Translator); only when a published version exists to remove.
+  // creditIdentity (Crew Members) stays published as a durable vendor record — no Unpublish.
   const canUnpublish =
+    documentType !== 'creditIdentity' &&
     !isTranslator &&
     Boolean(editState.published) &&
     Boolean(ops.unpublish?.disabled) === false
