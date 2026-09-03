@@ -74,6 +74,8 @@ import {
   type FrontEndDocument,
 } from './front-end-url'
 import {getStudioRole} from '../../lib/studio-roles'
+import {CreditIdentityInfoPanel} from './CreditIdentityInfoPanel'
+import {IdentityMergeDialog} from './IdentityMergeDialog'
 
 type DisplayTitlePartsDoc = {
   brandName?: string
@@ -220,34 +222,39 @@ function FormShell({
                   padding={4}
                   style={{maxWidth: 1280, margin: '0 auto', width: '100%'}}
                 >
-                  <ChangeIndicatorsTracker>
-                    <FormBuilder
-                      __internal_patchChannel={patchChannel}
-                      autoFocus
-                      changesOpen={false}
-                      collapsedFieldSets={collapsedFieldSets}
-                      collapsedPaths={collapsedPaths}
-                      focusPath={focusPath as Path}
-                      focused={formState.focused}
-                      groups={formState.groups}
-                      hasUpstreamVersion={hasUpstreamVersion}
-                      changed={formState.changed}
-                      id="root"
-                      members={formState.members}
-                      onChange={onChange}
-                      onFieldGroupSelect={onSetActiveFieldGroup}
-                      onPathBlur={onBlur}
-                      onPathFocus={onFocus}
-                      onPathOpen={onPathOpen}
-                      onSetFieldSetCollapsed={onSetCollapsedFieldSet}
-                      onSetPathCollapsed={onSetCollapsedPath}
-                      presence={presence}
-                      readOnly={formState.readOnly}
-                      schemaType={schemaType}
-                      validation={validation}
-                      value={value}
-                    />
-                  </ChangeIndicatorsTracker>
+                  <Stack space={5}>
+                    <ChangeIndicatorsTracker>
+                      <FormBuilder
+                        __internal_patchChannel={patchChannel}
+                        autoFocus
+                        changesOpen={false}
+                        collapsedFieldSets={collapsedFieldSets}
+                        collapsedPaths={collapsedPaths}
+                        focusPath={focusPath as Path}
+                        focused={formState.focused}
+                        groups={formState.groups}
+                        hasUpstreamVersion={hasUpstreamVersion}
+                        changed={formState.changed}
+                        id="root"
+                        members={formState.members}
+                        onChange={onChange}
+                        onFieldGroupSelect={onSetActiveFieldGroup}
+                        onPathBlur={onBlur}
+                        onPathFocus={onFocus}
+                        onPathOpen={onPathOpen}
+                        onSetFieldSetCollapsed={onSetCollapsedFieldSet}
+                        onSetPathCollapsed={onSetCollapsedPath}
+                        presence={presence}
+                        readOnly={formState.readOnly}
+                        schemaType={schemaType}
+                        validation={validation}
+                        value={value}
+                      />
+                    </ChangeIndicatorsTracker>
+                    {documentType === 'creditIdentity' ? (
+                      <CreditIdentityInfoPanel identityId={publishedId} />
+                    ) : null}
+                  </Stack>
                 </Box>
               </VirtualizerScrollInstanceProvider>
             </DivergencesProvider>
@@ -282,6 +289,7 @@ export function DocumentEditor({
   const [trashImpactText, setTrashImpactText] = useState('')
   const [unpublishConfirmOpen, setUnpublishConfirmOpen] = useState(false)
   const [viewOnSiteLoading, setViewOnSiteLoading] = useState(false)
+  const [mergeOpen, setMergeOpen] = useState(false)
 
   const editState = useEditState(publishedId, documentType)
   const ops = useDocumentOperation(publishedId, documentType)
@@ -290,6 +298,7 @@ export function DocumentEditor({
   const role = getStudioRole(currentUser)
   const isAdmin = role === 'admin'
   const isTranslator = role === 'translator'
+  const canMergeIdentity = documentType === 'creditIdentity' && isAdmin
 
   // Prefer live compile from displayTitleParts so chrome matches Portfolio Details.
   // Fall back to nav title, then schema type title (singletons like siteSettings
@@ -595,6 +604,14 @@ export function DocumentEditor({
               </Text>
             ) : null}
 
+            {canMergeIdentity ? (
+              <Button
+                mode="ghost"
+                text="Merge into…"
+                disabled={busy !== null}
+                onClick={() => setMergeOpen(true)}
+              />
+            ) : null}
             {frontEndUrl ? (
               <Button
                 mode="ghost"
