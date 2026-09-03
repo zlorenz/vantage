@@ -792,6 +792,7 @@ export function DocumentTable({
   const [sort, setSort] = useState(section.defaultSort)
   const [crewDeptTab, setCrewDeptTab] = useState<CrewDeptTab>('all')
   const [crewRoleFilter, setCrewRoleFilter] = useState<CrewRoleFilter>('all')
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false)
   const [pendingReviewCount, setPendingReviewCount] = useState(0)
   const [dismissedPairKeys, setDismissedPairKeys] = useState<Set<string>>(
     () => new Set(),
@@ -827,6 +828,7 @@ export function DocumentTable({
     setSearch('')
     setCrewDeptTab('all')
     setCrewRoleFilter('all')
+    setDuplicatesOnly(false)
     setStatusFilter('all')
     setSelected(new Set())
   }, [section.id, section.defaultSort])
@@ -1176,6 +1178,9 @@ export function DocumentTable({
       if (crewRoleFilter !== 'all') {
         next = next.filter((row) => row.roleKeys?.includes(crewRoleFilter))
       }
+      if (duplicatesOnly) {
+        next = next.filter((row) => duplicateFlagsById.has(baseId(row._id)))
+      }
     }
     if (q) {
       next = next.filter((row) =>
@@ -1215,6 +1220,8 @@ export function DocumentTable({
   }, [
     crewDeptTab,
     crewRoleFilter,
+    duplicateFlagsById,
+    duplicatesOnly,
     showCrewNotLinkedState,
     inTrash,
     isCrewMembersSection,
@@ -1742,6 +1749,17 @@ export function DocumentTable({
               onChange={(event) => setSearch(event.currentTarget.value)}
             />
           </Box>
+          {isCrewMembersSection && !showCrewNotLinkedState ? (
+            <Button
+              icon={WarningOutlineIcon}
+              text={`Duplicates only (${duplicateFlagsById.size})`}
+              mode={duplicatesOnly ? 'default' : 'ghost'}
+              tone={duplicatesOnly ? 'caution' : 'default'}
+              fontSize={1}
+              disabled={duplicateFlagsById.size === 0 && !duplicatesOnly}
+              onClick={() => setDuplicatesOnly((prev) => !prev)}
+            />
+          ) : null}
           {canCreate ? (
             <Button
               icon={AddIcon}
