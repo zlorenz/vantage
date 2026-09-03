@@ -10,6 +10,7 @@ import {
   Flex,
   Menu,
   MenuButton,
+  MenuGroup,
   MenuItem,
   Spinner,
   Stack,
@@ -17,7 +18,15 @@ import {
   TextInput,
   useToast,
 } from '@sanity/ui'
-import {AddIcon, ChevronDownIcon, EyeClosedIcon, SearchIcon, TrashIcon} from '@sanity/icons'
+import {
+  AddIcon,
+  ChevronDownIcon,
+  CloseIcon,
+  EyeClosedIcon,
+  FilterIcon,
+  SearchIcon,
+  TrashIcon,
+} from '@sanity/icons'
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
   CREW_DEPARTMENTS,
@@ -1389,48 +1398,82 @@ export function DocumentTable({
                 ))}
               </Flex>
               {!showCrewNotLinkedState ? (
-                <Flex gap={3} align="center" wrap="wrap">
-                  <button
-                    type="button"
-                    onClick={() => setCrewRoleFilter('all')}
-                    style={{
-                      all: 'unset',
-                      cursor: 'pointer',
-                      color:
-                        crewRoleFilter === 'all'
-                          ? 'var(--card-fg-color)'
-                          : 'var(--card-muted-fg-color)',
-                      fontWeight: crewRoleFilter === 'all' ? 600 : 400,
-                      fontSize: 13,
-                    }}
-                  >
-                    All ({crewRoleCounts.all ?? 0})
-                  </button>
-                  {linkedRolesInScope.map((roleKey) => (
-                    <button
-                      key={roleKey}
-                      type="button"
-                      onClick={() => setCrewRoleFilter(roleKey)}
-                      style={{
-                        all: 'unset',
-                        cursor: 'pointer',
-                        color:
-                          crewRoleFilter === roleKey
-                            ? 'var(--card-fg-color)'
-                            : 'var(--card-muted-fg-color)',
-                        fontWeight: crewRoleFilter === roleKey ? 600 : 400,
-                        fontSize: 13,
-                      }}
-                    >
-                      {crewRoleTabLabel(roleKey)} ({crewRoleCounts[roleKey] ?? 0})
-                    </button>
-                  ))}
+                <Flex gap={2} align="center" wrap="wrap">
+                  <MenuButton
+                    id={`${section.id}-crew-role-filter`}
+                    button={
+                      <Button
+                        text={
+                          crewRoleFilter === 'all'
+                            ? `Filter by role… (${crewRoleCounts.all ?? 0})`
+                            : `${crewRoleTabLabel(crewRoleFilter)} (${crewRoleCounts[crewRoleFilter] ?? 0})`
+                        }
+                        icon={FilterIcon}
+                        iconRight={ChevronDownIcon}
+                        mode="ghost"
+                        fontSize={1}
+                      />
+                    }
+                    menu={
+                      <Menu>
+                        <MenuItem
+                          text={`All roles (${crewRoleCounts.all ?? 0})`}
+                          pressed={crewRoleFilter === 'all'}
+                          onClick={() => setCrewRoleFilter('all')}
+                        />
+                        {crewDeptTab === 'all'
+                          ? CREW_DEPARTMENTS.filter((dept) =>
+                              deptHasLinkedRoles(dept.key),
+                            ).map((dept) => (
+                              <MenuGroup key={dept.key} text={dept.label}>
+                                {LINKED_DEPT_ROLE_KEYS[dept.key].map((roleKey) => (
+                                  <MenuItem
+                                    key={roleKey}
+                                    text={`${crewRoleTabLabel(roleKey)} (${crewRoleCounts[roleKey] ?? 0})`}
+                                    pressed={crewRoleFilter === roleKey}
+                                    onClick={() => setCrewRoleFilter(roleKey)}
+                                  />
+                                ))}
+                              </MenuGroup>
+                            ))
+                          : linkedRolesInScope.map((roleKey) => (
+                              <MenuItem
+                                key={roleKey}
+                                text={`${crewRoleTabLabel(roleKey)} (${crewRoleCounts[roleKey] ?? 0})`}
+                                pressed={crewRoleFilter === roleKey}
+                                onClick={() => setCrewRoleFilter(roleKey)}
+                              />
+                            ))}
+                      </Menu>
+                    }
+                    popover={{portal: true, placement: 'bottom-start'}}
+                  />
                 </Flex>
               ) : null}
             </Stack>
           ) : null}
         </Stack>
         <Flex gap={2} align="center" wrap="wrap">
+          {isCrewMembersSection &&
+          !showCrewNotLinkedState &&
+          crewRoleFilter !== 'all' ? (
+            <Badge
+              tone="primary"
+              fontSize={1}
+              mode="outline"
+              style={{cursor: 'pointer', paddingRight: 4}}
+              onClick={() => setCrewRoleFilter('all')}
+              title="Clear role filter"
+            >
+              <Flex align="center" gap={1}>
+                <span>
+                  {crewRoleTabLabel(crewRoleFilter)} (
+                  {crewRoleCounts[crewRoleFilter] ?? 0})
+                </span>
+                <CloseIcon style={{fontSize: 12}} />
+              </Flex>
+            </Badge>
+          ) : null}
           {(canMoveToTrash || canBulkHide) && selected.size > 0 ? (
             !inTrash ? (
               <MenuButton
