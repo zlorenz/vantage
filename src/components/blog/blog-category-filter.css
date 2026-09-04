@@ -1,0 +1,77 @@
+/* Production Log category filter — trigger + desktop popout placement.
+ *
+ * Reuses .vp-index-filter-sheet__* list/panel chrome from
+ * portfolio-index-filter-sheet.css. Desktop popout opens *downward*
+ * (trigger is in the page header, not a bottom bar).
+ */
+
+.vp-news-page__filter-anchor {
+  position: relative;
+  flex-shrink: 0;
+  align-self: baseline;
+}
+
+.vp-news-page__filter-trigger {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  vertical-align: baseline;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-news-page__filter-trigger:hover,
+.vp-news-page__filter-trigger:focus-visible {
+  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
+  outline: none;
+}
+
+.vp-news-page__filter-trigger-icon {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Term rows are <a> Links — keep button-like interaction chrome. */
+.vp-news-page__filter-anchor .vp-index-filter-sheet__term {
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+@media (min-width: 576px) {
+  /*
+   * Portfolio sheet opens upward from a bottom-bar trigger.
+   * News trigger sits in the header — flip to open below, right-aligned.
+   */
+  .vp-news-page__filter-sheet.vp-index-filter-sheet {
+    top: calc(100% + 0.35rem);
+    right: 0;
+    bottom: auto;
+    left: auto;
+  }
+
+  .vp-news-page__filter-sheet .vp-index-filter-sheet__panel {
+    transform: translateY(-0.5rem);
+  }
+
+  .vp-news-page__filter-sheet.is-open .vp-index-filter-sheet__panel {
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 576px) and (prefers-reduced-motion: reduce) {
+  .vp-news-page__filter-sheet .vp-index-filter-sheet__panel,
+  .vp-news-page__filter-sheet.is-open .vp-index-filter-sheet__panel {
+    transform: none;
+  }
+}

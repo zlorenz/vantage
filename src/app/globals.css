@@ -492,6 +492,7 @@
 .vp-case-carousel__title,
 .vp-case-header__brand,
 .vp-case-header__campaign,
+.vp-news-page__title,
 .vp-about-statement__heading,
 .vp-how-we-move__heading,
 .vp-how-we-move__trigger-label,
@@ -1361,29 +1362,64 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /* ==========================================================================
-   News index — multi-column post grid
+   News index — page title + multi-column post grid
    ========================================================================== */
 
-.vp-news-masonry {
-  column-count: 1;
-  column-gap: 0.75rem;
+/* Match .vp-case-header__campaign (portfolio case) — large white left-aligned display type. */
+.vp-news-page__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.vp-news-page__title {
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-family: var(--font-vp-heading);
+  font-size: clamp(2.5rem, 5vw, 3.875rem);
+  font-weight: var(--font-vp-heading-weight);
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: left;
+  overflow-wrap: break-word;
 }
 
 @media (min-width: 768px) {
-  .vp-news-masonry {
-    column-count: 2;
+  .vp-news-page__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .vp-news-page__title {
+    font-size: clamp(3.125rem, 4.5vw, 3.9rem);
   }
 }
 
-@media (min-width: 1024px) {
-  .vp-news-masonry {
-    column-count: 3;
-  }
+.vp-news-masonry {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
 }
 
-.vp-news-masonry > * {
-  break-inside: avoid;
-  margin-bottom: 0.75rem;
+.vp-news-masonry__col {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+}
+
+/* Horizontal gutters (space between stacked cards in a column). */
+.vp-news-masonry__col > .vp-post-card:not(:last-child) {
+  margin-bottom: 3rem;
+}
+
+/* Masonry columns are narrower than the old single-column list — pull titles down (~28px desktop). */
+.vp-news-masonry .vp-post-card__title {
+  font-size: clamp(1.25rem, 1.5vw, 1.75rem);
 }
 
 /* ==========================================================================

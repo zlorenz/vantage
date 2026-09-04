@@ -1,13 +1,13 @@
 /**
- * News index page — hero, intro, three-column masonry post grid.
+ * News index page — Production Log title + three-column masonry post grid.
+ * PageHero / intro body remain in Sanity for possible later return; not rendered here.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
-import { BlogPostCard } from '@/components/blog/BlogPostCard';
-import { PageHero } from '@/components/ui/PageHero';
-import { PortableTextIntro } from '@/components/ui/PortableTextIntro';
+import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
+import { BlogPostMasonry } from '@/components/blog/BlogPostMasonry';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { newsPageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
@@ -22,10 +22,10 @@ import {
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
-import { ALL_POSTS_QUERY } from '@/sanity/queries/blog';
+import { ALL_CATEGORIES_QUERY, ALL_POSTS_QUERY } from '@/sanity/queries/blog';
 import { NEWS_PAGE_QUERY } from '@/sanity/queries/pages';
 import type { NEWS_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
-import type { BlogPostCard as BlogPostCardData } from '@/types/sanity';
+import type { BlogPostCard as BlogPostCardData, CategoryTerm } from '@/types/sanity';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -59,31 +59,27 @@ export default async function NewsPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageResult, postsResult, phrases, organization] = await Promise.all([
+  const [pageResult, postsResult, categoriesResult, phrases, organization] = await Promise.all([
     sanityFetch({query: NEWS_PAGE_QUERY}),
     sanityFetch({query: ALL_POSTS_QUERY, stega: false}),
+    sanityFetch({query: ALL_CATEGORIES_QUERY, stega: false}),
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
   ]);
   const page = pageResult.data as NEWS_PAGE_QUERY_RESULT;
   const posts = postsResult.data as BlogPostCardData[];
+  const categories = categoriesResult.data as CategoryTerm[];
 
   if (!page) notFound();
 
-  const heroTitle =
-    typedLocale === 'zh' && page.heroTitleZh
-      ? page.heroTitleZh
-      : page.heroTitle || 'News <span class="vp-outline">& Insights</span>';
-
-  const introBlocks =
-    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
+  const pageTitle = 'Production Log';
 
   return (
     <>
       <JsonLd data={buildOrganization(organization)} />
       <JsonLd
         data={buildCollectionPage({
-          name: heroTitle,
+          name: pageTitle,
           description: seoDescription(page.seo ?? undefined, typedLocale),
           image: page.featuredImage ?? undefined,
           url: newsBreadcrumb(typedLocale).url,
@@ -93,24 +89,26 @@ export default async function NewsPage({ params }: Props) {
       <JsonLd
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), newsBreadcrumb(typedLocale)])}
       />
-      <PageHero title={heroTitle} backgroundImage={page.featuredImage ?? undefined} />
 
-      <SectionWrapper className="vp-news-page" fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-          <div className="vp-news-intro mb-12 max-w-[900px] font-light text-vp-text-muted">
-            <PortableTextIntro blocks={introBlocks ?? undefined} />
-          </div>
+      <SectionWrapper
+        className="vp-news-page !pt-[var(--vp-section-y-header-condensed)]"
+        fullBleed={true}
+      >
+        <div className="vp-content-rail">
+          <header className="vp-news-page__header">
+            <h1 className="vp-news-page__title">{pageTitle}</h1>
+            <BlogCategoryFilter
+              categories={categories}
+              locale={typedLocale}
+              phrases={phrases}
+            />
+          </header>
 
-          <div className="vp-news-masonry">
-            {posts.map((post) => (
-              <BlogPostCard
-                key={post._id}
-                post={post}
-                locale={typedLocale}
-                phrases={phrases}
-              />
-            ))}
-          </div>
+          <BlogPostMasonry
+            posts={posts}
+            locale={typedLocale}
+            phrases={phrases}
+          />
         </div>
       </SectionWrapper>
     </>

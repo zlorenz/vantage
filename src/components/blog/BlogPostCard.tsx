@@ -1,5 +1,9 @@
+'use client';
+
 /**
  * BlogPostCard — news index and category archive list card.
+ * Featured image keeps its intrinsic aspect ratio (no forced 16:9 crop)
+ * so staggered column layouts can vary card height from real stills.
  */
 
 import Image from 'next/image';
@@ -26,7 +30,7 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
   );
 
   const imageUrl = post.featuredImage
-    ? urlForImage(post.featuredImage).width(960).height(540).fit('crop').url()
+    ? urlForImage(post.featuredImage).width(960).url()
     : null;
 
   return (
@@ -34,15 +38,16 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
       {imageUrl ? (
         <Link
           href={{ pathname: '/[slug]', params: { slug: slugParam } }}
-          className="vp-post-card__thumb block aspect-video overflow-hidden bg-vp-search-thumb-bg"
+          className="vp-post-card__thumb block overflow-hidden bg-vp-search-thumb-bg"
           aria-label={title}
         >
           <Image
             src={imageUrl}
             alt=""
             width={960}
-            height={540}
-            className="h-full w-full object-cover"
+            height={640}
+            className="h-auto w-full"
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
           />
         </Link>
       ) : null}
