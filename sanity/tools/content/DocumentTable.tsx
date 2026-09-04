@@ -43,6 +43,7 @@ import type {ContentLeaf, ColumnId} from './sections'
 import {searchTextIncludes} from './search-normalize'
 import {DuplicateReviewDialog} from './DuplicateReviewDialog'
 import {IdentityMergeDialog} from './IdentityMergeDialog'
+import {KEY_VISUAL_VIDEO_FORMAT_ID} from '@video-formats'
 import {STUDIO_PAGE_LIST_GROQ_FILTER} from '../../lib/page-visibility'
 import {
   formatImpactSummary,
@@ -304,7 +305,19 @@ function buildQuery(documentType: string): string {
         "slug": slug.current,
         publishedAt,
         "_updatedAt": _updatedAt,
-        "metaDescription": seo.metaDescription,
+        "categories": array::join(
+          [
+            array::join(
+              array::compact(
+                videoFormats[!(@._ref in ["${KEY_VISUAL_VIDEO_FORMAT_ID}", "drafts.${KEY_VISUAL_VIDEO_FORMAT_ID}"])]->title
+              ),
+              ", "
+            ),
+            array::join(array::compact(industries[]->title), ", "),
+            array::join(array::compact(markets[]->title), ", ")
+          ][length(@) > 0],
+          " · "
+        ),
         isHidden,
         trash,
         "hasDraft": count(*[_id == "drafts." + ^._id]) > 0,
@@ -935,7 +948,22 @@ export function DocumentTable({
               isHidden,
               trash,
               "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop",
-              "categories": array::join(categories[]->title, ", "),
+              "categories": select(
+                _type == "portfolioEntry" => array::join(
+                  [
+                    array::join(
+                      array::compact(
+                        videoFormats[!(@._ref in ["${KEY_VISUAL_VIDEO_FORMAT_ID}", "drafts.${KEY_VISUAL_VIDEO_FORMAT_ID}"])]->title
+                      ),
+                      ", "
+                    ),
+                    array::join(array::compact(industries[]->title), ", "),
+                    array::join(array::compact(markets[]->title), ", ")
+                  ][length(@) > 0],
+                  " · "
+                ),
+                array::join(categories[]->title, ", ")
+              ),
               "parent": parent->title,
               role
             }

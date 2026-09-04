@@ -75,8 +75,8 @@ const portfolioColumns: TableColumn[] = [
   {id: 'thumbnail', header: '', width: '56px'},
   {id: 'title', header: 'Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
-  {id: 'publishedAt', header: 'Original Release Date', width: '180px', sortable: true},
-  {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
+  {id: 'publishedAt', header: 'Original Release', width: '180px', sortable: true},
+  {id: 'categories', header: 'Categories', minWidth: '220px'},
 ]
 
 const blogColumns: TableColumn[] = [
@@ -140,7 +140,7 @@ export const NAV_ITEMS: ContentNavItem[] = [
         supportsTrash: true,
         columns: portfolioColumns,
         defaultSort: {field: 'publishedAt', direction: 'desc'},
-        searchFields: ['title', 'titleZh', 'slug', 'metaDescription'],
+        searchFields: ['title', 'titleZh', 'slug', 'categories'],
       },
       {
         kind: 'leaf',
