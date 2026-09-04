@@ -566,7 +566,7 @@
   height: var(--vp-form-step-circle-size);
   border: 1px solid var(--vp-form-step-border);
   border-radius: 50%;
-  background: var(--vp-bg, #000);
+  background: var(--vp-bg, #0a0a0a);
   color: var(--vp-form-step-pending-text);
   font-size: 0.85rem;
   font-weight: 700;
@@ -718,7 +718,7 @@
   width: 1rem;
   height: 1rem;
   margin-right: 0.5rem;
-  border: 2px solid rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(var(--vp-black-rgb), 0.15);
   border-top-color: var(--vp-btn-primary-text);
   border-radius: var(--vp-radius-spinner);
   animation: vpSpin 0.8s linear infinite;

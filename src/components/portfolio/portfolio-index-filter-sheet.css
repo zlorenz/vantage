@@ -188,7 +188,7 @@
     border-radius: 0.75rem;
     background: #111111;
     color: #fff;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 12px 40px rgba(var(--vp-black-rgb), 0.45);
     opacity: 0;
     transform: translateY(0.5rem);
     pointer-events: none;

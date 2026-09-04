@@ -168,7 +168,7 @@
   /* Mobile-first taller frame; desktop restores 16:9 below */
   aspect-ratio: 4 / 5;
   border-radius: 1.75rem;
-  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 18px rgba(var(--vp-black-rgb), 0.4);
 }
 
 @media (min-width: 768px) {

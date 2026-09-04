@@ -536,7 +536,7 @@ function buildConfirmationEmailHtml(
       <td align="center">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-collapse:collapse;">
           <tr>
-            <td align="center" style="background:#000000;padding:28px 24px;">
+            <td align="center" style="background:#0a0a0a;padding:28px 24px;">
               <img src="${CONFIRMATION_LOGO_URL}" alt="Vantage Pictures" width="220" height="36" style="display:block;margin:0 auto;border:0;outline:none;width:220px;height:auto;" />
             </td>
           </tr>

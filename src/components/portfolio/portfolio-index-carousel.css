@@ -196,7 +196,7 @@
   height: 100%;
   width: auto;
   max-width: 100%;
-  background: var(--vp-bg, #000000);
+  background: var(--vp-bg, #0a0a0a);
   color: #fff;
   /* Peeks stay visible but not tappable — only the centered active card links.
    * Hit target is .vp-portfolio-index__card-link (mounted inside ± CONTENT window). */
@@ -246,7 +246,7 @@
   opacity: var(--vp-index-inactive-opacity);
   filter: blur(4px);
   /* Soft lift — no hard outer hairline (that reads as a sticker on dark posters). */
-  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 18px rgba(var(--vp-black-rgb), 0.4);
   transition:
     opacity 280ms ease,
     transform 280ms ease,
@@ -323,8 +323,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.72) 0%,
-    rgba(0, 0, 0, 0.28) 42%,
+    rgba(var(--vp-black-rgb), 0.72) 0%,
+    rgba(var(--vp-black-rgb), 0.28) 42%,
     transparent 72%
   );
 }
@@ -418,7 +418,7 @@
   padding: 0;
   border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
   border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(var(--vp-black-rgb), 0.45);
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -502,7 +502,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(var(--vp-black-rgb), 0.5);
   cursor: pointer;
   pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
@@ -575,7 +575,7 @@
   border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
   border-right: 0;
   border-radius: 9999px 0 0 9999px;
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(var(--vp-black-rgb), 0.72);
   color: #fff;
   font-family: var(--vp-font-sans);
   font-size: clamp(1.25rem, 3.5vw, 1.75rem);
@@ -610,7 +610,7 @@
   border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
   border-left: 0;
   border-radius: 0 9999px 9999px 0;
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(var(--vp-black-rgb), 0.72);
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -699,7 +699,7 @@
   border-radius: 9999px;
   background: rgba(28, 28, 28, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 1px 4px rgba(var(--vp-black-rgb), 0.45);
   transform: translate(-50%, -50%);
   pointer-events: none;
   will-change: left;

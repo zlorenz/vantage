@@ -19,7 +19,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(var(--vp-black-rgb), 0.55);
   cursor: pointer;
   pointer-events: auto;
   opacity: 0;
@@ -42,7 +42,7 @@
   border-radius: 1.25rem 1.25rem 0 0;
   background: #111111;
   color: #fff;
-  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 -12px 40px rgba(var(--vp-black-rgb), 0.45);
   pointer-events: auto;
   /* Off-screen below; ease-out slide with no overshoot. */
   transform: translateY(100%);

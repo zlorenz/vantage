@@ -8,7 +8,7 @@
    * Embla touch handling intercepts the swipe that would collapse toolbars). */
   height: 100vh;
   height: 100svh;
-  background: #000;
+  background: var(--vp-bg);
   color: #fff;
 }
 
@@ -41,7 +41,7 @@
   min-height: 0;
   /* Visible so lagging outgoing media can overlap the incoming slide. */
   overflow: visible;
-  background: #000;
+  background: var(--vp-bg);
   /* WebKit double-tap disambiguation (~350ms) on tap-classified contacts. */
   touch-action: manipulation;
 }
@@ -133,8 +133,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.55) 0%,
-    rgba(0, 0, 0, 0.15) 42%,
+    rgba(var(--vp-black-rgb), 0.55) 0%,
+    rgba(var(--vp-black-rgb), 0.15) 42%,
     transparent 70%
   );
 }

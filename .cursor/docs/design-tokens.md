@@ -10,7 +10,9 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-bg` | `#000000` | Page background — pure black |
+| `vp-black` | `#0a0a0a` | Soft black — neutral gray, never true `#000` |
+| `vp-black-rgb` | `10, 10, 10` | Channel form for `rgba(var(--vp-black-rgb), α)` overlays/scrims |
+| `vp-bg` | `var(--vp-black)` / `#0a0a0a` | Page background |
 | `vp-text` | `#ffffff` | Primary text — pure white |
 | `vp-text-muted` | `rgba(255,255,255,0.85)` | Secondary text, filter labels |
 | `vp-text-soft` | `rgba(255,255,255,0.75)` | Tertiary text |
@@ -34,7 +36,7 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-overlay-dark` | `rgba(0,0,0,0.45)` | Hero image overlays |
+| `vp-overlay-dark` | `rgba(var(--vp-black-rgb), 0.45)` | Hero image overlays |
 | `vp-overlay-light` | `rgba(255,255,255,0.1)` | Hover states on dark surfaces |
 
 ### Form & Input
@@ -55,8 +57,8 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 
 | State | Background | Text | Border |
 |---|---|---|---|
-| Primary default | `#ffffff` | `#000000` | — |
-| Primary hover | `#a6a6a6` | `#000000` | — |
+| Primary default | `#ffffff` | `#0a0a0a` (`vp-black`) | — |
+| Primary hover | `#a6a6a6` | `#0a0a0a` (`vp-black`) | — |
 | Ghost (hero slide) | `rgba(255,255,255,0.08)` | `#ffffff` | `rgba(255,255,255,0.25)` |
 | Ghost hover | `rgba(255,255,255,0.12)` | `#ffffff` | `rgba(255,255,255,0.5)` |
 
@@ -67,9 +69,9 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 | `#5c5c5c` | Brand logo grid cell borders |
 | `#bfbfbf` | Credits section text (muted grey) |
 | `rgba(255,255,255,0.4)` | Credit role labels |
-| `rgba(0,0,0,0.2)` | Hero carousel image overlay (light) |
-| `rgba(0,0,0,0.4)` | Dropdown menu background |
-| `rgba(0,0,0,0.65–0)` | Navbar gradient (top to transparent) |
+| `rgba(var(--vp-black-rgb), 0.2)` | Hero carousel image overlay (light) |
+| `rgba(var(--vp-black-rgb), 0.4)` | Dropdown menu background |
+| `rgba(var(--vp-black-rgb), 0.65–0)` | Navbar gradient (top to transparent) |
 | `#111` | Search card thumbnail placeholder background |
 
 ---
@@ -169,7 +171,7 @@ Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px
 | Logo height (tablet, ≤767px) | `51px` |
 | Logo height (mobile, ≤575px) | `46px` |
 | Navbar backdrop blur | `blur(16px)` |
-| Navbar gradient | `rgba(0,0,0,0.65)` → `rgba(0,0,0,0)` top to bottom |
+| Navbar gradient | `rgba(var(--vp-black-rgb), 0.65)` → `rgba(var(--vp-black-rgb), 0)` top to bottom |
 
 ### Footer
 
@@ -184,7 +186,7 @@ Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px
 |---|---|
 | Card image hover scale | `scale(1.03)` |
 | Card image transition | `0.35s ease` |
-| Card overlay gradient | `rgba(0,0,0,0.75)` → `rgba(0,0,0,0)` bottom to top, `height: 45%` |
+| Card overlay gradient | `rgba(var(--vp-black-rgb), 0.75)` → `rgba(var(--vp-black-rgb), 0)` bottom to top, `height: 45%` |
 | Card title padding | `1.25em 1em 0.75em` |
 | Load spinner size | `40px`, border `3px` |
 | Load more sentinel height | `120px` |
@@ -270,7 +272,7 @@ Inputs, filter tabs, modals, dropdowns: `border-radius: 0`
 The navbar uses a pseudo-element (`::before`) for its background — a gradient + blur combination that fades to transparent at the bottom, so it doesn't create a hard edge over hero content. This must be replicated exactly in the new navbar component.
 
 ```
-background: linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0))
+background: linear-gradient(180deg, rgba(var(--vp-black-rgb), 0.65), rgba(var(--vp-black-rgb), 0))
 backdrop-filter: blur(16px)
 mask-image: linear-gradient(to bottom, black, transparent)
 ```
@@ -286,7 +288,7 @@ Used in hero headings and page hero titles for typographic contrast.
 ### Portfolio Card Overlay
 Bottom-anchored gradient overlay on thumbnail images, covering the lower 45% of the card:
 ```
-background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0))
+background: linear-gradient(to top, rgba(var(--vp-black-rgb), 0.75), rgba(var(--vp-black-rgb), 0))
 ```
 Title text sits above this overlay, centred, uppercase, white.
 

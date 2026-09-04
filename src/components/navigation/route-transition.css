@@ -29,7 +29,7 @@
   z-index: 119;
   pointer-events: none;
   opacity: 0;
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(var(--vp-black-rgb), 0.18);
   transition: opacity 150ms ease;
 }
 
@@ -50,7 +50,7 @@
   border-radius: 0.75rem;
   background: rgba(18, 18, 18, 0.96);
   padding: 0.875rem 1rem;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 40px rgba(var(--vp-black-rgb), 0.35);
 }
 
 .vp-route-transition__toast-text {

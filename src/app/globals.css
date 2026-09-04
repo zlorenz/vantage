@@ -19,7 +19,8 @@
 @theme {
   /* Colour Palette — Core (design-tokens.md §Colour Palette › Core) */
 
-  --color-vp-bg: #000000;
+  /* Soft black — never true #000. Channel form for rgba(var(--vp-black-rgb), α). */
+  --color-vp-bg: #0a0a0a;
   --color-vp-text: #ffffff;
   --color-vp-text-muted: rgba(255, 255, 255, 0.85);
   --color-vp-text-soft: rgba(255, 255, 255, 0.75);
@@ -39,7 +40,7 @@
 
   /* Colour Palette — Overlays */
 
-  --color-vp-overlay-dark: rgba(0, 0, 0, 0.45);
+  --color-vp-overlay-dark: rgba(10, 10, 10, 0.45);
   --color-vp-overlay-light: rgba(255, 255, 255, 0.1);
 
   /* Colour Palette — Form & Input */
@@ -57,7 +58,7 @@
   /* Colour Palette — Button */
 
   --color-vp-btn-primary-bg: #ffffff;
-  --color-vp-btn-primary-text: #000000;
+  --color-vp-btn-primary-text: #0a0a0a;
   --color-vp-btn-primary-hover-bg: #a6a6a6;
   --color-vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
   --color-vp-btn-ghost-text: #ffffff;
@@ -70,8 +71,8 @@
   --color-vp-logo-grid-border: #5c5c5c;
   --color-vp-credits-text: #bfbfbf;
   --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
-  --color-vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
+  --color-vp-dropdown-bg: rgba(10, 10, 10, 0.4);
+  --color-vp-navbar-gradient-start: rgba(10, 10, 10, 0.65);
   --color-vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family
@@ -192,7 +193,10 @@
 :root {
   /* Colour Palette — Core */
 
-  --vp-bg: #000000;
+  /* Soft black — never true #000. Use --vp-black-rgb for translucent overlays. */
+  --vp-black: #0a0a0a;
+  --vp-black-rgb: 10, 10, 10;
+  --vp-bg: var(--vp-black);
   --vp-text: #ffffff;
   --vp-text-muted: rgba(255, 255, 255, 0.85);
   --vp-text-soft: rgba(255, 255, 255, 0.75);
@@ -211,7 +215,7 @@
 
   /* Colour Palette — Overlays */
 
-  --vp-overlay-dark: rgba(0, 0, 0, 0.45);
+  --vp-overlay-dark: rgba(var(--vp-black-rgb), 0.45);
   --vp-overlay-light: rgba(255, 255, 255, 0.1);
 
   /* Colour Palette — Form & Input */
@@ -229,7 +233,7 @@
   /* Colour Palette — Button */
 
   --vp-btn-primary-bg: #ffffff;
-  --vp-btn-primary-text: #000000;
+  --vp-btn-primary-text: var(--vp-black);
   --vp-btn-primary-hover-bg: #a6a6a6;
   --vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
   --vp-btn-ghost-text: #ffffff;
@@ -242,8 +246,8 @@
   --vp-logo-grid-border: #5c5c5c;
   --vp-credits-text: #bfbfbf;
   --vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --vp-dropdown-bg: rgba(0, 0, 0, 0.4);
-  --vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
+  --vp-dropdown-bg: rgba(var(--vp-black-rgb), 0.4);
+  --vp-navbar-gradient-start: rgba(var(--vp-black-rgb), 0.65);
   --vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family — see --font-vp-sans note above */
@@ -525,7 +529,7 @@
   background-image: linear-gradient(
     180deg,
     var(--vp-navbar-gradient-start),
-    rgba(0, 0, 0, 0)
+    rgba(var(--vp-black-rgb), 0)
   );
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
@@ -606,7 +610,7 @@ body:has(.vp-work-index) #header.navbar::before {
   height: 100vh;
   height: 100dvh;
   padding: 0;
-  background-color: #000;
+  background-color: var(--vp-bg);
   /* Off-screen above viewport; will-change only while mounted
    * (panel unmounts after close — see NavBar panelMounted / CLOSE_MS).
    * translateX(-50%) centers the 100vw breakout; translateY slides. */
@@ -776,7 +780,7 @@ body:has(.vp-work-index) #header.navbar::before {
     width: max-content;
     max-width: min(24rem, calc(100vw - 2rem));
     padding: 1.75rem 2rem;
-    background-color: #000;
+    background-color: var(--vp-bg);
     opacity: 0;
     transform: translateY(-0.5rem);
     will-change: opacity, transform;
@@ -1072,7 +1076,7 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-filterbar__clear:focus-visible {
   background: var(--color-vp-link-hover);
   border-color: var(--color-vp-link-hover);
-  color: #000;
+  color: var(--vp-btn-primary-text);
   outline: none;
 }
 
@@ -1142,7 +1146,7 @@ body:has(.vp-work-index) #header.navbar::before {
   z-index: 1;
   width: 100%;
   height: 45%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  background: linear-gradient(to top, rgba(var(--vp-black-rgb), 0.75), rgba(var(--vp-black-rgb), 0));
   pointer-events: none;
 }
 
@@ -1477,8 +1481,8 @@ body:has(.vp-work-index) #header.navbar::before {
   text-align: center;
   font-size: 0.8125rem;
   color: #fff;
-  text-shadow: 0 0 1.5px #000;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.4), transparent);
+  text-shadow: 0 0 1.5px var(--vp-black);
+  background: linear-gradient(0deg, rgba(var(--vp-black-rgb), 0.4), transparent);
 }
 
 /* ==========================================================================
@@ -1569,7 +1573,7 @@ body:has(.vp-work-index) #header.navbar::before {
   z-index: 30;
   margin-bottom: 1.25rem;
   padding: 0.75rem 0;
-  background: rgba(0, 0, 0, 0.92);
+  background: rgba(var(--vp-black-rgb), 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--color-vp-border-soft);
 }
@@ -1656,7 +1660,7 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-view-toggle__btn.is-active {
-  color: #000;
+  color: var(--vp-btn-primary-text);
   background: var(--color-vp-link);
 }
 
@@ -1720,7 +1724,7 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-badge--hidden {
-  color: #000;
+  color: var(--vp-btn-primary-text);
   background: var(--color-vp-link);
   border-color: var(--color-vp-link);
 }

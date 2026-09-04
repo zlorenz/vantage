@@ -22,7 +22,7 @@
   padding: 0;
   border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
   border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(var(--vp-black-rgb), 0.45);
   color: #fff;
   cursor: pointer;
   vertical-align: baseline;
