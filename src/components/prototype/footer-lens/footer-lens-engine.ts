@@ -1,16 +1,17 @@
 /**
- * Footer wordmark lens — Canvas 2D approximation of monopo.london's Pixi stack:
- * 1. White wordmark with inverse circular hole (outside lens)
- * 2. Mosaic "content swap" disc (inside lens) with displacement warp + rim RGB split
+ * Symbol loupe — Canvas 2D approximation of monopo.london's Pixi stack.
+ * Prototype for the About hero: large Vantage mark as a collage canvas.
+ * 1. White symbol with inverse circular hole (outside lens)
+ * 2. Photo-collage disc (inside lens) with displacement warp + rim RGB split
  * 3. Glass rim overlay
  * 4. Cursor lerp for organic tracking
  */
 
 import {
-  WORDMARK_PATH_D,
-  WORDMARK_VIEWBOX_H,
-  WORDMARK_VIEWBOX_W,
-} from "./wordmark-path";
+  SYMBOL_PATH_D,
+  SYMBOL_VIEWBOX_H,
+  SYMBOL_VIEWBOX_W,
+} from "./symbol-path";
 
 export type FooterLensPointer = { x: number; y: number } | null;
 
@@ -23,6 +24,67 @@ export type FooterLensEngine = {
   destroy: () => void;
   getDpr: () => number;
 };
+
+/**
+ * Placeholder-resolution photo collage (alpha-masked to the "A").
+ * Expect a higher-res re-export before shipping — pipeline test asset only.
+ */
+const COLLAGE_SRC = "/prototype/footer-lens/collage.png";
+
+/**
+ * Loupe warp — collage-readable:
+ * - Nearly flat zoom across most of the lens (one continuous curve, no seam)
+ * - Gentle dome + CA only near the rim
+ * (sampleDist = dist * zoom → lower zoom = stronger magnification)
+ */
+/** Center zoom (~2.2×). Confirmed; do not raise without re-checking collage. */
+const ZOOM_CENTER = 0.45;
+/** Rim zoom — closer to center so the dome is a soft falloff, not a second zone. */
+const ZOOM_EDGE = 0.55;
+/**
+ * Exponent for the continuous zoom / rim falloff (u^N).
+ * Higher = flatter longer, thinner transition at the edge. Tuned ~6–10.
+ */
+const ZOOM_FALLOFF_EXP = 9;
+/** Subtle rim displacement only (fraction of lensR). */
+const DISPLACE_FRAC = 0.035;
+/** Soft chromatic split at the outer rim (fraction of lensR). */
+const CA_FRAC = 0.01;
+/**
+ * Soft-focus onset as fraction of lensR — blur only in this outer band,
+ * aligned with the alpha feather at the disc boundary.
+ */
+const EDGE_BLUR_START = 0.82;
+/** Base blur radius in CSS px; multiplied by dpr for the device-pixel disc. */
+const EDGE_BLUR_CSS_PX = 5;
+/**
+ * Lens radius as fraction of symbol width.
+ * Slightly larger than the wordmark loupe so the collage reads on a square mark.
+ */
+const LENS_R_FRAC = 0.14;
+/**
+ * Reveal-buffer supersample vs logo CSS size (× devicePixelRatio).
+ * Sized so ~ZOOM_CENTER magnification still has spare source pixels on Retina.
+ */
+const REVEAL_SUPER = 1 / ZOOM_CENTER;
+
+type Cache = {
+  logoX: number;
+  logoY: number;
+  logoW: number;
+  logoH: number;
+  path2d: Path2D;
+  whiteWordmark: HTMLCanvasElement;
+  reveal: HTMLCanvasElement;
+  revealData: ImageData;
+  revealDw: number;
+  revealDh: number;
+};
+
+/* -------------------------------------------------------------------------- */
+/* LEGACY procedural mosaic — kept for easy restore. Not used while COLLAGE_SRC
+ * is active. Re-enable by calling buildProceduralMosaicReveal from rebuildCache.
+ * -------------------------------------------------------------------------- */
 
 const MOSAIC_COLS = 48;
 const MOSAIC_ROWS = 20;
@@ -51,43 +113,6 @@ const MOSAIC_WARM: ReadonlyArray<readonly [number, number, number]> = [
   [158, 128, 102],
   [176, 148, 118],
 ];
-
-/**
- * Loupe warp — collage-readable:
- * - Strong flat zoom across the middle ~70% of the lens
- * - Only subtle dome + CA in the outer rim
- * (sampleDist = dist * zoom → lower zoom = stronger magnification)
- */
-/** Flat zoom across the clear center (~2.5×; ~10% less than prior 2.8×). */
-const ZOOM_CENTER = 0.4;
-/** Slightly softer zoom at the rim (~1.9×) — keep falloff mild. */
-const ZOOM_EDGE = 0.53;
-/** Clean plateau as fraction of lensR (~70% diameter stays undistorted). */
-const INNER_FLAT = 0.7;
-/** Subtle rim displacement only (fraction of lensR). */
-const DISPLACE_FRAC = 0.035;
-/** Displacement + CA start at the outer 30% (fraction of lensR). */
-const RIM_START = 0.7;
-/** Soft chromatic split at the outer rim (fraction of lensR). */
-const CA_FRAC = 0.01;
-/**
- * Lens radius as fraction of wordmark width.
- * Sized so letter height sits inside the dome (~0.7× diameter), not on the poles.
- */
-const LENS_R_FRAC = 0.115;
-
-type Cache = {
-  logoX: number;
-  logoY: number;
-  logoW: number;
-  logoH: number;
-  path2d: Path2D;
-  whiteWordmark: HTMLCanvasElement;
-  reveal: HTMLCanvasElement;
-  revealData: ImageData;
-  revealDw: number;
-  revealDh: number;
-};
 
 function hash01(n: number): number {
   const x = Math.sin(n * 12.9898) * 43758.5453;
@@ -159,27 +184,8 @@ function paintPersonSilhouette(
   ctx.restore();
 }
 
-function buildWhiteWordmark(
-  path2d: Path2D,
-  logoX: number,
-  logoY: number,
-  logoW: number,
-  logoH: number,
-  dw: number,
-  dh: number,
-): HTMLCanvasElement {
-  const c = document.createElement("canvas");
-  c.width = dw;
-  c.height = dh;
-  const ctx = c.getContext("2d")!;
-  ctx.setTransform(dw / logoW, 0, 0, dh / logoH, 0, 0);
-  ctx.translate(-logoX, -logoY);
-  ctx.fillStyle = "#ffffff";
-  ctx.fill(path2d);
-  return c;
-}
-
-function buildRevealBuffer(
+/** @deprecated Prefer COLLAGE_SRC; kept so the gray-tile placeholder is easy to restore. */
+function buildProceduralMosaicReveal(
   path2d: Path2D,
   logoX: number,
   logoY: number,
@@ -235,6 +241,67 @@ function buildRevealBuffer(
   return { canvas: c, data: ctx.getImageData(0, 0, dw, dh) };
 }
 
+// Keep the restore helper referenced so tree-shaking / unused lint stays quiet.
+void buildProceduralMosaicReveal;
+
+/* -------------------------------------------------------------------------- */
+
+function buildWhiteWordmark(
+  path2d: Path2D,
+  logoX: number,
+  logoY: number,
+  logoW: number,
+  logoH: number,
+  dw: number,
+  dh: number,
+): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = dw;
+  c.height = dh;
+  const ctx = c.getContext("2d")!;
+  ctx.setTransform(dw / logoW, 0, 0, dh / logoH, 0, 0);
+  ctx.translate(-logoX, -logoY);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill(path2d);
+  return c;
+}
+
+/**
+ * Reveal buffer from the photo collage, then destination-in against Path2D.
+ * Collage is already alpha-masked to the "A"; Path2D intersect is intentional
+ * (harmless when they agree; watch for thin double-edge / gap if they drift).
+ * Drawn into the supersampled buffer (logoCss * dpr * REVEAL_SUPER).
+ */
+function buildRevealBuffer(
+  path2d: Path2D,
+  logoX: number,
+  logoY: number,
+  logoW: number,
+  logoH: number,
+  dw: number,
+  dh: number,
+  collage: CanvasImageSource,
+): { canvas: HTMLCanvasElement; data: ImageData } {
+  const c = document.createElement("canvas");
+  c.width = dw;
+  c.height = dh;
+  const ctx = c.getContext("2d")!;
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(collage, 0, 0, dw, dh);
+
+  ctx.save();
+  ctx.globalCompositeOperation = "destination-in";
+  ctx.setTransform(dw / logoW, 0, 0, dh / logoH, 0, 0);
+  ctx.translate(-logoX, -logoY);
+  ctx.fillStyle = "#fff";
+  ctx.fill(path2d);
+  ctx.restore();
+
+  return { canvas: c, data: ctx.getImageData(0, 0, dw, dh) };
+}
+
 /**
  * Bilinear sample. Out-of-bounds → 0 (no clamp-to-edge).
  * Clamp would repeat the logo's top/bottom rows into infinite vertical streaks
@@ -265,52 +332,95 @@ function sampleChannelBilinear(
   return v0 * (1 - fy) + v1 * fy;
 }
 
-function sampleRGBA(
-  data: Uint8ClampedArray,
-  dw: number,
-  dh: number,
-  sx: number,
-  sy: number,
-): [number, number, number, number] {
-  return [
-    sampleChannelBilinear(data, dw, dh, sx, sy, 0),
-    sampleChannelBilinear(data, dw, dh, sx, sy, 1),
-    sampleChannelBilinear(data, dw, dh, sx, sy, 2),
-    sampleChannelBilinear(data, dw, dh, sx, sy, 3),
-  ];
+/**
+ * One continuous zoom curve over the full 0..1 radius — no INNER_FLAT split.
+ * Slope stays C∞; u^N keeps the middle nearly flat and pushes warp to a thin rim.
+ */
+function zoomAt(u: number): number {
+  const t = Math.min(1, Math.max(0, u));
+  return ZOOM_CENTER + (ZOOM_EDGE - ZOOM_CENTER) * Math.pow(t, ZOOM_FALLOFF_EXP);
 }
 
-function zoomAt(t: number): number {
-  if (t <= INNER_FLAT) return ZOOM_CENTER;
-  const u = (t - INNER_FLAT) / (1 - INNER_FLAT);
-  const e = u * u * (3 - 2 * u);
-  return ZOOM_CENTER + (ZOOM_EDGE - ZOOM_CENTER) * e;
-}
-
-function rimWeight(t: number): number {
-  if (t <= RIM_START) return 0;
-  const u = (t - RIM_START) / (1 - RIM_START);
-  return u * u * (3 - 2 * u);
+/** Displace / CA weight — same continuous family as zoom (no rim-start kink). */
+function rimWeight(u: number): number {
+  const t = Math.min(1, Math.max(0, u));
+  return Math.pow(t, ZOOM_FALLOFF_EXP);
 }
 
 /**
- * Build the inside-lens disc: mosaic with radial zoom + rim displacement + CA.
- * Shared UV for alpha and RGB so the silhouette magnifies with the texture.
- * Out-of-bounds → 0 (no clamp-to-edge streaks).
+ * Device-pixel diameter for the loupe disc. Always even so the circle center
+ * sits on a pixel boundary and x/y radii stay identical (no egg from ceil).
  */
+function lensDiscDiameterPx(lensR: number, dpr: number): number {
+  const raw = Math.max(2, Math.round(lensR * 2 * dpr));
+  return raw % 2 === 0 ? raw : raw + 1;
+}
+
+/**
+ * Build the inside-lens disc at device-pixel resolution.
+ * Produces a feathered sharp layer plus an opaque padded blur source;
+ * soft-focus is applied after blur so alpha never pollutes the filter.
+ */
+/**
+ * Grow opaque RGB into neighboring transparent texels so a subsequent blur
+ * never samples empty (0,0,0,0) and dilutes toward black.
+ */
+function dilateOpaqueRgb(
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  iterations: number,
+): void {
+  const neighbors: ReadonlyArray<readonly [number, number]> = [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ];
+  for (let iter = 0; iter < iterations; iter++) {
+    const prev = new Uint8ClampedArray(data);
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const i = (y * w + x) * 4;
+        if (prev[i + 3]! >= 128) continue;
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        let n = 0;
+        for (const [dx, dy] of neighbors) {
+          const j = ((y + dy) * w + (x + dx)) * 4;
+          if (prev[j + 3]! < 128) continue;
+          r += prev[j]!;
+          g += prev[j + 1]!;
+          b += prev[j + 2]!;
+          n++;
+        }
+        if (n === 0) continue;
+        data[i] = Math.round(r / n);
+        data[i + 1] = Math.round(g / n);
+        data[i + 2] = Math.round(b / n);
+        data[i + 3] = 255;
+      }
+    }
+  }
+}
+
 function buildLensDisc(
   cache: Cache,
   lensR: number,
   lx: number,
   ly: number,
+  dpr: number,
+  size: number,
 ): HTMLCanvasElement {
-  const size = Math.max(1, Math.ceil(lensR * 2));
-  const out = document.createElement("canvas");
-  out.width = size;
-  out.height = size;
-  const ctx = out.getContext("2d")!;
-  const img = ctx.createImageData(size, size);
-  const outData = img.data;
+  const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
+  // Pad past the blur kernel so rim samples never see empty transparent black.
+  const pad = Math.ceil(blurPx * 2) + 2;
+  const paddedSize = size + pad * 2;
 
   const { revealData, revealDw, revealDh, logoX, logoY, logoW, logoH } = cache;
   const src = revealData.data;
@@ -318,70 +428,179 @@ function buildLensDisc(
   const scaleY = revealDh / logoH;
   const cx = size / 2;
   const cy = size / 2;
-  const rPx = lensR;
-  const originX = lx - lensR;
-  const originY = ly - lensR;
+  const radiusPx = size / 2;
+  const discCss = size / dpr;
+  const originX = lx - discCss / 2;
+  const originY = ly - discCss / 2;
 
-  for (let py = 0; py < size; py++) {
-    const dy = py - cy;
-    for (let px = 0; px < size; px++) {
-      const dx = px - cx;
-      const dist = Math.hypot(dx, dy);
-      if (dist > rPx) continue;
+  const sharp = document.createElement("canvas");
+  sharp.width = size;
+  sharp.height = size;
+  const sharpCtx = sharp.getContext("2d")!;
+  const sharpImg = sharpCtx.createImageData(size, size);
+  const sharpData = sharpImg.data;
 
-      const t = dist / rPx;
-      const inv = dist > 1e-6 ? 1 / dist : 0;
-      const ux = dx * inv;
-      const uy = dy * inv;
+  const opaque = document.createElement("canvas");
+  opaque.width = paddedSize;
+  opaque.height = paddedSize;
+  const opaqueCtx = opaque.getContext("2d")!;
+  const opaqueImg = opaqueCtx.createImageData(paddedSize, paddedSize);
+  const opaqueData = opaqueImg.data;
 
-      const toSrc = (qx: number, qy: number): [number, number] => {
-        const logoPx = originX + qx;
-        const logoPy = originY + qy;
+  for (let py = 0; py < paddedSize; py++) {
+    for (let px = 0; px < paddedSize; px++) {
+      const dxPx = px + 0.5 - (pad + cx);
+      const dyPx = py + 0.5 - (pad + cy);
+      const distPxRaw = Math.hypot(dxPx, dyPx);
+      if (distPxRaw > radiusPx + pad) continue;
+
+      // Clamp sampling radius for the pad ring — extend real edge color outward.
+      const distPx = Math.min(distPxRaw, radiusPx);
+      const dxCss = dxPx / dpr;
+      const dyCss = dyPx / dpr;
+      const distRawCss = distPxRaw / dpr;
+      const dist = distPx / dpr;
+      const t = Math.min(1, dist / lensR);
+      const inv = distRawCss > 1e-6 ? 1 / distRawCss : 0;
+      const ux = dxCss * inv;
+      const uy = dyCss * inv;
+
+      const toSrc = (qxCss: number, qyCss: number): [number, number] => {
+        const logoPx = originX + qxCss;
+        const logoPy = originY + qyCss;
         return [(logoPx - logoX) * scaleX, (logoPy - logoY) * scaleY];
       };
 
-      // One shared UV for alpha + RGB so the silhouette magnifies with the
-      // texture. (An unzoomed alpha gate locked top/bottom edges to 1:1 and
-      // spawned chopped slivers where gate vs color disagreed.)
       const zoom = zoomAt(t);
       const rw = rimWeight(t);
       const sampleDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
-      const sampleX = cx + ux * sampleDist;
-      const sampleY = cy + uy * sampleDist;
+      const sampleXCss = discCss / 2 + ux * sampleDist;
+      const sampleYCss = discCss / 2 + uy * sampleDist;
 
-      const [sx0, sy0] = toSrc(sampleX, sampleY);
+      const [sx0, sy0] = toSrc(sampleXCss, sampleYCss);
       const a = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 3);
-      if (a < 1) continue;
+      // Need real photo coverage — skip empty collage / OOB.
+      if (a < 0.5) continue;
 
-      let r: number;
-      let g: number;
-      let b: number;
-      if (rw < 0.02) {
-        [r, g, b] = sampleRGBA(src, revealDw, revealDh, sx0, sy0);
-      } else {
-        // Rim CA — RGB offsets only; alpha stays on the shared UV so chromatic
-        // chips don't detach from the glyph.
-        const caOff = lensR * CA_FRAC * rw;
-        const [sxR, syR] = toSrc(sampleX + ux * caOff, sampleY + uy * caOff);
-        const [sxB, syB] = toSrc(sampleX - ux * caOff, sampleY - uy * caOff);
-        r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
-        g = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 1);
-        b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
-      }
+      const caOff = lensR * CA_FRAC * rw;
+      const [sxR, syR] = toSrc(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
+      const [sxB, syB] = toSrc(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
+      const r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
+      const g = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 1);
+      const b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
 
-      const i = (py * size + px) * 4;
-      outData[i] = r;
-      outData[i + 1] = g;
-      outData[i + 2] = b;
-      outData[i + 3] = a;
+      // Opaque blur source: solid alpha (no lens-edge feather baked in).
+      const oi = (py * paddedSize + px) * 4;
+      opaqueData[oi] = r;
+      opaqueData[oi + 1] = g;
+      opaqueData[oi + 2] = b;
+      opaqueData[oi + 3] = 255;
+
+      // Sharp layer: only inside the visible disc, with soft circle coverage.
+      if (distPxRaw > radiusPx + 0.5) continue;
+      const sx = px - pad;
+      const sy = py - pad;
+      if (sx < 0 || sy < 0 || sx >= size || sy >= size) continue;
+      const edge = radiusPx - distPxRaw;
+      const circleCover = edge >= 0.5 ? 1 : edge + 0.5;
+      const outA = a * circleCover;
+      if (outA < 0.5) continue;
+      const si = (sy * size + sx) * 4;
+      sharpData[si] = r;
+      sharpData[si + 1] = g;
+      sharpData[si + 2] = b;
+      sharpData[si + 3] = outA;
     }
   }
 
-  ctx.putImageData(img, 0, 0);
+  // Extend opaque color into empty neighbors (pad + silhouette holes) so blur
+  // samples photo RGB only — never transparent black.
+  dilateOpaqueRgb(opaqueData, paddedSize, paddedSize, pad);
+
+  sharpCtx.putImageData(sharpImg, 0, 0);
+  opaqueCtx.putImageData(opaqueImg, 0, 0);
+
+  // Rasterize before filter (putImageData-only canvases can skip blur in Chromium).
+  const opaqueRaster = document.createElement("canvas");
+  opaqueRaster.width = paddedSize;
+  opaqueRaster.height = paddedSize;
+  opaqueRaster.getContext("2d")!.drawImage(opaque, 0, 0);
+
+  const sharpRaster = document.createElement("canvas");
+  sharpRaster.width = size;
+  sharpRaster.height = size;
+  sharpRaster.getContext("2d")!.drawImage(sharp, 0, 0);
+
+  return applyRimSoftFocus(sharpRaster, opaqueRaster, pad, dpr);
+}
+
+/**
+ * Soft-focus rim: blur a fully-opaque padded buffer first, THEN mask alpha.
+ * Never blur a feathered/transparent edge — that dilutes RGB toward black and
+ * reads as a flat gradient instead of softened photo detail.
+ */
+function applyRimSoftFocus(
+  revealSharp: HTMLCanvasElement,
+  revealOpaquePadded: HTMLCanvasElement,
+  pad: number,
+  dpr: number,
+): HTMLCanvasElement {
+  const size = revealSharp.width;
+  const cx = size / 2;
+  const cy = size / 2;
+  const radiusPx = size / 2;
+  const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
+
+  const blurredPadded = document.createElement("canvas");
+  blurredPadded.width = revealOpaquePadded.width;
+  blurredPadded.height = revealOpaquePadded.height;
+  const bctx = blurredPadded.getContext("2d")!;
+  bctx.filter = `blur(${blurPx}px)`;
+  bctx.drawImage(revealOpaquePadded, 0, 0);
+  bctx.filter = "none";
+
+  // Crop blurred padded buffer back to the visible disc size.
+  const revealBlurred = document.createElement("canvas");
+  revealBlurred.width = size;
+  revealBlurred.height = size;
+  const cctx = revealBlurred.getContext("2d")!;
+  cctx.drawImage(blurredPadded, -pad, -pad);
+
+  // Alpha mask LAST — rim soft-focus band × soft circle edge. Blur never sees this.
+  cctx.globalCompositeOperation = "destination-in";
+  const mask = cctx.createRadialGradient(
+    cx,
+    cy,
+    radiusPx * EDGE_BLUR_START,
+    cx,
+    cy,
+    radiusPx,
+  );
+  mask.addColorStop(0, "rgba(0,0,0,0)");
+  mask.addColorStop(0.35, "rgba(0,0,0,0.2)");
+  mask.addColorStop(0.7, "rgba(0,0,0,0.65)");
+  // Feather the very rim so the lens edge isn't a hard cut on the blurred layer.
+  mask.addColorStop(0.92, "rgba(0,0,0,1)");
+  mask.addColorStop(1, "rgba(0,0,0,0)");
+  cctx.fillStyle = mask;
+  cctx.beginPath();
+  cctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+  cctx.fill();
+
+  const out = document.createElement("canvas");
+  out.width = size;
+  out.height = size;
+  const octx = out.getContext("2d")!;
+  octx.drawImage(revealSharp, 0, 0);
+  octx.globalCompositeOperation = "source-over";
+  octx.drawImage(revealBlurred, 0, 0);
   return out;
 }
 
-/** Procedural glass rim (stand-in for monopo's /lense.png). */
+/**
+ * Procedural glass rim (stand-in for monopo's /lense.png).
+ * Primary stroke radius === reveal clip radius (same center, same r).
+ */
 function paintGlassOverlay(
   ctx: CanvasRenderingContext2D,
   lx: number,
@@ -391,7 +610,6 @@ function paintGlassOverlay(
   const outer = lensR * 1.06;
   const inner = lensR * 0.82;
 
-  // Soft annular highlight
   const ring = ctx.createRadialGradient(lx, ly, inner, lx, ly, outer);
   ring.addColorStop(0, "rgba(255,255,255,0)");
   ring.addColorStop(0.55, "rgba(255,255,255,0)");
@@ -403,10 +621,9 @@ function paintGlassOverlay(
   ctx.arc(lx, ly, outer, 0, Math.PI * 2);
   ctx.fill();
 
-  // Specular crescent (top-left)
   ctx.save();
   ctx.beginPath();
-  ctx.arc(lx, ly, lensR * 0.98, 0, Math.PI * 2);
+  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
   ctx.clip();
   const spec = ctx.createRadialGradient(
     lx - lensR * 0.35,
@@ -423,18 +640,27 @@ function paintGlassOverlay(
   ctx.fillRect(lx - lensR, ly - lensR, lensR * 2, lensR * 2);
   ctx.restore();
 
-  // Thin rim stroke
   ctx.strokeStyle = "rgba(255,255,255,0.28)";
   ctx.lineWidth = Math.max(1, lensR * 0.018);
   ctx.beginPath();
-  ctx.arc(lx, ly, lensR * 0.995, 0, Math.PI * 2);
+  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
   ctx.stroke();
 
   ctx.strokeStyle = "rgba(0,0,0,0.18)";
   ctx.lineWidth = Math.max(0.75, lensR * 0.012);
   ctx.beginPath();
-  ctx.arc(lx, ly, lensR * 1.01, 0, Math.PI * 2);
+  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
   ctx.stroke();
+}
+
+function loadCollageImage(): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load collage: ${COLLAGE_SRC}`));
+    img.src = COLLAGE_SRC;
+  });
 }
 
 export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEngine {
@@ -449,25 +675,30 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   let cache: Cache | null = null;
   let pointer: FooterLensPointer = null;
   let path2d: Path2D | null = null;
+  let collage: HTMLImageElement | null = null;
+  let destroyed = false;
+  let lastActive = false;
+  let lastLx = 0;
+  let lastLy = 0;
 
   const ensurePath = () => {
-    if (!path2d) path2d = new Path2D(WORDMARK_PATH_D);
+    if (!path2d) path2d = new Path2D(SYMBOL_PATH_D);
     return path2d;
   };
 
   const rebuildCache = () => {
-    if (cssW < 8 || cssH < 8) {
+    if (cssW < 8 || cssH < 8 || !collage) {
       cache = null;
       return;
     }
 
     const path = ensurePath();
-    const vbW = WORDMARK_VIEWBOX_W;
-    const vbH = WORDMARK_VIEWBOX_H;
-    // Logo is intentionally smaller than the full-bleed canvas so the lens
-    // can travel past letter edges without being clipped by the stage.
-    const padX = cssW * 0.12; // ~76% width
-    const padY = cssH * 0.22; // ~56% height
+    const vbW = SYMBOL_VIEWBOX_W;
+    const vbH = SYMBOL_VIEWBOX_H;
+    // Large symbol (still above About hero's 48vmin/28rem), dialed back 30%
+    // from the near-fullscreen fit so the loupe has breathing room.
+    const padX = cssW * 0.18;
+    const padY = cssH * 0.18;
     const fitW = cssW - padX * 2;
     const fitH = cssH - padY * 2;
     const scale = Math.min(fitW / vbW, fitH / vbH);
@@ -480,17 +711,28 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     const m = new DOMMatrix().translate(logoX, logoY).scale(scale);
     scaled.addPath(path, m);
 
-    const bufW = Math.max(1, Math.round(logoW * dpr));
-    const bufH = Math.max(1, Math.round(logoH * dpr));
-    const whiteWordmark = buildWhiteWordmark(scaled, logoX, logoY, logoW, logoH, bufW, bufH);
+    const whiteW = Math.max(1, Math.round(logoW * dpr));
+    const whiteH = Math.max(1, Math.round(logoH * dpr));
+    const revealW = Math.max(1, Math.round(logoW * dpr * REVEAL_SUPER));
+    const revealH = Math.max(1, Math.round(logoH * dpr * REVEAL_SUPER));
+    const whiteWordmark = buildWhiteWordmark(
+      scaled,
+      logoX,
+      logoY,
+      logoW,
+      logoH,
+      whiteW,
+      whiteH,
+    );
     const { canvas: reveal, data: revealData } = buildRevealBuffer(
       scaled,
       logoX,
       logoY,
       logoW,
       logoH,
-      bufW,
-      bufH,
+      revealW,
+      revealH,
+      collage,
     );
 
     cache = {
@@ -502,8 +744,8 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       whiteWordmark,
       reveal,
       revealData,
-      revealDw: bufW,
-      revealDh: bufH,
+      revealDw: revealW,
+      revealDh: revealH,
     };
   };
 
@@ -524,23 +766,27 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   const drawActive = (lx: number, ly: number) => {
     if (!cache) return;
     const { logoX, logoY, logoW, logoH, whiteWordmark } = cache;
-    const lensR = logoW * LENS_R_FRAC;
+    const lensRNom = logoW * LENS_R_FRAC;
+    const discPx = lensDiscDiameterPx(lensRNom, dpr);
+    const lensR = discPx / (2 * dpr);
 
     clear();
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    // 1) Lens content first — never paint white under the disc (that caused
-    // the plain wordmark to show through inside the circle).
-    const disc = buildLensDisc(cache, lensR, lx, ly);
+    const disc = buildLensDisc(cache, lensR, lx, ly, dpr, discPx);
+    const cxDev = lx * dpr;
+    const cyDev = ly * dpr;
+    const rDev = discPx / 2;
     ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.beginPath();
-    ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
+    ctx.arc(cxDev, cyDev, rDev, 0, Math.PI * 2);
     ctx.clip();
-    ctx.drawImage(disc, lx - lensR, ly - lensR, lensR * 2, lensR * 2);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(disc, cxDev - rDev, cyDev - rDev);
     ctx.restore();
 
-    // 2) White wordmark only outside the lens (inverse circular mask).
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, 0, cssW, cssH);
@@ -549,9 +795,27 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     ctx.drawImage(whiteWordmark, logoX, logoY, logoW, logoH);
     ctx.restore();
 
-    // 3) Glass rim overlay.
     paintGlassOverlay(ctx, lx, ly, lensR);
   };
+
+  const redraw = () => {
+    if (lastActive && cache) {
+      drawActive(lastLx, lastLy);
+    } else {
+      drawIdle();
+    }
+  };
+
+  void loadCollageImage()
+    .then((img) => {
+      if (destroyed) return;
+      collage = img;
+      rebuildCache();
+      redraw();
+    })
+    .catch((err) => {
+      console.error("[footer-lens]", err);
+    });
 
   return {
     setSize(cssWidth, cssHeight) {
@@ -563,16 +827,15 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       canvas.style.width = `${cssW}px`;
       canvas.style.height = `${cssH}px`;
       rebuildCache();
-      if (pointer) {
-        drawActive(pointer.x, pointer.y);
-      } else {
-        drawIdle();
-      }
+      redraw();
     },
     setPointer(next) {
       pointer = next;
     },
     drawAt(lx, ly, active) {
+      lastLx = lx;
+      lastLy = ly;
+      lastActive = active;
       if (!active || !cache) {
         drawIdle();
         return;
@@ -580,9 +843,11 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       drawActive(lx, ly);
     },
     destroy() {
+      destroyed = true;
       cache = null;
       path2d = null;
       pointer = null;
+      collage = null;
     },
     getDpr() {
       return dpr;

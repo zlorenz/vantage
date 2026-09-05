@@ -1,6 +1,6 @@
 /**
- * Prototype-only footer lens route.
- * Not linked from the live homepage. Noindex.
+ * Prototype-only symbol loupe route (About hero candidate).
+ * Not linked from the live site. Noindex.
  */
 
 import type {Metadata} from 'next';
@@ -17,7 +17,7 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: 'Prototype Footer Lens | Vantage Pictures',
+  title: 'Prototype Symbol Lens | Vantage Pictures',
   robots: {index: false, follow: false},
 };
 
