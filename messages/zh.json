@@ -122,6 +122,23 @@
     "shotIn": "拍摄",
     "download": "下载"
   },
+  "VietnamProductionService": {
+    "introHeading": "【待译】",
+    "introP1": "【待译】",
+    "introP2": "【待译】",
+    "whyHeading": "【待译】",
+    "whyP1": "【待译】",
+    "whyP2": "【待译】",
+    "whyP3": "【待译】",
+    "supportHeading": "【待译】",
+    "supportP1": "【待译】",
+    "supportP2": "【待译】",
+    "supportP3": "【待译】",
+    "guideHeading": "【待译】",
+    "guideP1": "【待译】",
+    "guideP2": "【待译】",
+    "guideCta": "【待译】"
+  },
   "Filters": {
     "videoFormat": "格式",
     "industry": "行业",

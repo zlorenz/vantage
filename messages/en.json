@@ -122,6 +122,23 @@
     "shotIn": "VIETNAM",
     "download": "DOWNLOAD"
   },
+  "VietnamProductionService": {
+    "introHeading": "Vietnam Production Service for International Commercial Shoots",
+    "introP1": "Vantage Pictures is a Vietnam-based production service company supporting foreign production companies, agencies, and brands filming commercials, brand films, and documentaries on location in Vietnam. Acting as your local production partner — sometimes called a production fixer — we handle everything on the ground: permits, crew, locations, and logistics, so your creative team can stay focused on the shoot itself rather than the paperwork behind it.",
+    "introP2": "We've supported international productions ranging from consumer electronics and technology campaigns to global agency work, providing line producing and full local execution to international standards. As more international teams look beyond the traditional Southeast Asia production hubs, Vietnam has become an increasingly common choice — and we're the local team that makes shooting here straightforward.",
+    "whyHeading": "Why Film in Vietnam?",
+    "whyP1": "Vietnam gives international production teams a combination that's hard to find elsewhere in the region: visually diverse locations, competitive costs, and a production ecosystem mature enough to support demanding commercial timelines. Within a few hours of Ho Chi Minh City or Hanoi, crews can move between modern skylines, tropical coastline, mountain terrain, and rural landscapes — often without relocating the production base at all.",
+    "whyP2": "Crew rates, equipment rental, and location costs remain competitive against more established regional hubs, without a drop-off in crew experience or equipment standards. A growing base of studios, rental houses, and experienced local crew — concentrated around Ho Chi Minh City — means shorter prep timelines and fewer logistical surprises for visiting teams.",
+    "whyP3": "And for agencies and brands coordinating production across Asia-Pacific, Vietnam's time zone alignment with regional hubs like Singapore, Hong Kong, and mainland China makes remote client oversight during the shoot noticeably easier.",
+    "supportHeading": "Full-Service Production Support in Vietnam",
+    "supportP1": "Vantage Pictures provides end-to-end production service support for international shoots in Vietnam, covering every stage from pre-production through delivery. Our production management team handles location scouting and permitting, casting, crew sourcing, and equipment rental, working directly with Ho Chi Minh City's established studio and rental-house network to source soundstages, lighting packages, and grip equipment on short lead times.",
+    "supportP2": "On the ground, our line producers manage budgeting, scheduling, and day-to-day logistics, acting as the single point of contact between your creative team and local vendors, crew, and authorities. Post-production coordination is available for teams who need editing, color, or sound handled locally before final delivery.",
+    "supportP3": "The result is a single accountable local partner for the full production process — not a patchwork of freelancers assembled shoot by shoot.",
+    "guideHeading": "See Every Vietnam Filming Location in One Guide",
+    "guideP1": "We've put together a complete Vietnam location guidebook covering the country's most production-ready locations — cityscapes, coastline, mountains, and industrial sites — with permitting notes and access details for each.",
+    "guideP2": "If you're scoping a shoot in Vietnam, this is the fastest way to see what's possible before you brief us.",
+    "guideCta": "Download the Vietnam Location Guidebook"
+  },
   "Filters": {
     "videoFormat": "Formats",
     "industry": "Industry",
