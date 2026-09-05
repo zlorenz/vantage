@@ -10,9 +10,9 @@ import {createFooterLensEngine} from './footer-lens-engine';
 import {createGradientBgEngine} from './gradient-bg-engine';
 import './footer-lens.css';
 
-/** Monopo uses smooth += 0.1 * (target - smooth). */
-const LERP = 0.1;
-const SETTLE_PX = 0.15;
+/** Near 1:1 follow — only a light ease vs OS cursor (was monopo 0.1). */
+const LERP = 0.4;
+const SETTLE_PX = 0.12;
 
 type FooterLensStageProps = {
   className?: string;

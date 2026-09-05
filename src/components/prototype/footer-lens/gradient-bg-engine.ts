@@ -248,19 +248,21 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
   let cssW = 1;
   let cssH = 1;
 
-  let targetForce = DEFAULTS.displacementBase;
-  let targetSeed = DEFAULTS.seedBase;
+  // Explicit `number` — DEFAULTS is `as const`, so bare lets pin literal types
+  // and `lerp()` (returns number) fails tsc on Vercel.
+  let targetForce: number = DEFAULTS.displacementBase;
+  let targetSeed: number = DEFAULTS.seedBase;
   let targetTX = 0;
-  let targetTY = DEFAULTS.transformYBias;
-  let targetOX = DEFAULTS.colorOffsetX;
-  let targetOY = DEFAULTS.colorOffsetY;
+  let targetTY: number = DEFAULTS.transformYBias;
+  let targetOX: number = DEFAULTS.colorOffsetX;
+  let targetOY: number = DEFAULTS.colorOffsetY;
 
-  let smoothForce = targetForce;
-  let smoothSeed = targetSeed;
+  let smoothForce: number = targetForce;
+  let smoothSeed: number = targetSeed;
   let smoothTX = 0;
-  let smoothTY = DEFAULTS.transformYBias;
-  let smoothOX = targetOX;
-  let smoothOY = targetOY;
+  let smoothTY: number = DEFAULTS.transformYBias;
+  let smoothOX: number = targetOX;
+  let smoothOY: number = targetOY;
 
   const SMOOTH = 0.08;
 

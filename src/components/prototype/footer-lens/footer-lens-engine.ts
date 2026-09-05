@@ -61,7 +61,7 @@ const EDGE_BLUR_CSS_PX = 5;
  * Lens radius as fraction of symbol width.
  * Slightly larger than the wordmark loupe so the collage reads on a square mark.
  */
-const LENS_R_FRAC = 0.14;
+const LENS_R_FRAC = 0.161;
 /**
  * Reveal-buffer supersample vs logo CSS size (× devicePixelRatio).
  * Sized so ~ZOOM_CENTER magnification still has spare source pixels on Retina.
@@ -357,19 +357,84 @@ function lensDiscDiameterPx(lensR: number, dpr: number): number {
 }
 
 /**
- * Build the inside-lens disc at device-pixel resolution.
- * Produces a feathered sharp layer plus an opaque padded blur source;
- * soft-focus is applied after blur so alpha never pollutes the filter.
+ * Cap internal loupe raster size. Full Retina disc + pad + dilate was a
+ * multi-million-op hog every hover frame on large About hero viewports.
+ * We still blit at full CSS/device size; only the warp buffer is downscaled.
  */
+const MAX_LOUPE_WORK_PX = 360;
+
+/** Skip rebuild when the lens center moves less than this (CSS px). */
+const LOUPE_MOVE_EPS = 0.4;
+
+type LoupeScratch = {
+  size: number;
+  pad: number;
+  sharp: HTMLCanvasElement;
+  opaque: HTMLCanvasElement;
+  opaqueRaster: HTMLCanvasElement;
+  sharpRaster: HTMLCanvasElement;
+  blurredPadded: HTMLCanvasElement;
+  revealBlurred: HTMLCanvasElement;
+  out: HTMLCanvasElement;
+  sharpImg: ImageData;
+  opaqueImg: ImageData;
+  dilatePrev: Uint8ClampedArray;
+};
+
+function makeCanvas(w: number, h: number): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  return c;
+}
+
+function ensureLoupeScratch(
+  scratch: LoupeScratch | null,
+  size: number,
+  pad: number,
+): LoupeScratch {
+  const paddedSize = size + pad * 2;
+  if (
+    scratch &&
+    scratch.size === size &&
+    scratch.pad === pad &&
+    scratch.sharp.width === size &&
+    scratch.opaque.width === paddedSize
+  ) {
+    return scratch;
+  }
+
+  const sharp = makeCanvas(size, size);
+  const opaque = makeCanvas(paddedSize, paddedSize);
+  const sharpCtx = sharp.getContext("2d")!;
+  const opaqueCtx = opaque.getContext("2d")!;
+  return {
+    size,
+    pad,
+    sharp,
+    opaque,
+    opaqueRaster: makeCanvas(paddedSize, paddedSize),
+    sharpRaster: makeCanvas(size, size),
+    blurredPadded: makeCanvas(paddedSize, paddedSize),
+    revealBlurred: makeCanvas(size, size),
+    out: makeCanvas(size, size),
+    sharpImg: sharpCtx.createImageData(size, size),
+    opaqueImg: opaqueCtx.createImageData(paddedSize, paddedSize),
+    dilatePrev: new Uint8ClampedArray(paddedSize * paddedSize * 4),
+  };
+}
+
 /**
  * Grow opaque RGB into neighboring transparent texels so a subsequent blur
  * never samples empty (0,0,0,0) and dilutes toward black.
+ * `prevBuf` is reused across iterations to avoid per-frame allocations.
  */
 function dilateOpaqueRgb(
   data: Uint8ClampedArray,
   w: number,
   h: number,
   iterations: number,
+  prevBuf: Uint8ClampedArray,
 ): void {
   const neighbors: ReadonlyArray<readonly [number, number]> = [
     [-1, 0],
@@ -382,21 +447,21 @@ function dilateOpaqueRgb(
     [1, 1],
   ];
   for (let iter = 0; iter < iterations; iter++) {
-    const prev = new Uint8ClampedArray(data);
+    prevBuf.set(data);
     for (let y = 1; y < h - 1; y++) {
       for (let x = 1; x < w - 1; x++) {
         const i = (y * w + x) * 4;
-        if (prev[i + 3]! >= 128) continue;
+        if (prevBuf[i + 3]! >= 128) continue;
         let r = 0;
         let g = 0;
         let b = 0;
         let n = 0;
         for (const [dx, dy] of neighbors) {
           const j = ((y + dy) * w + (x + dx)) * 4;
-          if (prev[j + 3]! < 128) continue;
-          r += prev[j]!;
-          g += prev[j + 1]!;
-          b += prev[j + 2]!;
+          if (prevBuf[j + 3]! < 128) continue;
+          r += prevBuf[j]!;
+          g += prevBuf[j + 1]!;
+          b += prevBuf[j + 2]!;
           n++;
         }
         if (n === 0) continue;
@@ -409,6 +474,10 @@ function dilateOpaqueRgb(
   }
 }
 
+/**
+ * Build the inside-lens disc at (optionally capped) device-pixel resolution.
+ * Soft-focus is applied after blur so alpha never pollutes the filter.
+ */
 function buildLensDisc(
   cache: Cache,
   lensR: number,
@@ -416,11 +485,13 @@ function buildLensDisc(
   ly: number,
   dpr: number,
   size: number,
-): HTMLCanvasElement {
+  scratchIn: LoupeScratch | null,
+): { disc: HTMLCanvasElement; scratch: LoupeScratch } {
   const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
   // Pad past the blur kernel so rim samples never see empty transparent black.
   const pad = Math.ceil(blurPx * 2) + 2;
   const paddedSize = size + pad * 2;
+  const scratch = ensureLoupeScratch(scratchIn, size, pad);
 
   const { revealData, revealDw, revealDh, logoX, logoY, logoW, logoH } = cache;
   const src = revealData.data;
@@ -433,19 +504,12 @@ function buildLensDisc(
   const originX = lx - discCss / 2;
   const originY = ly - discCss / 2;
 
-  const sharp = document.createElement("canvas");
-  sharp.width = size;
-  sharp.height = size;
-  const sharpCtx = sharp.getContext("2d")!;
-  const sharpImg = sharpCtx.createImageData(size, size);
-  const sharpData = sharpImg.data;
-
-  const opaque = document.createElement("canvas");
-  opaque.width = paddedSize;
-  opaque.height = paddedSize;
-  const opaqueCtx = opaque.getContext("2d")!;
-  const opaqueImg = opaqueCtx.createImageData(paddedSize, paddedSize);
-  const opaqueData = opaqueImg.data;
+  const sharpCtx = scratch.sharp.getContext("2d")!;
+  const opaqueCtx = scratch.opaque.getContext("2d")!;
+  const sharpData = scratch.sharpImg.data;
+  const opaqueData = scratch.opaqueImg.data;
+  sharpData.fill(0);
+  opaqueData.fill(0);
 
   for (let py = 0; py < paddedSize; py++) {
     for (let px = 0; px < paddedSize; px++) {
@@ -513,25 +577,24 @@ function buildLensDisc(
     }
   }
 
-  // Extend opaque color into empty neighbors (pad + silhouette holes) so blur
-  // samples photo RGB only — never transparent black.
-  dilateOpaqueRgb(opaqueData, paddedSize, paddedSize, pad);
+  // Enough iterations to cover ~blur kernel; full `pad` was O(pad) frame killers.
+  const dilateIters = Math.min(6, Math.max(2, Math.ceil(blurPx)));
+  dilateOpaqueRgb(opaqueData, paddedSize, paddedSize, dilateIters, scratch.dilatePrev);
 
-  sharpCtx.putImageData(sharpImg, 0, 0);
-  opaqueCtx.putImageData(opaqueImg, 0, 0);
+  sharpCtx.putImageData(scratch.sharpImg, 0, 0);
+  opaqueCtx.putImageData(scratch.opaqueImg, 0, 0);
 
   // Rasterize before filter (putImageData-only canvases can skip blur in Chromium).
-  const opaqueRaster = document.createElement("canvas");
-  opaqueRaster.width = paddedSize;
-  opaqueRaster.height = paddedSize;
-  opaqueRaster.getContext("2d")!.drawImage(opaque, 0, 0);
+  const opaqueRasterCtx = scratch.opaqueRaster.getContext("2d")!;
+  opaqueRasterCtx.clearRect(0, 0, paddedSize, paddedSize);
+  opaqueRasterCtx.drawImage(scratch.opaque, 0, 0);
 
-  const sharpRaster = document.createElement("canvas");
-  sharpRaster.width = size;
-  sharpRaster.height = size;
-  sharpRaster.getContext("2d")!.drawImage(sharp, 0, 0);
+  const sharpRasterCtx = scratch.sharpRaster.getContext("2d")!;
+  sharpRasterCtx.clearRect(0, 0, size, size);
+  sharpRasterCtx.drawImage(scratch.sharp, 0, 0);
 
-  return applyRimSoftFocus(sharpRaster, opaqueRaster, pad, dpr);
+  applyRimSoftFocus(scratch, blurPx);
+  return { disc: scratch.out, scratch };
 }
 
 /**
@@ -539,32 +602,24 @@ function buildLensDisc(
  * Never blur a feathered/transparent edge — that dilutes RGB toward black and
  * reads as a flat gradient instead of softened photo detail.
  */
-function applyRimSoftFocus(
-  revealSharp: HTMLCanvasElement,
-  revealOpaquePadded: HTMLCanvasElement,
-  pad: number,
-  dpr: number,
-): HTMLCanvasElement {
-  const size = revealSharp.width;
+function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
+  const size = scratch.size;
+  const pad = scratch.pad;
   const cx = size / 2;
   const cy = size / 2;
   const radiusPx = size / 2;
-  const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
 
-  const blurredPadded = document.createElement("canvas");
-  blurredPadded.width = revealOpaquePadded.width;
-  blurredPadded.height = revealOpaquePadded.height;
-  const bctx = blurredPadded.getContext("2d")!;
+  const bctx = scratch.blurredPadded.getContext("2d")!;
+  bctx.clearRect(0, 0, scratch.blurredPadded.width, scratch.blurredPadded.height);
   bctx.filter = `blur(${blurPx}px)`;
-  bctx.drawImage(revealOpaquePadded, 0, 0);
+  bctx.drawImage(scratch.opaqueRaster, 0, 0);
   bctx.filter = "none";
 
   // Crop blurred padded buffer back to the visible disc size.
-  const revealBlurred = document.createElement("canvas");
-  revealBlurred.width = size;
-  revealBlurred.height = size;
-  const cctx = revealBlurred.getContext("2d")!;
-  cctx.drawImage(blurredPadded, -pad, -pad);
+  const cctx = scratch.revealBlurred.getContext("2d")!;
+  cctx.clearRect(0, 0, size, size);
+  cctx.globalCompositeOperation = "source-over";
+  cctx.drawImage(scratch.blurredPadded, -pad, -pad);
 
   // Alpha mask LAST — rim soft-focus band × soft circle edge. Blur never sees this.
   cctx.globalCompositeOperation = "destination-in";
@@ -586,15 +641,12 @@ function applyRimSoftFocus(
   cctx.beginPath();
   cctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
   cctx.fill();
+  cctx.globalCompositeOperation = "source-over";
 
-  const out = document.createElement("canvas");
-  out.width = size;
-  out.height = size;
-  const octx = out.getContext("2d")!;
-  octx.drawImage(revealSharp, 0, 0);
-  octx.globalCompositeOperation = "source-over";
-  octx.drawImage(revealBlurred, 0, 0);
-  return out;
+  const octx = scratch.out.getContext("2d")!;
+  octx.clearRect(0, 0, size, size);
+  octx.drawImage(scratch.sharpRaster, 0, 0);
+  octx.drawImage(scratch.revealBlurred, 0, 0);
 }
 
 /**
@@ -680,6 +732,9 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   let lastActive = false;
   let lastLx = 0;
   let lastLy = 0;
+  let loupeScratch: LoupeScratch | null = null;
+  let lastBuiltLx = Number.NaN;
+  let lastBuiltLy = Number.NaN;
 
   const ensurePath = () => {
     if (!path2d) path2d = new Path2D(SYMBOL_PATH_D);
@@ -766,25 +821,42 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   const drawActive = (lx: number, ly: number) => {
     if (!cache) return;
     const { logoX, logoY, logoW, logoH, whiteWordmark } = cache;
-    const lensRNom = logoW * LENS_R_FRAC;
-    const discPx = lensDiscDiameterPx(lensRNom, dpr);
-    const lensR = discPx / (2 * dpr);
+    const lensR = logoW * LENS_R_FRAC;
+    const blitPx = lensDiscDiameterPx(lensR, dpr);
+    // Cap warp raster; blit still fills the full device-pixel disc.
+    let workPx = Math.min(blitPx, MAX_LOUPE_WORK_PX);
+    if (workPx % 2 !== 0) workPx -= 1;
+    workPx = Math.max(2, workPx);
+    const workDpr = (workPx / blitPx) * dpr;
 
     clear();
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    const disc = buildLensDisc(cache, lensR, lx, ly, dpr, discPx);
+    const { disc, scratch } = buildLensDisc(
+      cache,
+      lensR,
+      lx,
+      ly,
+      workDpr,
+      workPx,
+      loupeScratch,
+    );
+    loupeScratch = scratch;
+    lastBuiltLx = lx;
+    lastBuiltLy = ly;
+
     const cxDev = lx * dpr;
     const cyDev = ly * dpr;
-    const rDev = discPx / 2;
+    const rDev = blitPx / 2;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.beginPath();
     ctx.arc(cxDev, cyDev, rDev, 0, Math.PI * 2);
     ctx.clip();
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(disc, cxDev - rDev, cyDev - rDev);
+    ctx.imageSmoothingEnabled = workPx < blitPx;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(disc, cxDev - rDev, cyDev - rDev, blitPx, blitPx);
     ctx.restore();
 
     ctx.save();
@@ -833,10 +905,23 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       pointer = next;
     },
     drawAt(lx, ly, active) {
+      if (
+        active &&
+        lastActive &&
+        cache &&
+        Math.abs(lx - lastBuiltLx) < LOUPE_MOVE_EPS &&
+        Math.abs(ly - lastBuiltLy) < LOUPE_MOVE_EPS
+      ) {
+        lastLx = lx;
+        lastLy = ly;
+        return;
+      }
       lastLx = lx;
       lastLy = ly;
       lastActive = active;
       if (!active || !cache) {
+        lastBuiltLx = Number.NaN;
+        lastBuiltLy = Number.NaN;
         drawIdle();
         return;
       }
@@ -848,6 +933,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       path2d = null;
       pointer = null;
       collage = null;
+      loupeScratch = null;
     },
     getDpr() {
       return dpr;
