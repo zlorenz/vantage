@@ -108,6 +108,10 @@ type Row = {
   purgeAfter?: string
   thumbnailUrl?: string
   categories?: string
+  /** Portfolio taxonomy refs (published ids) for category filtering. */
+  videoFormatIds?: string[]
+  industryIds?: string[]
+  marketIds?: string[]
   parent?: string
   usage?: number
   role?: string
@@ -116,6 +120,18 @@ type Row = {
   /** Portfolio-entry counts per roleKey for creditIdentity rows. */
   usageByRole?: Partial<Record<string, number>>
 }
+
+type TaxonomyKind = 'videoFormat' | 'industry' | 'market'
+
+type TaxonomyTerm = {
+  _id: string
+  _type: TaxonomyKind
+  title: string
+  parentId?: string
+}
+
+/** Portfolio category filter: all terms, or one taxonomy document id. */
+type TaxonomyFilter = 'all' | string
 
 type StatusFilter =
   | 'all'
@@ -265,6 +281,67 @@ function baseId(id: string): string {
   return id.replace(/^drafts\./, '')
 }
 
+function asIdList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined
+  const ids = [
+    ...new Set(
+      value
+        .map((item) => (typeof item === 'string' ? baseId(item) : ''))
+        .filter(Boolean),
+    ),
+  ]
+  return ids.length > 0 ? ids : undefined
+}
+
+function rowMatchesTaxonomy(row: Row, filterId: string): boolean {
+  const id = baseId(filterId)
+  return Boolean(
+    row.videoFormatIds?.includes(id) ||
+      row.industryIds?.includes(id) ||
+      row.marketIds?.includes(id),
+  )
+}
+
+function orderIndustryTerms(terms: TaxonomyTerm[]): TaxonomyTerm[] {
+  const byId = new Map(terms.map((term) => [term._id, term]))
+  const used = new Set<string>()
+  const roots = terms
+    .filter((term) => {
+      const parent = term.parentId ? byId.get(baseId(term.parentId)) : undefined
+      return !parent
+    })
+    .sort((a, b) => a.title.localeCompare(b.title, undefined, {sensitivity: 'base'}))
+
+  const ordered: TaxonomyTerm[] = []
+  for (const root of roots) {
+    ordered.push(root)
+    used.add(root._id)
+    const children = terms
+      .filter((term) => term.parentId && baseId(term.parentId) === root._id)
+      .sort((a, b) => a.title.localeCompare(b.title, undefined, {sensitivity: 'base'}))
+    for (const child of children) {
+      ordered.push(child)
+      used.add(child._id)
+    }
+  }
+  const orphans = terms
+    .filter((term) => !used.has(term._id))
+    .sort((a, b) => a.title.localeCompare(b.title, undefined, {sensitivity: 'base'}))
+  return [...ordered, ...orphans]
+}
+
+const PORTFOLIO_TAXONOMY_TERMS_QUERY = `*[
+  _type in ["videoFormat", "industry", "market"]
+  && !(_id in path("drafts.**"))
+  && !(_id in path("versions.**"))
+  && !(_id in ["${KEY_VISUAL_VIDEO_FORMAT_ID}"])
+] | order(title asc) {
+  _id,
+  _type,
+  title,
+  "parentId": parent._ref
+}`
+
 function formatDate(value?: string): string {
   if (!value) return '—'
   const d = new Date(value)
@@ -318,6 +395,9 @@ function buildQuery(documentType: string): string {
           ][length(@) > 0],
           " · "
         ),
+        "videoFormatIds": videoFormats[!(@._ref in ["${KEY_VISUAL_VIDEO_FORMAT_ID}", "drafts.${KEY_VISUAL_VIDEO_FORMAT_ID}"])]._ref,
+        "industryIds": industries[]._ref,
+        "marketIds": markets[]._ref,
         isHidden,
         trash,
         "hasDraft": count(*[_id == "drafts." + ^._id]) > 0,
@@ -512,6 +592,9 @@ function normalizeRows(
       purgeAfter: trash?.purgeAfter ? String(trash.purgeAfter) : undefined,
       thumbnailUrl: doc.thumbnailUrl ? String(doc.thumbnailUrl) : undefined,
       categories: doc.categories ? String(doc.categories) : undefined,
+      videoFormatIds: asIdList(doc.videoFormatIds),
+      industryIds: asIdList(doc.industryIds),
+      marketIds: asIdList(doc.marketIds),
       parent: doc.parent ? String(doc.parent) : undefined,
       usage: typeof doc.usage === 'number' ? doc.usage : undefined,
       role: doc.role ? String(doc.role) : undefined,
@@ -818,6 +901,8 @@ export function DocumentTable({
     targetId: string
   } | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [taxonomyFilter, setTaxonomyFilter] = useState<TaxonomyFilter>('all')
+  const [taxonomyTerms, setTaxonomyTerms] = useState<TaxonomyTerm[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [reloadKey, setReloadKey] = useState(0)
   const [busy, setBusy] = useState(false)
@@ -835,6 +920,7 @@ export function DocumentTable({
   >(null)
 
   const inTrash = statusFilter === 'trash'
+  const isPortfolioSection = section.documentType === 'portfolioEntry'
 
   useEffect(() => {
     setSort(section.defaultSort)
@@ -843,12 +929,29 @@ export function DocumentTable({
     setCrewRoleFilter('all')
     setDuplicatesOnly(false)
     setStatusFilter('all')
+    setTaxonomyFilter('all')
     setSelected(new Set())
   }, [section.id, section.defaultSort])
 
   useEffect(() => {
+    if (inTrash && taxonomyFilter !== 'all') {
+      setTaxonomyFilter('all')
+    }
+  }, [inTrash, taxonomyFilter])
+
+  useEffect(() => {
+    if (
+      taxonomyFilter !== 'all' &&
+      taxonomyTerms.length > 0 &&
+      !taxonomyTerms.some((term) => term._id === taxonomyFilter)
+    ) {
+      setTaxonomyFilter('all')
+    }
+  }, [taxonomyFilter, taxonomyTerms])
+
+  useEffect(() => {
     setSelected(new Set())
-  }, [crewDeptTab, crewRoleFilter, statusFilter])
+  }, [crewDeptTab, crewRoleFilter, statusFilter, taxonomyFilter])
 
   // Drop Hidden when leaving portfolio; keep a valid tab.
   useEffect(() => {
@@ -922,6 +1025,13 @@ export function DocumentTable({
             .catch(() => [] as Array<{pairKey?: string}>)
         : Promise.resolve([] as Array<{pairKey?: string}>)
 
+    const taxonomyTermsPromise =
+      section.documentType === 'portfolioEntry'
+        ? client
+            .fetch<TaxonomyTerm[]>(PORTFOLIO_TAXONOMY_TERMS_QUERY)
+            .catch(() => [] as TaxonomyTerm[])
+        : Promise.resolve([] as TaxonomyTerm[])
+
     Promise.all([
       client.fetch<Record<string, unknown>[]>(query, params),
       client
@@ -964,6 +1074,11 @@ export function DocumentTable({
                 ),
                 array::join(categories[]->title, ", ")
               ),
+              "videoFormatIds": select(
+                _type == "portfolioEntry" => videoFormats[!(@._ref in ["${KEY_VISUAL_VIDEO_FORMAT_ID}", "drafts.${KEY_VISUAL_VIDEO_FORMAT_ID}"])]._ref
+              ),
+              "industryIds": select(_type == "portfolioEntry" => industries[]._ref),
+              "marketIds": select(_type == "portfolioEntry" => markets[]._ref),
               "parent": parent->title,
               role
             }
@@ -983,6 +1098,7 @@ export function DocumentTable({
       identityUsagePromise,
       identityReviewPromise,
       dismissalPromise,
+      taxonomyTermsPromise,
     ])
       .then(
         ([
@@ -992,6 +1108,7 @@ export function DocumentTable({
           usagePortfolios,
           reviewInputs,
           dismissals,
+          fetchedTaxonomyTerms,
         ]) => {
         if (cancelled) return
         let normalized = normalizeRows(docs, scheduledReleases)
@@ -1035,6 +1152,15 @@ export function DocumentTable({
           setPendingReviewCount(0)
           setDismissedPairKeys(new Set())
         }
+
+        setTaxonomyTerms(
+          fetchedTaxonomyTerms.map((term) => ({
+            _id: baseId(term._id),
+            _type: term._type,
+            title: term.title,
+            parentId: term.parentId ? baseId(term.parentId) : undefined,
+          })),
+        )
 
         setRows(
           supportsTrash ? mergeTrashRecords(normalized, trashRecords) : normalized,
@@ -1139,6 +1265,72 @@ export function DocumentTable({
     return counts
   }, [rows, supportsStatusFilter])
 
+  /** Rows in the current status/trash scope (before taxonomy + search). */
+  const statusScopedRows = useMemo(() => {
+    let next = rows.filter((row) =>
+      supportsTrash ? (inTrash ? row.isTrashed : !row.isTrashed) : true,
+    )
+    if (supportsStatusFilter && !inTrash && statusFilter !== 'all') {
+      next = next.filter((row) => documentStatus(row) === statusFilter)
+    }
+    return next
+  }, [inTrash, rows, statusFilter, supportsStatusFilter, supportsTrash])
+
+  const taxonomyCounts = useMemo(() => {
+    const byId = new Map<string, number>()
+    for (const row of statusScopedRows) {
+      const seen = new Set<string>()
+      for (const id of [
+        ...(row.videoFormatIds ?? []),
+        ...(row.industryIds ?? []),
+        ...(row.marketIds ?? []),
+      ]) {
+        if (seen.has(id)) continue
+        seen.add(id)
+        byId.set(id, (byId.get(id) ?? 0) + 1)
+      }
+    }
+    return {all: statusScopedRows.length, byId}
+  }, [statusScopedRows])
+
+  const taxonomyMenuGroups = useMemo(() => {
+    if (!isPortfolioSection) {
+      return {
+        formats: [] as TaxonomyTerm[],
+        industries: [] as TaxonomyTerm[],
+        markets: [] as TaxonomyTerm[],
+      }
+    }
+    const withCount = (term: TaxonomyTerm) =>
+      (taxonomyCounts.byId.get(term._id) ?? 0) > 0
+
+    const formats = taxonomyTerms
+      .filter((term) => term._type === 'videoFormat' && withCount(term))
+      .sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, {sensitivity: 'base'}),
+      )
+    const industries = orderIndustryTerms(
+      taxonomyTerms.filter((term) => term._type === 'industry' && withCount(term)),
+    )
+    const markets = taxonomyTerms
+      .filter((term) => term._type === 'market' && withCount(term))
+      .sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, {sensitivity: 'base'}),
+      )
+
+    return {formats, industries, markets}
+  }, [isPortfolioSection, taxonomyCounts.byId, taxonomyTerms])
+
+  const activeTaxonomyTerm = useMemo(() => {
+    if (taxonomyFilter === 'all') return null
+    return taxonomyTerms.find((term) => term._id === taxonomyFilter) ?? null
+  }, [taxonomyFilter, taxonomyTerms])
+
+  const industryIdsInMenu = useMemo(
+    () => new Set(taxonomyMenuGroups.industries.map((term) => term._id)),
+    [taxonomyMenuGroups.industries],
+  )
+
   const linkedRolesInScope = useMemo(
     () => linkedRolesForDept(crewDeptTab),
     [crewDeptTab],
@@ -1199,6 +1391,9 @@ export function DocumentTable({
     ) {
       next = next.filter((row) => documentStatus(row) === statusFilter)
     }
+    if (isPortfolioSection && !inTrash && taxonomyFilter !== 'all') {
+      next = next.filter((row) => rowMatchesTaxonomy(row, taxonomyFilter))
+    }
     if (isCrewMembersSection && !showCrewNotLinkedState) {
       if (crewDeptTab !== 'all') {
         next = next.filter((row) => rowMatchesDept(row, crewDeptTab))
@@ -1253,6 +1448,7 @@ export function DocumentTable({
     showCrewNotLinkedState,
     inTrash,
     isCrewMembersSection,
+    isPortfolioSection,
     rows,
     search,
     section.searchFields,
@@ -1260,6 +1456,7 @@ export function DocumentTable({
     statusFilter,
     supportsStatusFilter,
     supportsTrash,
+    taxonomyFilter,
   ])
 
   const allVisibleSelected =
@@ -1578,6 +1775,77 @@ export function DocumentTable({
               </button>
             </Flex>
           ) : null}
+          {isPortfolioSection && !inTrash ? (
+            <Flex gap={2} align="center" wrap="wrap">
+              <MenuButton
+                id={`${section.id}-taxonomy-filter`}
+                button={
+                  <Button
+                    text={
+                      taxonomyFilter === 'all' || !activeTaxonomyTerm
+                        ? `Filter by category… (${taxonomyCounts.all})`
+                        : `${activeTaxonomyTerm.title} (${taxonomyCounts.byId.get(taxonomyFilter) ?? 0})`
+                    }
+                    icon={FilterIcon}
+                    iconRight={ChevronDownIcon}
+                    mode="ghost"
+                    fontSize={1}
+                  />
+                }
+                menu={
+                  <Menu>
+                    <MenuItem
+                      text={`All categories (${taxonomyCounts.all})`}
+                      pressed={taxonomyFilter === 'all'}
+                      onClick={() => setTaxonomyFilter('all')}
+                    />
+                    {taxonomyMenuGroups.formats.length > 0 ? (
+                      <MenuGroup text="Formats">
+                        {taxonomyMenuGroups.formats.map((term) => (
+                          <MenuItem
+                            key={term._id}
+                            text={`${term.title} (${taxonomyCounts.byId.get(term._id) ?? 0})`}
+                            pressed={taxonomyFilter === term._id}
+                            onClick={() => setTaxonomyFilter(term._id)}
+                          />
+                        ))}
+                      </MenuGroup>
+                    ) : null}
+                    {taxonomyMenuGroups.industries.length > 0 ? (
+                      <MenuGroup text="Industries">
+                        {taxonomyMenuGroups.industries.map((term) => {
+                          const isChild = Boolean(
+                            term.parentId && industryIdsInMenu.has(term.parentId),
+                          )
+                          return (
+                            <MenuItem
+                              key={term._id}
+                              text={`${isChild ? '↳ ' : ''}${term.title} (${taxonomyCounts.byId.get(term._id) ?? 0})`}
+                              pressed={taxonomyFilter === term._id}
+                              onClick={() => setTaxonomyFilter(term._id)}
+                            />
+                          )
+                        })}
+                      </MenuGroup>
+                    ) : null}
+                    {taxonomyMenuGroups.markets.length > 0 ? (
+                      <MenuGroup text="Markets">
+                        {taxonomyMenuGroups.markets.map((term) => (
+                          <MenuItem
+                            key={term._id}
+                            text={`${term.title} (${taxonomyCounts.byId.get(term._id) ?? 0})`}
+                            pressed={taxonomyFilter === term._id}
+                            onClick={() => setTaxonomyFilter(term._id)}
+                          />
+                        ))}
+                      </MenuGroup>
+                    ) : null}
+                  </Menu>
+                }
+                popover={{portal: true, placement: 'bottom-start'}}
+              />
+            </Flex>
+          ) : null}
           {isCrewMembersSection ? (
             <Stack space={2}>
               <Flex gap={3} align="center" wrap="wrap">
@@ -1680,6 +1948,21 @@ export function DocumentTable({
           ) : null}
         </Stack>
         <Flex gap={2} align="center" wrap="wrap">
+          {isPortfolioSection &&
+          !inTrash &&
+          taxonomyFilter !== 'all' &&
+          activeTaxonomyTerm ? (
+            <Button
+              mode="ghost"
+              tone="primary"
+              fontSize={1}
+              padding={2}
+              iconRight={CloseIcon}
+              text={`${activeTaxonomyTerm.title} (${taxonomyCounts.byId.get(taxonomyFilter) ?? 0})`}
+              title="Clear category filter"
+              onClick={() => setTaxonomyFilter('all')}
+            />
+          ) : null}
           {isCrewMembersSection &&
           !showCrewNotLinkedState &&
           crewRoleFilter !== 'all' ? (
