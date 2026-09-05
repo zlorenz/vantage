@@ -2,115 +2,147 @@
 
 /**
  * Prototype-only footer lens — isolated from production SiteFooter.
+ * Continuous rAF + cursor lerp (~0.1) match monopo.london's tracking feel.
  */
 
 import {useEffect, useRef} from 'react';
-import {
-  renderFooterLens,
-  resizeCanvas,
-  type FooterLensCache,
-  type FooterLensState,
-} from './footer-lens-engine';
+import {createFooterLensEngine} from './footer-lens-engine';
 import './footer-lens.css';
+
+/** Monopo uses smooth += 0.1 * (target - smooth). */
+const LERP = 0.1;
+const SETTLE_PX = 0.15;
 
 export function FooterLensPrototype() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef<FooterLensState>({
-    cssW: 0,
-    cssH: 0,
-    dpr: 1,
-    pointerX: 0,
-    pointerY: 0,
-    pointerActive: false,
-  });
-  const cacheRef = useRef<FooterLensCache>({revealKey: '', reveal: null});
-  const rafRef = useRef<number>(0);
-  const needsDrawRef = useRef(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return;
 
-    const draw = () => {
-      const ctx = canvas.getContext('2d');
-      if (!ctx || stateRef.current.cssW < 1) return;
-      renderFooterLens(ctx, stateRef.current, cacheRef.current);
-      needsDrawRef.current = false;
-    };
+    const engine = createFooterLensEngine(canvas);
 
-    const schedule = () => {
-      needsDrawRef.current = true;
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = 0;
-        if (needsDrawRef.current) draw();
-      });
-    };
+    let targetX = 0;
+    let targetY = 0;
+    let smoothX = 0;
+    let smoothY = 0;
+    let pointerActive = false;
+    let running = false;
+    let seeded = false;
+    let raf = 0;
+    let lastDrawnX = Number.NaN;
+    let lastDrawnY = Number.NaN;
 
     const syncSize = () => {
       const rect = wrap.getBoundingClientRect();
       const cssW = Math.max(1, Math.floor(rect.width));
       const cssH = Math.max(1, Math.floor(rect.height));
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      stateRef.current.cssW = cssW;
-      stateRef.current.cssH = cssH;
-      stateRef.current.dpr = dpr;
-      cacheRef.current.reveal = null;
-      cacheRef.current.revealKey = '';
-      resizeCanvas(canvas, cssW, cssH, dpr);
-      // Seed pointer at logo center so first hover isn't off-canvas
-      if (!stateRef.current.pointerActive) {
-        stateRef.current.pointerX = cssW / 2;
-        stateRef.current.pointerY = cssH / 2;
+      engine.setSize(cssW, cssH);
+      if (!seeded) {
+        targetX = smoothX = cssW / 2;
+        targetY = smoothY = cssH / 2;
+        seeded = true;
       }
-      schedule();
+      lastDrawnX = Number.NaN;
     };
 
-    const onPointerMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      stateRef.current.pointerX = e.clientX - rect.left;
-      stateRef.current.pointerY = e.clientY - rect.top;
-      stateRef.current.pointerActive = true;
-      schedule();
+    const stopLoop = () => {
+      running = false;
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
     };
 
-    const onPointerEnter = (e: PointerEvent) => {
+    const tick = () => {
+      raf = 0;
+      if (!pointerActive) {
+        engine.drawAt(smoothX, smoothY, false);
+        running = false;
+        return;
+      }
+
+      smoothX += (targetX - smoothX) * LERP;
+      smoothY += (targetY - smoothY) * LERP;
+
+      const dx = targetX - smoothX;
+      const dy = targetY - smoothY;
+      const settled = dx * dx + dy * dy < SETTLE_PX * SETTLE_PX;
+      if (settled) {
+        smoothX = targetX;
+        smoothY = targetY;
+      }
+
+      const moved =
+        Number.isNaN(lastDrawnX) ||
+        Math.abs(smoothX - lastDrawnX) > 0.25 ||
+        Math.abs(smoothY - lastDrawnY) > 0.25;
+
+      if (moved) {
+        engine.setPointer({x: targetX, y: targetY});
+        engine.drawAt(smoothX, smoothY, true);
+        lastDrawnX = smoothX;
+        lastDrawnY = smoothY;
+      }
+
+      if (!settled || moved) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        running = false;
+      }
+    };
+
+    const startLoop = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const setTarget = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
-      stateRef.current.pointerX = e.clientX - rect.left;
-      stateRef.current.pointerY = e.clientY - rect.top;
-      stateRef.current.pointerActive = true;
-      schedule();
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      if (!pointerActive) {
+        // Snap onto cursor on enter so the lens doesn't travel from center.
+        smoothX = targetX;
+        smoothY = targetY;
+        lastDrawnX = Number.NaN;
+      }
+      pointerActive = true;
+      startLoop();
     };
 
     const onPointerLeave = () => {
-      stateRef.current.pointerActive = false;
-      schedule();
+      pointerActive = false;
+      engine.setPointer(null);
+      startLoop(); // one idle paint, then stop
     };
 
     syncSize();
     const ro = new ResizeObserver(syncSize);
     ro.observe(wrap);
 
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerenter', onPointerEnter);
+    canvas.addEventListener('pointermove', setTarget);
+    canvas.addEventListener('pointerenter', setTarget);
     canvas.addEventListener('pointerleave', onPointerLeave);
 
     return () => {
       ro.disconnect();
-      canvas.removeEventListener('pointermove', onPointerMove);
-      canvas.removeEventListener('pointerenter', onPointerEnter);
+      canvas.removeEventListener('pointermove', setTarget);
+      canvas.removeEventListener('pointerenter', setTarget);
       canvas.removeEventListener('pointerleave', onPointerLeave);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      stopLoop();
+      engine.destroy();
     };
   }, []);
 
   return (
     <div className="vp-footer-lens-proto">
       <p className="vp-footer-lens-proto__hint">
-        Hover the wordmark — mosaic reveal, outer-ring warp, rim chromatic
-        aberration. Prototype only.
+        Hover the wordmark — mosaic content swap, displacement warp, rim
+        chromatic aberration, glass overlay. Prototype only.
       </p>
       <div className="vp-footer-lens-proto__stage">
         <div ref={wrapRef} className="vp-footer-lens-proto__lens-wrap">
