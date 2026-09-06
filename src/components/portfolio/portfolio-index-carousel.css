@@ -841,6 +841,16 @@
     margin-inline: auto;
   }
 
+  /*
+   * Desktop filter/search entry points move to PortfolioIndexDesktopFilterRow.
+   * Keep the nodes mounted so mobile sheet/search logic stays intact; hide
+   * only the funnel + bottom search icon (and their clear badges) visually.
+   */
+  .vp-portfolio-index__tool--filter,
+  .vp-portfolio-index__tool--search {
+    display: none;
+  }
+
   .vp-portfolio-index__scrubber-track {
     padding-inline: 0.925rem;
   }
