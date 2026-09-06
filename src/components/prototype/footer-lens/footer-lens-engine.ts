@@ -67,6 +67,14 @@ const LENS_R_FRAC = 0.161;
  * Sized so ~ZOOM_CENTER magnification still has spare source pixels on Retina.
  */
 const REVEAL_SUPER = 1 / ZOOM_CENTER;
+/**
+ * Solid coverage gate for 0..255 alpha samples.
+ * CRITICAL: bilinear returns 0..255 — never compare against 0.5, or nearly
+ * transparent fringe / counter-hole pixels get treated as real content,
+ * forced opaque, dilated, and blurred into white/blue rim halos and floating
+ * dark shards (e.g. the "A" negative-space triangle).
+ */
+const ALPHA_SOLID = 128;
 
 type Cache = {
   logoX: number;
@@ -299,7 +307,24 @@ function buildRevealBuffer(
   ctx.fill(path2d);
   ctx.restore();
 
-  return { canvas: c, data: ctx.getImageData(0, 0, dw, dh) };
+  const data = ctx.getImageData(0, 0, dw, dh);
+  // destination-in clears alpha outside the mark but often leaves stale RGB
+  // (white / photo ghosts). Zero those so bilinear never bleeds foreign color
+  // into letterform edges, and sub-solid fringe cannot seed the opaque blur path.
+  scrubTransparentRgb(data.data);
+  ctx.putImageData(data, 0, 0);
+  return { canvas: c, data };
+}
+
+/** Zero RGB+A for every texel below solid coverage. */
+function scrubTransparentRgb(rgba: Uint8ClampedArray): void {
+  for (let i = 0; i < rgba.length; i += 4) {
+    if (rgba[i + 3]! >= ALPHA_SOLID) continue;
+    rgba[i] = 0;
+    rgba[i + 1] = 0;
+    rgba[i + 2] = 0;
+    rgba[i + 3] = 0;
+  }
 }
 
 /**
@@ -379,6 +404,8 @@ type LoupeScratch = {
   sharpImg: ImageData;
   opaqueImg: ImageData;
   dilatePrev: Uint8ClampedArray;
+  /** Exterior-flood mark buffer for enclosed-hole fill (1 byte per padded texel). */
+  holeMark: Uint8Array;
 };
 
 function makeCanvas(w: number, h: number): HTMLCanvasElement {
@@ -421,6 +448,7 @@ function ensureLoupeScratch(
     sharpImg: sharpCtx.createImageData(size, size),
     opaqueImg: opaqueCtx.createImageData(paddedSize, paddedSize),
     dilatePrev: new Uint8ClampedArray(paddedSize * paddedSize * 4),
+    holeMark: new Uint8Array(paddedSize * paddedSize),
   };
 }
 
@@ -469,6 +497,132 @@ function dilateOpaqueRgb(
         data[i + 1] = Math.round(g / n);
         data[i + 2] = Math.round(b / n);
         data[i + 3] = 255;
+      }
+    }
+  }
+}
+
+/**
+ * Fill transparent islands enclosed by photo content (e.g. the "A" counter)
+ * so magnification cannot leave a floating dark triangle where the WebGL
+ * backdrop shows through. Exterior empties — connected to outside the disc —
+ * stay transparent so the lens still clears over pure page background.
+ *
+ * `mark` is a reusable scratch byte buffer (length >= w*h).
+ */
+function fillEnclosedContentHoles(
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  cx: number,
+  cy: number,
+  radiusPx: number,
+  mark: Uint8Array,
+  dilatePrev: Uint8ClampedArray,
+): void {
+  if (mark.length < w * h) return;
+  mark.fill(0);
+
+  // Seed "exterior" = transparent samples outside the visible disc.
+  const stack: number[] = [];
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      if (data[i + 3]! >= 128) continue;
+      const dx = x + 0.5 - cx;
+      const dy = y + 0.5 - cy;
+      if (Math.hypot(dx, dy) <= radiusPx + 0.5) continue;
+      const mi = y * w + x;
+      mark[mi] = 1;
+      stack.push(mi);
+    }
+  }
+
+  // Flood through transparent texels so any empty region open to the outside
+  // is marked exterior (letterform edge over page bg). Enclosed counters aren't.
+  while (stack.length) {
+    const mi = stack.pop()!;
+    const x = mi % w;
+    const y = (mi / w) | 0;
+    for (let k = 0; k < 4; k++) {
+      const nx = x + (k === 0 ? -1 : k === 1 ? 1 : 0);
+      const ny = y + (k === 2 ? -1 : k === 3 ? 1 : 0);
+      if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+      const ni = ny * w + nx;
+      if (mark[ni]) continue;
+      const pi = ni * 4;
+      if (data[pi + 3]! >= 128) continue;
+      mark[ni] = 1;
+      stack.push(ni);
+    }
+  }
+
+  // BFS inpaint from opaque borders into enclosed holes only (O(hole pixels)).
+  void dilatePrev;
+  const queue: number[] = [];
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const mi = y * w + x;
+      if (mark[mi] === 1) continue; // exterior
+      const i = mi * 4;
+      if (data[i + 3]! >= 128) continue;
+      let touches = false;
+      for (let dy = -1; dy <= 1 && !touches; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          if (data[((y + dy) * w + (x + dx)) * 4 + 3]! >= 128) {
+            touches = true;
+            break;
+          }
+        }
+      }
+      if (!touches) continue;
+      mark[mi] = 2; // queued hole
+      queue.push(mi);
+    }
+  }
+
+  let qh = 0;
+  while (qh < queue.length) {
+    const mi = queue[qh++]!;
+    if (mark[mi] === 1) continue;
+    const x = mi % w;
+    const y = (mi / w) | 0;
+    const i = mi * 4;
+    if (data[i + 3]! >= 128) continue;
+
+    let r = 0;
+    let g = 0;
+    let b = 0;
+    let n = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const j = ((y + dy) * w + (x + dx)) * 4;
+        if (data[j + 3]! < 128) continue;
+        r += data[j]!;
+        g += data[j + 1]!;
+        b += data[j + 2]!;
+        n++;
+      }
+    }
+    if (n === 0) continue;
+    data[i] = Math.round(r / n);
+    data[i + 1] = Math.round(g / n);
+    data[i + 2] = Math.round(b / n);
+    data[i + 3] = 255;
+
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx < 1 || ny < 1 || nx >= w - 1 || ny >= h - 1) continue;
+        const ni = ny * w + nx;
+        if (mark[ni] !== 0) continue; // exterior or already queued
+        if (data[ni * 4 + 3]! >= 128) continue;
+        mark[ni] = 2;
+        queue.push(ni);
       }
     }
   }
@@ -543,17 +697,30 @@ function buildLensDisc(
 
       const [sx0, sy0] = toSrc(sampleXCss, sampleYCss);
       const a = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 3);
-      // Need real photo coverage — skip empty collage / OOB.
-      if (a < 0.5) continue;
+      // Solid photo coverage only — skip empty collage, OOB, and AA fringe.
+      if (a < ALPHA_SOLID) continue;
 
-      const caOff = lensR * CA_FRAC * rw;
-      const [sxR, syR] = toSrc(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
-      const [sxB, syB] = toSrc(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
-      const r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
+      // Base RGB from the covered sample. CA offsets may land outside the mark
+      // (over background / in the "A" counter); only split a channel when that
+      // offset still has solid coverage, otherwise keep the center channel so
+      // we never invent pale/blue rim color or dark hole shards.
+      let r = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 0);
       const g = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 1);
-      const b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
+      let b = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 2);
+      const caOff = lensR * CA_FRAC * rw;
+      if (caOff > 1e-6) {
+        const [sxR, syR] = toSrc(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
+        const [sxB, syB] = toSrc(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
+        if (sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 3) >= ALPHA_SOLID) {
+          r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
+        }
+        if (sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 3) >= ALPHA_SOLID) {
+          b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
+        }
+      }
 
       // Opaque blur source: solid alpha (no lens-edge feather baked in).
+      // Only real mosaic/photo texels ever land here — never a white backdrop.
       const oi = (py * paddedSize + px) * 4;
       opaqueData[oi] = r;
       opaqueData[oi + 1] = g;
@@ -568,12 +735,39 @@ function buildLensDisc(
       const edge = radiusPx - distPxRaw;
       const circleCover = edge >= 0.5 ? 1 : edge + 0.5;
       const outA = a * circleCover;
-      if (outA < 0.5) continue;
+      if (outA < 1) continue;
       const si = (sy * size + sx) * 4;
       sharpData[si] = r;
       sharpData[si + 1] = g;
       sharpData[si + 2] = b;
       sharpData[si + 3] = outA;
+    }
+  }
+
+  // Inpaint enclosed empties (magnified "A" counter, etc.) so they don't read as
+  // floating dark shards where the backdrop shows through. Leaves exterior empties
+  // (open to outside the disc / page background) untouched.
+  fillEnclosedContentHoles(
+    opaqueData,
+    paddedSize,
+    paddedSize,
+    pad + cx,
+    pad + cy,
+    radiusPx,
+    scratch.holeMark,
+    scratch.dilatePrev,
+  );
+  // Mirror hole fills into the sharp disc so both layers stay aligned.
+  for (let sy = 0; sy < size; sy++) {
+    for (let sx = 0; sx < size; sx++) {
+      const si = (sy * size + sx) * 4;
+      if (sharpData[si + 3]! >= 1) continue;
+      const oi = ((sy + pad) * paddedSize + (sx + pad)) * 4;
+      if (opaqueData[oi + 3]! < 128) continue;
+      sharpData[si] = opaqueData[oi]!;
+      sharpData[si + 1] = opaqueData[oi + 1]!;
+      sharpData[si + 2] = opaqueData[oi + 2]!;
+      sharpData[si + 3] = 255;
     }
   }
 
@@ -641,6 +835,21 @@ function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
   cctx.beginPath();
   cctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
   cctx.fill();
+
+  // Also clip soft-focus to real photo coverage (from the opaque buffer, unpadded).
+  // Without this, a faint circular wash can appear over empty disc / page bg.
+  cctx.globalCompositeOperation = "destination-in";
+  cctx.drawImage(
+    scratch.opaqueRaster,
+    pad,
+    pad,
+    size,
+    size,
+    0,
+    0,
+    size,
+    size,
+  );
   cctx.globalCompositeOperation = "source-over";
 
   const octx = scratch.out.getContext("2d")!;
@@ -651,7 +860,8 @@ function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
 
 /**
  * Procedural glass rim (stand-in for monopo's /lense.png).
- * Primary stroke radius === reveal clip radius (same center, same r).
+ * Dark hairline only — any white wash/stroke read as a pale rim halo over
+ * pure page background where the disc is empty.
  */
 function paintGlassOverlay(
   ctx: CanvasRenderingContext2D,
@@ -659,47 +869,8 @@ function paintGlassOverlay(
   ly: number,
   lensR: number,
 ): void {
-  const outer = lensR * 1.06;
-  const inner = lensR * 0.82;
-
-  const ring = ctx.createRadialGradient(lx, ly, inner, lx, ly, outer);
-  ring.addColorStop(0, "rgba(255,255,255,0)");
-  ring.addColorStop(0.55, "rgba(255,255,255,0)");
-  ring.addColorStop(0.78, "rgba(255,255,255,0.14)");
-  ring.addColorStop(0.92, "rgba(255,255,255,0.06)");
-  ring.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = ring;
-  ctx.beginPath();
-  ctx.arc(lx, ly, outer, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
-  ctx.clip();
-  const spec = ctx.createRadialGradient(
-    lx - lensR * 0.35,
-    ly - lensR * 0.4,
-    0,
-    lx - lensR * 0.1,
-    ly - lensR * 0.15,
-    lensR * 0.85,
-  );
-  spec.addColorStop(0, "rgba(255,255,255,0.22)");
-  spec.addColorStop(0.35, "rgba(255,255,255,0.06)");
-  spec.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = spec;
-  ctx.fillRect(lx - lensR, ly - lensR, lensR * 2, lensR * 2);
-  ctx.restore();
-
-  ctx.strokeStyle = "rgba(255,255,255,0.28)";
-  ctx.lineWidth = Math.max(1, lensR * 0.018);
-  ctx.beginPath();
-  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(0,0,0,0.18)";
-  ctx.lineWidth = Math.max(0.75, lensR * 0.012);
+  ctx.strokeStyle = "rgba(0,0,0,0.2)";
+  ctx.lineWidth = Math.max(0.75, lensR * 0.01);
   ctx.beginPath();
   ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
   ctx.stroke();
@@ -846,25 +1017,29 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     lastBuiltLx = lx;
     lastBuiltLy = ly;
 
-    const cxDev = lx * dpr;
-    const cyDev = ly * dpr;
-    const rDev = blitPx / 2;
-    ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.beginPath();
-    ctx.arc(cxDev, cyDev, rDev, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.imageSmoothingEnabled = workPx < blitPx;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(disc, cxDev - rDev, cyDev - rDev, blitPx, blitPx);
-    ctx.restore();
-
+    // Wordmark with lens hole FIRST. If the disc is drawn first, evenodd-hole
+    // antialiasing fringes white into the circle and reads as a pale rim halo
+    // over pure background. Disc on top covers that fringe.
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, 0, cssW, cssH);
     ctx.arc(lx, ly, lensR, 0, Math.PI * 2, true);
     ctx.clip("evenodd");
     ctx.drawImage(whiteWordmark, logoX, logoY, logoW, logoH);
+    ctx.restore();
+
+    const cxDev = lx * dpr;
+    const cyDev = ly * dpr;
+    const rDev = blitPx / 2;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.beginPath();
+    // Slightly oversized clip so disc covers residual hole-edge AA under the rim.
+    ctx.arc(cxDev, cyDev, rDev + 1.25, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.imageSmoothingEnabled = workPx < blitPx;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(disc, cxDev - rDev, cyDev - rDev, blitPx, blitPx);
     ctx.restore();
 
     paintGlassOverlay(ctx, lx, ly, lensR);
