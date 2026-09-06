@@ -11,12 +11,12 @@
  * Slide width is height-driven at every breakpoint (100cqh × card aspect)
  * so the slide box always hugs the aspect-locked card exactly — no blank
  * gutter inside the slide from a mismatched box shape. Inactive peeks use
- * opacity/blur/scale only.
+ * blur/scale + an opaque dark wash (not card opacity — that punched through
+ * to the bleed layer underneath).
  */
 
 .vp-portfolio-index {
   --vp-index-slide-gap: 0.5rem;
-  --vp-index-inactive-opacity: 0.45;
   --vp-index-inactive-scale: 0.94;
   /*
    * Card aspect matches Sanity CDN bake exactly (see @carousel-ratios).
@@ -176,12 +176,15 @@
     user-select: none;
   }
 
-  /* Single track-wide wash — not per-slide — so photography stays even. */
+  /*
+   * Track-wide wash — not per-slide. 0.9 leaves ~10% of the pre-blurred
+   * poster reading through so the field stays textured, not a legible photo.
+   */
   .vp-portfolio-index__bleed-wash {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.9);
     pointer-events: none;
   }
 }
@@ -316,14 +319,30 @@
   /* Fixed rem — % radius flattens on tall cards once ry exceeds half-width. */
   border-radius: 1.75rem;
   transform: scale(var(--vp-index-inactive-scale));
-  opacity: var(--vp-index-inactive-opacity);
+  /* Poster stays opaque — peer dimming is the ::before wash, not card opacity
+   * (opacity here punched a ghost of the bleed layer through the peer cards). */
+  opacity: 1;
   filter: blur(4px);
   /* Soft lift — no hard outer hairline (that reads as a sticker on dark posters). */
   box-shadow: 0 2px 18px rgba(var(--vp-black-rgb), 0.4);
   transition:
-    opacity 280ms ease,
     transform 280ms ease,
     filter 280ms ease;
+}
+
+/*
+ * Peer dark wash over the opaque poster. ::before (not a DOM child) — card
+ * markup has no wash slot, and ::after is already the glass rim. z-index 1
+ * sits above the poster (z-0) and under the link/overlay + rim.
+ */
+.vp-portfolio-index__card--styled::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
 }
 
 /*
@@ -355,9 +374,12 @@
 }
 
 .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled {
-  opacity: 1;
   transform: scale(1);
   filter: blur(0);
+}
+
+.vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled::before {
+  content: none;
 }
 
 .vp-portfolio-index__poster-wrap {
