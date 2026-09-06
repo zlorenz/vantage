@@ -205,13 +205,20 @@
 
   --vp-link: #f9db24;
   --vp-link-hover: #d7bf1f;
-  --vp-orange: #f04e23;
+  --vp-orange: #f04e23; /* Also nav hamburger / work close cell fill */
 
   /* Colour Palette — Borders */
 
   --vp-border: rgba(255, 255, 255, 0.6);
   --vp-border-strong: rgba(255, 255, 255, 0.95);
   --vp-border-soft: rgba(255, 255, 255, 0.12);
+  /* Stronger hairline than --vp-border-soft (0.12) — nav cells, chrome rules */
+  --vp-struct-line: 1px solid rgba(255, 255, 255, 0.15);
+
+  /* Sitewide desktop nav chrome (proven across every page via NavBar) */
+  --vp-nav-bar-height: 80px;
+  --vp-nav-cell-width: 94px;
+  --vp-nav-cell-tracking: -0.28px;
 
   /* Colour Palette — Overlays */
 
@@ -916,36 +923,26 @@ body:has(.vp-work-index) #header.navbar::before {
 
 /*
  * Desktop nav chrome (Figma 77:12462) — sitewide cell strip.
- * wordmark | EN | CN | orange hamburger, full-height hairlines between cells.
- * Orange fill: --vp-orange (#f04e23) === --vp-candidate-nav-accent-orange (doc lag).
- * Hairlines: --vp-candidate-struct-line (rgba(255,255,255,0.15)).
+ * wordmark | EN | 中文 | orange hamburger, full-height hairlines between cells.
+ * Orange fill: --vp-orange. Hairlines: --vp-struct-line (distinct from --vp-border-soft).
  */
 @media (min-width: 768px) {
   #header.navbar {
-    --vp-candidate-struct-line: 1px solid rgba(255, 255, 255, 0.15);
-    /* Figma candidate is 100px; shipping 80px — intentional override (nav felt too tall). */
-    --vp-candidate-nav-bar-height: 80px;
-    /*
-     * Right-side cells: 94px = midpoint of prior 108px and the 80px square.
-     * Do NOT bind these to nav-bar-height — that forced 1:1 squares.
-     */
-    --vp-candidate-nav-orange-cell-width: 94px;
-    --vp-candidate-nav-lang-cell-width: 94px;
-    min-height: var(--vp-candidate-nav-bar-height);
+    min-height: var(--vp-nav-bar-height);
     padding-block: 0;
-    border-bottom: var(--vp-candidate-struct-line);
+    border-bottom: var(--vp-struct-line);
   }
 
   #header .container-fluid {
     align-items: stretch;
-    min-height: var(--vp-candidate-nav-bar-height);
+    min-height: var(--vp-nav-bar-height);
     padding-inline: 0;
   }
 
   #header .navbar-brand {
     display: flex;
     align-items: center;
-    border-right: var(--vp-candidate-struct-line);
+    border-right: var(--vp-struct-line);
     padding-inline: 1.875rem;
   }
 
@@ -969,27 +966,27 @@ body:has(.vp-work-index) #header.navbar::before {
     justify-content: center;
     gap: 0.4rem;
     box-sizing: border-box;
-    width: var(--vp-candidate-nav-lang-cell-width);
-    min-width: var(--vp-candidate-nav-lang-cell-width);
+    width: var(--vp-nav-cell-width);
+    min-width: var(--vp-nav-cell-width);
     height: 100%;
     margin: 0;
     padding: 0;
     border: 0;
-    border-left: var(--vp-candidate-struct-line);
+    border-left: var(--vp-struct-line);
     border-radius: 0;
     background: transparent;
     color: #fff;
     font-family: var(--font-vp-heading);
     font-size: 14px;
     font-weight: 700;
-    letter-spacing: var(--vp-candidate-tracking-tight-14, -0.28px);
+    letter-spacing: var(--vp-nav-cell-tracking);
     line-height: 1.25;
     text-transform: uppercase;
     cursor: pointer;
   }
 
   #header .vp-lang-cell:last-child {
-    border-right: var(--vp-candidate-struct-line);
+    border-right: var(--vp-struct-line);
   }
 
   #header .vp-lang-cell:not(.is-active) {
@@ -1015,13 +1012,13 @@ body:has(.vp-work-index) #header.navbar::before {
   /*
    * Orange hamburger cell — must fill the full nav bar height.
    * Avoid height:100% against a min-height-only parent (collapses to the
-   * 20px icon). Stretch the wrapper + pin the button to the candidate height.
+   * 20px icon). Stretch the wrapper + pin the button to --vp-nav-bar-height.
    */
   #header .vp-nav-toggler-cell {
     display: flex;
     align-self: stretch;
     height: auto;
-    min-height: var(--vp-candidate-nav-bar-height);
+    min-height: var(--vp-nav-bar-height);
   }
 
   #header .navbar-toggler {
@@ -1029,14 +1026,13 @@ body:has(.vp-work-index) #header.navbar::before {
     align-items: center;
     justify-content: center;
     align-self: stretch;
-    width: var(--vp-candidate-nav-orange-cell-width);
-    min-width: var(--vp-candidate-nav-orange-cell-width);
+    width: var(--vp-nav-cell-width);
+    min-width: var(--vp-nav-cell-width);
     height: 100%;
-    min-height: var(--vp-candidate-nav-bar-height);
+    min-height: var(--vp-nav-bar-height);
     margin: 0;
     padding: 0;
     border-radius: 0;
-    /* Same hex as --vp-candidate-nav-accent-orange; prefer live --vp-orange. */
     background-color: var(--vp-orange);
   }
 

@@ -62,7 +62,7 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
         className="navbar fixed top-0 z-50 w-full py-[0.9rem] md:py-0"
         aria-label={t('primaryAria')}
       >
-        <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-[1.0625rem] md:h-full md:min-h-[var(--vp-candidate-nav-bar-height,80px)] md:flex-nowrap md:items-stretch md:px-0">
+        <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-[1.0625rem] md:h-full md:min-h-[var(--vp-nav-bar-height,80px)] md:flex-nowrap md:items-stretch md:px-0">
           <Link className="navbar-brand shrink-0 md:flex md:items-center" href={homeHref} rel="home">
             {/* SVG via <img> — next/image does not optimize SVGs */}
             {/* eslint-disable-next-line @next/next/no-img-element */}

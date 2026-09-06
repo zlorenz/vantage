@@ -4,6 +4,29 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 
 ---
 
+## Locked, component-scoped (`--vp-home-carousel-*`)
+
+Stable tokens used only by the homepage featured-work carousel. **Not** sitewide — do not reuse elsewhere until a second component needs the same value (then promote to a shared `--vp-*`). CSS lives under `.vp-proto-carousel` in `carousel.css`.
+
+| Token | Value | Usage | Notes |
+|---|---|---|---|
+| `--vp-home-carousel-overlay-pad-inline` | `30px` | Overlay L/R inset | |
+| `--vp-home-carousel-overlay-pad-block` | `36px` | Overlay top/bottom inset | Intentional vs Figma `60px` (~40% tighter). |
+| `--vp-home-carousel-title-tag-gap` | `24px` | Brand-row → campaign title | Intentional vs Figma `32px`. |
+| `--vp-home-carousel-brand-dot-size` | `0.8em` | Brand `::before` bullet | Corrected from undersized `0.4em`. |
+| `--vp-home-carousel-brand-accent` | `#fdb913` | Brand colour + bullet fill | Not `--vp-link` (`#f9db24`). Promote only if work-index matches identically. |
+| `--vp-home-carousel-tracking-tight-16` | `-0.32px` | Brand/format + credit names | |
+| `--vp-home-carousel-tracking-tight-48` | `-0.96px` | Campaign title 48px | |
+| `--vp-home-carousel-tracking-tight-14` | `-0.28px` | Slide counter | |
+| `--vp-home-carousel-credit-role` | `rgba(255,255,255,0.5)` | DIRECTOR / DOP labels | |
+| `--vp-home-carousel-credit-col-gap` | `80px` | Gap between credit columns | |
+| `--vp-home-carousel-counter-muted` | `rgba(255,255,255,0.6)` | Counter numerals + rule | |
+| `--vp-home-carousel-scrim` | symmetric `rgba(0,0,0,0.3)` vignette | Desktop overlay scrim | Mobile keeps prior bottom-weighted scrim. |
+
+**Font note (not a CSS colour token):** home brand / format / credit *names* use `--font-vp-heading-fallback` (Zalando Sans Expanded) at weight 700; campaign title stays Special Gothic. Sitewide Zalando licensing remains an open product decision — see `candidate-tokens.md`.
+
+---
+
 ## Colour Palette
 
 ### Core
@@ -23,6 +46,7 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 |---|---|---|
 | `vp-link` | `#f9db24` | Links, interactive accent — yellow |
 | `vp-link-hover` | `#d7bf1f` | Link hover state |
+| `vp-orange` | `#f04e23` | Brand orange — **also** desktop nav hamburger cell + work close cell fill (formerly candidate `nav-accent-orange`; identical hex, no duplicate token) |
 
 ### Borders
 
@@ -31,6 +55,19 @@ Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. The
 | `vp-border` | `rgba(255,255,255,0.6)` | Default borders (filter tabs, etc.) |
 | `vp-border-strong` | `rgba(255,255,255,0.95)` | Active/hover border state |
 | `vp-border-soft` | `rgba(255,255,255,0.12)` | Subtle dividers, card borders |
+| `vp-struct-line` | `1px solid rgba(255,255,255,0.15)` | Nav cell hairlines + chrome rules — **intentionally stronger** than `vp-border-soft` (0.12); keep both |
+
+### Sitewide nav chrome
+
+Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `globals.css`.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-nav-bar-height` | `80px` | Desktop `#header` min-height (intentional vs Figma `100px`) |
+| `--vp-nav-cell-width` | `94px` | EN / 中文 / hamburger cell width (height tracks bar; not square) |
+| `--vp-nav-cell-tracking` | `-0.28px` | Lang-cell letter-spacing |
+
+---
 
 ### Overlays
 
