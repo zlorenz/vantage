@@ -275,8 +275,9 @@
     --vp-candidate-tracking-tight-48: -0.96px;
     --vp-candidate-tracking-tight-14: -0.28px;
     --vp-candidate-home-overlay-pad-inline: 30px;
-    --vp-candidate-home-overlay-pad-block: 60px;
-    --vp-candidate-home-title-tag-gap: 32px;
+    /* Was 60px (Figma); −40% so bottom inset reads closer to the 30px sides. */
+    --vp-candidate-home-overlay-pad-block: 36px;
+    --vp-candidate-home-title-tag-gap: 24px;
     --vp-candidate-credit-col-gap: 80px;
   }
 
@@ -319,7 +320,7 @@
     flex: 1 1 auto;
     flex-direction: column;
     align-items: flex-start;
-    /* Candidate is 32px; keep exact — optical trim below removes line-box padding. */
+    /* Brand-row → title; shipping 24px (Figma was 32). */
     gap: var(--vp-candidate-home-title-tag-gap);
   }
 
@@ -341,12 +342,13 @@
     color: var(--vp-candidate-brand-accent);
   }
 
-  /* Figma ● before brand — candidate brand-accent fill. */
+  /* Figma brand uses a ● glyph at 16px Zalando Bold (~10–13px ink).
+   * Prior 0.4em (≈6.4px) was ~half that optical size. */
   .vp-proto-carousel__brand::before {
     content: "";
     display: inline-block;
-    width: 0.4em;
-    height: 0.4em;
+    width: 0.8em;
+    height: 0.8em;
     margin-right: 0.55em;
     border-radius: 50%;
     background: var(--vp-candidate-brand-accent);
@@ -356,6 +358,9 @@
   .vp-proto-carousel__brand,
   .vp-proto-carousel__format {
     font-size: 16px;
+    /* Figma: Zalando Sans Expanded Bold — Special Gothic 400 reads heavier. */
+    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-weight: 700;
     letter-spacing: var(--vp-candidate-tracking-tight-16);
     line-height: 1.25;
     /* Match Figma text-box-trim so the 32px gap is edge-to-edge, not ascent-inflated. */
@@ -437,9 +442,10 @@
   }
 
   .vp-proto-carousel__credit dd {
-    font-family: var(--font-vp-heading);
+    /* Figma: Zalando Sans Expanded Bold (crew names). */
+    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: var(--vp-candidate-tracking-tight-16);
     line-height: 1.4;
     text-transform: uppercase;
