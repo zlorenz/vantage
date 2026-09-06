@@ -235,7 +235,7 @@ export function NavBar({
         <LanguageSwitcher variant="cells" />
       </div>
 
-      <div className="relative z-50 flex md:h-full">
+      <div className="vp-nav-toggler-cell relative z-50 flex">
         <button
           ref={togglerRef}
           type="button"
