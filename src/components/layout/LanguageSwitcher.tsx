@@ -15,7 +15,7 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 
 const LOCALE_FLAG: Record<Locale, string> = {
-  en: '/flags/gb.svg',
+  en: '/flags/us.svg',
   zh: '/flags/cn.svg',
 };
 
