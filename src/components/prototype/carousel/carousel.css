@@ -323,6 +323,15 @@
     align-items: center;
   }
 
+  /* Short vertical hairline between brand and category (Figma). Mobile: hidden. */
+  .vp-proto-carousel__brand-rule {
+    display: block;
+    width: 1px;
+    height: 20px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
   .vp-proto-carousel__brand {
     color: var(--vp-candidate-brand-accent);
   }

@@ -205,7 +205,13 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               <div className="vp-proto-carousel__brand-row">
                 <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
                 {slide.formatLine ? (
-                  <p className="vp-proto-carousel__format">{slide.formatLine}</p>
+                  <>
+                    <span
+                      className="vp-proto-carousel__brand-rule"
+                      aria-hidden
+                    />
+                    <p className="vp-proto-carousel__format">{slide.formatLine}</p>
+                  </>
                 ) : null}
               </div>
               <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
