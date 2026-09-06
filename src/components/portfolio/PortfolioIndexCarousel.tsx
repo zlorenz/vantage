@@ -22,6 +22,7 @@ import {
   replacePublicFiltersUrl,
   type PublicFilters,
 } from './PortfolioGrid';
+import {PortfolioIndexDesktopFilterRow} from './PortfolioIndexDesktopFilterRow';
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
@@ -808,6 +809,17 @@ export function PortfolioIndexCarousel({
       className={`vp-portfolio-index${slideCount <= 3 ? ' is-sparse' : ''}`}
     >
       <div className="vp-portfolio-index__stage">
+        <PortfolioIndexDesktopFilterRow
+          locale={locale}
+          phrases={phrases}
+          slides={librarySlides}
+          filters={publicFilters}
+          onChangeFilter={updatePublicFilter}
+          onOpenSearch={openSearch}
+          videoFormats={videoFormats}
+          industries={industries}
+          markets={markets}
+        />
         <p
           className="vp-portfolio-index__counter"
           aria-live="polite"
