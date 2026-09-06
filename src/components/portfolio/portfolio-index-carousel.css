@@ -29,6 +29,8 @@
   --vp-index-slide-width-scale: 1;
   /* Bottom chrome (filter + scrubber + search) — reserved in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
+  /* Desktop filter row above the counter; 0 on mobile (row is display:none). */
+  --vp-index-top-row-height: 0px;
   /* Desktop default; mobile override (~7% shorter) below. */
   --vp-index-height-scale: 0.86;
 
@@ -73,6 +75,8 @@
   .vp-portfolio-index {
     --vp-index-slide-gap: 0.75rem;
     --vp-index-card-aspect: 520 / 673;
+    /* Matches PortfolioIndexDesktopFilterRow rendered height (Figma 40px). */
+    --vp-index-top-row-height: 2.5rem;
   }
 }
 
@@ -228,6 +232,7 @@
   height: calc(
     (
         100vh - var(--vp-header-height, 4.5rem) -
+          var(--vp-index-top-row-height, 0px) -
           var(--vp-index-bottom-bar-height, 5rem) -
           env(safe-area-inset-bottom, 0px)
       ) * var(--vp-index-height-scale, 0.86)
@@ -235,6 +240,7 @@
   height: calc(
     (
         100svh - var(--vp-header-height, 4.5rem) -
+          var(--vp-index-top-row-height, 0px) -
           var(--vp-index-bottom-bar-height, 5rem) -
           env(safe-area-inset-bottom, 0px)
       ) * var(--vp-index-height-scale, 0.86)
