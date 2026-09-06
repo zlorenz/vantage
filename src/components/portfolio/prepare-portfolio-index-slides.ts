@@ -23,6 +23,22 @@ const FEATURED_APPEND_EXCLUDE_HEAD = 12;
 const WORK_MOBILE_POSTER = posterSize(CAROUSEL_RATIOS.workMobile);
 const WORK_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.workDesktop);
 
+/**
+ * Desktop bleed-track bake — distinct from workDesktop poster (1040×1346).
+ *
+ * Derivation from `.vp-portfolio-index__bleed` CSS (desktop ≥576px):
+ * - Track spans the stage (`inset: 0` → full `.vp-portfolio-index` width =
+ *   viewport width; height = counter + card viewport band).
+ * - Reference viewport 1920×1080 (typical large desktop the track fills):
+ *   card band ≈ (1080 − 4.5rem − 5rem) × 0.86 ≈ 798px; stage ≈ ~820px tall;
+ *   track width = 1920px. Bake 1920×1080 so `object-fit: cover` never
+ *   upscales on that surface (blurred, so 1× is enough — no 2× poster DPR).
+ * - Pre-blur via Sanity `blur` (not CSS filter) to avoid runtime jank.
+ */
+const WORK_DESKTOP_BLEED = {width: 1920, height: 1080} as const;
+/** Sanity CDN blur amount (0–100). 50 ≈ soft full-bleed wash; matches builder docs. */
+const WORK_DESKTOP_BLEED_BLUR = 50;
+
 export type PortfolioIndexSlide = {
   id: string;
   /** Locale-aware portfolio route slug. */
@@ -31,6 +47,11 @@ export type PortfolioIndexSlide = {
   posterUrl: string;
   /** Desktop (≥576px) — ~520:673 Sanity crop matching the /work card. */
   posterUrlDesktop: string;
+  /**
+   * Desktop bleed-track URL — viewport-scale crop of featuredImage, pre-blurred
+   * at the CDN. Only consumed inside the ±STYLE_WINDOW_RADIUS bleed window.
+   */
+  bleedUrlDesktop: string;
   /** CSS object-position from featuredImage hotspot (e.g. "42% 55%"). */
   objectPosition: string;
   /** Brand + product (yellow eyebrow). */
@@ -92,6 +113,13 @@ export function preparePortfolioIndexSlideFromEntry(
     .fit('crop')
     .url();
 
+  const bleedUrlDesktop = urlForImage(entry.featuredImage)
+    .width(WORK_DESKTOP_BLEED.width)
+    .height(WORK_DESKTOP_BLEED.height)
+    .fit('crop')
+    .blur(WORK_DESKTOP_BLEED_BLUR)
+    .url();
+
   const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
   const {brandLine, campaignLine} = composeOverlayCopy(parts);
   const directorNames = getStructuredRoleNames(
@@ -104,6 +132,7 @@ export function preparePortfolioIndexSlideFromEntry(
     hrefSlug,
     posterUrl,
     posterUrlDesktop,
+    bleedUrlDesktop,
     objectPosition: objectPositionFromHotspot(entry.featuredImage.hotspot),
     brandLine,
     campaignLine,

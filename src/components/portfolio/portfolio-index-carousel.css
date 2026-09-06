@@ -118,14 +118,12 @@
 }
 
 /*
- * Step 1 prototype — parallel bleed track behind the Embla viewport.
+ * Parallel bleed track behind the Embla viewport (Step 1 sync + Step 2 media).
  * Transform is mirrored from Embla's container in JS (syncBleedTransform).
  * Slide width reuses the same CSS variables as .vp-portfolio-index__slide
- * (173–176) but cannot use 100cqh here: this track is taller than the card
- * band (full stage). Height expression matches the viewport's used height
- * (126–139). No shared width constant/hook exists — duplication unavoidable.
- * Desktop-only: absent below 576px (display:none). Step 2 may switch to
- * not rendering the node at all.
+ * but cannot use 100cqh here: this track is taller than the card band
+ * (full stage). No shared width constant/hook exists — duplication unavoidable.
+ * Desktop-only: absent below 576px (display:none).
  */
 .vp-portfolio-index__bleed {
   display: none;
@@ -168,19 +166,26 @@
     display: flex;
     align-items: stretch;
     justify-content: center;
+    overflow: hidden;
   }
 
-  .vp-portfolio-index__bleed-proto {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* CDN-pre-blurred; do not add filter: blur() here. */
+  .vp-portfolio-index__bleed-media {
+    display: block;
     width: 100%;
     height: 100%;
-    font-family: var(--vp-font-sans);
-    font-size: 2rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.85);
-    opacity: 0.55;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Single track-wide wash — not per-slide — so photography stays even. */
+  .vp-portfolio-index__bleed-wash {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: none;
   }
 }
 

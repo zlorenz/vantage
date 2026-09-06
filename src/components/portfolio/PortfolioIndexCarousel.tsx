@@ -794,32 +794,43 @@ export function PortfolioIndexCarousel({
           <span className="vp-portfolio-index__counter-total">{slideCount}</span>
         </p>
         {/*
-         * Step 1 prototype: parallel bleed track behind the Embla viewport.
-         * Same slide count/widths as the card track; transform mirrored from
-         * Embla's container (see syncBleedTransform). Colored index tiles only
-         * — no images yet. Desktop-only via CSS (display:none below 576px).
+         * Bleed track behind the Embla viewport. Same slide count/widths as
+         * the card track; transform mirrored from Embla (syncBleedTransform).
+         * Images mount only within ±STYLE_WINDOW_RADIUS of active. Desktop-only
+         * via CSS (display:none below 576px).
          */}
         <div className="vp-portfolio-index__bleed" aria-hidden="true">
           <div
             ref={bleedContainerRef}
             className="vp-portfolio-index__bleed-container"
           >
-            {filteredSlides.map((slide, index) => (
-              <div
-                key={`bleed-${slide.id}`}
-                className="vp-portfolio-index__bleed-slide"
-              >
+            {filteredSlides.map((slide, index) => {
+              const mountBleed = isWithinCircularWindow(
+                index,
+                activeIndex,
+                slideCount,
+                STYLE_WINDOW_RADIUS,
+              );
+              return (
                 <div
-                  className="vp-portfolio-index__bleed-proto"
-                  style={{
-                    backgroundColor: `hsl(${(index * 47) % 360} 65% 42%)`,
-                  }}
+                  key={`bleed-${slide.id}`}
+                  className="vp-portfolio-index__bleed-slide"
                 >
-                  {index}
+                  {mountBleed ? (
+                    <img
+                      className="vp-portfolio-index__bleed-media"
+                      src={slide.bleedUrlDesktop}
+                      alt=""
+                      draggable={false}
+                      decoding="async"
+                      style={{objectPosition: slide.objectPosition}}
+                    />
+                  ) : null}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+          <div className="vp-portfolio-index__bleed-wash" />
         </div>
         <div
           ref={emblaRef}
