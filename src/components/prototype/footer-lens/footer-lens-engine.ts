@@ -299,20 +299,28 @@ function buildRevealBuffer(
   ctx.imageSmoothingQuality = "high";
   ctx.drawImage(collage, 0, 0, dw, dh);
 
-  ctx.save();
-  ctx.globalCompositeOperation = "destination-in";
-  ctx.setTransform(dw / logoW, 0, 0, dh / logoH, 0, 0);
-  ctx.translate(-logoX, -logoY);
-  ctx.fillStyle = "#fff";
-  ctx.fill(path2d);
+  // Build the letterform mask in source-over (fill + thin stroke), then apply
+  // it once with destination-in. Stroking under destination-in itself would
+  // keep only the hairline outline and wipe the filled interior — empty lens.
+  const mask = document.createElement("canvas");
+  mask.width = dw;
+  mask.height = dh;
+  const mctx = mask.getContext("2d")!;
+  mctx.setTransform(dw / logoW, 0, 0, dh / logoH, 0, 0);
+  mctx.translate(-logoX, -logoY);
+  mctx.fillStyle = "#fff";
+  mctx.fill(path2d);
   // Slight stroke seals 1px Path2D cusps (A counter apex) that fill() alone
   // can leave as hairline gaps — those magnify into the dark triangle shard.
-  ctx.strokeStyle = "#fff";
-  ctx.lineJoin = "round";
-  ctx.lineCap = "round";
-  ctx.lineWidth = 0.4;
-  ctx.stroke(path2d);
-  ctx.restore();
+  mctx.strokeStyle = "#fff";
+  mctx.lineJoin = "round";
+  mctx.lineCap = "round";
+  mctx.lineWidth = 0.4;
+  mctx.stroke(path2d);
+
+  ctx.globalCompositeOperation = "destination-in";
+  ctx.drawImage(mask, 0, 0);
+  ctx.globalCompositeOperation = "source-over";
 
   const data = ctx.getImageData(0, 0, dw, dh);
   // destination-in clears alpha outside the mark but often leaves stale RGB
