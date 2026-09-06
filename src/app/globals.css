@@ -336,27 +336,14 @@
   --vp-file-block-button-gap: 1.25rem;
 }
 
-/* Soft top spotlight — /work only.
- * Fixed ::before (not body background): body/html `background` shorthand in
- * @layer base fights page-level background-image on iOS. Isolation keeps the
- * glow behind carousel content; carousel/slides stay transparent so gutters
- * reveal this layer. Brand orange via --vp-orange (#f04e23) at 18%. */
+/* /work index shell.
+ * Soft orange radial ::before removed — full-viewport portfolio bleed
+ * (`.vp-portfolio-index__bleed`, position:fixed) owns that backdrop role now.
+ * isolation + child z-index keep carousel chrome above the fixed bleed while
+ * the site header (z-50, outside this context) stays on top. */
 .vp-work-index {
   position: relative;
   isolation: isolate;
-}
-
-.vp-work-index::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 130% 55% at 50% 0px,
-    rgba(240, 78, 35, 0.18) 0%,
-    transparent 70%
-  );
 }
 
 .vp-work-index > * {

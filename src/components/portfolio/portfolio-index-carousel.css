@@ -119,11 +119,14 @@
 
 /*
  * Full-viewport bleed track behind the Embla viewport.
- * Each slide is 100vw (browser viewport width) × stage height — not card-
- * width. Transform is progress-proportional in JS (syncBleedTransform), in
- * vw units so it stays locked to this slide width. No gap: adjacent frames
- * sit edge-to-edge. overflow-x:hidden keeps only one frame (+ drag peeks)
- * visible. Desktop-only: absent below 576px (display:none).
+ * position:fixed; inset:0 covers the true browser viewport (edge-to-edge,
+ * including under the transparent /work nav) — not the stage band.
+ * Each slide is 100vw × 100% of that fixed root. Transform is progress-
+ * proportional in JS (syncBleedTransform), in vw units so it stays locked
+ * to this slide width. No gap: adjacent frames sit edge-to-edge.
+ * overflow-x:hidden keeps only one frame (+ drag peeks) visible.
+ * z-index:0 stays behind .vp-portfolio-index__viewport (z-index:1) and the
+ * nav (z-50). Desktop-only: absent below 576px (display:none).
  */
 .vp-portfolio-index__bleed {
   display: none;
@@ -132,11 +135,11 @@
 @media (min-width: 576px) {
   .vp-portfolio-index__bleed {
     display: block;
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 0;
     overflow-x: hidden;
-    overflow-y: visible;
+    overflow-y: hidden;
     pointer-events: none;
   }
 
