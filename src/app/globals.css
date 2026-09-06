@@ -926,8 +926,8 @@ body:has(.vp-work-index) #header.navbar::before {
     /* Figma candidate is 100px; shipping 80px — intentional override (nav felt too tall). */
     --vp-candidate-nav-bar-height: 80px;
     /*
-     * Right-side cells: midway between Figma/prior 108px and the 80px 1:1 square —
-     * slightly wider than tall, not a perfect square.
+     * Right-side cells: 94px = midpoint of prior 108px and the 80px square.
+     * Do NOT bind these to nav-bar-height — that forced 1:1 squares.
      */
     --vp-candidate-nav-orange-cell-width: 94px;
     --vp-candidate-nav-lang-cell-width: 94px;
@@ -1030,6 +1030,7 @@ body:has(.vp-work-index) #header.navbar::before {
     justify-content: center;
     align-self: stretch;
     width: var(--vp-candidate-nav-orange-cell-width);
+    min-width: var(--vp-candidate-nav-orange-cell-width);
     height: 100%;
     min-height: var(--vp-candidate-nav-bar-height);
     margin: 0;
