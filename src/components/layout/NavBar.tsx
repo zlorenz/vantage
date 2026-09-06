@@ -230,7 +230,7 @@ export function NavBar({
         <LanguageSwitcher variant="toggle" />
       </div>
 
-      {/* Desktop: EN + CN cells (Figma nav chrome) — sibling before hamburger */}
+      {/* Desktop: EN + 中文 cells (Figma nav chrome) — sibling before hamburger */}
       <div className="vp-desktop-lang-slot ml-auto hidden md:flex">
         <LanguageSwitcher variant="cells" />
       </div>

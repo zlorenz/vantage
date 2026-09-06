@@ -4,7 +4,7 @@
  * LanguageSwitcher — locale control that preserves the current path.
  * Prefers link[rel=alternate][hreflang] so bilingual slugs (EN ↔ ZH) swap correctly.
  *
- * - `cells` (desktop): both EN and CN cells with flag + label (Figma nav chrome)
+ * - `cells` (desktop): both EN and 中文 cells with flag + label (Figma nav chrome)
  * - `toggle` (mobile): compact control that switches to the other locale
  */
 
@@ -21,7 +21,7 @@ const LOCALE_FLAG: Record<Locale, string> = {
 
 const LOCALE_LABEL: Record<Locale, string> = {
   en: 'EN',
-  zh: 'CN',
+  zh: '中文',
 };
 
 const LOCALES: Locale[] = ['en', 'zh'];
