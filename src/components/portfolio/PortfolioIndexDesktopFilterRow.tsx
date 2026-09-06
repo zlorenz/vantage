@@ -105,6 +105,8 @@ export function PortfolioIndexDesktopFilterRow({
   const rootRef = useRef<HTMLDivElement>(null);
   const [openPanels, setOpenPanels] =
     useState<PanelOpenState>(ALL_PANELS_CLOSED);
+  /** Last-opened panel sits above siblings (530px rails overlap heavily). */
+  const [frontPanel, setFrontPanel] = useState<TaxonomyKey | null>(null);
 
   const filterEntries = slides as unknown as PortfolioGridEntry[];
 
@@ -150,11 +152,13 @@ export function PortfolioIndexDesktopFilterRow({
       if (!root) return;
       if (event.target instanceof Node && root.contains(event.target)) return;
       setOpenPanels(ALL_PANELS_CLOSED);
+      setFrontPanel(null);
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setOpenPanels(ALL_PANELS_CLOSED);
+        setFrontPanel(null);
       }
     };
 
@@ -167,7 +171,26 @@ export function PortfolioIndexDesktopFilterRow({
   }, [anyPanelOpen]);
 
   const togglePanel = (key: TaxonomyKey) => {
-    setOpenPanels((prev) => ({...prev, [key]: !prev[key]}));
+    setOpenPanels((prev) => {
+      const nextOpen = !prev[key];
+      const next = {...prev, [key]: nextOpen};
+      if (nextOpen) {
+        setFrontPanel(key);
+      } else {
+        setFrontPanel((current) => {
+          if (current !== key) return current;
+          return (
+            TAXONOMY_ORDER.find((candidate) => candidate !== key && next[candidate]) ??
+            null
+          );
+        });
+      }
+      return next;
+    });
+  };
+
+  const bringPanelToFront = (key: TaxonomyKey) => {
+    setFrontPanel(key);
   };
 
   const triggerCount = (key: TaxonomyKey): number => {
@@ -180,6 +203,7 @@ export function PortfolioIndexDesktopFilterRow({
 
   const handleSearchClick = () => {
     setOpenPanels(ALL_PANELS_CLOSED);
+    setFrontPanel(null);
     onOpenSearch();
   };
 
@@ -252,9 +276,12 @@ export function PortfolioIndexDesktopFilterRow({
               {open ? (
                 <div
                   id={`vp-desktop-filter-panel-${key}`}
-                  className="vp-portfolio-index-desktop-filters__panel"
+                  className={`vp-portfolio-index-desktop-filters__panel${
+                    frontPanel === key ? ' is-front' : ''
+                  }`}
                   role="listbox"
                   aria-label={label}
+                  onPointerDown={() => bringPanelToFront(key)}
                 >
                   <div className="vp-portfolio-index-desktop-filters__panel-body">
                     <button
