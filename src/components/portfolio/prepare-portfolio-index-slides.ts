@@ -49,7 +49,7 @@ export type PortfolioIndexSlide = {
   posterUrlDesktop: string;
   /**
    * Desktop bleed-track URL — viewport-scale crop of featuredImage, pre-blurred
-   * at the CDN. Only consumed inside the ±STYLE_WINDOW_RADIUS bleed window.
+   * at the CDN. Only consumed inside the ±BLEED_WINDOW_RADIUS bleed window.
    */
   bleedUrlDesktop: string;
   /** CSS object-position from featuredImage hotspot (e.g. "42% 55%"). */

@@ -81,6 +81,15 @@ const EAGER_LOAD_RADIUS = 3;
 const STYLE_WINDOW_RADIUS = 2;
 
 /**
+ * Bleed image mount radius. Cards use STYLE_WINDOW_RADIUS (±2) because several
+ * peers are partially visible at once; bleed slides are 100vw so only the
+ * active frame is onscreen at rest and neighbors appear only as edge peeks
+ * during a drag — ±1 is geometrically enough. Kept as its own constant (not
+ * silently reusing STYLE_WINDOW_RADIUS) so a future widen stays explicit.
+ */
+const BLEED_WINDOW_RADIUS = 1;
+
+/**
  * How many neighbors mount interactive chrome: hit-target Link, overlay copy,
  * and (with STYLE_WINDOW_RADIUS) --styled classes. Far keep-alive slides keep
  * only a hidden poster shell — no Link/title — so Embla shells stay inert.
@@ -381,15 +390,34 @@ export function PortfolioIndexCarousel({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [searchOpen]);
   /**
-   * Bleed-track sync: one source of truth — copy Embla's live container
-   * transform onto the un-clipped parallel track. getComputedStyle every
-   * scroll frame is intentional for Step 1 (measure jank before optimizing).
+   * Bleed-track sync (progress-proportional, not pixel-copy).
+   *
+   * Card slides and bleed slides no longer share a width, so mirroring
+   * Embla's computed translateX px is wrong. Map Embla's normalized
+   * scrollProgress (0→1 over the scroll limit) onto the bleed track:
+   *
+   *   loop:     translateX = -(progress * snapCount * 100vw)
+   *             Embla's loop limit length = contentSize ≈ one full lap
+   *             through every snap, so 0→1 ≡ snapCount bleed frames.
+   *   non-loop: translateX = -(progress * (snapCount - 1) * 100vw)
+   *             limit spans first→last snap ≡ (snapCount - 1) intervals.
+   *
+   * Keep raw progress (may briefly leave [0,1] around the loop seam) so
+   * Embla's location wrap jumps by ~1.0 and the duplicated bleed lap
+   * jumps by exactly one track width — visually identical.
    */
   const syncBleedTransform = useCallback(() => {
     const bleed = bleedContainerRef.current;
     if (!bleed || !emblaApi) return;
-    const transform = getComputedStyle(emblaApi.containerNode()).transform;
-    bleed.style.transform = transform === 'none' ? '' : transform;
+    const snapCount = emblaApi.scrollSnapList().length;
+    if (snapCount <= 1) {
+      bleed.style.transform = '';
+      return;
+    }
+    const progress = emblaApi.scrollProgress();
+    const loop = Boolean(emblaApi.internalEngine().options.loop);
+    const rangeSlides = loop ? snapCount : snapCount - 1;
+    bleed.style.transform = `translate3d(${-progress * rangeSlides * 100}vw, 0, 0)`;
   }, [emblaApi]);
 
   const onSelect = useCallback(() => {
@@ -794,41 +822,59 @@ export function PortfolioIndexCarousel({
           <span className="vp-portfolio-index__counter-total">{slideCount}</span>
         </p>
         {/*
-         * Bleed track behind the Embla viewport. Same slide count/widths as
-         * the card track; transform mirrored from Embla (syncBleedTransform).
-         * Images mount only within ±STYLE_WINDOW_RADIUS of active. Desktop-only
-         * via CSS (display:none below 576px).
+         * Full-viewport bleed track behind the Embla viewport. Each slide is
+         * 100vw (not card-width); transform is progress-proportional
+         * (syncBleedTransform). When Embla loops, the slide list is duplicated
+         * so the wrap wipe stays continuous. Images mount within
+         * ±BLEED_WINDOW_RADIUS of active. Desktop-only via CSS.
          */}
         <div className="vp-portfolio-index__bleed" aria-hidden="true">
           <div
             ref={bleedContainerRef}
             className="vp-portfolio-index__bleed-container"
           >
-            {filteredSlides.map((slide, index) => {
-              const mountBleed = isWithinCircularWindow(
-                index,
-                activeIndex,
-                slideCount,
-                STYLE_WINDOW_RADIUS,
-              );
-              return (
-                <div
-                  key={`bleed-${slide.id}`}
-                  className="vp-portfolio-index__bleed-slide"
-                >
-                  {mountBleed ? (
-                    <img
-                      className="vp-portfolio-index__bleed-media"
-                      src={slide.bleedUrlDesktop}
-                      alt=""
-                      draggable={false}
-                      decoding="async"
-                      style={{objectPosition: slide.objectPosition}}
-                    />
-                  ) : null}
-                </div>
-              );
-            })}
+            {Array.from(
+              {
+                // Duplicate the lap when Embla loops so the wrap wipe has a
+                // neighboring frame (matches syncBleedTransform's loop range).
+                length:
+                  ((emblaApi
+                    ? Boolean(emblaApi.internalEngine().options.loop)
+                    : slideCount > 3)
+                    ? 2
+                    : 1) * slideCount,
+              },
+              (_, slot) => {
+                const index = slideCount === 0 ? 0 : slot % slideCount;
+                const copy =
+                  slideCount === 0 ? 0 : Math.floor(slot / slideCount);
+                const slide = filteredSlides[index];
+                if (!slide) return null;
+                const mountBleed = isWithinCircularWindow(
+                  index,
+                  activeIndex,
+                  slideCount,
+                  BLEED_WINDOW_RADIUS,
+                );
+                return (
+                  <div
+                    key={`bleed-${copy}-${slide.id}`}
+                    className="vp-portfolio-index__bleed-slide"
+                  >
+                    {mountBleed ? (
+                      <img
+                        className="vp-portfolio-index__bleed-media"
+                        src={slide.bleedUrlDesktop}
+                        alt=""
+                        draggable={false}
+                        decoding="async"
+                        style={{objectPosition: slide.objectPosition}}
+                      />
+                    ) : null}
+                  </div>
+                );
+              },
+            )}
           </div>
           <div className="vp-portfolio-index__bleed-wash" />
         </div>

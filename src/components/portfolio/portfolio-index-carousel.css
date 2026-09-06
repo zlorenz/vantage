@@ -118,12 +118,12 @@
 }
 
 /*
- * Parallel bleed track behind the Embla viewport (Step 1 sync + Step 2 media).
- * Transform is mirrored from Embla's container in JS (syncBleedTransform).
- * Slide width reuses the same CSS variables as .vp-portfolio-index__slide
- * but cannot use 100cqh here: this track is taller than the card band
- * (full stage). No shared width constant/hook exists — duplication unavoidable.
- * Desktop-only: absent below 576px (display:none).
+ * Full-viewport bleed track behind the Embla viewport.
+ * Each slide is 100vw (browser viewport width) × stage height — not card-
+ * width. Transform is progress-proportional in JS (syncBleedTransform), in
+ * vw units so it stays locked to this slide width. No gap: adjacent frames
+ * sit edge-to-edge. overflow-x:hidden keeps only one frame (+ drag peeks)
+ * visible. Desktop-only: absent below 576px (display:none).
  */
 .vp-portfolio-index__bleed {
   display: none;
@@ -144,24 +144,18 @@
     display: flex;
     align-items: stretch;
     height: 100%;
-    margin-left: calc(var(--vp-index-slide-gap) * -1);
     will-change: transform;
   }
 
   .vp-portfolio-index__bleed-slide {
     position: relative;
     flex: 0 0 auto;
-    width: calc(
-      (
-          100svh - var(--vp-header-height, 4.5rem) -
-            var(--vp-index-bottom-bar-height, 5rem) -
-            env(safe-area-inset-bottom, 0px)
-        ) * var(--vp-index-height-scale, 0.86) * var(--vp-index-card-aspect) *
-        var(--vp-index-slide-width-scale, 1) + var(--vp-index-slide-gap)
-    );
+    /* 100vw (not 100%): must match syncBleedTransform's vw translate so
+     * progress→offset stays exact. Stage is already viewport-wide on /work;
+     * parent overflow-x:hidden clips any scrollbar-gutter overflow. */
+    width: 100vw;
     min-width: 0;
     height: 100%;
-    padding-left: var(--vp-index-slide-gap);
     box-sizing: border-box;
     display: flex;
     align-items: stretch;
