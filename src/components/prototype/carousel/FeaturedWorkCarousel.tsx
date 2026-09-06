@@ -318,11 +318,11 @@ export function FeaturedWorkCarousel({slides}: FeaturedWorkCarouselProps) {
         aria-label={`Slide ${activeIndex + 1} of ${slideCount}`}
       >
         <span className="vp-proto-carousel__counter-current" aria-hidden>
-          {activeIndex + 1}
+          {String(activeIndex + 1).padStart(2, '0')}
         </span>
         <span className="vp-proto-carousel__counter-rule" aria-hidden />
         <span className="vp-proto-carousel__counter-total" aria-hidden>
-          {slideCount}
+          {String(slideCount).padStart(2, '0')}
         </span>
       </div>
       <div

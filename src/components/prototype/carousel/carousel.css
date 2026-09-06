@@ -258,6 +258,24 @@
 
 @media (min-width: 768px) {
   /*
+   * Desktop redesign candidates (Figma 77:12462). Scoped to the carousel so
+   * mobile keeps the prior stacked layout/type. Typeface stays Special Gothic
+   * / Mona — Zalando Sans Expanded is deferred (licensing).
+   */
+  .vp-proto-carousel {
+    --vp-candidate-brand-accent: #fdb913;
+    --vp-candidate-credit-role: rgba(255, 255, 255, 0.5);
+    --vp-candidate-counter-muted: rgba(255, 255, 255, 0.6);
+    --vp-candidate-tracking-tight-16: -0.32px;
+    --vp-candidate-tracking-tight-48: -0.96px;
+    --vp-candidate-tracking-tight-14: -0.28px;
+    --vp-candidate-home-overlay-pad-inline: 30px;
+    --vp-candidate-home-overlay-pad-block: 60px;
+    --vp-candidate-home-title-tag-gap: 32px;
+    --vp-candidate-credit-col-gap: 80px;
+  }
+
+  /*
    * Cover-math: size the replaced box to --vp-preview-aspect so it covers
    * the viewport. Ultrawide (letterboxing) grows width; tall / pillarboxed
    * content grows height. 100svh matches the carousel box (100vh leftover
@@ -280,94 +298,118 @@
     transform: translate(-50%, -50%);
   }
 
+  /* Bottom-left brand+title, bottom-right credits — Figma overlay band. */
   .vp-proto-carousel__overlay-copy {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
     gap: 2rem;
-    /* Match side insets to bottom pad (3.25rem); ignore nav gutter alignment. */
-    padding-inline: 3.25rem;
+    padding: var(--vp-candidate-home-overlay-pad-block)
+      var(--vp-candidate-home-overlay-pad-inline);
   }
 
   .vp-proto-carousel__overlay-main {
     display: flex;
     min-width: 0;
+    flex: 1 1 auto;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: var(--vp-candidate-home-title-tag-gap);
   }
 
+  .vp-proto-carousel__brand-row {
+    gap: 1.5rem;
+  }
 
+  .vp-proto-carousel__brand {
+    color: var(--vp-candidate-brand-accent);
+  }
+
+  .vp-proto-carousel__brand,
+  .vp-proto-carousel__format {
+    font-size: 16px;
+    letter-spacing: var(--vp-candidate-tracking-tight-16);
+    line-height: 1.25;
+  }
+
+  .vp-proto-carousel__campaign {
+    font-size: 48px;
+    letter-spacing: var(--vp-candidate-tracking-tight-48);
+    line-height: 1.2;
+    /* Nudge down so Special Gothic baseline meets credit name baseline. */
+    margin-bottom: -0.1em;
+  }
+
+  /* Mid-right vertical counter (supersedes mid-left TEMP placement). */
   .vp-proto-carousel__counter {
     display: flex;
     position: absolute;
     top: 50%;
-    left: var(--spacing-vp-gutter);
-    z-index: 2;
+    right: var(--vp-candidate-home-overlay-pad-inline);
+    left: auto;
+    z-index: 4;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
     transform: translateY(-50%);
     pointer-events: none;
-    font-family: var(--font-vp-sans);
-    font-size: 0.8125rem;
+    font-family: var(--font-vp-heading);
+    font-size: 14px;
     font-weight: 400;
-    line-height: 1;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.25;
+    letter-spacing: var(--vp-candidate-tracking-tight-14);
+    text-transform: uppercase;
+    color: var(--vp-candidate-counter-muted);
   }
 
   .vp-proto-carousel__counter-current,
   .vp-proto-carousel__counter-total {
     display: block;
-    min-width: 1.1em;
+    min-width: 1.25em;
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
 
   .vp-proto-carousel__counter-rule {
     display: block;
-    width: 1rem;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.55);
+    width: 1px;
+    height: 2rem;
+    background: var(--vp-candidate-counter-muted);
   }
-
 
   .vp-proto-carousel__credits {
     flex-direction: row;
     align-items: flex-start;
-    gap: 2.5rem;
+    flex-shrink: 0;
+    gap: var(--vp-candidate-credit-col-gap);
   }
 
   .vp-proto-carousel__credit {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.45rem;
-  }
-
-  .vp-proto-carousel__brand,
-  .vp-proto-carousel__format {
-    font-size: 16px;
-    letter-spacing: 1.6px;
-  }
-
-  .vp-proto-carousel__campaign {
-    font-size: 48px;
-    /* Nudge down so Special Gothic baseline meets credit name baseline. */
-    margin-bottom: -0.1em;
+    align-items: flex-end;
+    gap: 0.5rem;
+    text-align: right;
   }
 
   .vp-proto-carousel__credit dt {
     width: auto;
-    font-size: 14px;
-    letter-spacing: 1.4px;
-    line-height: 1;
-    font-variant: small-caps;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.25;
+    color: var(--vp-candidate-credit-role);
+    font-variant: normal;
+    /* Figma: DIRECTOR / DOP — keep mobile source casing; uppercase desktop only. */
+    text-transform: uppercase;
   }
 
   .vp-proto-carousel__credit dd {
-    font-size: 19px;
-    line-height: 1.2;
+    font-family: var(--font-vp-heading);
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: var(--vp-candidate-tracking-tight-16);
+    line-height: 1.4;
+    text-transform: uppercase;
   }
 }
 
