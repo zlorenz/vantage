@@ -314,11 +314,13 @@
     flex: 1 1 auto;
     flex-direction: column;
     align-items: flex-start;
+    /* Candidate is 32px; keep exact — optical trim below removes line-box padding. */
     gap: var(--vp-candidate-home-title-tag-gap);
   }
 
   .vp-proto-carousel__brand-row {
     gap: 1.5rem;
+    align-items: center;
   }
 
   .vp-proto-carousel__brand {
@@ -330,12 +332,17 @@
     font-size: 16px;
     letter-spacing: var(--vp-candidate-tracking-tight-16);
     line-height: 1.25;
+    /* Match Figma text-box-trim so the 32px gap is edge-to-edge, not ascent-inflated. */
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
 
   .vp-proto-carousel__campaign {
     font-size: 48px;
     letter-spacing: var(--vp-candidate-tracking-tight-48);
     line-height: 1.2;
+    text-box-trim: trim-start;
+    text-box-edge: cap alphabetic;
     /* Nudge down so Special Gothic baseline meets credit name baseline. */
     margin-bottom: -0.1em;
   }
