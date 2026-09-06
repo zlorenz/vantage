@@ -177,15 +177,41 @@
   }
 
   /*
-   * Track-wide wash — not per-slide. 0.9 leaves ~10% of the pre-blurred
-   * poster reading through so the field stays textured, not a legible photo.
+   * Track-wide wash — not per-slide. 0.8 leaves ~20% of the pre-blurred
+   * poster reading through so the center field stays softly textured.
    */
   .vp-portfolio-index__bleed-wash {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.8);
     pointer-events: none;
+  }
+
+  /*
+   * Horizontal edge fade (Option B via ::after — no extra DOM node).
+   * Sits above image + flat wash; percent stops track the bleed root
+   * (position:fixed; inset:0) so the center third always matches viewport
+   * width. Soft stops read as a vignette, not a hard spotlight cutout.
+   * Does not move with .bleed-container's Embla-mirrored transform.
+   */
+  .vp-portfolio-index__bleed::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      #000 0%,
+      #000 6%,
+      rgba(0, 0, 0, 0.7) 18%,
+      transparent 36%,
+      transparent 64%,
+      rgba(0, 0, 0, 0.7) 82%,
+      #000 94%,
+      #000 100%
+    );
   }
 }
 
