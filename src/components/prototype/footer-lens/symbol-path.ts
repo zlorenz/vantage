@@ -6,9 +6,18 @@
 export const SYMBOL_VIEWBOX_W = 36;
 export const SYMBOL_VIEWBOX_H = 36;
 
-/** Polygon from vantage-logo.svg — Vantage mark. */
+/**
+ * Polygon from vantage-logo.svg — Vantage mark.
+ *
+ * The source SVG pinches the A counter apex to a single repeated vertex
+ * (18.01,12.46 twice). That perfect self-touch is invisible at 1× but is a
+ * topological singularity under loupe warp/magnification (bowtie mask →
+ * floating triangle shard). Split that one vertex by ±0.05 along the
+ * crossbar (y=12.46) so the pinch becomes a tiny open joint — same silhouette
+ * at display size, non-singular for resampling.
+ */
 export const SYMBOL_PATH_D =
-  "M13.48,0 L18.01,12.46 L23.48,27.53 L10.83,32.14 L18.01,12.46 L8.56,12.46 L0,36 L36,36 L22.9,0 Z";
+  "M13.48,0 L17.96,12.46 L23.48,27.53 L10.83,32.14 L18.06,12.46 L8.56,12.46 L0,36 L36,36 L22.9,0 Z";
 
 let cachedPath: Path2D | null = null;
 
