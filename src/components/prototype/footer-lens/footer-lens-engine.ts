@@ -784,9 +784,12 @@ function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
 }
 
 /**
- * Procedural glass rim (stand-in for monopo's /lense.png).
- * Dark hairline only — any white wash/stroke read as a pale rim halo over
- * pure page background where the disc is empty.
+ * Procedural glass chrome (stand-in for monopo's /lense.png).
+ * Drawn last on the main canvas with no clip / destination-in — independent
+ * of the letterform-masked mosaic. Soft rim glow + offset specular + dual
+ * hairlines so the lens reads as a glass sphere even over pure page background
+ * (matching redesign.vantage.pictures/about). Stripped to a dark hairline in
+ * 3cbe0bdc; that left only a faint outline on empty bg.
  */
 function paintGlassOverlay(
   ctx: CanvasRenderingContext2D,
@@ -794,8 +797,49 @@ function paintGlassOverlay(
   ly: number,
   lensR: number,
 ): void {
-  ctx.strokeStyle = "rgba(0,0,0,0.08)";
-  ctx.lineWidth = Math.max(0.5, lensR * 0.008);
+  const outer = lensR * 1.06;
+  const inner = lensR * 0.82;
+
+  // Soft annular rim wash (glass edge thickness).
+  const ring = ctx.createRadialGradient(lx, ly, inner, lx, ly, outer);
+  ring.addColorStop(0, "rgba(255,255,255,0)");
+  ring.addColorStop(0.55, "rgba(255,255,255,0)");
+  ring.addColorStop(0.78, "rgba(255,255,255,0.14)");
+  ring.addColorStop(0.92, "rgba(255,255,255,0.06)");
+  ring.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = ring;
+  ctx.beginPath();
+  ctx.arc(lx, ly, outer, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Offset specular highlight — the "sphere" cue on empty background.
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
+  ctx.clip();
+  const spec = ctx.createRadialGradient(
+    lx - lensR * 0.35,
+    ly - lensR * 0.4,
+    0,
+    lx - lensR * 0.1,
+    ly - lensR * 0.15,
+    lensR * 0.85,
+  );
+  spec.addColorStop(0, "rgba(255,255,255,0.22)");
+  spec.addColorStop(0.35, "rgba(255,255,255,0.06)");
+  spec.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = spec;
+  ctx.fillRect(lx - lensR, ly - lensR, lensR * 2, lensR * 2);
+  ctx.restore();
+
+  ctx.strokeStyle = "rgba(255,255,255,0.28)";
+  ctx.lineWidth = Math.max(1, lensR * 0.018);
+  ctx.beginPath();
+  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = "rgba(0,0,0,0.18)";
+  ctx.lineWidth = Math.max(0.75, lensR * 0.012);
   ctx.beginPath();
   ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
   ctx.stroke();
