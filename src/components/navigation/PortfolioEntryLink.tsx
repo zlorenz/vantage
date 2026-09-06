@@ -11,7 +11,8 @@ import {LinkPendingHint} from '@/components/navigation/LinkPendingHint';
 
 type PortfolioEntryLinkProps = Omit<ComponentProps<typeof Link>, 'href' | 'prefetch'> & {
   slug: string;
-  children: ReactNode;
+  /** Optional — whole-card hit targets may be visually empty (aria-label required). */
+  children?: ReactNode;
   showPendingHint?: boolean;
 };
 

@@ -3,10 +3,13 @@
 import {
   forwardRef,
   useEffect,
+  useRef,
   useState,
   type CSSProperties,
+  type MouseEvent,
+  type PointerEvent,
 } from 'react';
-import {useLocale, useTranslations} from 'next-intl';
+import {useLocale} from 'next-intl';
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink';
 import {trackImpressionOnce, trackVideoEvent} from '@/lib/video-events';
 import {normalizeStoredVideoUrl} from '@/lib/video-url';
@@ -28,12 +31,13 @@ interface CarouselSlideProps {
 
 export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
   function CarouselSlide({slide, index, active, mountPlayer}, ref) {
-    const t = useTranslations('Home');
     const locale = useLocale();
     const [playerReady, setPlayerReady] = useState(false);
     const [contentAspectHint, setContentAspectHint] = useState<number | null>(
       null,
     );
+    /** Pointer origin for drag-vs-tap suppression on the whole-card link. */
+    const pointerStartRef = useRef<{x: number; y: number} | null>(null);
     const portfolioSlug = slide.hrefSlug?.trim() || null;
     const slideKey = slide.portfolioEntryRef || slide.slug;
     const videoId = slide.vimeoUrl
@@ -65,6 +69,30 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         eventType: 'click_through',
         ...carouselEventBase,
       });
+    };
+
+    /** Suppress navigation when the gesture was a drag (Embla swipe), not a tap. */
+    const CARD_DRAG_CLICK_SUPPRESS_PX = 8;
+
+    const onCardPointerDown = (event: PointerEvent<HTMLAnchorElement>) => {
+      pointerStartRef.current = {x: event.clientX, y: event.clientY};
+    };
+
+    const onCardLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
+      const start = pointerStartRef.current;
+      pointerStartRef.current = null;
+      if (start) {
+        const dx = Math.abs(event.clientX - start.x);
+        const dy = Math.abs(event.clientY - start.y);
+        if (
+          dx > CARD_DRAG_CLICK_SUPPRESS_PX ||
+          dy > CARD_DRAG_CLICK_SUPPRESS_PX
+        ) {
+          event.preventDefault();
+          return;
+        }
+      }
+      trackCarouselClickThrough();
     };
 
     // Desktop-only: scan the poster that desktop actually paints for baked-in
@@ -181,35 +209,6 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                 ) : null}
               </div>
               <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
-              {portfolioSlug ? (
-                <PortfolioEntryLink
-                  slug={portfolioSlug}
-                  className={`vp-proto-carousel__explore ${
-                    interactive ? 'pointer-events-auto' : 'pointer-events-none'
-                  }`}
-                  tabIndex={interactive ? undefined : -1}
-                  onClick={trackCarouselClickThrough}
-                  showPendingHint
-                >
-                  {t('exploreButton')}
-                  <span className="vp-proto-carousel__explore-caret" aria-hidden>
-                    <svg
-                      className="vp-proto-carousel__explore-caret-icon"
-                      viewBox="7 4 12 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M9 6L16 12L9 18"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="square"
-                        strokeLinejoin="miter"
-                      />
-                    </svg>
-                  </span>
-                </PortfolioEntryLink>
-              ) : null}
             </div>
             <dl className="vp-proto-carousel__credits">
               <div className="vp-proto-carousel__credit">
@@ -222,42 +221,26 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               </div>
             </dl>
           </div>
-
-          {portfolioSlug ? (
-            <PortfolioEntryLink
-              slug={portfolioSlug}
-              className={`vp-proto-carousel__watch ${
-                interactive ? 'pointer-events-auto' : 'pointer-events-none'
-              }`}
-              aria-label="Watch"
-              tabIndex={interactive ? undefined : -1}
-              onClick={trackCarouselClickThrough}
-              showPendingHint
-            >
-              <span className="vp-proto-carousel__watch-cluster">
-                <span className="vp-proto-carousel__watch-label-mask">
-                  <span className="vp-proto-carousel__watch-label">Watch</span>
-                </span>
-                <span className="vp-proto-carousel__watch-caret" aria-hidden>
-                  <svg
-                    className="vp-proto-carousel__watch-caret-icon"
-                    viewBox="7 4 12 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 6L16 12L9 18"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="square"
-                      strokeLinejoin="miter"
-                    />
-                  </svg>
-                </span>
-              </span>
-            </PortfolioEntryLink>
-          ) : null}
         </div>
+
+        {portfolioSlug ? (
+          <PortfolioEntryLink
+            slug={portfolioSlug}
+            className={`vp-proto-carousel__card-link${
+              interactive ? ' is-active' : ''
+            }`}
+            aria-label={
+              [slide.brandLine, slide.campaignLine].filter(Boolean).join(' — ') ||
+              undefined
+            }
+            tabIndex={interactive ? undefined : -1}
+            aria-hidden={!interactive}
+            draggable={false}
+            onPointerDown={onCardPointerDown}
+            onClick={onCardLinkClick}
+            showPendingHint
+          />
+        ) : null}
       </article>
     );
   },
