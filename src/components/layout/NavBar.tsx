@@ -227,19 +227,19 @@ export function NavBar({
   return (
     <>
       <div className="vp-mobile-lang-slot ml-auto mr-1 flex items-center md:hidden">
-        <LanguageSwitcher />
+        <LanguageSwitcher variant="toggle" />
       </div>
 
-      {/* Desktop language switcher — sibling before hamburger (mirrors mobile slot) */}
-      <div className="vp-desktop-lang-slot ml-auto mr-1 hidden items-center md:flex">
-        <LanguageSwitcher />
+      {/* Desktop: EN + CN cells (Figma nav chrome) — sibling before hamburger */}
+      <div className="vp-desktop-lang-slot ml-auto hidden md:flex">
+        <LanguageSwitcher variant="cells" />
       </div>
 
-      <div className="relative z-50">
+      <div className="relative z-50 flex md:h-full">
         <button
           ref={togglerRef}
           type="button"
-          className="navbar-toggler border-0 bg-transparent p-[0.4375rem] shadow-none md:p-2"
+          className="navbar-toggler border-0 bg-transparent p-[0.4375rem] shadow-none md:p-0"
           aria-expanded={mobileOpen}
           aria-controls={isMobileViewport ? 'vp-navbar' : 'vp-desktop-navbar'}
           aria-label={toggleAria}

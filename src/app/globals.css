@@ -915,13 +915,13 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /*
- * Home desktop nav chrome (Figma 77:12462) — orange hamburger cell + hairlines.
- * Orange fill uses established --vp-orange (#f04e23); candidate nav-accent-orange
- * is the same value (doc lag in design-tokens.md). Hairlines stay candidate-scoped.
- * Scoped to the featured carousel so other routes keep prior chrome for now.
+ * Desktop nav chrome (Figma 77:12462) — sitewide cell strip.
+ * wordmark | EN | CN | orange hamburger, full-height hairlines between cells.
+ * Orange fill: --vp-orange (#f04e23) === --vp-candidate-nav-accent-orange (doc lag).
+ * Hairlines: --vp-candidate-struct-line (rgba(255,255,255,0.15)).
  */
 @media (min-width: 768px) {
-  body:has(.vp-proto-carousel) #header.navbar {
+  #header.navbar {
     --vp-candidate-struct-line: 1px solid rgba(255, 255, 255, 0.15);
     --vp-candidate-nav-bar-height: 100px;
     --vp-candidate-nav-orange-cell-width: 108px;
@@ -930,26 +930,81 @@ body:has(.vp-work-index) #header.navbar::before {
     border-bottom: var(--vp-candidate-struct-line);
   }
 
-  body:has(.vp-proto-carousel) #header .container-fluid {
+  #header .container-fluid {
     align-items: stretch;
     min-height: var(--vp-candidate-nav-bar-height);
+    padding-inline: 0;
   }
 
-  body:has(.vp-proto-carousel) #header .navbar-brand {
+  #header .navbar-brand {
     display: flex;
     align-items: center;
     border-right: var(--vp-candidate-struct-line);
     padding-inline: 1.875rem;
   }
 
-  body:has(.vp-proto-carousel) #header .vp-desktop-lang-slot {
+  #header .vp-desktop-lang-slot {
+    margin-left: auto;
     margin-right: 0;
-    border-left: var(--vp-candidate-struct-line);
-    border-right: var(--vp-candidate-struct-line);
-    padding-inline: 1.875rem;
+    display: flex;
+    align-items: stretch;
+    align-self: stretch;
   }
 
-  body:has(.vp-proto-carousel) #header .navbar-toggler {
+  #header .vp-lang-cells {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+  }
+
+  #header .vp-lang-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 6.75rem;
+    height: 100%;
+    margin: 0;
+    padding: 1rem 1.875rem;
+    border: 0;
+    border-left: var(--vp-candidate-struct-line);
+    border-radius: 0;
+    background: transparent;
+    color: #fff;
+    font-family: var(--font-vp-heading);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: var(--vp-candidate-tracking-tight-14, -0.28px);
+    line-height: 1.25;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  #header .vp-lang-cell:last-child {
+    border-right: var(--vp-candidate-struct-line);
+  }
+
+  #header .vp-lang-cell:not(.is-active) {
+    opacity: 0.5;
+  }
+
+  #header .vp-lang-cell:disabled {
+    cursor: default;
+  }
+
+  #header .vp-lang-cell__flag {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0;
+    object-fit: cover;
+  }
+
+  #header .vp-lang-cell__label {
+    display: block;
+  }
+
+  #header .navbar-toggler {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -963,7 +1018,7 @@ body:has(.vp-work-index) #header.navbar::before {
     background-color: var(--vp-orange);
   }
 
-  body:has(.vp-proto-carousel) #header .navbar-toggler .navbar-toggler-icon {
+  #header .navbar-toggler .navbar-toggler-icon {
     width: 1.75rem;
     height: 1.25rem;
   }
