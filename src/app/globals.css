@@ -914,6 +914,61 @@ body:has(.vp-work-index) #header.navbar::before {
   transform: rotate(-45deg);
 }
 
+/*
+ * Home desktop nav chrome (Figma 77:12462) — orange hamburger cell + hairlines.
+ * Orange fill uses established --vp-orange (#f04e23); candidate nav-accent-orange
+ * is the same value (doc lag in design-tokens.md). Hairlines stay candidate-scoped.
+ * Scoped to the featured carousel so other routes keep prior chrome for now.
+ */
+@media (min-width: 768px) {
+  body:has(.vp-proto-carousel) #header.navbar {
+    --vp-candidate-struct-line: 1px solid rgba(255, 255, 255, 0.15);
+    --vp-candidate-nav-bar-height: 100px;
+    --vp-candidate-nav-orange-cell-width: 108px;
+    min-height: var(--vp-candidate-nav-bar-height);
+    padding-block: 0;
+    border-bottom: var(--vp-candidate-struct-line);
+  }
+
+  body:has(.vp-proto-carousel) #header .container-fluid {
+    align-items: stretch;
+    min-height: var(--vp-candidate-nav-bar-height);
+  }
+
+  body:has(.vp-proto-carousel) #header .navbar-brand {
+    display: flex;
+    align-items: center;
+    border-right: var(--vp-candidate-struct-line);
+    padding-inline: 1.875rem;
+  }
+
+  body:has(.vp-proto-carousel) #header .vp-desktop-lang-slot {
+    margin-right: 0;
+    border-left: var(--vp-candidate-struct-line);
+    border-right: var(--vp-candidate-struct-line);
+    padding-inline: 1.875rem;
+  }
+
+  body:has(.vp-proto-carousel) #header .navbar-toggler {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: var(--vp-candidate-nav-orange-cell-width);
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    /* Same hex as --vp-candidate-nav-accent-orange; prefer live --vp-orange. */
+    background-color: var(--vp-orange);
+  }
+
+  body:has(.vp-proto-carousel) #header .navbar-toggler .navbar-toggler-icon {
+    width: 1.75rem;
+    height: 1.25rem;
+  }
+}
+
 /* Page hero minimum height */
 .vp-page-hero {
   position: relative;

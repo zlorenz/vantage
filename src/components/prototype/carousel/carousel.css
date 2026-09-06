@@ -411,5 +411,16 @@
     line-height: 1.4;
     text-transform: uppercase;
   }
+
+  /* Symmetric vertical vignette (Figma) — replaces mobile bottom-weighted scrim. */
+  .vp-proto-carousel__overlay-scrim {
+    --vp-candidate-home-scrim: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0) 50.482%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    background: var(--vp-candidate-home-scrim);
+  }
 }
 
