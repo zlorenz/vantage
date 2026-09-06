@@ -250,6 +250,8 @@ export function PortfolioIndexCarousel({
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
   const filterSignatureRef = useRef<string | null>(null);
+  /** Parallel bleed track — mirrors Embla container transform (Step 1 proto). */
+  const bleedContainerRef = useRef<HTMLDivElement>(null);
 
   const hasActiveFilters = Boolean(
     publicFilters.format || publicFilters.industry || publicFilters.market,
@@ -378,10 +380,23 @@ export function PortfolioIndexCarousel({
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [searchOpen]);
+  /**
+   * Bleed-track sync: one source of truth — copy Embla's live container
+   * transform onto the un-clipped parallel track. getComputedStyle every
+   * scroll frame is intentional for Step 1 (measure jank before optimizing).
+   */
+  const syncBleedTransform = useCallback(() => {
+    const bleed = bleedContainerRef.current;
+    if (!bleed || !emblaApi) return;
+    const transform = getComputedStyle(emblaApi.containerNode()).transform;
+    bleed.style.transform = transform === 'none' ? '' : transform;
+  }, [emblaApi]);
+
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setActiveIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
+    syncBleedTransform();
+  }, [emblaApi, syncBleedTransform]);
 
   /**
    * Keep counter/windowing aligned while Embla animates between snaps
@@ -391,6 +406,7 @@ export function PortfolioIndexCarousel({
    */
   const onScroll = useCallback(() => {
     if (!emblaApi) return;
+    syncBleedTransform();
     const snaps = emblaApi.scrollSnapList();
     if (snaps.length <= 1) return;
     const nearest = nearestSnapIndexFromProgress(
@@ -399,7 +415,7 @@ export function PortfolioIndexCarousel({
       Boolean(emblaApi.internalEngine().options.loop),
     );
     setActiveIndex((prev) => (prev === nearest ? prev : nearest));
-  }, [emblaApi]);
+  }, [emblaApi, syncBleedTransform]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -410,6 +426,7 @@ export function PortfolioIndexCarousel({
     } else {
       onSelect();
     }
+    syncBleedTransform();
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
     emblaApi.on('scroll', onScroll);
@@ -418,7 +435,7 @@ export function PortfolioIndexCarousel({
       emblaApi.off('reInit', onSelect);
       emblaApi.off('scroll', onScroll);
     };
-  }, [emblaApi, onSelect, onScroll]);
+  }, [emblaApi, onSelect, onScroll, syncBleedTransform]);
 
   /**
    * When filters change, the rendered slide list length/order changes.
@@ -776,6 +793,34 @@ export function PortfolioIndexCarousel({
           </span>
           <span className="vp-portfolio-index__counter-total">{slideCount}</span>
         </p>
+        {/*
+         * Step 1 prototype: parallel bleed track behind the Embla viewport.
+         * Same slide count/widths as the card track; transform mirrored from
+         * Embla's container (see syncBleedTransform). Colored index tiles only
+         * — no images yet. Desktop-only via CSS (display:none below 576px).
+         */}
+        <div className="vp-portfolio-index__bleed" aria-hidden="true">
+          <div
+            ref={bleedContainerRef}
+            className="vp-portfolio-index__bleed-container"
+          >
+            {filteredSlides.map((slide, index) => (
+              <div
+                key={`bleed-${slide.id}`}
+                className="vp-portfolio-index__bleed-slide"
+              >
+                <div
+                  className="vp-portfolio-index__bleed-proto"
+                  style={{
+                    backgroundColor: `hsl(${(index * 47) % 360} 65% 42%)`,
+                  }}
+                >
+                  {index}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div
           ref={emblaRef}
           className="vp-portfolio-index__viewport"

@@ -89,6 +89,7 @@
 }
 
 .vp-portfolio-index__stage {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -98,6 +99,8 @@
 }
 
 .vp-portfolio-index__counter {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: baseline;
@@ -114,12 +117,80 @@
   user-select: none;
 }
 
+/*
+ * Step 1 prototype — parallel bleed track behind the Embla viewport.
+ * Transform is mirrored from Embla's container in JS (syncBleedTransform).
+ * Slide width reuses the same CSS variables as .vp-portfolio-index__slide
+ * (173–176) but cannot use 100cqh here: this track is taller than the card
+ * band (full stage). Height expression matches the viewport's used height
+ * (126–139). No shared width constant/hook exists — duplication unavoidable.
+ * Desktop-only: absent below 576px (display:none). Step 2 may switch to
+ * not rendering the node at all.
+ */
+.vp-portfolio-index__bleed {
+  display: none;
+}
+
+@media (min-width: 576px) {
+  .vp-portfolio-index__bleed {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+    pointer-events: none;
+  }
+
+  .vp-portfolio-index__bleed-container {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    margin-left: calc(var(--vp-index-slide-gap) * -1);
+    will-change: transform;
+  }
+
+  .vp-portfolio-index__bleed-slide {
+    position: relative;
+    flex: 0 0 auto;
+    width: calc(
+      (
+          100svh - var(--vp-header-height, 4.5rem) -
+            var(--vp-index-bottom-bar-height, 5rem) -
+            env(safe-area-inset-bottom, 0px)
+        ) * var(--vp-index-height-scale, 0.86) * var(--vp-index-card-aspect) *
+        var(--vp-index-slide-width-scale, 1) + var(--vp-index-slide-gap)
+    );
+    min-width: 0;
+    height: 100%;
+    padding-left: var(--vp-index-slide-gap);
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .vp-portfolio-index__bleed-proto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--vp-font-sans);
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    opacity: 0.55;
+  }
+}
+
 .vp-portfolio-index__counter-sep {
   opacity: 0.7;
 }
 
 .vp-portfolio-index__viewport {
   position: relative;
+  z-index: 1;
   flex-shrink: 0;
   width: 100%;
   /* Absolute height (not % of root) so expanding the centering band does not grow cards. */
