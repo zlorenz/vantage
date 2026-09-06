@@ -923,7 +923,8 @@ body:has(.vp-work-index) #header.navbar::before {
 @media (min-width: 768px) {
   #header.navbar {
     --vp-candidate-struct-line: 1px solid rgba(255, 255, 255, 0.15);
-    --vp-candidate-nav-bar-height: 100px;
+    /* Figma candidate is 100px; shipping 80px — intentional override (nav felt too tall). */
+    --vp-candidate-nav-bar-height: 80px;
     --vp-candidate-nav-orange-cell-width: 108px;
     min-height: var(--vp-candidate-nav-bar-height);
     padding-block: 0;
