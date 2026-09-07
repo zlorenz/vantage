@@ -31,12 +31,37 @@
   box-sizing: border-box;
 }
 
+/*
+ * Single-video full-bleed slot — sibling of the header layout row, not
+ * inside the rail-offset main column. Edge-to-edge within the fullBleed shell.
+ */
+.vp-case-media-bleed {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/*
+ * Credits / key visuals under a full-bleed single video. Mirrors the right
+ * column inset (rail width + pad) without sitting beside an extended rail.
+ * Exact Figma credit column placement may need a follow-up pass.
+ */
+.vp-case-shell__below {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 1rem;
+  box-sizing: border-box;
+}
+
 .vp-case-rail {
   display: none;
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .vp-case-shell__main {
+  .vp-case-shell__main,
+  .vp-case-shell__below {
     padding-inline: 1.5rem;
   }
 }
@@ -91,6 +116,12 @@
     min-width: 0;
     max-width: none;
     margin-inline: 0;
+    padding-inline: var(--vp-case-shell-pad-x);
+    border-left: var(--vp-struct-line);
+  }
+
+  .vp-case-shell__below {
+    margin-left: var(--vp-case-rail-width);
     padding-inline: var(--vp-case-shell-pad-x);
     border-left: var(--vp-struct-line);
   }

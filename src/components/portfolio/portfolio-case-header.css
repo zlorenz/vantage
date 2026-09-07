@@ -191,11 +191,13 @@
 }
 
 /*
- * Main case video frame — full right-column width, Figma 16:9 chrome.
+ * Main case video frame — full-bleed when nested in .vp-case-media-bleed
+ * (single-video layout); otherwise inherits the parent column width.
  */
 .vp-case-video {
   position: relative;
   overflow: hidden;
+  width: 100%;
   aspect-ratio: 16 / 9;
   /* Radius 0 — closes a sitewide 1.75rem→0 radius-sweep instance. */
   border-radius: 0;
