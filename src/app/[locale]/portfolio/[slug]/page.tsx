@@ -9,6 +9,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
 import { PortfolioCaseRail } from '@/components/portfolio/PortfolioCaseRail';
+import { PortfolioCaseCarouselRailNav } from '@/components/portfolio/PortfolioCaseCarouselRailNav';
 import { KeyVisualsGallery } from '@/components/portfolio/KeyVisualsGallery';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioCaseMedia } from '@/components/portfolio/PortfolioCaseMedia';
@@ -201,21 +202,27 @@ export default async function PortfolioEntryPage({ params }: Props) {
       >
         {caseCarouselSlides ? (
           /*
-           * Multi-video: keep Phase 1 nesting (media + credits inside the
-           * rail-offset main column). Full-bleed carousel is a later pass.
+           * Multi-video: header row matches single-video; carousel row is
+           * rail-nav + media (flush to rail edge / viewport right); credits
+           * reuse .vp-case-credits-band. Card geometry / rail chrome later.
            */
-          <div className="vp-case-shell__layout">
-            <PortfolioCaseRail />
-            <div className="vp-case-shell__main">
-              {caseHeader}
-              <PortfolioCaseMedia
-                locale={typedLocale}
-                entry={entry}
-                caseCarouselSlides={caseCarouselSlides}
-              />
-              {caseBelowFold}
+          <>
+            <div className="vp-case-shell__layout">
+              <PortfolioCaseRail />
+              <div className="vp-case-shell__main">{caseHeader}</div>
             </div>
-          </div>
+            <div className="vp-case-carousel-row">
+              <PortfolioCaseCarouselRailNav />
+              <div className="vp-case-carousel-row__media">
+                <PortfolioCaseMedia
+                  locale={typedLocale}
+                  entry={entry}
+                  caseCarouselSlides={caseCarouselSlides}
+                />
+              </div>
+            </div>
+            <div className="vp-case-credits-band">{caseBelowFold}</div>
+          </>
         ) : (
           /*
            * Single-video: header row stays rail-inset; media is a full-bleed

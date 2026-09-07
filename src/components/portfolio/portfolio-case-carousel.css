@@ -18,7 +18,36 @@
   box-sizing: border-box;
 }
 
+/*
+ * Multi-video carousel row: rail-nav + media as flex siblings.
+ * Carousel fills remaining width flush to the rail edge and viewport right
+ * (no padding-inline). Desktop ≥992 only; below that media stacks full-bleed.
+ */
+.vp-case-carousel-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.vp-case-carousel-row__media {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 @media (min-width: 992px) {
+  .vp-case-carousel-row {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
   .vp-case-carousel-rail-nav {
     display: block;
     flex: 0 0 var(--vp-case-rail-width, 20.5rem);
@@ -26,6 +55,10 @@
     max-width: var(--vp-case-rail-width, 20.5rem);
     min-height: 1px;
     align-self: stretch;
+  }
+
+  .vp-case-carousel-row__media {
+    flex: 1 1 auto;
   }
 }
 

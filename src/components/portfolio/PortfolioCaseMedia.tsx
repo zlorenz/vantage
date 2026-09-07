@@ -3,8 +3,9 @@
  * Isolated so loading.tsx / Suspense can stream while header data resolves.
  *
  * When `caseCarouselSlides` is provided by the page, slide building is skipped
- * so the page can choose single-video full-bleed vs multi-video nested layout
- * without resolving posters twice.
+ * so the page can choose single-video full-bleed vs multi-video carousel-row
+ * layout without resolving posters twice. Internal Embla markup is unchanged
+ * by the page shell — only the parent wrapper differs.
  */
 
 import {Suspense} from 'react';
