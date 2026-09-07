@@ -76,6 +76,54 @@ const REVEAL_SUPER = 1 / ZOOM_CENTER;
  */
 const ALPHA_SOLID = 128;
 
+/**
+ * A-counter cusp in SYMBOL_PATH_D viewBox space (average of the ±0.15 split).
+ * Ring warp near this point can sample across the thin counter gap onto the
+ * opposite stroke — locally dampen displacement by proximity to this point.
+ */
+const CUSP_VB_X = 18.01;
+const CUSP_VB_Y = 12.46;
+/** Full damp (identity sample) within this viewBox radius of the cusp. */
+const CUSP_WARP_DAMP_INNER = 2.0;
+/** Full normal warp beyond this viewBox radius of the cusp. */
+const CUSP_WARP_DAMP_OUTER = 8.0;
+
+/** Smoothstep 0..1. */
+function smoothstep01(t: number): number {
+  const x = Math.min(1, Math.max(0, t));
+  return x * x * (3 - 2 * x);
+}
+
+/**
+ * Warp blend weight: 0 = identity (no zoom/displace), 1 = full loupe warp.
+ *
+ * Only dampens when the *unwarped* source has no solid reveal coverage near
+ * the cusp (open counter / collage hole). isPointInPath alone is wrong here:
+ * near the epsilon split it can report inside while the reveal buffer is
+ * still transparent — those are exactly the samples that jump onto the
+ * opposite stroke under full warp. Letterform pixels with real coverage
+ * keep full magnification.
+ */
+function cuspWarpAmount(
+  logoCssX: number,
+  logoCssY: number,
+  logoX: number,
+  logoY: number,
+  logoW: number,
+  logoH: number,
+  hasRevealCoverage: boolean,
+): number {
+  if (hasRevealCoverage) return 1;
+  const vbX = ((logoCssX - logoX) / logoW) * SYMBOL_VIEWBOX_W;
+  const vbY = ((logoCssY - logoY) / logoH) * SYMBOL_VIEWBOX_H;
+  const d = Math.hypot(vbX - CUSP_VB_X, vbY - CUSP_VB_Y);
+  if (d <= CUSP_WARP_DAMP_INNER) return 0;
+  if (d >= CUSP_WARP_DAMP_OUTER) return 1;
+  return smoothstep01(
+    (d - CUSP_WARP_DAMP_INNER) / (CUSP_WARP_DAMP_OUTER - CUSP_WARP_DAMP_INNER),
+  );
+}
+
 type Cache = {
   logoX: number;
   logoY: number;
@@ -299,9 +347,15 @@ function buildRevealBuffer(
   ctx.imageSmoothingQuality = "high";
   ctx.drawImage(collage, 0, 0, dw, dh);
 
-  // Build the letterform mask in source-over (fill + thin stroke), then apply
-  // it once with destination-in. Stroking under destination-in itself would
-  // keep only the hairline outline and wipe the filled interior — empty lens.
+  // Build the letterform mask in source-over (fill only), then apply it once
+  // with destination-in. Stroking under destination-in itself would keep only
+  // the hairline outline and wipe the filled interior — empty lens.
+  //
+  // A thin path stroke used to seal the A-counter cusp singularity; that
+  // singularity is now opened by the ±0.15 epsilon in SYMBOL_PATH_D, and the
+  // stroke was over-sealing the counter apex with real dark collage texels
+  // (Case A). Hairline gaps at other junctions are still sealed by
+  // morphCloseAlpha below.
   const mask = document.createElement("canvas");
   mask.width = dw;
   mask.height = dh;
@@ -310,13 +364,6 @@ function buildRevealBuffer(
   mctx.translate(-logoX, -logoY);
   mctx.fillStyle = "#fff";
   mctx.fill(path2d);
-  // Slight stroke seals 1px Path2D cusps (A counter apex) that fill() alone
-  // can leave as hairline gaps — those magnify into the dark triangle shard.
-  mctx.strokeStyle = "#fff";
-  mctx.lineJoin = "round";
-  mctx.lineCap = "round";
-  mctx.lineWidth = 0.4;
-  mctx.stroke(path2d);
 
   ctx.globalCompositeOperation = "destination-in";
   ctx.drawImage(mask, 0, 0);
@@ -328,8 +375,11 @@ function buildRevealBuffer(
   // into letterform edges, and sub-solid fringe cannot seed the opaque blur path.
   scrubTransparentRgb(data.data);
   // Seal remaining hairline gaps at sharp cusps at full reveal resolution.
+  // Radius 1 (was 3): radius 3 over-sealed the epsilon-opened A-counter apex
+  // with real dark collage texels (Case A). Radius 1 still closes 1px hairlines
+  // at other junctions without bridging the ±0.15 cusp opening.
   const closeTmp = new Uint8ClampedArray(data.data.length);
-  morphCloseAlpha(data.data, dw, dh, 3, closeTmp);
+  morphCloseAlpha(data.data, dw, dh, 1, closeTmp);
   scrubTransparentRgb(data.data);
   ctx.putImageData(data, 0, 0);
   return { canvas: c, data };
@@ -556,6 +606,12 @@ function ensureLoupeScratch(
 /**
  * Build the inside-lens disc at (optionally capped) device-pixel resolution.
  * Soft-focus is applied after blur so alpha never pollutes the filter.
+ *
+ * Coverage alpha uses a geometric Path2D hit-test (nonzero) at the warped
+ * source coordinate — same path + CSS space as the reveal mask — instead of
+ * bilinear-sampling the rasterized reveal alpha. Resampling a thin cusp
+ * thinner than a reveal texel was rounding open counter to fully opaque
+ * (Case A dark triangle). Color still comes from bilinear reveal RGB.
  */
 function buildLensDisc(
   cache: Cache,
@@ -572,7 +628,8 @@ function buildLensDisc(
   const paddedSize = size + pad * 2;
   const scratch = ensureLoupeScratch(scratchIn, size, pad);
 
-  const { revealData, revealDw, revealDh, logoX, logoY, logoW, logoH } = cache;
+  const { revealData, revealDw, revealDh, logoX, logoY, logoW, logoH, path2d } =
+    cache;
   const src = revealData.data;
   const scaleX = revealDw / logoW;
   const scaleY = revealDh / logoH;
@@ -583,12 +640,19 @@ function buildLensDisc(
   const originX = lx - discCss / 2;
   const originY = ly - discCss / 2;
 
+  // Hit-test context: path2d is in CSS logo space (same Path2D the reveal
+  // mask was filled with). Identity CTM so (logoCssX, logoCssY) align 1:1.
+  const hitCtx = ensurePathHitCtx();
+
   const sharpCtx = scratch.sharp.getContext("2d")!;
   const opaqueCtx = scratch.opaque.getContext("2d")!;
   const sharpData = scratch.sharpImg.data;
   const opaqueData = scratch.opaqueImg.data;
   sharpData.fill(0);
   opaqueData.fill(0);
+
+  const sampleCssInMark = (logoCssX: number, logoCssY: number): boolean =>
+    hitCtx.isPointInPath(path2d, logoCssX, logoCssY, "nonzero");
 
   for (let py = 0; py < paddedSize; py++) {
     for (let px = 0; px < paddedSize; px++) {
@@ -613,39 +677,72 @@ function buildLensDisc(
         const logoPy = originY + qyCss;
         return [(logoPx - logoX) * scaleX, (logoPy - logoY) * scaleY];
       };
+      const toLogoCss = (qxCss: number, qyCss: number): [number, number] => [
+        originX + qxCss,
+        originY + qyCss,
+      ];
 
       const zoom = zoomAt(t);
       const rw = rimWeight(t);
-      const sampleDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
+      // Pre-displacement source = unwarped disc position in logo CSS.
+      const preLogoX = originX + discCss / 2 + dxCss;
+      const preLogoY = originY + discCss / 2 + dyCss;
+      const [preSx, preSy] = toSrc(discCss / 2 + dxCss, discCss / 2 + dyCss);
+      const preCover =
+        sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
+        ALPHA_SOLID;
+      const warpAmt = cuspWarpAmount(
+        preLogoX,
+        preLogoY,
+        logoX,
+        logoY,
+        logoW,
+        logoH,
+        preCover,
+      );
+      // Lerp identity (dist) → full warp so samples near the A cusp don't
+      // jump the thin counter gap onto the opposite stroke.
+      const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
+      const sampleDist = dist + (fullDist - dist) * warpAmt;
       const sampleXCss = discCss / 2 + ux * sampleDist;
       const sampleYCss = discCss / 2 + uy * sampleDist;
 
-      const [sx0, sy0] = toSrc(sampleXCss, sampleYCss);
-      const a = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 3);
-      // Solid photo coverage only — skip empty collage, OOB, and AA fringe.
-      if (a < ALPHA_SOLID) continue;
+      const [logoCssX, logoCssY] = toLogoCss(sampleXCss, sampleYCss);
+      // Geometric coverage — not bilinear reveal alpha (cusp sub-texel trap).
+      if (!sampleCssInMark(logoCssX, logoCssY)) continue;
 
-      // Base RGB from the covered sample. CA offsets may land outside the mark
+      const [sx0, sy0] = toSrc(sampleXCss, sampleYCss);
+      // Reveal must actually have solid collage here. Path can report inside
+      // near the epsilon cusp while reveal/collage is still a transparent hole
+      // — writing that would stamp scrubbed RGB (0,0,0) as opaque black
+      // (the triangular notch).
+      const coverA = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 3);
+      if (coverA < ALPHA_SOLID) continue;
+
+      // Base RGB from bilinear reveal. CA offsets may land outside the mark
       // (over background / in the "A" counter); only split a channel when that
-      // offset still has solid coverage, otherwise keep the center channel so
-      // we never invent pale/blue rim color or dark hole shards.
+      // offset is still geometrically inside, otherwise keep the center channel.
       let r = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 0);
       const g = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 1);
       let b = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 2);
-      const caOff = lensR * CA_FRAC * rw;
+      // CA also follows the dampened ray — scale split by warpAmt so the
+      // cusp neighborhood doesn't get an undamped chromatic jump either.
+      const caOff = lensR * CA_FRAC * rw * warpAmt;
       if (caOff > 1e-6) {
-        const [sxR, syR] = toSrc(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
-        const [sxB, syB] = toSrc(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
-        if (sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 3) >= ALPHA_SOLID) {
+        const [lxR, lyR] = toLogoCss(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
+        const [lxB, lyB] = toLogoCss(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
+        if (sampleCssInMark(lxR, lyR)) {
+          const [sxR, syR] = toSrc(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
           r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
         }
-        if (sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 3) >= ALPHA_SOLID) {
+        if (sampleCssInMark(lxB, lyB)) {
+          const [sxB, syB] = toSrc(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
           b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
         }
       }
 
       // Opaque blur source: solid alpha (no lens-edge feather baked in).
-      // Only real mosaic/photo texels ever land here — never a white backdrop.
+      // Only geometrically-covered mark texels — never counter / OOB.
       const oi = (py * paddedSize + px) * 4;
       opaqueData[oi] = r;
       opaqueData[oi + 1] = g;
@@ -661,7 +758,7 @@ function buildLensDisc(
       // Wider soft feather so disc alpha reaches 0 before any residual hard rim.
       const feather = 1.75;
       const circleCover = edge >= feather ? 1 : Math.max(0, (edge + feather) / (2 * feather));
-      const outA = a * circleCover;
+      const outA = 255 * circleCover;
       if (outA < 1) continue;
       const si = (sy * size + sx) * 4;
       sharpData[si] = r;
@@ -676,6 +773,9 @@ function buildLensDisc(
   // gradient shows through.
   morphCloseAlpha(opaqueData, paddedSize, paddedSize, 3, scratch.dilatePrev);
   // Mirror any coverage morph-close added into the sharp disc.
+  // Live: morph dilates opaqueData into hairline gaps; sharp was only written
+  // by the warp loop, so without this copy those sealed texels stay empty
+  // in the sharp layer and the seal is invisible in the final disc.
   for (let sy = 0; sy < size; sy++) {
     for (let sx = 0; sx < size; sx++) {
       const si = (sy * size + sx) * 4;
@@ -686,6 +786,80 @@ function buildLensDisc(
       sharpData[si + 1] = opaqueData[oi + 1]!;
       sharpData[si + 2] = opaqueData[oi + 2]!;
       sharpData[si + 3] = 255;
+    }
+  }
+
+  // Morph dilate can re-fill the geometrically-open counter from letterform
+  // neighbors. Scrub any solid texel whose warped source is outside the path.
+  for (let py = 0; py < paddedSize; py++) {
+    for (let px = 0; px < paddedSize; px++) {
+      const oi = (py * paddedSize + px) * 4;
+      if (opaqueData[oi + 3]! < 1) continue;
+      const dxPx = px + 0.5 - (pad + cx);
+      const dyPx = py + 0.5 - (pad + cy);
+      const distPxRaw = Math.hypot(dxPx, dyPx);
+      if (distPxRaw > radiusPx + pad) {
+        opaqueData[oi] = 0;
+        opaqueData[oi + 1] = 0;
+        opaqueData[oi + 2] = 0;
+        opaqueData[oi + 3] = 0;
+        continue;
+      }
+      const distPx = Math.min(distPxRaw, radiusPx);
+      const dxCss = dxPx / dpr;
+      const dyCss = dyPx / dpr;
+      const distRawCss = distPxRaw / dpr;
+      const dist = distPx / dpr;
+      const t = Math.min(1, dist / lensR);
+      const inv = distRawCss > 1e-6 ? 1 / distRawCss : 0;
+      const ux = dxCss * inv;
+      const uy = dyCss * inv;
+      const zoom = zoomAt(t);
+      const rw = rimWeight(t);
+      const preLogoX = originX + discCss / 2 + dxCss;
+      const preLogoY = originY + discCss / 2 + dyCss;
+      const preSx = (preLogoX - logoX) * scaleX;
+      const preSy = (preLogoY - logoY) * scaleY;
+      const preCover =
+        sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
+        ALPHA_SOLID;
+      const warpAmt = cuspWarpAmount(
+        preLogoX,
+        preLogoY,
+        logoX,
+        logoY,
+        logoW,
+        logoH,
+        preCover,
+      );
+      const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
+      const sampleDist = dist + (fullDist - dist) * warpAmt;
+      const sampleXCss = discCss / 2 + ux * sampleDist;
+      const sampleYCss = discCss / 2 + uy * sampleDist;
+      const sampleLogoX = originX + sampleXCss;
+      const sampleLogoY = originY + sampleYCss;
+      if (sampleCssInMark(sampleLogoX, sampleLogoY)) {
+        const sSx = (sampleLogoX - logoX) * scaleX;
+        const sSy = (sampleLogoY - logoY) * scaleY;
+        if (
+          sampleChannelBilinear(src, revealDw, revealDh, sSx, sSy, 3) >=
+          ALPHA_SOLID
+        ) {
+          continue;
+        }
+      }
+      opaqueData[oi] = 0;
+      opaqueData[oi + 1] = 0;
+      opaqueData[oi + 2] = 0;
+      opaqueData[oi + 3] = 0;
+      const sx = px - pad;
+      const sy = py - pad;
+      if (sx < 0 || sy < 0 || sx >= size || sy >= size) continue;
+      const si = (sy * size + sx) * 4;
+      sharpData[si] = 0;
+      sharpData[si + 1] = 0;
+      sharpData[si + 2] = 0;
+      sharpData[si + 3] = 0;
     }
   }
 
@@ -706,6 +880,19 @@ function buildLensDisc(
 
   applyRimSoftFocus(scratch, blurPx);
   return { disc: scratch.out, scratch };
+}
+
+/** Reused 2d context for Path2D.isPointInPath (identity transform). */
+let pathHitCanvas: HTMLCanvasElement | null = null;
+function ensurePathHitCtx(): CanvasRenderingContext2D {
+  if (!pathHitCanvas) {
+    pathHitCanvas = document.createElement("canvas");
+    pathHitCanvas.width = 1;
+    pathHitCanvas.height = 1;
+  }
+  const ctx = pathHitCanvas.getContext("2d")!;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  return ctx;
 }
 
 /**
