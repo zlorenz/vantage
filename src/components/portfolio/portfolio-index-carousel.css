@@ -121,6 +121,27 @@
   user-select: none;
 }
 
+/* Desktop: counter leaves the flex flow so filter→card can be a clean 16px
+ * stage gap (Figma). Must follow the base .__counter rule so absolute wins
+ * over its position:relative. Nav→filter remains a centering side effect —
+ * not adjusted here. --vp-index-top-row-height still tracks the in-flow row. */
+@media (min-width: 576px) {
+  .vp-portfolio-index__stage {
+    gap: 1rem; /* 16px — filter row → carousel band (card top) */
+  }
+
+  .vp-portfolio-index__counter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--vp-index-top-row-height, 2.5rem);
+    z-index: 3;
+    box-sizing: border-box;
+    height: 1rem; /* matches stage gap — sits in the filter→card band */
+    align-items: center;
+  }
+}
+
 /*
  * Full-viewport bleed track behind the Embla viewport.
  * position:fixed; inset:0 covers the true browser viewport (edge-to-edge,
