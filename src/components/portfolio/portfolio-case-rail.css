@@ -1,19 +1,15 @@
 /**
  * Case-study left rail — structural column (not decorative overlay).
  *
- * Desktop breakpoint: 992px (min-width), same Figma-desktop split as
- * NavBar’s MOBILE_MQ / --vp-breakpoint-md. Below that the rail is hidden;
- * page shell collapse to single-column is finalized in the shell layout.
+ * Desktop breakpoint: 992px (min-width) — reuses NavBar’s Figma-desktop
+ * split / --vp-breakpoint-md. Below that the rail is hidden and the main
+ * column keeps the prior single-column gutters; mobile header/credits
+ * rules in portfolio-case-header.css are left untouched.
  */
 
 .vp-case-shell {
   /* Figma left inset ~328px → 20.5rem at 16px root (spacing-scale rem). */
   --vp-case-rail-width: 20.5rem;
-  /*
-   * Case hero needs nav clearance + Figma’s ~200px title band (pt-200).
-   * Keep the condensed token; scope the larger value to this shell only.
-   */
-  --vp-section-y-header-condensed: calc(var(--vp-nav-bar-height) + 12.5rem);
   /* Figma right-column horizontal pad (30px). */
   --vp-case-shell-pad-x: 1.875rem;
 }
@@ -26,7 +22,11 @@
 .vp-case-shell__main {
   width: 100%;
   min-width: 0;
-  /* Mobile: preserve prior single-column gutters (px-4 / md:px-6). */
+  /*
+   * Below 992px: single-column gutters matching the prior case page
+   * (px-4 / md:px-6). Header + credits mobile rules stay in
+   * portfolio-case-header.css untouched.
+   */
   padding-inline: 1rem;
   box-sizing: border-box;
 }
@@ -35,13 +35,27 @@
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 991.98px) {
   .vp-case-shell__main {
     padding-inline: 1.5rem;
   }
 }
 
 @media (min-width: 992px) {
+  /*
+   * Reuses NavBar / --vp-breakpoint-md 992px Figma-desktop split:
+   * same threshold as the site’s existing “desktop rail” chrome, so
+   * the case left rail appears with other desktop-only rails rather
+   * than inventing a 1024px breakpoint.
+   */
+  .vp-case-shell {
+    /*
+     * Case hero needs nav clearance + Figma’s ~200px title band (pt-200).
+     * Keep the condensed token; scope the larger value to desktop shell.
+     */
+    --vp-section-y-header-condensed: calc(var(--vp-nav-bar-height) + 12.5rem);
+  }
+
   .vp-case-shell__layout {
     display: flex;
     align-items: flex-start;
