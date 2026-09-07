@@ -67,21 +67,14 @@
   }
 
   .vp-case-rail {
-    position: sticky;
-    /* Stick under the fixed site header (not the section’s large top pad). */
-    top: var(--vp-header-height, var(--vp-nav-bar-height));
     z-index: 2;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     flex: 0 0 var(--vp-case-rail-width);
     width: var(--vp-case-rail-width);
     max-width: var(--vp-case-rail-width);
     align-self: flex-start;
     box-sizing: border-box;
-    /* Viewport band under fixed header — keeps mark in the lower third. */
-    height: calc(100vh - var(--vp-header-height, var(--vp-nav-bar-height)));
-    min-height: 20rem;
     /*
      * Under-nav inset for “Back to work” — Figma top:40 on the rail.
      * (Primary low offset was shell title-band padding; fixed in the
@@ -157,7 +150,6 @@
     width: 100%;
     max-width: 18rem;
     height: auto;
-    margin-top: auto;
     opacity: 0.08;
     mix-blend-mode: luminosity;
     pointer-events: none;

@@ -1,9 +1,10 @@
 /**
  * PortfolioCaseRail — structural left column for the case-study shell.
  *
- * Desktop: sticky rail with low-opacity VAP geometric mark + “all work”
- * back control. Mobile collapse is handled by portfolio-case-rail.css
- * (reuses the redesign’s 992px Figma-desktop split).
+ * Desktop: in-flow rail with low-opacity VAP geometric mark + “all work”
+ * back control (scrolls away with the header; not sticky/fixed). Mobile
+ * collapse is handled by portfolio-case-rail.css (reuses the redesign’s
+ * 992px Figma-desktop split).
  */
 
 import {getTranslations} from 'next-intl/server';
