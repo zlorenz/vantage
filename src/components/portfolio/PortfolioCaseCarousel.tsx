@@ -484,6 +484,9 @@ export function PortfolioCaseCarousel({
                         ) : (
                           <InfoOpenIcon />
                         )}
+                        <span className="vp-case-carousel__info-label">
+                          info
+                        </span>
                       </button>
                     ) : null}
                   </div>
