@@ -14,6 +14,7 @@ import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 import {
   countForPublicFilterValue,
+  matchesPublicFilters,
   publicFilterOptions,
   type PublicFilters,
 } from './PortfolioGrid';
@@ -35,6 +36,15 @@ interface PortfolioIndexDesktopFilterRowProps {
 }
 
 const TAXONOMY_ORDER: TaxonomyKey[] = ['format', 'industry', 'market'];
+
+const TAXONOMY_SLUG_FIELD: Record<
+  TaxonomyKey,
+  'videoFormatSlugs' | 'industrySlugs' | 'marketSlugs'
+> = {
+  format: 'videoFormatSlugs',
+  industry: 'industrySlugs',
+  market: 'marketSlugs',
+};
 
 const TAXONOMY_LABEL_KEY: Record<
   TaxonomyKey,
@@ -198,7 +208,15 @@ export function PortfolioIndexDesktopFilterRow({
     if (selected) {
       return countForPublicFilterValue(filterEntries, filters, key, selected);
     }
-    return countForPublicFilterValue(filterEntries, filters, key, '');
+    // No selection: count entries that already have a value for this taxonomy,
+    // still respecting active filters on the other two (empty `key` is a no-op
+    // in matchesPublicFilters). Distinct FORMAT/INDUSTRY/MARKET defaults.
+    const field = TAXONOMY_SLUG_FIELD[key];
+    return filterEntries.filter((entry) => {
+      if (!matchesPublicFilters(entry, filters)) return false;
+      const values = entry[field];
+      return Array.isArray(values) && values.some((value) => Boolean(value));
+    }).length;
   };
 
   const handleSearchClick = () => {
