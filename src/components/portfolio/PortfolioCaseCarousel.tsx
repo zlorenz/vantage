@@ -413,28 +413,6 @@ export function PortfolioCaseCarousel({
   return (
     <div className="vp-case-carousel">
       <div className="vp-case-carousel__stage">
-        <p
-          className="vp-case-carousel__counter"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <span className="vp-case-carousel__counter-current">
-            {activeIndex + 1}
-          </span>
-          <span className="vp-case-carousel__counter-sep" aria-hidden>
-            /
-          </span>
-          <span className="vp-case-carousel__counter-total">{slideCount}</span>
-        </p>
-        <button
-          type="button"
-          className="vp-case-carousel__nav vp-case-carousel__nav--prev"
-          onClick={scrollPrev}
-          disabled={!canScrollPrev}
-          aria-label="Previous video"
-        >
-          <NavChevron direction="prev" />
-        </button>
         <div
           ref={emblaRef}
           className="vp-case-carousel__viewport"
@@ -514,15 +492,6 @@ export function PortfolioCaseCarousel({
             })}
           </div>
         </div>
-        <button
-          type="button"
-          className="vp-case-carousel__nav vp-case-carousel__nav--next"
-          onClick={scrollNext}
-          disabled={!canScrollNext}
-          aria-label="Next video"
-        >
-          <NavChevron direction="next" />
-        </button>
       </div>
 
       {!isDesktop ? (
@@ -582,30 +551,6 @@ function InfoCloseIcon() {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="square"
-      />
-    </svg>
-  );
-}
-
-function NavChevron({direction}: {direction: 'prev' | 'next'}) {
-  return (
-    <svg
-      className="vp-case-carousel__nav-icon"
-      viewBox="0 0 24 24"
-      aria-hidden
-      focusable="false"
-    >
-      <path
-        d={
-          direction === 'prev'
-            ? 'M14.5 5.5 8 12l6.5 6.5'
-            : 'M9.5 5.5 16 12l-6.5 6.5'
-        }
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="square"
-        strokeLinejoin="miter"
       />
     </svg>
   );
