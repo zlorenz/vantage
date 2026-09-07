@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
+import { PortfolioCaseRail } from '@/components/portfolio/PortfolioCaseRail';
 import { KeyVisualsGallery } from '@/components/portfolio/KeyVisualsGallery';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioCaseMedia } from '@/components/portfolio/PortfolioCaseMedia';
@@ -150,34 +151,37 @@ export default async function PortfolioEntryPage({ params }: Props) {
       <JsonLd data={buildBreadcrumbs(breadcrumbItems)} />
       <SectionWrapper
         fullBleed={true}
-        className="!pt-[var(--vp-section-y-header-condensed)]"
+        className="vp-case-shell !pt-[var(--vp-section-y-header-condensed)]"
       >
-        <div className="mx-auto w-full max-w-[1680px] px-4 md:px-6 xl:px-8">
-          <PortfolioCaseHeader
-            locale={typedLocale}
-            phrases={phrases}
-            displayTitleParts={entry.displayTitleParts}
-            videoFormats={entry.videoFormats}
-            industries={entry.industries}
-            markets={entry.markets}
-            crewCredits={entry.crewCredits}
-          />
-          <PortfolioCaseMedia locale={typedLocale} entry={entry} />
-          <div className="mt-24 flex flex-col gap-28">
-            <PortfolioCredits
-              crewCredits={entry.crewCredits}
+        <div className="vp-case-shell__layout">
+          <PortfolioCaseRail />
+          <div className="vp-case-shell__main mx-auto w-full max-w-[1680px] px-4 md:px-6 xl:px-8">
+            <PortfolioCaseHeader
               locale={typedLocale}
-              phrases={phraseRecord}
+              phrases={phrases}
+              displayTitleParts={entry.displayTitleParts}
+              videoFormats={entry.videoFormats}
+              industries={entry.industries}
+              markets={entry.markets}
+              crewCredits={entry.crewCredits}
             />
-            <KeyVisualsGallery
-              keyVisuals={
-                (entry as PortfolioEntry &
-                  Pick<
-                    NonNullable<PORTFOLIO_ENTRY_QUERY_RESULT>,
-                    'keyVisuals'
-                  >).keyVisuals
-              }
-            />
+            <PortfolioCaseMedia locale={typedLocale} entry={entry} />
+            <div className="mt-24 flex flex-col gap-28">
+              <PortfolioCredits
+                crewCredits={entry.crewCredits}
+                locale={typedLocale}
+                phrases={phraseRecord}
+              />
+              <KeyVisualsGallery
+                keyVisuals={
+                  (entry as PortfolioEntry &
+                    Pick<
+                      NonNullable<PORTFOLIO_ENTRY_QUERY_RESULT>,
+                      'keyVisuals'
+                    >).keyVisuals
+                }
+              />
+            </div>
           </div>
         </div>
       </SectionWrapper>

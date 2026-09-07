@@ -1,0 +1,113 @@
+/**
+ * Case-study left rail — structural column (not decorative overlay).
+ *
+ * Desktop breakpoint: 992px (min-width), same Figma-desktop split as
+ * NavBar’s MOBILE_MQ / --vp-breakpoint-md. Below that the rail is hidden;
+ * page shell collapse to single-column is finalized in the shell layout.
+ */
+
+.vp-case-shell {
+  /* Figma left inset ~328px → 20.5rem at 16px root (spacing-scale rem). */
+  --vp-case-rail-width: 20.5rem;
+}
+
+.vp-case-shell__layout {
+  display: block;
+  width: 100%;
+}
+
+.vp-case-rail {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .vp-case-shell__layout {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .vp-case-rail {
+    position: sticky;
+    top: var(--vp-section-y-header-condensed);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 0 var(--vp-case-rail-width);
+    width: var(--vp-case-rail-width);
+    max-width: var(--vp-case-rail-width);
+    align-self: flex-start;
+    box-sizing: border-box;
+    /* Viewport band under condensed header offset — keeps mark in lower third. */
+    height: calc(100vh - var(--vp-section-y-header-condensed));
+    min-height: 20rem;
+    padding: 2.5rem 1.875rem;
+    pointer-events: none;
+  }
+
+  .vp-case-shell__main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .vp-case-rail__back {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 100%;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .vp-case-rail__back:hover,
+  .vp-case-rail__back:focus-visible {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .vp-case-rail__back:focus-visible {
+    outline: 1px solid var(--vp-border);
+    outline-offset: 4px;
+  }
+
+  .vp-case-rail__back-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--vp-overlay-light);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .vp-case-rail__back-icon {
+    display: block;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .vp-case-rail__back-label {
+    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+    letter-spacing: -0.28px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .vp-case-rail__mark {
+    display: block;
+    width: 100%;
+    max-width: 18rem;
+    height: auto;
+    margin-top: auto;
+    opacity: 0.08;
+    mix-blend-mode: luminosity;
+    pointer-events: none;
+    user-select: none;
+  }
+}
