@@ -74,6 +74,11 @@ function stripOptionChrome(label: string): string {
   return label.replace(/^\u00A0+/, '').replace(/ \(\d+\)$/, '');
 }
 
+/** Figma panel counts: bare n → "( n )" */
+function formatPanelCount(n: number): string {
+  return `( ${n} )`;
+}
+
 function SearchGlyph() {
   return (
     <svg
@@ -350,7 +355,7 @@ export function PortfolioIndexDesktopFilterRow({
                         → {t('all')}
                       </span>
                       <span className="vp-portfolio-index-desktop-filters__term-count">
-                        {allCount}
+                        {formatPanelCount(allCount)}
                       </span>
                     </button>
 
@@ -381,7 +386,7 @@ export function PortfolioIndexDesktopFilterRow({
                                 {stripOptionChrome(opt.label)}
                               </span>
                               <span className="vp-portfolio-index-desktop-filters__term-count">
-                                {termCount}
+                                {formatPanelCount(termCount)}
                               </span>
                             </button>
                           </li>
