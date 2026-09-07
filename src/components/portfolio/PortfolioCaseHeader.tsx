@@ -6,7 +6,7 @@
  * carousel and case-study styles can diverge independently.
  */
 
-import {composeOverlayCopy, joinOverlayList} from '@/components/prototype/carousel/overlay';
+import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
 import type {Locale} from '@/i18n/routing';
 import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
@@ -148,10 +148,10 @@ export function PortfolioCaseHeader({
   ];
 
   const credits = CREDIT_ROLES.flatMap(({roleKey, label}) => {
-    const names = joinOverlayList(
-      getStructuredRoleNames(crewCredits ?? [], roleKey),
+    const names = getStructuredRoleNames(crewCredits ?? [], roleKey).filter(
+      (name) => name.trim().length > 0,
     );
-    return names ? [{roleKey, label, names}] : [];
+    return names.length > 0 ? [{roleKey, label, names}] : [];
   });
 
   if (!brandLine && !campaignLine && pills.length === 0 && credits.length === 0) {
@@ -189,7 +189,16 @@ export function PortfolioCaseHeader({
                 {credits.map((credit) => (
                   <div key={credit.roleKey} className="vp-case-header__credit">
                     <dt>{credit.label}</dt>
-                    <dd>{credit.names}</dd>
+                    <dd>
+                      {credit.names.map((name, index) => (
+                        <span
+                          key={`${credit.roleKey}-${index}-${name}`}
+                          className="vp-case-header__credit-name"
+                        >
+                          {name}
+                        </span>
+                      ))}
+                    </dd>
                   </div>
                 ))}
               </dl>

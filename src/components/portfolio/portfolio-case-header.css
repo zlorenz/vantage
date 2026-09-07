@@ -99,6 +99,10 @@
 }
 
 .vp-case-header__credit dd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
   margin: 0;
   font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
   font-size: 1rem;
@@ -107,6 +111,11 @@
   letter-spacing: -0.02rem;
   line-height: 1.5;
   text-transform: uppercase;
+}
+
+.vp-case-header__credit-name {
+  display: block;
+  max-width: 100%;
 }
 
 .vp-case-header__pills {
