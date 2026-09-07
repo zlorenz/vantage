@@ -3,12 +3,13 @@
 /**
  * Desktop-only (≥576px) filter row for /work PortfolioIndexCarousel.
  *
- * SEARCH (left) reuses the existing search overlay trigger. FORMAT / INDUSTRY /
- * MARKET (right) open independent right-rail panels — multiple may be open at
- * once. Does not replace PortfolioIndexFilterSheet (mobile keeps that).
+ * SEARCH (left) is an always-visible inline field (Figma 77:12478 = icon +
+ * “SEARCH” label chrome — no border/fill box). FORMAT / INDUSTRY / MARKET
+ * (right) open independent right-rail panels — multiple may be open at once.
+ * Does not replace PortfolioIndexFilterSheet or the mobile search overlay.
  */
 
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState, type FormEvent} from 'react';
 import {useTranslations} from 'next-intl';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
@@ -29,7 +30,13 @@ interface PortfolioIndexDesktopFilterRowProps {
   slides: PortfolioIndexSlide[];
   filters: PublicFilters;
   onChangeFilter: (key: TaxonomyKey, value: string) => void;
-  onOpenSearch: () => void;
+  /** Committed `q` — seeds the field on load / popstate / filter-clear. */
+  searchValue: string;
+  /** Enter/submit — same commit path as the mobile overlay. */
+  onCommitSearch: (query: string) => void;
+  /** Overlay-shared no-results string; shown inline under the field when set. */
+  searchNoResultsQuery?: string;
+  onClearSearchNoResults?: () => void;
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
@@ -105,7 +112,10 @@ export function PortfolioIndexDesktopFilterRow({
   slides,
   filters,
   onChangeFilter,
-  onOpenSearch,
+  searchValue,
+  onCommitSearch,
+  searchNoResultsQuery = '',
+  onClearSearchNoResults,
   videoFormats,
   industries,
   markets,
@@ -117,6 +127,12 @@ export function PortfolioIndexDesktopFilterRow({
     useState<PanelOpenState>(ALL_PANELS_CLOSED);
   /** Last-opened panel sits above siblings (530px rails overlap heavily). */
   const [frontPanel, setFrontPanel] = useState<TaxonomyKey | null>(null);
+  /** Local draft; mirrors committed searchValue (URL / filter clear / commit). */
+  const [draftSearch, setDraftSearch] = useState(searchValue);
+
+  useEffect(() => {
+    setDraftSearch(searchValue);
+  }, [searchValue]);
 
   const filterEntries = slides as unknown as PortfolioGridEntry[];
 
@@ -219,10 +235,11 @@ export function PortfolioIndexDesktopFilterRow({
     }).length;
   };
 
-  const handleSearchClick = () => {
+  const handleSearchSubmit = (event: FormEvent) => {
+    event.preventDefault();
     setOpenPanels(ALL_PANELS_CLOSED);
     setFrontPanel(null);
-    onOpenSearch();
+    onCommitSearch(draftSearch);
   };
 
   const handleSelectAll = (key: TaxonomyKey) => {
@@ -239,17 +256,35 @@ export function PortfolioIndexDesktopFilterRow({
       className="vp-portfolio-index-desktop-filters"
       data-desktop-filter-row
     >
-      <button
-        type="button"
+      <form
         className="vp-portfolio-index-desktop-filters__search"
-        onClick={handleSearchClick}
-        aria-label={tSearch('openAria')}
+        role="search"
+        onSubmit={handleSearchSubmit}
       >
         <SearchGlyph />
-        <span className="vp-portfolio-index-desktop-filters__search-label">
-          {tSearch('title')}
-        </span>
-      </button>
+        <input
+          type="search"
+          className="vp-portfolio-index-desktop-filters__search-input"
+          value={draftSearch}
+          onChange={(event) => {
+            setDraftSearch(event.target.value);
+            if (searchNoResultsQuery) onClearSearchNoResults?.();
+          }}
+          placeholder={tSearch('title')}
+          aria-label={tSearch('placeholder')}
+          autoComplete="off"
+          enterKeyHint="search"
+        />
+        {searchNoResultsQuery ? (
+          <p
+            className="vp-portfolio-index-desktop-filters__search-no-results"
+            role="status"
+            aria-live="polite"
+          >
+            {tSearch('noResults', {query: searchNoResultsQuery})}
+          </p>
+        ) : null}
+      </form>
 
       <div className="vp-portfolio-index-desktop-filters__triggers">
         {TAXONOMY_ORDER.map((key) => {

@@ -713,16 +713,16 @@ export function PortfolioIndexCarousel({
     setSearchOpen(false);
   }, []);
 
-  const submitSearch = useCallback(() => {
-    const next = draftSearch.trim();
+  const commitSearchQuery = useCallback((raw: string): 'empty' | 'none' | 'ok' => {
+    const next = raw.trim();
 
-    // Empty submit clears any committed search and closes the overlay.
+    // Empty commit clears any committed search (and closes the mobile overlay).
     if (!next) {
       setCommittedSearch('');
       setSearchNoResultsQuery('');
       setActiveIndex(0);
       setSearchOpen(false);
-      return;
+      return 'empty';
     }
 
     // Preview against the full library (search clears taxonomy filters on commit).
@@ -733,12 +733,8 @@ export function PortfolioIndexCarousel({
     );
     if (matches.length === 0) {
       setSearchNoResultsQuery(next);
-      // Keep overlay + draft; leave carousel / committed search untouched.
-      window.requestAnimationFrame(() => {
-        searchInputRef.current?.focus();
-        searchInputRef.current?.select();
-      });
-      return;
+      // Leave carousel / committed search untouched.
+      return 'none';
     }
 
     setSearchNoResultsQuery('');
@@ -746,7 +742,23 @@ export function PortfolioIndexCarousel({
     setPublicFilters(EMPTY_PUBLIC_PRESETS);
     setActiveIndex(0);
     setSearchOpen(false);
-  }, [draftSearch, slides]);
+    return 'ok';
+  }, [slides]);
+
+  const submitSearch = useCallback(() => {
+    const result = commitSearchQuery(draftSearch);
+    if (result === 'none') {
+      // Keep mobile overlay open + re-focus the overlay field.
+      window.requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+      });
+    }
+  }, [commitSearchQuery, draftSearch]);
+
+  const clearSearchNoResults = useCallback(() => {
+    setSearchNoResultsQuery('');
+  }, []);
 
   const clearSearch = useCallback(() => {
     setCommittedSearch('');
@@ -932,7 +944,10 @@ export function PortfolioIndexCarousel({
           slides={librarySlides}
           filters={publicFilters}
           onChangeFilter={updatePublicFilter}
-          onOpenSearch={openSearch}
+          searchValue={committedSearch}
+          onCommitSearch={commitSearchQuery}
+          searchNoResultsQuery={searchNoResultsQuery}
+          onClearSearchNoResults={clearSearchNoResults}
           videoFormats={videoFormats}
           industries={industries}
           markets={markets}

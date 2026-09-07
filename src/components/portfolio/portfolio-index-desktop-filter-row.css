@@ -31,7 +31,13 @@
     pointer-events: auto;
   }
 
+  /*
+   * Figma 77:12478 — icon + “SEARCH” label chrome (no border / fill / box).
+   * Inline input keeps that cluster: transparent field, same muted uppercase
+   * type; placeholder reads as the former label until a query is typed.
+   */
   .vp-portfolio-index-desktop-filters__search {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -40,14 +46,10 @@
     border: 0;
     background: transparent;
     color: rgba(255, 255, 255, 0.4);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
   }
 
-  .vp-portfolio-index-desktop-filters__search:hover,
-  .vp-portfolio-index-desktop-filters__search:focus-visible {
+  .vp-portfolio-index-desktop-filters__search:focus-within {
     color: rgba(255, 255, 255, 0.72);
-    outline: none;
   }
 
   .vp-portfolio-index-desktop-filters__search-icon {
@@ -57,14 +59,56 @@
     flex-shrink: 0;
   }
 
-  .vp-portfolio-index-desktop-filters__search-label {
-    /* Figma: Zalando Sans Expanded Bold */
+  .vp-portfolio-index-desktop-filters__search-input {
+    box-sizing: border-box;
+    width: 10rem;
+    min-width: 5.5rem;
+    max-width: 18rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
+    /* Figma 77:12481 — Zalando Sans Expanded Bold 14px / tracking -0.28px */
     font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
     font-size: 0.875rem;
     font-weight: 700;
     line-height: 1;
-    letter-spacing: -0.0175rem; /* -0.28px @ 16px root */
+    letter-spacing: -0.0175rem;
     text-transform: uppercase;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .vp-portfolio-index-desktop-filters__search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    opacity: 1;
+    text-transform: uppercase;
+  }
+
+  .vp-portfolio-index-desktop-filters__search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .vp-portfolio-index-desktop-filters__search-no-results {
+    position: absolute;
+    top: calc(100% + 0.45rem);
+    left: 0;
+    z-index: 4;
+    margin: 0;
+    max-width: min(22rem, 70vw);
+    color: var(--vp-orange, #f04e23);
+    font-family: var(--vp-font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    pointer-events: none;
+    white-space: nowrap;
   }
 
   .vp-portfolio-index-desktop-filters__triggers {
