@@ -223,6 +223,31 @@
   opacity: 0.7;
 }
 
+/*
+ * Embla viewport + full-bleed bracket-band guides.
+ * Guides are siblings OUTSIDE the viewport so Embla overflow can't clip them.
+ * Desktop: viewport overflow:visible + band clip-path (vertically expanded by
+ * the proportional bracket outset) so corners/rails paint into the filter→card
+ * gap without padding the band (which would blow the 16px Figma spacing).
+ */
+.vp-portfolio-index__carousel-band {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.vp-portfolio-index__band-guides {
+  display: none;
+  pointer-events: none;
+}
+
+/* Desktop-only chrome — hide the SVG shell on mobile so it can't affect layout. */
+.vp-portfolio-index__active-frame {
+  display: none;
+  pointer-events: none;
+}
+
 .vp-portfolio-index__viewport {
   position: relative;
   z-index: 1;
@@ -254,6 +279,95 @@
    * homepage's pan-x on a vertical carousel: withhold the page-scroll axis). */
   touch-action: pinch-zoom;
   cursor: grab;
+}
+
+@media (min-width: 576px) {
+  .vp-portfolio-index {
+    /*
+     * Bracket frame extends 15/640 of card height outside the face (Figma
+     * 542×670 on 512×640). Used by clip-path so rails/corners can paint into
+     * the filter→card gap without padding the band (padding would inflate the
+     * gap past Figma’s 16px).
+     */
+    --vp-index-bracket-outset: calc(
+      (
+          100svh - var(--vp-header-height, 4.5rem) -
+            var(--vp-index-top-row-height, 0px) -
+            var(--vp-index-bottom-bar-height, 5rem) -
+            env(safe-area-inset-bottom, 0px)
+        ) * var(--vp-index-height-scale, 0.73) * 15 / 640
+    );
+  }
+
+  .vp-portfolio-index__carousel-band {
+    /* Expand clip vertically for brackets; keep X tight to the band. */
+    clip-path: inset(calc(-1 * var(--vp-index-bracket-outset)) 0);
+  }
+
+  .vp-portfolio-index__band-guides {
+    display: block;
+    position: absolute;
+    /* Bracket-frame top/bottom = −15/640 of card/band height. */
+    top: calc(100% * -15 / 640);
+    bottom: calc(100% * -15 / 640);
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .vp-portfolio-index__band-guide {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    /* 5px dash / 2px gap, white @ 15% — Figma dashPattern [5, 2] */
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.15) 0,
+      rgba(255, 255, 255, 0.15) 5px,
+      transparent 5px,
+      transparent 7px
+    );
+  }
+
+  .vp-portfolio-index__band-guide--top {
+    top: 0;
+  }
+
+  .vp-portfolio-index__band-guide--bottom {
+    bottom: 0;
+  }
+
+  /* Band clip-path handles peek clipping; visible lets brackets escape. */
+  .vp-portfolio-index__viewport {
+    overflow: visible;
+  }
+
+  /*
+   * Active-card chrome (SVG). Proportional inset: −15/640 vertical,
+   * −15/512 horizontal — scales with the live card box, not a fixed 15px.
+   * z-index above poster/overlay; pointer-events none so the card-link wins.
+   */
+  .vp-portfolio-index__active-frame {
+    display: block;
+    position: absolute;
+    inset: calc(100% * -15 / 640) calc(100% * -15 / 512);
+    z-index: 3;
+    width: auto;
+    height: auto;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* Escape card overflow:hidden so L-brackets / rails paint outside the face. */
+  .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled {
+    overflow: visible;
+  }
+
+  .vp-portfolio-index__slide.is-active {
+    overflow: visible;
+    z-index: 2;
+  }
 }
 
 .vp-portfolio-index__viewport:active {

@@ -224,6 +224,103 @@ function SearchSubmitIcon() {
   );
 }
 
+/**
+ * Active-card chrome from Figma 78:30485 — SVG so 1px strokes stay crisp via
+ * non-scaling-stroke while the frame scales with the card (542×670 viewBox on
+ * a 512×640 face = 15/512 × 15/640 outside).
+ */
+function PortfolioIndexActiveFrame() {
+  return (
+    <svg
+      className="vp-portfolio-index__active-frame"
+      viewBox="0 0 542 670"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {/* Dashed L/R rails — frame stroke, white @ 15%, dash 5/2 */}
+      <line
+        x1="0.5"
+        y1="0"
+        x2="0.5"
+        y2="670"
+        stroke="rgba(255,255,255,0.15)"
+        strokeWidth="1"
+        strokeDasharray="5 2"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1="541.5"
+        y1="0"
+        x2="541.5"
+        y2="670"
+        stroke="rgba(255,255,255,0.15)"
+        strokeWidth="1"
+        strokeDasharray="5 2"
+        vectorEffect="non-scaling-stroke"
+      />
+      {/* Corner L-brackets — #d9d9d9, 12×12, solid 1px */}
+      <path
+        d="M12.5 0.5 H0.5 V12.5"
+        fill="none"
+        stroke="#d9d9d9"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      />
+      <path
+        d="M529.5 0.5 H541.5 V12.5"
+        fill="none"
+        stroke="#d9d9d9"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      />
+      <path
+        d="M541.5 657.5 V669.5 H529.5"
+        fill="none"
+        stroke="#d9d9d9"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      />
+      <path
+        d="M0.5 657.5 V669.5 H12.5"
+        fill="none"
+        stroke="#d9d9d9"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      />
+      {/* Crosshair — 40×40 centered, solid white 1px */}
+      <line
+        x1="251"
+        y1="335"
+        x2="291"
+        y2="335"
+        stroke="#ffffff"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1="271"
+        y1="315"
+        x2="271"
+        y2="355"
+        stroke="#ffffff"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
+/** Full-bleed dashed guides at the bracket band’s top/bottom (Figma 78:30494/96). */
+function PortfolioIndexBandGuides() {
+  return (
+    <div className="vp-portfolio-index__band-guides" aria-hidden="true">
+      <span className="vp-portfolio-index__band-guide vp-portfolio-index__band-guide--top" />
+      <span className="vp-portfolio-index__band-guide vp-portfolio-index__band-guide--bottom" />
+    </div>
+  );
+}
+
 export function PortfolioIndexCarousel({
   slides,
   locale,
@@ -910,13 +1007,15 @@ export function PortfolioIndexCarousel({
           </div>
           <div className="vp-portfolio-index__bleed-wash" />
         </div>
-        <div
-          ref={emblaRef}
-          className="vp-portfolio-index__viewport"
-          aria-label="Portfolio index carousel"
-        >
-          <div className="vp-portfolio-index__container">
-            {filteredSlides.map((slide, index) => {
+        <div className="vp-portfolio-index__carousel-band">
+          <PortfolioIndexBandGuides />
+          <div
+            ref={emblaRef}
+            className="vp-portfolio-index__viewport"
+            aria-label="Portfolio index carousel"
+          >
+            <div className="vp-portfolio-index__container">
+              {filteredSlides.map((slide, index) => {
               const active = index === activeIndex;
               const mountContent = shouldMountPortfolioIndexContent(
                 index,
@@ -980,6 +1079,7 @@ export function PortfolioIndexCarousel({
                           style={{objectPosition: slide.objectPosition}}
                         />
                       </picture>
+                      {active ? <PortfolioIndexActiveFrame /> : null}
                       {mountContent ? (
                         <PortfolioEntryLink
                           slug={slide.hrefSlug}
@@ -1037,6 +1137,7 @@ export function PortfolioIndexCarousel({
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
         {filterTrigger}
