@@ -953,19 +953,6 @@ export function PortfolioIndexCarousel({
           industries={industries}
           markets={markets}
         />
-        <p
-          className="vp-portfolio-index__counter"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <span className="vp-portfolio-index__counter-current">
-            {activeIndex + 1}
-          </span>
-          <span className="vp-portfolio-index__counter-sep" aria-hidden>
-            /
-          </span>
-          <span className="vp-portfolio-index__counter-total">{slideCount}</span>
-        </p>
         {/*
          * Full-viewport bleed track behind the Embla viewport. Each slide is
          * 100vw (not card-width); transform is progress-proportional

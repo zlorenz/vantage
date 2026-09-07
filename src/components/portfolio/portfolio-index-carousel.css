@@ -4,7 +4,7 @@
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
  * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
  * viewport (safe-area aware), then flex-centers the card stage column
- * (counter + carousel + bottom chrome) on desktop. On mobile only, the
+ * (filter row + carousel + bottom chrome) on desktop. On mobile only, the
  * stage is bottom-anchored (flex-end) with a slightly shorter height-scale
  * so the reduction frees space above — bottom bar stays put. Card HEIGHT
  * subtracts the bottom bar from the viewport calc.
@@ -29,7 +29,7 @@
   --vp-index-slide-width-scale: 1;
   /* Bottom chrome (filter + scrubber + search) — reserved in viewport height, not centering. */
   --vp-index-bottom-bar-height: 5rem;
-  /* Desktop filter row above the counter; 0 on mobile (row is display:none). */
+  /* Desktop filter row above the carousel; 0 on mobile (row is display:none). */
   --vp-index-top-row-height: 0px;
   /* Desktop default; mobile override below. Tuned to Figma 640/1080 (~0.59). */
   --vp-index-height-scale: 0.73;
@@ -102,43 +102,11 @@
   gap: 0.75rem;
 }
 
-.vp-portfolio-index__counter {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 0.4em;
-  margin: 0;
-  padding: 0 var(--spacing-vp-gutter, 1rem);
-  font-family: var(--vp-font-sans);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.85);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Desktop: counter leaves the flex flow so filter→card can be a clean 16px
- * stage gap (Figma). Must follow the base .__counter rule so absolute wins
- * over its position:relative. Nav→filter remains a centering side effect —
- * not adjusted here. --vp-index-top-row-height still tracks the in-flow row. */
+/* Desktop: filter→card = Figma 16px via stage gap (counter removed; was
+ * previously absolutized out of flow so this gap already owned the spacing). */
 @media (min-width: 576px) {
   .vp-portfolio-index__stage {
     gap: 1rem; /* 16px — filter row → carousel band (card top) */
-  }
-
-  .vp-portfolio-index__counter {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: var(--vp-index-top-row-height, 2.5rem);
-    z-index: 3;
-    box-sizing: border-box;
-    height: 1rem; /* matches stage gap — sits in the filter→card band */
-    align-items: center;
   }
 }
 
@@ -238,10 +206,6 @@
       #000 100%
     );
   }
-}
-
-.vp-portfolio-index__counter-sep {
-  opacity: 0.7;
 }
 
 /*
