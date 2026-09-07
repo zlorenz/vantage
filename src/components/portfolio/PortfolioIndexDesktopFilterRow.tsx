@@ -56,9 +56,9 @@ function stripOptionChrome(label: string): string {
   return label.replace(/^\u00A0+/, '').replace(/ \(\d+\)$/, '');
 }
 
-/** Figma panel counts: bare n → "( n )" */
+/** Figma panel counts: bare n → "(n)" */
 function formatPanelCount(n: number): string {
-  return `( ${n} )`;
+  return `(${n})`;
 }
 
 function SearchGlyph() {
