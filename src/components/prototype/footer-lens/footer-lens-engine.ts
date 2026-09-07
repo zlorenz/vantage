@@ -75,35 +75,27 @@ const REVEAL_SUPER = 1 / ZOOM_CENTER;
  * dark shards (e.g. the "A" negative-space triangle).
  */
 const ALPHA_SOLID = 128;
-
 /**
- * A-counter cusp in SYMBOL_PATH_D viewBox space (average of the ±0.15 split).
- * Ring warp near this point can sample across the thin counter gap onto the
- * opposite stroke — locally dampen displacement by proximity to this point.
+ * Reveal-texel radius of the precomputed "near mask boundary" band.
+ * Used when building edgeProx (optional diagnostics / future adaptive paths).
+ * Per-frame coverage now uses the full geomMask directly (O(1)), so this
+ * no longer gates live isPointInPath.
  */
-const CUSP_VB_X = 18.01;
-const CUSP_VB_Y = 12.46;
-/** Full damp (identity sample) within this viewBox radius of the cusp. */
-const CUSP_WARP_DAMP_INNER = 2.0;
-/** Full normal warp beyond this viewBox radius of the cusp. */
-const CUSP_WARP_DAMP_OUTER = 8.0;
-
-/** Smoothstep 0..1. */
-function smoothstep01(t: number): number {
-  const x = Math.min(1, Math.max(0, t));
-  return x * x * (3 - 2 * x);
-}
-
+const EDGE_PROX_RADIUS = 8;
 /**
- * Warp blend near the A cusp. `dVb` = viewBox distance from unwarped sample
- * to the cusp. Far from the cusp → 1 (full warp) with no coverage sample.
+ * Fallback warp-edge distance in reveal texels when dynamic sizing isn't
+ * available. Prefer `warpEdgeDistForReveal(dw)` so falloff scales with the
+ * buffer (~8 viewBox units — same reach as the old cusp damp, but everywhere).
  */
-function cuspWarpAmount(dVb: number, hasRevealCoverage: boolean): number {
-  if (dVb >= CUSP_WARP_DAMP_OUTER) return 1;
-  if (hasRevealCoverage) return 1;
-  if (dVb <= CUSP_WARP_DAMP_INNER) return 0;
-  return smoothstep01(
-    (dVb - CUSP_WARP_DAMP_INNER) / (CUSP_WARP_DAMP_OUTER - CUSP_WARP_DAMP_INNER),
+const WARP_EDGE_DIST_MIN = 64;
+
+function warpEdgeDistForReveal(revealDw: number): number {
+  // Preserve prior CSS damp reach: old path used ~8 units in a 36-unit
+  // viewBox; re-export is 88.7 units (~2.46×), so scale the VB constant.
+  const warpEdgeVb = (8 * SYMBOL_VIEWBOX_W) / 36;
+  return Math.max(
+    WARP_EDGE_DIST_MIN,
+    Math.ceil((revealDw * warpEdgeVb) / SYMBOL_VIEWBOX_W),
   );
 }
 
@@ -118,6 +110,23 @@ type Cache = {
   revealData: ImageData;
   revealDw: number;
   revealDh: number;
+  /**
+   * Geometric occupancy (0/255) at each reveal texel (build-time isPointInPath).
+   * Used for O(1) warp pre-coverage and as a fast interior reference.
+   */
+  geomMask: Uint8Array;
+  /**
+   * 1 = within EDGE_PROX_RADIUS of any geom boundary; 0 = deep interior/exterior.
+   * O(1) lookup decides live hit-test vs fast bilinear — no hardcoded cusps.
+   */
+  edgeProx: Uint8Array;
+  /**
+   * Distance (texels, capped per reveal) to nearest geom boundary.
+   * Drives general warp dampening on both sides of every edge/gap.
+   */
+  edgeDist: Uint16Array;
+  /** Cap used when building edgeDist (reveal-texel units). */
+  warpEdgeDist: number;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -335,7 +344,7 @@ function buildRevealBuffer(
   // the hairline outline and wipe the filled interior — empty lens.
   //
   // A thin path stroke used to seal the A-counter cusp singularity; that
-  // singularity is now opened by the ±0.15 epsilon in SYMBOL_PATH_D, and the
+  // singularity is now opened by the 0.70-unit gap in SYMBOL_PATH_D, and the
   // stroke was over-sealing the counter apex with real dark collage texels
   // (Case A). Hairline gaps at other junctions are still sealed by
   // morphCloseAlpha below.
@@ -358,9 +367,9 @@ function buildRevealBuffer(
   // into letterform edges, and sub-solid fringe cannot seed the opaque blur path.
   scrubTransparentRgb(data.data);
   // Seal remaining hairline gaps at sharp cusps at full reveal resolution.
-  // Radius 1 (was 3): radius 3 over-sealed the epsilon-opened A-counter apex
-  // with real dark collage texels (Case A). Radius 1 still closes 1px hairlines
-  // at other junctions without bridging the ±0.15 cusp opening.
+  // Radius 1 (was 3): radius 3 over-sealed the opened A-counter apex with
+  // real dark collage texels (Case A). Radius 1 still closes 1px hairlines
+  // at other junctions without bridging the 0.70-unit cusp opening.
   const closeTmp = new Uint8ClampedArray(data.data.length);
   morphCloseAlpha(data.data, dw, dh, 1, closeTmp);
   scrubTransparentRgb(data.data);
@@ -368,15 +377,192 @@ function buildRevealBuffer(
   return { canvas: c, data };
 }
 
-/** Zero RGB+A for every texel below solid coverage. */
+/** Zero stale RGB only where alpha is fully empty (destination-in exterior).
+ * Keep soft AA fringes — zeroing them made geometrically-inside edge texels
+ * fail coverage and punch dark notches (page bg through the lens hole).
+ */
 function scrubTransparentRgb(rgba: Uint8ClampedArray): void {
   for (let i = 0; i < rgba.length; i += 4) {
-    if (rgba[i + 3]! >= ALPHA_SOLID) continue;
+    if (rgba[i + 3]! !== 0) continue;
     rgba[i] = 0;
     rgba[i + 1] = 0;
     rgba[i + 2] = 0;
-    rgba[i + 3] = 0;
   }
+}
+
+/**
+ * Build-time geometric occupancy, edge-proximity band, and edge-distance
+ * field for the WHOLE mark. isPointInPath runs once per reveal rebuild.
+ */
+function buildGeomEdgeMaps(
+  path2d: Path2D,
+  logoX: number,
+  logoY: number,
+  logoW: number,
+  logoH: number,
+  dw: number,
+  dh: number,
+): {
+  geomMask: Uint8Array;
+  edgeProx: Uint8Array;
+  edgeDist: Uint16Array;
+  warpEdgeDist: number;
+} {
+  const hitCtx = ensurePathHitCtx();
+  const geomMask = new Uint8Array(dw * dh);
+  const scaleX = dw / logoW;
+  const scaleY = dh / logoH;
+  for (let y = 0; y < dh; y++) {
+    const logoCssY = logoY + (y + 0.5) / scaleY;
+    const row = y * dw;
+    for (let x = 0; x < dw; x++) {
+      const logoCssX = logoX + (x + 0.5) / scaleX;
+      if (hitCtx.isPointInPath(path2d, logoCssX, logoCssY, "nonzero")) {
+        geomMask[row + x] = 255;
+      }
+    }
+  }
+
+  const warpEdgeDist = warpEdgeDistForReveal(dw);
+  // Chamfer distance-to-boundary (0 on boundary, increases away).
+  const INF = 0xffff;
+  const edgeDist = new Uint16Array(dw * dh);
+  edgeDist.fill(INF);
+  for (let y = 0; y < dh; y++) {
+    const row = y * dw;
+    for (let x = 0; x < dw; x++) {
+      const g = geomMask[row + x]!;
+      if (
+        (x > 0 && geomMask[row + x - 1]! !== g) ||
+        (x + 1 < dw && geomMask[row + x + 1]! !== g) ||
+        (y > 0 && geomMask[row - dw + x]! !== g) ||
+        (y + 1 < dh && geomMask[row + dw + x]! !== g)
+      ) {
+        edgeDist[row + x] = 0;
+      }
+    }
+  }
+  // Forward chamfer
+  for (let y = 0; y < dh; y++) {
+    const row = y * dw;
+    for (let x = 0; x < dw; x++) {
+      const i = row + x;
+      let d = edgeDist[i]!;
+      if (x > 0) d = Math.min(d, edgeDist[i - 1]! + 1);
+      if (y > 0) d = Math.min(d, edgeDist[i - dw]! + 1);
+      if (x > 0 && y > 0) d = Math.min(d, edgeDist[i - dw - 1]! + 1);
+      if (x + 1 < dw && y > 0) d = Math.min(d, edgeDist[i - dw + 1]! + 1);
+      edgeDist[i] = Math.min(INF, d);
+    }
+  }
+  // Backward chamfer
+  for (let y = dh - 1; y >= 0; y--) {
+    const row = y * dw;
+    for (let x = dw - 1; x >= 0; x--) {
+      const i = row + x;
+      let d = edgeDist[i]!;
+      if (x + 1 < dw) d = Math.min(d, edgeDist[i + 1]! + 1);
+      if (y + 1 < dh) d = Math.min(d, edgeDist[i + dw]! + 1);
+      if (x + 1 < dw && y + 1 < dh) d = Math.min(d, edgeDist[i + dw + 1]! + 1);
+      if (x > 0 && y + 1 < dh) d = Math.min(d, edgeDist[i + dw - 1]! + 1);
+      edgeDist[i] = Math.min(d, warpEdgeDist);
+    }
+  }
+
+  const edgeProx = new Uint8Array(dw * dh);
+  for (let i = 0; i < edgeProx.length; i++) {
+    if (edgeDist[i]! <= EDGE_PROX_RADIUS) edgeProx[i] = 1;
+  }
+  return { geomMask, edgeProx, edgeDist, warpEdgeDist };
+}
+
+/** O(1) nearest sample of the edge-proximity band. */
+function sampleEdgeProxNearest(
+  edgeProx: Uint8Array,
+  dw: number,
+  dh: number,
+  sx: number,
+  sy: number,
+): boolean {
+  // Just outside the reveal buffer is still "near a boundary" for the mark
+  // silhouette — treat a thin OOB ring as proximity so coverage stays precise.
+  if (sx < -EDGE_PROX_RADIUS || sy < -EDGE_PROX_RADIUS) return false;
+  if (sx >= dw + EDGE_PROX_RADIUS || sy >= dh + EDGE_PROX_RADIUS) return false;
+  const ix = Math.min(dw - 1, Math.max(0, Math.floor(sx)));
+  const iy = Math.min(dh - 1, Math.max(0, Math.floor(sy)));
+  if (sx < 0 || sy < 0 || sx >= dw || sy >= dh) return true;
+  return edgeProx[iy * dw + ix]! !== 0;
+}
+
+/**
+ * O(1) nearest sample of edge distance (0 = boundary).
+ * Out-of-buffer samples add Euclidean distance past the clamp edge so points
+ * just outside the logo (pad / viewBox overflow) still damp like near-edge
+ * exterior — previously OOB returned the max distance and got full warp,
+ * which jumped exterior rays into the letterform at sharp outer vertices.
+ */
+function sampleEdgeDistNearest(
+  edgeDist: Uint16Array,
+  dw: number,
+  dh: number,
+  sx: number,
+  sy: number,
+  warpEdgeDist: number,
+): number {
+  const ix = Math.min(dw - 1, Math.max(0, Math.floor(sx)));
+  const iy = Math.min(dh - 1, Math.max(0, Math.floor(sy)));
+  const base = edgeDist[iy * dw + ix]!;
+  if (sx >= 0 && sy >= 0 && sx < dw && sy < dh) return base;
+  const ox = sx < 0 ? -sx : sx >= dw ? sx - (dw - 1) : 0;
+  const oy = sy < 0 ? -sy : sy >= dh ? sy - (dh - 1) : 0;
+  return Math.min(warpEdgeDist, base + Math.hypot(ox, oy));
+}
+
+/** Smoothstep 0..1. */
+function smoothstep01(t: number): number {
+  const x = Math.min(1, Math.max(0, t));
+  return x * x * (3 - 2 * x);
+}
+
+/**
+ * General warp amount from edge distance + occupancy.
+ * Outside the mark → identity. Near any boundary → damp. Deep interior → full.
+ */
+/**
+ * Warp amount from edge distance + occupancy.
+ * Outside near any boundary → strong damp (large reach) so empty samples
+ * cannot jump into letterform. Inside near a boundary → lighter damp so
+ * thin tips stay continuous without killing loupe zoom in thicker strokes.
+ * Coverage is decided at the unwarped (pre) position separately — warp only
+ * affects which color is sampled (with identity fallback if the warped
+ * sample leaves the mark).
+ */
+function edgeWarpAmount(
+  edgeDist: number,
+  insideMark: boolean,
+  warpEdgeDist: number,
+): number {
+  // Inside reach ≈ 1.5 viewBox units; outside keeps the full ~8-unit map.
+  const reach = insideMark
+    ? Math.max(16, Math.ceil(warpEdgeDist * (1.5 / 8)))
+    : warpEdgeDist;
+  if (edgeDist >= reach) return 1;
+  return smoothstep01(edgeDist / reach);
+}
+
+
+/** Nearest-texel geometric occupancy (O(1)). */
+function sampleGeomMaskNearest(
+  geomMask: Uint8Array,
+  dw: number,
+  dh: number,
+  sx: number,
+  sy: number,
+): boolean {
+  if (sx < 0 || sy < 0 || sx >= dw || sy >= dh) return false;
+  const ix = Math.min(dw - 1, Math.max(0, Math.floor(sx)));
+  const iy = Math.min(dh - 1, Math.max(0, Math.floor(sy)));
+  return geomMask[iy * dw + ix]! >= 128;
 }
 
 /**
@@ -465,6 +651,138 @@ function morphCloseAlpha(
 }
 
 /**
+ * Morph-close only inside the solid bbox (+ radius margin). Full-frame
+ * dilate/erode was ~13ms/frame on the 416² pad; letterform usually occupies
+ * a fraction of that.
+ */
+function morphCloseAlphaBounded(
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  radius: number,
+  tmp: Uint8ClampedArray,
+  knownBBox?: { minX: number; minY: number; maxX: number; maxY: number } | null,
+): void {
+  if (radius < 1) return;
+  let minX = w;
+  let minY = h;
+  let maxX = -1;
+  let maxY = -1;
+  if (
+    knownBBox &&
+    knownBBox.maxX >= knownBBox.minX &&
+    knownBBox.maxY >= knownBBox.minY
+  ) {
+    minX = knownBBox.minX;
+    minY = knownBBox.minY;
+    maxX = knownBBox.maxX;
+    maxY = knownBBox.maxY;
+  } else {
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (data[(y * w + x) * 4 + 3]! < ALPHA_SOLID) continue;
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX < 0) return;
+  let x0 = Math.max(1, minX - radius);
+  let y0 = Math.max(1, minY - radius);
+  let x1 = Math.min(w - 2, maxX + radius);
+  let y1 = Math.min(h - 2, maxY + radius);
+
+  const neigh: ReadonlyArray<readonly [number, number]> = [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ];
+
+  const copyBBox = (src: Uint8ClampedArray, dst: Uint8ClampedArray) => {
+    for (let y = y0; y <= y1; y++) {
+      const row = y * w;
+      for (let x = x0; x <= x1; x++) {
+        const i = (row + x) * 4;
+        dst[i] = src[i]!;
+        dst[i + 1] = src[i + 1]!;
+        dst[i + 2] = src[i + 2]!;
+        dst[i + 3] = src[i + 3]!;
+      }
+    }
+  };
+
+  const dilate = (src: Uint8ClampedArray, dst: Uint8ClampedArray) => {
+    copyBBox(src, dst);
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const i = (y * w + x) * 4;
+        if (src[i + 3]! >= ALPHA_SOLID) continue;
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        let n = 0;
+        for (const [dx, dy] of neigh) {
+          const j = ((y + dy) * w + (x + dx)) * 4;
+          if (src[j + 3]! < ALPHA_SOLID) continue;
+          r += src[j]!;
+          g += src[j + 1]!;
+          b += src[j + 2]!;
+          n++;
+        }
+        if (n === 0) continue;
+        dst[i] = Math.round(r / n);
+        dst[i + 1] = Math.round(g / n);
+        dst[i + 2] = Math.round(b / n);
+        dst[i + 3] = 255;
+      }
+    }
+  };
+
+  const erode = (src: Uint8ClampedArray, dst: Uint8ClampedArray) => {
+    copyBBox(src, dst);
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const i = (y * w + x) * 4;
+        if (src[i + 3]! < ALPHA_SOLID) continue;
+        let solid = true;
+        for (const [dx, dy] of neigh) {
+          const j = ((y + dy) * w + (x + dx)) * 4;
+          if (src[j + 3]! < ALPHA_SOLID) {
+            solid = false;
+            break;
+          }
+        }
+        if (solid) continue;
+        dst[i] = 0;
+        dst[i + 1] = 0;
+        dst[i + 2] = 0;
+        dst[i + 3] = 0;
+      }
+    }
+  };
+
+  for (let k = 0; k < radius; k++) {
+    dilate(data, tmp);
+    x0 = Math.max(1, x0 - 1);
+    y0 = Math.max(1, y0 - 1);
+    x1 = Math.min(w - 2, x1 + 1);
+    y1 = Math.min(h - 2, y1 + 1);
+    copyBBox(tmp, data);
+  }
+  for (let k = 0; k < radius; k++) {
+    erode(data, tmp);
+    copyBBox(tmp, data);
+  }
+}
+
+/**
  * Bilinear sample. Out-of-bounds → 0 (no clamp-to-edge).
  * Clamp would repeat the logo's top/bottom rows into infinite vertical streaks
  * when the lens / warp samples past the wordmark buffer.
@@ -492,6 +810,71 @@ function sampleChannelBilinear(
   const v0 = data[i00]! * (1 - fx) + data[i10]! * fx;
   const v1 = data[i01]! * (1 - fx) + data[i11]! * fx;
   return v0 * (1 - fy) + v1 * fy;
+}
+
+/** One bilinear tap for R,G,B (avoids three separate channel walks). */
+function sampleRgbBilinear(
+  data: Uint8ClampedArray,
+  dw: number,
+  dh: number,
+  sx: number,
+  sy: number,
+): [number, number, number] {
+  if (sx < 0 || sy < 0 || sx >= dw - 1e-6 || sy >= dh - 1e-6) {
+    return [0, 0, 0];
+  }
+  const x0 = Math.floor(sx);
+  const y0 = Math.floor(sy);
+  const x1 = Math.min(dw - 1, x0 + 1);
+  const y1 = Math.min(dh - 1, y0 + 1);
+  const fx = sx - x0;
+  const fy = sy - y0;
+  const w00 = (1 - fx) * (1 - fy);
+  const w10 = fx * (1 - fy);
+  const w01 = (1 - fx) * fy;
+  const w11 = fx * fy;
+  const i00 = (y0 * dw + x0) * 4;
+  const i10 = (y0 * dw + x1) * 4;
+  const i01 = (y1 * dw + x0) * 4;
+  const i11 = (y1 * dw + x1) * 4;
+  return [
+    data[i00]! * w00 + data[i10]! * w10 + data[i01]! * w01 + data[i11]! * w11,
+    data[i00 + 1]! * w00 +
+      data[i10 + 1]! * w10 +
+      data[i01 + 1]! * w01 +
+      data[i11 + 1]! * w11,
+    data[i00 + 2]! * w00 +
+      data[i10 + 2]! * w10 +
+      data[i01 + 2]! * w01 +
+      data[i11 + 2]! * w11,
+  ];
+}
+
+/**
+ * Coverage via precomputed whole-mark geom mask (O(1)):
+ * Build-time isPointInPath is the membership source of truth for every texel.
+ * Reveal alpha is NOT used for hit-testing — soft AA fringes are geometrically
+ * inside the mark; rejecting them punched dark notches in the loupe.
+ * No per-frame isPointInPath and no hardcoded cusp coordinates.
+ */
+function sampleMarkCoverage(
+  _hitCtx: CanvasRenderingContext2D,
+  _path2d: Path2D,
+  _src: Uint8ClampedArray,
+  geomMask: Uint8Array,
+  _edgeProx: Uint8Array,
+  revealDw: number,
+  revealDh: number,
+  logoX: number,
+  logoY: number,
+  scaleX: number,
+  scaleY: number,
+  logoCssX: number,
+  logoCssY: number,
+): boolean {
+  const sx = (logoCssX - logoX) * scaleX;
+  const sy = (logoCssY - logoY) * scaleY;
+  return sampleGeomMaskNearest(geomMask, revealDw, revealDh, sx, sy);
 }
 
 /**
@@ -590,11 +973,10 @@ function ensureLoupeScratch(
  * Build the inside-lens disc at (optionally capped) device-pixel resolution.
  * Soft-focus is applied after blur so alpha never pollutes the filter.
  *
- * Coverage alpha uses a geometric Path2D hit-test (nonzero) at the warped
- * source coordinate — same path + CSS space as the reveal mask — instead of
- * bilinear-sampling the rasterized reveal alpha. Resampling a thin cusp
- * thinner than a reveal texel was rounding open counter to fully opaque
- * (Case A dark triangle). Color still comes from bilinear reveal RGB.
+ * Coverage uses the build-time whole-mark geom mask (O(1) nearest lookup).
+ * Membership is decided at the unwarped disc position; warp only affects
+ * color (with identity fallback if the warped sample leaves the mark).
+ * Edge-distance field damps warp near any boundary. No per-coordinate cases.
  */
 function buildLensDisc(
   cache: Cache,
@@ -605,14 +987,27 @@ function buildLensDisc(
   size: number,
   scratchIn: LoupeScratch | null,
 ): { disc: HTMLCanvasElement; scratch: LoupeScratch } {
+  const t0 = performance.now();
   const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
   // Pad past the blur kernel so rim samples never see empty transparent black.
   const pad = Math.ceil(blurPx * 2) + 2;
   const paddedSize = size + pad * 2;
   const scratch = ensureLoupeScratch(scratchIn, size, pad);
 
-  const { revealData, revealDw, revealDh, logoX, logoY, logoW, logoH, path2d } =
-    cache;
+  const {
+    revealData,
+    revealDw,
+    revealDh,
+    logoX,
+    logoY,
+    logoW,
+    logoH,
+    path2d,
+    geomMask,
+    edgeProx,
+    edgeDist,
+    warpEdgeDist,
+  } = cache;
   const src = revealData.data;
   const scaleX = revealDw / logoW;
   const scaleY = revealDh / logoH;
@@ -622,9 +1017,6 @@ function buildLensDisc(
   const discCss = size / dpr;
   const originX = lx - discCss / 2;
   const originY = ly - discCss / 2;
-
-  // Hit-test context: path2d is in CSS logo space (same Path2D the reveal
-  // mask was filled with). Identity CTM so (logoCssX, logoCssY) align 1:1.
   const hitCtx = ensurePathHitCtx();
 
   const sharpCtx = scratch.sharp.getContext("2d")!;
@@ -634,15 +1026,45 @@ function buildLensDisc(
   sharpData.fill(0);
   opaqueData.fill(0);
 
-  const sampleCssInMark = (logoCssX: number, logoCssY: number): boolean =>
-    hitCtx.isPointInPath(path2d, logoCssX, logoCssY, "nonzero");
+  const coverAt = (logoCssX: number, logoCssY: number) =>
+    sampleMarkCoverage(
+      hitCtx,
+      path2d,
+      src,
+      geomMask,
+      edgeProx,
+      revealDw,
+      revealDh,
+      logoX,
+      logoY,
+      scaleX,
+      scaleY,
+      logoCssX,
+      logoCssY,
+    );
 
+  const halfCss = discCss / 2;
+  let solidMinX = paddedSize;
+  let solidMinY = paddedSize;
+  let solidMaxX = -1;
+  let solidMaxY = -1;
+
+  const tMain0 = performance.now();
+  const sampleR = radiusPx + pad;
+  const sampleR2 = sampleR * sampleR;
+  const centerPx = pad + cx;
+  const centerPy = pad + cy;
   for (let py = 0; py < paddedSize; py++) {
-    for (let px = 0; px < paddedSize; px++) {
-      const dxPx = px + 0.5 - (pad + cx);
-      const dyPx = py + 0.5 - (pad + cy);
+    const dyPx = py + 0.5 - centerPy;
+    const dy2 = dyPx * dyPx;
+    if (dy2 > sampleR2) continue;
+    const xSpan = Math.sqrt(sampleR2 - dy2);
+    const px0 = Math.max(0, Math.floor(centerPx - xSpan));
+    const px1 = Math.min(paddedSize - 1, Math.ceil(centerPx + xSpan));
+    for (let px = px0; px <= px1; px++) {
+      const dxPx = px + 0.5 - centerPx;
       const distPxRaw = Math.hypot(dxPx, dyPx);
-      if (distPxRaw > radiusPx + pad) continue;
+      if (distPxRaw > sampleR) continue;
 
       // Clamp sampling radius for the pad ring — extend real edge color outward.
       const distPx = Math.min(distPxRaw, radiusPx);
@@ -655,82 +1077,101 @@ function buildLensDisc(
       const ux = dxCss * inv;
       const uy = dyCss * inv;
 
-      const toSrc = (qxCss: number, qyCss: number): [number, number] => {
-        const logoPx = originX + qxCss;
-        const logoPy = originY + qyCss;
-        return [(logoPx - logoX) * scaleX, (logoPy - logoY) * scaleY];
-      };
-      const toLogoCss = (qxCss: number, qyCss: number): [number, number] => [
-        originX + qxCss,
-        originY + qyCss,
-      ];
-
       const zoom = zoomAt(t);
       const rw = rimWeight(t);
       // Pre-displacement source = unwarped disc position in logo CSS.
-      const preLogoX = originX + discCss / 2 + dxCss;
-      const preLogoY = originY + discCss / 2 + dyCss;
-      const dVb = Math.hypot(
-        ((preLogoX - logoX) / logoW) * SYMBOL_VIEWBOX_W - CUSP_VB_X,
-        ((preLogoY - logoY) / logoH) * SYMBOL_VIEWBOX_H - CUSP_VB_Y,
+      // Coverage is decided HERE (whole-mark edge map), not at the warped
+      // sample — so thin tips never punch holes when warp jumps the gap.
+      const preLogoX = originX + halfCss + dxCss;
+      const preLogoY = originY + halfCss + dyCss;
+      if (!coverAt(preLogoX, preLogoY)) continue;
+
+      const preSx = (preLogoX - logoX) * scaleX;
+      const preSy = (preLogoY - logoY) * scaleY;
+      const preCover = sampleGeomMaskNearest(
+        geomMask,
+        revealDw,
+        revealDh,
+        preSx,
+        preSy,
       );
-      // Skip reveal coverage sample when far from the cusp (full warp).
-      let preCover = true;
-      if (dVb < CUSP_WARP_DAMP_OUTER) {
-        const [preSx, preSy] = toSrc(discCss / 2 + dxCss, discCss / 2 + dyCss);
-        preCover =
-          sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
-          ALPHA_SOLID;
-      }
-      const warpAmt = cuspWarpAmount(dVb, preCover);
-      // Lerp identity (dist) → full warp so samples near the A cusp don't
-      // jump the thin counter gap onto the opposite stroke.
+      const preEd = sampleEdgeDistNearest(
+        edgeDist,
+        revealDw,
+        revealDh,
+        preSx,
+        preSy,
+        warpEdgeDist,
+      );
+      const warpAmt = edgeWarpAmount(preEd, preCover, warpEdgeDist);
+      // Lerp identity → full warp; damp near boundaries (stronger outside).
       const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
       const sampleDist = dist + (fullDist - dist) * warpAmt;
-      const sampleXCss = discCss / 2 + ux * sampleDist;
-      const sampleYCss = discCss / 2 + uy * sampleDist;
+      const sampleXCss = halfCss + ux * sampleDist;
+      const sampleYCss = halfCss + uy * sampleDist;
 
-      const [logoCssX, logoCssY] = toLogoCss(sampleXCss, sampleYCss);
-      // Geometric coverage — not bilinear reveal alpha (cusp sub-texel trap).
-      if (!sampleCssInMark(logoCssX, logoCssY)) continue;
+      let logoCssX = originX + sampleXCss;
+      let logoCssY = originY + sampleYCss;
+      // If warp left the mark, fall back to identity color (keep coverage).
+      // O(1) geom+alpha — no second live isPointInPath; fallback is conservative.
+      {
+        const wsx = (logoCssX - logoX) * scaleX;
+        const wsy = (logoCssY - logoY) * scaleY;
+        const warpedOk = sampleGeomMaskNearest(
+          geomMask,
+          revealDw,
+          revealDh,
+          wsx,
+          wsy,
+        );
+        if (!warpedOk) {
+          logoCssX = preLogoX;
+          logoCssY = preLogoY;
+        }
+      }
 
-      const [sx0, sy0] = toSrc(sampleXCss, sampleYCss);
-      // Reveal must actually have solid collage here. Path can report inside
-      // near the epsilon cusp while reveal/collage is still a transparent hole
-      // — writing that would stamp scrubbed RGB (0,0,0) as opaque black
-      // (the triangular notch).
-      const coverA = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 3);
-      if (coverA < ALPHA_SOLID) continue;
+      const sx0 = (logoCssX - logoX) * scaleX;
+      const sy0 = (logoCssY - logoY) * scaleY;
 
       // Base RGB from bilinear reveal. CA offsets may land outside the mark
       // (over background / in the "A" counter); only split a channel when that
-      // offset is still geometrically inside, otherwise keep the center channel.
-      let r = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 0);
-      const g = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 1);
-      let b = sampleChannelBilinear(src, revealDw, revealDh, sx0, sy0, 2);
+      // offset is still covered, otherwise keep the center channel.
+      let [r, g, b] = sampleRgbBilinear(src, revealDw, revealDh, sx0, sy0);
       // CA also follows the dampened ray — scale split by warpAmt so the
       // cusp neighborhood doesn't get an undamped chromatic jump either.
       const caOff = lensR * CA_FRAC * rw * warpAmt;
       if (caOff > 1e-6) {
-        const [lxR, lyR] = toLogoCss(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
-        const [lxB, lyB] = toLogoCss(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
-        if (sampleCssInMark(lxR, lyR)) {
-          const [sxR, syR] = toSrc(sampleXCss + ux * caOff, sampleYCss + uy * caOff);
+        // CA channel gate: bilinear coverage only — not a second isPointInPath
+        // pass. Offsets are sub-pixel near the rim.
+        const sxR = (logoCssX + ux * caOff - logoX) * scaleX;
+        const syR = (logoCssY + uy * caOff - logoY) * scaleY;
+        if (
+          sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 3) >=
+          ALPHA_SOLID
+        ) {
           r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
         }
-        if (sampleCssInMark(lxB, lyB)) {
-          const [sxB, syB] = toSrc(sampleXCss - ux * caOff, sampleYCss - uy * caOff);
+        const sxB = (logoCssX - ux * caOff - logoX) * scaleX;
+        const syB = (logoCssY - uy * caOff - logoY) * scaleY;
+        if (
+          sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 3) >=
+          ALPHA_SOLID
+        ) {
           b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
         }
       }
 
       // Opaque blur source: solid alpha (no lens-edge feather baked in).
-      // Only geometrically-covered mark texels — never counter / OOB.
+      // Only covered mark texels — never counter / OOB.
       const oi = (py * paddedSize + px) * 4;
       opaqueData[oi] = r;
       opaqueData[oi + 1] = g;
       opaqueData[oi + 2] = b;
       opaqueData[oi + 3] = 255;
+      if (px < solidMinX) solidMinX = px;
+      if (py < solidMinY) solidMinY = py;
+      if (px > solidMaxX) solidMaxX = px;
+      if (py > solidMaxY) solidMaxY = py;
 
       // Sharp layer: only inside the visible disc, with soft circle coverage.
       if (distPxRaw > radiusPx + 0.5) continue;
@@ -740,7 +1181,8 @@ function buildLensDisc(
       const edge = radiusPx - distPxRaw;
       // Wider soft feather so disc alpha reaches 0 before any residual hard rim.
       const feather = 1.75;
-      const circleCover = edge >= feather ? 1 : Math.max(0, (edge + feather) / (2 * feather));
+      const circleCover =
+        edge >= feather ? 1 : Math.max(0, (edge + feather) / (2 * feather));
       const outA = 255 * circleCover;
       if (outA < 1) continue;
       const si = (sy * size + sx) * 4;
@@ -750,11 +1192,32 @@ function buildLensDisc(
       sharpData[si + 3] = outA;
     }
   }
+  const mainLoopMs = performance.now() - tMain0;
+
+  // Snapshot solid coverage before morph so scrub only re-tests texels that
+  // morph-close newly filled (the counter-leak risk). Pre-validated main-loop
+  // solids do not need a second geometric pass.
+  const preMorphSolid = new Uint8Array(paddedSize * paddedSize);
+  for (let i = 0, p = 3; i < preMorphSolid.length; i++, p += 4) {
+    preMorphSolid[i] = opaqueData[p]! >= 1 ? 1 : 0;
+  }
 
   // Seal hairline gaps in loupe coverage (A stroke junctions). Do NOT inpaint
   // the enclosed A counter — that hole should stay transparent so the page
   // gradient shows through.
-  morphCloseAlpha(opaqueData, paddedSize, paddedSize, 3, scratch.dilatePrev);
+  const tMorph0 = performance.now();
+  // Radius 1 seals 1px hairlines at junctions without bridging the opened
+  // counter cusp (0.70 viewBox units in SYMBOL_PATH_D).
+  if (solidMaxX >= 0) {
+    morphCloseAlphaBounded(
+      opaqueData,
+      paddedSize,
+      paddedSize,
+      1,
+      scratch.dilatePrev,
+      { minX: solidMinX, minY: solidMinY, maxX: solidMaxX, maxY: solidMaxY },
+    );
+  }
   // Mirror any coverage morph-close added into the sharp disc.
   // Live: morph dilates opaqueData into hairline gaps; sharp was only written
   // by the warp loop, so without this copy those sealed texels stay empty
@@ -773,11 +1236,22 @@ function buildLensDisc(
   }
 
   // Morph dilate can re-fill the geometrically-open counter from letterform
-  // neighbors. Scrub any solid texel whose warped source is outside the path.
-  for (let py = 0; py < paddedSize; py++) {
-    for (let px = 0; px < paddedSize; px++) {
-      const oi = (py * paddedSize + px) * 4;
+  // neighbors. Scrub only those newly filled solid texels (bbox-limited).
+  const scrubPad = 2;
+  const scrubMinX =
+    solidMaxX >= 0 ? Math.max(0, solidMinX - scrubPad) : 0;
+  const scrubMinY =
+    solidMaxY >= 0 ? Math.max(0, solidMinY - scrubPad) : 0;
+  const scrubMaxX =
+    solidMaxX >= 0 ? Math.min(paddedSize - 1, solidMaxX + scrubPad) : -1;
+  const scrubMaxY =
+    solidMaxY >= 0 ? Math.min(paddedSize - 1, solidMaxY + scrubPad) : -1;
+  for (let py = scrubMinY; py <= scrubMaxY; py++) {
+    for (let px = scrubMinX; px <= scrubMaxX; px++) {
+      const cell = py * paddedSize + px;
+      const oi = cell * 4;
       if (opaqueData[oi + 3]! < 1) continue;
+      if (preMorphSolid[cell]!) continue; // already validated in main loop
       const dxPx = px + 0.5 - (pad + cx);
       const dyPx = py + 0.5 - (pad + cy);
       const distPxRaw = Math.hypot(dxPx, dyPx);
@@ -788,47 +1262,13 @@ function buildLensDisc(
         opaqueData[oi + 3] = 0;
         continue;
       }
-      const distPx = Math.min(distPxRaw, radiusPx);
       const dxCss = dxPx / dpr;
       const dyCss = dyPx / dpr;
-      const distRawCss = distPxRaw / dpr;
-      const dist = distPx / dpr;
-      const t = Math.min(1, dist / lensR);
-      const inv = distRawCss > 1e-6 ? 1 / distRawCss : 0;
-      const ux = dxCss * inv;
-      const uy = dyCss * inv;
-      const zoom = zoomAt(t);
-      const rw = rimWeight(t);
       const preLogoX = originX + discCss / 2 + dxCss;
       const preLogoY = originY + discCss / 2 + dyCss;
-      const dVb = Math.hypot(
-        ((preLogoX - logoX) / logoW) * SYMBOL_VIEWBOX_W - CUSP_VB_X,
-        ((preLogoY - logoY) / logoH) * SYMBOL_VIEWBOX_H - CUSP_VB_Y,
-      );
-      let preCover = true;
-      if (dVb < CUSP_WARP_DAMP_OUTER) {
-        const preSx = (preLogoX - logoX) * scaleX;
-        const preSy = (preLogoY - logoY) * scaleY;
-        preCover =
-          sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
-          ALPHA_SOLID;
-      }
-      const warpAmt = cuspWarpAmount(dVb, preCover);
-      const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
-      const sampleDist = dist + (fullDist - dist) * warpAmt;
-      const sampleXCss = discCss / 2 + ux * sampleDist;
-      const sampleYCss = discCss / 2 + uy * sampleDist;
-      const sampleLogoX = originX + sampleXCss;
-      const sampleLogoY = originY + sampleYCss;
-      if (sampleCssInMark(sampleLogoX, sampleLogoY)) {
-        const sSx = (sampleLogoX - logoX) * scaleX;
-        const sSy = (sampleLogoY - logoY) * scaleY;
-        if (
-          sampleChannelBilinear(src, revealDw, revealDh, sSx, sSy, 3) >=
-          ALPHA_SOLID
-        ) {
-          continue;
-        }
+      // Morph may only seal texels that are geometrically inside the mark.
+      if (coverAt(preLogoX, preLogoY)) {
+        continue;
       }
       opaqueData[oi] = 0;
       opaqueData[oi + 1] = 0;
@@ -844,10 +1284,12 @@ function buildLensDisc(
       sharpData[si + 3] = 0;
     }
   }
+  const morphMs = performance.now() - tMorph0;
 
   // Do NOT dilate with forced opaque alpha before blur — that expands a hard
   // silhouette which, after blur, reads as a second ghost edge. Blur color+alpha
   // together so content edges soften as one continuous falloff.
+  const tBlit0 = performance.now();
   sharpCtx.putImageData(scratch.sharpImg, 0, 0);
   opaqueCtx.putImageData(scratch.opaqueImg, 0, 0);
 
@@ -861,6 +1303,45 @@ function buildLensDisc(
   sharpRasterCtx.drawImage(scratch.sharp, 0, 0);
 
   applyRimSoftFocus(scratch, blurPx);
+  const blitMs = performance.now() - tBlit0;
+  const buildMs = performance.now() - t0;
+  const g = globalThis as unknown as {
+    __VP_LENS_PROFILE?: {
+      buildMs: number;
+      workPx: number;
+      mainLoopMs: number;
+      morphMs: number;
+      blitMs: number;
+      paddedSize: number;
+    };
+    __VP_LENS_DEBUG_SHARP?: HTMLCanvasElement;
+    __VP_LENS_DEBUG_REVEAL?: HTMLCanvasElement;
+    __VP_LENS_DEBUG_META?: Record<string, unknown>;
+  };
+  g.__VP_LENS_PROFILE = {
+    buildMs,
+    workPx: size,
+    mainLoopMs,
+    morphMs,
+    blitMs,
+    paddedSize,
+  };
+  g.__VP_LENS_DEBUG_SHARP = scratch.sharp;
+  g.__VP_LENS_DEBUG_REVEAL = cache.reveal;
+  g.__VP_LENS_DEBUG_META = {
+    buildMs,
+    lx,
+    ly,
+    workDpr: dpr,
+    workPx: size,
+    lensR,
+    logoX,
+    logoY,
+    logoW,
+    logoH,
+    revealDw,
+    revealDh,
+  };
   return { disc: scratch.out, scratch };
 }
 
@@ -1098,6 +1579,15 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       revealH,
       collage,
     );
+    const { geomMask, edgeProx, edgeDist, warpEdgeDist } = buildGeomEdgeMaps(
+      scaled,
+      logoX,
+      logoY,
+      logoW,
+      logoH,
+      revealW,
+      revealH,
+    );
 
     cache = {
       logoX,
@@ -1110,6 +1600,10 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       revealData,
       revealDw: revealW,
       revealDh: revealH,
+      geomMask,
+      edgeProx,
+      edgeDist,
+      warpEdgeDist,
     };
   };
 

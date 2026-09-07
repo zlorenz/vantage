@@ -1,22 +1,22 @@
 /**
- * Path data from public/brand/vantage-logo.svg (viewBox 0 0 36 36).
- * Used as Path2D for both the white base layer and destination-in mosaic mask.
+ * Path data from design/assets/Logo Collage/symbol-collage-fix2.svg
+ * (viewBox 0 0 88.7 88.7). Used as Path2D for the white base layer and
+ * destination-in mosaic mask.
  */
 
-export const SYMBOL_VIEWBOX_W = 36;
-export const SYMBOL_VIEWBOX_H = 36;
+export const SYMBOL_VIEWBOX_W = 88.7;
+export const SYMBOL_VIEWBOX_H = 88.7;
 
 /**
- * Polygon from vantage-logo.svg — Vantage mark.
+ * Polygon from symbol-collage-fix2.svg — Vantage mark.
  *
- * The source SVG pinches the A counter apex to a single repeated vertex
- * (18.01,12.46 twice). That perfect self-touch is invisible at 1× but is a
- * topological singularity under loupe warp/magnification. Split that one
- * vertex by ±0.15 along the crossbar (y=12.46) so the pinch becomes a tiny
- * open joint — same silhouette at display size, non-singular for resampling.
+ * The source AI pinch at the A-counter apex is opened to a 0.70-unit gap
+ * between (44.70, 33.16) and (44.00, 33.16). At the ~372px loupe work buffer
+ * that yields ≥2 genuinely transparent texels (confirmed by mask-only
+ * diagnostic) so the joint stays non-singular under warp/magnification.
  */
 export const SYMBOL_PATH_D =
-  "M13.48,0 L17.86,12.46 L23.48,27.53 L10.83,32.14 L18.16,12.46 L8.56,12.46 L0,36 L36,36 L22.9,0 Z";
+  "M32.28,0 L44.7,33.16 L56.5,66.53 L28.48,76.73 L44,33.16 L20.2,33.16 L0,88.7 L88.7,88.7 L56.42,0 L32.28,0 Z";
 
 let cachedPath: Path2D | null = null;
 
