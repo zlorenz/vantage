@@ -181,19 +181,22 @@ export function PortfolioCaseHeader({
       </div>
 
       {credits.length > 0 || pillsList ? (
-        <div className="vp-case-header__meta">
-          {credits.length > 0 ? (
-            <dl className="vp-case-header__credits">
-              {credits.map((credit) => (
-                <div key={credit.roleKey} className="vp-case-header__credit">
-                  <dt>{credit.label}</dt>
-                  <dd>{credit.names}</dd>
-                </div>
-              ))}
-            </dl>
-          ) : null}
-          {pillsList}
-        </div>
+        <>
+          <div className="vp-case-header__rule" aria-hidden="true" />
+          <div className="vp-case-header__meta">
+            {credits.length > 0 ? (
+              <dl className="vp-case-header__credits">
+                {credits.map((credit) => (
+                  <div key={credit.roleKey} className="vp-case-header__credit">
+                    <dt>{credit.label}</dt>
+                    <dd>{credit.names}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+            {pillsList}
+          </div>
+        </>
       ) : null}
     </header>
   );
