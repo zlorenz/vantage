@@ -1488,8 +1488,8 @@ body:has(.vp-work-index) #header.navbar::before {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  /* Figma gap-100 between department groups in a column. */
-  gap: 6.25rem;
+  /* Was Figma gap-100; ~25% tighter below each credit panel. */
+  gap: 4.6875rem;
 }
 
 .vp-credits--split .vp-credits__col {
@@ -1506,8 +1506,8 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credits__dept {
   display: flex;
   flex-direction: column;
-  /* Figma gap-48 between header stack and row list. */
-  gap: 3rem;
+  /* Was Figma gap-48; ~15% tighter above the row list. */
+  gap: 2.55rem;
   margin-bottom: 0;
 }
 
@@ -1518,8 +1518,8 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credits__dept-head {
   display: flex;
   flex-direction: column;
-  /* Figma gap-32 between dual rules and heading. */
-  gap: 2rem;
+  /* Was Figma gap-32; ~25% tighter around the department title. */
+  gap: 1.5rem;
 }
 
 .vp-credits__dept-name {
