@@ -9,7 +9,6 @@ import { setRequestLocale } from 'next-intl/server';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { PortfolioCaseHeader } from '@/components/portfolio/PortfolioCaseHeader';
 import { PortfolioCaseRail } from '@/components/portfolio/PortfolioCaseRail';
-import { PortfolioCaseCarouselRailNav } from '@/components/portfolio/PortfolioCaseCarouselRailNav';
 import { KeyVisualsGallery } from '@/components/portfolio/KeyVisualsGallery';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioCaseMedia } from '@/components/portfolio/PortfolioCaseMedia';
@@ -211,16 +210,15 @@ export default async function PortfolioEntryPage({ params }: Props) {
               <PortfolioCaseRail />
               <div className="vp-case-shell__main">{caseHeader}</div>
             </div>
-            <div className="vp-case-carousel-row">
-              <PortfolioCaseCarouselRailNav />
-              <div className="vp-case-carousel-row__media">
-                <PortfolioCaseMedia
-                  locale={typedLocale}
-                  entry={entry}
-                  caseCarouselSlides={caseCarouselSlides}
-                />
-              </div>
-            </div>
+            {/*
+             * Media owns the carousel row (rail-nav + Embla) so both share
+             * one Embla API. See PortfolioCaseCarouselWithRail.
+             */}
+            <PortfolioCaseMedia
+              locale={typedLocale}
+              entry={entry}
+              caseCarouselSlides={caseCarouselSlides}
+            />
             <div className="vp-case-credits-band">{caseBelowFold}</div>
           </>
         ) : (

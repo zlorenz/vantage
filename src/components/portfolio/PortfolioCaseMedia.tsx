@@ -9,7 +9,7 @@
  */
 
 import {Suspense} from 'react';
-import {PortfolioCaseCarousel} from '@/components/portfolio/PortfolioCaseCarousel';
+import {PortfolioCaseCarouselWithRail} from '@/components/portfolio/PortfolioCaseCarouselWithRail';
 import {PortfolioVideoEmbed} from '@/components/portfolio/PortfolioVideoEmbed';
 import {
   buildPortfolioCaseSlides,
@@ -65,7 +65,7 @@ async function PortfolioCaseMediaContent({
   }
 
   if (caseCarouselSlides) {
-    return <PortfolioCaseCarousel slides={caseCarouselSlides} />;
+    return <PortfolioCaseCarouselWithRail slides={caseCarouselSlides} />;
   }
 
   return (
