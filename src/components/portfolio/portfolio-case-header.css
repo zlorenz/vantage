@@ -114,8 +114,9 @@
   flex-wrap: wrap;
   /* Mobile: left-align under title; desktop re-asserts end/auto beside credits. */
   justify-content: flex-start;
-  align-items: baseline;
-  gap: 0.5rem;
+  align-items: center;
+  /* Figma 2px between pills. */
+  gap: 0.125rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -125,16 +126,22 @@
 .vp-case-header__pill {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   margin: 0;
-  padding: 0.4rem 0.85rem;
-  border: 1px solid var(--vp-border-soft);
-  border-radius: 999px;
+  /* Figma h 64 / pad 24 — square chips, radius 0 (sitewide radius sweep instance). */
+  height: 4rem;
+  padding: 1.5rem;
+  border: 0;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.1);
   font-family: var(--font-vp-sans);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1.25rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -163,13 +170,7 @@
 
   .vp-case-header__pills {
     justify-content: flex-end;
-    gap: 0.625rem;
     margin: 0 0 0 auto;
-  }
-
-  .vp-case-header__pill {
-    padding: 0.625rem 1.25rem;
-    font-size: 1rem;
   }
 }
 
