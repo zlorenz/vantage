@@ -1602,10 +1602,11 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /*
- * Case-page credits band — Figma left:328 / width:1562 on 1920
- * (= rail width inset + 30px right gutter via --vp-case-shell-pad-x).
- * Used on the single-video full-bleed path; multi-video stays nested in
- * .vp-case-shell__main and does not use this class.
+ * Case-page credits band — left inset matches the rail
+ * (--vp-case-rail-width). Desktop: rail-edge vertical hairline continues the
+ * header wireframe; band runs flush to the viewport right so department
+ * rules meet the right edge (intentional break from Figma’s 30px right gutter).
+ * Multi-video stays nested in .vp-case-shell__main and does not use this class.
  */
 .vp-case-credits-band {
   width: 100%;
@@ -1615,9 +1616,10 @@ body:has(.vp-work-index) #header.navbar::before {
 @media (min-width: 992px) {
   .vp-case-credits-band {
     margin-left: var(--vp-case-rail-width, 20.5rem);
-    margin-right: var(--vp-case-shell-pad-x, 1.875rem);
+    margin-right: 0;
     width: auto;
     max-width: none;
+    border-left: var(--vp-struct-line);
   }
 }
 
