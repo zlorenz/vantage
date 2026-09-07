@@ -5,6 +5,35 @@
  * 2. Photo-collage disc (inside lens) with displacement warp + rim RGB split
  * 3. Glass rim overlay
  * 4. Cursor lerp for organic tracking
+ *
+ * ---------------------------------------------------------------------------
+ * MANDATORY REGRESSION CHECKLIST — every change to this file must re-verify
+ * ALL items with screenshots before reporting. Do not scope QA to the current
+ * bug only; silent regressions of previously fixed behavior are the recurring
+ * failure mode.
+ *
+ *  1. Cusp singularity — no floating shard; gap reads open
+ *  2. Cusp gap sufficiency — ≥0.70 vb units / clear work-res pixels
+ *  3. Lens shows real photo content on hover (not blank)
+ *  4. No white base bleed-through inside the lens
+ *  5. No oversized black disc / clear-region mismatch
+ *  6. Glass rim stroke aligns with reveal outer edge
+ *  7. No hard warp seam (smooth center→rim mag)
+ *  8. Magnification still reads strong (~2.2× class)
+ *  9. No ring-warp banding/pixelation
+ * 10. No blur color-wash (soft photo detail, not muddy flat)
+ * 11. No blur ghost-edge (one sharp→soft transition)
+ * 12. Glass rim visible on letterform AND page backgrounds
+ * 13. Performance ~16–18ms build, not 70–160ms
+ * 14. Edge-bulge — warped coverage; silhouette moves with hover
+ * 15. No black / smeared band — natural photo falloff at outer edges
+ * 16. 1× idle pixel-stable vs pre-work baseline
+ * 17. No transparent holes in legitimate dark photo (hair, frames, fabric, shadow)
+ *
+ * Coverage position must stay WARPED (item 14). No-data is SOURCE ALPHA /
+ * out-of-bounds only — never a luminance guess that punches holes in real
+ * dark photo (items 15–17).
+ * ---------------------------------------------------------------------------
  */
 
 import {
@@ -851,30 +880,138 @@ function sampleRgbBilinear(
 }
 
 /**
- * Coverage via precomputed whole-mark geom mask (O(1)):
- * Build-time isPointInPath is the membership source of truth for every texel.
- * Reveal alpha is NOT used for hit-testing — soft AA fringes are geometrically
- * inside the mark; rejecting them punched dark notches in the loupe.
- * No per-frame isPointInPath and no hardcoded cusp coordinates.
+ * Real-photo sampling (warped coverage stays).
+ *
+ * No-data ground truth = reveal SOURCE ALPHA (or sample OOB → a=0), NOT
+ * luminance. Dark hair / frames / fabric / shadow are real photo and must
+ * stay opaque. Transparent only when the reveal has no alpha there, or the
+ * warped sample falls outside the buffer.
  */
-function sampleMarkCoverage(
-  _hitCtx: CanvasRenderingContext2D,
-  _path2d: Path2D,
-  _src: Uint8ClampedArray,
+/** CA: ignore near-black channel taps (quality only — not a coverage gate). */
+const PHOTO_EDGE_MIN_LUMA = 40;
+/**
+ * Thin loupe-space alpha soften at the exterior silhouette (own RGB kept).
+ * Short on purpose — just AA softness, not a visible colored ring.
+ */
+const EDGE_ALPHA_FEATHER_PX = 2;
+
+type WarpedSample = { r: number; g: number; b: number; a: number };
+
+/**
+ * Warped-sample coverage + color + alpha.
+ *
+ * Coverage position: WARPED (geom at warped sample — silhouette bulges).
+ * Presence: reveal alpha at the sample (bilinear). OOB bilinear → 0 → null.
+ * Never reject in-bounds texels for being dark.
+ */
+function sampleWarpedMark(
+  src: Uint8ClampedArray,
   geomMask: Uint8Array,
-  _edgeProx: Uint8Array,
   revealDw: number,
   revealDh: number,
-  logoX: number,
-  logoY: number,
-  scaleX: number,
-  scaleY: number,
-  logoCssX: number,
-  logoCssY: number,
-): boolean {
-  const sx = (logoCssX - logoX) * scaleX;
-  const sy = (logoCssY - logoY) * scaleY;
-  return sampleGeomMaskNearest(geomMask, revealDw, revealDh, sx, sy);
+  sx: number,
+  sy: number,
+): WarpedSample | null {
+  if (!sampleGeomMaskNearest(geomMask, revealDw, revealDh, sx, sy)) {
+    return null;
+  }
+  // OOB returns 0 from sampleChannelBilinear — true out-of-bounds / no data.
+  const aTap = sampleChannelBilinear(src, revealDw, revealDh, sx, sy, 3);
+  if (aTap < 1) return null;
+  const [r, g, b] = sampleRgbBilinear(src, revealDw, revealDh, sx, sy);
+  return { r, g, b, a: Math.min(255, Math.round(aTap)) };
+}
+
+/**
+ * Thin exterior alpha soften: fade alpha only, keep each texel’s own RGB.
+ * Seeds from border-connected transparent (not enclosed counters).
+ */
+function featherExteriorAlphaOnly(
+  rgba: Uint8ClampedArray,
+  w: number,
+  h: number,
+  featherPx: number,
+): void {
+  if (featherPx < 1) return;
+  const n = w * h;
+  const exteriorEmpty = new Uint8Array(n);
+  const q = new Int32Array(n);
+  let qh = 0;
+  let qt = 0;
+  const trySeed = (x: number, y: number) => {
+    const i = y * w + x;
+    if (rgba[i * 4 + 3]! >= 128) return;
+    if (exteriorEmpty[i]!) return;
+    exteriorEmpty[i] = 1;
+    q[qt++] = i;
+  };
+  for (let x = 0; x < w; x++) {
+    trySeed(x, 0);
+    trySeed(x, h - 1);
+  }
+  for (let y = 0; y < h; y++) {
+    trySeed(0, y);
+    trySeed(w - 1, y);
+  }
+  while (qh < qt) {
+    const i = q[qh++]!;
+    const x = i % w;
+    const y = (i / w) | 0;
+    for (let oy = -1; oy <= 1; oy++) {
+      for (let ox = -1; ox <= 1; ox++) {
+        if (ox === 0 && oy === 0) continue;
+        const nx = x + ox;
+        const ny = y + oy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const ni = ny * w + nx;
+        if (exteriorEmpty[ni]!) continue;
+        if (rgba[ni * 4 + 3]! >= 128) continue;
+        exteriorEmpty[ni] = 1;
+        q[qt++] = ni;
+      }
+    }
+  }
+
+  const dist = new Uint8Array(n);
+  dist.fill(255);
+  qh = 0;
+  qt = 0;
+  for (let i = 0; i < n; i++) {
+    if (!exteriorEmpty[i]!) continue;
+    dist[i] = 0;
+    q[qt++] = i;
+  }
+  const cap = featherPx + 1;
+  while (qh < qt) {
+    const i = q[qh++]!;
+    const d = dist[i]!;
+    if (d >= cap) continue;
+    const x = i % w;
+    const y = (i / w) | 0;
+    const nd = d + 1;
+    for (let oy = -1; oy <= 1; oy++) {
+      for (let ox = -1; ox <= 1; ox++) {
+        if (ox === 0 && oy === 0) continue;
+        const nx = x + ox;
+        const ny = y + oy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const ni = ny * w + nx;
+        if (nd >= dist[ni]!) continue;
+        dist[ni] = nd;
+        q[qt++] = ni;
+      }
+    }
+  }
+  for (let i = 0; i < n; i++) {
+    const d = dist[i]!;
+    if (d === 0 || d > featherPx) continue;
+    const p = i * 4;
+    const a = rgba[p + 3]!;
+    if (a < 1) continue;
+    const t = d / featherPx;
+    const cover = t * t * (3 - 2 * t);
+    rgba[p + 3] = Math.round(a * cover);
+  }
 }
 
 /**
@@ -973,10 +1110,9 @@ function ensureLoupeScratch(
  * Build the inside-lens disc at (optionally capped) device-pixel resolution.
  * Soft-focus is applied after blur so alpha never pollutes the filter.
  *
- * Coverage uses the build-time whole-mark geom mask (O(1) nearest lookup).
- * Membership is decided at the unwarped disc position; warp only affects
- * color (with identity fallback if the warped sample leaves the mark).
- * Edge-distance field damps warp near any boundary. No per-coordinate cases.
+ * Coverage position: WARPED. Geom occupancy and color are both taken at the
+ * fully warped sample. No-data fringe feathers alpha toward transparent —
+ * never a forced-opaque synthetic fill. No identity fallback.
  */
 function buildLensDisc(
   cache: Cache,
@@ -1002,11 +1138,7 @@ function buildLensDisc(
     logoY,
     logoW,
     logoH,
-    path2d,
     geomMask,
-    edgeProx,
-    edgeDist,
-    warpEdgeDist,
   } = cache;
   const src = revealData.data;
   const scaleX = revealDw / logoW;
@@ -1017,7 +1149,6 @@ function buildLensDisc(
   const discCss = size / dpr;
   const originX = lx - discCss / 2;
   const originY = ly - discCss / 2;
-  const hitCtx = ensurePathHitCtx();
 
   const sharpCtx = scratch.sharp.getContext("2d")!;
   const opaqueCtx = scratch.opaque.getContext("2d")!;
@@ -1025,23 +1156,6 @@ function buildLensDisc(
   const opaqueData = scratch.opaqueImg.data;
   sharpData.fill(0);
   opaqueData.fill(0);
-
-  const coverAt = (logoCssX: number, logoCssY: number) =>
-    sampleMarkCoverage(
-      hitCtx,
-      path2d,
-      src,
-      geomMask,
-      edgeProx,
-      revealDw,
-      revealDh,
-      logoX,
-      logoY,
-      scaleX,
-      scaleY,
-      logoCssX,
-      logoCssY,
-    );
 
   const halfCss = discCss / 2;
   let solidMinX = paddedSize;
@@ -1079,77 +1193,43 @@ function buildLensDisc(
 
       const zoom = zoomAt(t);
       const rw = rimWeight(t);
-      // Pre-displacement source = unwarped disc position in logo CSS.
-      // Coverage is decided HERE (whole-mark edge map), not at the warped
-      // sample — so thin tips never punch holes when warp jumps the gap.
-      const preLogoX = originX + halfCss + dxCss;
-      const preLogoY = originY + halfCss + dyCss;
-      if (!coverAt(preLogoX, preLogoY)) continue;
-
-      const preSx = (preLogoX - logoX) * scaleX;
-      const preSy = (preLogoY - logoY) * scaleY;
-      const preCover = sampleGeomMaskNearest(
+      // Coverage position: WARPED. Real photo at source alpha; no-data →
+      // transparent (page shows through — no colored feather halo).
+      const sampleDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
+      const sampleXCss = halfCss + ux * sampleDist;
+      const sampleYCss = halfCss + uy * sampleDist;
+      const logoCssX = originX + sampleXCss;
+      const logoCssY = originY + sampleYCss;
+      const sx0 = (logoCssX - logoX) * scaleX;
+      const sy0 = (logoCssY - logoY) * scaleY;
+      const sampled = sampleWarpedMark(
+        src,
         geomMask,
         revealDw,
         revealDh,
-        preSx,
-        preSy,
+        sx0,
+        sy0,
       );
-      const preEd = sampleEdgeDistNearest(
-        edgeDist,
-        revealDw,
-        revealDh,
-        preSx,
-        preSy,
-        warpEdgeDist,
-      );
-      const warpAmt = edgeWarpAmount(preEd, preCover, warpEdgeDist);
-      // Lerp identity → full warp; damp near boundaries (stronger outside).
-      const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
-      const sampleDist = dist + (fullDist - dist) * warpAmt;
-      const sampleXCss = halfCss + ux * sampleDist;
-      const sampleYCss = halfCss + uy * sampleDist;
-
-      let logoCssX = originX + sampleXCss;
-      let logoCssY = originY + sampleYCss;
-      // If warp left the mark, fall back to identity color (keep coverage).
-      // O(1) geom+alpha — no second live isPointInPath; fallback is conservative.
-      {
-        const wsx = (logoCssX - logoX) * scaleX;
-        const wsy = (logoCssY - logoY) * scaleY;
-        const warpedOk = sampleGeomMaskNearest(
-          geomMask,
-          revealDw,
-          revealDh,
-          wsx,
-          wsy,
-        );
-        if (!warpedOk) {
-          logoCssX = preLogoX;
-          logoCssY = preLogoY;
-        }
-      }
-
-      const sx0 = (logoCssX - logoX) * scaleX;
-      const sy0 = (logoCssY - logoY) * scaleY;
-
-      // Base RGB from bilinear reveal. CA offsets may land outside the mark
-      // (over background / in the "A" counter); only split a channel when that
-      // offset is still covered, otherwise keep the center channel.
-      let [r, g, b] = sampleRgbBilinear(src, revealDw, revealDh, sx0, sy0);
-      // CA also follows the dampened ray — scale split by warpAmt so the
-      // cusp neighborhood doesn't get an undamped chromatic jump either.
-      const caOff = lensR * CA_FRAC * rw * warpAmt;
-      if (caOff > 1e-6) {
-        // CA channel gate: bilinear coverage only — not a second isPointInPath
-        // pass. Offsets are sub-pixel near the rim.
+      if (!sampled) continue;
+      let { r, g, b, a: sampleA } = sampled;
+      const caOff = lensR * CA_FRAC * rw;
+      // CA only on fully opaque real samples — soft fringe stays single-channel.
+      if (caOff > 1e-6 && sampleA >= 250) {
         const sxR = (logoCssX + ux * caOff - logoX) * scaleX;
         const syR = (logoCssY + uy * caOff - logoY) * scaleY;
         if (
           sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 3) >=
           ALPHA_SOLID
         ) {
-          r = sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 0);
+          const rTap = sampleChannelBilinear(
+            src,
+            revealDw,
+            revealDh,
+            sxR,
+            syR,
+            0,
+          );
+          if (rTap >= PHOTO_EDGE_MIN_LUMA) r = rTap;
         }
         const sxB = (logoCssX - ux * caOff - logoX) * scaleX;
         const syB = (logoCssY - uy * caOff - logoY) * scaleY;
@@ -1157,33 +1237,41 @@ function buildLensDisc(
           sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 3) >=
           ALPHA_SOLID
         ) {
-          b = sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 2);
+          const bTap = sampleChannelBilinear(
+            src,
+            revealDw,
+            revealDh,
+            sxB,
+            syB,
+            2,
+          );
+          if (bTap >= PHOTO_EDGE_MIN_LUMA) b = bTap;
         }
       }
 
-      // Opaque blur source: solid alpha (no lens-edge feather baked in).
-      // Only covered mark texels — never counter / OOB.
+      // Blur source keeps sample alpha so soft photo edges blur as one falloff.
       const oi = (py * paddedSize + px) * 4;
       opaqueData[oi] = r;
       opaqueData[oi + 1] = g;
       opaqueData[oi + 2] = b;
-      opaqueData[oi + 3] = 255;
-      if (px < solidMinX) solidMinX = px;
-      if (py < solidMinY) solidMinY = py;
-      if (px > solidMaxX) solidMaxX = px;
-      if (py > solidMaxY) solidMaxY = py;
+      opaqueData[oi + 3] = sampleA;
+      if (sampleA >= 128) {
+        if (px < solidMinX) solidMinX = px;
+        if (py < solidMinY) solidMinY = py;
+        if (px > solidMaxX) solidMaxX = px;
+        if (py > solidMaxY) solidMaxY = py;
+      }
 
-      // Sharp layer: only inside the visible disc, with soft circle coverage.
+      // Sharp layer: sample alpha × soft circle coverage.
       if (distPxRaw > radiusPx + 0.5) continue;
       const sx = px - pad;
       const sy = py - pad;
       if (sx < 0 || sy < 0 || sx >= size || sy >= size) continue;
       const edge = radiusPx - distPxRaw;
-      // Wider soft feather so disc alpha reaches 0 before any residual hard rim.
       const feather = 1.75;
       const circleCover =
         edge >= feather ? 1 : Math.max(0, (edge + feather) / (2 * feather));
-      const outA = 255 * circleCover;
+      const outA = sampleA * circleCover;
       if (outA < 1) continue;
       const si = (sy * size + sx) * 4;
       sharpData[si] = r;
@@ -1199,7 +1287,24 @@ function buildLensDisc(
   // solids do not need a second geometric pass.
   const preMorphSolid = new Uint8Array(paddedSize * paddedSize);
   for (let i = 0, p = 3; i < preMorphSolid.length; i++, p += 4) {
-    preMorphSolid[i] = opaqueData[p]! >= 1 ? 1 : 0;
+    preMorphSolid[i] = opaqueData[p]! >= 200 ? 1 : 0;
+  }
+
+  // Soft photo-edge falloff must not participate in morph close — dilate/erode
+  // would snap partial alphas to 0/255 and reintroduce a hard/smeared band.
+  // Park soft texels, morph only hard solids, then restore.
+  const softPark = new Uint8ClampedArray(opaqueData.length);
+  for (let p = 3; p < opaqueData.length; p += 4) {
+    const a = opaqueData[p]!;
+    if (a === 0 || a >= 200) continue;
+    softPark[p - 3] = opaqueData[p - 3]!;
+    softPark[p - 2] = opaqueData[p - 2]!;
+    softPark[p - 1] = opaqueData[p - 1]!;
+    softPark[p] = a;
+    opaqueData[p - 3] = 0;
+    opaqueData[p - 2] = 0;
+    opaqueData[p - 1] = 0;
+    opaqueData[p] = 0;
   }
 
   // Seal hairline gaps in loupe coverage (A stroke junctions). Do NOT inpaint
@@ -1218,6 +1323,14 @@ function buildLensDisc(
       { minX: solidMinX, minY: solidMinY, maxX: solidMaxX, maxY: solidMaxY },
     );
   }
+  for (let p = 3; p < softPark.length; p += 4) {
+    if (softPark[p]! < 1) continue;
+    if (opaqueData[p]! >= 1) continue; // morph sealed over this cell
+    opaqueData[p - 3] = softPark[p - 3]!;
+    opaqueData[p - 2] = softPark[p - 2]!;
+    opaqueData[p - 1] = softPark[p - 1]!;
+    opaqueData[p] = softPark[p]!;
+  }
   // Mirror any coverage morph-close added into the sharp disc.
   // Live: morph dilates opaqueData into hairline gaps; sharp was only written
   // by the warp loop, so without this copy those sealed texels stay empty
@@ -1227,11 +1340,12 @@ function buildLensDisc(
       const si = (sy * size + sx) * 4;
       if (sharpData[si + 3]! >= 1) continue;
       const oi = ((sy + pad) * paddedSize + (sx + pad)) * 4;
-      if (opaqueData[oi + 3]! < 128) continue;
+      // Only mirror near-solid morph seals — leave soft photo falloff alone.
+      if (opaqueData[oi + 3]! < 200) continue;
       sharpData[si] = opaqueData[oi]!;
       sharpData[si + 1] = opaqueData[oi + 1]!;
       sharpData[si + 2] = opaqueData[oi + 2]!;
-      sharpData[si + 3] = 255;
+      sharpData[si + 3] = opaqueData[oi + 3]!;
     }
   }
 
@@ -1264,10 +1378,54 @@ function buildLensDisc(
       }
       const dxCss = dxPx / dpr;
       const dyCss = dyPx / dpr;
-      const preLogoX = originX + discCss / 2 + dxCss;
-      const preLogoY = originY + discCss / 2 + dyCss;
-      // Morph may only seal texels that are geometrically inside the mark.
-      if (coverAt(preLogoX, preLogoY)) {
+      const distRawCss = distPxRaw / dpr;
+      const distPx = Math.min(distPxRaw, radiusPx);
+      const dist = distPx / dpr;
+      const t = Math.min(1, dist / lensR);
+      const inv = distRawCss > 1e-6 ? 1 / distRawCss : 0;
+      const ux = dxCss * inv;
+      const uy = dyCss * inv;
+      const zoom = zoomAt(t);
+      const rw = rimWeight(t);
+      const sampleDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
+      const sampleLogoX = originX + discCss / 2 + ux * sampleDist;
+      const sampleLogoY = originY + discCss / 2 + uy * sampleDist;
+      // Morph may only seal texels whose WARPED sample stays in the mark.
+      // Re-sample with feathered alpha — never force opaque synthetic fill.
+      const sxM = (sampleLogoX - logoX) * scaleX;
+      const syM = (sampleLogoY - logoY) * scaleY;
+      const morphColor = sampleWarpedMark(
+        src,
+        geomMask,
+        revealDw,
+        revealDh,
+        sxM,
+        syM,
+      );
+      if (morphColor && morphColor.a >= 200) {
+        opaqueData[oi] = morphColor.r;
+        opaqueData[oi + 1] = morphColor.g;
+        opaqueData[oi + 2] = morphColor.b;
+        opaqueData[oi + 3] = morphColor.a;
+        const sxKeep = px - pad;
+        const syKeep = py - pad;
+        if (
+          sxKeep >= 0 &&
+          syKeep >= 0 &&
+          sxKeep < size &&
+          syKeep < size
+        ) {
+          const siKeep = (syKeep * size + sxKeep) * 4;
+          if (sharpData[siKeep + 3]! >= 1) {
+            sharpData[siKeep] = morphColor.r;
+            sharpData[siKeep + 1] = morphColor.g;
+            sharpData[siKeep + 2] = morphColor.b;
+            sharpData[siKeep + 3] = Math.min(
+              sharpData[siKeep + 3]!,
+              morphColor.a,
+            );
+          }
+        }
         continue;
       }
       opaqueData[oi] = 0;
@@ -1284,6 +1442,14 @@ function buildLensDisc(
       sharpData[si + 3] = 0;
     }
   }
+  // Thin alpha-only exterior AA (own RGB kept — no nearest-color halo).
+  featherExteriorAlphaOnly(
+    opaqueData,
+    paddedSize,
+    paddedSize,
+    EDGE_ALPHA_FEATHER_PX,
+  );
+  featherExteriorAlphaOnly(sharpData, size, size, EDGE_ALPHA_FEATHER_PX);
   const morphMs = performance.now() - tMorph0;
 
   // Do NOT dilate with forced opaque alpha before blur — that expands a hard
@@ -1315,8 +1481,12 @@ function buildLensDisc(
       paddedSize: number;
     };
     __VP_LENS_DEBUG_SHARP?: HTMLCanvasElement;
+    __VP_LENS_DEBUG_OPAQUE?: HTMLCanvasElement;
+    __VP_LENS_DEBUG_BLURRED?: HTMLCanvasElement;
+    __VP_LENS_DEBUG_DISC?: HTMLCanvasElement;
     __VP_LENS_DEBUG_REVEAL?: HTMLCanvasElement;
     __VP_LENS_DEBUG_META?: Record<string, unknown>;
+    __VP_LENS_DEBUG_PAD?: number;
   };
   g.__VP_LENS_PROFILE = {
     buildMs,
@@ -1327,7 +1497,11 @@ function buildLensDisc(
     paddedSize,
   };
   g.__VP_LENS_DEBUG_SHARP = scratch.sharp;
+  g.__VP_LENS_DEBUG_OPAQUE = scratch.opaque;
+  g.__VP_LENS_DEBUG_BLURRED = scratch.revealBlurred;
+  g.__VP_LENS_DEBUG_DISC = scratch.out;
   g.__VP_LENS_DEBUG_REVEAL = cache.reveal;
+  g.__VP_LENS_DEBUG_PAD = pad;
   g.__VP_LENS_DEBUG_META = {
     buildMs,
     lx,
@@ -1341,6 +1515,8 @@ function buildLensDisc(
     logoH,
     revealDw,
     revealDh,
+    pad,
+    paddedSize,
   };
   return { disc: scratch.out, scratch };
 }
