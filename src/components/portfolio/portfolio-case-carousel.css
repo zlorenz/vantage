@@ -54,9 +54,9 @@
   --vp-case-rail-inset: 0px;
   --vp-case-slide-gap: 0;
   --vp-case-inactive-opacity: 0.4;
-  /* Title overlay insets — counter top/left match title left/bottom */
-  --vp-case-overlay-pad-x: 1.25rem;
-  --vp-case-overlay-pad-bottom: 1.2rem;
+  /* Title overlay insets — Figma 149:22173 pad 40px */
+  --vp-case-overlay-pad-x: 2.5rem;
+  --vp-case-overlay-pad-bottom: 2.5rem;
   /* Viewport X of the active card’s left edge (fixed; does not track slides) */
   --vp-case-active-left: var(--vp-case-rail-inset);
 
@@ -73,11 +73,6 @@
   container-type: inline-size;
 }
 
-@media (min-width: 768px) {
-  .vp-case-carousel {
-    --vp-case-overlay-pad-bottom: 1.35rem;
-  }
-}
 
 .vp-case-carousel__stage {
   position: relative;
@@ -280,8 +275,8 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: 0;
-  /* Extra right/bottom pad clears the info icon when present */
-  padding: 1.35rem var(--vp-case-overlay-pad-x) var(--vp-case-overlay-pad-bottom);
+  /* Extra right pad clears the info control when present */
+  padding: var(--vp-case-overlay-pad-bottom) var(--vp-case-overlay-pad-x);
   text-align: left;
 }
 
@@ -315,13 +310,14 @@
 .vp-case-carousel__title {
   margin: 0;
   flex-shrink: 0;
-  font-family: var(--font-vp-heading);
-  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  /* Zalando Sans Expanded Bold — same face as single-video case titles */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 2rem; /* 32px */
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
-  letter-spacing: 1px;
-  line-height: 1;
-  text-transform: uppercase;
+  letter-spacing: -0.04rem; /* -0.64px */
+  line-height: 1.2;
+  text-transform: capitalize;
   overflow-wrap: break-word;
 }
 
