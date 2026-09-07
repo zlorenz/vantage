@@ -42,8 +42,8 @@ export const CAROUSEL_RATIOS = {
   },
   workDesktop: {
     title: 'Full Portfolio Cards (Desktop)',
-    w: 520,
-    h: 673,
+    w: 512,
+    h: 640,
     color: 'rgba(249, 219, 36, 0.95)',
   },
   homeDesktop: {

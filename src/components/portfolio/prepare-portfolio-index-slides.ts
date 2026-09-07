@@ -24,7 +24,7 @@ const WORK_MOBILE_POSTER = posterSize(CAROUSEL_RATIOS.workMobile);
 const WORK_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.workDesktop);
 
 /**
- * Desktop bleed-track bake — distinct from workDesktop poster (1040×1346).
+ * Desktop bleed-track bake — distinct from workDesktop poster (1024×1280).
  *
  * Derivation from `.vp-portfolio-index__bleed` CSS (desktop ≥576px):
  * - Track spans the stage (`inset: 0` → full `.vp-portfolio-index` width =
@@ -45,7 +45,7 @@ export type PortfolioIndexSlide = {
   hrefSlug: string;
   /** Mobile (<576px) — ~2:3 Sanity crop matching the /work card. */
   posterUrl: string;
-  /** Desktop (≥576px) — ~520:673 Sanity crop matching the /work card. */
+  /** Desktop (≥576px) — 512:640 (4:5) Sanity crop matching the /work card. */
   posterUrlDesktop: string;
   /**
    * Desktop bleed-track URL — viewport-scale crop of featuredImage, pre-blurred
