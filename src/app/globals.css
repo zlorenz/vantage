@@ -842,7 +842,7 @@ body:has(.vp-work-index) #header.navbar::before {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    gap: 2.5rem; /* 40px → ~63px pitch with 32px/1.2 type */
+    gap: 1.5rem; /* 24px → ~63px pitch with 32px/1.2 type */
     box-sizing: border-box;
     margin: 0;
     padding: 5rem 1.875rem; /* 80px / 30px */
