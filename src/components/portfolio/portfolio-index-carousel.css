@@ -182,8 +182,25 @@
   }
 
   /*
+   * Mono film grain over the image+wash composite (single layer, not dual).
+   * Static tile from /brand/film-grain-tile.png — no runtime filters.
+   */
+  .vp-portfolio-index__bleed::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background-image: url('/brand/film-grain-tile.png');
+    background-repeat: repeat;
+    /* 128px display tile: fine grain without an obvious lattice at 1× view */
+    background-size: 128px 128px;
+    opacity: 0.15;
+  }
+
+  /*
    * Horizontal edge fade (Option B via ::after — no extra DOM node).
-   * Sits above image + flat wash; percent stops track the bleed root
+   * Sits above image + flat wash + grain; percent stops track the bleed root
    * (position:fixed; inset:0) so the center third always matches viewport
    * width. Soft stops read as a vignette, not a hard spotlight cutout.
    * Does not move with .bleed-container's Embla-mirrored transform.
@@ -192,7 +209,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 3;
     pointer-events: none;
     background: linear-gradient(
       to right,
