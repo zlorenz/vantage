@@ -70,8 +70,7 @@
   /* Flush to the media column’s left edge (rail edge after Phase 1 shell). */
   --vp-case-rail-inset: 0px;
   --vp-case-slide-gap: 0;
-  --vp-case-inactive-opacity: 0.45;
-  --vp-case-inactive-scale: 0.94;
+  --vp-case-inactive-opacity: 0.4;
   /* Title overlay insets — counter top/left match title left/bottom */
   --vp-case-overlay-pad-x: 1.25rem;
   --vp-case-overlay-pad-bottom: 1.2rem;
@@ -211,7 +210,7 @@
 .vp-case-carousel__card {
   position: relative;
   overflow: hidden;
-  /* Mobile-first taller frame; desktop restores 16:9 below */
+  /* Mobile-first taller frame; desktop restores 960/600 below */
   aspect-ratio: 4 / 5;
   width: 100%;
   border-radius: 1.75rem;
@@ -221,14 +220,9 @@
   -webkit-clip-path: inset(0 round 1.75rem);
   background: var(--vp-bg);
   box-shadow: 0 2px 18px rgba(var(--vp-black-rgb), 0.4);
-  /* Inactive = /work peek treatment */
-  transform: scale(var(--vp-case-inactive-scale));
+  /* Figma inactive peek: opacity only (no scale / blur). */
   opacity: var(--vp-case-inactive-opacity);
-  filter: blur(4px);
-  /* Do not transition filter — iOS Safari composites blur→none as a black flash */
-  transition:
-    opacity 280ms ease,
-    transform 280ms ease;
+  transition: opacity 280ms ease;
 }
 
 @media (min-width: 768px) {
@@ -270,10 +264,7 @@
 }
 
 .vp-case-carousel__slide.is-active .vp-case-carousel__card {
-  /* none — not scale(1) — so WebKit drops the transform layer on the active card */
-  transform: none;
   opacity: 1;
-  filter: none;
 }
 
 /* Underlay peek is visual-only while the active player handles hits */
