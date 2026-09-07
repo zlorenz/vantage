@@ -1056,6 +1056,7 @@ export function PortfolioIndexCarousel({
                           src={slide.posterUrl}
                           alt=""
                           className="vp-portfolio-index__poster"
+                          draggable={false}
                           decoding="async"
                           loading={eagerPoster ? 'eager' : 'lazy'}
                           fetchPriority={active ? 'high' : 'auto'}

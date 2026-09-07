@@ -36,8 +36,8 @@ const WORK_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.workDesktop);
  * - Pre-blur via Sanity `blur` (not CSS filter) to avoid runtime jank.
  */
 const WORK_DESKTOP_BLEED = {width: 1920, height: 1080} as const;
-/** Sanity CDN blur amount (0–100). 50 ≈ soft full-bleed wash; matches builder docs. */
-const WORK_DESKTOP_BLEED_BLUR = 50;
+/** Sanity CDN blur amount (0–100). 60 ≈ soft full-bleed wash; matches builder docs. */
+const WORK_DESKTOP_BLEED_BLUR = 60;
 
 export type PortfolioIndexSlide = {
   id: string;

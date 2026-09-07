@@ -170,14 +170,14 @@
   }
 
   /*
-   * Track-wide wash — not per-slide. 0.7 matches Figma Fill 000000 70%;
-   * ~30% of the pre-blurred poster reads through in the center field.
+   * Track-wide wash — not per-slide. 0.78 = Fill 000000 78%;
+   * ~22% of the pre-blurred poster reads through in the center field.
    */
   .vp-portfolio-index__bleed-wash {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.78);
     pointer-events: none;
   }
 
@@ -215,10 +215,10 @@
       to right,
       #000 0%,
       #000 6%,
-      rgba(0, 0, 0, 0.7) 18%,
+      rgba(0, 0, 0, 0.78) 18%,
       transparent 36%,
       transparent 64%,
-      rgba(0, 0, 0, 0.7) 82%,
+      rgba(0, 0, 0, 0.78) 82%,
       #000 94%,
       #000 100%
     );
@@ -255,6 +255,9 @@
   z-index: 1;
   flex-shrink: 0;
   width: 100%;
+  /* Drag-to-advance must not select poster/link copy (blue highlight). */
+  user-select: none;
+  -webkit-user-select: none;
   /* Absolute height (not % of root) so expanding the centering band does not grow cards. */
   height: calc(
     (
@@ -609,6 +612,8 @@
    * object-position is still applied as a subpixel safety net, but rounding
    * differences alone shouldn't move focal points visibly anymore. */
   object-fit: cover;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .vp-portfolio-index__overlay {
