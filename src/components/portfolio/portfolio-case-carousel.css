@@ -2,10 +2,9 @@
  * Multi-video case study carousel styles — card chrome matches .vp-case-video /
  * .vp-portfolio-index__card--styled. No vertical scroll lock (unlike /work).
  *
- * Full-bleed breakout: peeks reach the viewport edges. Active card snaps to
- * the content-rail left edge (align:start + viewport pad) at every breakpoint
- * so the next slide peeks on the right. Inactive peeks match /work
- * (dim + blur + hide overlay). Mobile cards use 4:5; desktop keeps 16:9.
+ * Shell (Phase 1): root fills `.vp-case-carousel-row__media` (flex:1) — no
+ * viewport-relative breakout. Active snap / card geometry still use the
+ * legacy 1680 content-rail tokens until Phase 2 retargets them.
  */
 
 /*
@@ -84,11 +83,10 @@
   --vp-case-active-left: var(--vp-case-rail-inset);
 
   position: relative;
-  width: 100vw;
-  max-width: 100vw;
-  /* Escape padded max-w rail; html overflow-x:hidden clips at viewport. */
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  /* Fills flex:1 media column — no 100vw / 50%-50vw escape (old 1680 parent). */
 }
 
 @media (min-width: 768px) {
