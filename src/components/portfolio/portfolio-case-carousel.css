@@ -69,7 +69,7 @@
   --vp-case-card-width: 68.7%;
   /* Flush to the media column’s left edge (rail edge after Phase 1 shell). */
   --vp-case-rail-inset: 0px;
-  --vp-case-slide-gap: 0.75rem;
+  --vp-case-slide-gap: 0;
   --vp-case-inactive-opacity: 0.45;
   --vp-case-inactive-scale: 0.94;
   /* Title overlay insets — counter top/left match title left/bottom */
@@ -201,6 +201,11 @@
   width: var(--vp-case-card-width);
   min-width: 0;
   box-sizing: border-box;
+}
+
+/* Hairline between abutting slides — --vp-struct-line is 1px solid rgba(255,255,255,0.15). */
+.vp-case-carousel__slide:not(:last-child) {
+  border-right: var(--vp-struct-line);
 }
 
 .vp-case-carousel__card {
