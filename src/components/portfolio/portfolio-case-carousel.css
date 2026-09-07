@@ -2,9 +2,8 @@
  * Multi-video case study carousel styles — card chrome matches .vp-case-video /
  * .vp-portfolio-index__card--styled. No vertical scroll lock (unlike /work).
  *
- * Shell (Phase 1): root fills `.vp-case-carousel-row__media` (flex:1) — no
- * viewport-relative breakout. Active snap / card geometry still use the
- * legacy 1680 content-rail tokens until Phase 2 retargets them.
+ * Shell (Phase 1): root fills `.vp-case-carousel-row__media` (flex:1).
+ * Card geometry (Phase 2): uniform ~68.7% slide width; peek via overflow.
  */
 
 /*
@@ -62,18 +61,15 @@
 }
 
 .vp-case-carousel {
-  /* Match page rail: max-w-[1680px] px-4 / md:px-6 / xl:px-8 */
-  --vp-case-rail-pad: 1rem;
-  --vp-case-rail-inset: var(--vp-case-rail-pad);
+  /*
+   * Figma 149:22173 — every slide is the same width (~68.7% of the carousel
+   * row’s available width = 1092.8/1591). Peek is overflow clipping, not a
+   * smaller inactive card. Percentage (not px) so Embla scales with the row.
+   */
+  --vp-case-card-width: 68.7%;
+  /* Flush to the media column’s left edge (rail edge after Phase 1 shell). */
+  --vp-case-rail-inset: 0px;
   --vp-case-slide-gap: 0.75rem;
-  /* Mobile: leave room for a right-edge peek of the next slide */
-  --vp-case-card-scale: 0.85;
-  --vp-case-card-width: calc(
-    min(
-        calc(100vw - 2 * var(--vp-case-rail-pad)),
-        calc(1680px - 2 * var(--vp-case-rail-pad))
-      ) * var(--vp-case-card-scale)
-  );
   --vp-case-inactive-opacity: 0.45;
   --vp-case-inactive-scale: 0.94;
   /* Title overlay insets — counter top/left match title left/bottom */
@@ -91,21 +87,7 @@
 
 @media (min-width: 768px) {
   .vp-case-carousel {
-    --vp-case-rail-pad: 1.5rem;
-    /* Same left edge as text inside max-w-[1680px] px-* */
-    --vp-case-rail-inset: max(
-      var(--vp-case-rail-pad),
-      calc((100vw - 1680px) / 2 + var(--vp-case-rail-pad))
-    );
-    /* Desktop: ~65% of rail card (middle of 60–70%). Height follows 16:9. */
-    --vp-case-card-scale: 0.65;
     --vp-case-overlay-pad-bottom: 1.35rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .vp-case-carousel {
-    --vp-case-rail-pad: 2rem;
   }
 }
 
@@ -144,12 +126,9 @@
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-  /* Embla align:start snaps into this padded content box → rail left edge */
+  /* align:start — active flush left; right pad leaves room for the peek */
   padding-left: var(--vp-case-rail-inset);
-  padding-right: max(
-    var(--vp-case-rail-inset),
-    calc(100vw - var(--vp-case-rail-inset) - var(--vp-case-card-width))
-  );
+  padding-right: calc(100% - var(--vp-case-card-width));
 }
 
 /* Desktop-only edge arrows — hidden on touch / narrow viewports */
