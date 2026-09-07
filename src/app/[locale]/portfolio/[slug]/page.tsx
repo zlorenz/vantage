@@ -155,7 +155,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
       >
         <div className="vp-case-shell__layout">
           <PortfolioCaseRail />
-          <div className="vp-case-shell__main mx-auto w-full max-w-[1680px] px-4 md:px-6 xl:px-8">
+          <div className="vp-case-shell__main">
             <PortfolioCaseHeader
               locale={typedLocale}
               phrases={phrases}

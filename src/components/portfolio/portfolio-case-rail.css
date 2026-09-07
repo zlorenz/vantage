@@ -9,6 +9,13 @@
 .vp-case-shell {
   /* Figma left inset ~328px → 20.5rem at 16px root (spacing-scale rem). */
   --vp-case-rail-width: 20.5rem;
+  /*
+   * Case hero needs nav clearance + Figma’s ~200px title band (pt-200).
+   * Keep the condensed token; scope the larger value to this shell only.
+   */
+  --vp-section-y-header-condensed: calc(var(--vp-nav-bar-height) + 12.5rem);
+  /* Figma right-column horizontal pad (30px). */
+  --vp-case-shell-pad-x: 1.875rem;
 }
 
 .vp-case-shell__layout {
@@ -16,8 +23,22 @@
   width: 100%;
 }
 
+.vp-case-shell__main {
+  width: 100%;
+  min-width: 0;
+  /* Mobile: preserve prior single-column gutters (px-4 / md:px-6). */
+  padding-inline: 1rem;
+  box-sizing: border-box;
+}
+
 .vp-case-rail {
   display: none;
+}
+
+@media (min-width: 768px) {
+  .vp-case-shell__main {
+    padding-inline: 1.5rem;
+  }
 }
 
 @media (min-width: 992px) {
@@ -29,7 +50,8 @@
 
   .vp-case-rail {
     position: sticky;
-    top: var(--vp-section-y-header-condensed);
+    /* Stick under the fixed site header (not the section’s large top pad). */
+    top: var(--vp-header-height, var(--vp-nav-bar-height));
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -39,16 +61,20 @@
     max-width: var(--vp-case-rail-width);
     align-self: flex-start;
     box-sizing: border-box;
-    /* Viewport band under condensed header offset — keeps mark in lower third. */
-    height: calc(100vh - var(--vp-section-y-header-condensed));
+    /* Viewport band under fixed header — keeps mark in the lower third. */
+    height: calc(100vh - var(--vp-header-height, var(--vp-nav-bar-height)));
     min-height: 20rem;
-    padding: 2.5rem 1.875rem;
+    padding: 2.5rem var(--vp-case-shell-pad-x);
     pointer-events: none;
   }
 
   .vp-case-shell__main {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: var(--vp-case-shell-pad-x);
+    border-left: var(--vp-struct-line);
   }
 
   .vp-case-rail__back {
