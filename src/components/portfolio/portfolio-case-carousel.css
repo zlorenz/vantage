@@ -82,6 +82,10 @@
   max-width: none;
   margin: 0;
   /* Fills flex:1 media column — no 100vw / 50%-50vw escape (old 1680 parent). */
+  /* Figma carousel band top/bottom hairlines. */
+  border-top: var(--vp-struct-line);
+  border-bottom: var(--vp-struct-line);
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -213,13 +217,9 @@
   /* Mobile-first taller frame; desktop restores 960/600 below */
   aspect-ratio: 4 / 5;
   width: 100%;
-  border-radius: 1.75rem;
-  /* iOS Safari: overflow+radius fails to clip when a transform is present
-   * (including scale(1)). clip-path keeps corners round under scale. */
-  clip-path: inset(0 round 1.75rem);
-  -webkit-clip-path: inset(0 round 1.75rem);
+  border-radius: 0;
   background: var(--vp-bg);
-  box-shadow: 0 2px 18px rgba(var(--vp-black-rgb), 0.4);
+  box-shadow: none;
   /* Figma inactive peek: opacity only (no scale / blur). */
   opacity: var(--vp-case-inactive-opacity);
   transition: opacity 280ms ease;
@@ -270,35 +270,6 @@
 /* Underlay peek is visual-only while the active player handles hits */
 .vp-case-carousel__slide.is-active .vp-case-carousel__peek {
   pointer-events: none;
-}
-
-/* Ensure poster/player fill inherits the round clip on mobile WebKit */
-.vp-case-carousel__card > *,
-.vp-case-carousel__card img {
-  border-radius: inherit;
-}
-
-/* Glass rim — same treatment as .vp-case-video::after */
-.vp-case-carousel__card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  border-radius: inherit;
-  pointer-events: none;
-  padding: 1px;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.22) 35%,
-    rgba(255, 255, 255, 0.08) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  mix-blend-mode: soft-light;
 }
 
 .vp-case-carousel__peek {
