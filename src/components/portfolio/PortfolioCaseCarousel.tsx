@@ -38,8 +38,23 @@ function caseEmblaOptions(align: 'start' | 'center') {
   };
 }
 
+/** Imperative handle shared with PortfolioCaseCarouselRailNav (same Embla). */
+export type PortfolioCaseCarouselApi = {
+  selectedIndex: number;
+  slideCount: number;
+  canScrollPrev: boolean;
+  canScrollNext: boolean;
+  scrollPrev: () => void;
+  scrollNext: () => void;
+};
+
 interface PortfolioCaseCarouselProps {
   slides: PortfolioCaseSlide[];
+  /**
+   * Fires on Embla ready / select / reInit so a sibling rail-nav can drive the
+   * same instance (mirrors portfolio-index passing emblaApi to chrome).
+   */
+  onApiChange?: (api: PortfolioCaseCarouselApi) => void;
 }
 
 function SlideTitleOverlay({
@@ -159,7 +174,10 @@ function ActiveSlidePlayer({
   );
 }
 
-export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
+export function PortfolioCaseCarousel({
+  slides,
+  onApiChange,
+}: PortfolioCaseCarouselProps) {
   const slideCount = slides.length;
   // Rail-aligned start at every breakpoint so the next card peeks on the right.
   const [emblaRef, emblaApi] = useEmblaCarousel(caseEmblaOptions('start'));
@@ -315,6 +333,26 @@ export function PortfolioCaseCarousel({slides}: PortfolioCaseCarouselProps) {
   const scrollNext = useCallback(() => {
     emblaApi?.scrollNext();
   }, [emblaApi]);
+
+  useEffect(() => {
+    if (!onApiChange || slideCount < 2) return;
+    onApiChange({
+      selectedIndex: activeIndex,
+      slideCount,
+      canScrollPrev,
+      canScrollNext,
+      scrollPrev,
+      scrollNext,
+    });
+  }, [
+    onApiChange,
+    activeIndex,
+    slideCount,
+    canScrollPrev,
+    canScrollNext,
+    scrollPrev,
+    scrollNext,
+  ]);
 
   const scrollToIndex = useCallback(
     (index: number) => {
