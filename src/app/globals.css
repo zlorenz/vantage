@@ -1488,6 +1488,8 @@ body:has(.vp-work-index) #header.navbar::before {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  /* Figma gap-100 between department groups in a column. */
+  gap: 6.25rem;
 }
 
 .vp-credits--split .vp-credits__col {
@@ -1502,11 +1504,11 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-credits__dept {
-  break-inside: avoid;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
+  /* Figma gap-48 between header stack and row list. */
+  gap: 3rem;
+  margin-bottom: 0;
 }
 
 .vp-credits__dept:last-child {
@@ -1516,23 +1518,32 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credits__dept-head {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  /* Figma gap-32 between dual rules and heading. */
+  gap: 2rem;
 }
 
 .vp-credits__dept-name {
-  font-family: var(--vp-font-heading);
-  font-size: 1.0625rem;
-  font-weight: var(--font-vp-heading-weight);
-  letter-spacing: 0.0625rem;
+  /* Beat globals .vp-credits__dept-name { font-weight: heading-weight }. */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.0325rem;
   line-height: 1.2;
   text-transform: uppercase;
-  color: var(--color-vp-text);
+  color: #fdb913;
+  padding-inline: 1.875rem;
+  box-sizing: border-box;
+}
+
+.vp-credits .vp-credits__dept-name {
+  font-weight: 700;
 }
 
 .vp-credits__rule {
-  height: 1px;
+  height: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.22);
+  border-top: var(--vp-struct-line);
+  background: none;
 }
 
 .vp-credits__rows {

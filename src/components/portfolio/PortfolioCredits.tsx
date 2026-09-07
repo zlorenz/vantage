@@ -97,7 +97,8 @@ function DepartmentBlock({
   return (
     <div className="vp-credits__dept">
       <div className="vp-credits__dept-head">
-        <div className="vp-credits__dept-name">{row.label}</div>
+        <div className="vp-credits__rule" aria-hidden="true" />
+        <div className="vp-credits__dept-name">{`●  ${row.label}`}</div>
         <div className="vp-credits__rule" aria-hidden="true" />
       </div>
       <div className="vp-credits__rows">
