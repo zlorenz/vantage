@@ -199,7 +199,8 @@
     box-sizing: border-box;
     width: 33.125rem; /* 530px */
     max-width: min(33.125rem, calc(100vw - 2rem));
-    max-height: min(51.6875rem, calc(100svh - 8rem));
+    /* Figma 84:36356 fixed 827px; clamp for shorter viewports */
+    height: min(51.6875rem, calc(100svh - 8rem));
     overflow: hidden;
     background: #0f0f0f;
     color: #fff;
@@ -218,7 +219,7 @@
     flex-direction: column;
     gap: 1.5rem; /* 24px */
     box-sizing: border-box;
-    max-height: inherit;
+    height: 100%;
     padding: 3rem 1.875rem; /* 48px / 30px */
     overflow-x: hidden;
     overflow-y: auto;
