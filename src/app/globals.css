@@ -1622,6 +1622,11 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 @media (max-width: 767.98px) {
+  /*
+   * Single-column collapse — independent of the old CSS-columns mechanism.
+   * Hide the vertical divider; stack columns. Soften desktop rhythm (100px /
+   * 48px / 282px role) so the block remains readable on narrow viewports.
+   */
   .vp-credits {
     flex-direction: column;
   }
@@ -1630,8 +1635,27 @@ body:has(.vp-work-index) #header.navbar::before {
     display: none;
   }
 
+  .vp-credits__col {
+    gap: 2.5rem;
+  }
+
   .vp-credits__dept {
-    margin-bottom: 1.5rem;
+    gap: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .vp-credits__dept-head {
+    gap: 1rem;
+  }
+
+  .vp-credits__dept-name {
+    padding-inline: 0;
+    font-size: 1.25rem;
+    letter-spacing: -0.025rem;
+  }
+
+  .vp-credits__rows {
+    padding-inline: 0;
   }
 
   .vp-credit-pair {
@@ -1639,9 +1663,10 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 
   .vp-credit-role {
-    flex-basis: min(17.625rem, 40%);
+    flex: 0 0 auto;
     width: auto;
-    max-width: 40%;
+    max-width: 42%;
+    min-width: 6.5rem;
   }
 
   .vp-filterbar__group {
