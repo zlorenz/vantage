@@ -468,7 +468,15 @@
   text-align: left;
 }
 
-.vp-portfolio-index__brand {
+.vp-portfolio-index__brand-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.vp-portfolio-index__brand,
+.vp-portfolio-index__format {
   margin: 0;
   font-family: var(--vp-font-heading);
   font-size: clamp(0.65rem, 1.3vw, 0.82rem);
@@ -476,7 +484,34 @@
   letter-spacing: 0.08em;
   line-height: 1.2;
   text-transform: uppercase;
+}
+
+.vp-portfolio-index__brand {
   color: #fdb913;
+}
+
+/* Figma ● before brand — ~0.8em relative to ~16px brand text (homepage carousel). */
+.vp-portfolio-index__brand::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.55em;
+  border-radius: 50%;
+  background: #fdb913;
+  vertical-align: 0.05em;
+}
+
+.vp-portfolio-index__brand-rule {
+  display: block;
+  width: 1px;
+  height: 0.9em;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.vp-portfolio-index__format {
+  color: #fff;
 }
 
 .vp-portfolio-index__campaign {
