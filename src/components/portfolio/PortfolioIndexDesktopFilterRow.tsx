@@ -5,7 +5,7 @@
  *
  * SEARCH (left) is an always-visible inline field (Figma 77:12478 = icon +
  * “SEARCH” label chrome — no border/fill box). FORMAT / INDUSTRY / MARKET
- * (right) open independent right-rail panels — multiple may be open at once.
+ * (right) open accordion-style right-rail panels — only one open at a time.
  * Does not replace PortfolioIndexFilterSheet or the mobile search overlay.
  */
 
@@ -50,14 +50,6 @@ const TAXONOMY_LABEL_KEY: Record<
   format: 'videoFormat',
   industry: 'industry',
   market: 'market',
-};
-
-type PanelOpenState = Record<TaxonomyKey, boolean>;
-
-const ALL_PANELS_CLOSED: PanelOpenState = {
-  format: false,
-  industry: false,
-  market: false,
 };
 
 function stripOptionChrome(label: string): string {
@@ -118,10 +110,8 @@ export function PortfolioIndexDesktopFilterRow({
   const t = useTranslations('Filters');
   const tSearch = useTranslations('Search');
   const rootRef = useRef<HTMLDivElement>(null);
-  const [openPanels, setOpenPanels] =
-    useState<PanelOpenState>(ALL_PANELS_CLOSED);
-  /** Last-opened panel sits above siblings (530px rails overlap heavily). */
-  const [frontPanel, setFrontPanel] = useState<TaxonomyKey | null>(null);
+  /** Accordion: at most one taxonomy panel open. */
+  const [openPanel, setOpenPanel] = useState<TaxonomyKey | null>(null);
   /** Local draft; mirrors committed searchValue (URL / filter clear / commit). */
   const [draftSearch, setDraftSearch] = useState(searchValue);
 
@@ -162,8 +152,7 @@ export function PortfolioIndexDesktopFilterRow({
     markets,
   ]);
 
-  const anyPanelOpen =
-    openPanels.format || openPanels.industry || openPanels.market;
+  const anyPanelOpen = openPanel !== null;
 
   useEffect(() => {
     if (!anyPanelOpen) return;
@@ -172,14 +161,12 @@ export function PortfolioIndexDesktopFilterRow({
       const root = rootRef.current;
       if (!root) return;
       if (event.target instanceof Node && root.contains(event.target)) return;
-      setOpenPanels(ALL_PANELS_CLOSED);
-      setFrontPanel(null);
+      setOpenPanel(null);
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setOpenPanels(ALL_PANELS_CLOSED);
-        setFrontPanel(null);
+        setOpenPanel(null);
       }
     };
 
@@ -192,32 +179,12 @@ export function PortfolioIndexDesktopFilterRow({
   }, [anyPanelOpen]);
 
   const togglePanel = (key: TaxonomyKey) => {
-    setOpenPanels((prev) => {
-      const nextOpen = !prev[key];
-      const next = {...prev, [key]: nextOpen};
-      if (nextOpen) {
-        setFrontPanel(key);
-      } else {
-        setFrontPanel((current) => {
-          if (current !== key) return current;
-          return (
-            TAXONOMY_ORDER.find((candidate) => candidate !== key && next[candidate]) ??
-            null
-          );
-        });
-      }
-      return next;
-    });
-  };
-
-  const bringPanelToFront = (key: TaxonomyKey) => {
-    setFrontPanel(key);
+    setOpenPanel((prev) => (prev === key ? null : key));
   };
 
   const handleSearchSubmit = (event: FormEvent) => {
     event.preventDefault();
-    setOpenPanels(ALL_PANELS_CLOSED);
-    setFrontPanel(null);
+    setOpenPanel(null);
     onCommitSearch(draftSearch);
   };
 
@@ -267,7 +234,7 @@ export function PortfolioIndexDesktopFilterRow({
 
       <div className="vp-portfolio-index-desktop-filters__triggers">
         {TAXONOMY_ORDER.map((key) => {
-          const open = openPanels[key];
+          const open = openPanel === key;
           const label = t(TAXONOMY_LABEL_KEY[key]);
           const allSelected = !filters[key];
           const allCount = countForPublicFilterValue(
@@ -300,12 +267,9 @@ export function PortfolioIndexDesktopFilterRow({
               {open ? (
                 <div
                   id={`vp-desktop-filter-panel-${key}`}
-                  className={`vp-portfolio-index-desktop-filters__panel${
-                    frontPanel === key ? ' is-front' : ''
-                  }`}
+                  className="vp-portfolio-index-desktop-filters__panel"
                   role="listbox"
                   aria-label={label}
-                  onPointerDown={() => bringPanelToFront(key)}
                 >
                   <div className="vp-portfolio-index-desktop-filters__panel-body">
                     <button

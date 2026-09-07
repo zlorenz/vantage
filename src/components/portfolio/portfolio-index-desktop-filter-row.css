@@ -187,11 +187,6 @@
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
   }
 
-  /* Independent panels overlap at 530px — last interacted sits on top. */
-  .vp-portfolio-index-desktop-filters__panel.is-front {
-    z-index: 61;
-  }
-
   .vp-portfolio-index-desktop-filters__panel-body {
     position: relative;
     z-index: 1;
