@@ -1579,21 +1579,26 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credit-names {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-vp-text);
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.02rem;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 .vp-credit-names a {
-  color: var(--color-vp-link);
-  font-weight: 400;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   text-decoration: none;
-  transition: color var(--vp-transition-fast);
 }
 
-.vp-credit-names a:hover {
-  color: var(--color-vp-link-hover);
+.vp-credit-names a:hover,
+.vp-credit-names a:focus-visible {
+  color: inherit;
 }
 
 /*
