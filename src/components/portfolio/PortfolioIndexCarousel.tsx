@@ -1118,17 +1118,9 @@ export function PortfolioIndexCarousel({
                                     </p>
                                   ) : null}
                                   {formatLabel ? (
-                                    <>
-                                      {slide.brandLine ? (
-                                        <span
-                                          className="vp-portfolio-index__brand-rule"
-                                          aria-hidden
-                                        />
-                                      ) : null}
-                                      <p className="vp-portfolio-index__format">
-                                        {formatLabel}
-                                      </p>
-                                    </>
+                                    <p className="vp-portfolio-index__format">
+                                      {formatLabel}
+                                    </p>
                                   ) : null}
                                 </div>
                               ) : null}
