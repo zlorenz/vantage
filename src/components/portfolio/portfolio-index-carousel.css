@@ -414,6 +414,13 @@
   content: none;
 }
 
+/* Desktop: Figma card face cornerRadius: 0 (mobile keeps 1.75rem above). */
+@media (min-width: 576px) {
+  .vp-portfolio-index__card--styled {
+    border-radius: 0;
+  }
+}
+
 .vp-portfolio-index__poster-wrap {
   position: absolute;
   inset: 0;
