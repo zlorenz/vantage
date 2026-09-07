@@ -15,7 +15,6 @@ import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 import {
   countForPublicFilterValue,
-  matchesPublicFilters,
   publicFilterOptions,
   type PublicFilters,
 } from './PortfolioGrid';
@@ -43,15 +42,6 @@ interface PortfolioIndexDesktopFilterRowProps {
 }
 
 const TAXONOMY_ORDER: TaxonomyKey[] = ['format', 'industry', 'market'];
-
-const TAXONOMY_SLUG_FIELD: Record<
-  TaxonomyKey,
-  'videoFormatSlugs' | 'industrySlugs' | 'marketSlugs'
-> = {
-  format: 'videoFormatSlugs',
-  industry: 'industrySlugs',
-  market: 'marketSlugs',
-};
 
 const TAXONOMY_LABEL_KEY: Record<
   TaxonomyKey,
@@ -224,22 +214,6 @@ export function PortfolioIndexDesktopFilterRow({
     setFrontPanel(key);
   };
 
-  const triggerCount = (key: TaxonomyKey): number => {
-    const selected = filters[key];
-    if (selected) {
-      return countForPublicFilterValue(filterEntries, filters, key, selected);
-    }
-    // No selection: count entries that already have a value for this taxonomy,
-    // still respecting active filters on the other two (empty `key` is a no-op
-    // in matchesPublicFilters). Distinct FORMAT/INDUSTRY/MARKET defaults.
-    const field = TAXONOMY_SLUG_FIELD[key];
-    return filterEntries.filter((entry) => {
-      if (!matchesPublicFilters(entry, filters)) return false;
-      const values = entry[field];
-      return Array.isArray(values) && values.some((value) => Boolean(value));
-    }).length;
-  };
-
   const handleSearchSubmit = (event: FormEvent) => {
     event.preventDefault();
     setOpenPanels(ALL_PANELS_CLOSED);
@@ -294,8 +268,6 @@ export function PortfolioIndexDesktopFilterRow({
       <div className="vp-portfolio-index-desktop-filters__triggers">
         {TAXONOMY_ORDER.map((key) => {
           const open = openPanels[key];
-          const selected = Boolean(filters[key]);
-          const count = triggerCount(key);
           const label = t(TAXONOMY_LABEL_KEY[key]);
           const allSelected = !filters[key];
           const allCount = countForPublicFilterValue(
@@ -314,7 +286,7 @@ export function PortfolioIndexDesktopFilterRow({
                 type="button"
                 className={`vp-portfolio-index-desktop-filters__trigger${
                   open ? ' is-open' : ''
-                }${selected ? ' is-active' : ''}`}
+                }`}
                 aria-expanded={open}
                 aria-controls={`vp-desktop-filter-panel-${key}`}
                 onClick={() => togglePanel(key)}
@@ -322,12 +294,6 @@ export function PortfolioIndexDesktopFilterRow({
                 <ChevronGlyph />
                 <span className="vp-portfolio-index-desktop-filters__trigger-label">
                   {label}
-                </span>
-                <span
-                  className="vp-portfolio-index-desktop-filters__trigger-count"
-                  aria-hidden="true"
-                >
-                  {count}
                 </span>
               </button>
 

@@ -171,26 +171,6 @@
     color: #fff;
   }
 
-  /*
-   * Figma ~9.03px. Locked to 9px (0.5625rem) — nearest whole pixel that still
-   * reads as a caption badge. Flagged for Zach: 9.03 is sub-pixel; if 9px
-   * feels too small on retina, bump to 10px rather than keeping a fractional
-   * font-size.
-   */
-  .vp-portfolio-index-desktop-filters__trigger-count {
-    /* Figma: Zalando Sans Expanded Bold */
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
-    font-size: 0.5625rem; /* 9px */
-    font-weight: 700;
-    line-height: 1;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  .vp-portfolio-index-desktop-filters__trigger.is-active
-    .vp-portfolio-index-desktop-filters__trigger-count {
-    color: rgba(255, 255, 255, 0.65);
-  }
-
   .vp-portfolio-index-desktop-filters__panel {
     position: absolute;
     top: calc(100% + 0.75rem);
