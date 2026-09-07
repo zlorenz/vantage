@@ -364,8 +364,8 @@
 
 /*
  * Peer dark wash over the opaque poster. ::before (not a DOM child) — card
- * markup has no wash slot, and ::after is already the glass rim. z-index 1
- * sits above the poster (z-0) and under the link/overlay + rim.
+ * markup has no wash slot. z-index 1 sits above the poster (z-0) and under
+ * the link/overlay.
  */
 .vp-portfolio-index__card--styled::before {
   content: '';
@@ -378,9 +378,8 @@
 }
 
 /*
- * Glass edge: ~1px hollow rim over the poster. Stronger at the top catch-
- * light, nearly gone at the bottom. soft-light blends with underlying pixels
- * so dark vignettes don't get a hard white sticker line.
+ * Glass edge (mobile): ~1px hollow rim. Desktop disables via content:none
+ * below — Figma card face has effects: [].
  */
 .vp-portfolio-index__card--styled::after {
   content: '';
@@ -414,10 +413,15 @@
   content: none;
 }
 
-/* Desktop: Figma card face cornerRadius: 0 (mobile keeps 1.75rem above). */
+/* Desktop: Figma card face — square corners, no shadow, no glass rim. */
 @media (min-width: 576px) {
   .vp-portfolio-index__card--styled {
     border-radius: 0;
+    box-shadow: none;
+  }
+
+  .vp-portfolio-index__card--styled::after {
+    content: none;
   }
 }
 
