@@ -555,8 +555,8 @@ export function LazyVimeoPlayer({
           aria-label="Tap to play video"
         >
           <span className="flex flex-col items-center gap-4">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-white/10">
-              <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+            <span className="flex h-20 w-20 items-center justify-center rounded-none border-[1.5px] border-white/15 bg-white/5 backdrop-blur-[5px]">
+              <span className="ml-0.5 block size-0 border-y-[0.75rem] border-l-[1.25rem] border-y-transparent border-l-white" />
             </span>
             <span className="font-sans text-sm tracking-wide text-white/90">
               Tap to play
@@ -584,8 +584,8 @@ export function LazyVimeoPlayer({
           ) : null}
           {!hidePlayButton ? (
             <span className="absolute inset-0 flex items-center justify-center">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-black/40 transition duration-200 group-hover:scale-110 group-hover:border-white group-hover:bg-black/55">
-                <span className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
+              <span className="flex h-20 w-20 items-center justify-center rounded-none border-[1.5px] border-white/15 bg-white/5 backdrop-blur-[5px] transition duration-200 group-hover:bg-white/10">
+                <span className="ml-0.5 block size-0 border-y-[0.75rem] border-l-[1.25rem] border-y-transparent border-l-white" />
               </span>
             </span>
           ) : null}
