@@ -1,0 +1,87 @@
+/* Desktop tick-marked slide readout — Figma 78:30581.
+ * Fixed to the visual viewport bottom; does NOT reserve layout height
+ * (card-band calc / --vp-index-bottom-bar-height stay unchanged).
+ */
+
+.vp-portfolio-index__tick-counter {
+  display: none;
+}
+
+/* sr-only live region — always on (desktop strip + mobile after old counter removal). */
+.vp-portfolio-index__tick-counter-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 576px) {
+  .vp-portfolio-index__tick-counter {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 52px;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .vp-portfolio-index__tick-counter-cell {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    box-sizing: border-box;
+  }
+
+  .vp-portfolio-index__tick-counter-label {
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-size: 0.875rem; /* 14px */
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.0175rem; /* -0.28px @ 16px root */
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .vp-portfolio-index__tick-counter-cell.is-active
+    .vp-portfolio-index__tick-counter-label {
+    color: #ffffff;
+  }
+
+  .vp-portfolio-index__tick-counter-ticks {
+    position: relative;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 16px;
+  }
+
+  .vp-portfolio-index__tick-counter-tick {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .vp-portfolio-index__tick-counter-tick.is-major {
+    height: 16px;
+  }
+}

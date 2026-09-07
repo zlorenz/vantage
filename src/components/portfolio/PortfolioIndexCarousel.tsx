@@ -28,6 +28,7 @@ import {
 import {PortfolioIndexDesktopFilterRow} from './PortfolioIndexDesktopFilterRow';
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
+import {PortfolioIndexTickCounter} from './PortfolioIndexTickCounter';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import {nearestSnapIndexFromProgress} from './nearest-snap-from-progress';
 import {
@@ -1075,6 +1076,7 @@ export function PortfolioIndexCarousel({
               return (
                 <div
                   key={slide.id}
+                  data-index={index}
                   className={`vp-portfolio-index__slide${active ? ' is-active' : ''}`}
                 >
                   {keepAlivePoster ? (
@@ -1157,6 +1159,11 @@ export function PortfolioIndexCarousel({
         </div>
         {filterTrigger}
       </div>
+      <PortfolioIndexTickCounter
+        activeIndex={activeIndex}
+        slideCount={slideCount}
+        emblaApi={emblaApi}
+      />
       {searchOverlay}
     </div>
   );
