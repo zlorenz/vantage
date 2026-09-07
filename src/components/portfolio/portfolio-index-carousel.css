@@ -476,12 +476,21 @@
     transform: scale(1);
     filter: blur(0);
   }
+
+  .vp-portfolio-index__card--styled::before {
+    opacity: 1;
+  }
+
+  .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled::before {
+    opacity: 0;
+  }
 }
 
 /*
  * Peer dark wash over the opaque poster. ::before (not a DOM child) — card
  * markup has no wash slot. z-index 1 sits above the poster (z-0) and under
- * the link/overlay.
+ * the link/overlay. Opacity (not content:none) so brightness eases in sync
+ * with the 280ms scale/blur transition instead of popping on snap change.
  */
 .vp-portfolio-index__card--styled::before {
   content: '';
@@ -490,7 +499,9 @@
   z-index: 1;
   border-radius: inherit;
   background: rgba(0, 0, 0, 0.45);
+  opacity: 1;
   pointer-events: none;
+  transition: opacity 280ms ease;
 }
 
 /*
@@ -526,7 +537,7 @@
 }
 
 .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled::before {
-  content: none;
+  opacity: 0;
 }
 
 /* Desktop: Figma card face — square corners, no shadow, no glass rim. */
@@ -1051,6 +1062,10 @@
 @media (prefers-reduced-motion: reduce) {
   .vp-portfolio-index__card--styled {
     filter: none;
+    transition: none;
+  }
+
+  .vp-portfolio-index__card--styled::before {
     transition: none;
   }
 
