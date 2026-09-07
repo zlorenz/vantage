@@ -575,6 +575,30 @@
   z-index: 0;
   display: block;
   margin: 0;
+  /* Clip/radius follow the card face so grain matches poster edges. */
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+/*
+ * Film grain on --styled posters only (± STYLE_WINDOW_RADIUS). Lives on
+ * poster-wrap (card ::before/::after already hold peer wash + mobile rim).
+ * Entire wrap is z-0 under the card wash (::before z-1), so peers darken
+ * grain correctly; active wash fades and grain stays on the sharp poster.
+ * Mobile + desktop — same thumbnail treatment as Zach's ask.
+ */
+.vp-portfolio-index__card--styled .vp-portfolio-index__poster-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url('/brand/film-grain-tile.png');
+  background-repeat: repeat;
+  /* Card faces ~300–500px wide — 80px reads finer than bleed's 128px tile. */
+  background-size: 80px 80px;
+  opacity: 0.15;
 }
 
 .vp-portfolio-index__poster {
