@@ -462,6 +462,23 @@
 }
 
 /*
+ * First-paint of --styled must start at the inactive look. Without this, a
+ * newly styled peek transitions from the bare .card defaults (scale 1, no
+ * blur) into inactive — a one-frame “active” flash on the incoming right edge.
+ */
+@starting-style {
+  .vp-portfolio-index__card--styled {
+    transform: scale(var(--vp-index-inactive-scale));
+    filter: blur(4px);
+  }
+
+  .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled {
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+/*
  * Peer dark wash over the opaque poster. ::before (not a DOM child) — card
  * markup has no wash slot. z-index 1 sits above the poster (z-0) and under
  * the link/overlay.

@@ -81,12 +81,15 @@ const EAGER_LOAD_RADIUS = 3;
 
 /**
  * How many neighbors get radius/overflow/transform/transition styling.
- * Peek layout shows ~3 cards; ±2 → 5 styled cards (active + peeks + buffer).
+ * Peek layout shows ~3 cards at rest; during a snap the incoming right-edge
+ * peer is already on-screen before activeIndex settles — ±2 was too tight and
+ * newly --styled cards transitioned from full-size/sharp → inactive (flash).
+ * ±3 keeps the next incoming peer pre-styled as inactive.
  */
-const STYLE_WINDOW_RADIUS = 2;
+const STYLE_WINDOW_RADIUS = 3;
 
 /**
- * Bleed image mount radius. Cards use STYLE_WINDOW_RADIUS (±2) because several
+ * Bleed image mount radius. Cards use STYLE_WINDOW_RADIUS because several
  * peers are partially visible at once; bleed slides are 100vw so only the
  * active frame is onscreen at rest and neighbors appear only as edge peeks
  * during a drag — ±1 is geometrically enough. Kept as its own constant (not
@@ -98,8 +101,10 @@ const BLEED_WINDOW_RADIUS = 1;
  * How many neighbors mount interactive chrome: hit-target Link, overlay copy,
  * and (with STYLE_WINDOW_RADIUS) --styled classes. Far keep-alive slides keep
  * only a hidden poster shell — no Link/title — so Embla shells stay inert.
+ * Matched to STYLE_WINDOW_RADIUS so --styled is not gated behind a narrower
+ * content window (styleCard requires mountContent).
  */
-const CONTENT_WINDOW_RADIUS = 2;
+const CONTENT_WINDOW_RADIUS = 3;
 
 /**
  * Loop needs enough slides to build clones. Sparse filtered sets (1–3) stay
