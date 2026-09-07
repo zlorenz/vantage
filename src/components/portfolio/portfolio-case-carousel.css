@@ -4,17 +4,8 @@
  *
  * Shell (Phase 1): root fills `.vp-case-carousel-row__media` (flex:1).
  * Card geometry (Phase 2): uniform ~68.7% slide width; peek via overflow.
+ * Rail-nav chrome: portfolio-case-carousel-rail-nav.css.
  */
-
-/*
- * Carousel row rail-nav slot — shares --vp-case-rail-width from
- * portfolio-case-rail.css (.vp-case-shell). Hidden below the desktop rail
- * breakpoint; Phase 3 fills counter + arrows.
- */
-.vp-case-carousel-rail-nav {
-  display: none;
-  box-sizing: border-box;
-}
 
 /*
  * Multi-video carousel row: rail-nav + media as flex siblings.
@@ -44,15 +35,6 @@
   .vp-case-carousel-row {
     flex-direction: row;
     align-items: stretch;
-  }
-
-  .vp-case-carousel-rail-nav {
-    display: block;
-    flex: 0 0 var(--vp-case-rail-width, 20.5rem);
-    width: var(--vp-case-rail-width, 20.5rem);
-    max-width: var(--vp-case-rail-width, 20.5rem);
-    min-height: 1px;
-    align-self: stretch;
   }
 
   .vp-case-carousel-row__media {

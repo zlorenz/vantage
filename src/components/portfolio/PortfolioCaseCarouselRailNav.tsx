@@ -1,13 +1,13 @@
 /**
  * PortfolioCaseCarouselRailNav — rail-width column beside the multi-video
- * carousel (Figma 149:22173). Props wire the same Embla instance as the
- * sibling carousel; counter + prev/next UI land in later Phase 3 commits.
+ * carousel (Figma 149:22173). Counter + prev/next share the Embla instance
+ * exposed by PortfolioCaseCarouselVia onApiChange.
  *
  * Not an extension of PortfolioCaseRail — carousel chrome is a sibling of the
  * carousel, not part of the header back/mark rail.
  */
 
-import './portfolio-case-carousel.css';
+import './portfolio-case-carousel-rail-nav.css';
 
 export type PortfolioCaseCarouselRailNavProps = {
   /** 0-based index from the shared Embla instance. */
@@ -19,19 +19,38 @@ export type PortfolioCaseCarouselRailNavProps = {
   scrollNext?: () => void;
 };
 
+function formatSlideNumber(n: number) {
+  return String(n).padStart(2, '0');
+}
+
 export function PortfolioCaseCarouselRailNav({
-  selectedIndex: _selectedIndex = 0,
-  slideCount: _slideCount = 0,
+  selectedIndex = 0,
+  slideCount = 0,
   canScrollPrev: _canScrollPrev = false,
   canScrollNext: _canScrollNext = false,
   scrollPrev: _scrollPrev,
   scrollNext: _scrollNext,
 }: PortfolioCaseCarouselRailNavProps = {}) {
+  const current = Math.max(1, selectedIndex + 1);
+  const total = Math.max(0, slideCount);
+
   return (
-    <aside
-      className="vp-case-carousel-rail-nav"
-      aria-hidden="true"
-      data-placeholder="carousel-rail-nav"
-    />
+    <aside className="vp-case-carousel-rail-nav" aria-label="Carousel controls">
+      <p
+        className="vp-case-carousel-rail-nav__counter"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span className="vp-case-carousel-rail-nav__counter-current">
+          {formatSlideNumber(current)}
+        </span>
+        <span className="vp-case-carousel-rail-nav__counter-rest" aria-hidden>
+          <span className="vp-case-carousel-rail-nav__counter-sep">/</span>
+          <span className="vp-case-carousel-rail-nav__counter-total">
+            {formatSlideNumber(total)}
+          </span>
+        </span>
+      </p>
+    </aside>
   );
 }
