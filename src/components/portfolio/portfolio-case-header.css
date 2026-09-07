@@ -45,12 +45,13 @@
 
 .vp-case-header__campaign {
   margin: 0;
-  font-family: var(--font-vp-heading);
-  font-size: clamp(2.5rem, 5vw, 3.875rem);
+  /* Zalando Sans Expanded — settled fallback face, Bold via heading weight. */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 4rem;
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
-  letter-spacing: 1px;
-  line-height: 1;
+  letter-spacing: -0.16rem;
+  line-height: 1.2;
   text-transform: uppercase;
   overflow-wrap: break-word;
 }
@@ -150,11 +151,6 @@
   .vp-case-header__brand {
     font-size: 1rem;
     letter-spacing: -0.02rem;
-  }
-
-  .vp-case-header__campaign {
-    font-size: clamp(3.125rem, 4.5vw, 3.9rem);
-    letter-spacing: 1px;
   }
 
   .vp-case-header__credits {
