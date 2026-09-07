@@ -59,8 +59,8 @@
 .vp-case-header__meta {
   display: flex;
   flex-wrap: wrap;
-  /* Align pill label baselines to credit name (dd) baselines. */
-  align-items: last baseline;
+  /* Vertically center credits block with taxonomy chips (not last-baseline). */
+  align-items: center;
   justify-content: space-between;
   gap: 1rem 1.5rem;
   /* Space below the title↔meta hairline (Figma meta py ~40). */
