@@ -175,6 +175,15 @@
 }
 
 @media (min-width: 992px) {
+  /*
+   * Figma right-column title band (~200px / pt-200). Kept on the header
+   * so the shell can pad only past the navbar and the rail divider meets
+   * the nav bottom flush.
+   */
+  .vp-case-header {
+    padding-top: 12.5rem;
+  }
+
   .vp-case-header__rule {
     width: calc(100% + 2 * var(--vp-case-shell-pad-x, 1.875rem));
     margin-inline: calc(-1 * var(--vp-case-shell-pad-x, 1.875rem));

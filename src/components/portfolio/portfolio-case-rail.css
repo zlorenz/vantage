@@ -50,10 +50,14 @@
    */
   .vp-case-shell {
     /*
-     * Case hero needs nav clearance + Figma’s ~200px title band (pt-200).
-     * Keep the condensed token; scope the larger value to desktop shell.
+     * Pad only past the fixed navbar so .vp-case-shell__main’s border-left
+     * meets the nav bottom flush. Title-band air (Figma ~200px) lives on
+     * .vp-case-header — not here — so the divider is not pushed down.
      */
-    --vp-section-y-header-condensed: calc(var(--vp-nav-bar-height) + 12.5rem);
+    --vp-section-y-header-condensed: var(
+      --vp-header-height,
+      var(--vp-nav-bar-height)
+    );
   }
 
   .vp-case-shell__layout {
