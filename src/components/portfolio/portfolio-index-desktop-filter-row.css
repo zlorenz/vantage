@@ -293,15 +293,15 @@
 
   .vp-portfolio-index-desktop-filters__watermark {
     position: absolute;
-    right: 1rem;
-    bottom: -0.35rem;
+    right: 0;
+    bottom: 0;
     z-index: 0;
-    /* Figma: Zalando Sans Expanded Bold */
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
-    font-size: 11rem;
-    font-weight: 700;
-    line-height: 0.75;
-    color: #fff;
+    /* Lower band of 827px panel (~Figma 84:36358 y≈550); cropped public asset */
+    width: 22rem;
+    height: auto;
+    max-height: 45%;
+    object-fit: contain;
+    object-position: right bottom;
     opacity: 0.1;
     mix-blend-mode: luminosity;
     pointer-events: none;

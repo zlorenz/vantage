@@ -389,12 +389,13 @@ export function PortfolioIndexDesktopFilterRow({
                       })}
                     </ul>
                   </div>
-                  <span
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     className="vp-portfolio-index-desktop-filters__watermark"
+                    src="/brand/vap-pattern.svg"
+                    alt=""
                     aria-hidden="true"
-                  >
-                    V
-                  </span>
+                  />
                 </div>
               ) : null}
             </div>
