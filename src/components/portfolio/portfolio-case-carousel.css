@@ -198,32 +198,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(var(--vp-black-rgb), 0.25);
+  /* No full-card scrim — Figma peek shows only the frosted play glyph */
+  background: transparent;
   pointer-events: none;
   opacity: 0;
   transition: opacity 280ms ease;
 }
 
-/* Peek play glyph stays hidden — active slide uses the Lazy*Player control */
+/*
+ * Peek play control — same 80px frosted square as LazyVimeoPlayer /
+ * LazyYouTubePlayer (Figma Component 1 on active + peek cards in 149:22173).
+ * Hidden on the active slide; Lazy* owns that control.
+ */
+.vp-case-carousel__slide:not(.is-active) .vp-case-carousel__play-affordance {
+  opacity: 1;
+}
 
 .vp-case-carousel__play-circle {
   display: flex;
-  width: 4rem;
-  height: 4rem;
+  width: 5rem; /* 80px — h-20 / w-20 in Lazy* players */
+  height: 5rem;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  background: rgba(var(--vp-black-rgb), 0.4);
+  border-radius: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .vp-case-carousel__play-triangle {
   display: block;
-  margin-left: 0.25rem;
+  margin-left: 0.125rem; /* ml-0.5 */
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 10px 0 10px 16px;
+  border-width: 0.75rem 0 0.75rem 1.25rem;
   border-color: transparent transparent transparent #fff;
 }
 
