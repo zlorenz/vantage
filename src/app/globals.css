@@ -1476,10 +1476,29 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-credits {
-  columns: 2;
-  column-gap: 4rem;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
   color: var(--color-vp-text);
   font-family: var(--vp-font-sans);
+}
+
+.vp-credits__col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vp-credits--split .vp-credits__col {
+  flex: 1 1 0;
+}
+
+.vp-credits__divider {
+  flex: 0 0 auto;
+  width: 0;
+  align-self: stretch;
+  border-left: var(--vp-struct-line);
 }
 
 .vp-credits__dept {
@@ -1556,9 +1575,33 @@ body:has(.vp-work-index) #header.navbar::before {
   color: var(--color-vp-link-hover);
 }
 
+/*
+ * Case-page credits band — Figma left:328 / width:1562 on 1920
+ * (= rail width inset + 30px right gutter via --vp-case-shell-pad-x).
+ * Used on the single-video full-bleed path; multi-video stays nested in
+ * .vp-case-shell__main and does not use this class.
+ */
+.vp-case-credits-band {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 992px) {
+  .vp-case-credits-band {
+    margin-left: var(--vp-case-rail-width, 20.5rem);
+    margin-right: var(--vp-case-shell-pad-x, 1.875rem);
+    width: auto;
+    max-width: none;
+  }
+}
+
 @media (max-width: 767.98px) {
   .vp-credits {
-    columns: 1;
+    flex-direction: column;
+  }
+
+  .vp-credits__divider {
+    display: none;
   }
 
   .vp-credits__dept {

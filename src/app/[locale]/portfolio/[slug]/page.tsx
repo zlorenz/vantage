@@ -233,7 +233,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 caseCarouselSlides={null}
               />
             </div>
-            <div className="vp-case-shell__below">{caseBelowFold}</div>
+            <div className="vp-case-credits-band">{caseBelowFold}</div>
           </>
         )}
       </SectionWrapper>
