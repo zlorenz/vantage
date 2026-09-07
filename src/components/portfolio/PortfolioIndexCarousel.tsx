@@ -15,9 +15,6 @@ import {useTranslations} from 'next-intl';
 import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink';
-import {decodeHtmlEntities} from '@/lib/decode-html-entities';
-import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
-import {flattenTaxonomyTree} from '@/lib/taxonomy-tree';
 import type {Locale} from '@/i18n/routing';
 import type {TaxonomyTerm} from '@/types/sanity';
 import {
@@ -381,23 +378,6 @@ export function PortfolioIndexCarousel({
     () => slides.filter((slide) => !slide.isAppendedFeatured),
     [slides],
   );
-  /** First `videoFormatSlugs` entry → locale title for active-card overlay tag. */
-  const videoFormatLabelBySlug = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const {term} of flattenTaxonomyTree(videoFormats)) {
-      const label = decodeHtmlEntities(
-        pickLocaleFieldWithPhrases(
-          locale,
-          term.title,
-          term.titleZh,
-          phrases,
-        ),
-      );
-      if (term.slug) map.set(term.slug, label);
-      if (term.slugZh) map.set(term.slugZh, label);
-    }
-    return map;
-  }, [videoFormats, locale, phrases]);
   const slideCount = filteredSlides.length;
   const filterSignature = `${publicFilters.format}|${publicFilters.industry}|${publicFilters.market}|${committedSearch.trim().toLowerCase()}`;
 
@@ -1048,12 +1028,6 @@ export function PortfolioIndexCarousel({
               const styleCard =
                 mountContent &&
                 shouldStylePortfolioIndexCard(index, activeIndex, slideCount);
-              // Overlay format tag: first non-empty videoFormatSlugs entry.
-              const formatSlug =
-                slide.videoFormatSlugs.find((value) => Boolean(value)) ?? '';
-              const formatLabel = formatSlug
-                ? (videoFormatLabelBySlug.get(formatSlug) ?? formatSlug)
-                : '';
               const cardClassName = [
                 'vp-portfolio-index__card',
                 styleCard ? 'vp-portfolio-index__card--styled' : '',
@@ -1110,18 +1084,11 @@ export function PortfolioIndexCarousel({
                               aria-hidden
                             />
                             <div className="vp-portfolio-index__overlay-copy">
-                              {slide.brandLine || formatLabel ? (
+                              {slide.brandLine ? (
                                 <div className="vp-portfolio-index__brand-row">
-                                  {slide.brandLine ? (
-                                    <p className="vp-portfolio-index__brand">
-                                      {slide.brandLine}
-                                    </p>
-                                  ) : null}
-                                  {formatLabel ? (
-                                    <p className="vp-portfolio-index__format">
-                                      {formatLabel}
-                                    </p>
-                                  ) : null}
+                                  <p className="vp-portfolio-index__brand">
+                                    {slide.brandLine}
+                                  </p>
                                 </div>
                               ) : null}
                               {slide.campaignLine ? (
