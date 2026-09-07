@@ -8,6 +8,27 @@
  * (dim + blur + hide overlay). Mobile cards use 4:5; desktop keeps 16:9.
  */
 
+/*
+ * Carousel row rail-nav slot — shares --vp-case-rail-width from
+ * portfolio-case-rail.css (.vp-case-shell). Hidden below the desktop rail
+ * breakpoint; Phase 3 fills counter + arrows.
+ */
+.vp-case-carousel-rail-nav {
+  display: none;
+  box-sizing: border-box;
+}
+
+@media (min-width: 992px) {
+  .vp-case-carousel-rail-nav {
+    display: block;
+    flex: 0 0 var(--vp-case-rail-width, 20.5rem);
+    width: var(--vp-case-rail-width, 20.5rem);
+    max-width: var(--vp-case-rail-width, 20.5rem);
+    min-height: 1px;
+    align-self: stretch;
+  }
+}
+
 .vp-case-carousel {
   /* Match page rail: max-w-[1680px] px-4 / md:px-6 / xl:px-8 */
   --vp-case-rail-pad: 1rem;
