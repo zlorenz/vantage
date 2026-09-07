@@ -228,7 +228,8 @@
 
 @media (min-width: 768px) {
   .vp-case-carousel__card {
-    aspect-ratio: 16 / 9;
+    /* Figma 149:22173 — 960/600 (1.6). Mobile keeps 4/5 (no Figma mobile). */
+    aspect-ratio: 960 / 600;
   }
 }
 
