@@ -784,7 +784,8 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 }
 
-/* Desktop right-rail panel — Figma 90:39846 (541×636 under header).
+/* Desktop right-rail panel — Figma 90:39846 (541px wide under header).
+ * Height is content-driven (nav list + socials + CTA), capped to viewport.
  * Same open/close timing as mobile (0.28s ease-out / 0.18s ease-in). */
 #header .vp-desktop-nav-panel {
   display: none;
@@ -800,13 +801,14 @@ body:has(.vp-work-index) #header.navbar::before {
     flex-direction: column;
     box-sizing: border-box;
     width: 33.8125rem; /* 541px */
-    height: 39.75rem; /* 636px */
+    height: auto; /* wrap nav count + chrome — not a fixed 636px */
     max-width: min(33.8125rem, 100vw);
     max-height: calc(
       100dvh - var(--vp-header-height, var(--vp-nav-bar-height, 5rem))
     );
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     border-left: 1px solid rgba(255, 255, 255, 0.15);
     background-color: #0f0f0f;
@@ -840,15 +842,13 @@ body:has(.vp-work-index) #header.navbar::before {
 
   #header .vp-desktop-nav-list {
     display: flex;
-    flex: 1 1 auto;
+    flex: 0 0 auto; /* size to items — no flex-grow empty space under last item */
     flex-direction: column;
     gap: 1.5rem; /* 24px → ~63px pitch with 32px/1.2 type */
     box-sizing: border-box;
     margin: 0;
-    padding: 5rem 1.875rem; /* 80px / 30px */
+    padding: 2.5rem 1.875rem; /* 40px equal top/bottom / 30px sides */
     list-style: none;
-    overflow-x: hidden;
-    overflow-y: auto;
   }
 
   #header .vp-desktop-nav-item {
