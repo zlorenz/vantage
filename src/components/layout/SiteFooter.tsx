@@ -6,20 +6,52 @@
  * for Xinpianchang and Xiaohongshu replicate the WordPress footer.
  */
 
-import type { SiteSettings } from '@/types/sanity';
+import type {SiteSettings} from '@/types/sanity';
 
 interface SiteFooterProps {
   siteSettings: SiteSettings;
 }
 
-function XinpianchangIcon() {
+export type SiteSocialKey =
+  | 'socialVimeo'
+  | 'socialInstagram'
+  | 'socialFacebook'
+  | 'socialXinpianchang'
+  | 'socialXiaohongshu';
+
+type SocialDef = {
+  key: SiteSocialKey;
+  label: string;
+  icon: 'fa-vimeo' | 'fa-instagram' | 'fa-facebook' | 'xinpianchang' | 'xiaohongshu';
+};
+
+/** Footer order (unchanged). */
+export const FOOTER_SOCIAL_ORDER: readonly SocialDef[] = [
+  {key: 'socialVimeo', label: 'Vimeo', icon: 'fa-vimeo'},
+  {key: 'socialInstagram', label: 'Instagram', icon: 'fa-instagram'},
+  {key: 'socialFacebook', label: 'Facebook', icon: 'fa-facebook'},
+  // YouTube / LinkedIn stay in siteSettings + Studio; not shown on the front end.
+  {key: 'socialXinpianchang', label: 'Xinpianchang', icon: 'xinpianchang'},
+  {key: 'socialXiaohongshu', label: 'Xiaohongshu', icon: 'xiaohongshu'},
+] as const;
+
+/** Desktop nav menu order (Figma 90:39846) — footer order stays separate. */
+export const NAV_MENU_SOCIAL_ORDER: readonly SocialDef[] = [
+  {key: 'socialVimeo', label: 'Vimeo', icon: 'fa-vimeo'},
+  {key: 'socialFacebook', label: 'Facebook', icon: 'fa-facebook'},
+  {key: 'socialInstagram', label: 'Instagram', icon: 'fa-instagram'},
+  {key: 'socialXiaohongshu', label: 'Xiaohongshu', icon: 'xiaohongshu'},
+  {key: 'socialXinpianchang', label: 'Xinpianchang', icon: 'xinpianchang'},
+] as const;
+
+function XinpianchangIcon({className = 'h-7 w-7 fill-current'}: {className?: string}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 600 615.8"
       role="img"
       focusable="false"
-      className="h-7 w-7 fill-current"
+      className={className}
       aria-hidden
     >
       <g transform="translate(0.000000,700.000000) scale(0.100000,-0.100000)">
@@ -30,14 +62,14 @@ function XinpianchangIcon() {
   );
 }
 
-function XiaohongshuIcon() {
+function XiaohongshuIcon({className = 'h-7 w-7 fill-current'}: {className?: string}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 377.97 376.53"
       role="img"
       focusable="false"
-      className="h-7 w-7 fill-current"
+      className={className}
       aria-hidden
     >
       <path d="M43.86,1.11C21.81,5.7,3.59,22.91,1.34,46.07c-2.33,23.92,0,49.25,0,73.3v149.53c0,27.5-6.94,64.79,10.75,87.96,19.11,25.02,53.98,19.06,81.6,19.06h214.03c8.48,0,18.08,1.24,26.39-.49,22.05-4.59,40.26-21.8,42.51-44.96,2.33-23.92,0-49.25,0-73.3V107.64c0-27.5,6.94-64.79-10.75-87.96C346.76-5.34,311.89.62,284.27.62H70.24c-8.48,0-18.08-1.24-26.39.49M177.26,134.02l-10.26,27.85h17.59l-14.66,35.18,13.19,1.47c-1.45,3.93-3.4,11.34-6.35,14.42-2.17,2.26-5.48,1.71-8.31,1.71-6.39,0-19.3,2.65-22.72-4.4-1.57-3.23.68-7.31,1.95-10.26,2.66-6.17,6.19-12.48,7.57-19.06-3.19,0-7.22.63-10.26-.49-11.4-4.19,1.28-22.52,3.91-28.83,1.85-4.43,4.04-14.05,8.06-16.86,5.65-3.94,14.24-1.21,20.28-.73M61.45,226.38c4.03,0,10.02,1.2,12.46-2.93,2.59-4.39.73-14.06.73-19.06v-48.38c0-4.53-2.29-18.38,1.71-21.26,3.29-2.37,17.1-1.87,18.57,2.2,2.4,6.66.24,17.83.24,24.92v46.91c0,8.04,1.39,17.39-1.95,24.92-3.19,7.18-18.04,13.59-25.41,8.06-3.24-2.43-5.55-11.6-6.35-15.39M284.27,134.02v7.33c5.47,0,12.33-1.12,17.59.49,17.56,5.36,16.13,22.61,16.13,37.63,2.93,0,5.93-.23,8.8.49,16.85,4.21,14.66,21.06,14.66,34.69,0,7.27,1.36,15.86-3.42,21.99-5.27,6.75-13.9,5.86-21.5,5.86-2.36,0-6.25.75-8.31-.73-3.85-2.77-5.54-11-6.35-15.39,4.82,0,13.51,1.65,17.35-1.95,4.52-4.25,2.67-20.86-2.69-23.7-2.84-1.5-7.16-.73-10.26-.73h-21.99v42.51h-20.52v-20.52h20.52v-17.59h-13.19v-20.52h13.19v-7.33h20.52M237.36,141.35v20.52h-11.73v61.57h19.06v19.06h-67.43l7.82-18.32,18.57-.73v-61.57h-11.73v-20.52h45.44M320.92,161.88c0-4.17-.76-9.17.49-13.19,4.9-15.82,28.76-3.07,16.86,10.02-1.35,1.49-3.73,2.22-5.62,2.69-3.75.94-7.89.49-11.73.49M61.45,161.88l-6.11,54.24-10.02,17.59-8.8-23.46,4.4-48.38h20.52M128.88,161.88l4.4,48.38-8.8,21.99h-2.93c-7.87-12.46-8.87-25.31-10.26-39.58-.99-10.14-2.93-20.58-2.93-30.78h20.52M284.27,161.88v17.59h13.19v-17.59h-13.19M174.32,223.45l-7.33,19.06h-32.25l7.82-19.79,11.24.24,20.52.49Z" />
@@ -45,16 +77,13 @@ function XiaohongshuIcon() {
   );
 }
 
-const SOCIAL_ORDER = [
-  { key: 'socialVimeo' as const, label: 'Vimeo', icon: 'fa-vimeo' },
-  { key: 'socialInstagram' as const, label: 'Instagram', icon: 'fa-instagram' },
-  { key: 'socialFacebook' as const, label: 'Facebook', icon: 'fa-facebook' },
-  // YouTube / LinkedIn stay in siteSettings + Studio; not shown on the front end.
-  { key: 'socialXinpianchang' as const, label: 'Xinpianchang', icon: 'xinpianchang' },
-  { key: 'socialXiaohongshu' as const, label: 'Xiaohongshu', icon: 'xiaohongshu' },
-] as const;
-
-function FaIcon({ name }: { name: string }) {
+function FaIcon({
+  name,
+  className = 'h-7 w-7 fill-current',
+}: {
+  name: string;
+  className?: string;
+}) {
   const paths: Record<string, string> = {
     'fa-vimeo':
       'M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2898 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.378-1.8809 1.132l-1.129-1.457a315.06 315.06 0 003.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4929 4.7969z',
@@ -66,10 +95,34 @@ function FaIcon({ name }: { name: string }) {
   const d = paths[name];
   if (!d) return null;
   return (
-    <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current" aria-hidden>
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path d={d} />
     </svg>
   );
+}
+
+export function SocialGlyph({
+  icon,
+  className = 'h-7 w-7 fill-current',
+}: {
+  icon: SocialDef['icon'];
+  className?: string;
+}) {
+  if (icon === 'xinpianchang') return <XinpianchangIcon className={className} />;
+  if (icon === 'xiaohongshu') return <XiaohongshuIcon className={className} />;
+  return <FaIcon name={icon} className={className} />;
+}
+
+export function resolveSiteSocials(
+  siteSettings: SiteSettings,
+  order: readonly SocialDef[] = FOOTER_SOCIAL_ORDER,
+): Array<SocialDef & {url: string}> {
+  return order
+    .map((s) => {
+      const url = siteSettings[s.key]?.trim();
+      return url ? {...s, url} : null;
+    })
+    .filter((s): s is SocialDef & {url: string} => Boolean(s));
 }
 
 const DEFAULT_SOCIAL_LINK_CLASS =
@@ -78,43 +131,36 @@ const DEFAULT_SOCIAL_LINK_CLASS =
 export function FooterSocials({
   siteSettings,
   linkClassName = DEFAULT_SOCIAL_LINK_CLASS,
+  order = FOOTER_SOCIAL_ORDER,
 }: {
   siteSettings: SiteSettings;
   linkClassName?: string;
+  order?: readonly SocialDef[];
 }) {
-  const socials = SOCIAL_ORDER.filter((s) => Boolean(siteSettings[s.key]?.trim()));
+  const socials = resolveSiteSocials(siteSettings, order);
   if (!socials.length) return null;
 
   return (
     <ul className="vp-footer-social m-0 flex list-none gap-5 p-0">
-      {socials.map((s) => {
-        const url = siteSettings[s.key]!.trim();
-        return (
-          <li key={s.key}>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={s.label}
-              aria-label={s.label}
-              className={linkClassName}
-            >
-              {s.icon === 'xinpianchang' ? (
-                <XinpianchangIcon />
-              ) : s.icon === 'xiaohongshu' ? (
-                <XiaohongshuIcon />
-              ) : (
-                <FaIcon name={s.icon} />
-              )}
-            </a>
-          </li>
-        );
-      })}
+      {socials.map((s) => (
+        <li key={s.key}>
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={s.label}
+            aria-label={s.label}
+            className={linkClassName}
+          >
+            <SocialGlyph icon={s.icon} />
+          </a>
+        </li>
+      ))}
     </ul>
   );
 }
 
-export function SiteFooter({ siteSettings }: SiteFooterProps) {
+export function SiteFooter({siteSettings}: SiteFooterProps) {
   const email = siteSettings.contactEmail?.trim();
 
   return (

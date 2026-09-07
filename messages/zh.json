@@ -9,6 +9,7 @@
     "sendBrief": "发送简报",
     "primaryAria": "主导航",
     "toggleAria": "切换导航菜单",
+    "closeMenuAria": "关闭导航菜单",
     "switchToChinese": "切换到中文",
     "switchToEnglish": "切换到英文"
   },

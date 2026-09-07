@@ -84,6 +84,8 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
             briefHref={
               pagePath(locale, 'video-campaign-brief', navPages) as LinkHref
             }
+            siteSettings={siteSettings}
+            closeMenuAria={t('closeMenuAria')}
           />
         </div>
       </SiteHeaderNav>
