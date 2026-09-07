@@ -179,8 +179,13 @@
     box-sizing: border-box;
     width: 33.125rem; /* 530px */
     max-width: min(33.125rem, calc(100vw - 2rem));
-    /* Figma 84:36356 fixed 827px; clamp for shorter viewports */
-    height: min(51.6875rem, calc(100svh - 8rem));
+    /*
+     * Prefer 36rem (576px) — shorter than Figma's 827px so typical laptop
+     * viewports keep the panel fully on-screen. Clamp subtracts ~12rem for
+     * site header + filter row + panel gap + bottom clearance (the old
+     * 100svh - 8rem ignored that the panel does not start at y=0).
+     */
+    height: min(36rem, calc(100svh - 12rem));
     overflow: hidden;
     background: #0f0f0f;
     color: #fff;
@@ -192,7 +197,7 @@
     z-index: 1;
     display: flex;
     flex-direction: column;
-    /* 0 — ALL→first term shares the same 58px row pitch as term→term */
+    /* 0 — ALL→first term shares the same row pitch as term→term */
     gap: 0;
     box-sizing: border-box;
     height: 100%;
@@ -209,9 +214,9 @@
     gap: 1rem;
     width: 100%;
     margin: 0;
-    /* Figma 58px top-to-top pitch; hairline at row bottom (~19px below centered 20px text) */
+    /* Midpoint between prior ~30px pitch and Figma 58px → 44px */
     box-sizing: border-box;
-    min-height: 3.625rem; /* 58px */
+    min-height: 2.75rem; /* 44px */
     padding: 0;
     border: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
