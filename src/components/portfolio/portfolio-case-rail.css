@@ -82,7 +82,14 @@
     /* Viewport band under fixed header — keeps mark in the lower third. */
     height: calc(100vh - var(--vp-header-height, var(--vp-nav-bar-height)));
     min-height: 20rem;
-    padding: 2.5rem var(--vp-case-shell-pad-x);
+    /*
+     * Under-nav inset for “Back to work” — Figma top:40 on the rail.
+     * (Primary low offset was shell title-band padding; fixed in the
+     * divider commit. This is the remaining intentional gap.)
+     */
+    padding-top: 2.5rem;
+    padding-inline: var(--vp-case-shell-pad-x);
+    padding-bottom: 2.5rem;
     pointer-events: none;
   }
 
@@ -99,8 +106,10 @@
     pointer-events: auto;
     display: inline-flex;
     align-items: center;
+    align-self: flex-start;
     gap: 1rem;
     max-width: 100%;
+    margin: 0;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.5);
   }
