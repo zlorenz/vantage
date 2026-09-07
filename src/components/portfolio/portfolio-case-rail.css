@@ -87,7 +87,8 @@
 
   .vp-case-shell__layout {
     display: flex;
-    align-items: flex-start;
+    /* Stretch rail to header column height so the mark can pin to the bottom. */
+    align-items: stretch;
     width: 100%;
   }
 
@@ -98,16 +99,17 @@
     flex: 0 0 var(--vp-case-rail-width);
     width: var(--vp-case-rail-width);
     max-width: var(--vp-case-rail-width);
-    align-self: flex-start;
+    align-self: stretch;
     box-sizing: border-box;
     /*
      * Under-nav inset for “Back to work” — Figma top:40 on the rail.
-     * (Primary low offset was shell title-band padding; fixed in the
-     * divider commit. This is the remaining intentional gap.)
+     * Horizontal pad lives on the back control only so the geometric mark
+     * can span the full rail (viewport left → sidebar divider).
      */
     padding-top: 2.5rem;
-    padding-inline: var(--vp-case-shell-pad-x);
-    padding-bottom: 2.5rem;
+    padding-inline: 0;
+    /* No bottom pad — mark sits flush above the full-bleed video. */
+    padding-bottom: 0;
     pointer-events: none;
   }
 
@@ -134,6 +136,8 @@
     gap: 1rem;
     max-width: 100%;
     margin: 0;
+    padding-inline: var(--vp-case-shell-pad-x);
+    box-sizing: border-box;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.5);
   }
@@ -179,8 +183,10 @@
   .vp-case-rail__mark {
     display: block;
     width: 100%;
-    max-width: 18rem;
+    max-width: none;
     height: auto;
+    /* Push to the bottom of the stretched header-row rail (above the video). */
+    margin-top: auto;
     opacity: 0.08;
     mix-blend-mode: luminosity;
     pointer-events: none;
