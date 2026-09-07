@@ -173,7 +173,7 @@ export function PortfolioCaseHeader({
     <header className="vp-case-header">
       <div className="vp-case-header__title-block">
         {brandLine ? (
-          <p className="vp-case-header__brand">{brandLine}</p>
+          <p className="vp-case-header__brand">{`●  ${brandLine}`}</p>
         ) : null}
         {campaignLine ? (
           <h1 className="vp-case-header__campaign">{campaignLine}</h1>
