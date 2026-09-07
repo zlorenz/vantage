@@ -95,32 +95,15 @@ function smoothstep01(t: number): number {
 }
 
 /**
- * Warp blend weight: 0 = identity (no zoom/displace), 1 = full loupe warp.
- *
- * Only dampens when the *unwarped* source has no solid reveal coverage near
- * the cusp (open counter / collage hole). isPointInPath alone is wrong here:
- * near the epsilon split it can report inside while the reveal buffer is
- * still transparent — those are exactly the samples that jump onto the
- * opposite stroke under full warp. Letterform pixels with real coverage
- * keep full magnification.
+ * Warp blend near the A cusp. `dVb` = viewBox distance from unwarped sample
+ * to the cusp. Far from the cusp → 1 (full warp) with no coverage sample.
  */
-function cuspWarpAmount(
-  logoCssX: number,
-  logoCssY: number,
-  logoX: number,
-  logoY: number,
-  logoW: number,
-  logoH: number,
-  hasRevealCoverage: boolean,
-): number {
+function cuspWarpAmount(dVb: number, hasRevealCoverage: boolean): number {
+  if (dVb >= CUSP_WARP_DAMP_OUTER) return 1;
   if (hasRevealCoverage) return 1;
-  const vbX = ((logoCssX - logoX) / logoW) * SYMBOL_VIEWBOX_W;
-  const vbY = ((logoCssY - logoY) / logoH) * SYMBOL_VIEWBOX_H;
-  const d = Math.hypot(vbX - CUSP_VB_X, vbY - CUSP_VB_Y);
-  if (d <= CUSP_WARP_DAMP_INNER) return 0;
-  if (d >= CUSP_WARP_DAMP_OUTER) return 1;
+  if (dVb <= CUSP_WARP_DAMP_INNER) return 0;
   return smoothstep01(
-    (d - CUSP_WARP_DAMP_INNER) / (CUSP_WARP_DAMP_OUTER - CUSP_WARP_DAMP_INNER),
+    (dVb - CUSP_WARP_DAMP_INNER) / (CUSP_WARP_DAMP_OUTER - CUSP_WARP_DAMP_INNER),
   );
 }
 
@@ -687,19 +670,19 @@ function buildLensDisc(
       // Pre-displacement source = unwarped disc position in logo CSS.
       const preLogoX = originX + discCss / 2 + dxCss;
       const preLogoY = originY + discCss / 2 + dyCss;
-      const [preSx, preSy] = toSrc(discCss / 2 + dxCss, discCss / 2 + dyCss);
-      const preCover =
-        sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
-        ALPHA_SOLID;
-      const warpAmt = cuspWarpAmount(
-        preLogoX,
-        preLogoY,
-        logoX,
-        logoY,
-        logoW,
-        logoH,
-        preCover,
+      const dVb = Math.hypot(
+        ((preLogoX - logoX) / logoW) * SYMBOL_VIEWBOX_W - CUSP_VB_X,
+        ((preLogoY - logoY) / logoH) * SYMBOL_VIEWBOX_H - CUSP_VB_Y,
       );
+      // Skip reveal coverage sample when far from the cusp (full warp).
+      let preCover = true;
+      if (dVb < CUSP_WARP_DAMP_OUTER) {
+        const [preSx, preSy] = toSrc(discCss / 2 + dxCss, discCss / 2 + dyCss);
+        preCover =
+          sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
+          ALPHA_SOLID;
+      }
+      const warpAmt = cuspWarpAmount(dVb, preCover);
       // Lerp identity (dist) → full warp so samples near the A cusp don't
       // jump the thin counter gap onto the opposite stroke.
       const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
@@ -818,20 +801,19 @@ function buildLensDisc(
       const rw = rimWeight(t);
       const preLogoX = originX + discCss / 2 + dxCss;
       const preLogoY = originY + discCss / 2 + dyCss;
-      const preSx = (preLogoX - logoX) * scaleX;
-      const preSy = (preLogoY - logoY) * scaleY;
-      const preCover =
-        sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
-        ALPHA_SOLID;
-      const warpAmt = cuspWarpAmount(
-        preLogoX,
-        preLogoY,
-        logoX,
-        logoY,
-        logoW,
-        logoH,
-        preCover,
+      const dVb = Math.hypot(
+        ((preLogoX - logoX) / logoW) * SYMBOL_VIEWBOX_W - CUSP_VB_X,
+        ((preLogoY - logoY) / logoH) * SYMBOL_VIEWBOX_H - CUSP_VB_Y,
       );
+      let preCover = true;
+      if (dVb < CUSP_WARP_DAMP_OUTER) {
+        const preSx = (preLogoX - logoX) * scaleX;
+        const preSy = (preLogoY - logoY) * scaleY;
+        preCover =
+          sampleChannelBilinear(src, revealDw, revealDh, preSx, preSy, 3) >=
+          ALPHA_SOLID;
+      }
+      const warpAmt = cuspWarpAmount(dVb, preCover);
       const fullDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
       const sampleDist = dist + (fullDist - dist) * warpAmt;
       const sampleXCss = discCss / 2 + ux * sampleDist;
