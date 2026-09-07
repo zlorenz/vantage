@@ -645,18 +645,6 @@
   color: #fdb913;
 }
 
-/* Figma ● before brand — ~0.8em relative to brand text. */
-.vp-portfolio-index__brand::before {
-  content: "";
-  display: inline-block;
-  width: 0.8em;
-  height: 0.8em;
-  margin-right: 0.55em;
-  border-radius: 50%;
-  background: #fdb913;
-  vertical-align: 0.05em;
-}
-
 .vp-portfolio-index__format {
   color: #fff;
 }
