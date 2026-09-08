@@ -103,9 +103,10 @@
   align-items: flex-start;
   gap: 0;
   margin: 0;
-  font-family: var(--font-vp-heading);
+  /* Zalando primary — VN-heavy credit names; weight tunable (Special Gothic is 400-only). */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   letter-spacing: -0.02rem;
   line-height: 1.5;

@@ -265,8 +265,8 @@
   /*
    * Locked home-carousel tokens (Figma 77:12462). Component-scoped — not
    * sitewide --vp-* until a second surface needs them. Mobile keeps prior
-   * stacked layout/type. Typeface: Special Gothic / Mona; Zalando only via
-   * --font-vp-heading as Vietnamese glyph fallback (never as primary face).
+   * stacked layout/type. Typeface: Special Gothic / Mona; Zalando is VN
+   * glyph fallback in the heading stack, and primary only for credit names.
    */
   .vp-proto-carousel {
     --vp-home-carousel-brand-accent: #fdb913;
@@ -443,9 +443,10 @@
   }
 
   .vp-proto-carousel__credit dd {
-    font-family: var(--font-vp-heading);
+    /* Zalando primary — VN-heavy credit names; weight tunable (Special Gothic is 400-only). */
+    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: var(--vp-home-carousel-tracking-tight-16);
     line-height: 1.4;
     text-transform: uppercase;

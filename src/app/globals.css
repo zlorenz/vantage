@@ -1579,9 +1579,10 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credit-names {
   flex: 1 1 auto;
   min-width: 0;
-  font-family: var(--font-vp-heading);
+  /* Zalando primary — VN-heavy credit names; weight tunable (Special Gothic is 400-only). */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.5;
   letter-spacing: -0.02rem;
   text-transform: uppercase;
