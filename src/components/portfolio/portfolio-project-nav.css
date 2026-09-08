@@ -96,7 +96,7 @@
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.08rem; /* -1.28px */
-  text-transform: capitalize;
+  text-transform: uppercase;
   color: #fff;
   overflow-wrap: break-word;
 }
@@ -245,7 +245,7 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* 32 */
+  gap: 1.5rem; /* 24 — match homepage carousel --vp-home-carousel-title-tag-gap */
   padding: 1.875rem 3rem 3rem; /* 30 / 48 / 48 */
   pointer-events: none;
 }
@@ -259,14 +259,18 @@
 
 .vp-project-nav__brand {
   margin: 0;
-  font-family: var(--font-vp-heading);
+  /* Match homepage carousel brand: Zalando Bold + text-box-trim so the
+   * meta→title gap is cap-to-cap, not ascent-inflated. */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
   font-size: 1rem; /* 16 */
-  font-weight: 400;
-  line-height: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
   letter-spacing: -0.02rem; /* -0.32px */
   text-transform: uppercase;
   color: #fdb913;
   white-space: pre;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 .vp-project-nav__meta-rule {
@@ -281,10 +285,12 @@
   font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
   font-size: 1rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.25;
   letter-spacing: -0.02rem;
   text-transform: uppercase;
   color: #fff;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 .vp-project-nav__title {
@@ -297,6 +303,9 @@
   text-transform: uppercase;
   color: #fff;
   overflow-wrap: break-word;
+  /* Trim title ascent so flex gap meets cap height (homepage campaign trim). */
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
 }
 
 @media (max-width: 991px) {
