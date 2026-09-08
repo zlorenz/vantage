@@ -1,0 +1,125 @@
+/**
+ * Site footer chrome — Figma 149:21611
+ * 100px structural bar: email | orange mark | social cells.
+ * Soft black via --vp-bg. Hairlines via --vp-struct-line.
+ * No mobile reflow until designer delivers mobile frames.
+ */
+
+.vp-site-footer {
+  --vp-footer-height: 6.25rem; /* 100px */
+
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--vp-footer-height);
+  min-height: var(--vp-footer-height);
+  margin: 0;
+  padding: 0;
+  border-top: var(--vp-struct-line);
+  background: var(--vp-bg);
+  color: var(--vp-text);
+}
+
+.vp-site-footer__email {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  box-sizing: border-box;
+  width: 31.25rem; /* 500px */
+  max-width: 100%;
+  height: 100%;
+  padding: 1.625rem 1.875rem; /* 26px 30px */
+  border-right: var(--vp-struct-line);
+}
+
+.vp-site-footer__email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem; /* 12px */
+  min-width: 0;
+  color: #fff;
+  font-family: var(--font-vp-heading);
+  font-size: 1.25rem; /* 20px */
+  font-weight: 700;
+  letter-spacing: -0.025em; /* -0.4px at 20px */
+  line-height: 1.5;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--vp-transition-fast);
+}
+
+.vp-site-footer__email-link:hover {
+  color: var(--vp-link);
+}
+
+.vp-site-footer__mail-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 2rem; /* 32px */
+  height: 2rem;
+}
+
+.vp-site-footer__mark {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 10rem; /* 160px */
+  height: 100%;
+  overflow: hidden;
+  background: var(--vp-orange);
+}
+
+.vp-site-footer__mark-img {
+  display: block;
+  width: 2.5rem; /* ~40px — matches Figma mark ink */
+  height: 2.5rem;
+  object-fit: contain;
+}
+
+.vp-site-footer__socials {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vp-site-footer__social {
+  flex: 0 0 6.25rem; /* 100px */
+  width: 6.25rem;
+  height: 100%;
+  border-left: var(--vp-struct-line);
+}
+
+.vp-site-footer__social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  text-decoration: none;
+  transition: color var(--vp-transition-fast);
+}
+
+.vp-site-footer__social-link:hover {
+  color: var(--vp-link);
+}
+
+/* Mask so Figma SVG glyphs inherit link color / hover. */
+.vp-site-footer__social-icon {
+  display: block;
+  width: 1.5rem; /* 24px */
+  height: 1.5rem;
+  background-color: currentColor;
+  -webkit-mask: var(--vp-footer-social-icon) center / contain no-repeat;
+  mask: var(--vp-footer-social-icon) center / contain no-repeat;
+}

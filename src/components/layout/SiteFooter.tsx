@@ -1,12 +1,14 @@
 /**
- * SiteFooter — minimal footer with email and social icons.
+ * SiteFooter — structural chrome bar (Figma 149:21611).
  *
- * Server component. Pure black background, email left, social icons right.
- * Social links render only when populated in siteSettings. Custom SVG icons
- * for Xinpianchang and Xiaohongshu replicate the WordPress footer.
+ * Server component. Soft-black bar: email left, orange mark center,
+ * social icon cells right. Hidden on homepage / work index via globals.css.
+ * Social links render only when populated in siteSettings.
  */
 
+import type {CSSProperties} from 'react';
 import type {SiteSettings} from '@/types/sanity';
+import './site-footer.css';
 
 interface SiteFooterProps {
   siteSettings: SiteSettings;
@@ -23,26 +25,47 @@ type SocialDef = {
   key: SiteSocialKey;
   label: string;
   icon: 'fa-vimeo' | 'fa-instagram' | 'fa-facebook' | 'xinpianchang' | 'xiaohongshu';
+  /** Figma-exported glyph for the site footer chrome cells. */
+  footerSrc: string;
 };
 
-/** Footer order (unchanged). */
+/** Sitewide social order — footer + desktop nav (Instagram before Facebook). */
 export const FOOTER_SOCIAL_ORDER: readonly SocialDef[] = [
-  {key: 'socialVimeo', label: 'Vimeo', icon: 'fa-vimeo'},
-  {key: 'socialInstagram', label: 'Instagram', icon: 'fa-instagram'},
-  {key: 'socialFacebook', label: 'Facebook', icon: 'fa-facebook'},
+  {
+    key: 'socialVimeo',
+    label: 'Vimeo',
+    icon: 'fa-vimeo',
+    footerSrc: '/brand/footer/vimeo.svg',
+  },
+  {
+    key: 'socialInstagram',
+    label: 'Instagram',
+    icon: 'fa-instagram',
+    footerSrc: '/brand/footer/instagram.svg',
+  },
+  {
+    key: 'socialFacebook',
+    label: 'Facebook',
+    icon: 'fa-facebook',
+    footerSrc: '/brand/footer/facebook.svg',
+  },
   // YouTube / LinkedIn stay in siteSettings + Studio; not shown on the front end.
-  {key: 'socialXinpianchang', label: 'Xinpianchang', icon: 'xinpianchang'},
-  {key: 'socialXiaohongshu', label: 'Xiaohongshu', icon: 'xiaohongshu'},
+  {
+    key: 'socialXinpianchang',
+    label: 'Xinpianchang',
+    icon: 'xinpianchang',
+    footerSrc: '/brand/footer/xinpianchang.svg',
+  },
+  {
+    key: 'socialXiaohongshu',
+    label: 'Xiaohongshu',
+    icon: 'xiaohongshu',
+    footerSrc: '/brand/footer/xiaohongshu.svg',
+  },
 ] as const;
 
-/** Desktop nav menu order (Figma 90:39846) — footer order stays separate. */
-export const NAV_MENU_SOCIAL_ORDER: readonly SocialDef[] = [
-  {key: 'socialVimeo', label: 'Vimeo', icon: 'fa-vimeo'},
-  {key: 'socialFacebook', label: 'Facebook', icon: 'fa-facebook'},
-  {key: 'socialInstagram', label: 'Instagram', icon: 'fa-instagram'},
-  {key: 'socialXiaohongshu', label: 'Xiaohongshu', icon: 'xiaohongshu'},
-  {key: 'socialXinpianchang', label: 'Xinpianchang', icon: 'xinpianchang'},
-] as const;
+/** Desktop nav menu uses the same order as the footer. */
+export const NAV_MENU_SOCIAL_ORDER: readonly SocialDef[] = FOOTER_SOCIAL_ORDER;
 
 function XinpianchangIcon({className = 'h-7 w-7 fill-current'}: {className?: string}) {
   return (
@@ -162,25 +185,62 @@ export function FooterSocials({
 
 export function SiteFooter({siteSettings}: SiteFooterProps) {
   const email = siteSettings.contactEmail?.trim();
+  const socials = resolveSiteSocials(siteSettings, FOOTER_SOCIAL_ORDER);
 
   return (
-    <footer className="vp-site-footer bg-vp-bg py-16 text-vp-text">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center justify-between gap-6 max-[575px]:flex-col min-[576px]:flex-row min-[576px]:items-center">
-          <div className="text-center min-[576px]:text-left">
-            {email ? (
-              <a
-                href={`mailto:${email}`}
-                className="text-xl font-bold text-vp-link hover:text-vp-link-hover"
-              >
-                {email}
-              </a>
-            ) : null}
-          </div>
-
-          <FooterSocials siteSettings={siteSettings} />
-        </div>
+    <footer className="vp-site-footer">
+      <div className="vp-site-footer__email">
+        {email ? (
+          <a href={`mailto:${email}`} className="vp-site-footer__email-link">
+            <img
+              src="/brand/footer/mail.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="vp-site-footer__mail-icon"
+              aria-hidden
+            />
+            <span>{email}</span>
+          </a>
+        ) : null}
       </div>
+
+      <div className="vp-site-footer__mark" aria-hidden="true">
+        <img
+          src="/brand/footer/mark.svg"
+          alt=""
+          width={40}
+          height={40}
+          className="vp-site-footer__mark-img"
+        />
+      </div>
+
+      {socials.length ? (
+        <ul className="vp-site-footer__socials">
+          {socials.map((s) => (
+            <li key={s.key} className="vp-site-footer__social">
+              <a
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={s.label}
+                aria-label={s.label}
+                className="vp-site-footer__social-link"
+              >
+                <span
+                  className="vp-site-footer__social-icon"
+                  style={
+                    {
+                      '--vp-footer-social-icon': `url(${s.footerSrc})`,
+                    } as CSSProperties
+                  }
+                  aria-hidden
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </footer>
   );
 }
