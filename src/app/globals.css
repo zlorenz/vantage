@@ -1605,9 +1605,9 @@ body:has(.vp-work-index) #header.navbar::before {
 /*
  * Case-page credits band — left inset matches the rail
  * (--vp-case-rail-width). Desktop: rail-edge vertical hairline continues the
- * header wireframe; band runs flush to the viewport right so department
- * rules meet the right edge (intentional break from Figma’s 30px right gutter).
- * Multi-video stays nested in .vp-case-shell__main and does not use this class.
+ * carousel media border-left through to the department rules; band runs flush
+ * to the viewport right so department rules meet the right edge (intentional
+ * break from Figma’s 30px right gutter).
  */
 .vp-case-credits-band {
   width: 100%;

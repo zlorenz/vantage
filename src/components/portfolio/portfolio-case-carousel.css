@@ -35,10 +35,19 @@
   .vp-case-carousel-row {
     flex-direction: row;
     align-items: stretch;
+    /*
+     * Full-width top/bottom hairlines across rail-nav + media:
+     * top sits flush under the header vap-pattern; bottom runs from the
+     * carousel’s BL corner to the viewport left edge.
+     */
+    border-top: var(--vp-struct-line);
+    border-bottom: var(--vp-struct-line);
   }
 
   .vp-case-carousel-row__media {
     flex: 1 1 auto;
+    /* Vertical hairline at the rail/media seam — continues into credits. */
+    border-left: var(--vp-struct-line);
   }
 }
 
@@ -65,12 +74,19 @@
   max-width: none;
   margin: 0;
   /* Fills flex:1 media column — no 100vw / 50%-50vw escape (old 1680 parent). */
-  /* Figma carousel band top/bottom hairlines. */
+  /* Mobile: own top/bottom hairlines. Desktop: row owns full-bleed rules. */
   border-top: var(--vp-struct-line);
   border-bottom: var(--vp-struct-line);
   box-sizing: border-box;
   /* Slide 68.7cqw resolves against this box (not the Embla track / padded viewport). */
   container-type: inline-size;
+}
+
+@media (min-width: 992px) {
+  .vp-case-carousel {
+    border-top: 0;
+    border-bottom: 0;
+  }
 }
 
 
