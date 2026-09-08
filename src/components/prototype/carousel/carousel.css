@@ -265,8 +265,8 @@
   /*
    * Locked home-carousel tokens (Figma 77:12462). Component-scoped — not
    * sitewide --vp-* until a second surface needs them. Mobile keeps prior
-   * stacked layout/type. Typeface: Special Gothic / Mona; Zalando Bold via
-   * --font-vp-heading-fallback for brand/format/credit names only.
+   * stacked layout/type. Typeface: Special Gothic / Mona; Zalando only via
+   * --font-vp-heading as Vietnamese glyph fallback (never as primary face).
    */
   .vp-proto-carousel {
     --vp-home-carousel-brand-accent: #fdb913;

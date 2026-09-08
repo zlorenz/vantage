@@ -12,7 +12,7 @@ Naming: `--vp-candidate-[name]`
 
 | Name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-font-zalando-expanded` | Zalando Sans Expanded Bold | Brand/category/title/filter labels in Figma | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12462 | adopted — home meta only | Desktop home brand, format, and credit *names* use `--font-vp-heading-fallback` at 700 to match Figma Bold. Campaign title stays Special Gothic. **Open:** license Zalando sitewide vs keep Special Gothic for display. |
+| `--vp-candidate-font-zalando-expanded` | Zalando Sans Expanded | Vietnamese-glyph fallback in `--font-vp-heading` stack | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12462 | adopted — stack fallback only | Loaded as `--font-vp-heading-fallback` and composed second in `--font-vp-heading`. Never used alone as a primary `font-family`. Figma often labels display type “Zalando”; product intent is Special Gothic primary. **Open:** license Zalando sitewide vs keep as VN-only fallback. |
 
 ### Closed content note
 

@@ -23,7 +23,7 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 | `--vp-home-carousel-counter-muted` | `rgba(255,255,255,0.6)` | Counter numerals + rule | |
 | `--vp-home-carousel-scrim` | symmetric `rgba(0,0,0,0.3)` vignette | Desktop overlay scrim | Mobile keeps prior bottom-weighted scrim. |
 
-**Font note (not a CSS colour token):** home brand / format / credit *names* use `--font-vp-heading-fallback` (Zalando Sans Expanded) at weight 700; campaign title stays Special Gothic. Sitewide Zalando licensing remains an open product decision — see `candidate-tokens.md`.
+**Font note (not a CSS colour token):** all display headings use `--font-vp-heading` (Special Gothic Expanded One primary → Zalando Sans Expanded Vietnamese-glyph fallback → system-ui). Never set `--font-vp-heading-fallback` alone as `font-family`. Sitewide Zalando licensing remains an open product decision — see `candidate-tokens.md`.
 
 ---
 
