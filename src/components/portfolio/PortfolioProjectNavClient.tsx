@@ -1,12 +1,15 @@
 'use client'
 
 /**
- * Interactive project-nav chrome — left panel, right cover/meta, bottom
- * EXPLORE + prev/next cycling the ±5 neighbor window (Figma 92:40293).
+ * Project-nav carousel — Embla strip (loop) matching multi-video case
+ * gestures: drag/swipe, horizontal wheel paging, keyboard, arrow buttons.
+ * One dual-panel slide visible at a time (no peek); horizontal snap animation.
  */
 
-import {useCallback, useMemo, useState} from 'react'
+import {useCallback, useEffect, useMemo, useRef} from 'react'
 import Image from 'next/image'
+import useEmblaCarousel from 'embla-carousel-react'
+import {WheelGestures} from 'wheel-gestures'
 import {phraseRecordToMap} from '@phrase-book'
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink'
 import type {Locale} from '@/i18n/routing'
@@ -14,6 +17,9 @@ import {resolveEntryDisplayTitleParts} from '@/lib/display-titles'
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field'
 import {urlForImage} from '@/lib/sanity'
 import type {PortfolioNavCard} from '@/lib/portfolio-nav'
+
+/** Same threshold as PortfolioCaseCarousel horizontal wheel paging. */
+const WHEEL_GESTURE_THRESHOLD_PX = 30
 
 export type PortfolioProjectNavClientProps = {
   locale: Locale
@@ -62,6 +68,40 @@ function NavChevron({direction}: {direction: 'prev' | 'next'}) {
   )
 }
 
+function slideCopy(
+  card: PortfolioNavCard,
+  locale: Locale,
+  phrases: Record<string, string>,
+) {
+  const phraseMap = phraseRecordToMap(phrases)
+  const parts = resolveEntryDisplayTitleParts(card, locale, phraseMap)
+  const brandLine = parts.brandName?.trim() ?? ''
+  const titleLine =
+    parts.campaignTitle?.trim() ||
+    pickLocaleFieldWithPhrases(
+      locale,
+      card.title,
+      card.titleZh,
+      phraseMap,
+    ).trim()
+  const formatLine = pickLocaleFieldWithPhrases(
+    locale,
+    card.primaryFormat?.title,
+    card.primaryFormat?.titleZh,
+    phraseMap,
+  ).trim()
+  const imageUrl = card.featuredImage
+    ? urlForImage(card.featuredImage)
+        .width(1250)
+        .height(624)
+        .fit('crop')
+        .url()
+    : null
+  const slugParam =
+    locale === 'zh' ? card.slugZh || card.slug || '' : card.slug || ''
+  return {brandLine, titleLine, formatLine, imageUrl, slugParam}
+}
+
 export function PortfolioProjectNavClient({
   locale,
   phrases,
@@ -69,53 +109,109 @@ export function PortfolioProjectNavClient({
   cardRingIndices,
   initialRingIndex,
 }: PortfolioProjectNavClientProps) {
-  const startLocal = useMemo(() => {
+  const startIndex = useMemo(() => {
     const idx = cardRingIndices.indexOf(initialRingIndex)
     return idx >= 0 ? idx : 0
   }, [cardRingIndices, initialRingIndex])
 
-  const [localIndex, setLocalIndex] = useState(startLocal)
   const count = cards.length
+  const canLoop = count > 1
 
-  const goPrev = useCallback(() => {
-    setLocalIndex((i) => (i - 1 + count) % count)
-  }, [count])
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: canLoop,
+    align: 'start',
+    containScroll: false,
+    dragFree: false,
+    startIndex,
+  })
 
-  const goNext = useCallback(() => {
-    setLocalIndex((i) => (i + 1) % count)
-  }, [count])
+  const gestureAccumRef = useRef(0)
+  const gestureFiredRef = useRef(false)
 
-  const active = cards[localIndex]
-  if (!active || count < 1) return null
+  const scrollPrev = useCallback(() => {
+    emblaApi?.scrollPrev()
+  }, [emblaApi])
 
-  const phraseMap = phraseRecordToMap(phrases)
-  const parts = resolveEntryDisplayTitleParts(active, locale, phraseMap)
-  const brandLine = parts.brandName?.trim() ?? ''
-  const titleLine =
-    parts.campaignTitle?.trim() ||
-    pickLocaleFieldWithPhrases(
-      locale,
-      active.title,
-      active.titleZh,
-      phraseMap,
-    ).trim()
-  const formatLine = pickLocaleFieldWithPhrases(
-    locale,
-    active.primaryFormat?.title,
-    active.primaryFormat?.titleZh,
-    phraseMap,
-  ).trim()
+  const scrollNext = useCallback(() => {
+    emblaApi?.scrollNext()
+  }, [emblaApi])
 
-  const imageUrl = active.featuredImage
-    ? urlForImage(active.featuredImage)
-        .width(1250)
-        .height(624)
-        .fit('crop')
-        .url()
-    : null
+  // Horizontal-only wheel paging — same pattern as PortfolioCaseCarousel.
+  useEffect(() => {
+    if (!emblaApi || !canLoop) return
 
-  const slugParam =
-    locale === 'zh' ? active.slugZh || active.slug || '' : active.slug || ''
+    const viewport = emblaApi.rootNode()
+    const wheelGestures = WheelGestures({
+      reverseSign: false,
+      preventWheelAction: false,
+    })
+
+    const unobserve = wheelGestures.observe(viewport)
+    const unsubscribe = wheelGestures.on('wheel', (wheelEventState) => {
+      const {isStart, isMomentum, axisDelta, event} = wheelEventState
+      const [deltaX, deltaY] = axisDelta
+
+      if (isStart) {
+        gestureAccumRef.current = 0
+        gestureFiredRef.current = false
+      }
+
+      if (event.ctrlKey) return
+      if (Math.abs(deltaX) <= Math.abs(deltaY) || deltaX === 0) return
+
+      event.preventDefault?.()
+      if (isMomentum) return
+
+      gestureAccumRef.current += Math.abs(deltaX)
+      if (gestureFiredRef.current) return
+      if (gestureAccumRef.current < WHEEL_GESTURE_THRESHOLD_PX) return
+
+      gestureFiredRef.current = true
+      if (deltaX > 0) {
+        emblaApi.scrollNext()
+      } else {
+        emblaApi.scrollPrev()
+      }
+    })
+
+    return () => {
+      unsubscribe()
+      unobserve()
+      wheelGestures.disconnect()
+    }
+  }, [emblaApi, canLoop])
+
+  useEffect(() => {
+    if (!emblaApi || !canLoop) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat) return
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+
+      const target = event.target as HTMLElement | null
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      if (event.key === 'ArrowRight') {
+        emblaApi.scrollNext()
+      } else {
+        emblaApi.scrollPrev()
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [emblaApi, canLoop])
+
+  if (count < 1) return null
 
   return (
     <section
@@ -130,88 +226,127 @@ export function PortfolioProjectNavClient({
           <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
           <span className="vp-project-nav__tick vp-project-nav__tick--br" />
         </div>
-        <div className="vp-project-nav__widget">
-        <div className="vp-project-nav__left">
-          <div className="vp-project-nav__heading">
-            <p className="vp-project-nav__label">Next Project</p>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="vp-project-nav__mark"
-            src="/brand/vap-pattern.svg"
-            alt=""
-            aria-hidden="true"
-          />
 
-          <div className="vp-project-nav__chrome">
-            {slugParam ? (
-              <PortfolioEntryLink
-                slug={slugParam}
-                className="vp-project-nav__explore"
-              >
-                explore
-              </PortfolioEntryLink>
-            ) : (
-              <span className="vp-project-nav__explore" aria-disabled>
-                explore
-              </span>
-            )}
-            <div className="vp-project-nav__arrows">
-              <button
-                type="button"
-                className="vp-project-nav__arrow vp-project-nav__arrow--prev"
-                onClick={goPrev}
-                aria-label="Previous project"
-              >
-                <NavChevron direction="prev" />
-              </button>
-              <button
-                type="button"
-                className="vp-project-nav__arrow vp-project-nav__arrow--next"
-                onClick={goNext}
-                aria-label="Next project"
-              >
-                <NavChevron direction="next" />
-              </button>
-            </div>
-          </div>
-        </div>
+        <div
+          ref={emblaRef}
+          className="vp-project-nav__viewport"
+          aria-roledescription="carousel"
+        >
+          <div className="vp-project-nav__container">
+            {cards.map((card, index) => {
+              const {
+                brandLine,
+                titleLine,
+                formatLine,
+                imageUrl,
+                slugParam,
+              } = slideCopy(card, locale, phrases)
 
-        <div className="vp-project-nav__right">
-          {imageUrl ? (
-            <Image
-              key={active._id}
-              className="vp-project-nav__cover"
-              src={imageUrl}
-              alt=""
-              fill
-              sizes="(max-width: 991px) 100vw, 65vw"
-              priority={false}
-            />
-          ) : (
-            <div className="vp-project-nav__cover-fallback" aria-hidden />
-          )}
-          <div className="vp-project-nav__cover-gradient" aria-hidden />
-          <CrosshairMark />
-          <div className="vp-project-nav__meta">
-            {(brandLine || formatLine) && (
-              <div className="vp-project-nav__meta-row">
-                {brandLine ? (
-                  <p className="vp-project-nav__brand">{`●  ${brandLine}`}</p>
-                ) : null}
-                {brandLine && formatLine ? (
-                  <span className="vp-project-nav__meta-rule" aria-hidden />
-                ) : null}
-                {formatLine ? (
-                  <p className="vp-project-nav__format">{formatLine}</p>
-                ) : null}
-              </div>
-            )}
-            {titleLine ? (
-              <p className="vp-project-nav__title">{titleLine}</p>
-            ) : null}
+              return (
+                <div
+                  className="vp-project-nav__slide"
+                  key={card._id}
+                  data-ring-index={cardRingIndices[index]}
+                >
+                  <div className="vp-project-nav__widget">
+                    <div className="vp-project-nav__left">
+                      <div className="vp-project-nav__heading">
+                        <p className="vp-project-nav__label">Next Project</p>
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        className="vp-project-nav__mark"
+                        src="/brand/vap-pattern.svg"
+                        alt=""
+                        aria-hidden="true"
+                      />
+
+                      <div className="vp-project-nav__chrome">
+                        {slugParam ? (
+                          <PortfolioEntryLink
+                            slug={slugParam}
+                            className="vp-project-nav__explore"
+                          >
+                            explore
+                          </PortfolioEntryLink>
+                        ) : (
+                          <span className="vp-project-nav__explore" aria-disabled>
+                            explore
+                          </span>
+                        )}
+                        <div className="vp-project-nav__arrows">
+                          <button
+                            type="button"
+                            className="vp-project-nav__arrow vp-project-nav__arrow--prev"
+                            onClick={scrollPrev}
+                            aria-label="Previous project"
+                            disabled={!canLoop}
+                          >
+                            <NavChevron direction="prev" />
+                          </button>
+                          <button
+                            type="button"
+                            className="vp-project-nav__arrow vp-project-nav__arrow--next"
+                            onClick={scrollNext}
+                            aria-label="Next project"
+                            disabled={!canLoop}
+                          >
+                            <NavChevron direction="next" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="vp-project-nav__right">
+                      {imageUrl ? (
+                        <Image
+                          className="vp-project-nav__cover"
+                          src={imageUrl}
+                          alt=""
+                          fill
+                          sizes="(max-width: 991px) 100vw, 65vw"
+                          priority={index === startIndex}
+                        />
+                      ) : (
+                        <div
+                          className="vp-project-nav__cover-fallback"
+                          aria-hidden
+                        />
+                      )}
+                      <div
+                        className="vp-project-nav__cover-gradient"
+                        aria-hidden
+                      />
+                      <CrosshairMark />
+                      <div className="vp-project-nav__meta">
+                        {(brandLine || formatLine) && (
+                          <div className="vp-project-nav__meta-row">
+                            {brandLine ? (
+                              <p className="vp-project-nav__brand">{`●  ${brandLine}`}</p>
+                            ) : null}
+                            {brandLine && formatLine ? (
+                              <span
+                                className="vp-project-nav__meta-rule"
+                                aria-hidden
+                              />
+                            ) : null}
+                            {formatLine ? (
+                              <p className="vp-project-nav__format">
+                                {formatLine}
+                              </p>
+                            ) : null}
+                          </div>
+                        )}
+                        {titleLine ? (
+                          <p className="vp-project-nav__title">{titleLine}</p>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
-        </div>
         </div>
       </div>
     </section>
