@@ -1,6 +1,41 @@
 /**
- * KeyVisualsGallery — masonry still-photography section below crew credits.
+ * KeyVisualsGallery — still-photography section below crew credits.
  * Renders nothing when the array is empty (no heading, no empty shell).
+ *
+ * ---------------------------------------------------------------------------
+ * Repeating grid algorithm (Figma 149:21711 → scalable CMS rhythm)
+ * ---------------------------------------------------------------------------
+ * Artboard content width 1860 with gap 15 → columns 610 : 1235 (≈32.8% : 66.4%).
+ * Tile aspects from Figma (width/height):
+ *   short  610/272 ≈ 2.243
+ *   tall   610/340 ≈ 1.794
+ *   hero   1235/688 ≈ 1.795  (≈ tall — same proportion, full right-column span)
+ *
+ * LEFT column cycle (chosen: Figma’s observed 5-tile sequence, not 2-cycle):
+ *   short → tall → short → tall → tall
+ * Why: matches the authored left stack on 149:21711 and varies height more
+ * than short/tall alternation alone, without inventing a third ratio.
+ *
+ * RIGHT column cycle (cleaned vs Figma’s one-off pair→hero→pair→pair):
+ *   pair → hero → pair
+ * Why: 2+1+2 = 5 images per cycle — equal to the left’s 5 — so columns stay
+ * balanced as the list grows (10 images per full left+right band). “Hero every
+ * 3rd group” in Figma terms; drops the trailing extra pair from the mock.
+ *
+ * Consumption / balance:
+ *   Each band takes 5 left + 5 right. Remainder after full bands is filled
+ *   left-first through the same cycles until images run out (partial cycles
+ *   allowed). Common counts 6 / 9 / 15 therefore cannot leave one column empty
+ *   while the other piles up.
+ *
+ * Low-count fallback (n < 5): Figma’s two-column rhythm needs enough tiles to
+ * read; below that, use a single full-width stack of `tall` slots, grouping
+ * consecutive pairs when two remain (so 3 → pair + one; 4 → two pairs; 1–2
+ * accordingly). Avoids a sparse half-empty second column.
+ *
+ * Slot fill: object-fit cover into the assigned aspect (Figma tiles are fixed
+ * proportions, not intrinsic image ratios).
+ * ---------------------------------------------------------------------------
  */
 
 import Image from 'next/image';
