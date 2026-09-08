@@ -33,7 +33,9 @@
       "@media-tags": ["../shared/media-tags"],
       "@media-tags/*": ["../shared/media-tags/*"],
       "@video-formats": ["../shared/video-formats"],
-      "@video-formats/*": ["../shared/video-formats/*"]
+      "@video-formats/*": ["../shared/video-formats/*"],
+      "@key-visuals-layout": ["../shared/key-visuals-layout"],
+      "@key-visuals-layout/*": ["../shared/key-visuals-layout/*"]
     }
   },
   "include": [
@@ -50,6 +52,7 @@
     "../shared/carousel-ratios/**/*.ts",
     "../shared/media-tags/**/*.ts",
     "../shared/video-formats/**/*.ts",
+    "../shared/key-visuals-layout/**/*.ts",
     "../messages/**/*.json",
     "../src/lib/campaign-brief-fields.ts",
     "../src/lib/campaign-brief-i18n.ts"

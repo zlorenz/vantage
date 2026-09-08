@@ -43,7 +43,9 @@
       "@media-tags": ["./shared/media-tags"],
       "@media-tags/*": ["./shared/media-tags/*"],
       "@video-formats": ["./shared/video-formats"],
-      "@video-formats/*": ["./shared/video-formats/*"]
+      "@video-formats/*": ["./shared/video-formats/*"],
+      "@key-visuals-layout": ["./shared/key-visuals-layout"],
+      "@key-visuals-layout/*": ["./shared/key-visuals-layout/*"]
     }
   },
   "include": [

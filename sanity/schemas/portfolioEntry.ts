@@ -24,6 +24,10 @@ import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadin
 import {NullField} from '../components/locale-pair/NullField'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
 import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
+import {
+  KeyVisualsArrayInput,
+  KeyVisualsArrayItem,
+} from '../components/KeyVisualsArrayInput'
 import {defineLocalePair, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {hiddenForTranslator} from '../lib/studio-roles'
 
@@ -432,13 +436,17 @@ export const portfolioEntry = defineType({
         {
           type: 'image',
           options: {hotspot: false},
-          components: {input: KeyVisualImageInput},
+          components: {
+            input: KeyVisualImageInput,
+            item: KeyVisualsArrayItem,
+          },
         },
       ],
       group: 'media',
       hidden: hiddenForTranslator,
+      components: {input: KeyVisualsArrayInput},
       description:
-        'Still-photography gallery, rendered as masonry below the crew credits block. Uses Media Library metadata (alt text, title, credit) — no per-item captions. Bulk uploads are auto-tagged via the key-visual-tag Function (tags appear within a few seconds). To add multiple photos at once, drag them directly onto this field area (below the existing thumbnails) — do NOT open an individual photo item and drop a batch inside its popup, which can cause upload errors.',
+        'Still-photography gallery below crew credits. Layout is a two-column rhythm (Left / Pair / Hero) from list order — reorder so standout frames get Hero or Wide badges. Uses Media Library metadata (alt, title, credit); no per-item captions. Bulk uploads auto-tag via key-visual-tag. Drag multiple photos onto this field (below existing thumbnails) — do not batch-drop inside a single photo popup.',
     }),
 
     defineField({

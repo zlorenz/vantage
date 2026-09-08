@@ -14,6 +14,7 @@ const sharedStudioOverlayZ = path.resolve(rootDir, '../shared/studio-overlay-z')
 const sharedCarouselRatios = path.resolve(rootDir, '../shared/carousel-ratios')
 const sharedMediaTags = path.resolve(rootDir, '../shared/media-tags/index.ts')
 const sharedVideoFormats = path.resolve(rootDir, '../shared/video-formats/index.ts')
+const sharedKeyVisualsLayout = path.resolve(rootDir, '../shared/key-visuals-layout')
 
 function mergeViteAliases(existing, extra) {
   const asArray = Array.isArray(existing)
@@ -71,6 +72,7 @@ export default defineCliConfig({
         '@carousel-ratios': sharedCarouselRatios,
         '@media-tags': sharedMediaTags,
         '@video-formats': sharedVideoFormats,
+        '@key-visuals-layout': sharedKeyVisualsLayout,
       }),
     },
     server: {
