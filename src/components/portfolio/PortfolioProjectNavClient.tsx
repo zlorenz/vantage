@@ -13,6 +13,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import {WheelGestures} from 'wheel-gestures'
 import {phraseRecordToMap} from '@phrase-book'
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink'
+import {composeOverlayCopy} from '@/components/prototype/carousel/overlay'
 import type {Locale} from '@/i18n/routing'
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles'
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field'
@@ -91,15 +92,8 @@ function slideCopy(
 ) {
   const phraseMap = phraseRecordToMap(phrases)
   const parts = resolveEntryDisplayTitleParts(card, locale, phraseMap)
-  const brandLine = parts.brandName?.trim() ?? ''
-  const titleLine =
-    parts.campaignTitle?.trim() ||
-    pickLocaleFieldWithPhrases(
-      locale,
-      card.title,
-      card.titleZh,
-      phraseMap,
-    ).trim()
+  // Same Brand/Product/Campaign split (+ brand/product dedup) as home + /work.
+  const {brandLine, campaignLine: titleLine} = composeOverlayCopy(parts)
   const formatLine = pickLocaleFieldWithPhrases(
     locale,
     card.primaryFormat?.title,
