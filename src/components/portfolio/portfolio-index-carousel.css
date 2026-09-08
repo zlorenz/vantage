@@ -425,6 +425,10 @@
   max-width: 100%;
   background: var(--vp-bg, #0a0a0a);
   color: #fff;
+  /* Overlay type/padding use cqi against this box so layout tracks card width
+   * (not vw) as height-driven cards shrink on short desktop viewports. */
+  container-type: inline-size;
+  container-name: vp-index-card;
   /* Peeks stay visible but not tappable — only the centered active card links.
    * Hit target is .vp-portfolio-index__card-link (mounted inside ± CONTENT window). */
   pointer-events: none;
@@ -647,8 +651,10 @@
   height: 100%;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 0.35rem;
-  padding: 1.35rem 1.25rem 1.2rem;
+  /* ~0.35 / 1.25 / 1.35 rem at a ~420px card; scales with card width. */
+  gap: clamp(0.25rem, 1.35cqi, 0.35rem);
+  padding: clamp(0.95rem, 5.2cqi, 1.35rem) clamp(0.9rem, 4.8cqi, 1.25rem)
+    clamp(0.85rem, 4.6cqi, 1.2rem);
   text-align: left;
 }
 
@@ -656,13 +662,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.5rem, 2.9cqi, 0.75rem);
 }
 
 .vp-portfolio-index__brand {
   margin: 0;
   font-family: var(--vp-font-heading);
-  font-size: clamp(0.6rem, 1.15vw, 0.75rem);
+  /* Prefer % of card width so Air-sized cards shrink type with the face. */
+  font-size: clamp(0.55rem, 2.85cqi, 0.75rem);
   font-weight: var(--font-vp-heading-weight);
   letter-spacing: 0.08em;
   line-height: 1.2;
@@ -685,13 +692,15 @@
 .vp-portfolio-index__campaign {
   margin: 0;
   font-family: var(--vp-font-heading);
-  font-size: clamp(1.05rem, 2.15vw, 1.6rem);
+  font-size: clamp(0.95rem, 6.1cqi, 1.6rem);
   font-weight: var(--font-vp-heading-weight);
   letter-spacing: 0.04em;
   line-height: 1.05;
   text-transform: uppercase;
   color: #fff;
-  overflow-wrap: break-word;
+  /* Normal wrap only — mid-word breaks were a side effect of vw-sized type
+   * outgrowing height-driven card width. */
+  overflow-wrap: normal;
 }
 
 /* Bottom chrome: filter (left) · scrubber · search (right).
