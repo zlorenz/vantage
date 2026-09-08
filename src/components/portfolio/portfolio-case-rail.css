@@ -171,7 +171,7 @@
   }
 
   .vp-case-rail__back-label {
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-family: var(--font-vp-heading);
     font-size: 0.875rem;
     font-weight: 700;
     line-height: 1.25rem;

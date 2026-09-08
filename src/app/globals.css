@@ -881,8 +881,7 @@ body:has(.vp-work-index) #header.navbar::before {
   #header .vp-desktop-nav-index {
     flex-shrink: 0;
     width: 1.75rem; /* 28px */
-    /* Figma: Zalando Sans Expanded Bold */
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-family: var(--font-vp-heading);
     font-size: 0.75rem; /* 12px */
     font-weight: 700;
     line-height: 1.25rem; /* 20px */
@@ -894,8 +893,7 @@ body:has(.vp-work-index) #header.navbar::before {
   #header .vp-desktop-nav-label {
     flex: 1 1 auto;
     min-width: 0;
-    /* Figma: Zalando Sans Expanded Bold */
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-family: var(--font-vp-heading);
     font-size: 2rem; /* 32px */
     font-weight: 700;
     line-height: 1.2;
@@ -979,8 +977,7 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 
   #header .vp-desktop-nav-brief__label {
-    /* Figma: Zalando Sans Expanded Bold */
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-family: var(--font-vp-heading);
     font-size: 1rem; /* 16px */
     font-weight: 700;
     line-height: 1.25rem; /* 20px */
