@@ -11,14 +11,18 @@ import Image from 'next/image';
 import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
 import { PortfolioEntryLink } from '@/components/navigation/PortfolioEntryLink';
 import { Link } from '@/i18n/navigation';
+import { phraseRecordToMap } from '@phrase-book';
 import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
+import { resolveEntryDocumentTitle } from '@/lib/display-titles';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { Locale } from '@/i18n/routing';
+import type { DisplayTitlePartsValue } from '@/types/sanity';
 
 interface SearchResultWithImage {
   _type: 'portfolioEntry' | 'blogPost';
   title: string;
   titleZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
   slug: string;
   slugZh?: string;
   publishedAt?: string;
@@ -141,7 +145,11 @@ function SearchCard({
   phrases?: Record<string, string>;
 }) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
-  const title = pickLocaleFieldWithPhrases(locale, item.title, item.titleZh, phrases);
+  const title = resolveEntryDocumentTitle(
+    item,
+    locale,
+    phrases ? phraseRecordToMap(phrases) : null,
+  );
 
   return (
     <article className="vp-card vp-card-reveal">

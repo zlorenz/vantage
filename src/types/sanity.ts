@@ -418,6 +418,7 @@ export interface SearchResultItem {
   _type: 'portfolioEntry' | 'blogPost';
   title: string;
   titleZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
   slug: string;
   slugZh?: string;
   /** Portfolio original release date, or blog post publish date. */

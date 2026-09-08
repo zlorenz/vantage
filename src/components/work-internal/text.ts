@@ -2,7 +2,7 @@
  * Text helpers for internal library display and search.
  */
 
-import { resolveEntryDisplayTitles } from '@/lib/display-titles';
+import { resolveEntryDocumentTitle } from '@/lib/display-titles';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import type { Locale } from '@/i18n/routing';
 import type { InternalLibraryEntry } from '@/types/sanity';
@@ -24,11 +24,11 @@ export function getDisplayTitle(
   entry: InternalLibraryEntry,
   locale: Locale = 'en',
 ): string {
-  const compiled = plainText(
-    resolveEntryDisplayTitles(entry, locale).documentTitle,
+  return (
+    plainText(resolveEntryDocumentTitle(entry, locale)) ||
+    plainText(entry.title) ||
+    entry.title
   );
-  if (compiled) return compiled;
-  return plainText(entry.title) || entry.title;
 }
 
 export function formatPublishDate(iso: string | undefined): string {

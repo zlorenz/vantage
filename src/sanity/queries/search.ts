@@ -19,6 +19,14 @@ export const SEARCH_QUERY = `
     _type,
     title,
     titleZh,
+    displayTitleParts{
+      brandName,
+      productName,
+      campaignTitle,
+      brandNameZh,
+      productNameZh,
+      campaignTitleZh
+    },
     "slug": slug.current,
     "slugZh": slugZh.current,
     "publishedAt": select(

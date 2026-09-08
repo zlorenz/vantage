@@ -15,6 +15,7 @@ import { PortfolioCaseMedia } from '@/components/portfolio/PortfolioCaseMedia';
 import { PortfolioProjectNav } from '@/components/portfolio/PortfolioProjectNav';
 import { buildPortfolioCaseSlides } from '@/components/portfolio/prepare-portfolio-case-slides';
 import { routing, type Locale } from '@/i18n/routing';
+import { resolveEntryDocumentTitle } from '@/lib/display-titles';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { getPhraseMap, getPhraseRecord } from '@/lib/phrase-book';
 import { portfolioEntryMetadata } from '@/lib/metadata';
@@ -118,12 +119,8 @@ export default async function PortfolioEntryPage({ params }: Props) {
     phraseRecord,
   );
 
-  const title = pickLocaleFieldWithPhrases(
-    typedLocale,
-    entry.title,
-    entry.titleZh,
-    phraseRecord,
-  );
+  // Live-compile for BreadcrumbList + VideoObject JSON-LD (same dedup path as <title>).
+  const title = resolveEntryDocumentTitle(entry, typedLocale, phrases);
 
   const breadcrumbItems = [
     homeBreadcrumb(typedLocale),

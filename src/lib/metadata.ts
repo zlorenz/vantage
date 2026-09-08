@@ -14,9 +14,10 @@
 
 import type { Metadata } from 'next';
 import type { SanityImageSource } from '@sanity/image-url';
+import { phraseRecordToMap } from '@phrase-book';
 import type { Locale } from '@/i18n/routing';
 import type { PortfolioEntry, SanityImage } from '@/types/sanity';
-import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
+import { resolveEntryDocumentTitle } from '@/lib/display-titles';
 import { urlForImage } from '@/lib/sanity';
 
 export const SITE_NAME = 'Vantage Pictures';
@@ -195,11 +196,12 @@ export function portfolioEntryMetadata(
   defaultOgImage?: SanityImage,
   phrases?: Record<string, string> | null,
 ): Metadata {
-  const displayTitle = pickLocaleFieldWithPhrases(
+  // Live-compile from displayTitleParts so brand/product dedup applies even
+  // when the stored `title` field still holds a pre-dedup snapshot.
+  const displayTitle = resolveEntryDocumentTitle(
+    entry,
     locale,
-    entry.title,
-    entry.titleZh,
-    phrases,
+    phrases ? phraseRecordToMap(phrases) : null,
   );
   const titleOverride = seoMetaTitle(entry.seo, locale);
   const description = seoDescription(entry.seo, locale, {

@@ -63,6 +63,30 @@ export function resolveEntryDisplayTitles(
   );
 }
 
+/**
+ * Live-compile `documentTitle` from Brand/Product/Campaign parts (includes
+ * brand/product dedup). Falls back to the stored `title` / `titleZh` fields
+ * when parts cannot compile — those may still hold a pre-dedup snapshot until
+ * the next Studio save.
+ */
+export function resolveEntryDocumentTitle(
+  entry: DisplayTitleFields & {
+    title?: string | null;
+    titleZh?: string | null;
+  },
+  locale: Locale,
+  phrases?: PhraseLookup | null,
+): string {
+  const compiled = resolveEntryDisplayTitles(entry, locale, phrases)
+    .documentTitle.replace(/\s+/g, ' ')
+    .trim();
+  if (compiled) return compiled;
+  if (locale === 'zh') {
+    return (entry.titleZh?.trim() || entry.title?.trim() || '');
+  }
+  return entry.title?.trim() || '';
+}
+
 /** Locale-resolved title parts — not compiled header/long/thumb HTML. */
 export function resolveEntryDisplayTitleParts(
   entry: DisplayTitleFields,
