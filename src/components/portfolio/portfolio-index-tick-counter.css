@@ -51,7 +51,7 @@
     margin: 0;
     padding: 0;
     color: rgba(255, 255, 255, 0.3);
-    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+    font-family: var(--font-vp-heading);
     font-size: 0.875rem; /* 14px */
     font-weight: 700;
     line-height: 1.4;
