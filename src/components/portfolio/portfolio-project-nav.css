@@ -91,7 +91,7 @@
 
 .vp-project-nav__label {
   margin: 0;
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 4rem; /* 64 */
   font-weight: 700;
   line-height: 1;
@@ -138,7 +138,7 @@
   background: #fff;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.25rem;
@@ -259,9 +259,9 @@
 
 .vp-project-nav__brand {
   margin: 0;
-  /* Match homepage carousel brand: Zalando Bold + text-box-trim so the
+  /* Match homepage carousel brand metrics + text-box-trim so the
    * meta→title gap is cap-to-cap, not ascent-inflated. */
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 1rem; /* 16 */
   font-weight: 700;
   line-height: 1.25;
@@ -282,7 +282,7 @@
 
 .vp-project-nav__format {
   margin: 0;
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.25;
@@ -295,7 +295,7 @@
 
 .vp-project-nav__title {
   margin: 0;
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 2.75rem; /* 44 */
   font-weight: 700;
   line-height: 1.2;
