@@ -10,7 +10,7 @@
 import {defineField, defineType} from 'sanity'
 import {createElement, useEffect} from 'react'
 import {AutoTagInput} from 'sanity-plugin-media'
-import {useClient, type ObjectInputProps} from 'sanity'
+import {useClient, type ObjectInputProps, type PreviewValue} from 'sanity'
 import {ensureKeyVisualTag, KEY_VISUAL_TAG_NAME} from '@media-tags'
 import {isKeyVisualVideoFormatId, KEY_VISUAL_VIDEO_FORMAT_ID} from '@video-formats'
 
@@ -449,7 +449,7 @@ export const portfolioEntry = defineType({
               assetTitle,
               slotKey,
             }: {
-              media?: unknown
+              media?: PreviewValue['media']
               filename?: string
               assetTitle?: string
               slotKey?: string
