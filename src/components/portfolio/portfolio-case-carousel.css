@@ -335,8 +335,7 @@
   margin: 0;
   flex: 1 1 auto;
   min-width: 0;
-  /* Zalando Sans Expanded Bold — same face as single-video case titles */
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 2rem; /* 32px */
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
@@ -390,7 +389,7 @@
 }
 
 .vp-case-carousel__info-label {
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 0.875rem; /* 14px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.25rem; /* 20px */

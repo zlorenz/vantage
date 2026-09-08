@@ -45,8 +45,7 @@
 
 .vp-case-header__campaign {
   margin: 0;
-  /* Zalando Sans Expanded — settled fallback face, Bold via heading weight. */
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 4rem;
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
@@ -104,7 +103,7 @@
   align-items: flex-start;
   gap: 0;
   margin: 0;
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
