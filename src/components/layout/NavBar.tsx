@@ -390,7 +390,7 @@ export function NavBar({
               {email ? (
                 <a
                   href={`mailto:${email}`}
-                  className="vp-mobile-nav-email vp-mobile-nav-item text-xl font-bold text-vp-link no-underline hover:text-vp-link-hover"
+                  className="vp-mobile-nav-email vp-mobile-nav-item text-xl font-bold text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
                   style={staggerStyle(emailStaggerIndex)}
                 >
                   {email}

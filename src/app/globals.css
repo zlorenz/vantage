@@ -27,8 +27,8 @@
 
   /* Colour Palette — Accent */
 
-  --color-vp-link: #f9db24;
-  --color-vp-link-hover: #d7bf1f;
+  --color-vp-link: #fdb913;
+  --color-vp-link-hover: #e09f02;
   /* VP Color Section — brand orange. Black text only (never white on orange). */
   --color-vp-orange: #f04e23;
 
@@ -108,10 +108,19 @@
   --font-vp-heading-weight: 900;
   --leading-tight: 1.1;
 
-  /* Transitions & Animation */
+  /* Transitions & Animation
+   *
+   * Interactive shade (links, buttons, icons — color / background /
+   * border-color / opacity / brightness filter):
+   *   CSS → transition: … var(--vp-transition)
+   *   Tailwind → transition-colors|opacity duration-vp-default
+   *
+   * --duration-vp-fast / --vp-transition-fast: micro UI only
+   * (e.g. nav dropdown opacity+transform). Not for hover shade.
+   */
 
   --duration-vp-fast: 150ms;
-  --duration-vp-default: 200ms;
+  --duration-vp-default: 300ms;
   --duration-vp-card: 350ms;
   --duration-vp-spin: 800ms;
   --duration-vp-card-reveal: 450ms;
@@ -203,8 +212,8 @@
 
   /* Colour Palette — Accent */
 
-  --vp-link: #f9db24;
-  --vp-link-hover: #d7bf1f;
+  --vp-link: #fdb913;
+  --vp-link-hover: #e09f02;
   --vp-orange: #f04e23; /* Also nav hamburger / work close cell fill */
 
   /* Colour Palette — Borders */
@@ -271,10 +280,15 @@
   --vp-uppercase-spacing: 0.08em;
   --vp-heading-spacing: 0.01em;
 
-  /* Transitions & Animation */
+  /* Transitions & Animation
+   *
+   * Keep in sync with @theme --duration-vp-* above.
+   * Shade hover/focus → --vp-transition (0.3s ease).
+   * Micro UI (dropdown reveal) → --vp-transition-fast only.
+   */
 
   --vp-transition-fast: 0.15s ease;
-  --vp-transition: 0.2s ease;
+  --vp-transition: 0.3s ease;
   --vp-transition-card: 0.35s ease;
   --vp-transition-spin: 0.8s linear;
   --vp-transition-card-reveal: 0.45s ease forwards;
@@ -557,8 +571,8 @@ body:has(.vp-work-index) #header.navbar::before {
   text-transform: uppercase;
   text-decoration: none;
   transition:
-    color var(--vp-transition-fast),
-    background-color var(--vp-transition-fast);
+    color var(--vp-transition),
+    background-color var(--vp-transition);
 }
 
 .navbar .dropdown-item {
@@ -938,7 +952,7 @@ body:has(.vp-work-index) #header.navbar::before {
     text-decoration: none;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    transition: color 0.18s ease, background-color 0.18s ease;
+    transition: color var(--vp-transition), background-color var(--vp-transition);
   }
 
   #header .vp-desktop-nav-social__link:hover,
@@ -967,7 +981,7 @@ body:has(.vp-work-index) #header.navbar::before {
     background: #fdb913;
     color: #000;
     text-decoration: none;
-    transition: filter 0.18s ease;
+    transition: filter var(--vp-transition);
   }
 
   #header .vp-desktop-nav-brief:hover,
@@ -1005,6 +1019,8 @@ body:has(.vp-work-index) #header.navbar::before {
   opacity: 0;
   transform: translateY(-8px);
   visibility: hidden;
+  /* Micro UI (opacity + transform together) — keep --vp-transition-fast;
+   * do not use --vp-transition (shade-only convention). */
   transition:
     opacity var(--vp-transition-fast),
     transform var(--vp-transition-fast);
@@ -1312,9 +1328,9 @@ body:has(.vp-work-index) #header.navbar::before {
   letter-spacing: var(--vp-uppercase-spacing);
   text-align: center;
   transition:
-    background-color var(--vp-transition-fast),
-    color var(--vp-transition-fast),
-    border-color var(--vp-transition-fast);
+    background-color var(--vp-transition),
+    color var(--vp-transition),
+    border-color var(--vp-transition);
 }
 
 .vp-filterbar__select:hover {
@@ -1343,9 +1359,9 @@ body:has(.vp-work-index) #header.navbar::before {
   line-height: 1;
   text-transform: uppercase;
   transition:
-    background-color var(--vp-transition-fast),
-    border-color var(--vp-transition-fast),
-    color var(--vp-transition-fast);
+    background-color var(--vp-transition),
+    border-color var(--vp-transition),
+    color var(--vp-transition);
 }
 
 .vp-filterbar__clear:hover,
@@ -1590,16 +1606,17 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-credit-names a {
-  color: inherit;
+  color: var(--vp-link);
   font: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
   text-decoration: none;
+  transition: color var(--vp-transition);
 }
 
 .vp-credit-names a:hover,
 .vp-credit-names a:focus-visible {
-  color: inherit;
+  color: var(--vp-link-hover);
 }
 
 /*
@@ -1810,6 +1827,16 @@ body:has(.vp-work-index) #header.navbar::before {
 /* Masonry columns are narrower than the old single-column list — pull titles down (~28px desktop). */
 .vp-news-masonry .vp-post-card__title {
   font-size: clamp(1.25rem, 1.5vw, 1.75rem);
+}
+
+/* Blog / search card title links — shade via opacity at the sitewide timing. */
+.vp-post-card__title a {
+  transition: opacity var(--vp-transition);
+}
+
+.vp-post-card__title a:hover,
+.vp-post-card__title a:focus-visible {
+  opacity: 0.8;
 }
 
 /* ==========================================================================
@@ -2095,8 +2122,8 @@ body:has(.vp-work-index) #header.navbar::before {
   background: none;
   border: 0;
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  transition: color var(--vp-transition);
 }
 
 .vp-internal-clear:hover {
@@ -2265,12 +2292,12 @@ body:has(.vp-work-index) #header.navbar::before {
   cursor: pointer;
   overflow: hidden;
   transition:
-    border-color var(--duration-vp-fast) var(--ease-vp-fast),
-    background var(--duration-vp-fast) var(--ease-vp-fast);
+    border-color var(--vp-transition),
+    background var(--vp-transition);
 }
 
 .vp-internal-card:hover {
-  border-color: rgba(249, 219, 36, 0.55);
+  border-color: rgba(253, 185, 19, 0.55);
   background: #111;
 }
 

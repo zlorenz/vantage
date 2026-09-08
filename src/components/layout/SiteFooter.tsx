@@ -149,7 +149,7 @@ export function resolveSiteSocials(
 }
 
 const DEFAULT_SOCIAL_LINK_CLASS =
-  'inline-flex text-white transition-colors duration-vp-fast hover:text-vp-link';
+  'inline-flex text-white transition-colors duration-vp-default hover:text-vp-link';
 
 export function FooterSocials({
   siteSettings,

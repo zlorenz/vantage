@@ -18,7 +18,7 @@ export function PortableTextVideoEmbed({ url }: PortableTextVideoEmbedProps) {
 
   if (!parsed) {
     return (
-      <a href={url} className="text-vp-link underline-offset-2 hover:underline">
+      <a href={url} className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover">
         {url}
       </a>
     );

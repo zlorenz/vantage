@@ -135,7 +135,7 @@ function createComponents(relaxed = false): PortableTextComponents {
         return (
           <a
             href={href}
-            className="text-vp-link underline-offset-2 hover:underline"
+            className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -148,7 +148,7 @@ function createComponents(relaxed = false): PortableTextComponents {
       return (
         <Link
           href={path as LinkHref}
-          className="text-vp-link underline-offset-2 hover:underline"
+          className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
         >
           {children}
         </Link>

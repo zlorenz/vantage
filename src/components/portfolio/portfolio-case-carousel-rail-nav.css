@@ -77,10 +77,17 @@
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: color var(--vp-transition), background-color var(--vp-transition);
 }
 
 .vp-case-carousel-rail-nav__btn--next {
   border-right: 0;
+}
+
+.vp-case-carousel-rail-nav__btn:hover,
+.vp-case-carousel-rail-nav__btn:focus-visible {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .vp-case-carousel-rail-nav__btn:focus-visible {

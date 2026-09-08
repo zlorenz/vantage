@@ -26,6 +26,7 @@
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
+  transition: filter var(--vp-transition);
 }
 
 .vp-index-filter-sheet__clear:hover,
@@ -96,6 +97,7 @@
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--vp-transition);
 }
 
 .vp-index-filter-sheet__row {
@@ -261,6 +263,7 @@
     background: transparent;
     color: #fff;
     cursor: pointer;
+    transition: background-color var(--vp-transition);
   }
 
   .vp-index-filter-sheet__icon-btn svg {

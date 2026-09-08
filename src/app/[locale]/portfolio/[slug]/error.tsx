@@ -45,13 +45,13 @@ export default function PortfolioEntryError({
             <button
               type="button"
               onClick={reset}
-              className="rounded-vp-nav-pill bg-vp-orange px-5 py-2.5 text-sm font-medium uppercase tracking-vp-navbar text-black transition-opacity hover:opacity-90"
+              className="rounded-vp-nav-pill bg-vp-orange px-5 py-2.5 text-sm font-medium uppercase tracking-vp-navbar text-black transition-opacity duration-vp-default hover:opacity-90"
             >
               {t('tryAgain')}
             </button>
             <Link
               href="/work"
-              className="rounded-vp-nav-pill border border-white/20 px-5 py-2.5 text-sm font-medium uppercase tracking-vp-navbar text-white transition-colors hover:border-white/40"
+              className="rounded-vp-nav-pill border border-white/20 px-5 py-2.5 text-sm font-medium uppercase tracking-vp-navbar text-white transition-colors duration-vp-default hover:border-white/40"
             >
               {t('backToWork')}
             </Link>

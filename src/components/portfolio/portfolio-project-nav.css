@@ -195,6 +195,13 @@
   text-decoration: none;
   color: #000;
   white-space: nowrap;
+  transition: background-color var(--vp-transition), color var(--vp-transition);
+}
+
+a.vp-project-nav__explore:hover,
+a.vp-project-nav__explore:focus-visible {
+  background: #e8e8e8;
+  color: #000;
 }
 
 .vp-project-nav__explore:focus-visible {
@@ -222,10 +229,22 @@
   background: transparent;
   color: #fff;
   cursor: pointer;
+  transition: color var(--vp-transition), background-color var(--vp-transition);
 }
 
 .vp-project-nav__arrow--prev {
   border-right: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+}
+
+.vp-project-nav__arrow:hover:not(:disabled),
+.vp-project-nav__arrow:focus-visible:not(:disabled) {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.vp-project-nav__arrow:disabled {
+  color: rgba(255, 255, 255, 0.25);
+  cursor: default;
 }
 
 .vp-project-nav__arrow:focus-visible {

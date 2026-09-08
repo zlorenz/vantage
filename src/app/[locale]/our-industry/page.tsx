@@ -92,7 +92,7 @@ function TermLinkSection({
               <li key={term._id}>
                 <Link
                   href={{ pathname, params: { slug } }}
-                  className="text-sm text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+                  className="text-sm text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
                 >
                   {label}
                 </Link>

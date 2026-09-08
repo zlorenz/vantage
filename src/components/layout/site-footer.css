@@ -48,7 +48,7 @@
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: color var(--vp-transition-fast);
+  transition: color var(--vp-transition);
 }
 
 .vp-site-footer__email-link:hover {
@@ -107,7 +107,7 @@
   padding: 0.5rem 1rem;
   color: #fff;
   text-decoration: none;
-  transition: color var(--vp-transition-fast);
+  transition: color var(--vp-transition);
 }
 
 .vp-site-footer__social-link:hover {

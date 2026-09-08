@@ -137,6 +137,7 @@
   background: transparent;
   color: #fff;
   cursor: pointer;
+  transition: background-color var(--vp-transition);
 }
 
 .vp-bottom-sheet__icon-btn svg {

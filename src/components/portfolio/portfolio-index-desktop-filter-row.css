@@ -46,6 +46,7 @@
     border: 0;
     background: transparent;
     color: rgba(255, 255, 255, 0.4);
+    transition: color var(--vp-transition);
   }
 
   .vp-portfolio-index-desktop-filters__search:focus-within {
@@ -57,6 +58,8 @@
     width: 1.25rem;
     height: 1.25rem;
     flex-shrink: 0;
+    /* Inherits form color (currentColor). */
+    transition: color var(--vp-transition);
   }
 
   .vp-portfolio-index-desktop-filters__search-input {
@@ -167,6 +170,7 @@
     letter-spacing: -0.0175rem;
     text-transform: uppercase;
     color: #fff;
+    transition: opacity var(--vp-transition);
   }
 
   .vp-portfolio-index-desktop-filters__panel {
@@ -227,6 +231,7 @@
     text-align: left;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    transition: color var(--vp-transition);
   }
 
   .vp-portfolio-index-desktop-filters__all:hover,

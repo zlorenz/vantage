@@ -56,7 +56,7 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
         <h2 className="vp-post-card__title m-0 mb-1 font-vp-heading text-[clamp(1.4rem,2vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
           <Link
             href={{ pathname: '/[slug]', params: { slug: slugParam } }}
-            className="text-inherit no-underline hover:opacity-80"
+            className="text-inherit no-underline"
           >
             {title}
           </Link>

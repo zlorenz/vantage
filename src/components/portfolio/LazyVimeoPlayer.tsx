@@ -584,7 +584,7 @@ export function LazyVimeoPlayer({
           ) : null}
           {!hidePlayButton ? (
             <span className="absolute inset-0 flex items-center justify-center">
-              <span className="flex h-20 w-20 items-center justify-center rounded-none border-[1.5px] border-white/15 bg-white/5 backdrop-blur-[5px] transition duration-200 group-hover:bg-white/10">
+              <span className="flex h-20 w-20 items-center justify-center rounded-none border-[1.5px] border-white/15 bg-white/5 backdrop-blur-[5px] transition-colors duration-vp-default group-hover:bg-white/10">
                 <span className="ml-0.5 block size-0 border-y-[0.75rem] border-l-[1.25rem] border-y-transparent border-l-white" />
               </span>
             </span>

@@ -27,6 +27,7 @@
   cursor: pointer;
   vertical-align: baseline;
   -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--vp-transition), background-color var(--vp-transition);
 }
 
 .vp-news-page__filter-trigger:hover,

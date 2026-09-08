@@ -182,7 +182,7 @@ export default async function BlogPostPage({ params }: Props) {
                           pathname: '/category/[slug]',
                           params: { slug: catSlug },
                         }}
-                        className="vp-category-pill rounded-sm border border-vp-border-soft px-2 py-0.5 text-xs uppercase no-underline hover:border-vp-border"
+                        className="vp-category-pill rounded-sm border border-vp-border-soft px-2 py-0.5 text-xs uppercase no-underline transition-colors duration-vp-default hover:border-vp-border"
                       >
                         {catLabel}
                       </Link>

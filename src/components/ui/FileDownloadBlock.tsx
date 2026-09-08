@@ -37,7 +37,7 @@ export function FileDownloadBlock({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-vp-link no-underline hover:text-vp-link-hover"
+          className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
         >
           {label}
         </a>

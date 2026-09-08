@@ -386,9 +386,9 @@
   cursor: pointer;
   pointer-events: auto;
   transition:
-    background 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease;
+    background var(--vp-transition),
+    border-color var(--vp-transition),
+    color var(--vp-transition);
   -webkit-tap-highlight-color: transparent;
 }
 

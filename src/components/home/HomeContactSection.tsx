@@ -37,7 +37,7 @@ export async function HomeContactSection() {
           <p className="m-0">
             <a
               href={`mailto:${TEMP_EMAIL}`}
-              className="font-bold text-black no-underline hover:underline"
+              className="font-bold text-black no-underline transition-opacity duration-vp-default hover:opacity-70"
             >
               {TEMP_EMAIL}
             </a>
@@ -45,7 +45,7 @@ export async function HomeContactSection() {
           <p className="m-0">
             <a
               href={TEMP_PHONE_HREF}
-              className="font-bold text-black no-underline hover:underline"
+              className="font-bold text-black no-underline transition-opacity duration-vp-default hover:opacity-70"
             >
               {TEMP_PHONE}
             </a>
@@ -54,7 +54,7 @@ export async function HomeContactSection() {
           {siteSettings ? (
             <FooterSocials
               siteSettings={siteSettings}
-              linkClassName="inline-flex text-black transition-opacity duration-vp-fast hover:opacity-70"
+              linkClassName="inline-flex text-black transition-opacity duration-vp-default hover:opacity-70"
             />
           ) : null}
         </div>

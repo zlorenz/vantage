@@ -49,7 +49,7 @@ export async function BlogSidebar({
                     pathname: '/category/[slug]',
                     params: { slug: slugParam },
                   }}
-                  className="block rounded-lg bg-neutral-700 px-4 py-3 font-bold text-white no-underline hover:bg-neutral-600"
+                  className="block rounded-lg bg-neutral-700 px-4 py-3 font-bold text-white no-underline transition-colors duration-vp-default hover:bg-neutral-600"
                 >
                   {label}
                 </Link>

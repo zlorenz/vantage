@@ -761,6 +761,9 @@
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--vp-transition),
+    background-color var(--vp-transition);
 }
 
 .vp-portfolio-index__filter-trigger:hover,
@@ -799,6 +802,7 @@
   -webkit-tap-highlight-color: transparent;
   /* Expand hit target without growing the visual chip. */
   box-shadow: 0 0 0 0.55rem transparent;
+  transition: filter var(--vp-transition);
 }
 
 .vp-portfolio-index__clear-badge--filter {
@@ -953,6 +957,9 @@
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--vp-transition),
+    border-color var(--vp-transition);
 }
 
 .vp-portfolio-index__search-input:focus + .vp-portfolio-index__search-submit {

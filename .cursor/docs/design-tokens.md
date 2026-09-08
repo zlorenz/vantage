@@ -14,7 +14,7 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 | `--vp-home-carousel-overlay-pad-block` | `36px` | Overlay top/bottom inset | Intentional vs Figma `60px` (~40% tighter). |
 | `--vp-home-carousel-title-tag-gap` | `24px` | Brand-row → campaign title | Intentional vs Figma `32px`. |
 | `--vp-home-carousel-brand-dot-size` | `0.8em` | Brand `::before` bullet | Corrected from undersized `0.4em`. |
-| `--vp-home-carousel-brand-accent` | `#fdb913` | Brand colour + bullet fill | Not `--vp-link` (`#f9db24`). Promote only if work-index matches identically. |
+| `--vp-home-carousel-brand-accent` | `#fdb913` | Brand colour + bullet fill | Same hex as `--vp-link`. |
 | `--vp-home-carousel-tracking-tight-16` | `-0.32px` | Brand/format + credit names | |
 | `--vp-home-carousel-tracking-tight-48` | `-0.96px` | Campaign title 48px | |
 | `--vp-home-carousel-tracking-tight-14` | `-0.28px` | Slide counter | |
@@ -44,8 +44,8 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-link` | `#f9db24` | Links, interactive accent — yellow |
-| `vp-link-hover` | `#d7bf1f` | Link hover state |
+| `vp-link` | `#fdb913` | Links, interactive accent — yellow |
+| `vp-link-hover` | `#e09f02` | Link hover state |
 | `vp-orange` | `#f04e23` | Brand orange — **also** desktop nav hamburger cell + work close cell fill (formerly candidate `nav-accent-orange`; identical hex, no duplicate token) |
 
 ### Borders
@@ -251,8 +251,18 @@ Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-transition-fast` | `0.15s ease` | Colour, border, opacity changes |
-| `vp-transition` | `0.2s ease` | Input backgrounds, general UI |
+| `vp-transition` / `duration-vp-default` | `0.3s ease` / `300ms` | **Official interactive shade timing** — link/button/icon `color`, `background`, `border-color`, `opacity`, brightness `filter` |
+| `vp-transition-fast` / `duration-vp-fast` | `0.15s ease` / `150ms` | Micro UI only (e.g. nav dropdown opacity+transform). **Not** for hover shade |
+| `vp-transition-card` | `0.35s ease` | Card image / larger surface motion |
+| `vp-transition-spin` | `0.8s linear` | Load spinner |
+| `vp-transition-card-reveal` | `0.45s ease forwards` | Portfolio card entrance |
+
+### Interactive shade convention
+
+- **In scope:** hover/focus changes to color, background, border-color, opacity, or brightness-like filter on links, icons, buttons, and similar chrome.
+- **Out of scope:** transform, layout, carousel snap, sheet/nav open-close, route overlays, scroll reveals.
+- **CSS:** `transition: color var(--vp-transition);` (list only the shade properties that change).
+- **Tailwind:** `transition-colors duration-vp-default` or `transition-opacity duration-vp-default` (prefer a CSS `var(--vp-transition)` rule when reliability matters).
 
 ### Named Animations
 
@@ -264,8 +274,8 @@ Used on: portfolio cards as they load in
 
 ### Dropdown Animation
 
-Desktop: `opacity: 0, translateY(-8px)` → visible, `transition: opacity 0.15s ease, transform 0.15s ease`
-Mobile: `max-height: 0, opacity: 0, translateY(-6px)` → `max-height: 480px`, `transition: max-height 0.24s ease, opacity 0.18s ease, transform 0.24s ease`
+Desktop: `opacity` + `transform` via `var(--vp-transition-fast)` (see `.navbar .dropdown .dropdown-menu` in `globals.css`).
+Mobile: `max-height` / `opacity` / `transform` open-close choreography (hard-coded 0.24s / 0.18s — motion UI, not shade).
 
 ---
 
@@ -334,17 +344,16 @@ Client logos displayed at 70% scale within their grid cells (`transform: scale(0
 
 ---
 
-## Notes for Tailwind Config
+## Notes for Tailwind / @theme
 
-When translating these tokens into `tailwind.config.js`:
+Tokens live in `src/app/globals.css` (`@theme` for utilities, `:root` `--vp-*` for custom CSS). When adding new ones:
 
-- Extend the `colors` key with all `vp-*` colour tokens using the exact names above
-- Extend `fontFamily` with `vp-sans` (Mona Sans stack) and `vp-heading` (Special Gothic Expanded One stack)
-- Extend `letterSpacing` with `vp-navbar`, `vp-uppercase`, and `vp-heading`
-- Extend `transitionDuration` and `transitionTimingFunction` for `vp-fast` and `vp-default`
-- Define custom `screens` matching the Bootstrap breakpoints above
-- Set `borderRadius` default to `0` in the theme to match the site's sharp-edged aesthetic
+- Prefer `@theme` `--color-vp-*`, `--font-vp-*`, `--duration-vp-*`, etc. so utilities generate automatically (Tailwind v4 — no `tailwind.config.js` colour extend needed for these)
+- Custom CSS should use semantic `:root` aliases (`--vp-link`, `--vp-transition`, …), not raw hex / hard-coded timings for interactive shade
+- Interactive shade: `duration-vp-default` (utilities) or `var(--vp-transition)` (CSS) — keep both at 300ms / 0.3s ease
 - Do not use Tailwind's default colour palette in components — only `vp-*` tokens
+- Set sharp corners via `--radius: 0` (already in `@theme`)
+- Screens already mirror Bootstrap breakpoints in `@theme`
 
 ---
 

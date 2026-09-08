@@ -42,10 +42,10 @@ const STATEMENT_ZH = '一起打造你的下一个广告战役';
 
 /** text-xl (1.25rem) + 25% → 1.5625rem */
 const CONTACT_LINK_CLASS =
-  'text-[1.5625rem] font-bold text-black no-underline transition-opacity duration-vp-fast hover:opacity-70';
+  'text-[1.5625rem] font-bold text-black no-underline transition-opacity duration-vp-default hover:opacity-70';
 
 const SOCIAL_LINK_CLASS =
-  'inline-flex text-black transition-opacity duration-vp-fast hover:opacity-70';
+  'inline-flex text-black transition-opacity duration-vp-default hover:opacity-70';
 
 function whatsappHref(value: string): string {
   const digits = value.replace(/[^\d]/g, '');

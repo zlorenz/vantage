@@ -196,32 +196,32 @@ export default async function AboutPage({ params }: Props) {
           <p className="m-0 mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-normal">
             <Link
               href="/our-company"
-              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             >
               {t('moreAboutOurCompany')}
             </Link>
             {/* Temporary — these point to the first existing category page per taxonomy as a placeholder. Will be replaced with links to consolidated taxonomy hub pages (see project notes) once those are built. */}
             <Link
               href={{ pathname: '/video-format/[slug]', params: { slug: 'brand-film' } }}
-              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             >
               {t('moreAboutFormats')}
             </Link>
             <Link
               href={{ pathname: '/industry/[slug]', params: { slug: 'ai-robotics' } }}
-              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             >
               {t('moreAboutIndustries')}
             </Link>
             <Link
               href={{ pathname: '/market/[slug]', params: { slug: 'china' } }}
-              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             >
               {t('moreAboutMarkets')}
             </Link>
             <Link
               href="/awards"
-              className="text-vp-link no-underline hover:text-vp-link-hover hover:underline"
+              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
             >
               {t('moreAboutAwards')}
             </Link>
