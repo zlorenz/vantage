@@ -1608,10 +1608,15 @@ body:has(.vp-work-index) #header.navbar::before {
  * carousel media border-left through to the department rules; band runs flush
  * to the viewport right so department rules meet the right edge (intentional
  * break from Figma’s 30px right gutter).
+ *
+ * Spacing above credits is padding (not margin) so the left hairline spans the
+ * carousel→credits gap instead of collapsing through the band.
  */
 .vp-case-credits-band {
   width: 100%;
   box-sizing: border-box;
+  /* Former inner mt-24 (6rem) — kept on the band so borders enclose the gap. */
+  padding-top: 6rem;
 }
 
 @media (min-width: 992px) {

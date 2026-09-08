@@ -161,13 +161,11 @@ export default async function PortfolioEntryPage({ params }: Props) {
   );
 
   const caseCredits = (
-    <div className="mt-24">
-      <PortfolioCredits
-        crewCredits={entry.crewCredits}
-        locale={typedLocale}
-        phrases={phraseRecord}
-      />
-    </div>
+    <PortfolioCredits
+      crewCredits={entry.crewCredits}
+      locale={typedLocale}
+      phrases={phraseRecord}
+    />
   );
 
   const caseKeyVisuals = (
