@@ -14,6 +14,7 @@ import {
   useState,
   type MouseEvent,
   type PointerEvent,
+  type ReactNode,
 } from 'react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -60,11 +61,13 @@ interface PortfolioCaseCarouselProps {
 function SlideTitleOverlay({
   title,
   description,
+  infoControl,
 }: {
   title?: string;
   description?: string;
+  infoControl?: ReactNode;
 }) {
-  if (!title && !description) return null;
+  if (!title && !description && !infoControl) return null;
   return (
     <div
       className={`vp-case-carousel__overlay${
@@ -72,12 +75,19 @@ function SlideTitleOverlay({
       }`}
     >
       <div className="vp-case-carousel__overlay-scrim" aria-hidden />
-      <div className="vp-case-carousel__overlay-copy">
+      <div className="vp-case-carousel__overlay-body">
         {description ? (
           <p className="vp-case-carousel__info-text">{description}</p>
         ) : null}
-        {title ? (
-          <p className="vp-case-carousel__title">{title}</p>
+        {title || infoControl ? (
+          <div className="vp-case-carousel__bottom-bar">
+            {title ? (
+              <p className="vp-case-carousel__title">{title}</p>
+            ) : (
+              <span className="vp-case-carousel__title-spacer" aria-hidden />
+            )}
+            {infoControl}
+          </div>
         ) : null}
       </div>
     </div>
@@ -460,35 +470,37 @@ export function PortfolioCaseCarousel({
                     <SlideTitleOverlay
                       title={showChrome ? slide.overlayTitle : undefined}
                       description={overlayDescription}
+                      infoControl={
+                        showInfo ? (
+                          <button
+                            type="button"
+                            className={`vp-case-carousel__info-btn${
+                              (isDesktop ? isInfoOpen : descSheetOpen)
+                                ? ' is-open'
+                                : ''
+                            }`}
+                            onClick={onInfoToggle}
+                            aria-label={
+                              (isDesktop ? isInfoOpen : descSheetOpen)
+                                ? 'Close info'
+                                : 'More info'
+                            }
+                            aria-expanded={
+                              isDesktop ? isInfoOpen : descSheetOpen
+                            }
+                          >
+                            {(isDesktop ? isInfoOpen : descSheetOpen) ? (
+                              <InfoCloseIcon />
+                            ) : (
+                              <InfoOpenIcon />
+                            )}
+                            <span className="vp-case-carousel__info-label">
+                              info
+                            </span>
+                          </button>
+                        ) : undefined
+                      }
                     />
-                    {showInfo ? (
-                      <button
-                        type="button"
-                        className={`vp-case-carousel__info-btn${
-                          (isDesktop ? isInfoOpen : descSheetOpen)
-                            ? ' is-open'
-                            : ''
-                        }`}
-                        onClick={onInfoToggle}
-                        aria-label={
-                          (isDesktop ? isInfoOpen : descSheetOpen)
-                            ? 'Close info'
-                            : 'More info'
-                        }
-                        aria-expanded={
-                          isDesktop ? isInfoOpen : descSheetOpen
-                        }
-                      >
-                        {(isDesktop ? isInfoOpen : descSheetOpen) ? (
-                          <InfoCloseIcon />
-                        ) : (
-                          <InfoOpenIcon />
-                        )}
-                        <span className="vp-case-carousel__info-label">
-                          info
-                        </span>
-                      </button>
-                    ) : null}
                   </div>
                 </div>
               );

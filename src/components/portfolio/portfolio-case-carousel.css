@@ -276,7 +276,7 @@
   );
 }
 
-.vp-case-carousel__overlay-copy {
+.vp-case-carousel__overlay-body {
   position: relative;
   z-index: 1;
   display: flex;
@@ -284,25 +284,16 @@
   min-height: 0;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 0;
-  /* Extra right pad clears the info control when present */
-  padding: var(--vp-case-overlay-pad-bottom) var(--vp-case-overlay-pad-x);
   text-align: left;
-}
-
-@media (min-width: 768px) {
-  .vp-case-carousel__overlay-copy {
-    /* Clear glass info chip (~106px) + 40px inset */
-    padding-right: calc(var(--vp-case-overlay-pad-x) + 7.5rem);
-  }
 }
 
 .vp-case-carousel__info-text {
   margin: 0;
   /* Same as a blank line between description paragraphs (pre-wrap \n\n) */
   margin-bottom: 1lh;
+  padding-inline: var(--vp-case-overlay-pad-x);
   max-width: 66.666%;
-  /* Grow up to available card height (above title + padding); scroll if longer */
+  /* Grow up to available card height (above bottom bar); scroll if longer */
   flex: 0 1 auto;
   min-height: 0;
   overflow-x: hidden;
@@ -318,9 +309,32 @@
   white-space: pre-wrap;
 }
 
+/*
+ * Shared bottom bar — Figma 149:22337 (128px tall, 40px pad, title + INFO row).
+ * Layout mechanism only; chip/title metrics stay Phase 4 values.
+ */
+.vp-case-carousel__bottom-bar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  height: 8rem; /* 128px */
+  padding: 0 var(--vp-case-overlay-pad-x); /* 40px — content row centers in bar */
+  pointer-events: none;
+}
+
+.vp-case-carousel__title-spacer {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .vp-case-carousel__title {
   margin: 0;
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   /* Zalando Sans Expanded Bold — same face as single-video case titles */
   font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
   font-size: 2rem; /* 32px */
@@ -328,20 +342,18 @@
   color: #fff;
   letter-spacing: -0.04rem; /* -0.64px */
   line-height: 1.2;
-  text-transform: capitalize;
+  text-transform: uppercase;
   overflow-wrap: break-word;
 }
 
 /*
  * Info control — glass chip (Figma 149:22340).
  * Desktop: toggles on-card description overlay. Mobile: opens BottomSheet.
+ * In-flow flex child of .vp-case-carousel__bottom-bar (not absolute).
  */
 .vp-case-carousel__info-btn {
-  position: absolute;
-  right: var(--vp-case-overlay-pad-x);
-  bottom: var(--vp-case-overlay-pad-bottom);
-  z-index: 7;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   gap: 0.5rem; /* 8px between 24px icon and label in Figma 16+24+8+… */
@@ -383,7 +395,7 @@
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.25rem; /* 20px */
   letter-spacing: -0.0175rem; /* -0.28px */
-  text-transform: lowercase;
+  text-transform: uppercase;
 }
 
 /* Mobile description sheet body (BottomSheet children) */
