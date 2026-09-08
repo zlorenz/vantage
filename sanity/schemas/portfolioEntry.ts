@@ -26,7 +26,7 @@ import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
 import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
 import {
   KeyVisualsArrayInput,
-  KeyVisualsArrayItem,
+  KeyVisualPreview,
 } from '../components/KeyVisualsArrayInput'
 import {defineLocalePair, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
 import {hiddenForTranslator} from '../lib/studio-roles'
@@ -436,9 +436,25 @@ export const portfolioEntry = defineType({
         {
           type: 'image',
           options: {hotspot: false},
+          preview: {
+            select: {
+              media: 'asset',
+              slotKey: '_key',
+            },
+            prepare: ({
+              media,
+              slotKey,
+            }: {
+              media?: unknown
+              slotKey?: string
+            }) => ({
+              media,
+              slotKey,
+            }),
+          },
           components: {
             input: KeyVisualImageInput,
-            item: KeyVisualsArrayItem,
+            preview: KeyVisualPreview,
           },
         },
       ],

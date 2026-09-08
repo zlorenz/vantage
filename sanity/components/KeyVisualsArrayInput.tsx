@@ -1,6 +1,8 @@
 /**
  * Key Visuals array chrome — slot badges from the same `@key-visuals-layout`
  * planner as the site gallery. Editors reorder to aim photos at Hero/Wide slots.
+ *
+ * Badge lives in the list preview (inline with the filename), not above the row.
  */
 
 import {useMemo} from 'react'
@@ -13,8 +15,7 @@ import {
 import {
   useFormValue,
   type ArrayOfObjectsInputProps,
-  type ObjectItem,
-  type ObjectItemProps,
+  type PreviewProps,
 } from 'sanity'
 
 const SLOT_TONE: Record<
@@ -26,6 +27,11 @@ const SLOT_TONE: Record<
   pair: 'primary',
   left: 'default',
   compact: 'default',
+}
+
+type KeyVisualPreviewProps = PreviewProps & {
+  /** Passed from schema preview.prepare — image array item `_key`. */
+  slotKey?: string
 }
 
 function KeyVisualsSlotLegend() {
@@ -40,7 +46,7 @@ function KeyVisualsSlotLegend() {
         <Flex gap={2} wrap="wrap">
           {(Object.keys(KEY_VISUAL_SLOT_LABEL) as KeyVisualSlotKind[]).map(
             (kind) => (
-              <Badge key={kind} tone={SLOT_TONE[kind]} fontSize={1}>
+              <Badge key={kind} tone={SLOT_TONE[kind]} fontSize={0}>
                 {KEY_VISUAL_SLOT_LABEL[kind]}
               </Badge>
             ),
@@ -62,30 +68,32 @@ export function KeyVisualsArrayInput(props: ArrayOfObjectsInputProps) {
   )
 }
 
-/** Per-row badge from current `keyVisuals` order. */
-export function KeyVisualsArrayItem(props: ObjectItemProps<ObjectItem>) {
-  const {renderDefault, value} = props
+/**
+ * Inline slot badge beside the default image preview (filename + thumb).
+ * Same pattern as Sanity’s richer array-item preview guide.
+ */
+export function KeyVisualPreview(props: KeyVisualPreviewProps) {
+  const {renderDefault, slotKey} = props
   const keyVisuals = useFormValue(['keyVisuals']) as
     | {_key?: string}[]
     | undefined
 
   const slot = useMemo(() => {
-    const key = typeof value?._key === 'string' ? value._key : null
-    if (!key) return undefined
-    return keyVisualSlotsByKey(keyVisuals).get(key)
-  }, [keyVisuals, value?._key])
+    if (!slotKey) return undefined
+    return keyVisualSlotsByKey(keyVisuals).get(slotKey)
+  }, [keyVisuals, slotKey])
 
   return (
-    <Stack space={2}>
+    <Flex align="center" gap={2} style={{width: '100%', minWidth: 0}}>
+      <Box flex={1} style={{minWidth: 0}}>
+        {renderDefault(props)}
+      </Box>
       {slot ? (
-        <Box>
-          <Badge tone={SLOT_TONE[slot]} fontSize={1}>
-            {KEY_VISUAL_SLOT_LABEL[slot]}
-            {slot === 'hero' || slot === 'wide' ? ' · full width' : ''}
-          </Badge>
-        </Box>
+        <Badge tone={SLOT_TONE[slot]} fontSize={0} style={{flexShrink: 0}}>
+          {KEY_VISUAL_SLOT_LABEL[slot]}
+          {slot === 'hero' || slot === 'wide' ? ' · full width' : ''}
+        </Badge>
       ) : null}
-      {renderDefault(props)}
-    </Stack>
+    </Flex>
   )
 }
