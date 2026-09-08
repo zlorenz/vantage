@@ -1885,7 +1885,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-key-visuals__title {
   margin: 0 0 3.75rem; /* 60px header→grid */
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-family: var(--font-vp-heading);
   font-size: 2.5rem; /* 40px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.2;
