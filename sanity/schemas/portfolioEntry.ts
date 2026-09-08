@@ -472,7 +472,7 @@ export const portfolioEntry = defineType({
       hidden: hiddenForTranslator,
       components: {input: KeyVisualsArrayInput},
       description:
-        'Still-photography gallery below crew credits. Layout is a two-column rhythm (Left / Pair / Hero) from list order — reorder so standout frames get Hero or Wide badges. Uses Media Library metadata (alt, title, credit); no per-item captions. Bulk uploads auto-tag via key-visual-tag. Drag multiple photos onto this field (below existing thumbnails) — do not batch-drop inside a single photo popup.',
+        'Still-photography gallery below crew credits. Layout is a two-column rhythm (Left / Middle+Right pair / Hero Two-Columns) from list order — reorder so standout frames get Hero Two-Columns. Uses Media Library metadata (alt, title, credit); no per-item captions. Bulk uploads auto-tag via key-visual-tag. Drag multiple photos onto this field (below existing thumbnails) — do not batch-drop inside a single photo popup.',
     }),
 
     defineField({

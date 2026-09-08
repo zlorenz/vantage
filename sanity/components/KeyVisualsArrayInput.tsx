@@ -1,6 +1,6 @@
 /**
  * Key Visuals array chrome — slot badges from the same `@key-visuals-layout`
- * planner as the site gallery. Editors reorder to aim photos at Hero/Wide slots.
+ * planner as the site gallery. Editors reorder to aim photos at hero slots.
  *
  * Badge lives in the list preview (inline with the filename), not above the row.
  */
@@ -9,6 +9,7 @@ import {useMemo} from 'react'
 import {Badge, Box, Card, Flex, Stack, Text} from '@sanity/ui'
 import {
   KEY_VISUAL_SLOT_LABEL,
+  KEY_VISUAL_SLOT_LEGEND,
   keyVisualSlotsByKey,
   type KeyVisualSlotKind,
 } from '@key-visuals-layout'
@@ -20,12 +21,13 @@ import {
 
 const SLOT_TONE: Record<
   KeyVisualSlotKind,
-  'primary' | 'positive' | 'caution' | 'default'
+  'primary' | 'positive' | 'caution' | 'critical' | 'default'
 > = {
-  hero: 'caution',
-  wide: 'caution',
-  pair: 'primary',
-  left: 'default',
+  hero: 'critical',
+  wide: 'critical',
+  left: 'positive',
+  pairCenter: 'primary',
+  pairRight: 'primary',
   compact: 'default',
 }
 
@@ -40,17 +42,16 @@ function KeyVisualsSlotLegend() {
       <Stack space={3}>
         <Text size={1} muted>
           Layout slots update as you reorder. Drag photos so the best frames
-          land on Hero or Wide (full right column). Slots are automatic from
-          order — not a manual highlight.
+          land on Hero Two-Columns (full right column). Slots are automatic from
+          order — not a manual highlight. Middle + Right share a blue badge
+          (they form a pair).
         </Text>
         <Flex gap={2} wrap="wrap">
-          {(Object.keys(KEY_VISUAL_SLOT_LABEL) as KeyVisualSlotKind[]).map(
-            (kind) => (
-              <Badge key={kind} tone={SLOT_TONE[kind]} fontSize={0}>
-                {KEY_VISUAL_SLOT_LABEL[kind]}
-              </Badge>
-            ),
-          )}
+          {KEY_VISUAL_SLOT_LEGEND.map((kind) => (
+            <Badge key={kind} tone={SLOT_TONE[kind]} fontSize={0}>
+              {KEY_VISUAL_SLOT_LABEL[kind]}
+            </Badge>
+          ))}
         </Flex>
       </Stack>
     </Card>
@@ -91,7 +92,6 @@ export function KeyVisualPreview(props: KeyVisualPreviewProps) {
       {slot ? (
         <Badge tone={SLOT_TONE[slot]} fontSize={0} style={{flexShrink: 0}}>
           {KEY_VISUAL_SLOT_LABEL[slot]}
-          {slot === 'hero' || slot === 'wide' ? ' · full width' : ''}
         </Badge>
       ) : null}
     </Flex>

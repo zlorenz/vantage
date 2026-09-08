@@ -69,16 +69,33 @@ export type RhythmPlan<T extends KeyVisualLayoutItem> =
 /**
  * Studio / editor-facing slot for one image key.
  * `wide` = remainder full-span single (same visual width as hero).
+ * Pair tiles: first = center column of the right band, second = right edge.
  */
-export type KeyVisualSlotKind = 'left' | 'pair' | 'hero' | 'wide' | 'compact'
+export type KeyVisualSlotKind =
+  | 'left'
+  | 'pairCenter'
+  | 'pairRight'
+  | 'hero'
+  | 'wide'
+  | 'compact'
 
 export const KEY_VISUAL_SLOT_LABEL: Record<KeyVisualSlotKind, string> = {
-  hero: 'Hero',
-  wide: 'Wide',
-  pair: 'Pair',
-  left: 'Left',
+  hero: 'Hero Two-Columns',
+  wide: 'Hero Two-Columns',
+  left: 'Left Column',
+  pairCenter: 'Middle Column',
+  pairRight: 'Right Column',
   compact: 'Compact',
 }
+
+/** Legend order in Studio (omit `wide` — same label/tone as `hero`; omit
+ * `compact` — only used when fewer than 5 images, so it clutters the legend). */
+export const KEY_VISUAL_SLOT_LEGEND: KeyVisualSlotKind[] = [
+  'hero',
+  'left',
+  'pairCenter',
+  'pairRight',
+]
 
 function leftTileHeight(aspect: LeftAspect): number {
   return LEFT_COL_W / (aspect === 'short' ? ASPECT_SHORT : ASPECT_TALL)
@@ -204,8 +221,8 @@ export function keyVisualSlotsByKey(
   if (plan.mode === 'compact') {
     for (const row of plan.rows) {
       if (row.kind === 'pair') {
-        map.set(row.a._key, 'compact')
-        map.set(row.b._key, 'compact')
+        map.set(row.a._key, 'pairCenter')
+        map.set(row.b._key, 'pairRight')
       } else {
         map.set(row.item._key, 'compact')
       }
@@ -218,8 +235,8 @@ export function keyVisualSlotsByKey(
   }
   for (const row of plan.right) {
     if (row.kind === 'pair') {
-      map.set(row.a._key, 'pair')
-      map.set(row.b._key, 'pair')
+      map.set(row.a._key, 'pairCenter')
+      map.set(row.b._key, 'pairRight')
     } else if (row.kind === 'hero') {
       map.set(row.item._key, 'hero')
     } else {
