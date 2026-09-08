@@ -126,7 +126,7 @@ export async function loadPortfolioNavData(
     currentRingIndex,
     ring.length,
     PORTFOLIO_NAV_WINDOW,
-  )
+  ).filter((idx) => idx !== currentRingIndex)
   const ids = cardRingIndices.map((idx) => ring[idx]!._id)
 
   const cardsResult = await sanityFetch({
