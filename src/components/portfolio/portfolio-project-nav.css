@@ -1,0 +1,97 @@
+/**
+ * Portfolio project-nav carousel — Figma 92:40293.
+ * Near-full-bleed 30px gutters (Key Visuals model), not rail-inset.
+ *
+ * Rem scale (16px root): 30→1.875, 60→3.75, 64→4, 100→6.25, 120→7.5,
+ * 410→25.625, 610→38.125, 624→39, 1250→78.125, 1860→116.25.
+ */
+
+.vp-project-nav {
+  /* Section chrome (ticks / hairline / py) lands in a later commit. */
+  width: 100%;
+}
+
+.vp-project-nav__widget {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 116.25rem; /* 1860 */
+  height: 39rem; /* 624 */
+  margin-inline: auto;
+}
+
+.vp-project-nav__left {
+  position: relative;
+  flex: 0 0 38.125rem; /* 610 */
+  width: 38.125rem;
+  max-width: 38.125rem;
+  background: #0f0f0f;
+  overflow: hidden;
+}
+
+.vp-project-nav__heading {
+  position: relative;
+  z-index: 1;
+  padding: 3.75rem 1.875rem 1.875rem; /* 60 / 30 / 30 */
+}
+
+.vp-project-nav__label {
+  margin: 0;
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 4rem; /* 64 */
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08rem; /* -1.28px */
+  text-transform: capitalize;
+  color: #fff;
+  overflow-wrap: break-word;
+}
+
+.vp-project-nav__mark {
+  position: absolute;
+  right: 0;
+  bottom: 6.25rem; /* clear future 100px bottom chrome */
+  width: 20.5rem; /* ~328 — matches Figma mark cluster width */
+  max-width: 54%;
+  height: auto;
+  opacity: 0.08;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+  user-select: none;
+}
+
+.vp-project-nav__right {
+  flex: 1 1 auto;
+  min-width: 0;
+  /* 1250 on 1860 artboard; flex fills remaining after 610 left. */
+  background: #0a0a0a;
+}
+
+@media (max-width: 991px) {
+  .vp-project-nav__widget {
+    flex-direction: column;
+    height: auto;
+    max-width: none;
+  }
+
+  .vp-project-nav__left {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    min-height: 16rem;
+  }
+
+  .vp-project-nav__label {
+    font-size: 2.5rem;
+    letter-spacing: -0.05rem;
+  }
+
+  .vp-project-nav__mark {
+    width: 12rem;
+    bottom: 1.5rem;
+  }
+
+  .vp-project-nav__right {
+    min-height: 16rem;
+  }
+}
