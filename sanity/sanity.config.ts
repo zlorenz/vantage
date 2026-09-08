@@ -108,7 +108,8 @@ export default defineConfig({
           t.templateId !== 'trashRecord' &&
           t.templateId !== 'duplicateDismissal' &&
           t.templateId !== 'campaignBriefAttachment' &&
-          t.templateId !== 'videoEvent',
+          t.templateId !== 'videoEvent' &&
+          t.templateId !== 'showreel',
       ),
     productionUrl: async (prev, {document}) => {
       const url = getFrontEndUrl(

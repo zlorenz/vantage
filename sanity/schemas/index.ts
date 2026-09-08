@@ -22,6 +22,7 @@ import { trashRecord } from './trashRecord';
 import { duplicateDismissal } from './duplicateDismissal';
 import { campaignBriefAttachment } from './campaignBriefAttachment';
 import { videoEvent } from './videoEvent';
+import { showreel } from './showreel';
 
 import { seoFields } from './objects/seoFields';
 import { trashMetadata } from './objects/trashMetadata';
@@ -75,4 +76,5 @@ export const schemaTypes = [
   duplicateDismissal,
   campaignBriefAttachment,
   videoEvent,
+  showreel,
 ];

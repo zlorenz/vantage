@@ -37,6 +37,21 @@ export type PortfolioEntryReference = {
   [internalGroqTypeReferenceTo]?: "portfolioEntry";
 };
 
+export type Showreel = {
+  _id: string;
+  _type: "showreel";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  portfolioItems?: Array<
+    {
+      _key: string;
+    } & PortfolioEntryReference
+  >;
+};
+
 export type VideoEvent = {
   _id: string;
   _type: "videoEvent";
@@ -87,6 +102,19 @@ export type CampaignBriefAttachment = {
     _type: "briefFile";
     _key: string;
   }>;
+};
+
+export type DuplicateDismissal = {
+  _id: string;
+  _type: "duplicateDismissal";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  pairKey?: string;
+  identityA?: string;
+  identityB?: string;
+  dismissedAt?: string;
+  dismissedBy?: string;
 };
 
 export type TrashRecord = {
@@ -984,9 +1012,11 @@ export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | GalleryImageImage
   | PortfolioEntryReference
+  | Showreel
   | VideoEvent
   | SanityFileAssetReference
   | CampaignBriefAttachment
+  | DuplicateDismissal
   | TrashRecord
   | Page
   | TrashMetadata
@@ -3192,6 +3222,47 @@ export type WORK_PAGE_QUERY_RESULT = {
   > | null;
 } | null;
 
+// Source: ../src/sanity/queries/portfolioNav.ts
+// Variable: PORTFOLIO_NAV_RING_QUERY
+// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)]    | order(publishedAt desc, title asc) {      _id,      "slug": slug.current,      "slugZh": slugZh.current,      publishedAt    }
+export type PORTFOLIO_NAV_RING_QUERY_RESULT = Array<{
+  _id: string;
+  slug: string | null;
+  slugZh: string | null;
+  publishedAt: string | null;
+}>;
+
+// Source: ../src/sanity/queries/portfolioNav.ts
+// Variable: PORTFOLIO_NAV_CARDS_BY_IDS_QUERY
+// Query: *[_type == "portfolioEntry" && _id in $ids && isHidden != true && !defined(trash.trashedAt)] {    _id,    "slug": slug.current,    "slugZh": slugZh.current,    publishedAt,    title,    titleZh,    displayTitleParts{      brandName,      productName,      campaignTitle,      brandNameZh,      productNameZh,      campaignTitleZh    },    featuredImage,    "primaryFormat": videoFormats[0]->{      title,      titleZh    }  }
+export type PORTFOLIO_NAV_CARDS_BY_IDS_QUERY_RESULT = Array<{
+  _id: string;
+  slug: string | null;
+  slugZh: string | null;
+  publishedAt: string | null;
+  title: string | null;
+  titleZh: string | null;
+  displayTitleParts: {
+    brandName: string | null;
+    productName: string | null;
+    campaignTitle: string | null;
+    brandNameZh: string | null;
+    productNameZh: string | null;
+    campaignTitleZh: string | null;
+  } | null;
+  featuredImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  primaryFormat: {
+    title: string | null;
+    titleZh: string | null;
+  } | null;
+}>;
+
 // Source: ../src/sanity/queries/sitemap.ts
 // Variable: SITEMAP_PAGES_QUERY
 // Query: *[_type == "page"    && slug.current in ["home", "work", "about", "news",        "vietnam-production-service", "vietnam-location-guide",        "video-campaign-brief"]    && noIndex != true    && !defined(trash.trashedAt)] {    "slug": slug.current,    "slugZh": slugZh.current,    "_updatedAt": _updatedAt  }
@@ -3223,6 +3294,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "page" && slug.current == "video-campaign-brief" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n\n  }\n': VIDEO_CAMPAIGN_BRIEF_PAGE_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    \n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  heroFilmTitle,\n  heroFilmTitleZh,\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  longTitleOverride,\n  longTitleOverrideZh\n,\n    excerpt,\n    excerptZh,\n    description,\n    descriptionZh,\n    featuredImage,\n    vimeoUrl,\n    xinpianchangUrl,\n    publishedAt,\n    isHidden,\n    additionalVideos[]{\n      vimeoUrl,\n      xinpianchangUrl,\n      videoTitle,\n      videoTitleZh,\n      description,\n      descriptionZh\n    },\n    keyVisuals[]{\n      ...,\n      asset->{\n        _id,\n        _type,\n        url,\n        title,\n        altText,\n        description,\n        creditLine,\n        metadata { dimensions { width, height, aspectRatio } }\n      }\n    },\n    videoFormats[]->{\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    industries[]->{\n      _id,\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current,\n      "parentId": parent._ref,\n      parent->{ title, titleZh }\n    },\n    markets[]->{\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    \n  crewCredits[]{\n    _key,\n    department,\n    roleKey,\n    role,\n    isCustomRole,\n    people[]{\n      _key,\n      name,\n      "url": coalesce(identity->url, url),\n      linkTitle,\n      "identityId": identity._ref,\n      "identityName": identity->name,\n      "identityNameZh": identity->nameZh\n    }\n  }\n,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': PORTFOLIO_ENTRY_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{\n    title,\n    titleZh,\n    heroTitle,\n    heroTitleZh,\n    featuredImage,\n    "body": body[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n},\n    "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n    _id,\n    _type,\n    url,\n    altText,\n    description,\n    metadata\n  }\n}\n  }\n': WORK_PAGE_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)]\n    | order(publishedAt desc, title asc) {\n      _id,\n      "slug": slug.current,\n      "slugZh": slugZh.current,\n      publishedAt\n    }\n': PORTFOLIO_NAV_RING_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && _id in $ids && isHidden != true && !defined(trash.trashedAt)] {\n    _id,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    publishedAt,\n    title,\n    titleZh,\n    displayTitleParts{\n      brandName,\n      productName,\n      campaignTitle,\n      brandNameZh,\n      productNameZh,\n      campaignTitleZh\n    },\n    featuredImage,\n    "primaryFormat": videoFormats[0]->{\n      title,\n      titleZh\n    }\n  }\n': PORTFOLIO_NAV_CARDS_BY_IDS_QUERY_RESULT;
     '\n  *[_type == "page"\n    && slug.current in ["home", "work", "about", "news",\n        "vietnam-production-service", "vietnam-location-guide",\n        "video-campaign-brief"]\n    && noIndex != true\n    && !defined(trash.trashedAt)] {\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    "_updatedAt": _updatedAt\n  }\n': SITEMAP_PAGES_QUERY_RESULT;
   }
 }
