@@ -61,10 +61,111 @@
 }
 
 .vp-project-nav__right {
+  position: relative;
   flex: 1 1 auto;
   min-width: 0;
   /* 1250 on 1860 artboard; flex fills remaining after 610 left. */
   background: #0a0a0a;
+  overflow: hidden;
+}
+
+.vp-project-nav__cover {
+  object-fit: cover;
+}
+
+.vp-project-nav__cover-fallback {
+  position: absolute;
+  inset: 0;
+  background: #1a1a1a;
+}
+
+.vp-project-nav__cover-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.3)
+  );
+  pointer-events: none;
+}
+
+.vp-project-nav__crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.5rem; /* 40 */
+  height: 2.5rem;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.vp-project-nav__crosshair line {
+  stroke: #fff;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.vp-project-nav__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* 32 */
+  padding: 1.875rem 3rem 3rem; /* 30 / 48 / 48 */
+  pointer-events: none;
+}
+
+.vp-project-nav__meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem; /* 24 */
+}
+
+.vp-project-nav__brand {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: 1rem; /* 16 */
+  font-weight: 400;
+  line-height: 1.25rem;
+  letter-spacing: -0.02rem; /* -0.32px */
+  text-transform: uppercase;
+  color: #fdb913;
+  white-space: pre;
+}
+
+.vp-project-nav__meta-rule {
+  display: block;
+  width: 0;
+  height: 1.25rem; /* 20 */
+  border-left: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+}
+
+.vp-project-nav__format {
+  margin: 0;
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.02rem;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.vp-project-nav__title {
+  margin: 0;
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 2.75rem; /* 44 */
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.055rem; /* -0.88px */
+  text-transform: uppercase;
+  color: #fff;
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 991px) {
@@ -92,6 +193,17 @@
   }
 
   .vp-project-nav__right {
-    min-height: 16rem;
+    min-height: 18rem;
+    aspect-ratio: 1250 / 624;
+  }
+
+  .vp-project-nav__meta {
+    padding: 1.25rem 1.5rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .vp-project-nav__title {
+    font-size: 1.75rem;
+    letter-spacing: -0.035rem;
   }
 }
