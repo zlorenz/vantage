@@ -22,16 +22,21 @@
  * balanced as the list grows (10 images per full left+right band). “Hero every
  * 3rd group” in Figma terms; drops the trailing extra pair from the mock.
  *
- * Consumption / balance:
- *   Each band takes 5 left + 5 right. Remainder after full bands is filled
- *   left-first through the same cycles until images run out (partial cycles
- *   allowed). Common counts 6 / 9 / 15 therefore cannot leave one column empty
- *   while the other piles up.
+ * Full bands:
+ *   While ≥10 images remain, place one complete left cycle (5) then one
+ *   complete right cycle (pair→hero→pair = 5). Track rendered height per
+ *   column (tile heights at Figma widths + 15px gaps) for the tail pass.
  *
- * Low-count fallback (n < 5): Figma’s two-column rhythm needs enough tiles to
- * read; below that, use a single full-width stack of `tall` slots, grouping
- * consecutive pairs when two remain (so 3 → pair + one; 4 → two pairs; 1–2
- * accordingly). Avoids a sparse half-empty second column.
+ * Remainder (height-balanced, not left-first):
+ *   After full bands, assign leftover images one placement unit at a time to
+ *   whichever column has less accumulated height (ties → left). Left unit =
+ *   next short/tall in LEFT_CYCLE (1 image). Right unit = next RIGHT_GROUPS
+ *   step (pair if ≥2 images remain, else a single/hero tile). This prevents
+ *   tails like n=12 (2 leftovers) from stacking both in the left column while
+ *   the shorter right column sits empty.
+ *
+ * Low-count fallback (n < 5): unchanged — single full-width stack of `tall`
+ * slots, grouping consecutive pairs when two remain.
  *
  * Slot fill: object-fit cover into the assigned aspect (Figma tiles are fixed
  * proportions, not intrinsic image ratios).
@@ -82,6 +87,11 @@ const ASPECT_TALL = 610 / 340;
 const LEFT_CYCLE = ['short', 'tall', 'short', 'tall', 'tall'] as const;
 const RIGHT_GROUPS = ['pair', 'hero', 'pair'] as const;
 
+/** Figma gap between tiles / columns (px), used only for height accounting. */
+const TILE_GAP = 15;
+const LEFT_COL_W = 610;
+const RIGHT_COL_W = 1235;
+
 type LeftAspect = (typeof LEFT_CYCLE)[number];
 type RightGroup = (typeof RIGHT_GROUPS)[number];
 
@@ -105,6 +115,18 @@ type RhythmPlan = {
 
 const FALLBACK_WIDTH = 1200;
 
+function leftTileHeight(aspect: LeftAspect): number {
+  return LEFT_COL_W / (aspect === 'short' ? ASPECT_SHORT : ASPECT_TALL);
+}
+
+function rightPairHeight(): number {
+  return LEFT_COL_W / ASPECT_TALL; // each pair cell ≈ 610 wide at tall ratio
+}
+
+function rightSpanHeight(): number {
+  return RIGHT_COL_W / ASPECT_TALL; // hero / single across the right column
+}
+
 function planKeyVisualsLayout(items: ReadyItem[]): RhythmPlan {
   if (items.length < 5) {
     const rows: CompactRow[] = [];
@@ -124,27 +146,78 @@ function planKeyVisualsLayout(items: ReadyItem[]): RhythmPlan {
   const left: {item: ReadyItem; aspect: LeftAspect}[] = [];
   const right: RightRow[] = [];
   let cursor = 0;
+  let leftH = 0;
+  let rightH = 0;
+  let leftStep = 0;
+  let rightStep = 0;
 
-  while (cursor < items.length) {
-    for (let i = 0; i < LEFT_CYCLE.length && cursor < items.length; i++) {
-      left.push({item: items[cursor], aspect: LEFT_CYCLE[i]});
+  const pushLeft = (item: ReadyItem, aspect: LeftAspect) => {
+    if (left.length > 0) leftH += TILE_GAP;
+    leftH += leftTileHeight(aspect);
+    left.push({item, aspect});
+    leftStep += 1;
+  };
+
+  const pushRightPair = (a: ReadyItem, b: ReadyItem) => {
+    if (right.length > 0) rightH += TILE_GAP;
+    rightH += rightPairHeight();
+    right.push({kind: 'pair', a, b});
+    rightStep += 1;
+  };
+
+  const pushRightHero = (item: ReadyItem) => {
+    if (right.length > 0) rightH += TILE_GAP;
+    rightH += rightSpanHeight();
+    right.push({kind: 'hero', item});
+    rightStep += 1;
+  };
+
+  const pushRightSingle = (item: ReadyItem) => {
+    if (right.length > 0) rightH += TILE_GAP;
+    rightH += rightSpanHeight();
+    right.push({kind: 'single', item});
+    rightStep += 1;
+  };
+
+  // Full bands: 5 left + 5 right while enough images remain.
+  while (items.length - cursor >= 10) {
+    for (let i = 0; i < LEFT_CYCLE.length; i++) {
+      pushLeft(items[cursor], LEFT_CYCLE[i]);
       cursor += 1;
     }
-
-    for (let g = 0; g < RIGHT_GROUPS.length && cursor < items.length; g++) {
+    for (let g = 0; g < RIGHT_GROUPS.length; g++) {
       const group: RightGroup = RIGHT_GROUPS[g];
       if (group === 'pair') {
-        if (cursor + 1 < items.length) {
-          right.push({kind: 'pair', a: items[cursor], b: items[cursor + 1]});
-          cursor += 2;
-        } else {
-          right.push({kind: 'single', item: items[cursor]});
-          cursor += 1;
-        }
+        pushRightPair(items[cursor], items[cursor + 1]);
+        cursor += 2;
       } else {
-        right.push({kind: 'hero', item: items[cursor]});
+        pushRightHero(items[cursor]);
         cursor += 1;
       }
+    }
+  }
+
+  // Remainder: assign to the shorter column (height-balanced).
+  while (cursor < items.length) {
+    if (leftH <= rightH) {
+      const aspect = LEFT_CYCLE[leftStep % LEFT_CYCLE.length];
+      pushLeft(items[cursor], aspect);
+      cursor += 1;
+      continue;
+    }
+
+    const group: RightGroup = RIGHT_GROUPS[rightStep % RIGHT_GROUPS.length];
+    if (group === 'pair') {
+      if (cursor + 1 < items.length) {
+        pushRightPair(items[cursor], items[cursor + 1]);
+        cursor += 2;
+      } else {
+        pushRightSingle(items[cursor]);
+        cursor += 1;
+      }
+    } else {
+      pushRightHero(items[cursor]);
+      cursor += 1;
     }
   }
 
