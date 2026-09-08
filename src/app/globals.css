@@ -1512,7 +1512,10 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-credits__dept:last-child {
+  /* Space below the final credit rows before the next section hairline
+   * (Key Visuals border-top / page end). Matches dept head→rows gap. */
   margin-bottom: 0;
+  padding-bottom: 2.55rem;
 }
 
 .vp-credits__dept-head {
