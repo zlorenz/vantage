@@ -12,6 +12,7 @@ import { PortfolioCaseRail } from '@/components/portfolio/PortfolioCaseRail';
 import { KeyVisualsGallery } from '@/components/portfolio/KeyVisualsGallery';
 import { PortfolioCredits } from '@/components/portfolio/PortfolioCredits';
 import { PortfolioCaseMedia } from '@/components/portfolio/PortfolioCaseMedia';
+import { PortfolioProjectNav } from '@/components/portfolio/PortfolioProjectNav';
 import { buildPortfolioCaseSlides } from '@/components/portfolio/prepare-portfolio-case-slides';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
@@ -223,8 +224,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
               entry={entry}
               caseCarouselSlides={caseCarouselSlides}
             />
-            <div className="vp-case-credits-band">{caseCredits}</div>
-            {caseKeyVisuals}
           </>
         ) : (
           /*
@@ -244,10 +243,15 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 caseCarouselSlides={null}
               />
             </div>
-            <div className="vp-case-credits-band">{caseCredits}</div>
-            {caseKeyVisuals}
           </>
         )}
+        {/*
+         * Shared below both templates: credits (rail-inset), Key Visuals
+         * (optional, near-full-bleed), project-nav (always last).
+         */}
+        <div className="vp-case-credits-band">{caseCredits}</div>
+        {caseKeyVisuals}
+        <PortfolioProjectNav currentId={entry._id} locale={typedLocale} />
       </SectionWrapper>
     </>
   );
