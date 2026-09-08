@@ -68,19 +68,134 @@ export type KeyVisualItem = {
   crop?: unknown;
 };
 
+type ReadyItem = KeyVisualItem & {asset: KeyVisualAsset};
+
 interface KeyVisualsGalleryProps {
   keyVisuals?: KeyVisualItem[] | null;
 }
 
+/** width/height — Figma 610/272 */
+const ASPECT_SHORT = 610 / 272;
+/** width/height — Figma 610/340 and hero 1235/688 */
+const ASPECT_TALL = 610 / 340;
+
+const LEFT_CYCLE = ['short', 'tall', 'short', 'tall', 'tall'] as const;
+const RIGHT_GROUPS = ['pair', 'hero', 'pair'] as const;
+
+type LeftAspect = (typeof LEFT_CYCLE)[number];
+type RightGroup = (typeof RIGHT_GROUPS)[number];
+
+type CompactRow =
+  | {kind: 'single'; item: ReadyItem}
+  | {kind: 'pair'; a: ReadyItem; b: ReadyItem};
+
+type RightRow =
+  | {kind: 'pair'; a: ReadyItem; b: ReadyItem}
+  | {kind: 'hero'; item: ReadyItem}
+  | {kind: 'single'; item: ReadyItem};
+
+type RhythmPlan = {
+  mode: 'compact';
+  rows: CompactRow[];
+} | {
+  mode: 'rhythm';
+  left: {item: ReadyItem; aspect: LeftAspect}[];
+  right: RightRow[];
+};
+
 const FALLBACK_WIDTH = 1200;
-const FALLBACK_HEIGHT = 800;
+
+function planKeyVisualsLayout(items: ReadyItem[]): RhythmPlan {
+  if (items.length < 5) {
+    const rows: CompactRow[] = [];
+    let i = 0;
+    while (i < items.length) {
+      if (i + 1 < items.length) {
+        rows.push({kind: 'pair', a: items[i], b: items[i + 1]});
+        i += 2;
+      } else {
+        rows.push({kind: 'single', item: items[i]});
+        i += 1;
+      }
+    }
+    return {mode: 'compact', rows};
+  }
+
+  const left: {item: ReadyItem; aspect: LeftAspect}[] = [];
+  const right: RightRow[] = [];
+  let cursor = 0;
+
+  while (cursor < items.length) {
+    for (let i = 0; i < LEFT_CYCLE.length && cursor < items.length; i++) {
+      left.push({item: items[cursor], aspect: LEFT_CYCLE[i]});
+      cursor += 1;
+    }
+
+    for (let g = 0; g < RIGHT_GROUPS.length && cursor < items.length; g++) {
+      const group: RightGroup = RIGHT_GROUPS[g];
+      if (group === 'pair') {
+        if (cursor + 1 < items.length) {
+          right.push({kind: 'pair', a: items[cursor], b: items[cursor + 1]});
+          cursor += 2;
+        } else {
+          right.push({kind: 'single', item: items[cursor]});
+          cursor += 1;
+        }
+      } else {
+        right.push({kind: 'hero', item: items[cursor]});
+        cursor += 1;
+      }
+    }
+  }
+
+  return {mode: 'rhythm', left, right};
+}
+
+function KeyVisualFigure({
+  item,
+  aspect,
+  sizes,
+}: {
+  item: ReadyItem;
+  aspect: number;
+  sizes: string;
+}) {
+  const {asset} = item;
+  const width = asset.metadata?.dimensions?.width || FALLBACK_WIDTH;
+  const displayWidth = snapNextImageWidth(Math.min(width, 1600));
+  const displayHeight = Math.max(1, Math.round(displayWidth / aspect));
+  const imageUrl = urlForImage({
+    _type: 'image',
+    asset: {_type: 'reference', _ref: asset._id},
+  })
+    .width(displayWidth)
+    .height(displayHeight)
+    .fit('crop')
+    .url();
+
+  return (
+    <figure
+      className="vp-key-visuals-gallery__item"
+      style={{aspectRatio: `${aspect}`}}
+    >
+      <Image
+        src={imageUrl}
+        alt={asset.altText?.trim() || ''}
+        fill
+        className="vp-key-visuals-gallery__img"
+        sizes={sizes}
+      />
+    </figure>
+  );
+}
 
 export function KeyVisualsGallery({keyVisuals}: KeyVisualsGalleryProps) {
   const items = (keyVisuals ?? []).filter(
-    (item): item is KeyVisualItem & {asset: KeyVisualAsset} =>
-      Boolean(item?.asset?._id),
+    (item): item is ReadyItem => Boolean(item?.asset?._id),
   );
   if (items.length === 0) return null;
+
+  const plan = planKeyVisualsLayout(items);
 
   return (
     <section className="vp-key-visuals" aria-labelledby="key-visuals-heading">
@@ -90,34 +205,91 @@ export function KeyVisualsGallery({keyVisuals}: KeyVisualsGalleryProps) {
         </span>
         {`  Key Visuals`}
       </h2>
-      <div className="vp-key-visuals-gallery">
-        {items.map((item) => {
-          const {asset} = item;
-          const width = asset.metadata?.dimensions?.width || FALLBACK_WIDTH;
-          const height = asset.metadata?.dimensions?.height || FALLBACK_HEIGHT;
-          const displayWidth = snapNextImageWidth(Math.min(width, 1600));
-          const displayHeight = Math.round((height / width) * displayWidth);
-          const imageUrl = urlForImage({
-            _type: 'image',
-            asset: {_type: 'reference', _ref: asset._id},
-          })
-            .width(displayWidth)
-            .url();
 
-          return (
-            <figure key={item._key} className="vp-key-visuals-gallery__item">
-              <Image
-                src={imageUrl}
-                alt={asset.altText?.trim() || ''}
-                width={displayWidth}
-                height={displayHeight}
-                className="vp-key-visuals-gallery__img"
-                sizes="(max-width: 639px) 100vw, 33vw"
+      {plan.mode === 'compact' ? (
+        <div className="vp-key-visuals-gallery vp-key-visuals-gallery--compact">
+          {plan.rows.map((row) =>
+            row.kind === 'pair' ? (
+              <div
+                key={`${row.a._key}-${row.b._key}`}
+                className="vp-key-visuals-gallery__pair"
+              >
+                <KeyVisualFigure
+                  item={row.a}
+                  aspect={ASPECT_TALL}
+                  sizes="(max-width: 639px) 100vw, 50vw"
+                />
+                <KeyVisualFigure
+                  item={row.b}
+                  aspect={ASPECT_TALL}
+                  sizes="(max-width: 639px) 100vw, 50vw"
+                />
+              </div>
+            ) : (
+              <KeyVisualFigure
+                key={row.item._key}
+                item={row.item}
+                aspect={ASPECT_TALL}
+                sizes="(max-width: 639px) 100vw, 100vw"
               />
-            </figure>
-          );
-        })}
-      </div>
+            ),
+          )}
+        </div>
+      ) : (
+        <div className="vp-key-visuals-gallery vp-key-visuals-gallery--rhythm">
+          <div className="vp-key-visuals-gallery__col vp-key-visuals-gallery__col--left">
+            {plan.left.map(({item, aspect}) => (
+              <KeyVisualFigure
+                key={item._key}
+                item={item}
+                aspect={aspect === 'short' ? ASPECT_SHORT : ASPECT_TALL}
+                sizes="(max-width: 991px) 100vw, 33vw"
+              />
+            ))}
+          </div>
+          <div className="vp-key-visuals-gallery__col vp-key-visuals-gallery__col--right">
+            {plan.right.map((row) => {
+              if (row.kind === 'pair') {
+                return (
+                  <div
+                    key={`${row.a._key}-${row.b._key}`}
+                    className="vp-key-visuals-gallery__pair"
+                  >
+                    <KeyVisualFigure
+                      item={row.a}
+                      aspect={ASPECT_TALL}
+                      sizes="(max-width: 991px) 100vw, 33vw"
+                    />
+                    <KeyVisualFigure
+                      item={row.b}
+                      aspect={ASPECT_TALL}
+                      sizes="(max-width: 991px) 100vw, 33vw"
+                    />
+                  </div>
+                );
+              }
+              if (row.kind === 'hero') {
+                return (
+                  <KeyVisualFigure
+                    key={row.item._key}
+                    item={row.item}
+                    aspect={ASPECT_TALL}
+                    sizes="(max-width: 991px) 100vw, 66vw"
+                  />
+                );
+              }
+              return (
+                <KeyVisualFigure
+                  key={row.item._key}
+                  item={row.item}
+                  aspect={ASPECT_TALL}
+                  sizes="(max-width: 991px) 100vw, 66vw"
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

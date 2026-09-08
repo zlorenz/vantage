@@ -1866,14 +1866,12 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /* ==========================================================================
-   Key Visuals gallery (portfolio entry) — Figma 149:21711 section chrome.
-   Near-full-bleed (30px gutters); ignores case rail. Do not alter
-   .vp-masonry-gallery. Grid rhythm lands in a follow-up commit.
+   Key Visuals gallery (portfolio entry) — Figma 149:21711.
+   Near-full-bleed (30px gutters); ignores case rail. Two-column authored
+   rhythm (not CSS column masonry). Do not alter .vp-masonry-gallery.
    ========================================================================== */
 
 .vp-key-visuals {
-  /* Escape .vp-case-credits-band rail inset when nested historically; mount is
-   * now a sibling of the band (page.tsx). Own full-bleed chrome + 30px gutters. */
   width: 100%;
   max-width: none;
   margin: 0;
@@ -1897,30 +1895,83 @@ body:has(.vp-work-index) #header.navbar::before {
   font-weight: 400;
 }
 
-.vp-key-visuals-gallery {
-  column-count: 3;
-  column-gap: 0.75rem;
+/* Desktop rhythm: 610:1235 of content width (~32.8% : 66.4%), gap 15px */
+.vp-key-visuals-gallery--rhythm {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9375rem; /* 15px */
+  width: 100%;
 }
 
-/* Same viewport as .vp-masonry-gallery mobile override; 1 col instead of 2. */
-@media (max-width: 639px) {
-  .vp-key-visuals-gallery {
-    column-count: 1;
-  }
+.vp-key-visuals-gallery__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem; /* 15px */
+  min-width: 0;
+}
+
+.vp-key-visuals-gallery__col--left {
+  flex: 610 1 0;
+}
+
+.vp-key-visuals-gallery__col--right {
+  flex: 1235 1 0;
+}
+
+.vp-key-visuals-gallery__pair {
+  display: flex;
+  gap: 0.9375rem; /* 15px */
+  width: 100%;
+}
+
+.vp-key-visuals-gallery__pair > .vp-key-visuals-gallery__item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.vp-key-visuals-gallery--compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem;
+  width: 100%;
 }
 
 .vp-key-visuals-gallery__item {
   position: relative;
   display: block;
-  margin: 0 0 0.75rem;
-  break-inside: avoid;
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background: #111;
 }
 
 .vp-key-visuals-gallery__img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 1.75rem;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+@media (max-width: 991.98px) {
+  .vp-key-visuals-gallery--rhythm {
+    flex-direction: column;
+  }
+
+  .vp-key-visuals-gallery__col--left,
+  .vp-key-visuals-gallery__col--right {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 639px) {
+  .vp-key-visuals-gallery__pair {
+    flex-direction: column;
+  }
 }
 
 .vp-pt-cta-button {
