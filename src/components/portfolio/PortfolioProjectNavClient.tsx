@@ -1,13 +1,14 @@
 'use client'
 
 /**
- * Interactive project-nav chrome — left panel + right cover/meta (Figma 92:40293).
- * Arrow / EXPLORE wiring lands in the next commit; starts on chronological next.
+ * Interactive project-nav chrome — left panel, right cover/meta, bottom
+ * EXPLORE + prev/next cycling the ±5 neighbor window (Figma 92:40293).
  */
 
-import {useMemo, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 import Image from 'next/image'
 import {phraseRecordToMap} from '@phrase-book'
+import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink'
 import type {Locale} from '@/i18n/routing'
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles'
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field'
@@ -37,6 +38,30 @@ function CrosshairMark() {
   )
 }
 
+function NavChevron({direction}: {direction: 'prev' | 'next'}) {
+  return (
+    <svg
+      className="vp-project-nav__arrow-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d={
+          direction === 'prev'
+            ? 'M14.5 5.5 8 12l6.5 6.5'
+            : 'M9.5 5.5 16 12l-6.5 6.5'
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+    </svg>
+  )
+}
+
 export function PortfolioProjectNavClient({
   locale,
   phrases,
@@ -49,9 +74,19 @@ export function PortfolioProjectNavClient({
     return idx >= 0 ? idx : 0
   }, [cardRingIndices, initialRingIndex])
 
-  const [localIndex] = useState(startLocal)
+  const [localIndex, setLocalIndex] = useState(startLocal)
+  const count = cards.length
+
+  const goPrev = useCallback(() => {
+    setLocalIndex((i) => (i - 1 + count) % count)
+  }, [count])
+
+  const goNext = useCallback(() => {
+    setLocalIndex((i) => (i + 1) % count)
+  }, [count])
+
   const active = cards[localIndex]
-  if (!active) return null
+  if (!active || count < 1) return null
 
   const phraseMap = phraseRecordToMap(phrases)
   const parts = resolveEntryDisplayTitleParts(active, locale, phraseMap)
@@ -79,6 +114,9 @@ export function PortfolioProjectNavClient({
         .url()
     : null
 
+  const slugParam =
+    locale === 'zh' ? active.slugZh || active.slug || '' : active.slug || ''
+
   return (
     <section
       className="vp-project-nav"
@@ -97,11 +135,45 @@ export function PortfolioProjectNavClient({
             alt=""
             aria-hidden="true"
           />
+
+          <div className="vp-project-nav__chrome">
+            {slugParam ? (
+              <PortfolioEntryLink
+                slug={slugParam}
+                className="vp-project-nav__explore"
+              >
+                explore
+              </PortfolioEntryLink>
+            ) : (
+              <span className="vp-project-nav__explore" aria-disabled>
+                explore
+              </span>
+            )}
+            <div className="vp-project-nav__arrows">
+              <button
+                type="button"
+                className="vp-project-nav__arrow vp-project-nav__arrow--prev"
+                onClick={goPrev}
+                aria-label="Previous project"
+              >
+                <NavChevron direction="prev" />
+              </button>
+              <button
+                type="button"
+                className="vp-project-nav__arrow vp-project-nav__arrow--next"
+                onClick={goNext}
+                aria-label="Next project"
+              >
+                <NavChevron direction="next" />
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="vp-project-nav__right">
           {imageUrl ? (
             <Image
+              key={active._id}
               className="vp-project-nav__cover"
               src={imageUrl}
               alt=""

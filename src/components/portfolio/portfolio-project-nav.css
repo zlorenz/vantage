@@ -50,7 +50,7 @@
 .vp-project-nav__mark {
   position: absolute;
   right: 0;
-  bottom: 6.25rem; /* clear future 100px bottom chrome */
+  bottom: 6.25rem; /* clear 100px bottom chrome */
   width: 20.5rem; /* ~328 — matches Figma mark cluster width */
   max-width: 54%;
   height: auto;
@@ -58,6 +58,83 @@
   mix-blend-mode: luminosity;
   pointer-events: none;
   user-select: none;
+}
+
+.vp-project-nav__chrome {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  height: 6.25rem; /* 100 */
+  border-top: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+}
+
+.vp-project-nav__explore {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  /* Fills leftover beside two 100px arrow cells → 410 on 610 artboard. */
+  height: 6.25rem;
+  padding-inline: 1rem;
+  background: #fff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  letter-spacing: -0.02rem; /* -0.32px */
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #000;
+  white-space: nowrap;
+}
+
+.vp-project-nav__explore:focus-visible {
+  outline: 1px solid var(--vp-border, #fff);
+  outline-offset: -2px;
+}
+
+.vp-project-nav__arrows {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  height: 100%;
+}
+
+.vp-project-nav__arrow {
+  display: inline-flex;
+  flex: 0 0 6.25rem; /* 100 */
+  align-items: center;
+  justify-content: center;
+  width: 6.25rem;
+  height: 6.25rem;
+  padding: 1.875rem; /* 30 */
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.vp-project-nav__arrow--prev {
+  border-right: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+}
+
+.vp-project-nav__arrow:focus-visible {
+  outline: 1px solid var(--vp-border, #fff);
+  outline-offset: -2px;
+}
+
+.vp-project-nav__arrow-icon {
+  display: block;
+  width: 1.5rem; /* 24 */
+  height: 1.5rem;
 }
 
 .vp-project-nav__right {
@@ -189,7 +266,11 @@
 
   .vp-project-nav__mark {
     width: 12rem;
-    bottom: 1.5rem;
+    bottom: 6.25rem;
+  }
+
+  .vp-project-nav__chrome {
+    /* Keep bottom chrome on the left stack on mobile. */
   }
 
   .vp-project-nav__right {
