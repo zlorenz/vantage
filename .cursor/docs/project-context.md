@@ -32,7 +32,7 @@ The goal is a fast, maintainable, custom-built site with a purpose-built CMS tha
 - Local path: `/Users/zacharialorenz/Documents/Cursor/vantage`
 - The WordPress installation remains in this folder during the build phase as a reference and content source. Do not delete WordPress files until explicitly instructed.
 - New Next.js application will be initialized inside this folder as the build progresses.
-- Environment variables (Sanity project ID, dataset, API tokens, Resend API key) are stored in `.env.local` and must never be committed to version control.
+- Environment variables (Sanity project ID, dataset, API tokens, Resend API key, showreel editor password) are stored in `.env.local` and must never be committed to version control. See `.cursor/docs/env-vars.md` for the showreel password placeholder.
 
 ---
 
