@@ -439,15 +439,25 @@ export const portfolioEntry = defineType({
           preview: {
             select: {
               media: 'asset',
+              filename: 'asset.originalFilename',
+              assetTitle: 'asset.title',
               slotKey: '_key',
             },
             prepare: ({
               media,
+              filename,
+              assetTitle,
               slotKey,
             }: {
               media?: unknown
+              filename?: string
+              assetTitle?: string
               slotKey?: string
             }) => ({
+              title:
+                (typeof filename === 'string' && filename.trim()) ||
+                (typeof assetTitle === 'string' && assetTitle.trim()) ||
+                'Image',
               media,
               slotKey,
             }),
