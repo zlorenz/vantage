@@ -1866,10 +1866,36 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /* ==========================================================================
-   Key Visuals gallery (portfolio entry) — scoped; do not alter .vp-masonry-gallery
-   Title size/spacing: Tailwind utilities on KeyVisualsGallery h2 (site section-
-   heading pattern). Keep gallery layout rules here only.
+   Key Visuals gallery (portfolio entry) — Figma 149:21711 section chrome.
+   Near-full-bleed (30px gutters); ignores case rail. Do not alter
+   .vp-masonry-gallery. Grid rhythm lands in a follow-up commit.
    ========================================================================== */
+
+.vp-key-visuals {
+  /* Escape .vp-case-credits-band rail inset when nested historically; mount is
+   * now a sibling of the band (page.tsx). Own full-bleed chrome + 30px gutters. */
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 10rem 1.875rem; /* 160px / 30px */
+  box-sizing: border-box;
+  border-top: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+}
+
+.vp-key-visuals__title {
+  margin: 0 0 3.75rem; /* 60px header→grid */
+  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
+  font-size: 2.5rem; /* 40px */
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.2;
+  letter-spacing: -0.05rem; /* -0.8px */
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.vp-key-visuals__bullet {
+  font-weight: 400;
+}
 
 .vp-key-visuals-gallery {
   column-count: 3;

@@ -159,23 +159,26 @@ export default async function PortfolioEntryPage({ params }: Props) {
     />
   );
 
-  const caseBelowFold = (
-    <div className="mt-24 flex flex-col gap-28">
+  const caseCredits = (
+    <div className="mt-24">
       <PortfolioCredits
         crewCredits={entry.crewCredits}
         locale={typedLocale}
         phrases={phraseRecord}
       />
-      <KeyVisualsGallery
-        keyVisuals={
-          (entry as PortfolioEntry &
-            Pick<
-              NonNullable<PORTFOLIO_ENTRY_QUERY_RESULT>,
-              'keyVisuals'
-            >).keyVisuals
-        }
-      />
     </div>
+  );
+
+  const caseKeyVisuals = (
+    <KeyVisualsGallery
+      keyVisuals={
+        (entry as PortfolioEntry &
+          Pick<
+            NonNullable<PORTFOLIO_ENTRY_QUERY_RESULT>,
+            'keyVisuals'
+          >).keyVisuals
+      }
+    />
   );
 
   return (
@@ -203,7 +206,8 @@ export default async function PortfolioEntryPage({ params }: Props) {
           /*
            * Multi-video: header row matches single-video; carousel row is
            * rail-nav + media (flush to rail edge / viewport right); credits
-           * reuse .vp-case-credits-band. Card geometry / rail chrome later.
+           * reuse .vp-case-credits-band. Key Visuals is a near-full-bleed
+           * sibling (30px gutters), not rail-inset.
            */
           <>
             <div className="vp-case-shell__layout">
@@ -219,12 +223,14 @@ export default async function PortfolioEntryPage({ params }: Props) {
               entry={entry}
               caseCarouselSlides={caseCarouselSlides}
             />
-            <div className="vp-case-credits-band">{caseBelowFold}</div>
+            <div className="vp-case-credits-band">{caseCredits}</div>
+            {caseKeyVisuals}
           </>
         ) : (
           /*
            * Single-video: header row stays rail-inset; media is a full-bleed
            * sibling; credits use an explicit inset wrapper (not rail-adjacent).
+           * Key Visuals is a near-full-bleed sibling (30px gutters), not rail-inset.
            */
           <>
             <div className="vp-case-shell__layout">
@@ -238,7 +244,8 @@ export default async function PortfolioEntryPage({ params }: Props) {
                 caseCarouselSlides={null}
               />
             </div>
-            <div className="vp-case-credits-band">{caseBelowFold}</div>
+            <div className="vp-case-credits-band">{caseCredits}</div>
+            {caseKeyVisuals}
           </>
         )}
       </SectionWrapper>
