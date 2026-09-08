@@ -65,10 +65,46 @@
   border-right-width: 1px;
 }
 
+.vp-project-nav__widget {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 39rem; /* 624 */
+  margin: 0;
+  max-width: none;
+  overflow: hidden;
+  /* Slide widths resolve against the widget, not the padded Embla track. */
+  container-type: inline-size;
+}
+
+/*
+ * Fixed left chrome sits above the Embla track (z-index 2) and blocks
+ * pointer events so only the uncovered right band is swipeable. Outgoing
+ * slides translate under this opaque panel.
+ */
+.vp-project-nav__left {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 38.125rem; /* 610 */
+  max-width: 38.125rem;
+  background: #0f0f0f;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
 .vp-project-nav__viewport {
+  position: relative;
+  z-index: 1;
   overflow: hidden;
   width: 100%;
-  height: 39rem; /* 624 — matches widget */
+  height: 100%;
+  box-sizing: border-box;
+  /* Leading inset matches left chrome — Embla align:start parks one card
+   * in the uncovered right band (same pattern as case carousel rail). */
+  padding-left: 38.125rem; /* 610 */
 }
 
 .vp-project-nav__container {
@@ -80,29 +116,19 @@
 
 .vp-project-nav__slide {
   position: relative;
-  flex: 0 0 100%;
-  width: 100%;
+  /* Right-band width only — cards sit flush; no 610px gutter between snaps. */
+  flex: 0 0 calc(100cqi - 38.125rem);
+  width: calc(100cqi - 38.125rem);
   min-width: 0;
   height: 100%;
   box-sizing: border-box;
 }
 
-.vp-project-nav__widget {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  max-width: none;
-}
-
-.vp-project-nav__left {
-  position: relative;
-  flex: 0 0 38.125rem; /* 610 */
-  width: 38.125rem;
-  max-width: 38.125rem;
-  background: #0f0f0f;
+.vp-project-nav__card {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
+  background: #0a0a0a;
 }
 
 .vp-project-nav__heading {
@@ -213,15 +239,6 @@
   height: 1.5rem;
 }
 
-.vp-project-nav__right {
-  position: relative;
-  flex: 1 1 auto;
-  min-width: 0;
-  /* 1250 on 1860 artboard; flex fills remaining after 610 left. */
-  background: #0a0a0a;
-  overflow: hidden;
-}
-
 .vp-project-nav__cover {
   object-fit: cover;
 }
@@ -235,6 +252,7 @@
 .vp-project-nav__cover-gradient {
   position: absolute;
   inset: 0;
+  /* Gradient only needs to read on the visible right band; full-slide is fine. */
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0),
@@ -243,6 +261,7 @@
   pointer-events: none;
 }
 
+/* Center of the visible right band (card is already inset past left chrome). */
 .vp-project-nav__crosshair {
   position: absolute;
   top: 50%;
@@ -259,6 +278,7 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* Meta is inside the right-band card — no extra 610 inset. */
 .vp-project-nav__meta {
   position: absolute;
   left: 0;
@@ -339,8 +359,26 @@
     display: none;
   }
 
+  .vp-project-nav__widget {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-width: none;
+    overflow: visible;
+  }
+
+  /* Stack chrome above cards — no underlay mask on small screens. */
+  .vp-project-nav__left {
+    position: relative;
+    z-index: auto;
+    width: 100%;
+    max-width: none;
+    min-height: 16rem;
+  }
+
   .vp-project-nav__viewport {
     height: auto;
+    padding-left: 0;
   }
 
   .vp-project-nav__container {
@@ -348,20 +386,26 @@
   }
 
   .vp-project-nav__slide {
-    height: auto;
-  }
-
-  .vp-project-nav__widget {
-    flex-direction: column;
-    height: auto;
-    max-width: none;
-  }
-
-  .vp-project-nav__left {
-    flex: none;
+    flex-basis: 100%;
     width: 100%;
-    max-width: none;
-    min-height: 16rem;
+    height: auto;
+  }
+
+  .vp-project-nav__card {
+    position: relative;
+    inset: auto;
+    min-height: 18rem;
+    aspect-ratio: 1250 / 624;
+  }
+
+  .vp-project-nav__crosshair {
+    left: 50%;
+  }
+
+  .vp-project-nav__meta {
+    left: 0;
+    padding: 1.25rem 1.5rem 1.5rem;
+    gap: 1rem;
   }
 
   .vp-project-nav__label {
@@ -372,20 +416,6 @@
   .vp-project-nav__mark {
     width: 12rem;
     bottom: 6.25rem;
-  }
-
-  .vp-project-nav__chrome {
-    /* Keep bottom chrome on the left stack on mobile. */
-  }
-
-  .vp-project-nav__right {
-    min-height: 18rem;
-    aspect-ratio: 1250 / 624;
-  }
-
-  .vp-project-nav__meta {
-    padding: 1.25rem 1.5rem 1.5rem;
-    gap: 1rem;
   }
 
   .vp-project-nav__title {
