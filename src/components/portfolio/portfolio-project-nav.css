@@ -7,8 +7,62 @@
  */
 
 .vp-project-nav {
-  /* Section chrome (ticks / hairline / py) lands in a later commit. */
+  position: relative;
   width: 100%;
+  padding: 7.5rem 1.875rem; /* 120 / 30 — Key Visuals gutter model */
+  border-top: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+}
+
+.vp-project-nav__frame {
+  position: relative;
+  width: 100%;
+  max-width: 116.25rem; /* 1860 widget */
+  margin-inline: auto;
+}
+
+/* Tick frame sits 15px (0.9375rem) outside the 1860×624 widget → 1890×654. */
+.vp-project-nav__ticks {
+  position: absolute;
+  inset: -0.9375rem;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.vp-project-nav__tick {
+  position: absolute;
+  width: 0.75rem; /* 12 */
+  height: 0.75rem;
+  border-color: #d9d9d9;
+  border-style: solid;
+  border-width: 0;
+}
+
+.vp-project-nav__tick--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-project-nav__tick--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.vp-project-nav__tick--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-project-nav__tick--br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
 }
 
 .vp-project-nav__widget {
@@ -246,6 +300,14 @@
 }
 
 @media (max-width: 991px) {
+  .vp-project-nav {
+    padding: 4rem 1.25rem;
+  }
+
+  .vp-project-nav__ticks {
+    display: none;
+  }
+
   .vp-project-nav__widget {
     flex-direction: column;
     height: auto;
