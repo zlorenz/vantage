@@ -140,14 +140,14 @@ export function WorkInternalListView({
           onSortChange={onSortChange}
         />
         <SortableHeader
-          label="Client"
-          column="client"
+          label="Date"
+          column="date"
           sort={sort}
           onSortChange={onSortChange}
         />
         <SortableHeader
-          label="Date"
-          column="date"
+          label="Brand"
+          column="client"
           sort={sort}
           onSortChange={onSortChange}
         />
@@ -207,10 +207,10 @@ export function WorkInternalListView({
               <span role="cell" className="vp-internal-list__title">
                 {title}
               </span>
+              <span role="cell">{formatPublishDate(entry.publishedAt)}</span>
               <span role="cell" className="vp-internal-list__client">
                 {getPrimaryClientName(entry)}
               </span>
-              <span role="cell">{formatPublishDate(entry.publishedAt)}</span>
               <span role="cell">{getCrewName(entry, 'director')}</span>
               <span role="cell">{getCrewName(entry, 'dop')}</span>
               <span role="cell">{getArtName(entry)}</span>
