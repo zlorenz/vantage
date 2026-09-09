@@ -467,70 +467,6 @@ export function WorkInternalToolbar({
           </div>
 
           <div className="vp-internal-toolbar__view-group">
-            <div
-              className="vp-internal-view-toggle"
-              role="group"
-              aria-label="View mode"
-            >
-              <button
-                type="button"
-                className={
-                  view === 'cards'
-                    ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
-                    : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
-                }
-                aria-label="Cards"
-                aria-pressed={view === 'cards'}
-                onClick={() => onViewChange('cards')}
-              >
-                <svg
-                  className="vp-internal-view-toggle__icon"
-                  viewBox="0 0 16 16"
-                  width="16"
-                  height="16"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <rect x="1" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="6" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="11" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="1" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="6" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="11" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="1" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="6" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
-                  <rect x="11" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className={
-                  view === 'list'
-                    ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
-                    : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
-                }
-                aria-label="List"
-                aria-pressed={view === 'list'}
-                onClick={() => onViewChange('list')}
-              >
-                <svg
-                  className="vp-internal-view-toggle__icon"
-                  viewBox="0 0 16 16"
-                  width="16"
-                  height="16"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <circle cx="2.5" cy="3" r="1.25" fill="currentColor" />
-                  <rect x="5.5" y="2" width="9" height="2" rx="0.75" fill="currentColor" />
-                  <circle cx="2.5" cy="8" r="1.25" fill="currentColor" />
-                  <rect x="5.5" y="7" width="9" height="2" rx="0.75" fill="currentColor" />
-                  <circle cx="2.5" cy="13" r="1.25" fill="currentColor" />
-                  <rect x="5.5" y="12" width="9" height="2" rx="0.75" fill="currentColor" />
-                </svg>
-              </button>
-            </div>
-
             <div className="vp-internal-card-size">
               <span className="vp-internal-card-size__label">Card Size</span>
               <div
@@ -563,6 +499,70 @@ export function WorkInternalToolbar({
 
       <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters">
         <div className="vp-internal-fchips" ref={chipRowRef}>
+          <div
+            className="vp-internal-view-toggle"
+            role="group"
+            aria-label="View mode"
+          >
+            <button
+              type="button"
+              className={
+                view === 'cards'
+                  ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
+                  : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
+              }
+              aria-label="Cards"
+              aria-pressed={view === 'cards'}
+              onClick={() => onViewChange('cards')}
+            >
+              <svg
+                className="vp-internal-view-toggle__icon"
+                viewBox="0 0 16 16"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect x="1" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="6" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="11" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="1" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="6" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="11" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="1" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="6" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+                <rect x="11" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className={
+                view === 'list'
+                  ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
+                  : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
+              }
+              aria-label="List"
+              aria-pressed={view === 'list'}
+              onClick={() => onViewChange('list')}
+            >
+              <svg
+                className="vp-internal-view-toggle__icon"
+                viewBox="0 0 16 16"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <circle cx="2.5" cy="3" r="1.25" fill="currentColor" />
+                <rect x="5.5" y="2" width="9" height="2" rx="0.75" fill="currentColor" />
+                <circle cx="2.5" cy="8" r="1.25" fill="currentColor" />
+                <rect x="5.5" y="7" width="9" height="2" rx="0.75" fill="currentColor" />
+                <circle cx="2.5" cy="13" r="1.25" fill="currentColor" />
+                <rect x="5.5" y="12" width="9" height="2" rx="0.75" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+
           <WorkInternalFilterPanel
             label="Categories"
             activeCount={taxonomyActiveCount}
