@@ -2117,20 +2117,13 @@ body:has(.vp-work-index) #header.navbar::before {
   align-items: flex-end;
 }
 
-.vp-internal-toolbar__controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 0.5rem 0.65rem;
-  min-width: 0;
-}
-
 .vp-internal-toolbar__meta {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.75rem;
   margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .vp-internal-search {
@@ -2215,10 +2208,11 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-toolbar__row--filters {
+  flex-wrap: nowrap;
   gap: 0.5rem 0.65rem;
   /* flex-end aligns the Sort select (not the stacked "Sort" label) with chips. */
   align-items: flex-end;
-  justify-content: space-between;
+  overflow-x: auto;
 }
 
 .vp-internal-toolbar__row--pills {
@@ -2231,11 +2225,13 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-internal-fchips {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.4rem;
   position: relative;
   z-index: 30;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .vp-internal-fchip {
@@ -2509,8 +2505,8 @@ body:has(.vp-work-index) #header.navbar::before {
   flex-direction: column;
   gap: 0.2rem;
   min-width: 8.5rem;
-  flex: 0 1 12rem;
-  max-width: 12rem;
+  width: 10.5rem;
+  flex: 0 0 auto;
 }
 
 .vp-internal-filter__label {

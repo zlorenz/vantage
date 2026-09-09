@@ -397,13 +397,12 @@ export function WorkInternalToolbar({
   return (
     <div className="vp-internal-toolbar">
       <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters">
-        <div className="vp-internal-toolbar__controls">
-          <div className="vp-internal-fchips" ref={chipRowRef}>
-            <div
-              className="vp-internal-view-toggle"
-              role="group"
-              aria-label="View mode"
-            >
+        <div className="vp-internal-fchips" ref={chipRowRef}>
+          <div
+            className="vp-internal-view-toggle"
+            role="group"
+            aria-label="View mode"
+          >
               <button
                 type="button"
                 className={
@@ -575,28 +574,27 @@ export function WorkInternalToolbar({
               <option value="client-desc">Brand Z–A</option>
             </select>
           </label>
-        </div>
 
-        <div className="vp-internal-toolbar__meta">
-          {active ? (
-            <button
-              type="button"
-              className="vp-internal-clear"
-              onClick={onClear}
+          <div className="vp-internal-toolbar__meta">
+            {active ? (
+              <button
+                type="button"
+                className="vp-internal-clear"
+                onClick={onClear}
+              >
+                Clear filters
+              </button>
+            ) : null}
+            <span
+              className="vp-internal-count"
+              aria-live="polite"
+              aria-busy={filtersPending || undefined}
             >
-              Clear filters
-            </button>
-          ) : null}
-          <span
-            className="vp-internal-count"
-            aria-live="polite"
-            aria-busy={filtersPending || undefined}
-          >
-            {resultCount === totalCount
-              ? `${resultCount} projects`
-              : `${resultCount} of ${totalCount}`}
-          </span>
-        </div>
+              {resultCount === totalCount
+                ? `${resultCount} projects`
+                : `${resultCount} of ${totalCount}`}
+            </span>
+          </div>
       </div>
 
       {activePills.length > 0 ? (
