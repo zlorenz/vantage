@@ -2235,7 +2235,8 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-internal-toolbar__row--filters {
   gap: 0.5rem 0.65rem;
-  align-items: center;
+  /* flex-end aligns the Sort select (not the stacked "Sort" label) with chips. */
+  align-items: flex-end;
 }
 
 .vp-internal-toolbar__row--pills {
