@@ -296,25 +296,55 @@ body:has(.vp-internal-page) .vp-internal-filter__select:focus {
    -------------------------------------------------------------------------- */
 
 body:has(.vp-internal-page) .vp-internal-card {
-  background: var(--vp-wi-surface);
-  border: 1px solid var(--vp-wi-border);
+  background: transparent;
+  border: 0;
   border-radius: var(--vp-wi-radius);
-  transition: border-color 140ms ease;
+  padding: 0;
+  box-shadow: none;
+  overflow: hidden;
+  transition: box-shadow 140ms ease;
 }
 
 body:has(.vp-internal-page) .vp-internal-card:hover, body:has(.vp-internal-page) .vp-internal-card.is-selected {
-  border-color: var(--vp-wi-accent-mid);
-  background: var(--vp-wi-surface);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
 }
 
 body:has(.vp-internal-page) .vp-internal-card.is-selected {
-  border-color: var(--vp-wi-accent);
-  box-shadow: 0 0 0 1px rgba(var(--vp-wi-accent-rgb), 0.35);
+  box-shadow: 0 0 0 1px rgba(var(--vp-wi-accent-rgb), 0.55);
+}
+
+/*
+ * Glass edge — same technique as mobile .vp-portfolio-index__card--styled::after
+ * (~1px hollow rim + soft-light blend).
+ */
+body:has(.vp-internal-page) .vp-internal-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.22) 35%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  mix-blend-mode: soft-light;
 }
 
 body:has(.vp-internal-page) .vp-internal-card__media {
   border-radius: inherit;
   background: var(--vp-wi-surface-raised);
+  overflow: hidden;
 }
 
 body:has(.vp-internal-page) .vp-internal-card__overlay {
