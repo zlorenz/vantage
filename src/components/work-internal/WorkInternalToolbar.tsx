@@ -307,7 +307,6 @@ export function WorkInternalToolbar({
         options: taxonomyOptionsByKey[section.key],
         selectedValue: filters[section.key],
         onSelect: (value: string) => patchFilter(section.key, value),
-        searchPlaceholder: `Search ${section.label.toLowerCase()}…`,
         emptyLabel: `No ${section.label.toLowerCase()} terms`,
       })),
     [
