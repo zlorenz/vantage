@@ -2086,6 +2086,13 @@ body:has(.vp-work-index) #header.navbar::before {
   gap: 0.75rem;
 }
 
+.vp-internal-toolbar__view-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .vp-internal-search {
   flex: 1 1 16rem;
   min-width: 12rem;
@@ -2151,6 +2158,104 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-internal-view-toggle__btn.is-active {
   color: var(--vp-btn-primary-text);
   background: var(--color-vp-link);
+}
+
+/* Appearance density panel (Cards/List companion) */
+
+.vp-internal-appearance {
+  position: relative;
+  display: inline-flex;
+}
+
+.vp-internal-appearance__panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 40;
+  width: min(18.5rem, calc(100vw - 2rem));
+  padding: 0.75rem 0.85rem;
+  background: #111;
+  border: 1px solid var(--color-vp-border-soft);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.vp-internal-appearance__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.7rem;
+}
+
+.vp-internal-appearance__row:last-of-type {
+  margin-bottom: 0.55rem;
+}
+
+.vp-internal-appearance__label {
+  flex: 0 0 auto;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-vp-text-soft);
+}
+
+.vp-internal-appearance__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  font: inherit;
+  color: var(--color-vp-text-soft);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.vp-internal-appearance__switch-track {
+  position: relative;
+  display: block;
+  width: 1.85rem;
+  height: 1rem;
+  background: var(--color-vp-input-bg);
+  border: 1px solid var(--color-vp-border-soft);
+}
+
+.vp-internal-appearance__switch-thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--color-vp-text-soft);
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.vp-internal-appearance__switch.is-on .vp-internal-appearance__switch-track {
+  background: rgba(253, 185, 19, 0.22);
+  border-color: rgba(253, 185, 19, 0.55);
+}
+
+.vp-internal-appearance__switch.is-on .vp-internal-appearance__switch-thumb {
+  transform: translateX(0.8rem);
+  background: var(--color-vp-link);
+}
+
+.vp-internal-appearance__switch-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-width: 1.5rem;
+}
+
+.vp-internal-appearance__hint {
+  margin: 0;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--color-vp-border-soft);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--color-vp-text-soft);
 }
 
 .vp-internal-toolbar__row--filters {
@@ -2261,22 +2366,133 @@ body:has(.vp-work-index) #header.navbar::before {
   align-items: stretch;
 }
 
+/* Card Size M (default) — current column density */
 @media (min-width: 575px) {
-  .vp-internal-cards {
+  .vp-internal-app[data-card-size='m'] .vp-internal-cards,
+  .vp-internal-app:not([data-card-size]) .vp-internal-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 992px) {
-  .vp-internal-cards {
+  .vp-internal-app[data-card-size='m'] .vp-internal-cards,
+  .vp-internal-app:not([data-card-size]) .vp-internal-cards {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1200px) {
-  .vp-internal-cards {
+  .vp-internal-app[data-card-size='m'] .vp-internal-cards,
+  .vp-internal-app:not([data-card-size]) .vp-internal-cards {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+/* Card Size S — denser grid, tighter body */
+@media (min-width: 575px) {
+  .vp-internal-app[data-card-size='s'] .vp-internal-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .vp-internal-app[data-card-size='s'] .vp-internal-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .vp-internal-app[data-card-size='s'] .vp-internal-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .vp-internal-app[data-card-size='s'] .vp-internal-cards {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1440px) {
+  .vp-internal-app[data-card-size='s'] .vp-internal-cards {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.vp-internal-app[data-card-size='s'] .vp-internal-card__body {
+  padding: 0.5rem 0.6rem 0.6rem;
+}
+
+.vp-internal-app[data-card-size='s'] .vp-internal-card__title {
+  font-size: 0.8125rem;
+}
+
+.vp-internal-app[data-card-size='s'] .vp-internal-card__date {
+  font-size: 0.75rem;
+}
+
+.vp-internal-app[data-card-size='s'] .vp-internal-card__body .vp-internal-meta {
+  gap: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
+  padding-top: 0.45rem;
+}
+
+/* Card Size L — fewer columns, roomier body */
+@media (min-width: 575px) {
+  .vp-internal-app[data-card-size='l'] .vp-internal-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .vp-internal-app[data-card-size='l'] .vp-internal-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.vp-internal-app[data-card-size='l'] .vp-internal-card__body {
+  padding: 0.95rem 1rem 1.05rem;
+}
+
+.vp-internal-app[data-card-size='l'] .vp-internal-card__title {
+  font-size: 1.0625rem;
+}
+
+.vp-internal-app[data-card-size='l'] .vp-internal-card__date {
+  font-size: 0.875rem;
+}
+
+/* Show Card Info — cards only */
+.vp-internal-app[data-card-info='off'] .vp-internal-card__date,
+.vp-internal-app[data-card-info='off'] .vp-internal-card__body .vp-internal-meta {
+  display: none;
+}
+
+.vp-internal-app[data-card-info='off'] .vp-internal-card__body {
+  padding-bottom: 0.7rem;
+}
+
+/* Title line clamp — cards + list */
+.vp-internal-app[data-title-lines='1'] .vp-internal-card__title,
+.vp-internal-app[data-title-lines='1'] .vp-internal-list__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: unset;
+}
+
+.vp-internal-app[data-title-lines='2'] .vp-internal-card__title,
+.vp-internal-app[data-title-lines='2'] .vp-internal-list__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: unset;
 }
 
 .vp-internal-card {

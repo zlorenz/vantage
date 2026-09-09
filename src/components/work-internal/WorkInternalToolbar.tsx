@@ -12,6 +12,7 @@ import type {
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
+import type { LibraryAppearance } from './appearance';
 import {
   countFacetOptions,
   type LibraryFilterContext,
@@ -22,6 +23,7 @@ import type {
   LibrarySort,
   LibraryViewMode,
 } from './types';
+import { WorkInternalAppearancePanel } from './WorkInternalAppearancePanel';
 
 interface WorkInternalToolbarProps {
   entries: InternalLibraryEntry[];
@@ -31,6 +33,7 @@ interface WorkInternalToolbarProps {
   deferredFilters: LibraryFilters;
   sort: LibrarySort;
   view: LibraryViewMode;
+  appearance: LibraryAppearance;
   resultCount: number;
   totalCount: number;
   filtersPending?: boolean;
@@ -46,6 +49,7 @@ interface WorkInternalToolbarProps {
   onFiltersChange: (next: LibraryFilters) => void;
   onSortChange: (sort: LibrarySort) => void;
   onViewChange: (view: LibraryViewMode) => void;
+  onAppearanceChange: (next: LibraryAppearance) => void;
   onClear: () => void;
 }
 
@@ -91,6 +95,7 @@ export function WorkInternalToolbar({
   deferredFilters,
   sort,
   view,
+  appearance,
   resultCount,
   totalCount,
   filtersPending = false,
@@ -106,6 +111,7 @@ export function WorkInternalToolbar({
   onFiltersChange,
   onSortChange,
   onViewChange,
+  onAppearanceChange,
   onClear,
 }: WorkInternalToolbarProps) {
   const active = hasActiveFilters(filters);
@@ -323,31 +329,43 @@ export function WorkInternalToolbar({
             </button>
           </div>
 
-          <div className="vp-internal-view-toggle" role="group" aria-label="View mode">
-            <button
-              type="button"
-              className={
-                view === 'cards'
-                  ? 'vp-internal-view-toggle__btn is-active'
-                  : 'vp-internal-view-toggle__btn'
-              }
-              aria-pressed={view === 'cards'}
-              onClick={() => onViewChange('cards')}
+          <div className="vp-internal-toolbar__view-group">
+            <div
+              className="vp-internal-view-toggle"
+              role="group"
+              aria-label="View mode"
             >
-              Cards
-            </button>
-            <button
-              type="button"
-              className={
-                view === 'list'
-                  ? 'vp-internal-view-toggle__btn is-active'
-                  : 'vp-internal-view-toggle__btn'
-              }
-              aria-pressed={view === 'list'}
-              onClick={() => onViewChange('list')}
-            >
-              List
-            </button>
+              <button
+                type="button"
+                className={
+                  view === 'cards'
+                    ? 'vp-internal-view-toggle__btn is-active'
+                    : 'vp-internal-view-toggle__btn'
+                }
+                aria-pressed={view === 'cards'}
+                onClick={() => onViewChange('cards')}
+              >
+                Cards
+              </button>
+              <button
+                type="button"
+                className={
+                  view === 'list'
+                    ? 'vp-internal-view-toggle__btn is-active'
+                    : 'vp-internal-view-toggle__btn'
+                }
+                aria-pressed={view === 'list'}
+                onClick={() => onViewChange('list')}
+              >
+                List
+              </button>
+            </div>
+            <div className="vp-internal-view-toggle">
+              <WorkInternalAppearancePanel
+                appearance={appearance}
+                onChange={onAppearanceChange}
+              />
+            </div>
           </div>
         </div>
       </div>

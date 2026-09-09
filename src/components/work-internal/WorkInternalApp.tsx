@@ -23,6 +23,13 @@ import type {
   TaxonomyTerm,
 } from '@/types/sanity';
 import {
+  appearanceDataAttrs,
+  DEFAULT_APPEARANCE,
+  readAppearance,
+  writeAppearance,
+  type LibraryAppearance,
+} from './appearance';
+import {
   buildArtDirectorFilterOptions,
   buildClientFilterOptions,
   buildDirectorFilterOptions,
@@ -89,6 +96,9 @@ export function WorkInternalApp({
   const [filters, setFilters] = useState(() => readFilters(searchParams));
   const [sort, setSort] = useState(() => readSort(searchParams));
   const [view, setView] = useState(() => readView(searchParams));
+  const [appearance, setAppearance] =
+    useState<LibraryAppearance>(DEFAULT_APPEARANCE);
+  const [appearanceReady, setAppearanceReady] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -96,6 +106,17 @@ export function WorkInternalApp({
   const deferredFilters = useDeferredValue(filters);
   const deferredSort = useDeferredValue(sort);
   const filtersPending = deferredFilters !== filters;
+
+  // Hydrate personal density prefs after mount (avoid SSR localStorage mismatch).
+  useEffect(() => {
+    setAppearance(readAppearance());
+    setAppearanceReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!appearanceReady) return;
+    writeAppearance(appearance);
+  }, [appearance, appearanceReady]);
 
   // Restore selection + open create form after login?next= round-trip.
   useEffect(() => {
@@ -207,7 +228,7 @@ export function WorkInternalApp({
   const selectedIdList = useMemo(() => [...selectedIds], [selectedIds]);
 
   return (
-    <div className="vp-internal-app">
+    <div className="vp-internal-app" {...appearanceDataAttrs(appearance)}>
       <header className="vp-internal-app__header">
         <h1 className="vp-internal-app__title">Work Library</h1>
       </header>
@@ -218,6 +239,7 @@ export function WorkInternalApp({
         deferredFilters={deferredFilters}
         sort={sort}
         view={view}
+        appearance={appearance}
         resultCount={filteredSorted.length}
         totalCount={visibilityTotal}
         filtersPending={filtersPending}
@@ -233,6 +255,7 @@ export function WorkInternalApp({
         onFiltersChange={setFilters}
         onSortChange={setSort}
         onViewChange={setView}
+        onAppearanceChange={setAppearance}
         onClear={clearFilters}
       />
 
