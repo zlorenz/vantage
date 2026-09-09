@@ -557,21 +557,23 @@ export function WorkInternalToolbar({
             </WorkInternalFilterPanel>
           </div>
 
-          <label className="vp-internal-filter">
-            <span className="vp-internal-filter__label">Sort</span>
-            <select
-              className="vp-internal-filter__select"
-              value={sort}
-              onChange={(e) => onSortChange(e.target.value as LibrarySort)}
-            >
-              <option value="publishedAt-desc">Newest first</option>
-              <option value="publishedAt-asc">Oldest first</option>
-              <option value="title-asc">Title A–Z</option>
-              <option value="title-desc">Title Z–A</option>
-              <option value="client-asc">Brand A–Z</option>
-              <option value="client-desc">Brand Z–A</option>
-            </select>
-          </label>
+          {view === 'cards' ? (
+            <label className="vp-internal-filter">
+              <span className="vp-internal-filter__label">Sort</span>
+              <select
+                className="vp-internal-filter__select"
+                value={sort}
+                onChange={(e) => onSortChange(e.target.value as LibrarySort)}
+              >
+                <option value="publishedAt-desc">Newest first</option>
+                <option value="publishedAt-asc">Oldest first</option>
+                <option value="title-asc">Title A–Z</option>
+                <option value="title-desc">Title Z–A</option>
+                <option value="client-asc">Brand A–Z</option>
+                <option value="client-desc">Brand Z–A</option>
+              </select>
+            </label>
+          ) : null}
 
           <div className="vp-internal-toolbar__meta">
             {active ? (
