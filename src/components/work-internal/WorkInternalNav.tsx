@@ -20,7 +20,12 @@ export function WorkInternalNav({
   return (
     <header className="vp-internal-nav" aria-label="Work library">
       <div className="vp-internal-nav__inner">
-        <Link className="vp-internal-nav__brand" href="/" rel="home">
+        <Link
+          className="vp-internal-nav__brand"
+          href="/"
+          rel="home noopener noreferrer"
+          target="_blank"
+        >
           {/* SVG via <img> — next/image does not optimize SVGs */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
