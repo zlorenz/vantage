@@ -17,6 +17,7 @@ import {
   Text,
   TextInput,
   useToast,
+  type Placement,
 } from '@sanity/ui'
 import {
   AddIcon,
@@ -72,8 +73,11 @@ type DisplayTitlePartsDoc = {
 }
 
 /** Keep nested filter submenus beside the parent menu (never flip above/below and cover siblings). */
-const NESTED_MENU_POPOVER = {
-  placement: 'right-start' as const,
+const NESTED_MENU_POPOVER: {
+  placement: Placement
+  fallbackPlacements: Placement[]
+} = {
+  placement: 'right-start',
   fallbackPlacements: ['left-start'],
 }
 
