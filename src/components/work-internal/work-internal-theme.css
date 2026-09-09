@@ -436,6 +436,11 @@ body:has(.vp-internal-page) .vp-internal-select__box {
   border-radius: var(--vp-wi-radius-sm);
 }
 
+body:has(.vp-internal-page) .vp-internal-list__select-col .vp-internal-select__box {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 body:has(.vp-internal-page) .vp-internal-select.is-checked .vp-internal-select__box, body:has(.vp-internal-page) .vp-internal-select__input:checked + .vp-internal-select__box {
   background: var(--vp-wi-accent);
   border-color: var(--vp-wi-accent);

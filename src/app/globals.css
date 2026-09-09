@@ -2886,6 +2886,8 @@ body:has(.vp-work-index) #header.navbar::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
+  height: 100%;
 }
 
 .vp-internal-list__title {
@@ -2931,6 +2933,8 @@ body:has(.vp-work-index) #header.navbar::before {
   /* Must be positioned so the absolute input stays inside the 1.35rem box.
      `static` made inset:0 cover the whole list (including sticky headers). */
   position: relative;
+  top: auto;
+  right: auto;
   z-index: 0;
 }
 
@@ -2987,7 +2991,7 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 
   .vp-internal-list__row .vp-internal-select {
-    opacity: 0;
+    opacity: 0.45;
   }
 
   .vp-internal-list__row:hover .vp-internal-select,
