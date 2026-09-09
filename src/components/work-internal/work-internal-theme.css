@@ -174,24 +174,15 @@ body:has(.vp-internal-page) .vp-internal-fchip__btn.is-active {
   border-color: var(--vp-wi-accent-mid);
 }
 
-body:has(.vp-internal-page) .vp-internal-fchip__panel, body:has(.vp-internal-page) .vp-internal-appearance__panel, body:has(.vp-internal-page) .vp-internal-menu__panel, body:has(.vp-internal-page) .vp-internal-showreel-dialog__panel {
+body:has(.vp-internal-page) .vp-internal-fchip__panel, body:has(.vp-internal-page) .vp-internal-menu__panel, body:has(.vp-internal-page) .vp-internal-showreel-dialog__panel {
   background: var(--vp-wi-surface);
   border: 1px solid var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-lg);
   box-shadow: var(--vp-wi-shadow);
 }
 
-body:has(.vp-internal-page) .vp-internal-appearance__panel {
-  padding: 0.7rem 0.75rem;
-}
-
-body:has(.vp-internal-page) .vp-internal-appearance__label {
+body:has(.vp-internal-page) .vp-internal-card-size__label {
   color: var(--vp-wi-text-muted);
-}
-
-body:has(.vp-internal-page) .vp-internal-appearance__hint {
-  border-top-color: var(--vp-wi-border);
-  color: var(--vp-wi-text-faint);
 }
 
 /* Filter panels */

@@ -2203,52 +2203,20 @@ body:has(.vp-work-index) #header.navbar::before {
   background: var(--color-vp-link);
 }
 
-/* Appearance density panel (Cards/List companion) */
+/* Inline card-size control (toolbar) */
 
-.vp-internal-appearance {
-  position: relative;
+.vp-internal-card-size {
   display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
 }
 
-.vp-internal-appearance__panel {
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  right: 0;
-  z-index: 40;
-  width: min(18.5rem, calc(100vw - 2rem));
-  padding: 0.75rem 0.85rem;
-  background: #111;
-  border: 1px solid var(--color-vp-border-soft);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-}
-
-.vp-internal-appearance__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.7rem;
-}
-
-.vp-internal-appearance__row:last-of-type {
-  margin-bottom: 0.55rem;
-}
-
-.vp-internal-appearance__label {
-  flex: 0 0 auto;
-  font-size: 0.6875rem;
+.vp-internal-card-size__label {
+  font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-vp-text-soft);
-}
-
-.vp-internal-appearance__hint {
-  margin: 0;
-  padding-top: 0.45rem;
-  border-top: 1px solid var(--color-vp-border-soft);
-  font-size: 0.6875rem;
-  line-height: 1.4;
   color: var(--color-vp-text-soft);
 }
 

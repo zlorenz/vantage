@@ -13,7 +13,7 @@ import type {
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
-import type {LibraryAppearance} from './appearance';
+import type {CardSize, LibraryAppearance} from './appearance';
 import {
   countFacetOptions,
   type LibraryFilterContext,
@@ -25,7 +25,6 @@ import {
 } from './people-filters';
 import {hasActiveFilters} from './url-state';
 import type {LibraryFilters, LibrarySort, LibraryViewMode} from './types';
-import {WorkInternalAppearancePanel} from './WorkInternalAppearancePanel';
 import {
   FilterActivePill,
   FilterOptionList,
@@ -478,11 +477,32 @@ export function WorkInternalToolbar({
                 List
               </button>
             </div>
-            <div className="vp-internal-view-toggle">
-              <WorkInternalAppearancePanel
-                appearance={appearance}
-                onChange={onAppearanceChange}
-              />
+
+            <div className="vp-internal-card-size">
+              <span className="vp-internal-card-size__label">Card Size</span>
+              <div
+                className="vp-internal-view-toggle"
+                role="group"
+                aria-label="Card size"
+              >
+                {(['s', 'm', 'l'] as const).map((size: CardSize) => (
+                  <button
+                    key={size}
+                    type="button"
+                    className={
+                      appearance.cardSize === size
+                        ? 'vp-internal-view-toggle__btn is-active'
+                        : 'vp-internal-view-toggle__btn'
+                    }
+                    aria-pressed={appearance.cardSize === size}
+                    onClick={() =>
+                      onAppearanceChange({...appearance, cardSize: size})
+                    }
+                  >
+                    {size.toUpperCase()}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
