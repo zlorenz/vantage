@@ -557,23 +557,30 @@ export function WorkInternalToolbar({
             </WorkInternalFilterPanel>
           </div>
 
-          {view === 'cards' ? (
-            <label className="vp-internal-filter">
-              <span className="vp-internal-filter__label">Sort</span>
-              <select
-                className="vp-internal-filter__select"
-                value={sort}
-                onChange={(e) => onSortChange(e.target.value as LibrarySort)}
-              >
-                <option value="publishedAt-desc">Newest first</option>
-                <option value="publishedAt-asc">Oldest first</option>
-                <option value="title-asc">Title A–Z</option>
-                <option value="title-desc">Title Z–A</option>
-                <option value="client-asc">Brand A–Z</option>
-                <option value="client-desc">Brand Z–A</option>
-              </select>
-            </label>
-          ) : null}
+          <label
+            className={
+              view === 'cards'
+                ? 'vp-internal-filter'
+                : 'vp-internal-filter is-spacer'
+            }
+            aria-hidden={view !== 'cards'}
+          >
+            <span className="vp-internal-filter__label">Sort</span>
+            <select
+              className="vp-internal-filter__select"
+              value={sort}
+              tabIndex={view === 'cards' ? undefined : -1}
+              disabled={view !== 'cards'}
+              onChange={(e) => onSortChange(e.target.value as LibrarySort)}
+            >
+              <option value="publishedAt-desc">Newest first</option>
+              <option value="publishedAt-asc">Oldest first</option>
+              <option value="title-asc">Title A–Z</option>
+              <option value="title-desc">Title Z–A</option>
+              <option value="client-asc">Brand A–Z</option>
+              <option value="client-desc">Brand Z–A</option>
+            </select>
+          </label>
 
           <div className="vp-internal-toolbar__meta">
             {active ? (

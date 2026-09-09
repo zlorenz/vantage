@@ -2113,10 +2113,16 @@ body:has(.vp-work-index) #header.navbar::before {
   top: var(--vp-internal-nav-height);
   z-index: 50;
   margin-bottom: 1.25rem;
-  padding: 0.75rem 0;
+  padding: 1rem 0 0.85rem;
   background: rgba(var(--vp-black-rgb), 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--color-vp-border-soft);
+}
+
+@media (min-width: 768px) {
+  .vp-internal-toolbar {
+    padding: 1.25rem 0 1rem;
+  }
 }
 
 .vp-internal-toolbar__row {
@@ -2527,6 +2533,12 @@ body:has(.vp-work-index) #header.navbar::before {
   min-width: 8.5rem;
   width: 10.5rem;
   flex: 0 0 auto;
+}
+
+/* Keep Sort’s layout height in list view so the toolbar doesn’t jump. */
+.vp-internal-filter.is-spacer {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .vp-internal-filter__label {
