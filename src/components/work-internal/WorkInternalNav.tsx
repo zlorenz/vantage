@@ -1,7 +1,7 @@
 /**
  * WorkInternalNav — minimal fixed header for the internal work library.
  *
- * Brand mark → homepage. Centered library search. No marketing nav.
+ * Brand mark → homepage. Centered library search. Page title on the right.
  */
 
 'use client';
@@ -43,8 +43,7 @@ export function WorkInternalNav({
           />
         </label>
 
-        {/* Balances the brand column so the search stays visually centered. */}
-        <span className="vp-internal-nav__spacer" aria-hidden="true" />
+        <h1 className="vp-internal-nav__title">Full Work Library</h1>
       </div>
     </header>
   );

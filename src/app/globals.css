@@ -2077,9 +2077,18 @@ body:has(.vp-work-index) #header.navbar::before {
   width: min(100%, 28rem);
 }
 
-.vp-internal-nav__spacer {
-  width: 2rem;
-  height: 2rem;
+.vp-internal-nav__title {
+  margin: 0;
+  justify-self: end;
+  max-width: 100%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-vp-text);
 }
 
 .vp-internal-app {

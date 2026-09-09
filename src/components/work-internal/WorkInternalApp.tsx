@@ -209,10 +209,6 @@ export function WorkInternalApp({
         onSearchChange={(q) => setFilters((prev) => ({...prev, q}))}
       />
 
-      <header className="vp-internal-app__header">
-        <h1 className="vp-internal-app__title">Work Library</h1>
-      </header>
-
       <WorkInternalToolbar
         entries={entries}
         filters={filters}

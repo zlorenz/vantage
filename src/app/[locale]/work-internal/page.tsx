@@ -28,7 +28,7 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: 'Work Library | Vantage Pictures',
+  title: 'Full Work Library | Vantage Pictures',
   robots: { index: false, follow: false },
 };
 
