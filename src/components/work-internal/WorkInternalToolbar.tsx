@@ -470,24 +470,17 @@ export function WorkInternalToolbar({
               <button
                 type="button"
                 className={
-                  filters.visibility === 'all'
-                    ? 'vp-internal-view-toggle__btn is-active'
-                    : 'vp-internal-view-toggle__btn'
-                }
-                aria-pressed={filters.visibility === 'all'}
-                onClick={() => patchFilter('visibility', 'all')}
-              >
-                All
-              </button>
-              <button
-                type="button"
-                className={
                   filters.visibility === 'public'
                     ? 'vp-internal-view-toggle__btn is-active'
                     : 'vp-internal-view-toggle__btn'
                 }
                 aria-pressed={filters.visibility === 'public'}
-                onClick={() => patchFilter('visibility', 'public')}
+                onClick={() =>
+                  patchFilter(
+                    'visibility',
+                    filters.visibility === 'public' ? 'all' : 'public',
+                  )
+                }
               >
                 Public
               </button>
@@ -499,7 +492,12 @@ export function WorkInternalToolbar({
                     : 'vp-internal-view-toggle__btn'
                 }
                 aria-pressed={filters.visibility === 'hidden'}
-                onClick={() => patchFilter('visibility', 'hidden')}
+                onClick={() =>
+                  patchFilter(
+                    'visibility',
+                    filters.visibility === 'hidden' ? 'all' : 'hidden',
+                  )
+                }
               >
                 Hidden
               </button>
