@@ -1,8 +1,11 @@
 /**
  * Soft-delete / restore / permanent-delete lifecycle for Content tool documents.
  *
- * Works on portfolioEntry, blogPost, and page. Uses marker-based trash plus
+ * Trash workflow: portfolioEntry, blogPost, and page — marker-based trash plus
  * trashRecord audit docs (string IDs only — never strong refs).
+ *
+ * Hard delete: taxonomies and other non-trash types via hardDeleteDocuments
+ * (refuses while inbound strong refs remain; then deletes all variants).
  */
 
 import type {SanityClient} from 'sanity'
@@ -426,13 +429,20 @@ function walkForReferences(
 export async function findInboundReferences(
   client: SanityClient,
   targetPublishedId: string,
+  options: {includeVersions?: boolean} = {},
 ): Promise<RemovedReferenceBackup[]> {
+  // Hard-delete must clear release versions too — strong refs there block
+  // sanity.action.document.delete. Trash only needs published/draft referrers.
   const referrers = await client.fetch<
     Array<{_id: string; _type: string; title?: string; name?: string}>
   >(
-    `*[references($id) && !(_id in [$id, $draftId]) && !(_id match $versionPattern) && _type != "trashRecord"]{
-      _id, _type, title, name
-    }`,
+    options.includeVersions
+      ? `*[references($id) && !(_id in [$id, $draftId]) && _type != "trashRecord"]{
+          _id, _type, title, name
+        }`
+      : `*[references($id) && !(_id in [$id, $draftId]) && !(_id match $versionPattern) && _type != "trashRecord"]{
+          _id, _type, title, name
+        }`,
     {
       id: targetPublishedId,
       draftId: `drafts.${targetPublishedId}`,
@@ -446,9 +456,14 @@ export async function findInboundReferences(
     // Prefer drafting the draft variant when present so restore lands on editable copy.
     const draftId = `drafts.${publishedIdOf(ref._id)}`
     const publishedRefId = publishedIdOf(ref._id)
-    const draftDoc = await client.getDocument(draftId)
-    const publishedDoc = await client.getDocument(publishedRefId)
-    const targets = [draftDoc, publishedDoc].filter(Boolean) as Array<
+    const [draftDoc, publishedDoc, versionDoc] = await Promise.all([
+      client.getDocument(draftId),
+      client.getDocument(publishedRefId),
+      ref._id.startsWith('versions.')
+        ? client.getDocument(ref._id)
+        : Promise.resolve(null),
+    ])
+    const targets = [draftDoc, publishedDoc, versionDoc].filter(Boolean) as Array<
       Record<string, unknown> & {_id: string; _type: string}
     >
 
@@ -1041,6 +1056,84 @@ async function disposeReleaseVersions(
   }
 }
 
+/**
+ * Permanently delete non-trash documents (taxonomies, blog categories, etc.).
+ *
+ * Refuses if any inbound strong references remain — callers must clear usage
+ * first. Does not strip references.
+ */
+export async function hardDeleteDocuments(
+  client: SanityClient,
+  publishedIds: string[],
+  hints: Record<string, DeleteHint> = {},
+): Promise<LifecycleResult[]> {
+  const results: LifecycleResult[] = []
+
+  for (const publishedId of publishedIds) {
+    try {
+      const inventory = await inventoryDocument(client, publishedId)
+      if (
+        inventory.variantIds.length === 0 &&
+        inventory.schedules.length === 0 &&
+        !hints[publishedId]
+      ) {
+        results.push({
+          publishedId,
+          title: publishedId,
+          ok: false,
+          error: 'Document not found',
+        })
+        continue
+      }
+
+      const referrers = await listInboundReferrers(client, publishedId)
+      if (referrers.length > 0) {
+        results.push({
+          publishedId,
+          title: inventory.title || publishedId,
+          ok: false,
+          error: `Still in use. Remove all “Used by” items before deleting:\n${formatReferrerBlockList(referrers)}`,
+        })
+        continue
+      }
+
+      // Defense in depth: walk may catch refs the summary query shaped differently.
+      const backups = await findInboundReferences(client, publishedId, {
+        includeVersions: true,
+      })
+      if (backups.length > 0) {
+        const impacts = summarizeImpacts(backups)
+        results.push({
+          publishedId,
+          title: inventory.title || publishedId,
+          ok: false,
+          error: `Still in use. Remove all “Used by” items before deleting:\n${formatImpactSummary(impacts)}`,
+        })
+        continue
+      }
+
+      const [result] = await permanentlyDelete(client, [publishedId], hints)
+      results.push(
+        result ?? {
+          publishedId,
+          title: inventory.title || publishedId,
+          ok: false,
+          error: 'Delete returned no result',
+        },
+      )
+    } catch (error) {
+      results.push({
+        publishedId,
+        title: publishedId,
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
+  return results
+}
+
 export async function permanentlyDelete(
   client: SanityClient,
   publishedIds: string[],
@@ -1140,7 +1233,28 @@ export async function permanentlyDelete(
           if (!/not found|already|does not exist/i.test(message)) throw error
         }
       } else if (fresh.draft) {
-        await discardVariant(client, fresh.draft._id)
+        // Draft-only docs are not versions — use document.discard, not version.discard.
+        try {
+          await client.action({
+            actionType: 'sanity.action.document.discard',
+            draftId: fresh.draft._id,
+          })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          if (!/not found|already|does not exist/i.test(message)) {
+            try {
+              await client.delete(fresh.draft._id)
+            } catch (fallbackError) {
+              const fallbackMessage =
+                fallbackError instanceof Error
+                  ? fallbackError.message
+                  : String(fallbackError)
+              if (!/not found|already|does not exist/i.test(fallbackMessage)) {
+                throw fallbackError
+              }
+            }
+          }
+        }
       }
 
       // Final sweep — catch any variant that raced back into existence.
@@ -1154,7 +1268,18 @@ export async function permanentlyDelete(
         await discardVariant(client, version._id)
       }
       if (leftover.draft) {
-        await discardVariant(client, leftover.draft._id)
+        try {
+          await client.action({
+            actionType: 'sanity.action.document.discard',
+            draftId: leftover.draft._id,
+          })
+        } catch {
+          try {
+            await client.delete(leftover.draft._id)
+          } catch {
+            // ignore — final sweep is best-effort
+          }
+        }
       }
       if (leftover.published) {
         // Draft was already discarded above when present; don't re-list it.
@@ -1216,4 +1341,54 @@ export function formatImpactSummary(impacts: InboundReferenceImpact[]): string {
       return `• ${title} (${type}) — ${paths}`
     })
     .join('\n')
+}
+
+export type InboundReferrerSummary = {
+  publishedId: string
+  type: string
+  title: string
+}
+
+/**
+ * Fast referrer list for delete guards / UI — matches the table "Used by" count
+ * without walking full document trees.
+ */
+export async function listInboundReferrers(
+  client: SanityClient,
+  targetPublishedId: string,
+): Promise<InboundReferrerSummary[]> {
+  const rows = await client.fetch<
+    Array<{_id: string; _type: string; title?: string; name?: string}>
+  >(
+    `*[
+      references($id) &&
+      !(_id in [$id, $draftId]) &&
+      !(_id match $versionPattern) &&
+      _type != "trashRecord"
+    ]{_id, _type, title, name}`,
+    {
+      id: targetPublishedId,
+      draftId: `drafts.${targetPublishedId}`,
+      versionPattern: `versions.*.${targetPublishedId}`,
+    },
+  )
+
+  const byPublished = new Map<string, InboundReferrerSummary>()
+  for (const row of rows || []) {
+    const id = publishedIdOf(row._id)
+    if (byPublished.has(id)) continue
+    byPublished.set(id, {
+      publishedId: id,
+      type: row._type,
+      title: titleOf(row),
+    })
+  }
+  return [...byPublished.values()].sort((a, b) => a.title.localeCompare(b.title))
+}
+
+export function formatReferrerBlockList(
+  referrers: InboundReferrerSummary[],
+): string {
+  if (referrers.length === 0) return ''
+  return referrers.map((r) => `• ${r.title} (${r.type})`).join('\n')
 }

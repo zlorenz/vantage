@@ -451,7 +451,7 @@ function buildQuery(documentType: string): string {
         titleZh,
         "slug": slug.current,
         "parent": parent->title,
-        "usage": count(*[_type == "portfolioEntry" && references(^._id)])
+        "usage": count(*[references(^._id)])
       }`
     case 'videoFormat':
     case 'market':

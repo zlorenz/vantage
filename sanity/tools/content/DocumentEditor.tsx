@@ -59,9 +59,12 @@ import {
 } from 'sanity'
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {
-  formatImpactSummary,
+  formatReferrerBlockList,
+  hardDeleteDocuments,
+  listInboundReferrers,
   moveToTrash,
   preflightTrash,
+  formatImpactSummary,
   TRASHABLE_TYPES,
   type TrashableType,
 } from './document-lifecycle'
@@ -287,6 +290,9 @@ export function DocumentEditor({
   const [scheduleAt, setScheduleAt] = useState('')
   const [trashConfirmOpen, setTrashConfirmOpen] = useState(false)
   const [trashImpactText, setTrashImpactText] = useState('')
+  const [deleteDialog, setDeleteDialog] = useState<
+    null | {kind: 'blocked' | 'confirm'; impactText: string}
+  >(null)
   const [unpublishConfirmOpen, setUnpublishConfirmOpen] = useState(false)
   const [viewOnSiteLoading, setViewOnSiteLoading] = useState(false)
   const [mergeOpen, setMergeOpen] = useState(false)
@@ -295,6 +301,15 @@ export function DocumentEditor({
   const ops = useDocumentOperation(publishedId, documentType)
   const schema = useSchema()
   const supportsTrash = TRASHABLE_TYPES.includes(documentType as TrashableType)
+  // Formats / Industries / Markets / Blog categories / Platforms / Crew: no
+  // schedule or unpublish — those are for page-level content only.
+  const slimToolbar =
+    documentType === 'videoFormat' ||
+    documentType === 'industry' ||
+    documentType === 'market' ||
+    documentType === 'category' ||
+    documentType === 'platform' ||
+    documentType === 'creditIdentity'
   const role = getStudioRole(currentUser)
   const isAdmin = role === 'admin'
   const isTranslator = role === 'translator'
@@ -316,19 +331,21 @@ export function DocumentEditor({
     Boolean(ops.discardChanges?.disabled) === false &&
     Boolean(editState.published) &&
     Boolean(editState.draft)
-  // Admin + Editor only (not Translator); only when a published version exists to remove.
-  // creditIdentity (Crew Members) stays published as a durable vendor record — no Unpublish.
+  // Page-level docs only (portfolio / blog / pages). Taxonomies stay published records.
   const canUnpublish =
-    documentType !== 'creditIdentity' &&
+    !slimToolbar &&
     !isTranslator &&
     Boolean(editState.published) &&
     Boolean(ops.unpublish?.disabled) === false
+  const canSchedule = !slimToolbar && Boolean(editState.draft)
   // Translator: no Move to Trash. Permanent delete (non-trash types): admin only.
+  // Don't gate on ops.delete — Studio's execute() omits drafts when called with no
+  // version ids, so we hard-delete via the client instead.
   const canDelete = isTranslator
     ? false
     : supportsTrash
       ? Boolean(editState.draft || editState.published)
-      : isAdmin && Boolean(ops.delete?.disabled) === false
+      : isAdmin && Boolean(editState.draft || editState.published)
 
   const frontEndUrl = useMemo(
     () =>
@@ -370,6 +387,18 @@ export function DocumentEditor({
   // null (no controllable reference), so we omit them and clear `opener` instead.
   const handleViewOnSite = useCallback(async () => {
     if (!frontEndUrl || viewOnSiteLoading) return
+
+    // Taxonomy archives: open the public filtered grid directly. Draft-mode
+    // preview is for page-level docs; archive pages are driven by published terms.
+    if (
+      documentType === 'videoFormat' ||
+      documentType === 'industry' ||
+      documentType === 'market' ||
+      documentType === 'category'
+    ) {
+      window.open(frontEndUrl, '_blank', 'noopener,noreferrer')
+      return
+    }
 
     // Must run before any await — browsers only treat this as user-initiated then.
     const previewName = `vp-site-preview-${Date.now()}`
@@ -432,7 +461,14 @@ export function DocumentEditor({
     } finally {
       setViewOnSiteLoading(false)
     }
-  }, [client, currentUser?.id, frontEndUrl, toast, viewOnSiteLoading])
+  }, [
+    client,
+    currentUser?.id,
+    documentType,
+    frontEndUrl,
+    toast,
+    viewOnSiteLoading,
+  ])
 
   const handleDiscard = useCallback(() => {
     setBusy('discard')
@@ -487,6 +523,63 @@ export function DocumentEditor({
     }
   }, [client, currentUser, isTranslator, onBack, publishedId, toast])
 
+  const openHardDeleteDialog = useCallback(async () => {
+    if (isTranslator || supportsTrash || !isAdmin) return
+    setBusy('delete')
+    try {
+      const referrers = await listInboundReferrers(client, publishedId)
+      if (referrers.length > 0) {
+        setDeleteDialog({
+          kind: 'blocked',
+          impactText: formatReferrerBlockList(referrers),
+        })
+        return
+      }
+      setDeleteDialog({kind: 'confirm', impactText: ''})
+    } catch (error) {
+      toast.push({
+        status: 'error',
+        title: 'Could not prepare delete',
+        description: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setBusy(null)
+    }
+  }, [client, isAdmin, isTranslator, publishedId, supportsTrash, toast])
+
+  const handleHardDelete = useCallback(async () => {
+    if (!isAdmin || supportsTrash) return
+    setBusy('delete')
+    try {
+      const [result] = await hardDeleteDocuments(client, [publishedId])
+      if (!result?.ok) {
+        throw new Error(result?.error || 'Delete failed')
+      }
+      toast.push({status: 'success', title: 'Deleted'})
+      setDeleteDialog(null)
+      onBack()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      if (/still in use/i.test(message)) {
+        const list = message
+          .replace(/^Still in use\.\s*/i, '')
+          .replace(/^Remove all [^\n]*:\n?/i, '')
+        setDeleteDialog({
+          kind: 'blocked',
+          impactText: list || message,
+        })
+      } else {
+        toast.push({
+          status: 'error',
+          title: 'Could not delete',
+          description: message,
+        })
+      }
+    } finally {
+      setBusy(null)
+    }
+  }, [client, isAdmin, onBack, publishedId, supportsTrash, toast])
+
   const handleDelete = useCallback(() => {
     if (supportsTrash) {
       if (isTranslator) return
@@ -494,21 +587,8 @@ export function DocumentEditor({
       return
     }
     if (!isAdmin) return
-    if (!window.confirm('Delete this document permanently?')) return
-    setBusy('delete')
-    ops.delete.execute()
-    toast.push({status: 'success', title: 'Deleted'})
-    setBusy(null)
-    onBack()
-  }, [
-    isAdmin,
-    isTranslator,
-    onBack,
-    openTrashConfirm,
-    ops.delete,
-    supportsTrash,
-    toast,
-  ])
+    void openHardDeleteDialog()
+  }, [isAdmin, isTranslator, openHardDeleteDialog, openTrashConfirm, supportsTrash])
 
   const handleSchedule = useCallback(async () => {
     const publishAt = new Date(scheduleAt)
@@ -637,18 +717,21 @@ export function DocumentEditor({
                 mode="ghost"
                 tone="critical"
                 icon={TrashIcon}
-                text={supportsTrash ? 'Move to Trash' : undefined}
+                text={supportsTrash ? 'Move to Trash' : 'Delete'}
+                loading={busy === 'delete'}
                 disabled={busy !== null}
                 onClick={handleDelete}
               />
             ) : null}
-            <Button
-              mode="ghost"
-              icon={CalendarIcon}
-              text="Schedule"
-              disabled={!editState.draft || busy !== null}
-              onClick={() => setScheduleOpen(true)}
-            />
+            {canSchedule ? (
+              <Button
+                mode="ghost"
+                icon={CalendarIcon}
+                text="Schedule"
+                disabled={busy !== null}
+                onClick={() => setScheduleOpen(true)}
+              />
+            ) : null}
             {canUnpublish ? (
               <Button
                 mode="ghost"
@@ -753,6 +836,73 @@ export function DocumentEditor({
                 text={busy === 'delete' ? 'Moving…' : 'Move to Trash'}
                 disabled={busy === 'delete'}
                 onClick={handleMoveToTrash}
+              />
+            </Flex>
+          </Stack>
+        </Dialog>
+      ) : null}
+
+      {deleteDialog?.kind === 'blocked' ? (
+        <Dialog
+          id="delete-blocked"
+          header="Cannot delete — still in use"
+          width={1}
+          onClose={() => {
+            if (busy !== 'delete') setDeleteDialog(null)
+          }}
+        >
+          <Stack space={4} padding={4}>
+            <Text size={1}>
+              “{headerTitle}” still appears in the Used by column for the items
+              below. Remove this category from every one of them before it can
+              be deleted.
+            </Text>
+            <Card padding={3} radius={2} tone="critical">
+              <Text size={1} style={{whiteSpace: 'pre-wrap'}}>
+                {deleteDialog.impactText || 'One or more items still reference this category.'}
+              </Text>
+            </Card>
+            <Text size={1} muted>
+              Open each item, clear this category, publish if needed, then try
+              Delete again.
+            </Text>
+            <Flex justify="flex-end">
+              <Button
+                text="OK"
+                tone="primary"
+                disabled={busy === 'delete'}
+                onClick={() => setDeleteDialog(null)}
+              />
+            </Flex>
+          </Stack>
+        </Dialog>
+      ) : null}
+
+      {deleteDialog?.kind === 'confirm' ? (
+        <Dialog
+          id="delete-confirm"
+          header="Delete permanently"
+          width={1}
+          onClose={() => {
+            if (busy !== 'delete') setDeleteDialog(null)
+          }}
+        >
+          <Stack space={4} padding={4}>
+            <Text size={1}>
+              Delete “{headerTitle}” permanently? This cannot be undone.
+            </Text>
+            <Flex justify="flex-end" gap={2}>
+              <Button
+                mode="bleed"
+                text="Cancel"
+                disabled={busy === 'delete'}
+                onClick={() => setDeleteDialog(null)}
+              />
+              <Button
+                tone="critical"
+                text={busy === 'delete' ? 'Deleting…' : 'Delete permanently'}
+                disabled={busy === 'delete'}
+                onClick={handleHardDelete}
               />
             </Flex>
           </Stack>

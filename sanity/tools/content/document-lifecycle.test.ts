@@ -7,9 +7,12 @@ import assert from 'node:assert/strict'
 import {TRASH_RETENTION_DAYS} from '../../../shared/trash-retention'
 import {
   formatImpactSummary,
+  formatReferrerBlockList,
+  hardDeleteDocuments,
   purgeAfterFrom,
   summarizeImpacts,
   trashRecordId,
+  type InboundReferrerSummary,
   type RemovedReferenceBackup,
 } from './document-lifecycle'
 
@@ -46,6 +49,14 @@ assert.match(summary, /Home/)
 assert.match(summary, /heroSlides/)
 
 assert.equal(trashRecordId('portfolio-1'), 'trashRecord.portfolio-1')
+assert.equal(typeof hardDeleteDocuments, 'function')
+
+const referrers: InboundReferrerSummary[] = [
+  {publishedId: 'p1', type: 'portfolioEntry', title: 'Campaign A'},
+  {publishedId: 'p2', type: 'portfolioEntry', title: 'Campaign B'},
+]
+assert.match(formatReferrerBlockList(referrers), /Campaign A/)
+assert.match(formatReferrerBlockList(referrers), /Campaign B/)
 
 const from = new Date('2026-07-19T00:00:00.000Z')
 const purge = new Date(purgeAfterFrom(from))
