@@ -396,18 +396,188 @@ export function WorkInternalToolbar({
 
   return (
     <div className="vp-internal-toolbar">
-      <div className="vp-internal-toolbar__row vp-internal-toolbar__row--primary">
-        <div className="vp-internal-toolbar__meta">
-          <span
-            className="vp-internal-count"
-            aria-live="polite"
-            aria-busy={filtersPending || undefined}
-          >
-            {resultCount === totalCount
-              ? `${resultCount} projects`
-              : `${resultCount} of ${totalCount}`}
-          </span>
+      <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters">
+        <div className="vp-internal-toolbar__controls">
+          <div className="vp-internal-fchips" ref={chipRowRef}>
+            <div
+              className="vp-internal-view-toggle"
+              role="group"
+              aria-label="View mode"
+            >
+              <button
+                type="button"
+                className={
+                  view === 'cards'
+                    ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
+                    : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
+                }
+                aria-label="Cards"
+                aria-pressed={view === 'cards'}
+                onClick={() => onViewChange('cards')}
+              >
+                <svg
+                  className="vp-internal-view-toggle__icon"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  height="16"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <rect x="1" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="6" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="11" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="1" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="6" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="11" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="1" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="6" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+                  <rect x="11" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className={
+                  view === 'list'
+                    ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
+                    : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
+                }
+                aria-label="List"
+                aria-pressed={view === 'list'}
+                onClick={() => onViewChange('list')}
+              >
+                <svg
+                  className="vp-internal-view-toggle__icon"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  height="16"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <circle cx="2.5" cy="3" r="1.25" fill="currentColor" />
+                  <rect x="5.5" y="2" width="9" height="2" rx="0.75" fill="currentColor" />
+                  <circle cx="2.5" cy="8" r="1.25" fill="currentColor" />
+                  <rect x="5.5" y="7" width="9" height="2" rx="0.75" fill="currentColor" />
+                  <circle cx="2.5" cy="13" r="1.25" fill="currentColor" />
+                  <rect x="5.5" y="12" width="9" height="2" rx="0.75" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
 
+            <div
+              className="vp-internal-view-toggle"
+              role="group"
+              aria-label="Visibility"
+            >
+              <button
+                type="button"
+                className={
+                  filters.visibility === 'all'
+                    ? 'vp-internal-view-toggle__btn is-active'
+                    : 'vp-internal-view-toggle__btn'
+                }
+                aria-pressed={filters.visibility === 'all'}
+                onClick={() => patchFilter('visibility', 'all')}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                className={
+                  filters.visibility === 'public'
+                    ? 'vp-internal-view-toggle__btn is-active'
+                    : 'vp-internal-view-toggle__btn'
+                }
+                aria-pressed={filters.visibility === 'public'}
+                onClick={() => patchFilter('visibility', 'public')}
+              >
+                Public
+              </button>
+              <button
+                type="button"
+                className={
+                  filters.visibility === 'hidden'
+                    ? 'vp-internal-view-toggle__btn is-active'
+                    : 'vp-internal-view-toggle__btn'
+                }
+                aria-pressed={filters.visibility === 'hidden'}
+                onClick={() => patchFilter('visibility', 'hidden')}
+              >
+                Hidden
+              </button>
+            </div>
+
+            <WorkInternalFilterPanel
+              label="Categories"
+              activeCount={taxonomyActiveCount}
+              open={openPanel === 'taxonomy'}
+              onToggle={() => togglePanel('taxonomy')}
+              panelClassName="vp-internal-fchip__panel--nested"
+            >
+              <NestedFilterMenu
+                rootLabel="Categories"
+                sections={categorySections}
+              />
+            </WorkInternalFilterPanel>
+
+            <WorkInternalFilterPanel
+              label="Brands"
+              activeCount={filters.client ? 1 : 0}
+              open={openPanel === 'client'}
+              onToggle={() => togglePanel('client')}
+              panelClassName="vp-internal-fchip__panel--client"
+            >
+              <label className="vp-internal-fchip__search">
+                <span className="sr-only">Search brands</span>
+                <input
+                  type="search"
+                  className="vp-internal-fchip__search-input"
+                  placeholder="Search brands…"
+                  value={clientQuery}
+                  onChange={(e) => setClientQuery(e.target.value)}
+                />
+              </label>
+              <FilterOptionList
+                options={filteredClientOptions}
+                selectedValue={filters.client}
+                onSelect={(value) => {
+                  patchFilter('client', value);
+                  if (value) setOpenPanel(null);
+                }}
+                emptyLabel={
+                  clientQuery.trim() ? 'No matching brands' : 'No brands'
+                }
+              />
+            </WorkInternalFilterPanel>
+
+            <WorkInternalFilterPanel
+              label="Crew"
+              activeCount={peopleActiveCount}
+              open={openPanel === 'people'}
+              onToggle={() => togglePanel('people')}
+              panelClassName="vp-internal-fchip__panel--nested"
+            >
+              <NestedFilterMenu rootLabel="Crew roles" sections={crewSections} />
+            </WorkInternalFilterPanel>
+          </div>
+
+          <label className="vp-internal-filter">
+            <span className="vp-internal-filter__label">Sort</span>
+            <select
+              className="vp-internal-filter__select"
+              value={sort}
+              onChange={(e) => onSortChange(e.target.value as LibrarySort)}
+            >
+              <option value="publishedAt-desc">Newest first</option>
+              <option value="publishedAt-asc">Oldest first</option>
+              <option value="title-asc">Title A–Z</option>
+              <option value="title-desc">Title Z–A</option>
+              <option value="client-asc">Brand A–Z</option>
+              <option value="client-desc">Brand Z–A</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="vp-internal-toolbar__meta">
           {active ? (
             <button
               type="button"
@@ -417,187 +587,16 @@ export function WorkInternalToolbar({
               Clear filters
             </button>
           ) : null}
-
-          <div
-            className="vp-internal-view-toggle"
-            role="group"
-            aria-label="Visibility"
+          <span
+            className="vp-internal-count"
+            aria-live="polite"
+            aria-busy={filtersPending || undefined}
           >
-            <button
-              type="button"
-              className={
-                filters.visibility === 'all'
-                  ? 'vp-internal-view-toggle__btn is-active'
-                  : 'vp-internal-view-toggle__btn'
-              }
-              aria-pressed={filters.visibility === 'all'}
-              onClick={() => patchFilter('visibility', 'all')}
-            >
-              All
-            </button>
-            <button
-              type="button"
-              className={
-                filters.visibility === 'public'
-                  ? 'vp-internal-view-toggle__btn is-active'
-                  : 'vp-internal-view-toggle__btn'
-              }
-              aria-pressed={filters.visibility === 'public'}
-              onClick={() => patchFilter('visibility', 'public')}
-            >
-              Public
-            </button>
-            <button
-              type="button"
-              className={
-                filters.visibility === 'hidden'
-                  ? 'vp-internal-view-toggle__btn is-active'
-                  : 'vp-internal-view-toggle__btn'
-              }
-              aria-pressed={filters.visibility === 'hidden'}
-              onClick={() => patchFilter('visibility', 'hidden')}
-            >
-              Hidden
-            </button>
-          </div>
+            {resultCount === totalCount
+              ? `${resultCount} projects`
+              : `${resultCount} of ${totalCount}`}
+          </span>
         </div>
-      </div>
-
-      <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters">
-        <div className="vp-internal-fchips" ref={chipRowRef}>
-          <div
-            className="vp-internal-view-toggle"
-            role="group"
-            aria-label="View mode"
-          >
-            <button
-              type="button"
-              className={
-                view === 'cards'
-                  ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
-                  : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
-              }
-              aria-label="Cards"
-              aria-pressed={view === 'cards'}
-              onClick={() => onViewChange('cards')}
-            >
-              <svg
-                className="vp-internal-view-toggle__icon"
-                viewBox="0 0 16 16"
-                width="16"
-                height="16"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <rect x="1" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="6" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="11" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="1" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="6" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="11" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="1" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="6" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
-                <rect x="11" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className={
-                view === 'list'
-                  ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
-                  : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
-              }
-              aria-label="List"
-              aria-pressed={view === 'list'}
-              onClick={() => onViewChange('list')}
-            >
-              <svg
-                className="vp-internal-view-toggle__icon"
-                viewBox="0 0 16 16"
-                width="16"
-                height="16"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <circle cx="2.5" cy="3" r="1.25" fill="currentColor" />
-                <rect x="5.5" y="2" width="9" height="2" rx="0.75" fill="currentColor" />
-                <circle cx="2.5" cy="8" r="1.25" fill="currentColor" />
-                <rect x="5.5" y="7" width="9" height="2" rx="0.75" fill="currentColor" />
-                <circle cx="2.5" cy="13" r="1.25" fill="currentColor" />
-                <rect x="5.5" y="12" width="9" height="2" rx="0.75" fill="currentColor" />
-              </svg>
-            </button>
-          </div>
-
-          <WorkInternalFilterPanel
-            label="Categories"
-            activeCount={taxonomyActiveCount}
-            open={openPanel === 'taxonomy'}
-            onToggle={() => togglePanel('taxonomy')}
-            panelClassName="vp-internal-fchip__panel--nested"
-          >
-            <NestedFilterMenu
-              rootLabel="Categories"
-              sections={categorySections}
-            />
-          </WorkInternalFilterPanel>
-
-          <WorkInternalFilterPanel
-            label="Brands"
-            activeCount={filters.client ? 1 : 0}
-            open={openPanel === 'client'}
-            onToggle={() => togglePanel('client')}
-            panelClassName="vp-internal-fchip__panel--client"
-          >
-            <label className="vp-internal-fchip__search">
-              <span className="sr-only">Search brands</span>
-              <input
-                type="search"
-                className="vp-internal-fchip__search-input"
-                placeholder="Search brands…"
-                value={clientQuery}
-                onChange={(e) => setClientQuery(e.target.value)}
-              />
-            </label>
-            <FilterOptionList
-              options={filteredClientOptions}
-              selectedValue={filters.client}
-              onSelect={(value) => {
-                patchFilter('client', value);
-                if (value) setOpenPanel(null);
-              }}
-              emptyLabel={
-                clientQuery.trim() ? 'No matching brands' : 'No brands'
-              }
-            />
-          </WorkInternalFilterPanel>
-
-          <WorkInternalFilterPanel
-            label="Crew"
-            activeCount={peopleActiveCount}
-            open={openPanel === 'people'}
-            onToggle={() => togglePanel('people')}
-            panelClassName="vp-internal-fchip__panel--nested"
-          >
-            <NestedFilterMenu rootLabel="Crew roles" sections={crewSections} />
-          </WorkInternalFilterPanel>
-        </div>
-
-        <label className="vp-internal-filter">
-          <span className="vp-internal-filter__label">Sort</span>
-          <select
-            className="vp-internal-filter__select"
-            value={sort}
-            onChange={(e) => onSortChange(e.target.value as LibrarySort)}
-          >
-            <option value="publishedAt-desc">Newest first</option>
-            <option value="publishedAt-asc">Oldest first</option>
-            <option value="title-asc">Title A–Z</option>
-            <option value="title-desc">Title Z–A</option>
-            <option value="client-asc">Brand A–Z</option>
-            <option value="client-desc">Brand Z–A</option>
-          </select>
-        </label>
       </div>
 
       {activePills.length > 0 ? (

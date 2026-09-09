@@ -2117,9 +2117,12 @@ body:has(.vp-work-index) #header.navbar::before {
   align-items: flex-end;
 }
 
-.vp-internal-toolbar__row--primary {
-  justify-content: flex-end;
-  margin-bottom: 0.75rem;
+.vp-internal-toolbar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.65rem;
+  min-width: 0;
 }
 
 .vp-internal-toolbar__meta {
@@ -2127,6 +2130,7 @@ body:has(.vp-work-index) #header.navbar::before {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
+  margin-left: auto;
 }
 
 .vp-internal-search {
@@ -2153,6 +2157,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-internal-count {
   font-size: 0.8125rem;
+  line-height: 1.35rem;
   color: var(--color-vp-text-soft);
   white-space: nowrap;
 }
@@ -2213,6 +2218,7 @@ body:has(.vp-work-index) #header.navbar::before {
   gap: 0.5rem 0.65rem;
   /* flex-end aligns the Sort select (not the stacked "Sort" label) with chips. */
   align-items: flex-end;
+  justify-content: space-between;
 }
 
 .vp-internal-toolbar__row--pills {
@@ -2503,7 +2509,7 @@ body:has(.vp-work-index) #header.navbar::before {
   flex-direction: column;
   gap: 0.2rem;
   min-width: 8.5rem;
-  flex: 1 1 8.5rem;
+  flex: 0 1 12rem;
   max-width: 12rem;
 }
 
