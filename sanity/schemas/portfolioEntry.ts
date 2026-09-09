@@ -65,9 +65,10 @@ export const portfolioEntry = defineType({
     {name: 'slugAndDate', options: {columns: 2}},
     {name: 'copy', title: 'Description', options: {columns: 2}},
     {name: 'taxonomy', title: 'Formats / Industries / Markets', options: {columns: 3}},
-    // Untitled: Featured Image | Video URL (legend hidden via studio.css).
-    {name: 'featuredAndVideo', options: {columns: 2}},
-    {name: 'carouselPreview', title: 'Carousel Preview', options: {columns: 2}},
+    // Untitled layout row (legend hidden via studio.css) — featured image alone.
+    // Video URLs live in `videos[]` (first = main). Legacy root video fields stay
+    // hidden for dual-read until Option B / cutover.
+    {name: 'featuredAndVideo', options: {columns: 1}},
   ],
 
   fields: [
@@ -341,63 +342,94 @@ export const portfolioEntry = defineType({
       fieldset: 'featuredAndVideo',
       // hotspot UI is custom (FeaturedImageHotspotInput); keep stock upload via renderDefault.
       // Data still writes standard hotspot/crop for urlForImage().
+      // Campaign-level poster (cards, OG, homepage stills) — Option A keeps this
+      // on the document; Option B may later mirror from videos[0].
       options: {hotspot: false},
       components: {input: FeaturedImageHotspotInput},
       validation: (rule) => rule.required(),
       hidden: hiddenForTranslator,
     }),
 
+    defineField({
+      name: 'videos',
+      title: 'Videos',
+      type: 'array',
+      group: 'media',
+      of: [{type: 'portfolioVideo'}],
+      description:
+        'First item is the main film (case page primary player + homepage carousel candidate). Drag to reorder. Items below are additional films.',
+      hidden: hiddenForTranslatorWhenEmpty,
+      components: {input: TranslatorLockedArrayInput},
+      validation: (rule) =>
+        rule.custom((videos, context) => {
+          const rows = Array.isArray(videos) ? videos : []
+          if (rows.length === 0) {
+            const legacyUrl = (
+              context.document as {vimeoUrl?: string} | undefined
+            )?.vimeoUrl
+            if (legacyUrl?.trim()) return true
+            return 'Add at least one video — the first item is the main film.'
+          }
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i] as
+              | {
+                  vimeoUrl?: string
+                  videoTitle?: string
+                }
+              | undefined
+            if (!row?.vimeoUrl?.trim()) {
+              return `Video ${i + 1}: Video URL is required.`
+            }
+            if (i > 0 && !row.videoTitle?.trim()) {
+              return `Video ${i + 1}: Video Title is required on additional films.`
+            }
+          }
+          return true
+        }),
+    }),
+
+    // --- Legacy main-film fields (hidden; dual-read until cutover) ---
     ...defineLocalePair({
       name: 'vimeoUrl',
       zhName: 'xinpianchangUrl',
-      title: 'Video URL',
+      title: 'Video URL (legacy)',
       type: 'url',
       group: 'media',
-      fieldset: 'featuredAndVideo',
       vimeoPicker: true,
-      description:
-        'Vimeo or YouTube for English (YouTube only when Vimeo cannot host). Xinpianchang for Chinese.',
-      validation: (rule) => rule.required().uri({scheme: ['http', 'https']}),
+      description: 'Legacy main film URL — prefer Videos[0]. Kept for dual-read.',
+      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
       zhValidation: (rule) => rule.uri({scheme: ['http', 'https']}),
-      optional: false,
-      // Embed host URLs, not translation — editors upload to Xinpianchang.
+      optional: true,
       editorCanEditZh: true,
+      hidden: () => true,
     }),
 
     defineField({
       name: 'previewCleanVimeoUrl',
-      title: 'Clean Preview Video URL',
+      title: 'Clean Preview Video URL (legacy)',
       type: 'url',
       group: 'media',
-      fieldset: 'carouselPreview',
-      description:
-        'Vimeo URL for clean export (no burned-in text/logos), for carousel preview clips. This replaces the master video above for carousel playback only — single portfolio pages always use the master Video URL.',
-      hidden: hiddenForTranslator,
+      hidden: () => true,
       components: {field: OptionalField, input: VimeoUrlInput},
       validation: (rule) => rule.uri({scheme: ['http', 'https']}),
     }),
 
     defineField({
       name: 'previewStartSeconds',
-      title: 'In and Out Points',
+      title: 'In and Out Points (legacy)',
       type: 'number',
       group: 'media',
-      fieldset: 'carouselPreview',
-      description:
-        'For the homepage carousel clip. Leave empty to play the full video. Options are real keyframes when a Vimeo URL is set.',
-      hidden: hiddenForTranslator,
+      hidden: () => true,
       components: {field: PreviewBoundsPairField},
       validation: (rule) => rule.min(0),
     }),
 
     defineField({
       name: 'previewEndSeconds',
-      title: 'End',
+      title: 'End (legacy)',
       type: 'number',
       group: 'media',
-      // Omit fieldset so NullField does not consume a column in the 2-col row.
-      // Stay in the form tree for editors (NullField) so sibling patches work.
-      hidden: hiddenForTranslator,
+      hidden: () => true,
       components: {field: NullField},
       validation: (rule) =>
         rule.min(0).custom((end, context) => {
@@ -410,21 +442,21 @@ export const portfolioEntry = defineType({
 
     ...defineLocalePair({
       name: 'heroFilmTitle',
-      title: 'Hero Film Title',
+      title: 'Hero Film Title (legacy)',
       type: 'string',
       group: 'media',
-      description:
-        'Only use if different from Campaign Title, typically for multi-video campaigns.',
+      description: 'Legacy — prefer Videos[0] Video Title. Kept for dual-read.',
+      hidden: () => true,
     }),
 
     defineField({
       name: 'additionalVideos',
-      title: 'Additional Videos',
+      title: 'Additional Videos (legacy)',
       type: 'array',
       group: 'media',
       of: [{type: 'additionalVideo'}],
-      description: 'Supplementary videos below the main player.',
-      hidden: hiddenForTranslatorWhenEmpty,
+      description: 'Legacy — prefer Videos. Kept for dual-read.',
+      hidden: () => true,
       components: {input: TranslatorLockedArrayInput},
     }),
 

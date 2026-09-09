@@ -24,6 +24,12 @@ const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
     titleZh
   },
   featuredImage,
+  "videos": videos[0...1]{
+    vimeoUrl,
+    previewStartSeconds,
+    previewEndSeconds,
+    previewCleanVimeoUrl
+  },
   vimeoUrl,
   previewStartSeconds,
   previewEndSeconds,

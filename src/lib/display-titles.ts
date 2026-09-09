@@ -24,6 +24,11 @@ export type DisplayTitleFields = ResolveDisplayTitlesInput & {
   } | null;
   heroFilmTitle?: string | null;
   heroFilmTitleZh?: string | null;
+  /** Unified videos — first item episode title maps to heroFilmTitle. */
+  videos?: Array<{
+    videoTitle?: string | null;
+    videoTitleZh?: string | null;
+  } | null> | null;
 };
 
 export type AdditionalVideoTitleFields = {
@@ -33,15 +38,24 @@ export type AdditionalVideoTitleFields = {
 
 function flatten(input: DisplayTitleFields): ResolveDisplayTitlesInput {
   const parts = input.displayTitleParts ?? {};
+  const mainVideo = input.videos?.[0];
+  const heroFilmTitle =
+    mainVideo?.videoTitle?.trim() ||
+    parts.heroFilmTitle ||
+    input.heroFilmTitle;
+  const heroFilmTitleZh =
+    mainVideo?.videoTitleZh?.trim() ||
+    parts.heroFilmTitleZh ||
+    input.heroFilmTitleZh;
   return {
     brandName: parts.brandName ?? input.brandName,
     productName: parts.productName ?? input.productName,
     campaignTitle: parts.campaignTitle ?? input.campaignTitle,
-    heroFilmTitle: parts.heroFilmTitle ?? input.heroFilmTitle,
+    heroFilmTitle,
     brandNameZh: parts.brandNameZh ?? input.brandNameZh,
     productNameZh: parts.productNameZh ?? input.productNameZh,
     campaignTitleZh: parts.campaignTitleZh ?? input.campaignTitleZh,
-    heroFilmTitleZh: parts.heroFilmTitleZh ?? input.heroFilmTitleZh,
+    heroFilmTitleZh,
     thumbTitleOverride: input.thumbTitleOverride,
     headerTitleOverride: input.headerTitleOverride,
     longTitleOverride: input.longTitleOverride,

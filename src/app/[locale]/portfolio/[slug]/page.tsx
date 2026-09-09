@@ -22,6 +22,9 @@ import { portfolioEntryMetadata } from '@/lib/metadata';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import {
+  resolveMainPortfolioVideo,
+} from '@portfolio-videos';
+import {
   buildBreadcrumbs,
   buildOrganization,
   buildVideoObject,
@@ -135,15 +138,19 @@ export default async function PortfolioEntryPage({ params }: Props) {
     locale: typedLocale,
     phrases: phraseRecord,
     portfolioEntryRef: entry._id,
-    vimeoUrl: entry.vimeoUrl,
-    xinpianchangUrl: entry.xinpianchangUrl,
     featuredImage: entry.featuredImage,
-    heroFilmTitle: entry.heroFilmTitle,
-    heroFilmTitleZh: entry.heroFilmTitleZh,
     description: entry.description,
     descriptionZh: entry.descriptionZh,
+    videos: entry.videos,
+    vimeoUrl: entry.vimeoUrl,
+    xinpianchangUrl: entry.xinpianchangUrl,
+    heroFilmTitle: entry.heroFilmTitle,
+    heroFilmTitleZh: entry.heroFilmTitleZh,
     additionalVideos: entry.additionalVideos,
   });
+
+  const mainVideo = resolveMainPortfolioVideo(entry);
+  const mainVimeoUrl = mainVideo?.vimeoUrl?.trim() || entry.vimeoUrl?.trim() || '';
 
   const caseHeader = (
     <PortfolioCaseHeader
@@ -182,14 +189,14 @@ export default async function PortfolioEntryPage({ params }: Props) {
   return (
     <>
       <JsonLd data={buildOrganization(organization)} />
-      {entry.vimeoUrl?.trim() ? (
+      {mainVimeoUrl ? (
         <JsonLd
           data={buildVideoObject({
             title,
             description,
             featuredImage: entry.featuredImage,
             publishedAt: entry.publishedAt,
-            vimeoUrl: entry.vimeoUrl,
+            vimeoUrl: mainVimeoUrl,
             locale: typedLocale,
             crewCredits: entry.crewCredits,
           })}

@@ -8,6 +8,7 @@ import Image from 'next/image'
 import {urlForImage} from '@/lib/sanity'
 import {resolveEntryDisplayTitles} from '@/lib/display-titles'
 import type {ShowreelPublicItem} from './showreel-public-types'
+import {showreelItemVideoUrls} from './showreel-public-types'
 
 interface ShowreelPortfolioCardProps {
   item: ShowreelPublicItem
@@ -29,9 +30,16 @@ export function ShowreelPortfolioCard({
     .url()
 
   // Public showreel is English-only for v1 (ZH route mirrors EN).
-  const {thumbTitle} = resolveEntryDisplayTitles(item, 'en')
+  const {thumbTitle} = resolveEntryDisplayTitles(
+    {
+      displayTitleParts: item.displayTitleParts ?? undefined,
+      thumbTitleOverride: item.thumbTitleOverride ?? undefined,
+    },
+    'en',
+  )
   const exploreHref = `/portfolio/${item.slug}`
-  const hasVideo = Boolean(item.vimeoUrl?.trim() || item.xinpianchangUrl?.trim())
+  const {vimeoUrl, xinpianchangUrl} = showreelItemVideoUrls(item)
+  const hasVideo = Boolean(vimeoUrl || xinpianchangUrl)
 
   return (
     <article

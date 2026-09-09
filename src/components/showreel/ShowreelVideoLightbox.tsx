@@ -17,6 +17,7 @@ import {LazyYouTubePlayer} from '@/components/ui/LazyYouTubePlayer'
 import {LazyXinpianchangPlayer} from '@/components/portfolio/LazyXinpianchangPlayer'
 import {xinpianchangToEmbedUrl} from '@/lib/xinpianchang'
 import type {ShowreelPublicItem} from './showreel-public-types'
+import {showreelItemVideoUrls} from './showreel-public-types'
 
 interface ShowreelVideoLightboxProps {
   item: ShowreelPublicItem
@@ -27,9 +28,8 @@ function LightboxPlayer({item}: {item: ShowreelPublicItem}) {
   const featuredPoster = item.featuredImage
     ? urlForImage(item.featuredImage).width(1920).height(1080).fit('crop').url()
     : undefined
-  const parsed = item.vimeoUrl?.trim()
-    ? parseVideoUrl(item.vimeoUrl)
-    : null
+  const {vimeoUrl, xinpianchangUrl} = showreelItemVideoUrls(item)
+  const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null
   const vimeoPoster =
     parsed?.provider === 'vimeo'
       ? (vimeoThumbnailUrl(parsed.url) ?? undefined)
@@ -58,13 +58,10 @@ function LightboxPlayer({item}: {item: ShowreelPublicItem}) {
     )
   }
 
-  if (
-    item.xinpianchangUrl &&
-    xinpianchangToEmbedUrl(item.xinpianchangUrl)
-  ) {
+  if (xinpianchangUrl && xinpianchangToEmbedUrl(xinpianchangUrl)) {
     return (
       <LazyXinpianchangPlayer
-        embedUrl={item.xinpianchangUrl}
+        embedUrl={xinpianchangUrl}
         posterUrl={posterUrl}
         portfolioEntryRef={item._id}
       />

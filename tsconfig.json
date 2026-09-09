@@ -45,7 +45,9 @@
       "@video-formats": ["./shared/video-formats"],
       "@video-formats/*": ["./shared/video-formats/*"],
       "@key-visuals-layout": ["./shared/key-visuals-layout"],
-      "@key-visuals-layout/*": ["./shared/key-visuals-layout/*"]
+      "@key-visuals-layout/*": ["./shared/key-visuals-layout/*"],
+      "@portfolio-videos": ["./shared/portfolio-videos"],
+      "@portfolio-videos/*": ["./shared/portfolio-videos/*"]
     }
   },
   "include": [

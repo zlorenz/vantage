@@ -28,16 +28,17 @@ import { seoFields } from './objects/seoFields';
 import { trashMetadata } from './objects/trashMetadata';
 import { crewPerson } from './objects/crewPerson';
 import { crewCredit } from './objects/crewCredit';
-import { additionalVideo } from './objects/additionalVideo';
-import { founder } from './objects/founder';
-import { awardItem } from './objects/awardItem';
-import { brandLogoItem } from './objects/brandLogoItem';
-import { campaignCta } from './objects/campaignCta';
-import { pdfDownload } from './objects/pdfDownload';
-import { imageGallery } from './objects/imageGallery';
-import { ctaButton } from './objects/ctaButton';
-import { videoEmbed } from './objects/videoEmbed';
-import { portableTextBody, pagePortableText, plainPortableText } from './objects/portableTextBody';
+import { additionalVideo } from './objects/additionalVideo'
+import { portfolioVideo } from './objects/portfolioVideo'
+import { founder } from './objects/founder'
+import { awardItem } from './objects/awardItem'
+import { brandLogoItem } from './objects/brandLogoItem'
+import { campaignCta } from './objects/campaignCta'
+import { pdfDownload } from './objects/pdfDownload'
+import { imageGallery } from './objects/imageGallery'
+import { ctaButton } from './objects/ctaButton'
+import { videoEmbed } from './objects/videoEmbed'
+import { portableTextBody, pagePortableText, plainPortableText } from './objects/portableTextBody'
 
 export const schemaTypes = [
   // Shared objects
@@ -46,6 +47,7 @@ export const schemaTypes = [
   crewPerson,
   crewCredit,
   additionalVideo,
+  portfolioVideo,
   founder,
   awardItem,
   brandLogoItem,

@@ -103,6 +103,7 @@ export function categoryForCmsField(
     enPath === 'displayTitleParts.productName' ||
     enPath === 'displayTitleParts.campaignTitle' ||
     enPath === 'heroFilmTitle' ||
+    enPath === 'videos[].videoTitle' ||
     enPath === 'additionalVideos[].videoTitle' ||
     enPath.endsWith('.videoTitle')
   ) {
@@ -149,6 +150,7 @@ export function categoryForCmsField(
   if (
     enPath === 'excerpt' ||
     enPath === 'description' ||
+    enPath === 'videos[].description' ||
     enPath === 'additionalVideos[].description' ||
     enPath.endsWith('.description') ||
     enPath === 'seo.metaDescription'

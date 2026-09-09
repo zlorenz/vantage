@@ -17,6 +17,7 @@ import {
 import {useEffect, useMemo, useState} from 'react'
 import {useClient} from 'sanity'
 import {compileDisplayTitles, trimPart} from '@display-titles'
+import {resolvePortfolioVideos} from '@portfolio-videos'
 import {STUDIO_OVERLAY_Z} from '@studio-overlay-z'
 
 type PortfolioVideoRow = {
@@ -27,8 +28,15 @@ type PortfolioVideoRow = {
     productName?: string
     campaignTitle?: string
   }
+  videos?: Array<{
+    _key?: string
+    vimeoUrl?: string
+    videoTitle?: string
+  }>
   vimeoUrl?: string
+  heroFilmTitle?: string
   additionalVideos?: Array<{
+    _key?: string
     vimeoUrl?: string
     videoTitle?: string
   }>
@@ -64,23 +72,18 @@ function flattenVideos(docs: PortfolioVideoRow[]): PickerItem[] {
   const items: PickerItem[] = []
   for (const doc of docs) {
     const label = entryLabel(doc)
-    if (doc.vimeoUrl?.trim()) {
+    const videos = resolvePortfolioVideos(doc)
+    for (const [i, video] of videos.entries()) {
+      if (!video.vimeoUrl?.trim()) continue
+      const episode = video.videoTitle?.trim()
       items.push({
-        key: `${doc._id}:hero`,
+        key: `${doc._id}:${video._key || i}`,
         label,
-        detail: 'Hero video',
-        url: doc.vimeoUrl.trim(),
-        title: label,
-      })
-    }
-    for (const [i, av] of (doc.additionalVideos ?? []).entries()) {
-      if (!av?.vimeoUrl?.trim()) continue
-      const episode = av.videoTitle?.trim()
-      items.push({
-        key: `${doc._id}:add:${i}`,
-        label,
-        detail: episode || `Additional video ${i + 1}`,
-        url: av.vimeoUrl.trim(),
+        detail:
+          i === 0
+            ? episode || 'Main film'
+            : episode || `Additional video ${i}`,
+        url: video.vimeoUrl.trim(),
         title: episode || label,
       })
     }
@@ -107,8 +110,10 @@ export function PortfolioVideoPicker({onSelect, onClose}: PortfolioVideoPickerPr
           _id,
           title,
           displayTitleParts,
+          videos[]{vimeoUrl, videoTitle, _key},
           vimeoUrl,
-          additionalVideos[]{vimeoUrl, videoTitle}
+          heroFilmTitle,
+          additionalVideos[]{vimeoUrl, videoTitle, _key}
         } | order(title asc)`,
       )
       .then((data) => {

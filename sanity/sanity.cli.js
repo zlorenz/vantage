@@ -15,6 +15,7 @@ const sharedCarouselRatios = path.resolve(rootDir, '../shared/carousel-ratios')
 const sharedMediaTags = path.resolve(rootDir, '../shared/media-tags/index.ts')
 const sharedVideoFormats = path.resolve(rootDir, '../shared/video-formats/index.ts')
 const sharedKeyVisualsLayout = path.resolve(rootDir, '../shared/key-visuals-layout')
+const sharedPortfolioVideos = path.resolve(rootDir, '../shared/portfolio-videos')
 
 function mergeViteAliases(existing, extra) {
   const asArray = Array.isArray(existing)
@@ -73,6 +74,7 @@ export default defineCliConfig({
         '@media-tags': sharedMediaTags,
         '@video-formats': sharedVideoFormats,
         '@key-visuals-layout': sharedKeyVisualsLayout,
+        '@portfolio-videos': sharedPortfolioVideos,
       }),
     },
     server: {

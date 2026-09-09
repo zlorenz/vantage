@@ -18,6 +18,10 @@ export type ShowreelPublicItem = {
   thumbTitleOverride?: string | null
   featuredImage?: SanityImage | null
   slug?: string | null
+  videos?: Array<{
+    vimeoUrl?: string | null
+    xinpianchangUrl?: string | null
+  } | null> | null
   vimeoUrl?: string | null
   xinpianchangUrl?: string | null
 }
@@ -27,4 +31,17 @@ export type ShowreelPublicData = {
   title: string
   description?: string
   items: ShowreelPublicItem[]
+}
+
+/** Main film URLs — prefer videos[0], fall back to legacy root fields. */
+export function showreelItemVideoUrls(item: ShowreelPublicItem): {
+  vimeoUrl?: string
+  xinpianchangUrl?: string
+} {
+  const main = item.videos?.find((row) => row != null) ?? null
+  const vimeoUrl =
+    main?.vimeoUrl?.trim() || item.vimeoUrl?.trim() || undefined
+  const xinpianchangUrl =
+    main?.xinpianchangUrl?.trim() || item.xinpianchangUrl?.trim() || undefined
+  return {vimeoUrl, xinpianchangUrl}
 }

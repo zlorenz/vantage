@@ -160,6 +160,23 @@ export interface PlatformTerm {
  * Enriched portfolio row for the internal work library.
  * Source: INTERNAL_LIBRARY_QUERY.
  */
+export interface PortfolioVideo {
+  _key?: string;
+  vimeoUrl: string;
+  xinpianchangUrl?: string;
+  /** Episode title only — composed with campaign Brand/Product/Campaign on the frontend. */
+  videoTitle?: string;
+  videoTitleZh?: string;
+  description?: string;
+  descriptionZh?: string;
+  previewCleanVimeoUrl?: string;
+  previewStartSeconds?: number;
+  previewEndSeconds?: number;
+}
+
+/** @deprecated Use PortfolioVideo — legacy additionalVideos[] row shape. */
+export type AdditionalVideo = PortfolioVideo;
+
 export interface InternalLibraryEntry {
   _id: string;
   title: string;
@@ -178,8 +195,12 @@ export interface InternalLibraryEntry {
   featuredImage: SanityImage;
   isHidden?: boolean;
   publishedAt?: string;
-  vimeoUrl: string;
+  /** @deprecated Prefer videos[0]. */
+  vimeoUrl?: string;
   xinpianchangUrl?: string;
+  videos?: PortfolioVideo[];
+  /** @deprecated Prefer videos. */
+  additionalVideos?: PortfolioVideo[];
   clients?: NamedSlugTerm[];
   crewMembers?: InternalCrewMember[];
   platforms?: NamedSlugTerm[];
@@ -220,16 +241,6 @@ export interface CrewCredit {
   people: CrewPerson[];
 }
 
-export interface AdditionalVideo {
-  vimeoUrl: string;
-  xinpianchangUrl?: string;
-  /** Episode title only — composed with campaign Brand/Product/Campaign on the frontend. */
-  videoTitle: string;
-  videoTitleZh?: string;
-  description?: string;
-  descriptionZh?: string;
-}
-
 /** Full single-entry shape — PORTFOLIO_ENTRY_QUERY. */
 export interface PortfolioEntry {
   _id: string;
@@ -238,7 +249,9 @@ export interface PortfolioEntry {
   slug: string;
   slugZh?: string;
   displayTitleParts?: DisplayTitlePartsValue;
+  /** @deprecated Prefer videos[0].videoTitle via resolveMainFilmTitle. */
   heroFilmTitle?: string;
+  /** @deprecated Prefer videos[0].videoTitleZh. */
   heroFilmTitleZh?: string;
   thumbTitleOverride?: string;
   thumbTitleOverrideZh?: string;
@@ -251,13 +264,20 @@ export interface PortfolioEntry {
   description: string;
   descriptionZh?: string;
   featuredImage: SanityImage;
-  vimeoUrl: string;
+  /** @deprecated Prefer videos[0].vimeoUrl via resolveMainPortfolioVideo. */
+  vimeoUrl?: string;
+  /** @deprecated Prefer videos[0].xinpianchangUrl. */
   xinpianchangUrl?: string;
+  /** @deprecated Prefer videos[0].preview*. */
+  previewCleanVimeoUrl?: string;
   previewStartSeconds?: number;
   previewEndSeconds?: number;
   publishedAt?: string;
   isHidden?: boolean;
-  additionalVideos?: AdditionalVideo[];
+  /** Unified ordered films — first item is the main film. */
+  videos?: PortfolioVideo[];
+  /** @deprecated Prefer videos[1..]. */
+  additionalVideos?: PortfolioVideo[];
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];

@@ -113,6 +113,7 @@ export const PHRASE_INVENTORY_DOCS_QUERY = `*[_type in [
   heroFilmTitle, heroFilmTitleZh,
   excerpt, excerptZh, description, descriptionZh,
   heroTitle, heroTitleZh,
+  videos[]{videoTitle, videoTitleZh, description, descriptionZh},
   additionalVideos[]{videoTitle, videoTitleZh, description, descriptionZh},
   founders[]{jobTitle, jobTitleZh},
   crewCredits[]{
@@ -167,6 +168,8 @@ export function zhSiblingPathFor(enPath: string): string | null {
     'displayTitleParts.campaignTitle': 'displayTitleParts.campaignTitleZh',
     heroFilmTitle: 'heroFilmTitleZh',
     heroTitle: 'heroTitleZh',
+    'videos[].videoTitle': 'videos[].videoTitleZh',
+    'videos[].description': 'videos[].descriptionZh',
     'additionalVideos[].videoTitle': 'additionalVideos[].videoTitleZh',
     'additionalVideos[].description': 'additionalVideos[].descriptionZh',
     'founders[].jobTitle': 'founders[].jobTitleZh',

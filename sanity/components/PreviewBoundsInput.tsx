@@ -12,11 +12,13 @@ import {Box, Button, Flex, Grid, Stack, Text, TextInput} from '@sanity/ui'
 import {useCallback, useMemo, useState, type ChangeEvent, type ReactNode} from 'react'
 import {
   getPublishedId,
+  pathToString,
   set,
   unset,
   useDocumentOperation,
   useFormValue,
   type FieldProps,
+  type Path,
 } from 'sanity'
 import {extractVimeoId, normalizeStoredVideoUrl} from '@video-url'
 
@@ -176,6 +178,8 @@ type PairInnerProps = {
   startSeconds: number | undefined
   endSeconds: number | undefined
   documentId: string
+  /** Absolute path to previewEndSeconds (document or videos[_key=…].…). */
+  endPath: Path
   title: ReactNode
   description?: ReactNode
   errors: string[]
@@ -190,6 +194,7 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
     startSeconds,
     endSeconds,
     documentId,
+    endPath,
     title,
     description,
     errors,
@@ -236,13 +241,15 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
   // an inline arrow would remount the <video> on every Start/End form patch.
   const onMintError = useCallback(() => setMintFailed(true), [])
 
+  const endPathString = pathToString(endPath)
+
   const handleSelect = useCallback(
     (bound: PreviewBound, next: string) => {
       if (!next) {
         if (bound === 'start') {
           startOnChange?.(unset())
         } else if (documentId) {
-          patch.execute([{unset: ['previewEndSeconds']}])
+          patch.execute([{unset: [endPathString]}])
         }
         return
       }
@@ -252,16 +259,16 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
       if (bound === 'start') {
         startOnChange?.(set(parsed))
         if (typeof endSeconds === 'number' && parsed >= endSeconds && documentId) {
-          patch.execute([{unset: ['previewEndSeconds']}])
+          patch.execute([{unset: [endPathString]}])
         }
         return
       }
 
       if (documentId) {
-        patch.execute([{set: {previewEndSeconds: parsed}}])
+        patch.execute([{set: {[endPathString]: parsed}}])
       }
     },
-    [documentId, endSeconds, patch, startOnChange],
+    [documentId, endPathString, endSeconds, patch, startOnChange],
   )
 
   const rangeError =
@@ -361,14 +368,16 @@ function PreviewBoundsPairInner(props: PairInnerProps) {
   )
 }
 
-/** Stacked Start / End field for the Carousel Preview fieldset. */
+/** Stacked Start / End field — works at document root or inside videos[]. */
 export function PreviewBoundsPairField(props: FieldProps) {
   const readOnly = Boolean(props.inputProps?.readOnly)
   const startOnChange = props.inputProps?.onChange
-  const vimeoUrl = asUrl(useFormValue(['vimeoUrl']))
-  const cleanPreviewUrl = asUrl(useFormValue(['previewCleanVimeoUrl']))
-  const startValue = useFormValue(['previewStartSeconds'])
-  const endValue = useFormValue(['previewEndSeconds'])
+  const parentPath = props.path.slice(0, -1) as Path
+  const vimeoUrl = asUrl(useFormValue([...parentPath, 'vimeoUrl']))
+  const cleanPreviewUrl = asUrl(useFormValue([...parentPath, 'previewCleanVimeoUrl']))
+  const startValue = useFormValue([...parentPath, 'previewStartSeconds'])
+  const endValue = useFormValue([...parentPath, 'previewEndSeconds'])
+  const endPath = [...parentPath, 'previewEndSeconds'] as Path
   const documentId = asUrl(useFormValue(['_id']))
   const {patch} = useDocumentOperation(getPublishedId(documentId), 'portfolioEntry')
 
@@ -394,6 +403,7 @@ export function PreviewBoundsPairField(props: FieldProps) {
       startSeconds={startSeconds}
       endSeconds={endSeconds}
       documentId={documentId}
+      endPath={endPath}
       title={props.title || 'In and Out Points'}
       description={props.description as ReactNode}
       errors={errors}

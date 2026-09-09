@@ -3,6 +3,7 @@
  */
 
 import {compileDisplayTitles, trimPart} from '@display-titles'
+import {resolvePortfolioVideos} from '@portfolio-videos'
 import {extractVimeoId, extractYouTubeId, fetchVideoOEmbedTitle} from '@video-url'
 import type {SanityClient} from 'sanity'
 
@@ -13,7 +14,12 @@ type PortfolioHit = {
     productName?: string
     campaignTitle?: string
   }
+  videos?: Array<{
+    vimeoUrl?: string
+    videoTitle?: string
+  }>
   vimeoUrl?: string
+  heroFilmTitle?: string
   additionalVideos?: Array<{
     vimeoUrl?: string
     videoTitle?: string
@@ -46,7 +52,7 @@ function urlsMatch(a: string, b: string): boolean {
   return Boolean(idA && idB && idA === idB)
 }
 
-/** Match hero or additional video URL → best available title from portfolio. */
+/** Match portfolio video URL → best available title from portfolio. */
 export async function fetchPortfolioVideoTitle(
   client: SanityClient,
   url: string,
@@ -57,24 +63,27 @@ export async function fetchPortfolioVideoTitle(
   const rows = await client.fetch<PortfolioHit[]>(
     `*[_type == "portfolioEntry" && !(_id in path("drafts.**")) && (
       vimeoUrl match $needle ||
+      count((videos[defined(vimeoUrl) && vimeoUrl match $needle])) > 0 ||
       count((additionalVideos[defined(vimeoUrl) && vimeoUrl match $needle])) > 0
     )][0...16]{
       title,
       displayTitleParts,
+      videos[]{vimeoUrl, videoTitle},
       vimeoUrl,
+      heroFilmTitle,
       additionalVideos[]{vimeoUrl, videoTitle}
     }`,
     {needle: `*${videoId}*`},
   )
 
   for (const doc of rows ?? []) {
-    if (doc.vimeoUrl && urlsMatch(doc.vimeoUrl, url)) {
-      const label = entryLabel(doc)
-      if (label) return label
-    }
-    for (const av of doc.additionalVideos ?? []) {
-      if (!av?.vimeoUrl || !urlsMatch(av.vimeoUrl, url)) continue
-      const title = av.videoTitle?.trim() || entryLabel(doc)
+    for (const [i, video] of resolvePortfolioVideos(doc).entries()) {
+      if (!video.vimeoUrl || !urlsMatch(video.vimeoUrl, url)) continue
+      if (i === 0) {
+        const label = entryLabel(doc)
+        if (label) return label
+      }
+      const title = video.videoTitle?.trim() || entryLabel(doc)
       if (title) return title
     }
   }
@@ -85,7 +94,7 @@ export async function fetchPortfolioVideoTitle(
 /**
  * Best-effort title for Studio previews:
  * 1) provider / noembed oEmbed
- * 2) matching portfolio entry / additional video
+ * 2) matching portfolio entry / video
  */
 export async function resolveVideoTitle(
   client: SanityClient,

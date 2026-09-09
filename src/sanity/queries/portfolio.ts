@@ -129,11 +129,27 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
     description,
     descriptionZh,
     featuredImage,
+    videos[]{
+      _key,
+      vimeoUrl,
+      xinpianchangUrl,
+      videoTitle,
+      videoTitleZh,
+      description,
+      descriptionZh,
+      previewCleanVimeoUrl,
+      previewStartSeconds,
+      previewEndSeconds
+    },
     vimeoUrl,
     xinpianchangUrl,
+    previewCleanVimeoUrl,
+    previewStartSeconds,
+    previewEndSeconds,
     publishedAt,
     isHidden,
     additionalVideos[]{
+      _key,
       vimeoUrl,
       xinpianchangUrl,
       videoTitle,
@@ -222,8 +238,19 @@ export const INTERNAL_LIBRARY_QUERY = `
     featuredImage,
     isHidden,
     publishedAt,
+    videos[]{
+      _key,
+      vimeoUrl,
+      xinpianchangUrl,
+      videoTitle,
+      videoTitleZh
+    },
     vimeoUrl,
     xinpianchangUrl,
+    additionalVideos[]{
+      videoTitle,
+      videoTitleZh
+    },
     clients[]->{
       name,
       "slug": slug.current

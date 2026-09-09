@@ -255,8 +255,24 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
     (useFormValue(['headerTitleOverrideZh']) as string | undefined) ?? ''
   const longTitleOverride = (useFormValue(['longTitleOverride']) as string | undefined) ?? ''
   const longTitleOverrideZh = (useFormValue(['longTitleOverrideZh']) as string | undefined) ?? ''
-  const heroFilmTitle = (useFormValue(['heroFilmTitle']) as string | undefined) ?? ''
-  const heroFilmTitleZh = (useFormValue(['heroFilmTitleZh']) as string | undefined) ?? ''
+  // Prefer videos[0] episode title; fall back to legacy heroFilmTitle*.
+  const heroFilmTitleLegacy =
+    (useFormValue(['heroFilmTitle']) as string | undefined) ?? ''
+  const heroFilmTitleZhLegacy =
+    (useFormValue(['heroFilmTitleZh']) as string | undefined) ?? ''
+  const videosForHero = useFormValue(['videos']) as
+    | Array<{videoTitle?: string; videoTitleZh?: string} | undefined>
+    | undefined
+  const heroFilmTitle =
+    (typeof videosForHero?.[0]?.videoTitle === 'string' &&
+    videosForHero[0].videoTitle.trim()
+      ? videosForHero[0].videoTitle
+      : heroFilmTitleLegacy) ?? ''
+  const heroFilmTitleZh =
+    (typeof videosForHero?.[0]?.videoTitleZh === 'string' &&
+    videosForHero[0].videoTitleZh.trim()
+      ? videosForHero[0].videoTitleZh
+      : heroFilmTitleZhLegacy) ?? ''
 
   useEffect(() => {
     setDraft((prev) => (partsEqual(prev, stored) ? prev : stored))

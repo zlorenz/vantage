@@ -1,3 +1,4 @@
+import {resolveCarouselPreviewPlayback} from '@portfolio-videos';
 import {phraseRecordToMap} from '@phrase-book';
 import type {Locale} from '@/i18n/routing';
 import {getStructuredRoleNames} from '@/lib/credits-config';
@@ -6,7 +7,7 @@ import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import {getPhraseRecord} from '@/lib/phrase-book';
 import {urlForImage} from '@/lib/sanity';
 import {sanityFetch} from '@/sanity/lib/live';
-import type {CrewCredit, DisplayTitlePartsValue, SanityImage} from '@/types/sanity';
+import type {CrewCredit, DisplayTitlePartsValue, PortfolioVideo, SanityImage} from '@/types/sanity';
 import {composeOverlayCopy, joinOverlayList} from './overlay';
 import {HOME_REDESIGN_CAROUSEL_QUERY} from './query';
 import type {PrototypeCarouselSlide} from './types';
@@ -32,6 +33,13 @@ type CarouselEntry = {
   crewCredits?: CrewCredit[] | null;
   videoFormats?: CarouselFormat[] | null;
   featuredImage?: SanityImage | null;
+  videos?: Array<Pick<
+    PortfolioVideo,
+    | 'vimeoUrl'
+    | 'previewCleanVimeoUrl'
+    | 'previewStartSeconds'
+    | 'previewEndSeconds'
+  > | null> | null;
   vimeoUrl?: string | null;
   previewStartSeconds?: number | null;
   previewEndSeconds?: number | null;
@@ -76,13 +84,29 @@ export async function loadFeaturedWorkSlides(
           .url()
       : null;
     const objectPosition = objectPositionFromHotspot(entry.featuredImage?.hotspot);
-    const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
+    const parts = resolveEntryDisplayTitleParts(
+      {
+        displayTitleParts: entry.displayTitleParts ?? undefined,
+      },
+      locale,
+      phraseMap,
+    );
     const {brandLine, campaignLine} = composeOverlayCopy(parts);
     const formatLine = joinOverlayList(
       (entry.videoFormats ?? []).map((format) =>
         pickLocaleFieldWithPhrases(locale, format.title, format.titleZh, phraseMap),
       ),
     );
+
+    const preview = resolveCarouselPreviewPlayback({
+      videos: (entry.videos ?? undefined)?.filter(
+        (row): row is NonNullable<typeof row> => row != null,
+      ),
+      vimeoUrl: entry.vimeoUrl,
+      previewCleanVimeoUrl: entry.previewCleanVimeoUrl,
+      previewStartSeconds: entry.previewStartSeconds,
+      previewEndSeconds: entry.previewEndSeconds,
+    });
 
     return {
       portfolioEntryRef: entry._id,
@@ -96,9 +120,9 @@ export async function loadFeaturedWorkSlides(
       posterUrl,
       posterUrlDesktop,
       objectPosition,
-      vimeoUrl: entry.previewCleanVimeoUrl?.trim() || entry.vimeoUrl?.trim() || null,
-      previewStartSeconds: entry.previewStartSeconds ?? null,
-      previewEndSeconds: entry.previewEndSeconds ?? null,
+      vimeoUrl: preview.vimeoUrl,
+      previewStartSeconds: preview.previewStartSeconds,
+      previewEndSeconds: preview.previewEndSeconds,
     };
   });
 }

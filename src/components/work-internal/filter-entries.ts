@@ -6,6 +6,7 @@
  */
 
 import {getStructuredRoleNames} from '@/lib/credits-config';
+import {resolveMainFilmTitle, resolvePortfolioVideos} from '@portfolio-videos';
 import type {
   CreditIdentityTerm,
   InternalLibraryEntry,
@@ -361,6 +362,11 @@ export function buildSearchText(entry: InternalLibraryEntry): string {
   const peopleNames = PEOPLE_FILTER_GROUPS.flatMap((group) =>
     getCreditRoleNames(entry, group.roleKey),
   );
+  const mainFilm = resolveMainFilmTitle(entry);
+  const videoTitles = resolvePortfolioVideos(entry).flatMap((video) => [
+    video.videoTitle ?? '',
+    video.videoTitleZh ?? '',
+  ]);
   const haystacks: string[] = [
     entry.title,
     entry.titleZh ?? '',
@@ -372,6 +378,9 @@ export function buildSearchText(entry: InternalLibraryEntry): string {
     parts?.campaignTitleZh ?? '',
     entry.heroFilmTitle ?? '',
     entry.heroFilmTitleZh ?? '',
+    mainFilm.videoTitle ?? '',
+    mainFilm.videoTitleZh ?? '',
+    ...videoTitles,
     editor === '—' ? '' : editor,
     art === '—' ? '' : art,
     ...(entry.clients?.map((c) => c.name) ?? []),
