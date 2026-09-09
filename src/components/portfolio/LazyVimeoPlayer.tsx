@@ -15,7 +15,7 @@
  * Carousel previews stay on their own muted path — not this component.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import Image from 'next/image';
 import type Player from '@vimeo/player';
@@ -54,6 +54,11 @@ interface LazyVimeoPlayerProps {
   fullscreenOnPlay?: boolean;
   /** Hidden iframe warm-up for inactive carousel slides (no poster UI). */
   prefetch?: boolean;
+  /**
+   * Start playback on mount (e.g. lightbox opened from a poster click).
+   * Best-effort — iOS may still require a second tap if the SDK was not ready.
+   */
+  autoPlay?: boolean;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -136,6 +141,7 @@ export function LazyVimeoPlayer({
   priority = false,
   fullscreenOnPlay = false,
   prefetch = false,
+  autoPlay = false,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
@@ -428,7 +434,7 @@ export function LazyVimeoPlayer({
     [clearPlaybackWatchdog, promptTapToPlay],
   );
 
-  const startPlayback = () => {
+  const startPlayback = (options?: {syncFlush?: boolean}) => {
     if (startedFromGestureRef.current) return;
     startedFromGestureRef.current = true;
     setAwaitingTapToPlay(false);
@@ -441,7 +447,13 @@ export function LazyVimeoPlayer({
     const readyNow = playerReady && !!player;
     playerReadyAtTapRef.current = readyNow;
 
-    flushSync(() => setPlaying(true));
+    // flushSync is for user-gesture taps (keeps FS+play in one turn).
+    // autoPlay mounts from useLayoutEffect — flushSync there throws in React 19.
+    if (options?.syncFlush === false) {
+      setPlaying(true);
+    } else {
+      flushSync(() => setPlaying(true));
+    }
 
     if (wantsFullscreen && wrap) {
       requestElementFullscreen(wrap);
@@ -456,6 +468,14 @@ export function LazyVimeoPlayer({
       pendingStartRef.current = true;
     }
   };
+
+  // Lightbox / parent-opened sessions: attempt play once after mount.
+  useLayoutEffect(() => {
+    if (!autoPlay || prefetch) return;
+    startPlayback({syncFlush: false});
+    // Mount-only: open lightbox from a user gesture, then start once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount autoplay
+  }, [autoPlay, prefetch]);
 
   /** Second tap when SDK finished loading after the first gesture expired. */
   const confirmTapToPlay = () => {

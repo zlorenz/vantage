@@ -28,6 +28,10 @@ export const routing = defineRouting({
       en: '/showreel/login',
       zh: '/showreel/login',
     },
+    '/showreel/[id]': {
+      en: '/showreel/[id]',
+      zh: '/showreel/[id]',
+    },
     '/showreel/[id]/edit': {
       en: '/showreel/[id]/edit',
       zh: '/showreel/[id]/edit',
