@@ -2023,20 +2023,69 @@ body:has(.vp-work-index) #header.navbar::before {
    ========================================================================== */
 
 .vp-internal-page {
+  --vp-internal-nav-height: 3.5rem;
   min-height: 60vh;
-  padding: var(--vp-section-y-header-condensed) 1rem 3rem;
+  padding: calc(var(--vp-internal-nav-height) + var(--spacing-vp-gutter))
+    var(--spacing-vp-gutter) 3rem;
 }
 
 @media (min-width: 768px) {
   .vp-internal-page {
-    padding: var(--vp-section-y-header-condensed) 1.5rem 4rem;
+    padding: calc(var(--vp-internal-nav-height) + var(--spacing-vp-gutter))
+      var(--spacing-vp-gutter) 4rem;
   }
+}
+
+.vp-internal-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: var(--vp-internal-nav-height);
+  background: rgba(var(--vp-black-rgb), 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-vp-border-soft);
+}
+
+.vp-internal-nav__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--spacing-vp-gutter);
+  height: 100%;
+  width: 100%;
+  padding-inline: var(--spacing-vp-gutter);
+}
+
+.vp-internal-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.vp-internal-nav__mark {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.vp-internal-nav__search {
+  justify-self: center;
+  width: min(100%, 28rem);
+}
+
+.vp-internal-nav__spacer {
+  width: 2rem;
+  height: 2rem;
 }
 
 .vp-internal-app {
   width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
 }
 
 .vp-internal-app__header {
@@ -2052,7 +2101,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-internal-toolbar {
   position: sticky;
-  top: 0;
+  top: var(--vp-internal-nav-height);
   z-index: 50;
   margin-bottom: 1.25rem;
   padding: 0.75rem 0;
@@ -2069,7 +2118,7 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-toolbar__row--primary {
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 0.75rem;
 }
 

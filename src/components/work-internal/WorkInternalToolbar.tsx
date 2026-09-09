@@ -1,5 +1,6 @@
 /**
- * WorkInternalToolbar — search, chip filters, sort, view toggle, clear, count.
+ * WorkInternalToolbar — chip filters, sort, view toggle, clear, count.
+ * Library search lives in WorkInternalNav (page header).
  */
 
 'use client';
@@ -382,17 +383,6 @@ export function WorkInternalToolbar({
   return (
     <div className="vp-internal-toolbar">
       <div className="vp-internal-toolbar__row vp-internal-toolbar__row--primary">
-        <label className="vp-internal-search">
-          <span className="sr-only">Search library</span>
-          <input
-            type="search"
-            className="vp-internal-search__input"
-            placeholder="Search title, client, crew…"
-            value={filters.q}
-            onChange={(e) => patchFilter('q', e.target.value)}
-          />
-        </label>
-
         <div className="vp-internal-toolbar__meta">
           <span
             className="vp-internal-count"

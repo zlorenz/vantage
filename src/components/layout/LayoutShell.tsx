@@ -2,7 +2,8 @@
  * LayoutShell — composes global site chrome around page content.
  *
  * Server component. SiteHeader and SiteFooter are server components
- * rendered as siblings around the page content. Contact is a normal
+ * passed into LayoutChrome (client) so /work-internal can hide the
+ * marketing header without affecting other routes. Contact is a normal
  * /contact route now — no modal provider/mount here anymore.
  */
 
@@ -10,6 +11,7 @@ import type { ReactNode } from 'react';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
 import { RouteTransitionOverlay } from '@/components/navigation/RouteTransitionOverlay';
+import { LayoutChrome } from './LayoutChrome';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
 
@@ -29,11 +31,18 @@ export async function LayoutShell({
   return (
     <>
       <RouteTransitionOverlay />
-      <SiteHeader locale={locale} siteSettings={siteSettings} navPages={navPages} />
-      <main id="main" className="site-main flex-1">
+      <LayoutChrome
+        header={
+          <SiteHeader
+            locale={locale}
+            siteSettings={siteSettings}
+            navPages={navPages}
+          />
+        }
+        footer={<SiteFooter siteSettings={siteSettings} />}
+      >
         {children}
-      </main>
-      <SiteFooter siteSettings={siteSettings} />
+      </LayoutChrome>
     </>
   );
 }

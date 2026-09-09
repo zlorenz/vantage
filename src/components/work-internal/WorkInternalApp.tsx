@@ -55,6 +55,7 @@ import {
 import { takeShowreelCreatePending } from './showreel-create-pending';
 import { WorkInternalCardView } from './WorkInternalCardView';
 import { WorkInternalListView } from './WorkInternalListView';
+import { WorkInternalNav } from './WorkInternalNav';
 import { WorkInternalQuickView } from './WorkInternalQuickView';
 import { WorkInternalShowreelBar } from './WorkInternalShowreelBar';
 import { WorkInternalToolbar } from './WorkInternalToolbar';
@@ -224,6 +225,11 @@ export function WorkInternalApp({
 
   return (
     <div className="vp-internal-app" {...appearanceDataAttrs(appearance)}>
+      <WorkInternalNav
+        searchQuery={filters.q}
+        onSearchChange={(q) => setFilters((prev) => ({...prev, q}))}
+      />
+
       <header className="vp-internal-app__header">
         <h1 className="vp-internal-app__title">Work Library</h1>
       </header>
