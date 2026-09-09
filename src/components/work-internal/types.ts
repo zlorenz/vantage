@@ -8,7 +8,9 @@ export type LibrarySort =
   | 'publishedAt-desc'
   | 'publishedAt-asc'
   | 'title-asc'
-  | 'client-asc';
+  | 'title-desc'
+  | 'client-asc'
+  | 'client-desc';
 
 export type VisibilityFilter = 'all' | 'public' | 'hidden';
 

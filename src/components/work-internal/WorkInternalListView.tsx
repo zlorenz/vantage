@@ -5,24 +5,122 @@
 'use client';
 
 import Image from 'next/image';
-import { urlForImage } from '@/lib/sanity';
-import type { Locale } from '@/i18n/routing';
-import type { InternalLibraryEntry } from '@/types/sanity';
-import { openPortfolioEntry } from './entry-url';
-import { getArtName, getCrewName, getEditorName } from './filter-entries';
-import { formatPublishDate, getDisplayTitle } from './text';
-import { WorkInternalSelectCheckbox } from './WorkInternalSelectCheckbox';
+import {urlForImage} from '@/lib/sanity';
+import type {Locale} from '@/i18n/routing';
+import type {InternalLibraryEntry} from '@/types/sanity';
+import {openPortfolioEntry} from './entry-url';
+import {
+  getArtName,
+  getCrewName,
+  getEditorName,
+  getPrimaryClientName,
+} from './filter-entries';
+import {formatPublishDate, getDisplayTitle} from './text';
+import type {LibrarySort} from './types';
+import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
+
+type SortColumn = 'title' | 'date' | 'client';
 
 interface WorkInternalListViewProps {
   entries: InternalLibraryEntry[];
   locale: Locale;
+  sort: LibrarySort;
+  onSortChange: (sort: LibrarySort) => void;
   selectedIds: Set<string>;
   onToggleSelect: (id: string, selected: boolean) => void;
+}
+
+function sortColumnFor(sort: LibrarySort): SortColumn {
+  if (sort.startsWith('title-')) return 'title';
+  if (sort.startsWith('client-')) return 'client';
+  return 'date';
+}
+
+function sortDirection(sort: LibrarySort): 'asc' | 'desc' {
+  return sort.endsWith('-asc') ? 'asc' : 'desc';
+}
+
+/** Default when switching to a column that isn't currently active. */
+function defaultSortForColumn(column: SortColumn): LibrarySort {
+  switch (column) {
+    case 'title':
+      return 'title-asc';
+    case 'client':
+      return 'client-asc';
+    case 'date':
+    default:
+      return 'publishedAt-desc';
+  }
+}
+
+function toggledSort(sort: LibrarySort, column: SortColumn): LibrarySort {
+  if (sortColumnFor(sort) !== column) return defaultSortForColumn(column);
+
+  switch (column) {
+    case 'title':
+      return sort === 'title-asc' ? 'title-desc' : 'title-asc';
+    case 'client':
+      return sort === 'client-asc' ? 'client-desc' : 'client-asc';
+    case 'date':
+      return sort === 'publishedAt-desc'
+        ? 'publishedAt-asc'
+        : 'publishedAt-desc';
+  }
+}
+
+interface SortableHeaderProps {
+  label: string;
+  column: SortColumn;
+  sort: LibrarySort;
+  onSortChange: (sort: LibrarySort) => void;
+}
+
+function SortableHeader({
+  label,
+  column,
+  sort,
+  onSortChange,
+}: SortableHeaderProps) {
+  const active = sortColumnFor(sort) === column;
+  const direction = sortDirection(sort);
+  const next = toggledSort(sort, column);
+  const ariaSort = active
+    ? direction === 'asc'
+      ? 'ascending'
+      : 'descending'
+    : 'none';
+
+  return (
+    <span role="columnheader" aria-sort={ariaSort}>
+      <button
+        type="button"
+        className={
+          active
+            ? 'vp-internal-list__sort-btn is-active'
+            : 'vp-internal-list__sort-btn'
+        }
+        onClick={(event) => {
+          // Header sits above rows, but stopPropagation keeps any future
+          // parent listeners from treating this as a row/select action.
+          event.preventDefault();
+          event.stopPropagation();
+          onSortChange(next);
+        }}
+      >
+        <span>{label}</span>
+        <span className="vp-internal-list__sort-ind" aria-hidden="true">
+          {active ? (direction === 'asc' ? '↑' : '↓') : '↕'}
+        </span>
+      </button>
+    </span>
+  );
 }
 
 export function WorkInternalListView({
   entries,
   locale,
+  sort,
+  onSortChange,
   selectedIds,
   onToggleSelect,
 }: WorkInternalListViewProps) {
@@ -33,8 +131,24 @@ export function WorkInternalListView({
           <span className="sr-only">Select</span>
         </span>
         <span role="columnheader" className="vp-internal-list__thumb-col" />
-        <span role="columnheader">Title</span>
-        <span role="columnheader">Date</span>
+        <SortableHeader
+          label="Title"
+          column="title"
+          sort={sort}
+          onSortChange={onSortChange}
+        />
+        <SortableHeader
+          label="Client"
+          column="client"
+          sort={sort}
+          onSortChange={onSortChange}
+        />
+        <SortableHeader
+          label="Date"
+          column="date"
+          sort={sort}
+          onSortChange={onSortChange}
+        />
         <span role="columnheader">Dir</span>
         <span role="columnheader">DOP</span>
         <span role="columnheader">ART</span>
@@ -85,6 +199,9 @@ export function WorkInternalListView({
               </span>
               <span role="cell" className="vp-internal-list__title">
                 {title}
+              </span>
+              <span role="cell" className="vp-internal-list__client">
+                {getPrimaryClientName(entry)}
               </span>
               <span role="cell">{formatPublishDate(entry.publishedAt)}</span>
               <span role="cell">{getCrewName(entry, 'director')}</span>

@@ -261,6 +261,8 @@ export function WorkInternalApp({
             <WorkInternalListView
               entries={filteredSorted}
               locale={locale}
+              sort={sort}
+              onSortChange={setSort}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
             />

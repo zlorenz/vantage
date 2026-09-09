@@ -17,7 +17,9 @@ const SORT_VALUES: LibrarySort[] = [
   'publishedAt-desc',
   'publishedAt-asc',
   'title-asc',
+  'title-desc',
   'client-asc',
+  'client-desc',
 ];
 
 const VIEW_VALUES: LibraryViewMode[] = ['cards', 'list'];

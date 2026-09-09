@@ -646,7 +646,9 @@ export function WorkInternalToolbar({
             <option value="publishedAt-desc">Newest first</option>
             <option value="publishedAt-asc">Oldest first</option>
             <option value="title-asc">Title A–Z</option>
+            <option value="title-desc">Title Z–A</option>
             <option value="client-asc">Client A–Z</option>
+            <option value="client-desc">Client Z–A</option>
           </select>
         </label>
       </div>

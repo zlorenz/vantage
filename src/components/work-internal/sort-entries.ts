@@ -37,9 +37,20 @@ export function sortLibraryEntries(
           getDisplayTitle(b, locale),
         ),
       );
+    case 'title-desc':
+      return copy.sort((a, b) =>
+        compareStrings(
+          getDisplayTitle(b, locale),
+          getDisplayTitle(a, locale),
+        ),
+      );
     case 'client-asc':
       return copy.sort((a, b) =>
         compareStrings(getPrimaryClientName(a), getPrimaryClientName(b)),
+      );
+    case 'client-desc':
+      return copy.sort((a, b) =>
+        compareStrings(getPrimaryClientName(b), getPrimaryClientName(a)),
       );
     case 'publishedAt-desc':
     default:
