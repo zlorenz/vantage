@@ -2219,9 +2219,10 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-internal-toolbar__row--filters {
   flex-wrap: nowrap;
   gap: 0.5rem 0.65rem;
-  /* flex-end aligns the Sort select (not the stacked "Sort" label) with chips. */
+  /* flex-end aligns the Sort select (not the stacked "Sort" label) with chips.
+     Keep overflow visible so chip panels / nested flyouts aren't clipped. */
   align-items: flex-end;
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .vp-internal-toolbar__row--pills {
@@ -2241,6 +2242,7 @@ body:has(.vp-work-index) #header.navbar::before {
   z-index: 30;
   flex: 0 1 auto;
   min-width: 0;
+  overflow: visible;
 }
 
 .vp-internal-fchip {
