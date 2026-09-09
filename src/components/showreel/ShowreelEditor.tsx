@@ -10,7 +10,14 @@
 'use client'
 
 import Image from 'next/image'
-import {useEffect, useMemo, useState, useTransition, type FormEvent} from 'react'
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  useTransition,
+  type FormEvent,
+} from 'react'
 import {useRouter} from '@/i18n/navigation'
 import {urlForImage} from '@/lib/sanity'
 import type {Locale} from '@/i18n/routing'
@@ -20,8 +27,6 @@ import type {InternalLibraryEntry} from '@/types/sanity'
 import {buildSearchTextByEntryId} from '@/components/work-internal/filter-entries'
 import {getDisplayTitle} from '@/components/work-internal/text'
 import {ShowreelItemPicker} from './ShowreelItemPicker'
-
-const DELETE_CONFIRM_WORD = 'DELETE'
 
 export type ShowreelEditorItem = {
   _id: string
@@ -144,16 +149,14 @@ export function ShowreelEditor({
     showreelPublicPath(showreel._id, locale),
   )
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
-  const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [savingFields, startSaveFields] = useTransition()
   const [savingItems, startSaveItems] = useTransition()
   const [deleting, startDeleting] = useTransition()
+  const deleteDialogTitleId = useId()
 
   const publicPath = showreelPublicPath(showreel._id, locale)
   const busy = savingFields || savingItems || deleting
-  const deleteReady =
-    deleteConfirmText.trim().toUpperCase() === DELETE_CONFIRM_WORD
 
 
   useEffect(() => {
@@ -286,19 +289,17 @@ export function ShowreelEditor({
 
   function openDeleteConfirm() {
     setDeleteError(null)
-    setDeleteConfirmText('')
     setDeleteConfirmOpen(true)
   }
 
   function cancelDeleteConfirm() {
     if (deleting) return
     setDeleteConfirmOpen(false)
-    setDeleteConfirmText('')
     setDeleteError(null)
   }
 
   function onConfirmDelete() {
-    if (!deleteReady || deleting) return
+    if (deleting) return
     setDeleteError(null)
     startDeleting(async () => {
       const result = await deleteShowreel(showreel._id)
@@ -309,6 +310,18 @@ export function ShowreelEditor({
       router.replace('/work-internal')
     })
   }
+
+  useEffect(() => {
+    if (!deleteConfirmOpen) return
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape' && !deleting) {
+        setDeleteConfirmOpen(false)
+        setDeleteError(null)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [deleteConfirmOpen, deleting])
 
   return (
     <div className="vp-showreel-editor">
@@ -497,32 +510,47 @@ export function ShowreelEditor({
           Permanently delete this showreel. This cannot be undone — the public
           link will stop working immediately.
         </p>
+        <button
+          type="button"
+          className="vp-showreel-editor__danger-btn"
+          onClick={openDeleteConfirm}
+          disabled={busy}
+        >
+          Delete Showreel
+        </button>
+        {deleteError && !deleteConfirmOpen ? (
+          <p className="vp-showreel-editor__error" role="alert">
+            {deleteError}
+          </p>
+        ) : null}
+      </section>
 
-        {!deleteConfirmOpen ? (
-          <button
-            type="button"
-            className="vp-showreel-editor__danger-btn"
-            onClick={openDeleteConfirm}
-            disabled={busy}
+      {deleteConfirmOpen ? (
+        <div
+          className="vp-showreel-editor__delete-dialog"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !deleting) {
+              cancelDeleteConfirm()
+            }
+          }}
+        >
+          <div
+            className="vp-showreel-editor__delete-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={deleteDialogTitleId}
           >
-            Delete Showreel
-          </button>
-        ) : (
-          <div className="vp-showreel-editor__danger-confirm">
-            <label className="vp-showreel-editor__field">
-              <span className="vp-internal-filter__label">
-                Type {DELETE_CONFIRM_WORD} to confirm
-              </span>
-              <input
-                type="text"
-                className="vp-internal-search__input"
-                value={deleteConfirmText}
-                onChange={(e) => setDeleteConfirmText(e.target.value)}
-                autoComplete="off"
-                disabled={deleting}
-                aria-label={`Type ${DELETE_CONFIRM_WORD} to confirm deletion`}
-              />
-            </label>
+            <h2
+              id={deleteDialogTitleId}
+              className="vp-showreel-editor__delete-title"
+            >
+              Delete this showreel?
+            </h2>
+            <p className="vp-showreel-editor__hint">
+              This permanently removes the showreel. There is no recovery —
+              the public link will stop working immediately.
+            </p>
             {deleteError ? (
               <p className="vp-showreel-editor__error" role="alert">
                 {deleteError}
@@ -541,14 +569,14 @@ export function ShowreelEditor({
                 type="button"
                 className="vp-showreel-editor__danger-btn"
                 onClick={onConfirmDelete}
-                disabled={deleting || !deleteReady}
+                disabled={deleting}
               >
-                {deleting ? 'Deleting…' : 'Confirm permanent delete'}
+                {deleting ? 'Deleting…' : 'Delete'}
               </button>
             </div>
           </div>
-        )}
-      </section>
+        </div>
+      ) : null}
     </div>
   )
 }

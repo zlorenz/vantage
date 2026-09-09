@@ -2886,18 +2886,44 @@ body:has(.vp-work-index) #header.navbar::before {
   cursor: not-allowed;
 }
 
-.vp-showreel-editor__danger-confirm {
-  margin-top: 0.75rem;
-  max-width: 28rem;
-}
-
 .vp-showreel-editor__danger-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
+}
+
+.vp-showreel-editor__danger-actions .vp-showreel-editor__danger-btn {
+  margin-top: 0;
+}
+
+.vp-showreel-editor__delete-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(var(--vp-black-rgb), 0.62);
+}
+
+.vp-showreel-editor__delete-panel {
+  width: 100%;
+  max-width: 24rem;
+  padding: 1.25rem;
+  background: #111;
+  border: 1px solid var(--color-vp-border-soft);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.vp-showreel-editor__delete-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-vp-heading);
 }
 
 /* Public showreel page */
