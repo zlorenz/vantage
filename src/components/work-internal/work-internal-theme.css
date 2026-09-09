@@ -194,30 +194,6 @@ body:has(.vp-internal-page) .vp-internal-appearance__hint {
   color: var(--vp-wi-text-faint);
 }
 
-body:has(.vp-internal-page) .vp-internal-appearance__switch-track {
-  background: var(--vp-wi-surface-raised);
-  border: 1px solid var(--vp-wi-border);
-  border-radius: 999px;
-}
-
-body:has(.vp-internal-page) .vp-internal-appearance__switch-thumb {
-  background: var(--vp-wi-text-muted);
-  border-radius: 999px;
-}
-
-body:has(.vp-internal-page) .vp-internal-appearance__switch.is-on .vp-internal-appearance__switch-track {
-  background: var(--vp-wi-accent-soft);
-  border-color: var(--vp-wi-accent-mid);
-}
-
-body:has(.vp-internal-page) .vp-internal-appearance__switch.is-on .vp-internal-appearance__switch-thumb {
-  background: var(--vp-wi-accent);
-}
-
-body:has(.vp-internal-page) .vp-internal-appearance__switch-text {
-  color: var(--vp-wi-text-muted);
-}
-
 /* Filter panels */
 
 body:has(.vp-internal-page) .vp-internal-fchip__panel {

@@ -2243,55 +2243,6 @@ body:has(.vp-work-index) #header.navbar::before {
   color: var(--color-vp-text-soft);
 }
 
-.vp-internal-appearance__switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0;
-  font: inherit;
-  color: var(--color-vp-text-soft);
-  background: none;
-  border: 0;
-  cursor: pointer;
-}
-
-.vp-internal-appearance__switch-track {
-  position: relative;
-  display: block;
-  width: 1.85rem;
-  height: 1rem;
-  background: var(--color-vp-input-bg);
-  border: 1px solid var(--color-vp-border-soft);
-}
-
-.vp-internal-appearance__switch-thumb {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 0.7rem;
-  height: 0.7rem;
-  background: var(--color-vp-text-soft);
-  transition: transform 120ms ease, background 120ms ease;
-}
-
-.vp-internal-appearance__switch.is-on .vp-internal-appearance__switch-track {
-  background: rgba(253, 185, 19, 0.22);
-  border-color: rgba(253, 185, 19, 0.55);
-}
-
-.vp-internal-appearance__switch.is-on .vp-internal-appearance__switch-thumb {
-  transform: translateX(0.8rem);
-  background: var(--color-vp-link);
-}
-
-.vp-internal-appearance__switch-text {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  min-width: 1.5rem;
-}
-
 .vp-internal-appearance__hint {
   margin: 0;
   padding-top: 0.45rem;
@@ -2741,32 +2692,6 @@ body:has(.vp-work-index) #header.navbar::before {
   font-size: 0.875rem;
 }
 
-/* Title Overlay — cards only (poster-only grid when off) */
-.vp-internal-app[data-card-info='off'] .vp-internal-card__overlay {
-  display: none;
-}
-
-/* Title line clamp — cards + list */
-.vp-internal-app[data-title-lines='1'] .vp-internal-card__title,
-.vp-internal-app[data-title-lines='1'] .vp-internal-list__title {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  white-space: normal;
-  text-overflow: unset;
-}
-
-.vp-internal-app[data-title-lines='2'] .vp-internal-card__title,
-.vp-internal-app[data-title-lines='2'] .vp-internal-list__title {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  white-space: normal;
-  text-overflow: unset;
-}
-
 .vp-internal-card {
   position: relative;
   min-width: 0;
@@ -2840,6 +2765,10 @@ body:has(.vp-work-index) #header.navbar::before {
   color: #fff;
   overflow-wrap: anywhere;
   word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .vp-internal-card__date {

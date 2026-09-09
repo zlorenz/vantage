@@ -5,11 +5,7 @@
 'use client';
 
 import {useEffect, useId, useRef, useState} from 'react';
-import type {
-  CardSize,
-  LibraryAppearance,
-  TitleLines,
-} from './appearance';
+import type {CardSize, LibraryAppearance} from './appearance';
 
 interface WorkInternalAppearancePanelProps {
   appearance: LibraryAppearance;
@@ -101,57 +97,8 @@ export function WorkInternalAppearancePanel({
             </div>
           </div>
 
-          <div className="vp-internal-appearance__row">
-            <span className="vp-internal-appearance__label">Title Overlay</span>
-            <button
-              type="button"
-              className={
-                appearance.showCardInfo
-                  ? 'vp-internal-appearance__switch is-on'
-                  : 'vp-internal-appearance__switch'
-              }
-              role="switch"
-              aria-checked={appearance.showCardInfo}
-              aria-label="Show title and date overlay on cards"
-              onClick={() => patch('showCardInfo', !appearance.showCardInfo)}
-            >
-              <span className="vp-internal-appearance__switch-track">
-                <span className="vp-internal-appearance__switch-thumb" />
-              </span>
-              <span className="vp-internal-appearance__switch-text">
-                {appearance.showCardInfo ? 'On' : 'Off'}
-              </span>
-            </button>
-          </div>
-
-          <div className="vp-internal-appearance__row">
-            <span className="vp-internal-appearance__label">Titles</span>
-            <div
-              className="vp-internal-view-toggle"
-              role="group"
-              aria-label="Title lines"
-            >
-              {([1, 2] as const).map((lines: TitleLines) => (
-                <button
-                  key={lines}
-                  type="button"
-                  className={
-                    appearance.titleLines === lines
-                      ? 'vp-internal-view-toggle__btn is-active'
-                      : 'vp-internal-view-toggle__btn'
-                  }
-                  aria-pressed={appearance.titleLines === lines}
-                  onClick={() => patch('titleLines', lines)}
-                >
-                  {lines === 1 ? '1 Line' : '2 Lines'}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <p className="vp-internal-appearance__hint">
-            Card Size and Title Overlay apply to Cards view only. Titles
-            apply to Cards and List.
+            Card Size applies to Cards view only.
           </p>
         </div>
       ) : null}
