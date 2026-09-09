@@ -71,6 +71,12 @@ type DisplayTitlePartsDoc = {
   campaignTitle?: string
 }
 
+/** Keep nested filter submenus beside the parent menu (never flip above/below and cover siblings). */
+const NESTED_MENU_POPOVER = {
+  placement: 'right-start' as const,
+  fallbackPlacements: ['left-start'] as const,
+}
+
 function titleFromDoc(doc: Record<string, unknown>): string {
   const parts = doc.displayTitleParts as DisplayTitlePartsDoc | undefined
   if (parts && trimPart(parts.brandName)) {
@@ -1783,8 +1789,8 @@ export function DocumentTable({
                   <Button
                     text={
                       taxonomyFilter === 'all' || !activeTaxonomyTerm
-                        ? `Filter by category… (${taxonomyCounts.all})`
-                        : `${activeTaxonomyTerm.title} (${taxonomyCounts.byId.get(taxonomyFilter) ?? 0})`
+                        ? 'Filter by category…'
+                        : activeTaxonomyTerm.title
                     }
                     icon={FilterIcon}
                     iconRight={ChevronDownIcon}
@@ -1800,7 +1806,7 @@ export function DocumentTable({
                       onClick={() => setTaxonomyFilter('all')}
                     />
                     {taxonomyMenuGroups.formats.length > 0 ? (
-                      <MenuGroup text="Formats">
+                      <MenuGroup text="Formats" popover={NESTED_MENU_POPOVER}>
                         {taxonomyMenuGroups.formats.map((term) => (
                           <MenuItem
                             key={term._id}
@@ -1812,7 +1818,7 @@ export function DocumentTable({
                       </MenuGroup>
                     ) : null}
                     {taxonomyMenuGroups.industries.length > 0 ? (
-                      <MenuGroup text="Industries">
+                      <MenuGroup text="Industries" popover={NESTED_MENU_POPOVER}>
                         {taxonomyMenuGroups.industries.map((term) => {
                           const isChild = Boolean(
                             term.parentId && industryIdsInMenu.has(term.parentId),
@@ -1829,7 +1835,7 @@ export function DocumentTable({
                       </MenuGroup>
                     ) : null}
                     {taxonomyMenuGroups.markets.length > 0 ? (
-                      <MenuGroup text="Markets">
+                      <MenuGroup text="Markets" popover={NESTED_MENU_POPOVER}>
                         {taxonomyMenuGroups.markets.map((term) => (
                           <MenuItem
                             key={term._id}
@@ -1899,8 +1905,8 @@ export function DocumentTable({
                       <Button
                         text={
                           crewRoleFilter === 'all'
-                            ? `Filter by role… (${crewRoleCounts.all ?? 0})`
-                            : `${crewRoleTabLabel(crewRoleFilter)} (${crewRoleCounts[crewRoleFilter] ?? 0})`
+                            ? 'Filter by role…'
+                            : crewRoleTabLabel(crewRoleFilter)
                         }
                         icon={FilterIcon}
                         iconRight={ChevronDownIcon}
@@ -1919,7 +1925,11 @@ export function DocumentTable({
                           ? CREW_DEPARTMENTS.filter((dept) =>
                               deptHasLinkedRoles(dept.key),
                             ).map((dept) => (
-                              <MenuGroup key={dept.key} text={dept.label}>
+                              <MenuGroup
+                                key={dept.key}
+                                text={dept.label}
+                                popover={NESTED_MENU_POPOVER}
+                              >
                                 {LINKED_DEPT_ROLE_KEYS[dept.key].map((roleKey) => (
                                   <MenuItem
                                     key={roleKey}
