@@ -47,8 +47,10 @@ import {
   readSort,
   readView,
 } from './url-state';
+import { takeShowreelCreatePending } from './showreel-create-pending';
 import { WorkInternalCardView } from './WorkInternalCardView';
 import { WorkInternalListView } from './WorkInternalListView';
+import { WorkInternalShowreelBar } from './WorkInternalShowreelBar';
 import { WorkInternalToolbar } from './WorkInternalToolbar';
 
 export interface WorkInternalAppProps {
@@ -87,11 +89,24 @@ export function WorkInternalApp({
   const [filters, setFilters] = useState(() => readFilters(searchParams));
   const [sort, setSort] = useState(() => readSort(searchParams));
   const [view, setView] = useState(() => readView(searchParams));
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+  const [createOpen, setCreateOpen] = useState(false);
 
   // Keep grid/facet work off the typing critical path.
   const deferredFilters = useDeferredValue(filters);
   const deferredSort = useDeferredValue(sort);
   const filtersPending = deferredFilters !== filters;
+
+  // Restore selection + open create form after login?next= round-trip.
+  useEffect(() => {
+    const pendingIds = takeShowreelCreatePending();
+    if (!pendingIds) return;
+    const known = new Set(entries.map((entry) => entry._id));
+    const restored = pendingIds.filter((id) => known.has(id));
+    if (restored.length === 0) return;
+    setSelectedIds(new Set(restored));
+    setCreateOpen(true);
+  }, [entries]);
 
   useEffect(() => {
     replaceLibraryUrl({ filters, sort, view });
@@ -175,6 +190,22 @@ export function WorkInternalApp({
     setSort(DEFAULT_SORT);
   }, []);
 
+  const toggleSelect = useCallback((id: string, selected: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (selected) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedIds(new Set());
+    setCreateOpen(false);
+  }, []);
+
+  const selectedIdList = useMemo(() => [...selectedIds], [selectedIds]);
+
   return (
     <div className="vp-internal-app">
       <header className="vp-internal-app__header">
@@ -227,12 +258,29 @@ export function WorkInternalApp({
               ) : null}
             </p>
           ) : view === 'list' ? (
-            <WorkInternalListView entries={filteredSorted} locale={locale} />
+            <WorkInternalListView
+              entries={filteredSorted}
+              locale={locale}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelect}
+            />
           ) : (
-            <WorkInternalCardView entries={filteredSorted} locale={locale} />
+            <WorkInternalCardView
+              entries={filteredSorted}
+              locale={locale}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelect}
+            />
           )}
         </div>
       </div>
+
+      <WorkInternalShowreelBar
+        selectedIds={selectedIdList}
+        createOpen={createOpen}
+        onCreateOpenChange={setCreateOpen}
+        onClearSelection={clearSelection}
+      />
     </div>
   );
 }
