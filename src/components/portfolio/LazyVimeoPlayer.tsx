@@ -589,7 +589,7 @@ export function LazyVimeoPlayer({
         <button
           type="button"
           className="group absolute inset-0 z-[2] block w-full cursor-pointer border-0 bg-black p-0"
-          onClick={startPlayback}
+          onClick={() => startPlayback()}
           aria-label="Play video"
         >
           {posterUrl ? (
