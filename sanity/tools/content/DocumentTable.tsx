@@ -74,7 +74,7 @@ type DisplayTitlePartsDoc = {
 /** Keep nested filter submenus beside the parent menu (never flip above/below and cover siblings). */
 const NESTED_MENU_POPOVER = {
   placement: 'right-start' as const,
-  fallbackPlacements: ['left-start'] as const,
+  fallbackPlacements: ['left-start'],
 }
 
 function titleFromDoc(doc: Record<string, unknown>): string {
