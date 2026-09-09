@@ -394,14 +394,8 @@
     overscroll-behavior-y: contain;
   }
 
-  /* Homepage / Work index are carousel-only. Hide the sitewide footer so
-   * nothing sits below the stage (previously gated on .vp-home-contact).
-   * Header Contact modal and the /contact route stay. */
-  body:has(.vp-home-contact) .vp-site-footer,
-  body:has(.vp-home-hero) .vp-site-footer,
-  body:has(.vp-work-index) .vp-site-footer {
-    display: none;
-  }
+  /* Footer hide for homepage / work: see site-footer.css (must be
+   * unlayered so it beats `.vp-site-footer { display: flex }`). */
 
   /* Work index is a locked horizontal stage — no document scroll.
    * html + body both need overflow:hidden; iOS still rubber-bands with

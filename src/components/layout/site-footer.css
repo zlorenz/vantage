@@ -3,7 +3,18 @@
  * 100px structural bar: email | orange mark | social cells.
  * Soft black via --vp-bg. Hairlines via --vp-struct-line.
  * No mobile reflow until designer delivers mobile frames.
+ *
+ * Hide rules must stay unlayered (same as `.vp-site-footer` below).
+ * The previous copy lived in `@layer base` and lost to this file’s
+ * `display: flex` after the chrome rewrite.
  */
+
+/* Homepage / Work index are carousel-only — no sitewide footer. */
+body:has(.vp-home-contact) .vp-site-footer,
+body:has(.vp-home-hero) .vp-site-footer,
+body:has(.vp-work-index) .vp-site-footer {
+  display: none;
+}
 
 .vp-site-footer {
   --vp-footer-height: 6.25rem; /* 100px */
