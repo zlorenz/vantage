@@ -185,10 +185,6 @@ body:has(.vp-internal-page) .vp-internal-fchip__panel, body:has(.vp-internal-pag
   box-shadow: var(--vp-wi-shadow);
 }
 
-body:has(.vp-internal-page) .vp-internal-card-size__label {
-  color: var(--vp-wi-text-muted);
-}
-
 /* Filter panels */
 
 body:has(.vp-internal-page) .vp-internal-fchip__panel {

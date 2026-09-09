@@ -13,7 +13,6 @@ import type {
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
-import type {CardSize, LibraryAppearance} from './appearance';
 import {
   countFacetOptions,
   type LibraryFilterContext,
@@ -54,7 +53,6 @@ interface WorkInternalToolbarProps {
   deferredFilters: LibraryFilters;
   sort: LibrarySort;
   view: LibraryViewMode;
-  appearance: LibraryAppearance;
   resultCount: number;
   totalCount: number;
   filtersPending?: boolean;
@@ -67,7 +65,6 @@ interface WorkInternalToolbarProps {
   onFiltersChange: (next: LibraryFilters) => void;
   onSortChange: (sort: LibrarySort) => void;
   onViewChange: (view: LibraryViewMode) => void;
-  onAppearanceChange: (next: LibraryAppearance) => void;
   onClear: () => void;
 }
 
@@ -120,7 +117,6 @@ export function WorkInternalToolbar({
   deferredFilters,
   sort,
   view,
-  appearance,
   resultCount,
   totalCount,
   filtersPending = false,
@@ -133,7 +129,6 @@ export function WorkInternalToolbar({
   onFiltersChange,
   onSortChange,
   onViewChange,
-  onAppearanceChange,
   onClear,
 }: WorkInternalToolbarProps) {
   const active = hasActiveFilters(filters);
@@ -464,35 +459,6 @@ export function WorkInternalToolbar({
             >
               Hidden
             </button>
-          </div>
-
-          <div className="vp-internal-toolbar__view-group">
-            <div className="vp-internal-card-size">
-              <span className="vp-internal-card-size__label">Card Size</span>
-              <div
-                className="vp-internal-view-toggle"
-                role="group"
-                aria-label="Card size"
-              >
-                {(['s', 'm', 'l'] as const).map((size: CardSize) => (
-                  <button
-                    key={size}
-                    type="button"
-                    className={
-                      appearance.cardSize === size
-                        ? 'vp-internal-view-toggle__btn is-active'
-                        : 'vp-internal-view-toggle__btn'
-                    }
-                    aria-pressed={appearance.cardSize === size}
-                    onClick={() =>
-                      onAppearanceChange({...appearance, cardSize: size})
-                    }
-                  >
-                    {size.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
