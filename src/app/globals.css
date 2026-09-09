@@ -2893,15 +2893,26 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-internal-list__title {
   font-weight: 500;
   color: var(--color-vp-text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .vp-internal-list__client {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.vp-internal-list__row > [role='cell'],
+.vp-internal-list__hit > [role='cell'] {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.vp-internal-list__thumb-col {
+  max-width: none;
+  overflow-wrap: normal;
 }
 
 .vp-internal-list__thumb {

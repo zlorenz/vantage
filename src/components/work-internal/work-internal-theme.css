@@ -368,9 +368,10 @@ body:has(.vp-internal-page) .vp-internal-list__head, body:has(.vp-internal-page)
 }
 
 body:has(.vp-internal-page) .vp-internal-list__head > *, body:has(.vp-internal-page) .vp-internal-list__row > [role='cell'], body:has(.vp-internal-page) .vp-internal-list__hit > [role='cell'] {
-  justify-self: start;
+  justify-self: stretch;
   text-align: left;
   min-width: 0;
+  max-width: 100%;
 }
 
 body:has(.vp-internal-page) .vp-internal-list__select-col {
