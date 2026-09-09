@@ -102,7 +102,7 @@ export function WorkInternalAppearancePanel({
           </div>
 
           <div className="vp-internal-appearance__row">
-            <span className="vp-internal-appearance__label">Show Card Info</span>
+            <span className="vp-internal-appearance__label">Title Overlay</span>
             <button
               type="button"
               className={
@@ -112,6 +112,7 @@ export function WorkInternalAppearancePanel({
               }
               role="switch"
               aria-checked={appearance.showCardInfo}
+              aria-label="Show title and date overlay on cards"
               onClick={() => patch('showCardInfo', !appearance.showCardInfo)}
             >
               <span className="vp-internal-appearance__switch-track">
@@ -149,7 +150,7 @@ export function WorkInternalAppearancePanel({
           </div>
 
           <p className="vp-internal-appearance__hint">
-            Card Size and Show Card Info apply to Cards view only. Titles
+            Card Size and Title Overlay apply to Cards view only. Titles
             apply to Cards and List.
           </p>
         </div>

@@ -8,6 +8,7 @@ export type TitleLines = 1 | 2;
 
 export interface LibraryAppearance {
   cardSize: CardSize;
+  /** Cards only — show title + date overlay on the poster. */
   showCardInfo: boolean;
   titleLines: TitleLines;
 }

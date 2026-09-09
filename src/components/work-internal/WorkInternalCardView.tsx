@@ -1,5 +1,6 @@
 /**
  * Compact card grid for the internal work library.
+ * Full-bleed poster cards with optional title/date overlay.
  */
 
 'use client';
@@ -8,7 +9,6 @@ import Image from 'next/image';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
-import {getArtName, getCrewName, getEditorName} from './filter-entries';
 import {formatPublishDate, getDisplayTitle} from './text';
 import {WorkInternalItemMenu} from './WorkInternalItemMenu';
 import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
@@ -77,30 +77,12 @@ export function WorkInternalCardView({
                     Hidden
                   </span>
                 ) : null}
-              </div>
-              <div className="vp-internal-card__body">
-                <h2 className="vp-internal-card__title">{title}</h2>
-                <p className="vp-internal-card__date">
-                  {formatPublishDate(entry.publishedAt)}
-                </p>
-                <dl className="vp-internal-meta">
-                  <div>
-                    <dt>Dir</dt>
-                    <dd>{getCrewName(entry, 'director')}</dd>
-                  </div>
-                  <div>
-                    <dt>DOP</dt>
-                    <dd>{getCrewName(entry, 'dop')}</dd>
-                  </div>
-                  <div>
-                    <dt>ART</dt>
-                    <dd>{getArtName(entry)}</dd>
-                  </div>
-                  <div>
-                    <dt>EDIT</dt>
-                    <dd>{getEditorName(entry)}</dd>
-                  </div>
-                </dl>
+                <div className="vp-internal-card__overlay">
+                  <h2 className="vp-internal-card__title">{title}</h2>
+                  <p className="vp-internal-card__date">
+                    {formatPublishDate(entry.publishedAt)}
+                  </p>
+                </div>
               </div>
             </button>
           </div>
