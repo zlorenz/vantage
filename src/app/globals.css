@@ -2269,7 +2269,7 @@ body:has(.vp-work-index) #header.navbar::before {
   margin-top: 0.55rem;
 }
 
-/* Chip filter shell (Taxonomy / Client; People later) */
+/* Chip filter shell (Taxonomy / Client / People) */
 
 .vp-internal-fchips {
   display: inline-flex;
@@ -2339,6 +2339,38 @@ body:has(.vp-work-index) #header.navbar::before {
   display: flex;
   flex-direction: column;
   padding-top: 0.45rem;
+}
+
+.vp-internal-fchip__panel--people {
+  width: min(18.5rem, calc(100vw - 2rem));
+  max-height: min(26rem, 75vh);
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.45rem;
+  overflow: hidden;
+}
+
+.vp-internal-fpeople {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-bottom: 0.25rem;
+}
+
+.vp-internal-fpeople__group + .vp-internal-fpeople__group {
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--color-vp-border-soft);
+}
+
+.vp-internal-fpeople__heading {
+  margin: 0;
+  padding: 0.35rem 0.85rem 0.2rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-vp-text-soft);
 }
 
 .vp-internal-ftax__tabs {

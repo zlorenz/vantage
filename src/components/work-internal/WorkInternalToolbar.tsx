@@ -17,6 +17,11 @@ import {
   countFacetOptions,
   type LibraryFilterContext,
 } from './filter-entries';
+import {
+  PEOPLE_FILTER_GROUPS,
+  PEOPLE_LIBRARY_FILTER_KEYS,
+  type PeopleLibraryFilterKey,
+} from './people-filters';
 import {hasActiveFilters} from './url-state';
 import type {LibraryFilters, LibrarySort, LibraryViewMode} from './types';
 import {WorkInternalAppearancePanel} from './WorkInternalAppearancePanel';
@@ -27,7 +32,7 @@ import {
   type FilterPanelOption,
 } from './WorkInternalFilterPanel';
 
-type ChipPanelId = 'taxonomy' | 'client';
+type ChipPanelId = 'taxonomy' | 'client' | 'people';
 
 type TaxonomyFilterKey = 'format' | 'industry' | 'market';
 
@@ -53,10 +58,7 @@ interface WorkInternalToolbarProps {
   totalCount: number;
   filtersPending?: boolean;
   clients: CreditIdentityTerm[];
-  directors: CreditIdentityTerm[];
-  dops: CreditIdentityTerm[];
-  artDirectors: CreditIdentityTerm[];
-  editors: CreditIdentityTerm[];
+  peopleOptionsByKey: Record<PeopleLibraryFilterKey, CreditIdentityTerm[]>;
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
@@ -66,25 +68,6 @@ interface WorkInternalToolbarProps {
   onViewChange: (view: LibraryViewMode) => void;
   onAppearanceChange: (next: LibraryAppearance) => void;
   onClear: () => void;
-}
-
-function optionCountLabel(count: number, label: string): string {
-  return count > 0 ? `${label} (${count})` : label;
-}
-
-function identityOptionsWithCounts(
-  terms: CreditIdentityTerm[],
-  counts: Map<string, number>,
-  selectedId: string,
-): {value: string; label: string; disabled: boolean}[] {
-  return terms.map((term) => {
-    const count = counts.get(term._id) ?? 0;
-    return {
-      value: term._id,
-      label: optionCountLabel(count, decodeHtmlEntities(term.name)),
-      disabled: count === 0 && selectedId !== term._id,
-    };
-  });
 }
 
 function toTaxonomyPanelOptions(
@@ -104,7 +87,7 @@ function toTaxonomyPanelOptions(
   });
 }
 
-function toClientPanelOptions(
+function toIdentityPanelOptions(
   terms: CreditIdentityTerm[],
   counts: Map<string, number>,
   selectedId: string,
@@ -125,7 +108,7 @@ function findTaxonomyLabel(terms: TaxonomyTerm[], slug: string): string {
   return hit ? decodeHtmlEntities(hit.title) : slug;
 }
 
-function findClientLabel(terms: CreditIdentityTerm[], id: string): string {
+function findIdentityLabel(terms: CreditIdentityTerm[], id: string): string {
   const hit = terms.find((t) => t._id === id);
   return hit ? decodeHtmlEntities(hit.name) : id;
 }
@@ -141,10 +124,7 @@ export function WorkInternalToolbar({
   totalCount,
   filtersPending = false,
   clients,
-  directors,
-  dops,
-  artDirectors,
-  editors,
+  peopleOptionsByKey,
   videoFormats,
   industries,
   markets,
@@ -158,6 +138,7 @@ export function WorkInternalToolbar({
   const active = hasActiveFilters(filters);
   const [openPanel, setOpenPanel] = useState<ChipPanelId | null>(null);
   const [clientQuery, setClientQuery] = useState('');
+  const [peopleQuery, setPeopleQuery] = useState('');
   const [taxonomyTab, setTaxonomyTab] =
     useState<TaxonomyFilterKey>('format');
   const chipRowRef = useRef<HTMLDivElement>(null);
@@ -196,6 +177,7 @@ export function WorkInternalToolbar({
 
   useEffect(() => {
     if (openPanel !== 'client') setClientQuery('');
+    if (openPanel !== 'people') setPeopleQuery('');
   }, [openPanel]);
 
   // Facet counts ignore free-text search so typing never re-scores every
@@ -208,60 +190,19 @@ export function WorkInternalToolbar({
       deferredFilters.dop,
       deferredFilters['art-director'],
       deferredFilters.editor,
+      deferredFilters.producer,
+      deferredFilters['line-producer'],
+      deferredFilters.colorist,
+      deferredFilters['sound-design-mix'],
+      deferredFilters.composer,
+      deferredFilters['1st-ad'],
+      deferredFilters['vfx-online'],
       deferredFilters.format,
       deferredFilters.industry,
       deferredFilters.market,
       deferredFilters.visibility,
     ],
   );
-
-  const directorSelectOptions = useMemo(() => {
-    const counts = countFacetOptions(
-      entries,
-      facetFilters,
-      'director',
-      directors.map((c) => c._id),
-      filterCtx,
-    );
-    return identityOptionsWithCounts(directors, counts, facetFilters.director);
-  }, [entries, facetFilters, directors, filterCtx]);
-
-  const dopSelectOptions = useMemo(() => {
-    const counts = countFacetOptions(
-      entries,
-      facetFilters,
-      'dop',
-      dops.map((c) => c._id),
-      filterCtx,
-    );
-    return identityOptionsWithCounts(dops, counts, facetFilters.dop);
-  }, [entries, facetFilters, dops, filterCtx]);
-
-  const artDirectorSelectOptions = useMemo(() => {
-    const counts = countFacetOptions(
-      entries,
-      facetFilters,
-      'art-director',
-      artDirectors.map((c) => c._id),
-      filterCtx,
-    );
-    return identityOptionsWithCounts(
-      artDirectors,
-      counts,
-      facetFilters['art-director'],
-    );
-  }, [entries, facetFilters, artDirectors, filterCtx]);
-
-  const editorSelectOptions = useMemo(() => {
-    const counts = countFacetOptions(
-      entries,
-      facetFilters,
-      'editor',
-      editors.map((c) => c._id),
-      filterCtx,
-    );
-    return identityOptionsWithCounts(editors, counts, facetFilters.editor);
-  }, [entries, facetFilters, editors, filterCtx]);
 
   const formatOptions = useMemo(() => {
     const flat = flattenTaxonomyTree(videoFormats);
@@ -307,8 +248,29 @@ export function WorkInternalToolbar({
       clients.map((c) => c._id),
       filterCtx,
     );
-    return toClientPanelOptions(clients, counts, facetFilters.client);
+    return toIdentityPanelOptions(clients, counts, facetFilters.client);
   }, [entries, facetFilters, clients, filterCtx]);
+
+  const peopleOptionsByGroup = useMemo(() => {
+    return PEOPLE_FILTER_GROUPS.map((group) => {
+      const terms = peopleOptionsByKey[group.libraryKey];
+      const counts = countFacetOptions(
+        entries,
+        facetFilters,
+        group.libraryKey,
+        terms.map((t) => t._id),
+        filterCtx,
+      );
+      return {
+        group,
+        options: toIdentityPanelOptions(
+          terms,
+          counts,
+          facetFilters[group.libraryKey],
+        ),
+      };
+    });
+  }, [entries, facetFilters, peopleOptionsByKey, filterCtx]);
 
   const taxonomyOptionsByKey: Record<TaxonomyFilterKey, FilterPanelOption[]> =
     {
@@ -327,6 +289,10 @@ export function WorkInternalToolbar({
     ({key}) => Boolean(filters[key]),
   ).length;
 
+  const peopleActiveCount = PEOPLE_LIBRARY_FILTER_KEYS.filter((key) =>
+    Boolean(filters[key]),
+  ).length;
+
   const filteredClientOptions = useMemo(() => {
     const needle = clientQuery.trim().toLowerCase();
     if (!needle) return clientOptions;
@@ -335,15 +301,31 @@ export function WorkInternalToolbar({
     );
   }, [clientOptions, clientQuery]);
 
+  const filteredPeopleGroups = useMemo(() => {
+    const needle = peopleQuery.trim().toLowerCase();
+    if (!needle) return peopleOptionsByGroup;
+    return peopleOptionsByGroup
+      .map(({group, options}) => ({
+        group,
+        options: options.filter((opt) =>
+          opt.label.toLowerCase().includes(needle),
+        ),
+      }))
+      .filter(({options}) => options.length > 0);
+  }, [peopleOptionsByGroup, peopleQuery]);
+
   const activePills = useMemo(() => {
-    const pills: {key: string; filterKey: 'client' | TaxonomyFilterKey; label: string}[] =
-      [];
+    const pills: {
+      key: string;
+      filterKey: 'client' | TaxonomyFilterKey | PeopleLibraryFilterKey;
+      label: string;
+    }[] = [];
 
     if (filters.client) {
       pills.push({
         key: 'client',
         filterKey: 'client',
-        label: `Client: ${findClientLabel(clients, filters.client)}`,
+        label: `Client: ${findIdentityLabel(clients, filters.client)}`,
       });
     }
 
@@ -360,13 +342,38 @@ export function WorkInternalToolbar({
       });
     }
 
+    for (const group of PEOPLE_FILTER_GROUPS) {
+      const value = filters[group.libraryKey];
+      if (!value) continue;
+      pills.push({
+        key: group.libraryKey,
+        filterKey: group.libraryKey,
+        label: `${group.label}: ${findIdentityLabel(
+          peopleOptionsByKey[group.libraryKey],
+          value,
+        )}`,
+      });
+    }
+
     return pills;
   }, [
     filters.client,
     filters.format,
     filters.industry,
     filters.market,
+    filters.director,
+    filters.dop,
+    filters['art-director'],
+    filters.editor,
+    filters.producer,
+    filters['line-producer'],
+    filters.colorist,
+    filters['sound-design-mix'],
+    filters.composer,
+    filters['1st-ad'],
+    filters['vfx-online'],
     clients,
+    peopleOptionsByKey,
     videoFormats,
     industries,
     markets,
@@ -523,7 +530,10 @@ export function WorkInternalToolbar({
                     >
                       {section.label}
                       {selected ? (
-                        <span className="vp-internal-ftax__tab-dot" aria-hidden="true" />
+                        <span
+                          className="vp-internal-ftax__tab-dot"
+                          aria-hidden="true"
+                        />
                       ) : null}
                     </button>
                   );
@@ -577,33 +587,54 @@ export function WorkInternalToolbar({
               }
             />
           </WorkInternalFilterPanel>
-        </div>
 
-        {/* People role selects — replaced in the next prompt */}
-        <FilterSelect
-          label="Director"
-          value={filters.director}
-          onChange={(v) => patchFilter('director', v)}
-          options={directorSelectOptions}
-        />
-        <FilterSelect
-          label="DOP"
-          value={filters.dop}
-          onChange={(v) => patchFilter('dop', v)}
-          options={dopSelectOptions}
-        />
-        <FilterSelect
-          label="Art Director"
-          value={filters['art-director']}
-          onChange={(v) => patchFilter('art-director', v)}
-          options={artDirectorSelectOptions}
-        />
-        <FilterSelect
-          label="Editor"
-          value={filters.editor}
-          onChange={(v) => patchFilter('editor', v)}
-          options={editorSelectOptions}
-        />
+          <WorkInternalFilterPanel
+            label="People"
+            activeCount={peopleActiveCount}
+            open={openPanel === 'people'}
+            onToggle={() => togglePanel('people')}
+            panelClassName="vp-internal-fchip__panel--people"
+          >
+            <label className="vp-internal-fchip__search">
+              <span className="sr-only">Search people</span>
+              <input
+                type="search"
+                className="vp-internal-fchip__search-input"
+                placeholder="Search people…"
+                value={peopleQuery}
+                onChange={(e) => setPeopleQuery(e.target.value)}
+              />
+            </label>
+            <div className="vp-internal-fpeople">
+              {filteredPeopleGroups.length === 0 ? (
+                <p className="vp-internal-fchip__empty">
+                  {peopleQuery.trim()
+                    ? 'No matching people'
+                    : 'No people credited'}
+                </p>
+              ) : (
+                filteredPeopleGroups.map(({group, options}) => (
+                  <section
+                    key={group.libraryKey}
+                    className="vp-internal-fpeople__group"
+                    aria-label={group.label}
+                  >
+                    <h3 className="vp-internal-fpeople__heading">
+                      {group.label}
+                    </h3>
+                    <FilterOptionList
+                      options={options}
+                      selectedValue={filters[group.libraryKey]}
+                      onSelect={(value) =>
+                        patchFilter(group.libraryKey, value)
+                      }
+                    />
+                  </section>
+                ))
+              )}
+            </div>
+          </WorkInternalFilterPanel>
+        </div>
 
         <label className="vp-internal-filter">
           <span className="vp-internal-filter__label">Sort</span>
@@ -635,39 +666,5 @@ export function WorkInternalToolbar({
         </div>
       ) : null}
     </div>
-  );
-}
-
-interface FilterSelectProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: {value: string; label: string; disabled: boolean}[];
-  includeAll?: boolean;
-}
-
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  options,
-  includeAll = true,
-}: FilterSelectProps) {
-  return (
-    <label className="vp-internal-filter">
-      <span className="vp-internal-filter__label">{label}</span>
-      <select
-        className="vp-internal-filter__select"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {includeAll ? <option value="">All</option> : null}
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </label>
   );
 }

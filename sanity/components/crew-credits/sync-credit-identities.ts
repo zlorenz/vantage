@@ -52,8 +52,8 @@ export const FULL_IDENTITY_LINK_DEPARTMENTS: readonly CrewDepartmentKey[] = [
 
 /**
  * Role keys that receive Studio inline identity linking and confidence gating:
- * filter-five Work Library roles (partial production/camera/art/post) plus every
- * standard role in FULL_IDENTITY_LINK_DEPARTMENTS.
+ * Work Library filter credit roles plus every standard role in
+ * FULL_IDENTITY_LINK_DEPARTMENTS.
  */
 export function studioInlineIdentityLinkPolicy(): IdentityLinkPolicy {
   const roleKeys = new Set<string>(FILTER_CREDIT_ROLE_KEYS)
@@ -180,13 +180,9 @@ export function planIdentitySyncFromCredits(
     FILTER_CREDIT_IDENTITY_LINK_POLICY,
   )
   return {
-    namesByRole: {
-      brand: namesByRole.brand ?? [],
-      director: namesByRole.director ?? [],
-      dop: namesByRole.dop ?? [],
-      art_director: namesByRole.art_director ?? [],
-      editor: namesByRole.editor ?? [],
-    },
+    namesByRole: Object.fromEntries(
+      FILTER_CREDIT_ROLE_KEYS.map((key) => [key, namesByRole[key] ?? []]),
+    ) as Record<FilterCreditRoleKey, string[]>,
   }
 }
 

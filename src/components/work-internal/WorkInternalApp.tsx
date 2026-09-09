@@ -30,15 +30,13 @@ import {
   type LibraryAppearance,
 } from './appearance';
 import {
-  buildArtDirectorFilterOptions,
+  buildAllPeopleFilterOptions,
   buildClientFilterOptions,
-  buildDirectorFilterOptions,
-  buildDopFilterOptions,
-  buildEditorFilterOptions,
   buildSearchTextByEntryId,
   filterLibraryEntries,
   identityNameById,
 } from './filter-entries';
+import {PEOPLE_FILTER_GROUPS} from './people-filters';
 import { sortLibraryEntries } from './sort-entries';
 import {
   DEFAULT_FILTERS,
@@ -145,50 +143,32 @@ export function WorkInternalApp({
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  const artDirectorOptions = useMemo(
-    () => buildArtDirectorFilterOptions(entries),
-    [entries],
-  );
-  const directorOptions = useMemo(
-    () => buildDirectorFilterOptions(entries),
-    [entries],
-  );
-  const dopOptions = useMemo(
-    () => buildDopFilterOptions(entries),
-    [entries],
-  );
   const clientOptions = useMemo(
     () => buildClientFilterOptions(entries),
     [entries],
   );
-  const editorOptions = useMemo(
-    () => buildEditorFilterOptions(entries),
+  const peopleOptionsByKey = useMemo(
+    () => buildAllPeopleFilterOptions(entries),
     [entries],
   );
 
   const filterCtx = useMemo(() => {
     const nameByFilterId = new Map<string, string>();
-    for (const map of [
-      identityNameById(clientOptions),
-      identityNameById(directorOptions),
-      identityNameById(dopOptions),
-      identityNameById(artDirectorOptions),
-      identityNameById(editorOptions),
-    ]) {
-      for (const [id, name] of map) nameByFilterId.set(id, name);
+    for (const [id, name] of identityNameById(clientOptions)) {
+      nameByFilterId.set(id, name);
+    }
+    for (const group of PEOPLE_FILTER_GROUPS) {
+      for (const [id, name] of identityNameById(
+        peopleOptionsByKey[group.libraryKey],
+      )) {
+        nameByFilterId.set(id, name);
+      }
     }
     return {
       nameByFilterId,
       searchTextByEntryId: buildSearchTextByEntryId(entries),
     };
-  }, [
-    artDirectorOptions,
-    clientOptions,
-    directorOptions,
-    dopOptions,
-    editorOptions,
-    entries,
-  ]);
+  }, [clientOptions, peopleOptionsByKey, entries]);
 
   const filteredSorted = useMemo(() => {
     return sortLibraryEntries(
@@ -244,10 +224,7 @@ export function WorkInternalApp({
         totalCount={visibilityTotal}
         filtersPending={filtersPending}
         clients={clientOptions}
-        directors={directorOptions}
-        dops={dopOptions}
-        artDirectors={artDirectorOptions}
-        editors={editorOptions}
+        peopleOptionsByKey={peopleOptionsByKey}
         filterCtx={filterCtx}
         videoFormats={videoFormats}
         industries={industries}

@@ -29,6 +29,14 @@ export const FILTER_CREDIT_ROLE_KEYS = [
   'dop',
   'art_director',
   'editor',
+  'producer',
+  'line_producer',
+  'colorist',
+  'sound_design_mix',
+  'composer',
+  '1st_ad',
+  'vfx',
+  'online',
 ] as const
 
 export type FilterCreditRoleKey = (typeof FILTER_CREDIT_ROLE_KEYS)[number]

@@ -5,32 +5,38 @@
  * unlinked credits use `unlinked-{slug}` option ids matched by name.
  */
 
-import { getStructuredRoleNames } from '@/lib/credits-config';
+import {getStructuredRoleNames} from '@/lib/credits-config';
 import type {
   CreditIdentityTerm,
   InternalLibraryEntry,
 } from '@/types/sanity';
-import { DEFAULT_FILTERS, type LibraryFilters } from './types';
+import {
+  PEOPLE_FILTER_GROUPS,
+  type PeopleFilterRoleKey,
+  type PeopleLibraryFilterKey,
+  peopleGroupByLibraryKey,
+} from './people-filters';
+import {DEFAULT_FILTERS, type LibraryFilters} from './types';
 
-export type FilterRoleKey =
-  | 'brand'
-  | 'director'
-  | 'dop'
-  | 'art_director'
-  | 'editor';
+/** brand + people filter match keys (includes synthetic `vfx_online`). */
+export type FilterRoleKey = 'brand' | PeopleFilterRoleKey;
 
 const FILTER_ROLE_TO_LIBRARY_KEY: Record<
   FilterRoleKey,
-  keyof Pick<
-    LibraryFilters,
-    'client' | 'director' | 'dop' | 'art-director' | 'editor'
-  >
+  keyof LibraryFilters
 > = {
   brand: 'client',
   director: 'director',
   dop: 'dop',
   art_director: 'art-director',
   editor: 'editor',
+  producer: 'producer',
+  line_producer: 'line-producer',
+  colorist: 'colorist',
+  sound_design_mix: 'sound-design-mix',
+  composer: 'composer',
+  '1st_ad': '1st-ad',
+  vfx_online: 'vfx-online',
 };
 
 /** Optional name lookups for transitional unlinked / legacy slug matching. */
@@ -38,6 +44,14 @@ export interface LibraryFilterContext {
   nameByFilterId?: ReadonlyMap<string, string>;
   /** Precomputed lowercase search blobs keyed by entry `_id`. */
   searchTextByEntryId?: ReadonlyMap<string, string>;
+}
+
+function catalogRoleKeysForFilterRole(
+  roleKey: FilterRoleKey,
+): readonly string[] {
+  if (roleKey === 'brand') return ['brand'];
+  const group = PEOPLE_FILTER_GROUPS.find((g) => g.roleKey === roleKey);
+  return group?.catalogRoleKeys ?? [roleKey];
 }
 
 function getProductionDesignerNames(entry: InternalLibraryEntry): string[] {
@@ -57,8 +71,11 @@ function getCreditRoleNames(
   roleKey: FilterRoleKey,
 ): string[] {
   if (roleKey === 'brand') return getBrandNames(entry);
-  if (roleKey === 'editor') return getEditorNames(entry);
-  return getStructuredRoleNames(entry.crewCredits, roleKey);
+  const names: string[] = [];
+  for (const catalogKey of catalogRoleKeysForFilterRole(roleKey)) {
+    names.push(...getStructuredRoleNames(entry.crewCredits, catalogKey));
+  }
+  return names;
 }
 
 export function toFilterSlug(name: string): string {
@@ -84,8 +101,14 @@ function isUnlinkedOptionId(id: string): boolean {
 }
 
 function peopleForRole(entry: InternalLibraryEntry, roleKey: FilterRoleKey) {
+  const catalogKeys = new Set(catalogRoleKeysForFilterRole(roleKey));
   return (entry.crewCredits ?? [])
-    .filter((credit) => credit.roleKey === roleKey && !credit.isCustomRole)
+    .filter(
+      (credit) =>
+        Boolean(credit.roleKey) &&
+        catalogKeys.has(credit.roleKey!) &&
+        !credit.isCustomRole,
+    )
     .flatMap((credit) => credit.people ?? []);
 }
 
@@ -121,14 +144,20 @@ function matchesRoleFilter(
   if (people.some((person) => person.identityId === filterId)) return true;
 
   const displayName = nameByFilterId?.get(filterId);
-  if (namesMatchFilter(getCreditRoleNames(entry, roleKey), filterId, displayName)) {
+  if (
+    namesMatchFilter(getCreditRoleNames(entry, roleKey), filterId, displayName)
+  ) {
     return true;
   }
 
   // Art filter also matches Production Designer by display name.
   if (roleKey === 'art_director' && displayName) {
     const needle = displayName.trim().toLowerCase();
-    if (getProductionDesignerNames(entry).some((part) => part.toLowerCase() === needle)) {
+    if (
+      getProductionDesignerNames(entry).some(
+        (part) => part.toLowerCase() === needle,
+      )
+    ) {
       return true;
     }
   }
@@ -140,6 +169,7 @@ function matchesRoleFilter(
   if (
     roleKey !== 'brand' &&
     roleKey !== 'editor' &&
+    roleKey !== 'vfx_online' &&
     entry.crewMembers?.some(
       (m) =>
         m.slug === filterId &&
@@ -231,6 +261,27 @@ export function buildEditorFilterOptions(
   return buildIdentityFilterOptions(entries, 'editor');
 }
 
+export function buildPeopleFilterOptions(
+  entries: InternalLibraryEntry[],
+  roleKey: PeopleFilterRoleKey,
+): CreditIdentityTerm[] {
+  if (roleKey === 'art_director') {
+    return buildArtDirectorFilterOptions(entries);
+  }
+  return buildIdentityFilterOptions(entries, roleKey);
+}
+
+/** Options for every People panel group, keyed by LibraryFilters URL key. */
+export function buildAllPeopleFilterOptions(
+  entries: InternalLibraryEntry[],
+): Record<PeopleLibraryFilterKey, CreditIdentityTerm[]> {
+  const out = {} as Record<PeopleLibraryFilterKey, CreditIdentityTerm[]>;
+  for (const group of PEOPLE_FILTER_GROUPS) {
+    out[group.libraryKey] = buildPeopleFilterOptions(entries, group.roleKey);
+  }
+  return out;
+}
+
 export function identityNameById(
   terms: CreditIdentityTerm[],
 ): Map<string, string> {
@@ -307,6 +358,9 @@ export function buildSearchText(entry: InternalLibraryEntry): string {
   const editor = getEditorName(entry);
   const art = getArtName(entry);
   const parts = entry.displayTitleParts;
+  const peopleNames = PEOPLE_FILTER_GROUPS.flatMap((group) =>
+    getCreditRoleNames(entry, group.roleKey),
+  );
   const haystacks: string[] = [
     entry.title,
     entry.titleZh ?? '',
@@ -323,10 +377,7 @@ export function buildSearchText(entry: InternalLibraryEntry): string {
     ...(entry.clients?.map((c) => c.name) ?? []),
     ...(entry.crewMembers?.map((m) => m.name) ?? []),
     ...getBrandNames(entry),
-    ...getCreditRoleNames(entry, 'director'),
-    ...getCreditRoleNames(entry, 'dop'),
-    ...getCreditRoleNames(entry, 'art_director'),
-    ...getEditorNames(entry),
+    ...peopleNames,
   ];
   return haystacks.join('\0').toLowerCase();
 }
@@ -356,12 +407,18 @@ function matchesSearch(
 }
 
 function matchesTaxonomySlug(
-  terms: { slug: string; slugZh?: string }[] | undefined,
+  terms: {slug: string; slugZh?: string}[] | undefined,
   slug: string,
 ): boolean {
-  return Boolean(
-    terms?.some((t) => t.slug === slug || t.slugZh === slug),
-  );
+  return Boolean(terms?.some((t) => t.slug === slug || t.slugZh === slug));
+}
+
+function libraryKeyToFilterRole(
+  key: keyof LibraryFilters,
+): FilterRoleKey | null {
+  if (key === 'client') return 'brand';
+  const group = peopleGroupByLibraryKey(key);
+  return group?.roleKey ?? null;
 }
 
 /** Whether `entry` satisfies a single filter dimension (not search/visibility). */
@@ -378,28 +435,20 @@ function matchesFilterKey(
     case 'q':
       return matchesSearch(entry, value, ctx);
     case 'visibility':
-      // 'all' — no exclusion
       if (value === 'public') return !entry.isHidden;
       if (value === 'hidden') return Boolean(entry.isHidden);
       return true;
-    case 'client':
-      return matchesRoleFilter(entry, 'brand', value, nameById);
-    case 'director':
-      return matchesRoleFilter(entry, 'director', value, nameById);
-    case 'dop':
-      return matchesRoleFilter(entry, 'dop', value, nameById);
-    case 'art-director':
-      return matchesRoleFilter(entry, 'art_director', value, nameById);
-    case 'editor':
-      return matchesRoleFilter(entry, 'editor', value, nameById);
     case 'format':
       return matchesTaxonomySlug(entry.videoFormats, value);
     case 'industry':
       return matchesTaxonomySlug(entry.industries, value);
     case 'market':
       return matchesTaxonomySlug(entry.markets, value);
-    default:
-      return true;
+    default: {
+      const roleKey = libraryKeyToFilterRole(key);
+      if (!roleKey) return true;
+      return matchesRoleFilter(entry, roleKey, value, nameById);
+    }
   }
 }
 
@@ -413,47 +462,11 @@ export function matchesLibraryFilters(
   if (filters.visibility === 'public' && entry.isHidden) return false;
   if (filters.visibility === 'hidden' && !entry.isHidden) return false;
 
-  if (filters.client && !matchesFilterKey(entry, 'client', filters.client, ctx)) {
-    return false;
-  }
-  if (
-    filters.director &&
-    !matchesFilterKey(entry, 'director', filters.director, ctx)
-  ) {
-    return false;
-  }
-  if (filters.dop && !matchesFilterKey(entry, 'dop', filters.dop, ctx)) {
-    return false;
-  }
-  if (
-    filters['art-director'] &&
-    !matchesFilterKey(entry, 'art-director', filters['art-director'], ctx)
-  ) {
-    return false;
-  }
-  if (
-    filters.editor &&
-    !matchesFilterKey(entry, 'editor', filters.editor, ctx)
-  ) {
-    return false;
-  }
-  if (
-    filters.format &&
-    !matchesFilterKey(entry, 'format', filters.format, ctx)
-  ) {
-    return false;
-  }
-  if (
-    filters.industry &&
-    !matchesFilterKey(entry, 'industry', filters.industry, ctx)
-  ) {
-    return false;
-  }
-  if (
-    filters.market &&
-    !matchesFilterKey(entry, 'market', filters.market, ctx)
-  ) {
-    return false;
+  for (const key of Object.keys(filters) as (keyof LibraryFilters)[]) {
+    if (key === 'q' || key === 'visibility') continue;
+    const value = filters[key];
+    if (!value) continue;
+    if (!matchesFilterKey(entry, key, value, ctx)) return false;
   }
 
   return true;
@@ -464,9 +477,7 @@ export function filterLibraryEntries(
   filters: LibraryFilters,
   ctx?: LibraryFilterContext,
 ): InternalLibraryEntry[] {
-  return entries.filter((entry) =>
-    matchesLibraryFilters(entry, filters, ctx),
-  );
+  return entries.filter((entry) => matchesLibraryFilters(entry, filters, ctx));
 }
 
 function clearedFiltersForKey(

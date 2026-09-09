@@ -19,6 +19,14 @@ export interface LibraryFilters {
   dop: string;
   'art-director': string;
   editor: string;
+  producer: string;
+  'line-producer': string;
+  colorist: string;
+  'sound-design-mix': string;
+  composer: string;
+  '1st-ad': string;
+  /** Combined VFX | Online filter bucket (OR match). */
+  'vfx-online': string;
   format: string;
   industry: string;
   market: string;
@@ -32,6 +40,13 @@ export const DEFAULT_FILTERS: LibraryFilters = {
   dop: '',
   'art-director': '',
   editor: '',
+  producer: '',
+  'line-producer': '',
+  colorist: '',
+  'sound-design-mix': '',
+  composer: '',
+  '1st-ad': '',
+  'vfx-online': '',
   format: '',
   industry: '',
   market: '',

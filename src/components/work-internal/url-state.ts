@@ -11,6 +11,7 @@ import {
   type LibraryViewMode,
   type VisibilityFilter,
 } from './types';
+import {PEOPLE_LIBRARY_FILTER_KEYS} from './people-filters';
 
 const SORT_VALUES: LibrarySort[] = [
   'publishedAt-desc',
@@ -30,13 +31,14 @@ function parseVisibility(raw: string | null): VisibilityFilter {
 }
 
 export function readFilters(params: URLSearchParams): LibraryFilters {
+  const people = Object.fromEntries(
+    PEOPLE_LIBRARY_FILTER_KEYS.map((key) => [key, params.get(key) || '']),
+  ) as Pick<LibraryFilters, (typeof PEOPLE_LIBRARY_FILTER_KEYS)[number]>;
+
   return {
     q: params.get('q') || '',
     client: params.get('client') || '',
-    director: params.get('director') || '',
-    dop: params.get('dop') || '',
-    'art-director': params.get('art-director') || '',
-    editor: params.get('editor') || '',
+    ...people,
     format: params.get('format') || '',
     industry: params.get('industry') || '',
     market: params.get('market') || '',
@@ -66,14 +68,13 @@ export function buildLibraryQuery(state: {
   view: LibraryViewMode;
 }): Record<string, string> {
   const query: Record<string, string> = {};
-  const { filters, sort, view } = state;
+  const {filters, sort, view} = state;
 
   if (filters.q) query.q = filters.q;
   if (filters.client) query.client = filters.client;
-  if (filters.director) query.director = filters.director;
-  if (filters.dop) query.dop = filters.dop;
-  if (filters['art-director']) query['art-director'] = filters['art-director'];
-  if (filters.editor) query.editor = filters.editor;
+  for (const key of PEOPLE_LIBRARY_FILTER_KEYS) {
+    if (filters[key]) query[key] = filters[key];
+  }
   if (filters.format) query.format = filters.format;
   if (filters.industry) query.industry = filters.industry;
   if (filters.market) query.market = filters.market;
@@ -87,16 +88,15 @@ export function buildLibraryQuery(state: {
 }
 
 export function hasActiveFilters(filters: LibraryFilters): boolean {
-  return (
+  if (
     Boolean(filters.q) ||
     Boolean(filters.client) ||
-    Boolean(filters.director) ||
-    Boolean(filters.dop) ||
-    Boolean(filters['art-director']) ||
-    Boolean(filters.editor) ||
     Boolean(filters.format) ||
     Boolean(filters.industry) ||
     Boolean(filters.market) ||
     filters.visibility !== DEFAULT_FILTERS.visibility
-  );
+  ) {
+    return true;
+  }
+  return PEOPLE_LIBRARY_FILTER_KEYS.some((key) => Boolean(filters[key]));
 }
