@@ -141,6 +141,10 @@ body:has(.vp-internal-page) .vp-internal-view-toggle__btn {
     background 120ms ease;
 }
 
+body:has(.vp-internal-page) .vp-internal-view-toggle__btn--icon {
+  padding: 0.4rem;
+}
+
 body:has(.vp-internal-page) .vp-internal-view-toggle__btn:hover {
   color: var(--vp-wi-text);
   background: var(--vp-wi-surface-hover);

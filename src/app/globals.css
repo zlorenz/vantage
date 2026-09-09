@@ -2203,6 +2203,19 @@ body:has(.vp-work-index) #header.navbar::before {
   background: var(--color-vp-link);
 }
 
+.vp-internal-view-toggle__btn--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  line-height: 0;
+}
+
+.vp-internal-view-toggle__icon {
+  display: block;
+  flex: 0 0 auto;
+}
+
 /* Inline card-size control (toolbar) */
 
 .vp-internal-card-size {
