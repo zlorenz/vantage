@@ -3,8 +3,8 @@
  */
 
 import type {Metadata} from 'next'
-import {notFound} from 'next/navigation'
 import {setRequestLocale} from 'next-intl/server'
+import {Link} from '@/i18n/navigation'
 import type {Locale} from '@/i18n/routing'
 import {ShowreelEditor} from '@/components/showreel/ShowreelEditor'
 import {sanityFetch} from '@/sanity/lib/live'
@@ -53,7 +53,26 @@ export default async function ShowreelEditPage({params}: Props) {
   } | null
 
   if (!showreel?._id || !showreel.title) {
-    notFound()
+    return (
+      <div className="vp-internal-page">
+        <div className="vp-showreel-editor">
+          <header className="vp-showreel-editor__header">
+            <h1 className="vp-internal-app__title">Showreel not found</h1>
+          </header>
+          <p className="vp-showreel-editor__hint">
+            This showreel doesn’t exist or was already deleted.
+          </p>
+          <p className="vp-showreel-editor__id">
+            <code>{id}</code>
+          </p>
+          <p>
+            <Link href="/work-internal" className="vp-internal-clear">
+              Back to Work Library
+            </Link>
+          </p>
+        </div>
+      </div>
+    )
   }
 
   const library = libraryResult.data as InternalLibraryEntry[]

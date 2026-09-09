@@ -2851,6 +2851,55 @@ body:has(.vp-work-index) #header.navbar::before {
   margin-bottom: 0.75rem;
 }
 
+.vp-showreel-editor__danger {
+  margin-top: 0.5rem;
+  padding: 1.25rem 1rem 1rem;
+  border: 1px solid var(--vp-form-error-border);
+  background: var(--vp-form-error-bg);
+}
+
+.vp-showreel-editor__danger .vp-showreel-editor__section-title {
+  color: var(--vp-form-error);
+}
+
+.vp-showreel-editor__danger-btn {
+  margin-top: 0.75rem;
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--vp-form-error);
+  border: 0;
+  cursor: pointer;
+  transition: opacity var(--vp-transition);
+}
+
+.vp-showreel-editor__danger-btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.vp-showreel-editor__danger-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.vp-showreel-editor__danger-confirm {
+  margin-top: 0.75rem;
+  max-width: 28rem;
+}
+
+.vp-showreel-editor__danger-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
 /* Public showreel page */
 
 .vp-showreel-card {

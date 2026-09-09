@@ -1,7 +1,8 @@
 /**
  * PATCH /api/showreel/[id] — update title, description, and/or ordered portfolio items.
+ * DELETE /api/showreel/[id] — hard-delete the showreel document (no trash).
  *
- * Body (at least one field):
+ * PATCH body (at least one field):
  *   { title?: string, description?: string | null, portfolioItemIds?: string[] }
  *
  * portfolioItemIds is a full ordered replacement (min 1). Same portfolioEntry
@@ -32,15 +33,64 @@ type RouteContext = {
   params: Promise<{id: string}>
 }
 
+async function resolveShowreelId(
+  rawId: string | undefined,
+): Promise<
+  | {ok: true; id: string}
+  | {ok: false; response: NextResponse}
+> {
+  const id = typeof rawId === 'string' ? rawId.trim() : ''
+  if (!id) {
+    return {
+      ok: false,
+      response: NextResponse.json({error: 'Missing showreel id'}, {status: 400}),
+    }
+  }
+  return {ok: true, id}
+}
+
+async function fetchExistingShowreelId(
+  id: string,
+): Promise<
+  | {ok: true; id: string}
+  | {ok: false; response: NextResponse}
+> {
+  const client = getSanityWriteClient()
+  try {
+    const exists = await client.fetch<string | null>(
+      `*[_type == "showreel" && _id == $id && !(_id in path("drafts.**"))][0]._id`,
+      {id},
+    )
+    if (!exists) {
+      return {
+        ok: false,
+        response: NextResponse.json(
+          {error: 'Showreel not found'},
+          {status: 404},
+        ),
+      }
+    }
+    return {ok: true, id: exists}
+  } catch (err) {
+    console.error('[showreel] lookup failed:', err)
+    return {
+      ok: false,
+      response: NextResponse.json(
+        {error: 'Failed to load showreel'},
+        {status: 500},
+      ),
+    }
+  }
+}
+
 export async function PATCH(request: NextRequest, context: RouteContext) {
   const unauthorized = requireShowreelAuth(request)
   if (unauthorized) return unauthorized
 
   const {id: rawId} = await context.params
-  const id = typeof rawId === 'string' ? rawId.trim() : ''
-  if (!id) {
-    return NextResponse.json({error: 'Missing showreel id'}, {status: 400})
-  }
+  const resolved = await resolveShowreelId(rawId)
+  if (!resolved.ok) return resolved.response
+  const {id} = resolved
 
   let body: PatchBody
   try {
@@ -127,25 +177,10 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     }
   }
 
+  const existing = await fetchExistingShowreelId(id)
+  if (!existing.ok) return existing.response
+
   const client = getSanityWriteClient()
-
-  let exists: string | null
-  try {
-    exists = await client.fetch<string | null>(
-      `*[_type == "showreel" && _id == $id && !(_id in path("drafts.**"))][0]._id`,
-      {id},
-    )
-  } catch (err) {
-    console.error('[showreel] lookup failed:', err)
-    return NextResponse.json(
-      {error: 'Failed to load showreel'},
-      {status: 500},
-    )
-  }
-
-  if (!exists) {
-    return NextResponse.json({error: 'Showreel not found'}, {status: 404})
-  }
 
   try {
     let patch = client.patch(id)
@@ -178,4 +213,31 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     ...(description !== undefined ? {description} : {}),
     ...(portfolioItemIds !== undefined ? {portfolioItemIds} : {}),
   })
+}
+
+/** Hard-delete — showreels are disposable; no soft-trash. */
+export async function DELETE(request: NextRequest, context: RouteContext) {
+  const unauthorized = requireShowreelAuth(request)
+  if (unauthorized) return unauthorized
+
+  const {id: rawId} = await context.params
+  const resolved = await resolveShowreelId(rawId)
+  if (!resolved.ok) return resolved.response
+  const {id} = resolved
+
+  const existing = await fetchExistingShowreelId(id)
+  if (!existing.ok) return existing.response
+
+  try {
+    const client = getSanityWriteClient()
+    await client.delete(id)
+  } catch (err) {
+    console.error('[showreel] delete failed:', err)
+    return NextResponse.json(
+      {error: 'Failed to delete showreel'},
+      {status: 500},
+    )
+  }
+
+  return NextResponse.json({ok: true, id})
 }

@@ -11,6 +11,7 @@
 
 import Image from 'next/image'
 import {useEffect, useMemo, useState, useTransition, type FormEvent} from 'react'
+import {useRouter} from '@/i18n/navigation'
 import {urlForImage} from '@/lib/sanity'
 import type {Locale} from '@/i18n/routing'
 import {showreelLoginPathFor} from '@/lib/showreel-auth-paths'
@@ -19,6 +20,8 @@ import type {InternalLibraryEntry} from '@/types/sanity'
 import {buildSearchTextByEntryId} from '@/components/work-internal/filter-entries'
 import {getDisplayTitle} from '@/components/work-internal/text'
 import {ShowreelItemPicker} from './ShowreelItemPicker'
+
+const DELETE_CONFIRM_WORD = 'DELETE'
 
 export type ShowreelEditorItem = {
   _id: string
@@ -65,6 +68,12 @@ async function patchShowreel(
       )
       return {ok: false, error: 'Unauthorized'}
     }
+    if (res.status === 404) {
+      return {
+        ok: false,
+        error: 'This showreel no longer exists (it may have been deleted).',
+      }
+    }
     if (!res.ok) {
       return {ok: false, error: data?.error || 'Save failed'}
     }
@@ -74,11 +83,46 @@ async function patchShowreel(
   }
 }
 
+async function deleteShowreel(
+  id: string,
+): Promise<{ok: true} | {ok: false; error: string}> {
+  try {
+    const res = await fetch(`/api/showreel/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      credentials: 'same-origin',
+    })
+    const data = (await res.json().catch(() => null)) as {
+      error?: string
+    } | null
+    if (res.status === 401) {
+      const {pathname, search} = window.location
+      const login = showreelLoginPathFor(pathname)
+      window.location.assign(
+        `${login}?next=${encodeURIComponent(`${pathname}${search}`)}`,
+      )
+      return {ok: false, error: 'Unauthorized'}
+    }
+    if (res.status === 404) {
+      return {
+        ok: false,
+        error: 'This showreel was already deleted.',
+      }
+    }
+    if (!res.ok) {
+      return {ok: false, error: data?.error || 'Delete failed'}
+    }
+    return {ok: true}
+  } catch {
+    return {ok: false, error: 'Delete failed'}
+  }
+}
+
 export function ShowreelEditor({
   locale,
   showreel,
   library,
 }: ShowreelEditorProps) {
+  const router = useRouter()
   const [title, setTitle] = useState(showreel.title)
   const [description, setDescription] = useState(showreel.description ?? '')
   const [savedTitle, setSavedTitle] = useState(showreel.title)
@@ -99,10 +143,18 @@ export function ShowreelEditor({
   const [publicUrl, setPublicUrl] = useState(() =>
     showreelPublicPath(showreel._id, locale),
   )
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const [savingFields, startSaveFields] = useTransition()
   const [savingItems, startSaveItems] = useTransition()
+  const [deleting, startDeleting] = useTransition()
 
   const publicPath = showreelPublicPath(showreel._id, locale)
+  const busy = savingFields || savingItems || deleting
+  const deleteReady =
+    deleteConfirmText.trim().toUpperCase() === DELETE_CONFIRM_WORD
+
 
   useEffect(() => {
     setPublicUrl(`${window.location.origin}${publicPath}`)
@@ -232,6 +284,32 @@ export function ShowreelEditor({
     }
   }
 
+  function openDeleteConfirm() {
+    setDeleteError(null)
+    setDeleteConfirmText('')
+    setDeleteConfirmOpen(true)
+  }
+
+  function cancelDeleteConfirm() {
+    if (deleting) return
+    setDeleteConfirmOpen(false)
+    setDeleteConfirmText('')
+    setDeleteError(null)
+  }
+
+  function onConfirmDelete() {
+    if (!deleteReady || deleting) return
+    setDeleteError(null)
+    startDeleting(async () => {
+      const result = await deleteShowreel(showreel._id)
+      if (!result.ok) {
+        setDeleteError(result.error)
+        return
+      }
+      router.replace('/work-internal')
+    })
+  }
+
   return (
     <div className="vp-showreel-editor">
       <header className="vp-showreel-editor__header">
@@ -283,7 +361,7 @@ export function ShowreelEditor({
               setFieldsSaved(false)
             }}
             required
-            disabled={savingFields}
+            disabled={savingFields || deleting}
           />
         </label>
         <label className="vp-showreel-editor__field">
@@ -296,7 +374,7 @@ export function ShowreelEditor({
               setFieldsSaved(false)
             }}
             rows={4}
-            disabled={savingFields}
+            disabled={savingFields || deleting}
           />
         </label>
         {fieldsError ? (
@@ -313,7 +391,7 @@ export function ShowreelEditor({
           <button
             type="submit"
             className="vp-internal-showreel-bar__create"
-            disabled={savingFields || !title.trim() || !fieldsDirty}
+            disabled={savingFields || deleting || !title.trim() || !fieldsDirty}
           >
             {savingFields ? 'Saving…' : 'Save details'}
           </button>
@@ -365,7 +443,7 @@ export function ShowreelEditor({
                     type="button"
                     className="vp-showreel-editor__icon-btn"
                     aria-label="Move up"
-                    disabled={savingItems || index === 0}
+                    disabled={busy || index === 0}
                     onClick={() => moveItem(index, -1)}
                   >
                     ↑
@@ -374,7 +452,7 @@ export function ShowreelEditor({
                     type="button"
                     className="vp-showreel-editor__icon-btn"
                     aria-label="Move down"
-                    disabled={savingItems || index === items.length - 1}
+                    disabled={busy || index === items.length - 1}
                     onClick={() => moveItem(index, 1)}
                   >
                     ↓
@@ -382,7 +460,7 @@ export function ShowreelEditor({
                   <button
                     type="button"
                     className="vp-internal-clear"
-                    disabled={savingItems || items.length <= 1}
+                    disabled={busy || items.length <= 1}
                     onClick={() => removeItem(item._id)}
                     title={
                       items.length <= 1
@@ -404,9 +482,73 @@ export function ShowreelEditor({
         library={library}
         searchCtx={searchCtx}
         excludedIds={itemIdSet}
-        disabled={savingItems}
+        disabled={busy}
         onAdd={addItems}
       />
+
+      <section
+        className="vp-showreel-editor__danger"
+        aria-label="Delete showreel"
+      >
+        <div className="vp-showreel-editor__section-head">
+          <h2 className="vp-showreel-editor__section-title">Danger zone</h2>
+        </div>
+        <p className="vp-showreel-editor__hint">
+          Permanently delete this showreel. This cannot be undone — the public
+          link will stop working immediately.
+        </p>
+
+        {!deleteConfirmOpen ? (
+          <button
+            type="button"
+            className="vp-showreel-editor__danger-btn"
+            onClick={openDeleteConfirm}
+            disabled={busy}
+          >
+            Delete Showreel
+          </button>
+        ) : (
+          <div className="vp-showreel-editor__danger-confirm">
+            <label className="vp-showreel-editor__field">
+              <span className="vp-internal-filter__label">
+                Type {DELETE_CONFIRM_WORD} to confirm
+              </span>
+              <input
+                type="text"
+                className="vp-internal-search__input"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                autoComplete="off"
+                disabled={deleting}
+                aria-label={`Type ${DELETE_CONFIRM_WORD} to confirm deletion`}
+              />
+            </label>
+            {deleteError ? (
+              <p className="vp-showreel-editor__error" role="alert">
+                {deleteError}
+              </p>
+            ) : null}
+            <div className="vp-showreel-editor__danger-actions">
+              <button
+                type="button"
+                className="vp-internal-clear"
+                onClick={cancelDeleteConfirm}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="vp-showreel-editor__danger-btn"
+                onClick={onConfirmDelete}
+                disabled={deleting || !deleteReady}
+              >
+                {deleting ? 'Deleting…' : 'Confirm permanent delete'}
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
     </div>
   )
 }
