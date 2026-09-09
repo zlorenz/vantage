@@ -25,6 +25,7 @@ import {
 } from './people-filters';
 import {hasActiveFilters} from './url-state';
 import type {LibraryFilters, LibrarySort, LibraryViewMode} from './types';
+import {NestedFilterMenu} from './NestedFilterMenu';
 import {
   FilterActivePill,
   FilterOptionList,
@@ -138,9 +139,6 @@ export function WorkInternalToolbar({
   const active = hasActiveFilters(filters);
   const [openPanel, setOpenPanel] = useState<ChipPanelId | null>(null);
   const [clientQuery, setClientQuery] = useState('');
-  const [peopleQuery, setPeopleQuery] = useState('');
-  const [taxonomyTab, setTaxonomyTab] =
-    useState<TaxonomyFilterKey>('format');
   const chipRowRef = useRef<HTMLDivElement>(null);
 
   function patchFilter<K extends keyof LibraryFilters>(
@@ -177,7 +175,6 @@ export function WorkInternalToolbar({
 
   useEffect(() => {
     if (openPanel !== 'client') setClientQuery('');
-    if (openPanel !== 'people') setPeopleQuery('');
   }, [openPanel]);
 
   // Facet counts ignore free-text search so typing never re-scores every
@@ -301,18 +298,42 @@ export function WorkInternalToolbar({
     );
   }, [clientOptions, clientQuery]);
 
-  const filteredPeopleGroups = useMemo(() => {
-    const needle = peopleQuery.trim().toLowerCase();
-    if (!needle) return peopleOptionsByGroup;
-    return peopleOptionsByGroup
-      .map(({group, options}) => ({
-        group,
-        options: options.filter((opt) =>
-          opt.label.toLowerCase().includes(needle),
-        ),
-      }))
-      .filter(({options}) => options.length > 0);
-  }, [peopleOptionsByGroup, peopleQuery]);
+  const categorySections = useMemo(
+    () =>
+      TAXONOMY_SECTIONS.map((section) => ({
+        id: section.key,
+        label: section.label,
+        hasSelection: Boolean(filters[section.key]),
+        options: taxonomyOptionsByKey[section.key],
+        selectedValue: filters[section.key],
+        onSelect: (value: string) => patchFilter(section.key, value),
+        searchPlaceholder: `Search ${section.label.toLowerCase()}…`,
+        emptyLabel: `No ${section.label.toLowerCase()} terms`,
+      })),
+    [
+      filters.format,
+      filters.industry,
+      filters.market,
+      formatOptions,
+      industryOptions,
+      marketOptions,
+    ],
+  );
+
+  const crewSections = useMemo(
+    () =>
+      peopleOptionsByGroup.map(({group, options}) => ({
+        id: group.libraryKey,
+        label: group.label,
+        hasSelection: Boolean(filters[group.libraryKey]),
+        options,
+        selectedValue: filters[group.libraryKey],
+        onSelect: (value: string) => patchFilter(group.libraryKey, value),
+        searchPlaceholder: `Search ${group.label.toLowerCase()}…`,
+        emptyLabel: 'No people credited',
+      })),
+    [peopleOptionsByGroup, filters],
+  );
 
   const activePills = useMemo(() => {
     const pills: {
@@ -325,7 +346,7 @@ export function WorkInternalToolbar({
       pills.push({
         key: 'client',
         filterKey: 'client',
-        label: `Client: ${findIdentityLabel(clients, filters.client)}`,
+        label: `Brand: ${findIdentityLabel(clients, filters.client)}`,
       });
     }
 
@@ -544,76 +565,31 @@ export function WorkInternalToolbar({
       <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters">
         <div className="vp-internal-fchips" ref={chipRowRef}>
           <WorkInternalFilterPanel
-            label="Taxonomy"
+            label="Categories"
             activeCount={taxonomyActiveCount}
             open={openPanel === 'taxonomy'}
             onToggle={() => togglePanel('taxonomy')}
-            panelClassName="vp-internal-fchip__panel--taxonomy"
+            panelClassName="vp-internal-fchip__panel--nested"
           >
-            <div className="vp-internal-ftax">
-              <div
-                className="vp-internal-ftax__tabs"
-                role="tablist"
-                aria-label="Taxonomy group"
-              >
-                {TAXONOMY_SECTIONS.map((section) => {
-                  const selected = Boolean(filters[section.key]);
-                  return (
-                    <button
-                      key={section.key}
-                      type="button"
-                      role="tab"
-                      aria-selected={taxonomyTab === section.key}
-                      className={
-                        taxonomyTab === section.key
-                          ? 'vp-internal-ftax__tab is-active'
-                          : 'vp-internal-ftax__tab'
-                      }
-                      onClick={() => setTaxonomyTab(section.key)}
-                    >
-                      {section.label}
-                      {selected ? (
-                        <span
-                          className="vp-internal-ftax__tab-dot"
-                          aria-hidden="true"
-                        />
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-              {TAXONOMY_SECTIONS.map((section) =>
-                taxonomyTab === section.key ? (
-                  <div
-                    key={section.key}
-                    role="tabpanel"
-                    aria-label={section.label}
-                    className="vp-internal-ftax__panel"
-                  >
-                    <FilterOptionList
-                      options={taxonomyOptionsByKey[section.key]}
-                      selectedValue={filters[section.key]}
-                      onSelect={(value) => patchFilter(section.key, value)}
-                    />
-                  </div>
-                ) : null,
-              )}
-            </div>
+            <NestedFilterMenu
+              rootLabel="Categories"
+              sections={categorySections}
+            />
           </WorkInternalFilterPanel>
 
           <WorkInternalFilterPanel
-            label="Client"
+            label="Brands"
             activeCount={filters.client ? 1 : 0}
             open={openPanel === 'client'}
             onToggle={() => togglePanel('client')}
             panelClassName="vp-internal-fchip__panel--client"
           >
             <label className="vp-internal-fchip__search">
-              <span className="sr-only">Search clients</span>
+              <span className="sr-only">Search brands</span>
               <input
                 type="search"
                 className="vp-internal-fchip__search-input"
-                placeholder="Search clients…"
+                placeholder="Search brands…"
                 value={clientQuery}
                 onChange={(e) => setClientQuery(e.target.value)}
               />
@@ -626,56 +602,19 @@ export function WorkInternalToolbar({
                 if (value) setOpenPanel(null);
               }}
               emptyLabel={
-                clientQuery.trim() ? 'No matching clients' : 'No clients'
+                clientQuery.trim() ? 'No matching brands' : 'No brands'
               }
             />
           </WorkInternalFilterPanel>
 
           <WorkInternalFilterPanel
-            label="People"
+            label="Crew"
             activeCount={peopleActiveCount}
             open={openPanel === 'people'}
             onToggle={() => togglePanel('people')}
-            panelClassName="vp-internal-fchip__panel--people"
+            panelClassName="vp-internal-fchip__panel--nested"
           >
-            <label className="vp-internal-fchip__search">
-              <span className="sr-only">Search people</span>
-              <input
-                type="search"
-                className="vp-internal-fchip__search-input"
-                placeholder="Search people…"
-                value={peopleQuery}
-                onChange={(e) => setPeopleQuery(e.target.value)}
-              />
-            </label>
-            <div className="vp-internal-fpeople">
-              {filteredPeopleGroups.length === 0 ? (
-                <p className="vp-internal-fchip__empty">
-                  {peopleQuery.trim()
-                    ? 'No matching people'
-                    : 'No people credited'}
-                </p>
-              ) : (
-                filteredPeopleGroups.map(({group, options}) => (
-                  <section
-                    key={group.libraryKey}
-                    className="vp-internal-fpeople__group"
-                    aria-label={group.label}
-                  >
-                    <h3 className="vp-internal-fpeople__heading">
-                      {group.label}
-                    </h3>
-                    <FilterOptionList
-                      options={options}
-                      selectedValue={filters[group.libraryKey]}
-                      onSelect={(value) =>
-                        patchFilter(group.libraryKey, value)
-                      }
-                    />
-                  </section>
-                ))
-              )}
-            </div>
+            <NestedFilterMenu rootLabel="Crew roles" sections={crewSections} />
           </WorkInternalFilterPanel>
         </div>
 
@@ -690,8 +629,8 @@ export function WorkInternalToolbar({
             <option value="publishedAt-asc">Oldest first</option>
             <option value="title-asc">Title A–Z</option>
             <option value="title-desc">Title Z–A</option>
-            <option value="client-asc">Client A–Z</option>
-            <option value="client-desc">Client Z–A</option>
+            <option value="client-asc">Brand A–Z</option>
+            <option value="client-desc">Brand Z–A</option>
           </select>
         </label>
       </div>
