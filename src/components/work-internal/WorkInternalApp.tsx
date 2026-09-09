@@ -55,6 +55,7 @@ import {
 import { takeShowreelCreatePending } from './showreel-create-pending';
 import { WorkInternalCardView } from './WorkInternalCardView';
 import { WorkInternalListView } from './WorkInternalListView';
+import { WorkInternalQuickView } from './WorkInternalQuickView';
 import { WorkInternalShowreelBar } from './WorkInternalShowreelBar';
 import { WorkInternalToolbar } from './WorkInternalToolbar';
 
@@ -99,6 +100,7 @@ export function WorkInternalApp({
   const [appearanceReady, setAppearanceReady] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [createOpen, setCreateOpen] = useState(false);
+  const [quickViewId, setQuickViewId] = useState<string | null>(null);
 
   // Keep grid/facet work off the typing critical path.
   const deferredFilters = useDeferredValue(filters);
@@ -207,6 +209,19 @@ export function WorkInternalApp({
 
   const selectedIdList = useMemo(() => [...selectedIds], [selectedIds]);
 
+  const openQuickView = useCallback((id: string) => {
+    setQuickViewId(id);
+  }, []);
+
+  const closeQuickView = useCallback(() => {
+    setQuickViewId(null);
+  }, []);
+
+  const quickViewEntry = useMemo(() => {
+    if (!quickViewId) return null;
+    return entries.find((entry) => entry._id === quickViewId) ?? null;
+  }, [entries, quickViewId]);
+
   return (
     <div className="vp-internal-app" {...appearanceDataAttrs(appearance)}>
       <header className="vp-internal-app__header">
@@ -265,6 +280,7 @@ export function WorkInternalApp({
               onSortChange={setSort}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
+              onOpenQuickView={openQuickView}
             />
           ) : (
             <WorkInternalCardView
@@ -272,10 +288,19 @@ export function WorkInternalApp({
               locale={locale}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
+              onOpenQuickView={openQuickView}
             />
           )}
         </div>
       </div>
+
+      {quickViewEntry ? (
+        <WorkInternalQuickView
+          entry={quickViewEntry}
+          locale={locale}
+          onClose={closeQuickView}
+        />
+      ) : null}
 
       <WorkInternalShowreelBar
         selectedIds={selectedIdList}

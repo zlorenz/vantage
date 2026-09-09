@@ -5,19 +5,20 @@
 'use client';
 
 import Image from 'next/image';
-import { urlForImage } from '@/lib/sanity';
-import type { Locale } from '@/i18n/routing';
-import type { InternalLibraryEntry } from '@/types/sanity';
-import { openPortfolioEntry } from './entry-url';
-import { getArtName, getCrewName, getEditorName } from './filter-entries';
-import { formatPublishDate, getDisplayTitle } from './text';
-import { WorkInternalSelectCheckbox } from './WorkInternalSelectCheckbox';
+import {urlForImage} from '@/lib/sanity';
+import type {Locale} from '@/i18n/routing';
+import type {InternalLibraryEntry} from '@/types/sanity';
+import {getArtName, getCrewName, getEditorName} from './filter-entries';
+import {formatPublishDate, getDisplayTitle} from './text';
+import {WorkInternalItemMenu} from './WorkInternalItemMenu';
+import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
 
 interface WorkInternalCardViewProps {
   entries: InternalLibraryEntry[];
   locale: Locale;
   selectedIds: Set<string>;
   onToggleSelect: (id: string, selected: boolean) => void;
+  onOpenQuickView: (id: string) => void;
 }
 
 export function WorkInternalCardView({
@@ -25,6 +26,7 @@ export function WorkInternalCardView({
   locale,
   selectedIds,
   onToggleSelect,
+  onOpenQuickView,
 }: WorkInternalCardViewProps) {
   return (
     <div className="vp-internal-cards" role="list">
@@ -52,10 +54,15 @@ export function WorkInternalCardView({
               label={`Select ${title}`}
               onChange={(checked) => onToggleSelect(entry._id, checked)}
             />
+            <WorkInternalItemMenu
+              entry={entry}
+              locale={locale}
+              onQuickView={() => onOpenQuickView(entry._id)}
+            />
             <button
               type="button"
               className="vp-internal-card__hit"
-              onClick={() => openPortfolioEntry(entry, locale)}
+              onClick={() => onOpenQuickView(entry._id)}
             >
               <div className="vp-internal-card__media">
                 <Image

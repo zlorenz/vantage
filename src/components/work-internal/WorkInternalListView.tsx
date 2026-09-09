@@ -8,7 +8,6 @@ import Image from 'next/image';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
-import {openPortfolioEntry} from './entry-url';
 import {
   getArtName,
   getCrewName,
@@ -17,6 +16,7 @@ import {
 } from './filter-entries';
 import {formatPublishDate, getDisplayTitle} from './text';
 import type {LibrarySort} from './types';
+import {WorkInternalItemMenu} from './WorkInternalItemMenu';
 import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
 
 type SortColumn = 'title' | 'date' | 'client';
@@ -28,6 +28,7 @@ interface WorkInternalListViewProps {
   onSortChange: (sort: LibrarySort) => void;
   selectedIds: Set<string>;
   onToggleSelect: (id: string, selected: boolean) => void;
+  onOpenQuickView: (id: string) => void;
 }
 
 function sortColumnFor(sort: LibrarySort): SortColumn {
@@ -123,6 +124,7 @@ export function WorkInternalListView({
   onSortChange,
   selectedIds,
   onToggleSelect,
+  onOpenQuickView,
 }: WorkInternalListViewProps) {
   return (
     <div className="vp-internal-list" role="table" aria-label="Portfolio library">
@@ -181,10 +183,15 @@ export function WorkInternalListView({
                 onChange={(checked) => onToggleSelect(entry._id, checked)}
               />
             </span>
+            <WorkInternalItemMenu
+              entry={entry}
+              locale={locale}
+              onQuickView={() => onOpenQuickView(entry._id)}
+            />
             <button
               type="button"
               className="vp-internal-list__hit"
-              onClick={() => openPortfolioEntry(entry, locale)}
+              onClick={() => onOpenQuickView(entry._id)}
             >
               <span className="vp-internal-list__thumb-col" role="cell">
                 <span className="vp-internal-list__thumb">
