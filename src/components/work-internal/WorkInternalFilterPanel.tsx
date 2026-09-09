@@ -58,7 +58,22 @@ export function WorkInternalFilterPanel({
       >
         <span className="vp-internal-fchip__label">{chipLabel}</span>
         <span className="vp-internal-fchip__chevron" aria-hidden="true">
-          ▾
+          <svg
+            className="vp-internal-fchip__chevron-icon"
+            viewBox="0 0 12 12"
+            width="12"
+            height="12"
+            focusable="false"
+          >
+            <path
+              d="M2.2 4.2 L6 8 L9.8 4.2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </span>
       </button>
 

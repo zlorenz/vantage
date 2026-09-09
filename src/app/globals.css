@@ -2281,9 +2281,18 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-fchip__chevron {
-  font-size: 0.65rem;
-  line-height: 1;
-  opacity: 0.75;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 0;
+  opacity: 0.9;
+}
+
+.vp-internal-fchip__chevron-icon {
+  display: block;
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .vp-internal-fchip__panel {
