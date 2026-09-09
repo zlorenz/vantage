@@ -1,11 +1,16 @@
 /**
- * Showreel editor stub — password-gated via proxy.ts (auth infrastructure).
- * Full editor UI lands in a later prompt.
+ * Showreel editor — password-gated via proxy.ts (`isShowreelEditPath`).
  */
 
 import type {Metadata} from 'next'
+import {notFound} from 'next/navigation'
 import {setRequestLocale} from 'next-intl/server'
 import type {Locale} from '@/i18n/routing'
+import {ShowreelEditor} from '@/components/showreel/ShowreelEditor'
+import {sanityFetch} from '@/sanity/lib/live'
+import {INTERNAL_LIBRARY_QUERY} from '@/sanity/queries/portfolio'
+import {SHOWREEL_EDITOR_QUERY} from '@/sanity/queries/showreel'
+import type {InternalLibraryEntry} from '@/types/sanity'
 
 type Props = {
   params: Promise<{locale: string; id: string}>
@@ -18,19 +23,56 @@ export const metadata: Metadata = {
   robots: {index: false, follow: false},
 }
 
-export default async function ShowreelEditStubPage({params}: Props) {
+export default async function ShowreelEditPage({params}: Props) {
   const {locale, id} = await params
-  setRequestLocale(locale as Locale)
+  const typedLocale = locale as Locale
+  setRequestLocale(typedLocale)
+
+  const [showreelResult, libraryResult] = await Promise.all([
+    sanityFetch({
+      query: SHOWREEL_EDITOR_QUERY,
+      params: {id},
+      stega: false,
+    }),
+    sanityFetch({query: INTERNAL_LIBRARY_QUERY, stega: false}),
+  ])
+
+  const showreel = showreelResult.data as {
+    _id: string
+    title?: string
+    description?: string
+    items?: Array<{
+      _id: string
+      title: string
+      titleZh?: string
+      displayTitleParts?: InternalLibraryEntry['displayTitleParts']
+      featuredImage?: InternalLibraryEntry['featuredImage']
+      slug?: string
+      slugZh?: string
+    } | null>
+  } | null
+
+  if (!showreel?._id || !showreel.title) {
+    notFound()
+  }
+
+  const library = libraryResult.data as InternalLibraryEntry[]
+  const items = (showreel.items ?? []).filter(
+    (item): item is NonNullable<typeof item> => Boolean(item?._id),
+  )
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16">
-      <h1 className="mb-2 font-vp-heading text-2xl font-bold uppercase tracking-vp-heading">
-        Showreel editor
-      </h1>
-      <p className="text-vp-text-muted">
-        Authenticated stub for showreel <code>{id}</code>. Editor UI coming
-        next.
-      </p>
+    <div className="vp-internal-page">
+      <ShowreelEditor
+        locale={typedLocale}
+        showreel={{
+          _id: showreel._id,
+          title: showreel.title,
+          description: showreel.description,
+          items,
+        }}
+        library={library}
+      />
     </div>
   )
 }
