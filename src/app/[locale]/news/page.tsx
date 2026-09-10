@@ -134,6 +134,7 @@ export default async function NewsPage({ params }: Props) {
 
         {/* Full-bleed chrome — outside .vp-content-rail so borders span the viewport. */}
         <div className="vp-news-page__chrome">
+          <div className="vp-news-page__rule" aria-hidden="true" />
           {featuredPost ? (
             <FeaturedPost
               post={featuredPost}
