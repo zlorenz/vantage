@@ -1,0 +1,172 @@
+/**
+ * Blog desktop category filter — mirrors portfolio desktop filter chrome
+ * (vp-portfolio-index-desktop-filters__*) for a single Categories facet.
+ */
+
+.vp-blog-desktop-filter {
+  display: none;
+}
+
+@media (min-width: 576px) {
+  .vp-blog-desktop-filter {
+    display: block;
+    position: relative;
+    z-index: 3;
+    flex-shrink: 0;
+    pointer-events: auto;
+  }
+
+  .vp-blog-desktop-filter__trigger-wrap {
+    position: relative;
+  }
+
+  .vp-blog-desktop-filter__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vp-blog-desktop-filter__trigger:hover,
+  .vp-blog-desktop-filter__trigger:focus-visible {
+    outline: none;
+  }
+
+  .vp-blog-desktop-filter__trigger:hover .vp-blog-desktop-filter__trigger-label,
+  .vp-blog-desktop-filter__trigger:focus-visible
+    .vp-blog-desktop-filter__trigger-label {
+    opacity: 0.85;
+  }
+
+  .vp-blog-desktop-filter__chevron {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    transition: transform 0.18s ease;
+  }
+
+  .vp-blog-desktop-filter__trigger.is-open .vp-blog-desktop-filter__chevron {
+    transform: rotate(180deg);
+  }
+
+  .vp-blog-desktop-filter__trigger-label {
+    font-family: var(--font-vp-heading);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.0175rem;
+    text-transform: uppercase;
+    color: #fff;
+    transition: opacity var(--vp-transition);
+  }
+
+  .vp-blog-desktop-filter__panel {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    z-index: 60;
+    box-sizing: border-box;
+    width: 33.125rem;
+    max-width: min(33.125rem, calc(100vw - 2rem));
+    height: min(36rem, calc(100svh - 12rem));
+    overflow: hidden;
+    background: #0f0f0f;
+    color: #fff;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  .vp-blog-desktop-filter__panel-body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 3rem 1.875rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .vp-blog-desktop-filter__all,
+  .vp-blog-desktop-filter__term {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.25);
+    font-family: var(--font-vp-heading);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--vp-transition);
+  }
+
+  .vp-blog-desktop-filter__all:hover,
+  .vp-blog-desktop-filter__term:hover,
+  .vp-blog-desktop-filter__all:focus-visible,
+  .vp-blog-desktop-filter__term:focus-visible {
+    color: rgba(255, 255, 255, 0.7);
+    outline: none;
+  }
+
+  .vp-blog-desktop-filter__all.is-selected,
+  .vp-blog-desktop-filter__term.is-selected {
+    color: #fff;
+  }
+
+  .vp-blog-desktop-filter__all-label,
+  .vp-blog-desktop-filter__term-label {
+    min-width: 0;
+    text-transform: uppercase;
+    letter-spacing: -0.0175rem;
+  }
+
+  .vp-blog-desktop-filter__term-count {
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .vp-blog-desktop-filter__terms {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vp-blog-desktop-filter__watermark {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    width: 22rem;
+    height: auto;
+    max-height: 45%;
+    object-fit: contain;
+    object-position: right bottom;
+    opacity: 0.1;
+    mix-blend-mode: luminosity;
+    pointer-events: none;
+  }
+}
