@@ -527,6 +527,7 @@ body:has(.vp-internal-page) .vp-internal-detail__title {
 
 body:has(.vp-internal-page) .vp-internal-detail__date,
 body:has(.vp-internal-page) .vp-internal-detail__section-title,
+body:has(.vp-internal-page) .vp-internal-detail__tax-heading,
 body:has(.vp-internal-page) .vp-internal-detail__facts dt,
 body:has(.vp-internal-page) .vp-internal-detail__pairs dt,
 body:has(.vp-internal-page) .vp-internal-detail__empty-credits {

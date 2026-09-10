@@ -449,33 +449,57 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
                 <dd>{platforms.join(', ')}</dd>
               </div>
             ) : null}
-            {playableVideos.length > 1 ? (
-              <div>
-                <dt>Films</dt>
-                <dd>{playableVideos.length}</dd>
-              </div>
-            ) : null}
           </dl>
 
           {(formats.length > 0 ||
             industries.length > 0 ||
             markets.length > 0) && (
-            <div className="vp-internal-detail__tags" aria-label="Taxonomy">
-              {formats.map((label) => (
-                <span key={`f-${label}`} className="vp-internal-detail__tag">
-                  {label}
-                </span>
-              ))}
-              {industries.map((label) => (
-                <span key={`i-${label}`} className="vp-internal-detail__tag">
-                  {label}
-                </span>
-              ))}
-              {markets.map((label) => (
-                <span key={`m-${label}`} className="vp-internal-detail__tag">
-                  {label}
-                </span>
-              ))}
+            <div className="vp-internal-detail__taxonomy" aria-label="Taxonomy">
+              {formats.length > 0 ? (
+                <div className="vp-internal-detail__tax-group">
+                  <h2 className="vp-internal-detail__tax-heading">Format</h2>
+                  <div className="vp-internal-detail__tags">
+                    {formats.map((label) => (
+                      <span
+                        key={`f-${label}`}
+                        className="vp-internal-detail__tag"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+              {industries.length > 0 ? (
+                <div className="vp-internal-detail__tax-group">
+                  <h2 className="vp-internal-detail__tax-heading">Industry</h2>
+                  <div className="vp-internal-detail__tags">
+                    {industries.map((label) => (
+                      <span
+                        key={`i-${label}`}
+                        className="vp-internal-detail__tag"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+              {markets.length > 0 ? (
+                <div className="vp-internal-detail__tax-group">
+                  <h2 className="vp-internal-detail__tax-heading">Market</h2>
+                  <div className="vp-internal-detail__tags">
+                    {markets.map((label) => (
+                      <span
+                        key={`m-${label}`}
+                        className="vp-internal-detail__tag"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
           )}
 
