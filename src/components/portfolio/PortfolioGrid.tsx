@@ -479,17 +479,15 @@ export function PortfolioGrid({
     publicFilters.market !== presetMarket;
 
   const updatePublicFilter = (key: keyof PublicFilters, value: string) => {
-    setPublicFilters((prev) => {
-      const next = { ...prev, [key]: value };
-      if (filterMode === 'public') {
-        trackInteractionEvent({
-          eventType: 'filter_change',
-          sourceSurface: 'taxonomy_archive',
-          filters: next,
-        });
-      }
-      return next;
-    });
+    const next = { ...publicFilters, [key]: value };
+    setPublicFilters(next);
+    if (filterMode === 'public') {
+      trackInteractionEvent({
+        eventType: 'filter_change',
+        sourceSurface: 'taxonomy_archive',
+        filters: next,
+      });
+    }
     keepFiltersInView();
   };
 

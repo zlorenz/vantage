@@ -752,21 +752,18 @@ export function PortfolioIndexCarousel({
 
   const updatePublicFilter = useCallback(
     (key: keyof PublicFilters, value: string) => {
-      setPublicFilters((prev) => {
-        const next = {...prev, [key]: value};
-        trackInteractionEvent({
-          eventType: 'filter_change',
-          sourceSurface: 'work_carousel',
-          filters: next,
-        });
-        return next;
-      });
+      setPublicFilters((prev) => ({...prev, [key]: value}));
       // Activating a filter clears any committed search.
       setCommittedSearch('');
       setDraftSearch('');
       setActiveIndex(0);
+      trackInteractionEvent({
+        eventType: 'filter_change',
+        sourceSurface: 'work_carousel',
+        filters: {...publicFilters, [key]: value},
+      });
     },
-    [],
+    [publicFilters],
   );
 
   const clearAllActive = useCallback(() => {
@@ -783,18 +780,18 @@ export function PortfolioIndexCarousel({
     });
   }, []);
 
-  const clearOnePublicFilter = useCallback((key: keyof PublicFilters) => {
-    setPublicFilters((prev) => {
-      const next = {...prev, [key]: ''};
+  const clearOnePublicFilter = useCallback(
+    (key: keyof PublicFilters) => {
+      setPublicFilters((prev) => ({...prev, [key]: ''}));
+      setActiveIndex(0);
       trackInteractionEvent({
         eventType: 'filter_change',
         sourceSurface: 'work_carousel',
-        filters: next,
+        filters: {...publicFilters, [key]: ''},
       });
-      return next;
-    });
-    setActiveIndex(0);
-  }, []);
+    },
+    [publicFilters],
+  );
 
   const closeFilterSheet = useCallback(() => {
     setFilterSheetOpen(false);
