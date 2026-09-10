@@ -2,7 +2,7 @@
 
 /**
  * BlogPostCard — news index and category archive list card.
- * Figma Blog card 2051:5750: fixed 480px image, L-brackets, meta pills.
+ * Figma Blog card 2051:5750: fixed 480px image, L-brackets, meta pills, 26px title.
  */
 
 import Image from 'next/image';
@@ -109,7 +109,7 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
         ) : null}
 
         <div className="vp-blog-card__copy">
-          <h2 className="vp-blog-card__title vp-blog-card__title--legacy">
+          <h2 className="vp-blog-card__title">
             <Link href={{ pathname: '/[slug]', params: { slug: slugParam } }}>
               {title}
             </Link>

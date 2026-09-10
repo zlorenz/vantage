@@ -127,11 +127,11 @@ a.vp-blog-card__pill:focus-visible {
   width: 100%;
 }
 
-/* Interim title scale until Figma 26px commit. */
-.vp-blog-card__title--legacy {
+/* Figma title — 26px / lh 1.4. */
+.vp-blog-card__title {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: clamp(1.25rem, 1.5vw, 1.75rem);
+  font-size: 1.625rem; /* 26px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.4;
   color: #fff;
