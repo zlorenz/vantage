@@ -44,6 +44,13 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
 
   return (
     <article className="vp-featured-post">
+      <div className="vp-featured-post__brackets" aria-hidden="true">
+        <span className="vp-featured-post__bracket vp-featured-post__bracket--tl" />
+        <span className="vp-featured-post__bracket vp-featured-post__bracket--tr" />
+        <span className="vp-featured-post__bracket vp-featured-post__bracket--br" />
+        <span className="vp-featured-post__bracket vp-featured-post__bracket--bl" />
+      </div>
+
       <div className="vp-featured-post__inner">
         <div className="vp-featured-post__content">
           <div className="vp-featured-post__copy">
@@ -118,13 +125,6 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
           ) : (
             <div className="vp-featured-post__image-fallback" aria-hidden="true" />
           )}
-        </div>
-
-        <div className="vp-featured-post__brackets" aria-hidden="true">
-          <span className="vp-featured-post__bracket vp-featured-post__bracket--tl" />
-          <span className="vp-featured-post__bracket vp-featured-post__bracket--tr" />
-          <span className="vp-featured-post__bracket vp-featured-post__bracket--br" />
-          <span className="vp-featured-post__bracket vp-featured-post__bracket--bl" />
         </div>
       </div>
     </article>

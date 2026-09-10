@@ -4,10 +4,11 @@
  */
 
 .vp-featured-post {
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   margin-bottom: 7.5rem; /* Figma gap featured → grid: 120px */
-  padding: 1.875rem; /* 30px */
+  padding: 1.875rem; /* 30px — content inset; brackets sit outside at 15px */
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -181,8 +182,9 @@ a.vp-featured-post__pill:focus-visible {
 }
 
 .vp-featured-post__brackets {
+  /* Figma 2051:5546 — 15px from outer chrome; content block is at 30px. */
   position: absolute;
-  inset: 0.9375rem; /* 15px */
+  inset: 0.9375rem;
   z-index: 2;
   pointer-events: none;
 }
