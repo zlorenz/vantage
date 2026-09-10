@@ -156,6 +156,12 @@ type Cache = {
   edgeDist: Uint16Array;
   /** Cap used when building edgeDist (reveal-texel units). */
   warpEdgeDist: number;
+  /**
+   * Additive-only hole bleed: collage RGBA masked to allowanceMask (inner
+   * cavity minus cusp-seal footprint). Null alpha outside. Path2D / geomMask
+   * / destination-in reveal stay unchanged — this is a separate source.
+   */
+  holeAllowanceData: ImageData;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -348,6 +354,11 @@ function buildWhiteWordmark(
  * Collage is already alpha-masked to the "A"; Path2D intersect is intentional
  * (harmless when they agree; watch for thin double-edge / gap if they drift).
  * Drawn into the supersampled buffer (logoCss * dpr * REVEAL_SUPER).
+ *
+ * Optional holeMask: after Path2D destination-in + morphClose, copy opaque
+ * mark RGBA 1–2 texels into holeMask cells only (never exterior). Those cells
+ * stay geomMask==0 so sampleWarpedMark still nulls there — shelf is solely
+ * so mark-edge bilinear neighbors are content instead of hard zero.
  */
 function buildRevealBuffer(
   path2d: Path2D,
@@ -358,6 +369,7 @@ function buildRevealBuffer(
   dw: number,
   dh: number,
   collage: CanvasImageSource,
+  holeMask?: Uint8Array,
 ): { canvas: HTMLCanvasElement; data: ImageData } {
   const c = document.createElement("canvas");
   c.width = dw;
@@ -402,6 +414,15 @@ function buildRevealBuffer(
   const closeTmp = new Uint8ClampedArray(data.data.length);
   morphCloseAlpha(data.data, dw, dh, 1, closeTmp);
   scrubTransparentRgb(data.data);
+  // Mark|hole seam shelf: holeMask only (excludes border-reachable exterior).
+  if (holeMask) {
+    dilateOpaqueIntoMask(data.data, dw, dh, holeMask, SEAM_SHELF_TEXELS);
+    // Path2D destination-in leaves a soft AA fringe on the mark side of the
+    // cut; bilinear there never reaches the hole shelf. Solidify alpha only
+    // on mark texels that touch holeMask (RGB unchanged) so the junction is
+    // opaque without widening silhouette into exterior.
+    solidifyMarkAlphaTouchingHole(data.data, dw, dh, holeMask);
+  }
   ctx.putImageData(data, 0, 0);
   return { canvas: c, data };
 }
@@ -503,6 +524,302 @@ function buildGeomEdgeMaps(
     if (edgeDist[i]! <= EDGE_PROX_RADIUS) edgeProx[i] = 1;
   }
   return { geomMask, edgeProx, edgeDist, warpEdgeDist };
+}
+
+/**
+ * Cusp gap endpoints in viewBox (SYMBOL_PATH_D). Used only as a temporary
+ * flood barrier when classifying the inner cavity — never mutates live Path2D.
+ */
+const CUSP_GAP_VB = { x0: 44.0, x1: 44.7, y: 33.16 } as const;
+/**
+ * Seal half-width in viewBox units for classification + allowance exclusion.
+ * Validated brush was ~±0.2 vb at 10×; use 0.35 (wider) so the gap channel
+ * stays out of allowanceMask.
+ */
+const CUSP_SEAL_HALF_VB = 0.35;
+/**
+ * Master switch for the additive hole-allowance layer. Set false to no-op the
+ * fallback (Path2D hard-hole clip only) without deleting code — used to verify
+ * that disabling restores pre-allowance behavior.
+ */
+const HOLE_ALLOWANCE_ENABLED = true;
+/**
+ * Build-time mark|hole seam shelf width in reveal texels. Feeds bilinear
+ * neighborhoods across the Path2D cut without reading as a second ring.
+ * 2 texels: radius 1 left a residual magenta gap under loupe warp/DPR.
+ */
+const SEAM_SHELF_TEXELS = 2;
+
+/**
+ * Classify the enclosed counter (hole) vs border-reachable exterior.
+ *
+ * Temporarily seals the cusp gap as a flood barrier only — does not mutate
+ * live Path2D / geomMask. sealFootprint marks the brush used for that barrier
+ * and for allowance exclusion.
+ */
+function classifyHoleCavity(
+  geomMask: Uint8Array,
+  dw: number,
+  dh: number,
+): { exterior: Uint8Array; sealFootprint: Uint8Array; holeMask: Uint8Array } {
+  const sealed = new Uint8Array(geomMask);
+  const sealFootprint = new Uint8Array(dw * dh);
+  const sx = dw / SYMBOL_VIEWBOX_W;
+  const sy = dh / SYMBOL_VIEWBOX_H;
+  const rTx = Math.max(3, Math.ceil(CUSP_SEAL_HALF_VB * sx));
+  const rTy = Math.max(3, Math.ceil(CUSP_SEAL_HALF_VB * sy));
+  const gapSpanPx = Math.max(1, Math.ceil((CUSP_GAP_VB.x1 - CUSP_GAP_VB.x0) * sx));
+  const steps = Math.max(80, gapSpanPx * 2);
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const vx = CUSP_GAP_VB.x0 + (CUSP_GAP_VB.x1 - CUSP_GAP_VB.x0) * t;
+    const vy = CUSP_GAP_VB.y;
+    const cx = Math.round(vx * sx - 0.5);
+    const cy = Math.round(vy * sy - 0.5);
+    for (let oy = -rTy; oy <= rTy; oy++) {
+      for (let ox = -rTx; ox <= rTx; ox++) {
+        const nx = cx + ox;
+        const ny = cy + oy;
+        if (nx < 0 || ny < 0 || nx >= dw || ny >= dh) continue;
+        const idx = ny * dw + nx;
+        sealed[idx] = 255;
+        sealFootprint[idx] = 1;
+      }
+    }
+  }
+
+  const exterior = new Uint8Array(dw * dh);
+  const q = new Int32Array(dw * dh);
+  let qh = 0;
+  let qt = 0;
+  const trySeed = (x: number, y: number) => {
+    const i = y * dw + x;
+    if (sealed[i]! >= 128 || exterior[i]!) return;
+    exterior[i] = 1;
+    q[qt++] = i;
+  };
+  for (let x = 0; x < dw; x++) {
+    trySeed(x, 0);
+    trySeed(x, dh - 1);
+  }
+  for (let y = 0; y < dh; y++) {
+    trySeed(0, y);
+    trySeed(dw - 1, y);
+  }
+  while (qh < qt) {
+    const i = q[qh++]!;
+    const x = i % dw;
+    const y = (i / dw) | 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        if (dx !== 0 && dy !== 0) continue; // 4-connected
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= dw || ny >= dh) continue;
+        const ni = ny * dw + nx;
+        if (sealed[ni]! >= 128 || exterior[ni]!) continue;
+        exterior[ni] = 1;
+        q[qt++] = ni;
+      }
+    }
+  }
+
+  const holeMask = new Uint8Array(dw * dh);
+  for (let i = 0; i < dw * dh; i++) {
+    if (geomMask[i]! < 128 && exterior[i]! === 0) holeMask[i] = 1;
+  }
+  return { exterior, sealFootprint, holeMask };
+}
+
+/**
+ * Force opaque alpha on mark-side texels that touch holeMask. Leaves exterior
+ * and interior soft AA alone — only the mark|hole interface.
+ */
+function solidifyMarkAlphaTouchingHole(
+  rgba: Uint8ClampedArray,
+  dw: number,
+  dh: number,
+  holeMask: Uint8Array,
+): void {
+  for (let y = 0; y < dh; y++) {
+    for (let x = 0; x < dw; x++) {
+      const i = y * dw + x;
+      if (holeMask[i]!) continue;
+      const p = i * 4;
+      const a = rgba[p + 3]!;
+      if (a < 1 || a >= 255) continue;
+      let touchesHole = false;
+      for (let oy = -1; oy <= 1 && !touchesHole; oy++) {
+        for (let ox = -1; ox <= 1; ox++) {
+          if (ox === 0 && oy === 0) continue;
+          const nx = x + ox;
+          const ny = y + oy;
+          if (nx < 0 || ny < 0 || nx >= dw || ny >= dh) continue;
+          if (holeMask[ny * dw + nx]!) {
+            touchesHole = true;
+            break;
+          }
+        }
+      }
+      if (touchesHole) rgba[p + 3] = 255;
+    }
+  }
+}
+
+/**
+ * Build-time morphological dilate of opaque RGBA into targetMask cells.
+ * forbidMask cells are never written and never used as copy sources (cusp
+ * seal + exterior for the allowance shelf).
+ */
+function dilateOpaqueIntoMask(
+  rgba: Uint8ClampedArray,
+  dw: number,
+  dh: number,
+  targetMask: Uint8Array,
+  radius: number,
+  forbidMask?: Uint8Array,
+): void {
+  if (radius < 1) return;
+  const tmp = new Uint8ClampedArray(rgba.length);
+  for (let iter = 0; iter < radius; iter++) {
+    tmp.set(rgba);
+    for (let y = 0; y < dh; y++) {
+      for (let x = 0; x < dw; x++) {
+        const i = y * dw + x;
+        if (targetMask[i]! === 0) continue;
+        if (forbidMask && forbidMask[i]!) continue;
+        const p = i * 4;
+        if (rgba[p + 3]! > 0) continue;
+        let bestA = 0;
+        let br = 0;
+        let bg = 0;
+        let bb = 0;
+        let ba = 0;
+        for (let oy = -1; oy <= 1; oy++) {
+          for (let ox = -1; ox <= 1; ox++) {
+            if (ox === 0 && oy === 0) continue;
+            const nx = x + ox;
+            const ny = y + oy;
+            if (nx < 0 || ny < 0 || nx >= dw || ny >= dh) continue;
+            const ni = ny * dw + nx;
+            if (forbidMask && forbidMask[ni]!) continue;
+            const np = ni * 4;
+            const a = rgba[np + 3]!;
+            if (a <= bestA) continue;
+            bestA = a;
+            br = rgba[np]!;
+            bg = rgba[np + 1]!;
+            bb = rgba[np + 2]!;
+            ba = a;
+          }
+        }
+        if (bestA < 1) continue;
+        tmp[p] = br;
+        tmp[p + 1] = bg;
+        tmp[p + 2] = bb;
+        tmp[p + 3] = ba;
+      }
+    }
+    rgba.set(tmp);
+  }
+}
+
+/**
+ * Build-time additive holeAllowance buffer.
+ *
+ * holeMask: geomMask==0 cells not reached by a border flood when the cusp
+ * segment is sealed as a temporary barrier (cavity that only opens via the
+ * 0.70-unit gap).
+ * allowanceMask: holeMask minus the seal footprint — never paints the gap
+ * channel. Outer exterior and mark interior are excluded by construction.
+ *
+ * After hard masking, dilates allow content SEAM_SHELF_TEXELS into adjacent
+ * mark cells so hole-edge bilinear does not mix with hard-zero mark neighbors;
+ * then re-zeros sealFootprint and exterior (seal is never a dilate source or
+ * target — forbidMask during dilate + explicit wipe after).
+ *
+ * Does not modify geomMask, SYMBOL_PATH_D, or the Path2D reveal clip.
+ */
+function buildHoleAllowanceData(
+  geomMask: Uint8Array,
+  dw: number,
+  dh: number,
+  collage: CanvasImageSource,
+  classified?: {
+    exterior: Uint8Array;
+    sealFootprint: Uint8Array;
+    holeMask: Uint8Array;
+  },
+): ImageData {
+  const { exterior, sealFootprint, holeMask } =
+    classified ?? classifyHoleCavity(geomMask, dw, dh);
+
+  const c = document.createElement("canvas");
+  c.width = dw;
+  c.height = dh;
+  const ctx = c.getContext("2d")!;
+  ctx.drawImage(collage, 0, 0, dw, dh);
+  const data = ctx.getImageData(0, 0, dw, dh);
+  const rgba = data.data;
+  const markTarget = new Uint8Array(dw * dh);
+  const forbid = new Uint8Array(dw * dh);
+  for (let i = 0, p = 0; i < dw * dh; i++, p += 4) {
+    // allowanceMask = holeMask ∧ ¬sealFootprint
+    const allow =
+      holeMask[i]! !== 0 && sealFootprint[i]! === 0;
+    if (geomMask[i]! >= 128) markTarget[i] = 1;
+    if (sealFootprint[i]! || exterior[i]!) forbid[i] = 1;
+    if (allow) continue;
+    rgba[p] = 0;
+    rgba[p + 1] = 0;
+    rgba[p + 2] = 0;
+    rgba[p + 3] = 0;
+  }
+  // Shelf into mark only; seal + exterior never source or target.
+  dilateOpaqueIntoMask(
+    rgba,
+    dw,
+    dh,
+    markTarget,
+    SEAM_SHELF_TEXELS,
+    forbid,
+  );
+  // Solidify soft allow texels that touch mark so hole-edge bilinear stays opaque.
+  for (let y = 0; y < dh; y++) {
+    for (let x = 0; x < dw; x++) {
+      const i = y * dw + x;
+      if (forbid[i]!) continue;
+      if (markTarget[i]!) continue;
+      if (holeMask[i]! === 0 || sealFootprint[i]!) continue;
+      const p = i * 4;
+      const a = rgba[p + 3]!;
+      if (a < 1 || a >= 255) continue;
+      let touchesMark = false;
+      for (let oy = -1; oy <= 1 && !touchesMark; oy++) {
+        for (let ox = -1; ox <= 1; ox++) {
+          if (ox === 0 && oy === 0) continue;
+          const nx = x + ox;
+          const ny = y + oy;
+          if (nx < 0 || ny < 0 || nx >= dw || ny >= dh) continue;
+          if (markTarget[ny * dw + nx]!) {
+            touchesMark = true;
+            break;
+          }
+        }
+      }
+      if (touchesMark) rgba[p + 3] = 255;
+    }
+  }
+  // Explicit post-dilate wipe — seal remains sole cusp authority.
+  for (let i = 0, p = 0; i < dw * dh; i++, p += 4) {
+    if (sealFootprint[i]! === 0 && exterior[i]! === 0) continue;
+    rgba[p] = 0;
+    rgba[p + 1] = 0;
+    rgba[p + 2] = 0;
+    rgba[p + 3] = 0;
+  }
+  return data;
 }
 
 /** O(1) nearest sample of the edge-proximity band. */
@@ -923,6 +1240,24 @@ function sampleWarpedMark(
 }
 
 /**
+ * Additive hole-bleed sample — NO geomMask gate. Source is already masked to
+ * allowanceMask (cavity minus cusp-seal footprint). Only used when
+ * sampleWarpedMark already returned null.
+ */
+function sampleHoleAllowance(
+  src: Uint8ClampedArray,
+  revealDw: number,
+  revealDh: number,
+  sx: number,
+  sy: number,
+): WarpedSample | null {
+  const aTap = sampleChannelBilinear(src, revealDw, revealDh, sx, sy, 3);
+  if (aTap < 1) return null;
+  const [r, g, b] = sampleRgbBilinear(src, revealDw, revealDh, sx, sy);
+  return { r, g, b, a: Math.min(255, Math.round(aTap)) };
+}
+
+/**
  * Thin exterior alpha soften: fade alpha only, keep each texel’s own RGB.
  * Seeds from border-connected transparent (not enclosed counters).
  */
@@ -1139,8 +1474,10 @@ function buildLensDisc(
     logoW,
     logoH,
     geomMask,
+    holeAllowanceData,
   } = cache;
   const src = revealData.data;
+  const holeSrc = holeAllowanceData.data;
   const scaleX = revealDw / logoW;
   const scaleY = revealDh / logoH;
   const cx = size / 2;
@@ -1202,14 +1539,18 @@ function buildLensDisc(
       const logoCssY = originY + sampleYCss;
       const sx0 = (logoCssX - logoX) * scaleX;
       const sy0 = (logoCssY - logoY) * scaleY;
-      const sampled = sampleWarpedMark(
-        src,
-        geomMask,
-        revealDw,
-        revealDh,
-        sx0,
-        sy0,
-      );
+      const sampled =
+        sampleWarpedMark(
+          src,
+          geomMask,
+          revealDw,
+          revealDh,
+          sx0,
+          sy0,
+        ) ??
+        (HOLE_ALLOWANCE_ENABLED
+          ? sampleHoleAllowance(holeSrc, revealDw, revealDh, sx0, sy0)
+          : null);
       if (!sampled) continue;
       let { r, g, b, a: sampleA } = sampled;
       const caOff = lensR * CA_FRAC * rw;
@@ -1745,6 +2086,16 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       whiteW,
       whiteH,
     );
+    const { geomMask, edgeProx, edgeDist, warpEdgeDist } = buildGeomEdgeMaps(
+      scaled,
+      logoX,
+      logoY,
+      logoW,
+      logoH,
+      revealW,
+      revealH,
+    );
+    const holeClassified = classifyHoleCavity(geomMask, revealW, revealH);
     const { canvas: reveal, data: revealData } = buildRevealBuffer(
       scaled,
       logoX,
@@ -1754,15 +2105,14 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       revealW,
       revealH,
       collage,
+      holeClassified.holeMask,
     );
-    const { geomMask, edgeProx, edgeDist, warpEdgeDist } = buildGeomEdgeMaps(
-      scaled,
-      logoX,
-      logoY,
-      logoW,
-      logoH,
+    const holeAllowanceData = buildHoleAllowanceData(
+      geomMask,
       revealW,
       revealH,
+      collage,
+      holeClassified,
     );
 
     cache = {
@@ -1780,6 +2130,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       edgeProx,
       edgeDist,
       warpEdgeDist,
+      holeAllowanceData,
     };
   };
 
