@@ -273,8 +273,11 @@ export function NavBar({
         <LanguageSwitcher variant="toggle" />
       </div>
 
-      {/* Desktop: EN + 中文 cells (Figma nav chrome) — sibling before hamburger */}
-      <div className="vp-desktop-lang-slot ml-auto hidden md:flex">
+      {/* Desktop: search + EN/中文 cells (Figma nav chrome) — sibling before hamburger.
+          NavSearch's non-alwaysExpanded mode is `hidden md:block`; mobile keeps
+          the panel-mounted alwaysExpanded instance below. */}
+      <div className="vp-desktop-lang-slot ml-auto hidden items-center gap-2 md:flex">
+        <NavSearch />
         <LanguageSwitcher variant="cells" />
       </div>
 
