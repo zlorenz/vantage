@@ -3,9 +3,10 @@
  *
  * Source: content-schema.md §4.4
  *
- * Two tabs:
+ * Tabs:
  * - Page Details — Title → Card (image | excerpt) → slug, hero chrome, SEO
  * - Content — frontend-aligned widgets (carousel → featured work → body → logos…)
+ *   Hidden on the news (Production Log) page — intro lives in Excerpt.
  */
 
 import {defineField, defineType} from 'sanity'
@@ -14,7 +15,7 @@ import {ClearableArrayInput} from '../components/ClearableArrayInput'
 import {TranslatorLockedArrayInput} from '../components/TranslatorLockedArrayInput'
 import {BilingualPortableTextInput} from '../components/body/BilingualPortableTextInput'
 import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
-import {hideUnlessPageSlug} from '../lib/page-visibility'
+import {hideUnlessPageSlug, isPageSlug} from '../lib/page-visibility'
 import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
 
 export const page = defineType({
@@ -24,7 +25,13 @@ export const page = defineType({
 
   groups: [
     {name: 'details', title: 'Page Details', default: true},
-    {name: 'content', title: 'Content'},
+    // News only uses Page Details (title + excerpt intro) — hide Content there.
+    {
+      name: 'content',
+      title: 'Content',
+      hidden: ({document, value}) =>
+        isPageSlug((document ?? value) as Record<string, unknown> | undefined, 'news'),
+    },
   ],
 
   fieldsets: [
@@ -71,7 +78,8 @@ export const page = defineType({
       rows: 3,
       group: 'details',
       fieldset: 'card',
-      description: 'Card / teaser copy. Usually the former body lead paragraph.',
+      description:
+        'Card / teaser copy. On Production Log (news): the page intro under the title.',
       optional: true,
     }),
 
@@ -186,7 +194,17 @@ export const page = defineType({
       type: 'pagePortableText',
       group: 'content',
       description: 'Main page copy. On Home: company description under Featured Work.',
-      validation: (rule) => rule.required(),
+      // News uses Excerpt for the intro — body is unused and not required there.
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          if (isPageSlug(context.document as Record<string, unknown>, 'news')) {
+            return true
+          }
+          if (!value || (Array.isArray(value) && value.length === 0)) {
+            return 'Required'
+          }
+          return true
+        }),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
       hidden: hiddenForTranslatorWhenEmpty,
       components: {input: BilingualPortableTextInput},

@@ -136,11 +136,12 @@ export const CONTACT_PAGE_QUERY = defineQuery(`
   }
 `)
 
-/** News index — meta + hero/body intro. */
+/** News index — meta + excerpt intro (no Portable Text body). */
 export const NEWS_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "news" && !defined(trash.trashedAt)][0]{
     ${PAGE_META_FIELDS},
-    ${PAGE_CONTENT_FIELDS}
+    excerpt,
+    excerptZh
   }
 `)
 
