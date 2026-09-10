@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
 import { BlogPostMasonry } from '@/components/blog/BlogPostMasonry';
+import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
@@ -77,6 +78,8 @@ export default async function NewsPage({ params }: Props) {
   const pageTitle =
     pickLocaleFieldWithPhrases(typedLocale, page.title, page.titleZh, phrases) ||
     'Production Log';
+  const bodyBlocks =
+    typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
 
   return (
     <>
@@ -104,6 +107,11 @@ export default async function NewsPage({ params }: Props) {
               <p className="vp-news-page__eyebrow">{`●  ${t('eyebrow')}`}</p>
               <div className="vp-news-page__title-block">
                 <h1 className="vp-news-page__title">{pageTitle}</h1>
+                {bodyBlocks?.length ? (
+                  <div className="vp-news-page__intro">
+                    <PortableTextContent blocks={bodyBlocks} />
+                  </div>
+                ) : null}
               </div>
             </div>
             <BlogCategoryFilter

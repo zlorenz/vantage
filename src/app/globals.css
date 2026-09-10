@@ -1846,6 +1846,25 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 }
 
+/* Figma intro under H1 — Mona Sans 18px / 60% white. */
+.vp-news-page__intro {
+  margin: 0;
+  max-width: 61.375rem;
+  font-family: var(--font-vp-sans);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.vp-news-page__intro p {
+  margin: 0;
+}
+
+.vp-news-page__intro p + p {
+  margin-top: 0.75em;
+}
+
 .vp-news-masonry {
   display: flex;
   align-items: flex-start;
