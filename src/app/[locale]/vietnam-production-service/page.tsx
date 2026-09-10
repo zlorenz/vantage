@@ -115,7 +115,7 @@ export default async function VietnamProductionServicePage({ params }: Props) {
   const pClass = 'mb-6 font-normal leading-relaxed text-vp-text-muted last:mb-0';
   const guidePClass = 'mb-6 font-normal leading-relaxed text-black/75 last:mb-0';
   const guideCtaClassName =
-    'inline-block rounded-full bg-black px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-white no-underline transition-colors duration-vp-default hover:bg-black/80';
+    'inline-block rounded-full bg-black px-8 py-3 font-vp-heading text-vp-btn font-semibold leading-vp-btn uppercase tracking-vp-btn text-white no-underline transition-colors duration-vp-default hover:bg-black/80';
 
   return (
     <>

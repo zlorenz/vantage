@@ -97,6 +97,9 @@ Values from `video-campaign-brief-form.css` and `file-block.css`. **Now captured
 | `vp-btn-letter-spacing` | `0.125rem` | Button letter-spacing |
 | `vp-btn-select-files-spacing` | `0.05em` | Select files button |
 | `vp-btn-padding` | `0.75rem 2rem` | Form button padding |
+| `vp-btn-font-size` / `text-vp-btn` | `1.3rem` | Default button label size |
+| `vp-btn-line-height` / `leading-vp-btn` | `1.625rem` | Default button line-height |
+| `vp-btn-arrow-size` | `1.4625rem` | BriefArrow / Explore glyph |
 | `vp-btn-ghost-hover-bg` | `rgba(255,255,255,0.1)` | Ghost button hover |
 | `vp-btn-primary-hover-soft` | `rgba(255,255,255,0.85)` | Select-files hover |
 

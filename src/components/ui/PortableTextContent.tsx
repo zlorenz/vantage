@@ -219,7 +219,7 @@ function createComponents(relaxed = false): PortableTextComponents {
 
       const path = normalizeInternalPath(button.url);
       const ctaClassName =
-        'inline-block rounded-full bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-sm font-semibold uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
+        'inline-block rounded-full bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-vp-btn font-semibold leading-vp-btn uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
 
       if (isAppExternalUrl(button.url)) {
         return (

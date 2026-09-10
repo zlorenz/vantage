@@ -178,35 +178,46 @@
   display: flex;
   flex: 1 1 auto;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 1rem;
   min-width: 0;
   /* Fills leftover beside two 100px arrow cells → 410 on 610 artboard. */
   height: 6.25rem;
-  padding-inline: 1rem;
-  background: #fff;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding-inline: 1.875rem; /* 30 — match desktop nav brief */
+  background: var(--vp-link);
   font-family: var(--font-vp-heading);
-  font-size: 1rem;
+  font-size: var(--vp-btn-font-size);
   font-weight: 700;
-  line-height: 1.25rem;
-  letter-spacing: -0.02rem; /* -0.32px */
+  line-height: var(--vp-btn-line-height);
+  letter-spacing: -0.026rem;
   text-transform: uppercase;
   text-decoration: none;
   color: #000;
   white-space: nowrap;
-  transition: background-color var(--vp-transition), color var(--vp-transition);
+  transition: background-color var(--vp-transition), filter var(--vp-transition);
 }
 
 a.vp-project-nav__explore:hover,
 a.vp-project-nav__explore:focus-visible {
-  background: #e8e8e8;
+  background: var(--vp-link-hover);
   color: #000;
 }
 
 .vp-project-nav__explore:focus-visible {
   outline: 1px solid var(--vp-border, #fff);
   outline-offset: -2px;
+}
+
+.vp-project-nav__explore-label {
+  min-width: 0;
+}
+
+.vp-project-nav__explore-arrow {
+  display: block;
+  width: var(--vp-btn-arrow-size);
+  height: var(--vp-btn-arrow-size);
+  flex-shrink: 0;
+  color: #000;
 }
 
 .vp-project-nav__arrows {

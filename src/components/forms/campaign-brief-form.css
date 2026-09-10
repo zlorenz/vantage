@@ -346,7 +346,8 @@
   background: var(--vp-btn-ghost-bg);
   color: var(--vp-btn-ghost-text);
   font-family: var(--vp-font-heading);
-  font-size: 0.875rem;
+  font-size: var(--vp-btn-font-size);
+  line-height: var(--vp-btn-line-height);
   font-weight: 600;
   letter-spacing: var(--vp-btn-select-files-spacing);
   text-transform: uppercase;

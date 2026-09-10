@@ -185,6 +185,10 @@
   --color-vp-btn-primary-hover-soft: rgba(255, 255, 255, 0.85);
   --tracking-vp-btn: 0.125rem;
   --tracking-vp-btn-select-files: 0.05em;
+  /* Default button label + diagonal arrow glyph (~30% up from 16/18). */
+  --text-vp-btn: 1.3rem;
+  --leading-vp-btn: 1.625rem;
+  --spacing-vp-btn-arrow: 1.4625rem;
 
   /* Form & File Block Tokens — File Block */
 
@@ -343,6 +347,10 @@
   --vp-btn-padding: 0.75rem 2rem;
   --vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.1);
   --vp-btn-primary-hover-soft: rgba(255, 255, 255, 0.85);
+  /* Default button label + BriefArrow glyph (yellow chrome CTAs + white pills). */
+  --vp-btn-font-size: 1.3rem;
+  --vp-btn-line-height: 1.625rem;
+  --vp-btn-arrow-size: 1.4625rem;
 
   /* Form & File Block Tokens — File Block */
 
@@ -986,17 +994,17 @@ body:has(.vp-work-index) #header.navbar::before {
 
   #header .vp-desktop-nav-brief__label {
     font-family: var(--font-vp-heading);
-    font-size: 1rem; /* 16px */
+    font-size: var(--vp-btn-font-size);
     font-weight: 700;
-    line-height: 1.25rem; /* 20px */
+    line-height: var(--vp-btn-line-height);
     text-transform: uppercase;
     color: #000;
   }
 
   #header .vp-desktop-nav-brief__arrow {
     display: block;
-    width: 1.125rem; /* 18px */
-    height: 1.125rem;
+    width: var(--vp-btn-arrow-size);
+    height: var(--vp-btn-arrow-size);
     flex-shrink: 0;
     color: #000;
   }

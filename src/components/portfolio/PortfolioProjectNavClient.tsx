@@ -53,6 +53,23 @@ function CrosshairMark() {
   )
 }
 
+/** Same path as NavBar BriefArrowIcon (desktop campaign-brief CTA). */
+function ExploreArrowIcon() {
+  return (
+    <svg
+      className="vp-project-nav__explore-arrow"
+      viewBox="0 0 18 18"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M4.2 12.9 11.4 5.7H6.75V4.2H14.1v7.35h-1.5V6.9L5.4 14.1z"
+      />
+    </svg>
+  )
+}
+
 function NavChevron({direction}: {direction: 'prev' | 'next'}) {
   return (
     <svg
@@ -326,11 +343,13 @@ export function PortfolioProjectNavClient({
                   slug={activeSlug}
                   className="vp-project-nav__explore"
                 >
-                  explore
+                  <span className="vp-project-nav__explore-label">explore</span>
+                  <ExploreArrowIcon />
                 </PortfolioEntryLink>
               ) : (
                 <span className="vp-project-nav__explore" aria-disabled>
-                  explore
+                  <span className="vp-project-nav__explore-label">explore</span>
+                  <ExploreArrowIcon />
                 </span>
               )}
               <div className="vp-project-nav__arrows">
