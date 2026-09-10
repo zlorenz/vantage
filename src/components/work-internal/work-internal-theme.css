@@ -626,7 +626,7 @@ body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea:focus {
 
   body:has(.vp-internal-page) .vp-internal-sheet__segment-btn.is-active,
   body:has(.vp-internal-page) .vp-internal-sheet__choice.is-selected,
-  body:has(.vp-internal-page) .vp-internal-sheet__accordion-btn.has-selection,
+  body:has(.vp-internal-page) .vp-internal-sheet__nav-row.has-selection .vp-internal-sheet__nav-label,
   body:has(.vp-internal-page) .vp-internal-sheet__clear {
     color: var(--vp-wi-accent);
   }
@@ -634,6 +634,23 @@ body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea:focus {
   body:has(.vp-internal-page) .vp-internal-sheet__segment-btn.is-active {
     background: var(--vp-wi-accent-soft);
     border-color: var(--vp-wi-accent-mid);
+  }
+
+  body:has(.vp-internal-page) .vp-internal-sheet__search-input {
+    background: var(--vp-wi-surface-raised);
+    border-color: var(--vp-wi-border);
+    color: var(--vp-wi-text);
+  }
+
+  body:has(.vp-internal-page) .vp-internal-sheet__search-input:focus {
+    border-color: var(--vp-wi-accent-mid);
+    background: var(--vp-wi-surface);
+  }
+
+  body:has(.vp-internal-page) .vp-internal-sheet__nav-row,
+  body:has(.vp-internal-page) .vp-internal-sheet__choice,
+  body:has(.vp-internal-page) .vp-internal-sheet__nav-list {
+    border-color: var(--vp-wi-border);
   }
 
   body:has(.vp-internal-page) .vp-internal-showreel-bar {
