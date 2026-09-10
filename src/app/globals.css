@@ -1889,6 +1889,8 @@ body:has(.vp-work-index) #header.navbar::before {
 
 .vp-news-page__intro p {
   margin: 0;
+  /* Scoped override — PortableText uses text-vp-text-muted (0.85); Figma wants 0.6. */
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .vp-news-page__intro p + p {
