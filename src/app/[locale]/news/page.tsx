@@ -118,6 +118,7 @@ export default async function NewsPage({ params }: Props) {
             </div>
             <BlogCategoryFilter
               categories={categories}
+              posts={posts}
               locale={typedLocale}
               phrases={phrases}
             />
