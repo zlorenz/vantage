@@ -14,7 +14,11 @@ import {
   getWorkInternalDetailHref,
   prepareWorkInternalDetailNavigation,
 } from './entry-url';
-import {formatPublishDate, getDisplayTitle} from './text';
+import {
+  formatPublishDate,
+  getDisplayTitle,
+  getDisplayTitleParts,
+} from './text';
 import {WorkInternalItemMenu} from './WorkInternalItemMenu';
 import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
 
@@ -40,6 +44,11 @@ export function WorkInternalCardView({
           .fit('crop')
           .url();
         const title = getDisplayTitle(entry, locale);
+        const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
+        // Mirror the portfolio case header: small yellow Brand/Product line
+        // above the larger white Campaign line. When Brand can't compile,
+        // fall back to the single-line combined `title`.
+        const campaignText = campaignLine || title;
         const selected = selectedIds.has(entry._id);
         const detailHref = getWorkInternalDetailHref(entry);
 
@@ -80,7 +89,10 @@ export function WorkInternalCardView({
                   </span>
                 ) : null}
                 <div className="vp-internal-card__overlay">
-                  <h2 className="vp-internal-card__title">{title}</h2>
+                  {brandLine ? (
+                    <p className="vp-internal-card__brand">{brandLine}</p>
+                  ) : null}
+                  <h2 className="vp-internal-card__title">{campaignText}</h2>
                   <p className="vp-internal-card__date">
                     {formatPublishDate(entry.publishedAt)}
                   </p>

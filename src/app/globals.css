@@ -2777,6 +2777,24 @@ body:has(.vp-work-index) #header.navbar::before {
   pointer-events: none;
 }
 
+/*
+ * Small yellow Brand/Product line above the campaign title — mirrors the
+ * portfolio case header treatment. Sized ~70% of the campaign title so the
+ * hierarchy reads clearly at both card and list scales.
+ */
+.vp-internal-card__brand {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fdb913;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .vp-internal-card__title {
   margin: 0;
   font-size: 0.9375rem;
@@ -2917,10 +2935,35 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-list__title {
+  /*
+   * Title cell now stacks a small yellow Brand line above the campaign line
+   * (mirrors the portfolio case header). The existing campaign styles are
+   * preserved on `.vp-internal-list__campaign`.
+   */
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
   font-weight: 500;
   color: var(--color-vp-text);
   overflow-wrap: anywhere;
   white-space: normal;
+}
+
+.vp-internal-list__brand {
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fdb913;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vp-internal-list__campaign {
+  /* Campaign inherits the existing `.vp-internal-list__title` styles. */
+  display: block;
 }
 
 .vp-internal-list__client {
@@ -3675,6 +3718,10 @@ body:has(.vp-work-index) #header.navbar::before {
     gap: 0.85rem;
   }
 
+  .vp-internal-card__brand {
+    font-size: 0.625rem;
+  }
+
   .vp-internal-card__title {
     font-size: 0.875rem;
   }
@@ -3707,8 +3754,19 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 
   .vp-internal-list__title {
+    /* Keep the split layout on mobile — sizing is applied per-line. */
     font-size: 0.8125rem;
     line-height: 1.3;
+    overflow: hidden;
+  }
+
+  .vp-internal-list__brand {
+    font-size: 0.5625rem;
+  }
+
+  .vp-internal-list__campaign {
+    /* Clamp the campaign line specifically (not the whole cell) so the
+       small brand line above it is never truncated. */
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;

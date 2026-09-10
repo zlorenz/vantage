@@ -19,7 +19,7 @@ import {
   getEditorName,
   getPrimaryClientName,
 } from './filter-entries';
-import {formatPublishDate, getDisplayTitle} from './text';
+import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
 import type {LibrarySort} from './types';
 import {WorkInternalItemMenu} from './WorkInternalItemMenu';
 import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
@@ -187,6 +187,11 @@ export function WorkInternalListView({
           .fit('crop')
           .url();
         const title = getDisplayTitle(entry, locale);
+        const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
+        // Mirror the portfolio case header: small yellow Brand/Product line
+        // above the larger white Campaign line. When Brand can't compile,
+        // fall back to the single-line combined `title`.
+        const campaignText = campaignLine || title;
         const selected = selectedIds.has(entry._id);
 
         return (
@@ -225,7 +230,12 @@ export function WorkInternalListView({
                 </span>
               </span>
               <span role="cell" className="vp-internal-list__title">
-                {title}
+                {brandLine ? (
+                  <span className="vp-internal-list__brand">{brandLine}</span>
+                ) : null}
+                <span className="vp-internal-list__campaign">
+                  {campaignText}
+                </span>
               </span>
               <span role="cell" className="vp-internal-list__date">
                 {formatPublishDate(entry.publishedAt)}
