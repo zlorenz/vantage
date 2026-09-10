@@ -5,7 +5,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
-import { BlogPostCard } from '@/components/blog/BlogPostCard';
+import { BlogPostGrid } from '@/components/blog/BlogPostGrid';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
@@ -154,16 +154,11 @@ export default async function CategoryArchivePage({ params }: Props) {
         <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <div className="vp-news-posts flex flex-col gap-16">
-                {posts.map((post) => (
-                  <BlogPostCard
-                    key={post._id}
-                    post={post}
-                    locale={typedLocale}
-                    phrases={phrases}
-                  />
-                ))}
-              </div>
+              <BlogPostGrid
+                posts={posts}
+                locale={typedLocale}
+                phrases={phrases}
+              />
             </div>
 
             <div className="lg:col-span-4">

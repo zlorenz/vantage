@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
-import { BlogPostMasonry } from '@/components/blog/BlogPostMasonry';
+import { BlogPostGrid } from '@/components/blog/BlogPostGrid';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
@@ -121,7 +121,7 @@ export default async function NewsPage({ params }: Props) {
             />
           </header>
 
-          <BlogPostMasonry
+          <BlogPostGrid
             posts={posts}
             locale={typedLocale}
             phrases={phrases}

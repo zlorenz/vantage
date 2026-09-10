@@ -1865,29 +1865,6 @@ body:has(.vp-work-index) #header.navbar::before {
   margin-top: 0.75em;
 }
 
-.vp-news-masonry {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-}
-
-.vp-news-masonry__col {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 0;
-  flex-direction: column;
-}
-
-/* Horizontal gutters (space between stacked cards in a column). */
-.vp-news-masonry__col > .vp-post-card:not(:last-child) {
-  margin-bottom: 3rem;
-}
-
-/* Masonry columns are narrower than the old single-column list — pull titles down (~28px desktop). */
-.vp-news-masonry .vp-post-card__title {
-  font-size: clamp(1.25rem, 1.5vw, 1.75rem);
-}
-
 /* Blog / search card title links — shade via opacity at the sitewide timing. */
 .vp-post-card__title a {
   transition: opacity var(--vp-transition);
