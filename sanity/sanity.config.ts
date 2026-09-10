@@ -109,6 +109,7 @@ export default defineConfig({
           t.templateId !== 'duplicateDismissal' &&
           t.templateId !== 'campaignBriefAttachment' &&
           t.templateId !== 'videoEvent' &&
+          t.templateId !== 'interactionEvent' &&
           t.templateId !== 'showreel',
       ),
     productionUrl: async (prev, {document}) => {
