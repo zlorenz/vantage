@@ -166,7 +166,8 @@
   "Blog": {
     "categories": "BLOG CATEGORIES",
     "postedOn": "Posted on ",
-    "eyebrow": "Our Blog"
+    "eyebrow": "Our Blog",
+    "readMore": "Read More"
   },
   "Contact": {
     "modalTitle": "Contact",

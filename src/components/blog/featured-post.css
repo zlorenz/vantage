@@ -1,0 +1,251 @@
+/**
+ * Featured post — Figma Blog 2050:5488.
+ * Desktop: 680px tall, ~770px text column + image, yellow READ MORE bar.
+ */
+
+.vp-featured-post {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 7.5rem; /* Figma gap featured → grid: 120px */
+  padding: 1.875rem; /* 30px */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-featured-post__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(18rem, 48.125rem) minmax(0, 1fr); /* ~770px + rest */
+  width: 100%;
+  height: 42.5rem; /* 680px */
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-featured-post__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 100%;
+  background: #0f0f0f;
+  overflow: hidden;
+}
+
+.vp-featured-post__copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2.5rem; /* 40px */
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 3.75rem 5rem 1.5rem 1.875rem; /* pt 60 / pr 80 / pl 30 */
+}
+
+.vp-featured-post__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.vp-featured-post__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+  font-family: var(--font-vp-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.vp-featured-post__pill:hover,
+a.vp-featured-post__pill:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.vp-featured-post__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.vp-featured-post__title {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: 2rem; /* 32px */
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.4;
+  letter-spacing: -0.04rem; /* −0.64px */
+  color: #fff;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+
+.vp-featured-post__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--vp-transition);
+}
+
+.vp-featured-post__title a:hover,
+.vp-featured-post__title a:focus-visible {
+  opacity: 0.8;
+}
+
+.vp-featured-post__excerpt {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-family: var(--font-vp-sans);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.vp-featured-post__motif {
+  position: absolute;
+  right: 0;
+  bottom: 5rem; /* sit above CTA */
+  width: 20.5rem;
+  max-width: 55%;
+  height: auto;
+  opacity: 0.08;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+  user-select: none;
+}
+
+.vp-featured-post__cta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 5rem; /* 80px */
+  padding-inline: 1rem;
+  background: #fdb913;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-family: var(--font-vp-heading);
+  font-size: 1rem;
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.25rem;
+  color: #000;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: filter var(--vp-transition);
+}
+
+.vp-featured-post__cta:hover,
+.vp-featured-post__cta:focus-visible {
+  filter: brightness(1.05);
+  outline: none;
+}
+
+.vp-featured-post__media {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  background: #1a1a1a;
+}
+
+.vp-featured-post__image,
+.vp-featured-post__image-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vp-featured-post__image-fallback {
+  background: #1a1a1a;
+}
+
+.vp-featured-post__brackets {
+  position: absolute;
+  inset: 0.9375rem; /* 15px */
+  z-index: 2;
+  pointer-events: none;
+}
+
+.vp-featured-post__bracket {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0 solid #d9d9d9;
+}
+
+.vp-featured-post__bracket--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-featured-post__bracket--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.vp-featured-post__bracket--br {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.vp-featured-post__bracket--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+/* Desktop-only pass — stack as a simple block below Figma desktop split. */
+@media (max-width: 575.98px) {
+  .vp-featured-post {
+    margin-bottom: 3rem;
+    padding: 1rem;
+  }
+
+  .vp-featured-post__inner {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .vp-featured-post__media {
+    order: -1;
+    aspect-ratio: 16 / 10;
+    height: auto;
+    min-height: 14rem;
+  }
+
+  .vp-featured-post__copy {
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+
+  .vp-featured-post__title {
+    font-size: 1.5rem;
+  }
+}
