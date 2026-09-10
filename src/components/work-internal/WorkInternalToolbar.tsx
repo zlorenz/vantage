@@ -31,6 +31,10 @@ import {
   WorkInternalFilterPanel,
   type FilterPanelOption,
 } from './WorkInternalFilterPanel';
+import {
+  WorkInternalFilterSheet,
+  WorkInternalSortSheet,
+} from './WorkInternalMobileSheets';
 
 type ChipPanelId = 'taxonomy' | 'client' | 'people';
 
@@ -134,6 +138,8 @@ export function WorkInternalToolbar({
   const active = hasActiveFilters(filters);
   const [openPanel, setOpenPanel] = useState<ChipPanelId | null>(null);
   const [clientQuery, setClientQuery] = useState('');
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
   const chipRowRef = useRef<HTMLDivElement>(null);
 
   function patchFilter<K extends keyof LibraryFilters>(
@@ -285,6 +291,12 @@ export function WorkInternalToolbar({
     Boolean(filters[key]),
   ).length;
 
+  const filterBadgeCount =
+    taxonomyActiveCount +
+    (filters.client ? 1 : 0) +
+    peopleActiveCount +
+    (filters.visibility !== 'all' ? 1 : 0);
+
   const filteredClientOptions = useMemo(() => {
     const needle = clientQuery.trim().toLowerCase();
     if (!needle) return clientOptions;
@@ -396,7 +408,148 @@ export function WorkInternalToolbar({
 
   return (
     <div className="vp-internal-toolbar">
-      <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters">
+      {/* Mobile chrome (<768px): view toggle + filter/sort icon buttons */}
+      <div className="vp-internal-toolbar__mobile">
+        <div
+          className="vp-internal-view-toggle"
+          role="group"
+          aria-label="View mode"
+        >
+          <button
+            type="button"
+            className={
+              view === 'cards'
+                ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
+                : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
+            }
+            aria-label="Cards"
+            aria-pressed={view === 'cards'}
+            onClick={() => onViewChange('cards')}
+          >
+            <svg
+              className="vp-internal-view-toggle__icon"
+              viewBox="0 0 16 16"
+              width="16"
+              height="16"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="1" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="6" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="11" y="1" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="1" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="6" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="11" y="6" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="1" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="6" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+              <rect x="11" y="11" width="4" height="4" rx="0.5" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={
+              view === 'list'
+                ? 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon is-active'
+                : 'vp-internal-view-toggle__btn vp-internal-view-toggle__btn--icon'
+            }
+            aria-label="List"
+            aria-pressed={view === 'list'}
+            onClick={() => onViewChange('list')}
+          >
+            <svg
+              className="vp-internal-view-toggle__icon"
+              viewBox="0 0 16 16"
+              width="16"
+              height="16"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="2.5" cy="3" r="1.25" fill="currentColor" />
+              <rect x="5.5" y="2" width="9" height="2" rx="0.75" fill="currentColor" />
+              <circle cx="2.5" cy="8" r="1.25" fill="currentColor" />
+              <rect x="5.5" y="7" width="9" height="2" rx="0.75" fill="currentColor" />
+              <circle cx="2.5" cy="13" r="1.25" fill="currentColor" />
+              <rect x="5.5" y="12" width="9" height="2" rx="0.75" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="vp-internal-toolbar__mobile-actions">
+          <span
+            className="vp-internal-count"
+            aria-live="polite"
+            aria-busy={filtersPending || undefined}
+          >
+            {resultCount === totalCount
+              ? `${resultCount}`
+              : `${resultCount}/${totalCount}`}
+          </span>
+          <button
+            type="button"
+            className={
+              filterBadgeCount > 0 || filterSheetOpen
+                ? 'vp-internal-toolbar__icon-btn is-active'
+                : 'vp-internal-toolbar__icon-btn'
+            }
+            aria-label={
+              filterBadgeCount > 0
+                ? `Filters, ${filterBadgeCount} active`
+                : 'Filters'
+            }
+            aria-expanded={filterSheetOpen}
+            onClick={() => {
+              setSortSheetOpen(false);
+              setFilterSheetOpen(true);
+            }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="currentColor"
+                d="M3 5.25A.75.75 0 0 1 3.75 4.5h16.5a.75.75 0 0 1 .53 1.28l-6.28 6.28v5.19a.75.75 0 0 1-1.13.65l-3-1.8a.75.75 0 0 1-.37-.65v-3.39L3.22 5.78A.75.75 0 0 1 3 5.25Z"
+              />
+            </svg>
+            {filterBadgeCount > 0 ? (
+              <span className="vp-internal-toolbar__badge">{filterBadgeCount}</span>
+            ) : null}
+          </button>
+          <button
+            type="button"
+            className={
+              sortSheetOpen
+                ? 'vp-internal-toolbar__icon-btn is-active'
+                : 'vp-internal-toolbar__icon-btn'
+            }
+            aria-label="Sort"
+            aria-expanded={sortSheetOpen}
+            onClick={() => {
+              setFilterSheetOpen(false);
+              setSortSheetOpen(true);
+            }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="currentColor"
+                d="M7.75 4a.75.75 0 0 1 .75.75V17.19l2.72-2.72a.75.75 0 1 1 1.06 1.06l-4 4a.75.75 0 0 1-1.06 0l-4-4a.75.75 0 1 1 1.06-1.06L7 17.19V4.75A.75.75 0 0 1 7.75 4Zm8.5 0a.75.75 0 0 1 .53.22l4 4a.75.75 0 1 1-1.06 1.06L16.5 6.81V19.25a.75.75 0 0 1-1.5 0V6.81l-3.22 3.22a.75.75 0 1 1-1.06-1.06l4-4A.75.75 0 0 1 16.25 4Z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop chrome (≥768px) */}
+      <div className="vp-internal-toolbar__row vp-internal-toolbar__row--filters vp-internal-toolbar__desktop">
         <div className="vp-internal-fchips" ref={chipRowRef}>
           <div
             className="vp-internal-view-toggle"
@@ -569,7 +722,7 @@ export function WorkInternalToolbar({
             <select
               className="vp-internal-filter__select"
               value={sort}
-              tabIndex={view === 'cards' ? undefined : -1}
+              tabIndex={view !== 'cards' ? -1 : undefined}
               disabled={view !== 'cards'}
               onChange={(e) => onSortChange(e.target.value as LibrarySort)}
             >
@@ -618,6 +771,26 @@ export function WorkInternalToolbar({
           ))}
         </div>
       ) : null}
+
+      <WorkInternalFilterSheet
+        open={filterSheetOpen}
+        onClose={() => setFilterSheetOpen(false)}
+        visibility={filters.visibility}
+        onVisibilityChange={(value) => patchFilter('visibility', value)}
+        categorySections={categorySections}
+        brandOptions={clientOptions}
+        brandSelected={filters.client}
+        onBrandSelect={(value) => patchFilter('client', value)}
+        crewSections={crewSections}
+        hasActiveFilters={active}
+        onClear={onClear}
+      />
+      <WorkInternalSortSheet
+        open={sortSheetOpen}
+        onClose={() => setSortSheetOpen(false)}
+        sort={sort}
+        onSortChange={onSortChange}
+      />
     </div>
   );
 }

@@ -78,6 +78,7 @@ interface SortableHeaderProps {
   column: SortColumn;
   sort: LibrarySort;
   onSortChange: (sort: LibrarySort) => void;
+  className?: string;
 }
 
 function SortableHeader({
@@ -85,6 +86,7 @@ function SortableHeader({
   column,
   sort,
   onSortChange,
+  className,
 }: SortableHeaderProps) {
   const active = sortColumnFor(sort) === column;
   const direction = sortDirection(sort);
@@ -96,7 +98,11 @@ function SortableHeader({
     : 'none';
 
   return (
-    <span role="columnheader" aria-sort={ariaSort}>
+    <span
+      role="columnheader"
+      aria-sort={ariaSort}
+      className={className}
+    >
       <button
         type="button"
         className={
@@ -153,17 +159,31 @@ export function WorkInternalListView({
           column="client"
           sort={sort}
           onSortChange={onSortChange}
+          className="vp-internal-list__desktop-col"
         />
-        <span role="columnheader">Dir</span>
-        <span role="columnheader">DOP</span>
-        <span role="columnheader">ART</span>
-        <span role="columnheader">EDIT</span>
-        <span role="columnheader">Status</span>
+        <span role="columnheader" className="vp-internal-list__desktop-col">
+          Dir
+        </span>
+        <span role="columnheader" className="vp-internal-list__desktop-col">
+          DOP
+        </span>
+        <span role="columnheader" className="vp-internal-list__desktop-col">
+          ART
+        </span>
+        <span role="columnheader" className="vp-internal-list__desktop-col">
+          EDIT
+        </span>
+        <span role="columnheader" className="vp-internal-list__desktop-col">
+          Status
+        </span>
+        <span role="columnheader" className="vp-internal-list__menu-col">
+          <span className="sr-only">Actions</span>
+        </span>
       </div>
       {entries.map((entry) => {
         const imageUrl = urlForImage(entry.featuredImage)
           .width(160)
-          .height(90)
+          .height(160)
           .fit('crop')
           .url();
         const title = getDisplayTitle(entry, locale);
@@ -186,7 +206,6 @@ export function WorkInternalListView({
                 onChange={(checked) => onToggleSelect(entry._id, checked)}
               />
             </span>
-            <WorkInternalItemMenu entry={entry} locale={locale} />
             <Link
               href={getWorkInternalDetailHref(entry)}
               className="vp-internal-list__hit"
@@ -208,15 +227,43 @@ export function WorkInternalListView({
               <span role="cell" className="vp-internal-list__title">
                 {title}
               </span>
-              <span role="cell">{formatPublishDate(entry.publishedAt)}</span>
-              <span role="cell" className="vp-internal-list__client">
+              <span role="cell" className="vp-internal-list__date">
+                {formatPublishDate(entry.publishedAt)}
+              </span>
+              <span
+                role="cell"
+                className="vp-internal-list__client vp-internal-list__desktop-col"
+              >
                 {getPrimaryClientName(entry)}
               </span>
-              <span role="cell">{getCrewName(entry, 'director')}</span>
-              <span role="cell">{getCrewName(entry, 'dop')}</span>
-              <span role="cell">{getArtName(entry)}</span>
-              <span role="cell">{getEditorName(entry)}</span>
-              <span role="cell">
+              <span
+                role="cell"
+                className="vp-internal-list__desktop-col"
+              >
+                {getCrewName(entry, 'director')}
+              </span>
+              <span
+                role="cell"
+                className="vp-internal-list__desktop-col"
+              >
+                {getCrewName(entry, 'dop')}
+              </span>
+              <span
+                role="cell"
+                className="vp-internal-list__desktop-col"
+              >
+                {getArtName(entry)}
+              </span>
+              <span
+                role="cell"
+                className="vp-internal-list__desktop-col"
+              >
+                {getEditorName(entry)}
+              </span>
+              <span
+                role="cell"
+                className="vp-internal-list__desktop-col"
+              >
                 {entry.isHidden ? (
                   <span className="vp-internal-badge vp-internal-badge--hidden">
                     Hidden
@@ -228,6 +275,9 @@ export function WorkInternalListView({
                 )}
               </span>
             </Link>
+            <span className="vp-internal-list__menu-col" role="cell">
+              <WorkInternalItemMenu entry={entry} locale={locale} />
+            </span>
           </div>
         );
       })}
