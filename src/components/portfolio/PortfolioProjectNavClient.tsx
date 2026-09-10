@@ -387,58 +387,77 @@ export function PortfolioProjectNavClient({
                   Boolean(card) &&
                   loopDistance(index, selectedIndex, count) <= IMAGE_MOUNT_RADIUS
                 const copy = card ? slideCopy(card, locale, phrases) : null
+                const slug = slugForSlide(slide, locale)
+                const cardAriaLabel = copy?.titleLine
+                  ? `Explore ${copy.titleLine}`
+                  : 'Explore project'
+
+                const cardMedia = (
+                  <>
+                    {mountImage && copy?.imageUrl ? (
+                      <Image
+                        className="vp-project-nav__cover"
+                        src={copy.imageUrl}
+                        alt=""
+                        fill
+                        sizes="(max-width: 991px) 100vw, 65vw"
+                        priority={index === startIndex}
+                        draggable={false}
+                      />
+                    ) : (
+                      <div
+                        className="vp-project-nav__cover-fallback"
+                        aria-hidden
+                      />
+                    )}
+                    <div
+                      className="vp-project-nav__cover-gradient"
+                      aria-hidden
+                    />
+                    <CrosshairMark />
+                    {copy ? (
+                      <div className="vp-project-nav__meta">
+                        {(copy.brandLine || copy.formatLine) && (
+                          <div className="vp-project-nav__meta-row">
+                            {copy.brandLine ? (
+                              <p className="vp-project-nav__brand">{`●  ${copy.brandLine}`}</p>
+                            ) : null}
+                            {copy.brandLine && copy.formatLine ? (
+                              <span
+                                className="vp-project-nav__meta-rule"
+                                aria-hidden
+                              />
+                            ) : null}
+                            {copy.formatLine ? (
+                              <p className="vp-project-nav__format">
+                                {copy.formatLine}
+                              </p>
+                            ) : null}
+                          </div>
+                        )}
+                        {copy.titleLine ? (
+                          <p className="vp-project-nav__title">
+                            {copy.titleLine}
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </>
+                )
 
                 return (
                   <div className="vp-project-nav__slide" key={slide._id}>
-                    <div className="vp-project-nav__card">
-                      {mountImage && copy?.imageUrl ? (
-                        <Image
-                          className="vp-project-nav__cover"
-                          src={copy.imageUrl}
-                          alt=""
-                          fill
-                          sizes="(max-width: 991px) 100vw, 65vw"
-                          priority={index === startIndex}
-                        />
-                      ) : (
-                        <div
-                          className="vp-project-nav__cover-fallback"
-                          aria-hidden
-                        />
-                      )}
-                      <div
-                        className="vp-project-nav__cover-gradient"
-                        aria-hidden
-                      />
-                      <CrosshairMark />
-                      {copy ? (
-                        <div className="vp-project-nav__meta">
-                          {(copy.brandLine || copy.formatLine) && (
-                            <div className="vp-project-nav__meta-row">
-                              {copy.brandLine ? (
-                                <p className="vp-project-nav__brand">{`●  ${copy.brandLine}`}</p>
-                              ) : null}
-                              {copy.brandLine && copy.formatLine ? (
-                                <span
-                                  className="vp-project-nav__meta-rule"
-                                  aria-hidden
-                                />
-                              ) : null}
-                              {copy.formatLine ? (
-                                <p className="vp-project-nav__format">
-                                  {copy.formatLine}
-                                </p>
-                              ) : null}
-                            </div>
-                          )}
-                          {copy.titleLine ? (
-                            <p className="vp-project-nav__title">
-                              {copy.titleLine}
-                            </p>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
+                    {slug ? (
+                      <PortfolioEntryLink
+                        slug={slug}
+                        className="vp-project-nav__card"
+                        aria-label={cardAriaLabel}
+                      >
+                        {cardMedia}
+                      </PortfolioEntryLink>
+                    ) : (
+                      <div className="vp-project-nav__card">{cardMedia}</div>
+                    )}
                   </div>
                 )
               })}
