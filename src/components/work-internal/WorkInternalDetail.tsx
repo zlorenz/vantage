@@ -5,7 +5,13 @@
 
 'use client';
 
+import {useEffect, useId, useMemo, useRef, useState} from 'react';
+import Image from 'next/image';
 import {Link, useRouter} from '@/i18n/navigation';
+import {
+  resolvePortfolioVideos,
+  type PortfolioVideoFields,
+} from '@portfolio-videos';
 import {decodeHtmlEntities} from '@/lib/decode-html-entities';
 import {resolveCreditsForDisplay} from '@/lib/credits-config';
 import {libraryReturnBrowserPath} from '@/lib/internal-app-paths';
@@ -43,25 +49,87 @@ function namedLabels(terms: NamedSlugTerm[] | undefined): string[] {
     .filter((name): name is string => Boolean(name));
 }
 
-function DetailPlayer({entry}: {entry: InternalLibraryEntry}) {
-  const featuredPoster = entry.featuredImage
-    ? urlForImage(entry.featuredImage).width(1920).height(1080).fit('crop').url()
-    : undefined;
-  const parsed = entry.vimeoUrl?.trim()
-    ? parseVideoUrl(entry.vimeoUrl)
+function isPlayableVideo(video: PortfolioVideoFields): boolean {
+  if (video.vimeoUrl?.trim()) {
+    const parsed = parseVideoUrl(video.vimeoUrl);
+    if (parsed?.provider === 'vimeo' || parsed?.provider === 'youtube') {
+      return true;
+    }
+  }
+  return Boolean(
+    video.xinpianchangUrl && xinpianchangToEmbedUrl(video.xinpianchangUrl),
+  );
+}
+
+function episodeTitle(
+  video: PortfolioVideoFields,
+  locale: Locale,
+  fallback: string,
+): string {
+  const raw =
+    locale === 'zh' && video.videoTitleZh?.trim()
+      ? video.videoTitleZh
+      : video.videoTitle?.trim()
+        ? video.videoTitle
+        : fallback;
+  return decodeHtmlEntities(raw);
+}
+
+function posterForVideo(
+  entry: InternalLibraryEntry,
+  video: PortfolioVideoFields,
+  isMain: boolean,
+): string | undefined {
+  if (isMain && entry.featuredImage) {
+    return urlForImage(entry.featuredImage)
+      .width(960)
+      .height(540)
+      .fit('crop')
+      .url();
+  }
+  const parsed = video.vimeoUrl?.trim()
+    ? parseVideoUrl(video.vimeoUrl)
+    : null;
+  if (parsed?.provider === 'vimeo') {
+    return vimeoThumbnailUrl(parsed.url) ?? undefined;
+  }
+  if (entry.featuredImage) {
+    return urlForImage(entry.featuredImage)
+      .width(960)
+      .height(540)
+      .fit('crop')
+      .url();
+  }
+  return undefined;
+}
+
+function VideoPlayer({
+  entryId,
+  video,
+  posterUrl,
+  autoPlay = false,
+  priority = false,
+  posterSizes,
+}: {
+  entryId: string;
+  video: PortfolioVideoFields;
+  posterUrl?: string;
+  autoPlay?: boolean;
+  priority?: boolean;
+  posterSizes: string;
+}) {
+  const parsed = video.vimeoUrl?.trim()
+    ? parseVideoUrl(video.vimeoUrl)
     : null;
   const vimeoPoster =
     parsed?.provider === 'vimeo'
       ? (vimeoThumbnailUrl(parsed.url) ?? undefined)
       : undefined;
-  const posterUrl = featuredPoster ?? vimeoPoster;
+  const resolvedPoster = posterUrl ?? vimeoPoster;
 
   if (parsed?.provider === 'youtube') {
     return (
-      <LazyYouTubePlayer
-        videoId={parsed.id}
-        portfolioEntryRef={entry._id}
-      />
+      <LazyYouTubePlayer videoId={parsed.id} portfolioEntryRef={entryId} />
     );
   }
 
@@ -69,24 +137,24 @@ function DetailPlayer({entry}: {entry: InternalLibraryEntry}) {
     return (
       <LazyVimeoPlayer
         vimeoUrl={parsed.url}
-        posterUrl={posterUrl}
-        portfolioEntryRef={entry._id}
-        autoPlay={false}
-        posterSizes="(max-width: 992px) 100vw, min(1100px, 70vw)"
-        priority
+        posterUrl={resolvedPoster}
+        portfolioEntryRef={entryId}
+        autoPlay={autoPlay}
+        posterSizes={posterSizes}
+        priority={priority}
       />
     );
   }
 
   if (
-    entry.xinpianchangUrl &&
-    xinpianchangToEmbedUrl(entry.xinpianchangUrl)
+    video.xinpianchangUrl &&
+    xinpianchangToEmbedUrl(video.xinpianchangUrl)
   ) {
     return (
       <LazyXinpianchangPlayer
-        embedUrl={entry.xinpianchangUrl}
-        posterUrl={posterUrl}
-        portfolioEntryRef={entry._id}
+        embedUrl={video.xinpianchangUrl}
+        posterUrl={resolvedPoster}
+        portfolioEntryRef={entryId}
       />
     );
   }
@@ -94,6 +162,144 @@ function DetailPlayer({entry}: {entry: InternalLibraryEntry}) {
   return (
     <div className="vp-internal-detail__no-video">
       No playable video for this project.
+    </div>
+  );
+}
+
+function DetailVideoLightbox({
+  entryId,
+  video,
+  title,
+  posterUrl,
+  onClose,
+}: {
+  entryId: string;
+  video: PortfolioVideoFields;
+  title: string;
+  posterUrl?: string;
+  onClose: () => void;
+}) {
+  const titleId = useId();
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      className="vp-showreel-lightbox"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="vp-showreel-lightbox__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
+        <div className="vp-showreel-lightbox__chrome">
+          <h2 id={titleId} className="vp-showreel-lightbox__title">
+            {title}
+          </h2>
+          <button
+            ref={closeRef}
+            type="button"
+            className="vp-showreel-lightbox__close"
+            onClick={onClose}
+            aria-label="Close video"
+          >
+            Close
+          </button>
+        </div>
+        <div className="vp-showreel-lightbox__player">
+          <VideoPlayer
+            entryId={entryId}
+            video={video}
+            posterUrl={posterUrl}
+            autoPlay
+            priority
+            posterSizes="(max-width: 992px) 100vw, min(1100px, 92vw)"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailVideoGrid({
+  entry,
+  videos,
+  locale,
+  campaignTitle,
+  onOpen,
+}: {
+  entry: InternalLibraryEntry;
+  videos: PortfolioVideoFields[];
+  locale: Locale;
+  campaignTitle: string;
+  onOpen: (video: PortfolioVideoFields, index: number) => void;
+}) {
+  return (
+    <div
+      className="vp-internal-detail__video-grid"
+      role="list"
+      aria-label="Project films"
+    >
+      {videos.map((video, index) => {
+        const isMain = index === 0;
+        const title = episodeTitle(
+          video,
+          locale,
+          isMain ? campaignTitle : `Film ${index + 1}`,
+        );
+        const poster = posterForVideo(entry, video, isMain);
+
+        return (
+          <div key={video._key ?? `film-${index}`} role="listitem" className="vp-internal-card">
+            <button
+              type="button"
+              className="vp-internal-card__hit"
+              onClick={() => onOpen(video, index)}
+            >
+              <div className="vp-internal-card__media">
+                {poster ? (
+                  <Image
+                    src={poster}
+                    alt=""
+                    fill
+                    sizes="(max-width: 992px) 50vw, 25vw"
+                    className="object-cover"
+                  />
+                ) : null}
+                {isMain ? (
+                  <span className="vp-internal-badge vp-internal-badge--public">
+                    Main
+                  </span>
+                ) : null}
+                <div className="vp-internal-card__overlay">
+                  <h2 className="vp-internal-card__title">{title}</h2>
+                </div>
+              </div>
+            </button>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -130,6 +336,17 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
     crewCredits: entry.crewCredits,
     locale,
   });
+
+  const playableVideos = useMemo(
+    () => resolvePortfolioVideos(entry).filter(isPlayableVideo),
+    [entry],
+  );
+
+  const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(
+    null,
+  );
+  const activeVideo =
+    activeVideoIndex !== null ? playableVideos[activeVideoIndex] : null;
 
   return (
     <div className="vp-internal-detail">
@@ -184,8 +401,38 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
       </div>
 
       <div className="vp-internal-detail__layout">
-        <div className="vp-internal-detail__player">
-          <DetailPlayer entry={entry} />
+        <div
+          className={
+            playableVideos.length > 1
+              ? 'vp-internal-detail__media vp-internal-detail__media--grid'
+              : 'vp-internal-detail__media'
+          }
+        >
+          {playableVideos.length === 0 ? (
+            <div className="vp-internal-detail__player">
+              <div className="vp-internal-detail__no-video">
+                No playable video for this project.
+              </div>
+            </div>
+          ) : playableVideos.length === 1 ? (
+            <div className="vp-internal-detail__player">
+              <VideoPlayer
+                entryId={entry._id}
+                video={playableVideos[0]}
+                posterUrl={posterForVideo(entry, playableVideos[0], true)}
+                priority
+                posterSizes="(max-width: 992px) 100vw, min(1100px, 70vw)"
+              />
+            </div>
+          ) : (
+            <DetailVideoGrid
+              entry={entry}
+              videos={playableVideos}
+              locale={locale}
+              campaignTitle={title}
+              onOpen={(_video, index) => setActiveVideoIndex(index)}
+            />
+          )}
         </div>
 
         <div className="vp-internal-detail__body">
@@ -200,6 +447,12 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
               <div>
                 <dt>Platform</dt>
                 <dd>{platforms.join(', ')}</dd>
+              </div>
+            ) : null}
+            {playableVideos.length > 1 ? (
+              <div>
+                <dt>Films</dt>
+                <dd>{playableVideos.length}</dd>
               </div>
             ) : null}
           </dl>
@@ -256,6 +509,24 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
           )}
         </div>
       </div>
+
+      {activeVideo ? (
+        <DetailVideoLightbox
+          entryId={entry._id}
+          video={activeVideo}
+          title={episodeTitle(
+            activeVideo,
+            locale,
+            activeVideoIndex === 0 ? title : `Film ${(activeVideoIndex ?? 0) + 1}`,
+          )}
+          posterUrl={posterForVideo(
+            entry,
+            activeVideo,
+            activeVideoIndex === 0,
+          )}
+          onClose={() => setActiveVideoIndex(null)}
+        />
+      ) : null}
     </div>
   );
 }

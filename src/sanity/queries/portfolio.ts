@@ -248,6 +248,9 @@ const INTERNAL_LIBRARY_ENTRY_FIELDS = `
   vimeoUrl,
   xinpianchangUrl,
   additionalVideos[]{
+    _key,
+    vimeoUrl,
+    xinpianchangUrl,
     videoTitle,
     videoTitleZh
   },
