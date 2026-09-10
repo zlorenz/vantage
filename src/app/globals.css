@@ -1819,8 +1819,8 @@ body:has(.vp-work-index) #header.navbar::before {
   flex: 1 1 auto;
   flex-direction: column;
   align-items: flex-start;
-  /* Figma gap eyebrow → title block: 40px */
-  gap: 2.5rem;
+  /* Match case header brand→campaign gap (.vp-case-header__title-block). */
+  gap: 0.35rem;
 }
 
 .vp-news-page__title-block {
