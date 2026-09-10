@@ -61,6 +61,15 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
               sizes="(max-width: 767px) 100vw, 50vw"
             />
           </Link>
+          {/* Date overlaid on image — intentional deviation from Figma 2050:4920 (Zach). */}
+          {post.publishedAt ? (
+            <time
+              className="vp-blog-card__date-pill"
+              dateTime={post.publishedAt}
+            >
+              {formatCardPillDate(post.publishedAt, locale)}
+            </time>
+          ) : null}
           <div className="vp-blog-card__brackets" aria-hidden="true">
             <span className="vp-blog-card__bracket vp-blog-card__bracket--tl" />
             <span className="vp-blog-card__bracket vp-blog-card__bracket--tr" />
@@ -71,16 +80,8 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
       ) : null}
 
       <div className="vp-blog-card__body">
-        {post.publishedAt || categories.length ? (
+        {categories.length ? (
           <div className="vp-blog-card__pills">
-            {post.publishedAt ? (
-              <time
-                className="vp-blog-card__pill"
-                dateTime={post.publishedAt}
-              >
-                {formatCardPillDate(post.publishedAt, locale)}
-              </time>
-            ) : null}
             {categories.map((category) => {
               const catSlug =
                 locale === 'zh'

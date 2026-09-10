@@ -35,6 +35,36 @@
   object-fit: cover;
 }
 
+/*
+ * Date pill overlaid top-left on the image — intentional deviation from
+ * Figma 2050:4920 (Zach); do not "correct" back without checking.
+ * Offset = media pad (30px) + 16px into the image.
+ */
+.vp-blog-card__date-pill {
+  position: absolute;
+  top: calc(1.875rem + 1rem);
+  left: calc(1.875rem + 1rem);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+  font-family: var(--font-vp-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* Corner L-brackets — 12×12, #d9d9d9 (same chrome as portfolio index cards). */
 .vp-blog-card__brackets {
   position: absolute;
