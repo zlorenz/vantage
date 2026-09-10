@@ -97,12 +97,29 @@ export function CarouselVimeoEmbed({
         if (!paused) reportReady();
       });
 
+      const wrapToStart = () => {
+        if (!activeRef.current) return;
+        void (async () => {
+          try {
+            await player.setCurrentTime(startRef.current ?? 0);
+            const paused = await player.getPaused();
+            if (paused && activeRef.current) {
+              await player.play();
+            }
+          } catch {
+            // Autoplay can be blocked until the first gesture; swipe is enough.
+          }
+        })();
+      };
+
       const onTimeUpdate = (data: {seconds: number}) => {
         const end = endRef.current;
         if (end == null || !activeRef.current) return;
-        if (data.seconds >= end) {
-          void player.setCurrentTime(startRef.current ?? 0);
-        }
+        if (data.seconds >= end) wrapToStart();
+      };
+
+      const onEnded = () => {
+        wrapToStart();
       };
 
       try {
@@ -111,6 +128,7 @@ export function CarouselVimeoEmbed({
         await player.setLoop(!boundedLoop);
         if (boundedLoop) {
           player.on('timeupdate', onTimeUpdate);
+          player.on('ended', onEnded);
         }
         if (cancelled) return;
         if (activeRef.current) {

@@ -264,21 +264,36 @@ export function PreviewBoundsVisualPicker({
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [applyPlayheadBound, readOnly, seekTo])
 
-  // Bounded loop — near-verbatim from CarouselNativeVideo.tsx timeupdate wrap.
+  // Bounded loop — near-verbatim from CarouselNativeVideo.tsx wrap (+ ended).
   useEffect(() => {
     const video = videoRef.current
     if (!video || !boundedLoop) return
 
-    const onTimeUpdate = () => {
-      const end = endRef.current
-      if (end == null) return
-      if (video.currentTime >= end) {
-        video.currentTime = startRef.current ?? 0
+    const wrapToStart = () => {
+      video.currentTime = startRef.current ?? 0
+      if (video.paused) {
+        void video.play().catch(() => {
+          // Editor may need to press play after a gesture.
+        })
       }
     }
 
+    const onTimeUpdate = () => {
+      const end = endRef.current
+      if (end == null) return
+      if (video.currentTime >= end) wrapToStart()
+    }
+
+    const onEnded = () => {
+      wrapToStart()
+    }
+
     video.addEventListener('timeupdate', onTimeUpdate)
-    return () => video.removeEventListener('timeupdate', onTimeUpdate)
+    video.addEventListener('ended', onEnded)
+    return () => {
+      video.removeEventListener('timeupdate', onTimeUpdate)
+      video.removeEventListener('ended', onEnded)
+    }
   }, [src, boundedLoop])
 
   useEffect(() => {

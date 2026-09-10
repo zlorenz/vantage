@@ -4,6 +4,8 @@
  * Native muted preview for a carousel slide, using a server-minted source.
  * Optional previewStartSeconds / previewEndSeconds loop a bounded range;
  * otherwise the element uses the native loop attribute for the full clip.
+ * Bounded wraps also listen for `ended` and resume play() — needed when the
+ * out-point sits at media duration and timeupdate loses the EOF race.
  *
  * Two activation paths share this element:
  *
@@ -557,20 +559,39 @@ export function CarouselNativeVideo({
     return cleanup;
   }, [active, src, playbackFormat]);
 
+  // Bounded in/out wrap. When end ≈ media duration, timeupdate can lose the
+  // race to the browser's natural `ended` pause — seek alone leaves the
+  // element paused, so resume play() after wrap (and on `ended`).
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !boundedLoop) return;
 
-    const onTimeUpdate = () => {
-      const end = endRef.current;
-      if (end == null || !activeRef.current) return;
-      if (video.currentTime >= end) {
-        video.currentTime = startRef.current ?? 0;
+    const wrapToStart = () => {
+      if (!activeRef.current) return;
+      video.currentTime = startRef.current ?? 0;
+      if (video.paused) {
+        void video.play().catch(() => {
+          // Autoplay can be blocked until the first gesture; swipe is enough.
+        });
       }
     };
 
+    const onTimeUpdate = () => {
+      const end = endRef.current;
+      if (end == null || !activeRef.current) return;
+      if (video.currentTime >= end) wrapToStart();
+    };
+
+    const onEnded = () => {
+      wrapToStart();
+    };
+
     video.addEventListener('timeupdate', onTimeUpdate);
-    return () => video.removeEventListener('timeupdate', onTimeUpdate);
+    video.addEventListener('ended', onEnded);
+    return () => {
+      video.removeEventListener('timeupdate', onTimeUpdate);
+      video.removeEventListener('ended', onEnded);
+    };
   }, [src, boundedLoop]);
 
   const handleLoadedMetadata = () => {
