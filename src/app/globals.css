@@ -3627,6 +3627,25 @@ body:has(.vp-work-index) #header.navbar::before {
 
 @media (max-width: 767.98px) {
   /*
+   * iOS Safari + Chrome auto-zoom into any focused input whose computed
+   * font-size is under 16px and never zoom back out — which then hides
+   * items from the sticky toolbar and offsets the grid/table. Bumping
+   * text inputs inside the internal library and any portalled bottom
+   * sheet to 16px prevents the zoom entirely.
+   *
+   * Scoped to the internal library + bottom sheets so we don't touch
+   * intentionally-small inputs elsewhere in the app.
+   */
+  .vp-internal-page input,
+  .vp-internal-page textarea,
+  .vp-internal-page select,
+  .vp-bottom-sheet input,
+  .vp-bottom-sheet textarea,
+  .vp-bottom-sheet select {
+    font-size: 16px;
+  }
+
+  /*
    * Fixed nav grows to include the safe-area inset on notched devices, so
    * the page's padding-top must include that same inset — otherwise content
    * (and the sticky toolbar) render underneath the nav and get clipped.
