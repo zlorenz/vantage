@@ -58,7 +58,7 @@ export type FooterLensEngine = {
  * Placeholder-resolution photo collage (alpha-masked to the "A").
  * Expect a higher-res re-export before shipping — pipeline test asset only.
  */
-const COLLAGE_SRC = "/prototype/footer-lens/collage.png";
+const COLLAGE_SRC = "/prototype/footer-lens/vantage-logo-photo-collage-01.png";
 
 /**
  * Loupe warp — collage-readable:
