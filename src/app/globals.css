@@ -1776,6 +1776,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 /* Figma Blog 2050:5242 — eyebrow + H1 + intro stack; desktop filter bottom-aligned. */
 .vp-news-page__header {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1788,6 +1789,28 @@ body:has(.vp-work-index) #header.navbar::before {
   .vp-news-page__header {
     align-items: flex-end;
   }
+}
+
+/* Figma Group 2050:5203 — vap pattern, ~8% opacity, mix-blend-luminosity. */
+.vp-news-page__motif {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: 20.5rem; /* ~328px Figma group width */
+  max-width: 40%;
+  height: auto;
+  opacity: 0.08;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+  user-select: none;
+}
+
+.vp-news-page__heading,
+.vp-news-page__header > .vp-blog-desktop-filter,
+.vp-news-page__filter-anchor {
+  position: relative;
+  z-index: 1;
 }
 
 .vp-news-page__heading {

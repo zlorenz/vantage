@@ -105,6 +105,13 @@ export default async function NewsPage({ params }: Props) {
       >
         <div className="vp-content-rail">
           <header className="vp-news-page__header">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="vp-news-page__motif"
+              src="/brand/vap-pattern.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <div className="vp-news-page__heading">
               <p className="vp-news-page__eyebrow">{`●  ${t('eyebrow')}`}</p>
               <div className="vp-news-page__title-block">
