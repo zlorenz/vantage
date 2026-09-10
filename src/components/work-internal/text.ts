@@ -31,13 +31,29 @@ export function getDisplayTitle(
   );
 }
 
+/** Fixed English short months — avoids Safari vs Node `en-GB` mismatch (`Sep`/`Sept`). */
+const SHORT_MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+] as const;
+
 export function formatPublishDate(iso: string | undefined): string {
   if (!iso) return '—';
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return '—';
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  // UTC calendar parts — publishedAt is a date (not a local wall-clock time).
+  const day = date.getUTCDate();
+  const month = SHORT_MONTHS[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+  return `${day} ${month} ${year}`;
 }
