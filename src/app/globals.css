@@ -1897,6 +1897,11 @@ body:has(.vp-work-index) #header.navbar::before {
   margin-top: 0.75em;
 }
 
+/* Featured + grid sit outside .vp-content-rail so structural borders are full-bleed. */
+.vp-news-page__chrome {
+  width: 100%;
+}
+
 /* Blog / search card title links — shade via opacity at the sitewide timing. */
 .vp-post-card__title a {
   transition: opacity var(--vp-transition);

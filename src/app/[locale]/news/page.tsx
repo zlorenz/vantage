@@ -130,7 +130,10 @@ export default async function NewsPage({ params }: Props) {
               phrases={phrases}
             />
           </header>
+        </div>
 
+        {/* Full-bleed chrome — outside .vp-content-rail so borders span the viewport. */}
+        <div className="vp-news-page__chrome">
           {featuredPost ? (
             <FeaturedPost
               post={featuredPost}
