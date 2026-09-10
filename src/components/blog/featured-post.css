@@ -169,6 +169,34 @@ a.vp-featured-post__pill:focus-visible {
   background: #1a1a1a;
 }
 
+/*
+ * Date pill overlaid top-left on the featured image — intentional deviation
+ * from Figma 2050:4920 (Zach); do not "correct" back without checking.
+ */
+.vp-featured-post__date-pill {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+  font-family: var(--font-vp-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .vp-featured-post__image,
 .vp-featured-post__image-fallback {
   display: block;

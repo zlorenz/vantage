@@ -54,13 +54,8 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
       <div className="vp-featured-post__inner">
         <div className="vp-featured-post__content">
           <div className="vp-featured-post__copy">
-            {post.publishedAt || categories.length ? (
+            {categories.length ? (
               <div className="vp-featured-post__pills">
-                {post.publishedAt ? (
-                  <time className="vp-featured-post__pill" dateTime={post.publishedAt}>
-                    {formatFeaturedPillDate(post.publishedAt, locale)}
-                  </time>
-                ) : null}
                 {categories.map((category) => {
                   const catSlug =
                     locale === 'zh'
@@ -112,6 +107,12 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
         </div>
 
         <div className="vp-featured-post__media">
+          {/* Date overlaid on image — intentional deviation from Figma 2050:4920 (Zach). */}
+          {post.publishedAt ? (
+            <time className="vp-featured-post__date-pill" dateTime={post.publishedAt}>
+              {formatFeaturedPillDate(post.publishedAt, locale)}
+            </time>
+          ) : null}
           {imageUrl ? (
             <Image
               src={imageUrl}
