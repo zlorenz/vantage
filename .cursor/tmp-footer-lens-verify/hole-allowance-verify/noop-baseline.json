@@ -1,0 +1,24 @@
+{
+  "mode": "HOLE_ALLOWANCE_ENABLED=false",
+  "hole": {
+    "solid": 71599,
+    "colored": 40769,
+    "cavityColored": 335,
+    "hash": 1182083932,
+    "buildMs": 23.100000008940697
+  },
+  "cusp": {
+    "solid": 79435,
+    "colored": 50673,
+    "cavityColored": 3935,
+    "hash": 3447953370,
+    "buildMs": 24.299999997019768
+  },
+  "outer": {
+    "solid": 98585,
+    "colored": 52169,
+    "cavityColored": 10104,
+    "hash": 195127148,
+    "buildMs": 23.799999997019768
+  }
+}
