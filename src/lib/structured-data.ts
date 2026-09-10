@@ -191,7 +191,8 @@ export function workBreadcrumb(locale: Locale): BreadcrumbItem {
 
 export function newsBreadcrumb(locale: Locale): BreadcrumbItem {
   return {
-    name: locale === 'zh' ? '新闻动态' : 'News',
+    // ZH: still '新闻动态' — needs Karen/Hien translation to match EN "Production Log".
+    name: locale === 'zh' ? '新闻动态' : 'Production Log',
     url: locale === 'zh' ? '/zh/新闻' : '/news',
   };
 }
