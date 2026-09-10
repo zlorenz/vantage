@@ -10,6 +10,7 @@
 import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
+import { trackInteractionEvent } from '@/lib/interaction-events';
 
 export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean }) {
   const t = useTranslations('Search');
@@ -23,6 +24,11 @@ export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean
     e.preventDefault();
     const q = query.trim();
     if (!q) return;
+    trackInteractionEvent({
+      eventType: 'search_submit',
+      sourceSurface: 'nav_search',
+      query: q,
+    });
     router.push(
       {
         pathname: '/search',

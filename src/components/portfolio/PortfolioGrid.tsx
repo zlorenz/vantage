@@ -12,6 +12,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
+import { trackInteractionEvent } from '@/lib/interaction-events';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { flattenTaxonomyTree, optionIndent } from '@/lib/taxonomy-tree';
 import { PortfolioCard } from './PortfolioCard';
@@ -478,16 +479,34 @@ export function PortfolioGrid({
     publicFilters.market !== presetMarket;
 
   const updatePublicFilter = (key: keyof PublicFilters, value: string) => {
-    setPublicFilters((prev) => ({ ...prev, [key]: value }));
+    setPublicFilters((prev) => {
+      const next = { ...prev, [key]: value };
+      if (filterMode === 'public') {
+        trackInteractionEvent({
+          eventType: 'filter_change',
+          sourceSurface: 'taxonomy_archive',
+          filters: next,
+        });
+      }
+      return next;
+    });
     keepFiltersInView();
   };
 
   const clearPublicFilters = () => {
-    setPublicFilters({
+    const next = {
       format: presetFormat,
       industry: presetIndustry,
       market: presetMarket,
-    });
+    };
+    setPublicFilters(next);
+    if (filterMode === 'public') {
+      trackInteractionEvent({
+        eventType: 'filter_change',
+        sourceSurface: 'taxonomy_archive',
+        filters: next,
+      });
+    }
     keepFiltersInView();
   };
 

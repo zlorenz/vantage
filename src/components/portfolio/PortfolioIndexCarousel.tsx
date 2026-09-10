@@ -16,6 +16,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import {WheelGestures} from 'wheel-gestures';
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink';
 import type {Locale} from '@/i18n/routing';
+import {trackInteractionEvent} from '@/lib/interaction-events';
 import type {TaxonomyTerm} from '@/types/sanity';
 import {
   readPublicFilters,
@@ -704,6 +705,11 @@ export function PortfolioIndexCarousel({
     );
     if (matches.length === 0) {
       setSearchNoResultsQuery(next);
+      trackInteractionEvent({
+        eventType: 'search_submit',
+        sourceSurface: 'work_carousel',
+        query: next,
+      });
       // Leave carousel / committed search untouched.
       return 'none';
     }
@@ -713,6 +719,11 @@ export function PortfolioIndexCarousel({
     setPublicFilters(EMPTY_PUBLIC_PRESETS);
     setActiveIndex(0);
     setSearchOpen(false);
+    trackInteractionEvent({
+      eventType: 'search_submit',
+      sourceSurface: 'work_carousel',
+      query: next,
+    });
     return 'ok';
   }, [slides]);
 
@@ -741,7 +752,15 @@ export function PortfolioIndexCarousel({
 
   const updatePublicFilter = useCallback(
     (key: keyof PublicFilters, value: string) => {
-      setPublicFilters((prev) => ({...prev, [key]: value}));
+      setPublicFilters((prev) => {
+        const next = {...prev, [key]: value};
+        trackInteractionEvent({
+          eventType: 'filter_change',
+          sourceSurface: 'work_carousel',
+          filters: next,
+        });
+        return next;
+      });
       // Activating a filter clears any committed search.
       setCommittedSearch('');
       setDraftSearch('');
@@ -757,10 +776,23 @@ export function PortfolioIndexCarousel({
     setSearchNoResultsQuery('');
     setActiveIndex(0);
     setSearchOpen(false);
+    trackInteractionEvent({
+      eventType: 'filter_change',
+      sourceSurface: 'work_carousel',
+      filters: EMPTY_PUBLIC_PRESETS,
+    });
   }, []);
 
   const clearOnePublicFilter = useCallback((key: keyof PublicFilters) => {
-    setPublicFilters((prev) => ({...prev, [key]: ''}));
+    setPublicFilters((prev) => {
+      const next = {...prev, [key]: ''};
+      trackInteractionEvent({
+        eventType: 'filter_change',
+        sourceSurface: 'work_carousel',
+        filters: next,
+      });
+      return next;
+    });
     setActiveIndex(0);
   }, []);
 

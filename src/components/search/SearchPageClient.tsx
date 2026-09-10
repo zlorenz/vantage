@@ -14,6 +14,7 @@ import { Link } from '@/i18n/navigation';
 import { phraseRecordToMap } from '@phrase-book';
 import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
 import { resolveEntryDocumentTitle } from '@/lib/display-titles';
+import { trackInteractionEvent } from '@/lib/interaction-events';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { Locale } from '@/i18n/routing';
 import type { DisplayTitlePartsValue } from '@/types/sanity';
@@ -108,6 +109,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
                 item={item}
                 locale={locale}
                 phrases={phrases}
+                query={query}
               />
             ))}
           </div>
@@ -126,6 +128,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
                 item={item}
                 locale={locale}
                 phrases={phrases}
+                query={query}
               />
             ))}
           </div>
@@ -139,10 +142,12 @@ function SearchCard({
   item,
   locale,
   phrases,
+  query,
 }: {
   item: SearchResultWithImage;
   locale: Locale;
   phrases?: Record<string, string>;
+  query: string;
 }) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
   const title = resolveEntryDocumentTitle(
@@ -156,6 +161,15 @@ function SearchCard({
       <PortfolioEntryLink
         slug={slugParam}
         className="vp-card__link block text-white no-underline"
+        onClick={() => {
+          trackInteractionEvent({
+            eventType: 'result_click',
+            sourceSurface: 'search_page',
+            query,
+            resultSlug: slugParam,
+            resultType: 'portfolio',
+          });
+        }}
       >
         <div className="vp-card__media relative aspect-video w-full overflow-hidden">
           {item.imageUrl ? (
@@ -173,10 +187,12 @@ function SearchNewsCard({
   item,
   locale,
   phrases,
+  query,
 }: {
   item: SearchResultWithImage;
   locale: Locale;
   phrases?: Record<string, string>;
+  query: string;
 }) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
   const title = pickLocaleFieldWithPhrases(locale, item.title, item.titleZh, phrases);
@@ -185,12 +201,23 @@ function SearchNewsCard({
     pickLocaleFieldWithPhrases(locale, item.bodyText, item.bodyTextZh, phrases),
   );
 
+  const trackClick = () => {
+    trackInteractionEvent({
+      eventType: 'result_click',
+      sourceSurface: 'search_page',
+      query,
+      resultSlug: slugParam,
+      resultType: 'news',
+    });
+  };
+
   return (
     <article className="vp-post-card">
       {item.imageUrl ? (
         <Link
           href={{ pathname: '/[slug]', params: { slug: slugParam } }}
           className="vp-post-card__thumb block aspect-video overflow-hidden bg-vp-search-thumb-bg"
+          onClick={trackClick}
         >
           <Image src={item.imageUrl} alt="" width={960} height={540} className="h-full w-full object-cover" />
         </Link>
@@ -200,6 +227,7 @@ function SearchNewsCard({
           <Link
             href={{ pathname: '/[slug]', params: { slug: slugParam } }}
             className="text-inherit no-underline"
+            onClick={trackClick}
           >
             {title}
           </Link>
