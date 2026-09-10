@@ -26,6 +26,7 @@ export const ALL_POSTS_QUERY = `
   *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
+      _id,
       title,
       titleZh,
       "slug": slug.current,
@@ -87,6 +88,7 @@ export const POSTS_BY_CATEGORY_QUERY = `
   ][0]._id)] | order(publishedAt desc) {
     ${BLOG_CARD_FIELDS},
     "categories": categories[]->{
+      _id,
       title,
       titleZh,
       "slug": slug.current,
