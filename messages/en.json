@@ -158,7 +158,10 @@
     "portfolioAria": "Portfolio filters",
     "crewAria": "Portfolio crew filters",
     "clearSearchAria": "Clear search",
-    "clearFiltersAria": "Clear filters"
+    "clearFiltersAria": "Clear filters",
+    "activeFiltersAria": "Active filters",
+    "removeFilterAria": "Remove {label}",
+    "clearSearchPillAria": "Clear search “{query}”"
   },
   "Blog": {
     "categories": "BLOG CATEGORIES",

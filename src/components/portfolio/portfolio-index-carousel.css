@@ -31,6 +31,8 @@
   --vp-index-bottom-bar-height: 5rem;
   /* Desktop filter row above the carousel; 0 on mobile (row is display:none). */
   --vp-index-top-row-height: 0px;
+  /* Active filter/search pills row; 0 until .has-active-filters. */
+  --vp-index-active-filters-height: 0px;
   /* Desktop default; mobile override below. Tuned to Figma 640/1080 (~0.59). */
   --vp-index-height-scale: 0.73;
 
@@ -71,12 +73,21 @@
   --vp-index-slide-width-scale: 1.16;
 }
 
+.vp-portfolio-index.has-active-filters {
+  /* Single-line Clear all + pills; matches PortfolioIndexActiveFilters chrome. */
+  --vp-index-active-filters-height: 2.25rem;
+}
+
 @media (min-width: 576px) {
   .vp-portfolio-index {
     --vp-index-slide-gap: 0.75rem;
     --vp-index-card-aspect: 512 / 640;
     /* Matches PortfolioIndexDesktopFilterRow rendered height (Figma 40px). */
     --vp-index-top-row-height: 2.5rem;
+  }
+
+  .vp-portfolio-index.has-active-filters {
+    --vp-index-active-filters-height: 2.5rem;
   }
 }
 
@@ -263,6 +274,7 @@
     (
         100vh - var(--vp-header-height, 4.5rem) -
           var(--vp-index-top-row-height, 0px) -
+          var(--vp-index-active-filters-height, 0px) -
           var(--vp-index-bottom-bar-height, 5rem) -
           env(safe-area-inset-bottom, 0px)
       ) * var(--vp-index-height-scale, 0.73)
@@ -271,6 +283,7 @@
     (
         100svh - var(--vp-header-height, 4.5rem) -
           var(--vp-index-top-row-height, 0px) -
+          var(--vp-index-active-filters-height, 0px) -
           var(--vp-index-bottom-bar-height, 5rem) -
           env(safe-area-inset-bottom, 0px)
       ) * var(--vp-index-height-scale, 0.73)
@@ -298,6 +311,7 @@
       (
           100svh - var(--vp-header-height, 4.5rem) -
             var(--vp-index-top-row-height, 0px) -
+            var(--vp-index-active-filters-height, 0px) -
             var(--vp-index-bottom-bar-height, 5rem) -
             env(safe-area-inset-bottom, 0px)
         ) * var(--vp-index-height-scale, 0.73) * 15 / 640
@@ -704,8 +718,7 @@
 }
 
 /* Bottom chrome: filter (left) · scrubber · search (right).
- * Symmetrical bookends; tools are nudged inward so corner clear badges
- * have gutter room without permanently reserving a flex sibling. */
+ * Symmetrical bookends; tools are nudged inward for corner breathing room. */
 .vp-portfolio-index__bottom-bar {
   position: relative;
   flex-shrink: 0;
@@ -717,7 +730,6 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--vp-index-bottom-bar-height, 5rem);
-  /* Extra side inset vs scrubber — room for overhanging clear badges. */
   padding: 0 max(var(--spacing-vp-gutter, 1rem), 1.35rem);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   overflow: visible;
@@ -781,50 +793,6 @@
   display: block;
   width: 1.25rem;
   height: 1.25rem;
-}
-
-/* Small corner clear chips — only mounted when that side is active. */
-.vp-portfolio-index__clear-badge {
-  position: absolute;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.2rem;
-  height: 1.2rem;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--vp-orange, #f04e23);
-  border-radius: 9999px;
-  background: var(--vp-orange, #f04e23);
-  color: #fff;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  /* Expand hit target without growing the visual chip. */
-  box-shadow: 0 0 0 0.55rem transparent;
-  transition: filter var(--vp-transition);
-}
-
-.vp-portfolio-index__clear-badge--filter {
-  top: -0.15rem;
-  left: -0.45rem;
-}
-
-.vp-portfolio-index__clear-badge--search {
-  top: -0.15rem;
-  right: -0.45rem;
-}
-
-.vp-portfolio-index__clear-badge:hover,
-.vp-portfolio-index__clear-badge:focus-visible {
-  filter: brightness(1.12);
-  outline: none;
-}
-
-.vp-portfolio-index__clear-badge-icon {
-  display: block;
-  width: 0.7rem;
-  height: 0.7rem;
 }
 
 /* Centered search field — no panel chrome; scrim dismisses. */
@@ -1069,7 +1037,7 @@
   /*
    * Desktop filter/search entry points move to PortfolioIndexDesktopFilterRow.
    * Keep the nodes mounted so mobile sheet/search logic stays intact; hide
-   * only the funnel + bottom search icon (and their clear badges) visually.
+   * only the funnel + bottom search icon visually.
    */
   .vp-portfolio-index__tool--filter,
   .vp-portfolio-index__tool--search {

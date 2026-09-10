@@ -158,7 +158,10 @@
     "portfolioAria": "作品集筛选",
     "crewAria": "制作团队筛选",
     "clearSearchAria": "清除搜索",
-    "clearFiltersAria": "清除筛选"
+    "clearFiltersAria": "清除筛选",
+    "activeFiltersAria": "当前筛选",
+    "removeFilterAria": "移除 {label}",
+    "clearSearchPillAria": "清除搜索“{query}”"
   },
   "Blog": {
     "categories": "博客分类",

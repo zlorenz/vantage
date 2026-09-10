@@ -22,6 +22,7 @@ import {
   replacePublicFiltersUrl,
   type PublicFilters,
 } from './PortfolioGrid';
+import {PortfolioIndexActiveFilters} from './PortfolioIndexActiveFilters';
 import {PortfolioIndexDesktopFilterRow} from './PortfolioIndexDesktopFilterRow';
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
@@ -190,22 +191,6 @@ function SearchIcon() {
       <path
         fill="currentColor"
         d="M10.5 3.75a6.75 6.75 0 1 0 4.248 12.032l3.735 3.735a.75.75 0 1 0 1.06-1.06l-3.734-3.735A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z"
-      />
-    </svg>
-  );
-}
-
-function ClearBadgeIcon() {
-  return (
-    <svg
-      className="vp-portfolio-index__clear-badge-icon"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        fill="currentColor"
-        d="M6.22 6.22a.75.75 0 0 1 1.06 0L12 10.94l4.72-4.72a.75.75 0 1 1 1.06 1.06L13.06 12l4.72 4.72a.75.75 0 1 1-1.06 1.06L12 13.06l-4.72 4.72a.75.75 0 0 1-1.06-1.06L10.94 12 6.22 7.28a.75.75 0 0 1 0-1.06Z"
       />
     </svg>
   );
@@ -765,14 +750,38 @@ export function PortfolioIndexCarousel({
     [],
   );
 
-  const clearPublicFilters = useCallback(() => {
+  const clearAllActive = useCallback(() => {
     setPublicFilters(EMPTY_PUBLIC_PRESETS);
+    setCommittedSearch('');
+    setDraftSearch('');
+    setSearchNoResultsQuery('');
+    setActiveIndex(0);
+    setSearchOpen(false);
+  }, []);
+
+  const clearOnePublicFilter = useCallback((key: keyof PublicFilters) => {
+    setPublicFilters((prev) => ({...prev, [key]: ''}));
     setActiveIndex(0);
   }, []);
 
   const closeFilterSheet = useCallback(() => {
     setFilterSheetOpen(false);
   }, []);
+
+  const activeFiltersBar = (
+    <PortfolioIndexActiveFilters
+      locale={locale}
+      phrases={phrases}
+      filters={publicFilters}
+      searchValue={committedSearch}
+      onClearFilter={clearOnePublicFilter}
+      onClearSearch={clearSearch}
+      onClearAll={clearAllActive}
+      videoFormats={videoFormats}
+      industries={industries}
+      markets={markets}
+    />
+  );
 
   const filterTrigger = (
     <div className="vp-portfolio-index__bottom-bar">
@@ -801,22 +810,12 @@ export function PortfolioIndexCarousel({
             slides={librarySlides}
             filters={publicFilters}
             onChangeFilter={updatePublicFilter}
-            onClearAll={clearPublicFilters}
+            onClearAll={clearAllActive}
             videoFormats={videoFormats}
             industries={industries}
             markets={markets}
           />
         </div>
-        {hasActiveFilters ? (
-          <button
-            type="button"
-            className="vp-portfolio-index__clear-badge vp-portfolio-index__clear-badge--filter"
-            aria-label={t('clearFiltersAria')}
-            onClick={clearPublicFilters}
-          >
-            <ClearBadgeIcon />
-          </button>
-        ) : null}
       </div>
       <PortfolioIndexScrubber
         snapCount={slideCount}
@@ -835,16 +834,6 @@ export function PortfolioIndexCarousel({
         >
           <SearchIcon />
         </button>
-        {hasActiveSearch ? (
-          <button
-            type="button"
-            className="vp-portfolio-index__clear-badge vp-portfolio-index__clear-badge--search"
-            aria-label={t('clearSearchAria')}
-            onClick={clearSearch}
-          >
-            <ClearBadgeIcon />
-          </button>
-        ) : null}
       </div>
     </div>
   );
@@ -907,10 +896,34 @@ export function PortfolioIndexCarousel({
     </div>
   ) : null;
 
+  const hasActiveChrome = hasActiveFilters || hasActiveSearch;
+  const indexRootClassName = [
+    'vp-portfolio-index',
+    slideCount <= 3 ? 'is-sparse' : '',
+    hasActiveChrome ? 'has-active-filters' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   if (!slideCount) {
     return (
-      <div className="vp-portfolio-index">
+      <div className={indexRootClassName}>
         <div className="vp-portfolio-index__stage">
+          <PortfolioIndexDesktopFilterRow
+            locale={locale}
+            phrases={phrases}
+            slides={librarySlides}
+            filters={publicFilters}
+            onChangeFilter={updatePublicFilter}
+            searchValue={committedSearch}
+            onCommitSearch={commitSearchQuery}
+            searchNoResultsQuery={searchNoResultsQuery}
+            onClearSearchNoResults={clearSearchNoResults}
+            videoFormats={videoFormats}
+            industries={industries}
+            markets={markets}
+          />
+          {activeFiltersBar}
           <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
           {filterTrigger}
         </div>
@@ -920,9 +933,7 @@ export function PortfolioIndexCarousel({
   }
 
   return (
-    <div
-      className={`vp-portfolio-index${slideCount <= 3 ? ' is-sparse' : ''}`}
-    >
+    <div className={indexRootClassName}>
       <div className="vp-portfolio-index__stage">
         <PortfolioIndexDesktopFilterRow
           locale={locale}
@@ -938,6 +949,7 @@ export function PortfolioIndexCarousel({
           industries={industries}
           markets={markets}
         />
+        {activeFiltersBar}
         {/*
          * Full-viewport bleed track behind the Embla viewport. Each slide is
          * 100vw (not card-width); transform is progress-proportional
