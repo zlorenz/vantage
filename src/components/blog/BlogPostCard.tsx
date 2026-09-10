@@ -2,11 +2,10 @@
 
 /**
  * BlogPostCard — news index and category archive list card.
- * Figma Blog card 2051:5750: fixed 480px image + corner L-brackets.
+ * Figma Blog card 2051:5750: fixed 480px image, L-brackets, meta pills.
  */
 
 import Image from 'next/image';
-import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
 import { Link } from '@/i18n/navigation';
 import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
@@ -21,6 +20,15 @@ interface BlogPostCardProps {
   phrases?: Record<string, string>;
 }
 
+/** Card-local short month (e.g. "Mar 30, 2026") — do not change shared BlogPostedOn. */
+function formatCardPillDate(dateString: string, locale: Locale): string {
+  return new Date(dateString).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
 export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
   const slugParam = locale === 'zh' ? post.slugZh || post.slug : post.slug;
   const title = pickLocaleFieldWithPhrases(locale, post.title, post.titleZh, phrases);
@@ -32,6 +40,8 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
   const imageUrl = post.featuredImage
     ? urlForImage(post.featuredImage).width(960).height(480).fit('crop').url()
     : null;
+
+  const categories = post.categories ?? [];
 
   return (
     <article className="vp-blog-card">
@@ -61,18 +71,49 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
       ) : null}
 
       <div className="vp-blog-card__body">
+        {post.publishedAt || categories.length ? (
+          <div className="vp-blog-card__pills">
+            {post.publishedAt ? (
+              <time
+                className="vp-blog-card__pill"
+                dateTime={post.publishedAt}
+              >
+                {formatCardPillDate(post.publishedAt, locale)}
+              </time>
+            ) : null}
+            {categories.map((category) => {
+              const catSlug =
+                locale === 'zh'
+                  ? category.slugZh || category.slug
+                  : category.slug;
+              const catLabel = pickLocaleFieldWithPhrases(
+                locale,
+                category.title,
+                category.titleZh,
+                phrases,
+              );
+              return (
+                <Link
+                  key={category._id}
+                  href={{
+                    pathname: '/category/[slug]',
+                    params: { slug: catSlug },
+                  }}
+                  className="vp-blog-card__pill"
+                >
+                  {catLabel}
+                </Link>
+              );
+            })}
+          </div>
+        ) : null}
+
         <div className="vp-blog-card__copy">
           <h2 className="vp-blog-card__title vp-blog-card__title--legacy">
             <Link href={{ pathname: '/[slug]', params: { slug: slugParam } }}>
               {title}
             </Link>
           </h2>
-
-          {post.publishedAt ? (
-            <div className="vp-blog-card__legacy-meta">
-              <BlogPostedOn publishedAt={post.publishedAt} locale={locale} />
-            </div>
-          ) : null}
 
           {excerpt ? (
             <div className="vp-blog-card__excerpt">
