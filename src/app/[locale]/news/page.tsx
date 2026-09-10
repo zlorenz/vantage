@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
 import { BlogPostGrid } from '@/components/blog/BlogPostGrid';
+import { FeaturedPost } from '@/components/blog/FeaturedPost';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
@@ -80,6 +81,7 @@ export default async function NewsPage({ params }: Props) {
     'Production Log';
   const bodyBlocks =
     typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
+  const featuredPost = posts[0] ?? null;
 
   return (
     <>
@@ -121,10 +123,19 @@ export default async function NewsPage({ params }: Props) {
             />
           </header>
 
+          {featuredPost ? (
+            <FeaturedPost
+              post={featuredPost}
+              locale={typedLocale}
+              phrases={phrases}
+            />
+          ) : null}
+
           <BlogPostGrid
             posts={posts}
             locale={typedLocale}
             phrases={phrases}
+            excludePostId={featuredPost?._id}
           />
         </div>
       </SectionWrapper>
