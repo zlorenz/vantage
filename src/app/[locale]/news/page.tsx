@@ -1,15 +1,16 @@
 /**
- * News index page — Production Log title + three-column masonry post grid.
- * PageHero / intro body remain in Sanity for possible later return; not rendered here.
+ * News index page — Production Log header + post grid.
+ * Figma Blog frame 2050:4920 (desktop).
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
 import { BlogPostMasonry } from '@/components/blog/BlogPostMasonry';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
+import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { newsPageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import {
@@ -72,7 +73,10 @@ export default async function NewsPage({ params }: Props) {
 
   if (!page) notFound();
 
-  const pageTitle = 'Production Log';
+  const t = await getTranslations('Blog');
+  const pageTitle =
+    pickLocaleFieldWithPhrases(typedLocale, page.title, page.titleZh, phrases) ||
+    'Production Log';
 
   return (
     <>
@@ -96,7 +100,12 @@ export default async function NewsPage({ params }: Props) {
       >
         <div className="vp-content-rail">
           <header className="vp-news-page__header">
-            <h1 className="vp-news-page__title">{pageTitle}</h1>
+            <div className="vp-news-page__heading">
+              <p className="vp-news-page__eyebrow">{`●  ${t('eyebrow')}`}</p>
+              <div className="vp-news-page__title-block">
+                <h1 className="vp-news-page__title">{pageTitle}</h1>
+              </div>
+            </div>
             <BlogCategoryFilter
               categories={categories}
               locale={typedLocale}

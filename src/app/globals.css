@@ -1774,25 +1774,62 @@ body:has(.vp-work-index) #header.navbar::before {
    News index — page title + multi-column post grid
    ========================================================================== */
 
-/* Match .vp-case-header__campaign (portfolio case) — large white left-aligned display type. */
+/* Figma Blog 2050:5242 — eyebrow + H1 + intro stack; filter stays end-aligned. */
 .vp-news-page__header {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem 1.5rem;
   margin-bottom: 2rem;
 }
 
+.vp-news-page__heading {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Figma gap eyebrow → title block: 40px */
+  gap: 2.5rem;
+}
+
+.vp-news-page__title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Figma gap title → intro: 32px */
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Figma ● Our Blog — Special Gothic Expanded One 16px / #fdb913 / −0.32px */
+.vp-news-page__eyebrow {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  letter-spacing: -0.02rem;
+  text-transform: uppercase;
+  color: #fdb913;
+}
+
+/* Override globals heading-weight 900 for Regular eyebrow (same as case brand). */
+.vp-news-page .vp-news-page__eyebrow {
+  font-weight: 400;
+}
+
+/* Figma Production Log — 80px / lh 1.2 / tracking −3.2px (desktop). */
 .vp-news-page__title {
   margin: 0;
   min-width: 0;
-  flex: 1 1 auto;
+  width: 100%;
   font-family: var(--font-vp-heading);
-  font-size: clamp(2.5rem, 5vw, 3.875rem);
+  font-size: clamp(2.5rem, 5vw, 5rem);
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
-  letter-spacing: 1px;
-  line-height: 1;
+  letter-spacing: -0.2rem;
+  line-height: 1.2;
   text-transform: uppercase;
   text-align: left;
   overflow-wrap: break-word;
@@ -1804,7 +1841,8 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 
   .vp-news-page__title {
-    font-size: clamp(3.125rem, 4.5vw, 3.9rem);
+    font-size: 5rem;
+    letter-spacing: -0.2rem;
   }
 }
 

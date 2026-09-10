@@ -165,7 +165,8 @@
   },
   "Blog": {
     "categories": "博客分类",
-    "postedOn": "发布于 "
+    "postedOn": "发布于 ",
+    "eyebrow": "我们的博客"
   },
   "Contact": {
     "modalTitle": "联系",
