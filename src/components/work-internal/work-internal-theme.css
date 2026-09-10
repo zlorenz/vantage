@@ -459,7 +459,7 @@ body:has(.vp-internal-page) .vp-internal-list__row [role='cell'] .vp-internal-ba
 }
 
 /* --------------------------------------------------------------------------
-   Select / menu / Quick View / showreel chrome
+   Select / menu / Project detail / showreel chrome
    -------------------------------------------------------------------------- */
 
 body:has(.vp-internal-page) .vp-internal-select__box {
@@ -504,57 +504,53 @@ body:has(.vp-internal-page) .vp-internal-menu__item:hover {
   background: var(--vp-wi-surface-hover);
 }
 
-body:has(.vp-internal-page) .vp-internal-quickview {
-  background: rgba(6, 6, 7, 0.72);
-}
-
-body:has(.vp-internal-page) .vp-internal-quickview__panel {
-  background: var(--vp-wi-surface);
-  border: 1px solid var(--vp-wi-border);
-  border-radius: var(--vp-wi-radius-lg);
-  box-shadow: var(--vp-wi-shadow);
-  overflow: hidden;
-}
-
-body:has(.vp-internal-page) .vp-internal-quickview__chrome {
+body:has(.vp-internal-page) .vp-internal-detail__toolbar {
+  background: rgba(12, 12, 13, 0.94);
   border-bottom-color: var(--vp-wi-border);
-  background: var(--vp-wi-surface-raised);
 }
 
-body:has(.vp-internal-page) .vp-internal-quickview__title {
+body:has(.vp-internal-page) .vp-internal-detail__back {
   color: var(--vp-wi-text);
-}
-
-body:has(.vp-internal-page) .vp-internal-quickview__date, body:has(.vp-internal-page) .vp-internal-quickview__section-title, body:has(.vp-internal-page) .vp-internal-quickview__facts dt, body:has(.vp-internal-page) .vp-internal-quickview__pairs dt, body:has(.vp-internal-page) .vp-internal-quickview__empty-credits {
-  color: var(--vp-wi-text-muted);
-}
-
-body:has(.vp-internal-page) .vp-internal-quickview__open, body:has(.vp-internal-page) .vp-internal-quickview__close {
+  border-color: var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-sm);
 }
 
-body:has(.vp-internal-page) .vp-internal-quickview__open {
+body:has(.vp-internal-page) .vp-internal-detail__back:hover {
+  border-color: var(--vp-wi-border-strong);
+  color: var(--vp-wi-text);
+}
+
+body:has(.vp-internal-page) .vp-internal-detail__nav-title,
+body:has(.vp-internal-page) .vp-internal-detail__title {
+  color: var(--vp-wi-text);
+}
+
+body:has(.vp-internal-page) .vp-internal-detail__date,
+body:has(.vp-internal-page) .vp-internal-detail__section-title,
+body:has(.vp-internal-page) .vp-internal-detail__facts dt,
+body:has(.vp-internal-page) .vp-internal-detail__pairs dt,
+body:has(.vp-internal-page) .vp-internal-detail__empty-credits {
+  color: var(--vp-wi-text-muted);
+}
+
+body:has(.vp-internal-page) .vp-internal-detail__open-public {
   color: var(--vp-wi-text);
   background: var(--vp-wi-accent-soft);
   border-color: var(--vp-wi-accent-mid);
+  border-radius: var(--vp-wi-radius-sm);
 }
 
-body:has(.vp-internal-page) .vp-internal-quickview__open:hover {
+body:has(.vp-internal-page) .vp-internal-detail__open-public:hover {
   background: rgba(var(--vp-wi-accent-rgb), 0.28);
 }
 
-body:has(.vp-internal-page) .vp-internal-quickview__close {
-  color: var(--vp-wi-text-muted);
-  background: transparent;
+body:has(.vp-internal-page) .vp-internal-detail__player {
   border-color: var(--vp-wi-border);
+  border-radius: var(--vp-wi-radius-lg);
+  overflow: hidden;
 }
 
-body:has(.vp-internal-page) .vp-internal-quickview__close:hover {
-  color: var(--vp-wi-text);
-  border-color: var(--vp-wi-border-strong);
-}
-
-body:has(.vp-internal-page) .vp-internal-quickview__tag {
+body:has(.vp-internal-page) .vp-internal-detail__tag {
   color: var(--vp-wi-text-muted);
   border-color: var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-sm);

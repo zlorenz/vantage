@@ -24,6 +24,11 @@ export const routing = defineRouting({
       en: '/work-internal',
       zh: '/work-internal',
     },
+    // Temporary prefix — at launch, app.vantage.pictures/[slug] (prefix stripped).
+    '/work-internal/[slug]': {
+      en: '/work-internal/[slug]',
+      zh: '/work-internal/[slug]',
+    },
     '/showreel/login': {
       en: '/showreel/login',
       zh: '/showreel/login',

@@ -19,6 +19,7 @@ import {
   type FormEvent,
 } from 'react'
 import {useRouter} from '@/i18n/navigation'
+import {workInternalLibraryHref} from '@/lib/internal-app-paths'
 import {urlForImage} from '@/lib/sanity'
 import type {Locale} from '@/i18n/routing'
 import {showreelLoginPathFor} from '@/lib/showreel-auth-paths'
@@ -307,7 +308,7 @@ export function ShowreelEditor({
         setDeleteError(result.error)
         return
       }
-      router.replace('/work-internal')
+      router.replace(workInternalLibraryHref())
     })
   }
 

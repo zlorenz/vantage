@@ -10,16 +10,13 @@
 
 import type { ReactNode } from 'react';
 import { usePathname } from '@/i18n/navigation';
+import { isWorkInternalPath } from '@/lib/internal-app-paths';
 import '@/components/work-internal/work-internal-theme.css';
 
 interface LayoutChromeProps {
   header: ReactNode;
   footer: ReactNode;
   children: ReactNode;
-}
-
-function isWorkInternalPath(pathname: string): boolean {
-  return pathname === '/work-internal';
 }
 
 function WorkInternalFooter() {

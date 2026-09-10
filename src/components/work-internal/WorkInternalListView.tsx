@@ -5,9 +5,14 @@
 'use client';
 
 import Image from 'next/image';
+import {Link} from '@/i18n/navigation';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
+import {
+  getWorkInternalDetailHref,
+  prepareWorkInternalDetailNavigation,
+} from './entry-url';
 import {
   getArtName,
   getCrewName,
@@ -28,7 +33,6 @@ interface WorkInternalListViewProps {
   onSortChange: (sort: LibrarySort) => void;
   selectedIds: Set<string>;
   onToggleSelect: (id: string, selected: boolean) => void;
-  onOpenQuickView: (id: string) => void;
 }
 
 function sortColumnFor(sort: LibrarySort): SortColumn {
@@ -124,7 +128,6 @@ export function WorkInternalListView({
   onSortChange,
   selectedIds,
   onToggleSelect,
-  onOpenQuickView,
 }: WorkInternalListViewProps) {
   return (
     <div className="vp-internal-list" role="table" aria-label="Portfolio library">
@@ -183,15 +186,13 @@ export function WorkInternalListView({
                 onChange={(checked) => onToggleSelect(entry._id, checked)}
               />
             </span>
-            <WorkInternalItemMenu
-              entry={entry}
-              locale={locale}
-              onQuickView={() => onOpenQuickView(entry._id)}
-            />
-            <button
-              type="button"
+            <WorkInternalItemMenu entry={entry} locale={locale} />
+            <Link
+              href={getWorkInternalDetailHref(entry)}
               className="vp-internal-list__hit"
-              onClick={() => onOpenQuickView(entry._id)}
+              onClick={() => {
+                prepareWorkInternalDetailNavigation(entry);
+              }}
             >
               <span className="vp-internal-list__thumb-col" role="cell">
                 <span className="vp-internal-list__thumb">
@@ -226,7 +227,7 @@ export function WorkInternalListView({
                   </span>
                 )}
               </span>
-            </button>
+            </Link>
           </div>
         );
       })}

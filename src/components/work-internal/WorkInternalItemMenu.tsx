@@ -3,30 +3,33 @@
  *
  * Visibility matches the bulk-select checkbox: always on touch, hover on
  * fine pointers. Menu actions are siblings of the hit target so they never
- * open Quick View accidentally.
+ * navigate to project details accidentally.
  */
 
 'use client';
 
 import {useEffect, useId, useRef, useState} from 'react';
+import {useRouter} from '@/i18n/navigation';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
-import {openPortfolioEntry} from './entry-url';
+import {
+  openPortfolioEntry,
+  prepareWorkInternalDetailNavigation,
+} from './entry-url';
 
 interface WorkInternalItemMenuProps {
   entry: InternalLibraryEntry;
   locale: Locale;
-  onQuickView: () => void;
 }
 
 export function WorkInternalItemMenu({
   entry,
   locale,
-  onQuickView,
 }: WorkInternalItemMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
+  const router = useRouter();
 
   useEffect(() => {
     if (!open) return;
@@ -84,10 +87,11 @@ export function WorkInternalItemMenu({
               event.preventDefault();
               event.stopPropagation();
               setOpen(false);
-              onQuickView();
+              const href = prepareWorkInternalDetailNavigation(entry);
+              router.push(href);
             }}
           >
-            Quick View
+            Project details
           </button>
           <button
             type="button"

@@ -60,6 +60,8 @@ export function pathsForWebhookBody(body: RevalidateWebhookBody): string[] {
     return unique([
       localePath('en', `/portfolio/${slug}`),
       localePath('zh', `/portfolio/${zhSlug}`),
+      localePath('en', `/work-internal/${slug}`),
+      localePath('zh', `/work-internal/${slug}`),
       ...work,
       ...workInternal,
       ...home,

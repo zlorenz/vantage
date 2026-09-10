@@ -5,6 +5,7 @@
 import type {Metadata} from 'next'
 import {setRequestLocale} from 'next-intl/server'
 import {Link} from '@/i18n/navigation'
+import {workInternalLibraryHref} from '@/lib/internal-app-paths'
 import type {Locale} from '@/i18n/routing'
 import {ShowreelEditor} from '@/components/showreel/ShowreelEditor'
 import {sanityFetch} from '@/sanity/lib/live'
@@ -66,7 +67,7 @@ export default async function ShowreelEditPage({params}: Props) {
             <code>{id}</code>
           </p>
           <p>
-            <Link href="/work-internal" className="vp-internal-clear">
+            <Link href={workInternalLibraryHref()} className="vp-internal-clear">
               Back to Work Library
             </Link>
           </p>

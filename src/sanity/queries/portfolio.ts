@@ -227,62 +227,78 @@ export const ALL_PORTFOLIO_INTERNAL_QUERY = `
  * Enriched library rows for the internal work tool — skim meta + detail pane.
  * Includes hidden entries; resolves names (not just slugs) for filters/display.
  */
-export const INTERNAL_LIBRARY_QUERY = `
-  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
-    _id,
-    title,
-    titleZh,
-    ${PORTFOLIO_DISPLAY_TITLE_FIELDS},
-    "slug": slug.current,
-    "slugZh": slugZh.current,
-    featuredImage,
-    isHidden,
-    publishedAt,
-    videos[]{
-      _key,
-      vimeoUrl,
-      xinpianchangUrl,
-      videoTitle,
-      videoTitleZh
-    },
+/** Shared projection for work-internal list + detail. */
+const INTERNAL_LIBRARY_ENTRY_FIELDS = `
+  _id,
+  title,
+  titleZh,
+  ${PORTFOLIO_DISPLAY_TITLE_FIELDS},
+  "slug": slug.current,
+  "slugZh": slugZh.current,
+  featuredImage,
+  isHidden,
+  publishedAt,
+  videos[]{
+    _key,
     vimeoUrl,
     xinpianchangUrl,
-    additionalVideos[]{
-      videoTitle,
-      videoTitleZh
-    },
-    clients[]->{
-      name,
-      "slug": slug.current
-    },
-    crewMembers[]->{
-      name,
-      "slug": slug.current,
-      role
-    },
-    platforms[]->{
-      name,
-      "slug": slug.current
-    },
-    videoFormats[]->{
-      title,
-      titleZh,
-      "slug": slug.current,
-      "slugZh": slugZh.current
-    },
-    industries[]->{
-      title,
-      titleZh,
-      "slug": slug.current,
-      "slugZh": slugZh.current
-    },
-    markets[]->{
-      title,
-      titleZh,
-      "slug": slug.current,
-      "slugZh": slugZh.current
-    },
-    ${PORTFOLIO_CREDITS_FIELDS}
+    videoTitle,
+    videoTitleZh
+  },
+  vimeoUrl,
+  xinpianchangUrl,
+  additionalVideos[]{
+    videoTitle,
+    videoTitleZh
+  },
+  clients[]->{
+    name,
+    "slug": slug.current
+  },
+  crewMembers[]->{
+    name,
+    "slug": slug.current,
+    role
+  },
+  platforms[]->{
+    name,
+    "slug": slug.current
+  },
+  videoFormats[]->{
+    title,
+    titleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current
+  },
+  industries[]->{
+    title,
+    titleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current
+  },
+  markets[]->{
+    title,
+    titleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current
+  },
+  ${PORTFOLIO_CREDITS_FIELDS}
+`;
+
+export const INTERNAL_LIBRARY_QUERY = `
+  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
+    ${INTERNAL_LIBRARY_ENTRY_FIELDS}
+  }
+`;
+
+/** Single library entry for `/work-internal/[slug]` (includes hidden). */
+export const INTERNAL_LIBRARY_ENTRY_BY_SLUG_QUERY = `
+  *[
+    _type == "portfolioEntry" &&
+    !defined(trash.trashedAt) &&
+    (slug.current == $slug || slugZh.current == $slug)
+  ][0]{
+    ${INTERNAL_LIBRARY_ENTRY_FIELDS}
   }
 `;
 

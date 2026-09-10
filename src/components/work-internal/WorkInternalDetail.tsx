@@ -1,15 +1,14 @@
 /**
- * WorkInternalQuickView — centered modal for a library entry.
- *
- * Video playback mirrors ShowreelVideoLightbox (client Lazy* players).
- * Dismiss: close button, Escape, backdrop mousedown.
+ * WorkInternalDetail — full-viewport utilitarian project page for
+ * `/work-internal/[slug]` (temporary prefix until app.vantage.pictures).
  */
 
 'use client';
 
-import {useEffect, useId, useRef} from 'react';
+import {Link, useRouter} from '@/i18n/navigation';
 import {decodeHtmlEntities} from '@/lib/decode-html-entities';
 import {resolveCreditsForDisplay} from '@/lib/credits-config';
+import {libraryReturnBrowserPath} from '@/lib/internal-app-paths';
 import {urlForImage} from '@/lib/sanity';
 import {parseVideoUrl} from '@/lib/video-url';
 import {vimeoThumbnailUrl} from '@/lib/vimeo';
@@ -27,10 +26,9 @@ import {openPortfolioEntry} from './entry-url';
 import {getPrimaryClientName} from './filter-entries';
 import {formatPublishDate, getDisplayTitle} from './text';
 
-interface WorkInternalQuickViewProps {
+interface WorkInternalDetailProps {
   entry: InternalLibraryEntry;
   locale: Locale;
-  onClose: () => void;
 }
 
 function taxonomyLabel(term: TaxonomyTerm, locale: Locale): string {
@@ -45,7 +43,7 @@ function namedLabels(terms: NamedSlugTerm[] | undefined): string[] {
     .filter((name): name is string => Boolean(name));
 }
 
-function QuickViewPlayer({entry}: {entry: InternalLibraryEntry}) {
+function DetailPlayer({entry}: {entry: InternalLibraryEntry}) {
   const featuredPoster = entry.featuredImage
     ? urlForImage(entry.featuredImage).width(1920).height(1080).fit('crop').url()
     : undefined;
@@ -74,7 +72,7 @@ function QuickViewPlayer({entry}: {entry: InternalLibraryEntry}) {
         posterUrl={posterUrl}
         portfolioEntryRef={entry._id}
         autoPlay={false}
-        posterSizes="(max-width: 992px) 100vw, min(960px, 92vw)"
+        posterSizes="(max-width: 992px) 100vw, min(1100px, 70vw)"
         priority
       />
     );
@@ -94,19 +92,30 @@ function QuickViewPlayer({entry}: {entry: InternalLibraryEntry}) {
   }
 
   return (
-    <div className="vp-internal-quickview__no-video">
+    <div className="vp-internal-detail__no-video">
       No playable video for this project.
     </div>
   );
 }
 
-export function WorkInternalQuickView({
-  entry,
-  locale,
-  onClose,
-}: WorkInternalQuickViewProps) {
-  const titleId = useId();
-  const closeRef = useRef<HTMLButtonElement>(null);
+function BackToLibraryButton() {
+  const router = useRouter();
+
+  return (
+    <button
+      type="button"
+      className="vp-internal-detail__back"
+      onClick={() => {
+        // String href keeps filter query from sessionStorage (typed path alone cannot).
+        router.push(libraryReturnBrowserPath() as '/work-internal');
+      }}
+    >
+      ← Back to Full Work
+    </button>
+  );
+}
+
+export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
   const title = getDisplayTitle(entry, locale);
   const client = getPrimaryClientName(entry);
   const platforms = namedLabels(entry.platforms);
@@ -122,85 +131,67 @@ export function WorkInternalQuickView({
     locale,
   });
 
-  useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeRef.current?.focus();
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, []);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
-
   return (
-    <div
-      className="vp-internal-quickview"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
-    >
-      <div
-        className="vp-internal-quickview__panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-      >
-        <header className="vp-internal-quickview__chrome">
-          <div className="vp-internal-quickview__heading">
-            <h2 id={titleId} className="vp-internal-quickview__title">
-              {title}
-            </h2>
-            <p className="vp-internal-quickview__sub">
-              {entry.isHidden ? (
-                <span className="vp-internal-badge vp-internal-badge--hidden">
-                  Hidden
-                </span>
-              ) : (
-                <span className="vp-internal-badge vp-internal-badge--public">
-                  Public
-                </span>
-              )}
-              {entry.publishedAt ? (
-                <span className="vp-internal-quickview__date">
-                  {formatPublishDate(entry.publishedAt)}
-                </span>
-              ) : null}
-            </p>
-          </div>
-          <div className="vp-internal-quickview__chrome-actions">
-            <button
-              type="button"
-              className="vp-internal-quickview__open"
-              onClick={() => openPortfolioEntry(entry, locale)}
-            >
-              Open public page ↗
-            </button>
-            <button
-              ref={closeRef}
-              type="button"
-              className="vp-internal-quickview__close"
-              onClick={onClose}
-              aria-label="Close quick view"
-            >
-              Close
-            </button>
-          </div>
-        </header>
+    <div className="vp-internal-detail">
+      <header className="vp-internal-nav" aria-label="Project details">
+        <div className="vp-internal-nav__inner">
+          <Link
+            className="vp-internal-nav__brand"
+            href="/"
+            rel="home noopener noreferrer"
+            target="_blank"
+          >
+            {/* SVG via <img> — next/image does not optimize SVGs */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/vantage-logo.svg"
+              alt="Vantage Pictures"
+              width={36}
+              height={36}
+              className="vp-internal-nav__mark"
+            />
+          </Link>
+          <p className="vp-internal-detail__nav-title">{title}</p>
+          <span className="vp-internal-nav__title">Project</span>
+        </div>
+      </header>
 
-        <div className="vp-internal-quickview__player">
-          <QuickViewPlayer entry={entry} />
+      <div className="vp-internal-detail__toolbar">
+        <BackToLibraryButton />
+        <div className="vp-internal-detail__toolbar-actions">
+          {entry.isHidden ? (
+            <span className="vp-internal-badge vp-internal-badge--hidden">
+              Hidden
+            </span>
+          ) : (
+            <span className="vp-internal-badge vp-internal-badge--public">
+              Public
+            </span>
+          )}
+          {entry.publishedAt ? (
+            <span className="vp-internal-detail__date">
+              {formatPublishDate(entry.publishedAt)}
+            </span>
+          ) : null}
+          <button
+            type="button"
+            className="vp-internal-detail__open-public"
+            onClick={() => openPortfolioEntry(entry, locale)}
+          >
+            Open public page ↗
+          </button>
+        </div>
+      </div>
+
+      <div className="vp-internal-detail__layout">
+        <div className="vp-internal-detail__player">
+          <DetailPlayer entry={entry} />
         </div>
 
-        <div className="vp-internal-quickview__body">
-          <dl className="vp-internal-quickview__facts">
+        <div className="vp-internal-detail__body">
+          <h1 className="vp-internal-detail__title">{title}</h1>
+
+          <dl className="vp-internal-detail__facts">
             <div>
               <dt>Client</dt>
               <dd>{client === '—' ? '—' : client}</dd>
@@ -216,19 +207,19 @@ export function WorkInternalQuickView({
           {(formats.length > 0 ||
             industries.length > 0 ||
             markets.length > 0) && (
-            <div className="vp-internal-quickview__tags" aria-label="Taxonomy">
+            <div className="vp-internal-detail__tags" aria-label="Taxonomy">
               {formats.map((label) => (
-                <span key={`f-${label}`} className="vp-internal-quickview__tag">
+                <span key={`f-${label}`} className="vp-internal-detail__tag">
                   {label}
                 </span>
               ))}
               {industries.map((label) => (
-                <span key={`i-${label}`} className="vp-internal-quickview__tag">
+                <span key={`i-${label}`} className="vp-internal-detail__tag">
                   {label}
                 </span>
               ))}
               {markets.map((label) => (
-                <span key={`m-${label}`} className="vp-internal-quickview__tag">
+                <span key={`m-${label}`} className="vp-internal-detail__tag">
                   {label}
                 </span>
               ))}
@@ -236,18 +227,18 @@ export function WorkInternalQuickView({
           )}
 
           {creditRows.length > 0 ? (
-            <div className="vp-internal-quickview__credits">
-              <h3 className="vp-internal-quickview__section-title">Credits</h3>
+            <div className="vp-internal-detail__credits">
+              <h2 className="vp-internal-detail__section-title">Credits</h2>
               {creditRows.map((row) => (
                 <section
                   key={row.key}
-                  className="vp-internal-quickview__dept"
+                  className="vp-internal-detail__dept"
                   aria-label={row.label}
                 >
-                  <h4 className="vp-internal-quickview__dept-label">
+                  <h3 className="vp-internal-detail__dept-label">
                     {row.label}
-                  </h4>
-                  <dl className="vp-internal-quickview__pairs">
+                  </h3>
+                  <dl className="vp-internal-detail__pairs">
                     {row.pairs.map((pair) => (
                       <div key={`${row.key}-${pair.role}-${pair.names}`}>
                         <dt>{pair.role}</dt>
@@ -259,7 +250,7 @@ export function WorkInternalQuickView({
               ))}
             </div>
           ) : (
-            <p className="vp-internal-quickview__empty-credits">
+            <p className="vp-internal-detail__empty-credits">
               No structured credits for this project.
             </p>
           )}

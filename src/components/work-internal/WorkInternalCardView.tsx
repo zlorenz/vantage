@@ -6,9 +6,14 @@
 'use client';
 
 import Image from 'next/image';
+import {Link} from '@/i18n/navigation';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
+import {
+  getWorkInternalDetailHref,
+  prepareWorkInternalDetailNavigation,
+} from './entry-url';
 import {formatPublishDate, getDisplayTitle} from './text';
 import {WorkInternalItemMenu} from './WorkInternalItemMenu';
 import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
@@ -18,7 +23,6 @@ interface WorkInternalCardViewProps {
   locale: Locale;
   selectedIds: Set<string>;
   onToggleSelect: (id: string, selected: boolean) => void;
-  onOpenQuickView: (id: string) => void;
 }
 
 export function WorkInternalCardView({
@@ -26,7 +30,6 @@ export function WorkInternalCardView({
   locale,
   selectedIds,
   onToggleSelect,
-  onOpenQuickView,
 }: WorkInternalCardViewProps) {
   return (
     <div className="vp-internal-cards" role="list">
@@ -38,6 +41,7 @@ export function WorkInternalCardView({
           .url();
         const title = getDisplayTitle(entry, locale);
         const selected = selectedIds.has(entry._id);
+        const detailHref = getWorkInternalDetailHref(entry);
 
         return (
           <div
@@ -54,15 +58,13 @@ export function WorkInternalCardView({
               label={`Select ${title}`}
               onChange={(checked) => onToggleSelect(entry._id, checked)}
             />
-            <WorkInternalItemMenu
-              entry={entry}
-              locale={locale}
-              onQuickView={() => onOpenQuickView(entry._id)}
-            />
-            <button
-              type="button"
+            <WorkInternalItemMenu entry={entry} locale={locale} />
+            <Link
+              href={detailHref}
               className="vp-internal-card__hit"
-              onClick={() => onOpenQuickView(entry._id)}
+              onClick={() => {
+                prepareWorkInternalDetailNavigation(entry);
+              }}
             >
               <div className="vp-internal-card__media">
                 <Image
@@ -84,7 +86,7 @@ export function WorkInternalCardView({
                   </p>
                 </div>
               </div>
-            </button>
+            </Link>
           </div>
         );
       })}
