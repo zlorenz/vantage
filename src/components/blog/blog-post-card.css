@@ -1,0 +1,135 @@
+/**
+ * Blog index / category archive card — Figma Blog card 2051:5750.
+ * Scoped to .vp-blog-card so search’s .vp-post-card copy stays independent.
+ */
+
+.vp-blog-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+  padding-bottom: 5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-blog-card__media {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  /* Figma: 30px pad around the 480px image + bracket inset band */
+  padding: 1.875rem;
+}
+
+.vp-blog-card__thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 30rem; /* 480px */
+  overflow: hidden;
+  background: var(--color-vp-search-thumb-bg, #1a1a1a);
+}
+
+.vp-blog-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Corner L-brackets — 12×12, #d9d9d9 (same chrome as portfolio index cards). */
+.vp-blog-card__brackets {
+  position: absolute;
+  inset: 0.9375rem; /* 15px — Figma bracket band inset */
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vp-blog-card__bracket {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0 solid #d9d9d9;
+}
+
+.vp-blog-card__bracket--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-blog-card__bracket--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.vp-blog-card__bracket--br {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.vp-blog-card__bracket--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-blog-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-sizing: border-box;
+  padding: 0 1.875rem;
+}
+
+.vp-blog-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Interim title scale until Figma 26px commit. */
+.vp-blog-card__title--legacy {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: clamp(1.25rem, 1.5vw, 1.75rem);
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.4;
+  color: #fff;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+
+.vp-blog-card__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--vp-transition);
+}
+
+.vp-blog-card__title a:hover,
+.vp-blog-card__title a:focus-visible {
+  opacity: 0.8;
+}
+
+.vp-blog-card__legacy-meta {
+  font-size: 0.875rem;
+  color: var(--color-vp-text-soft, rgba(255, 255, 255, 0.55));
+}
+
+.vp-blog-card__excerpt {
+  margin: 0;
+  font-family: var(--font-vp-sans);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.vp-blog-card__excerpt p {
+  margin: 0;
+}

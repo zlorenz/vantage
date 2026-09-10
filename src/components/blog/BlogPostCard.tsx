@@ -2,8 +2,7 @@
 
 /**
  * BlogPostCard — news index and category archive list card.
- * Featured image keeps its intrinsic aspect ratio (no forced 16:9 crop)
- * so staggered column layouts can vary card height from real stills.
+ * Figma Blog card 2051:5750: fixed 480px image + corner L-brackets.
  */
 
 import Image from 'next/image';
@@ -14,6 +13,7 @@ import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { urlForImage } from '@/lib/sanity';
 import type { BlogPostCard as BlogPostCardData } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
+import './blog-post-card.css';
 
 interface BlogPostCardProps {
   post: BlogPostCardData;
@@ -30,49 +30,56 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
   );
 
   const imageUrl = post.featuredImage
-    ? urlForImage(post.featuredImage).width(960).url()
+    ? urlForImage(post.featuredImage).width(960).height(480).fit('crop').url()
     : null;
 
   return (
-    <article className="vp-post-card">
+    <article className="vp-blog-card">
       {imageUrl ? (
-        <Link
-          href={{ pathname: '/[slug]', params: { slug: slugParam } }}
-          className="vp-post-card__thumb block overflow-hidden bg-vp-search-thumb-bg"
-          aria-label={title}
-        >
-          <Image
-            src={imageUrl}
-            alt=""
-            width={960}
-            height={640}
-            className="h-auto w-full"
-            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-          />
-        </Link>
-      ) : null}
-
-      <div className="vp-post-card__body pt-4 md:pt-5">
-        <h2 className="vp-post-card__title m-0 mb-1 font-vp-heading text-[clamp(1.4rem,2vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+        <div className="vp-blog-card__media">
           <Link
             href={{ pathname: '/[slug]', params: { slug: slugParam } }}
-            className="text-inherit no-underline"
+            className="vp-blog-card__thumb"
+            aria-label={title}
           >
-            {title}
+            <Image
+              src={imageUrl}
+              alt=""
+              width={960}
+              height={480}
+              className="size-full object-cover"
+              sizes="(max-width: 767px) 100vw, 50vw"
+            />
           </Link>
-        </h2>
-
-        {post.publishedAt ? (
-          <div className="vp-post-card__meta mb-2 text-sm text-vp-text-soft">
-            <BlogPostedOn publishedAt={post.publishedAt} locale={locale} />
+          <div className="vp-blog-card__brackets" aria-hidden="true">
+            <span className="vp-blog-card__bracket vp-blog-card__bracket--tl" />
+            <span className="vp-blog-card__bracket vp-blog-card__bracket--tr" />
+            <span className="vp-blog-card__bracket vp-blog-card__bracket--br" />
+            <span className="vp-blog-card__bracket vp-blog-card__bracket--bl" />
           </div>
-        ) : null}
+        </div>
+      ) : null}
 
-        {excerpt ? (
-          <div className="vp-post-card__excerpt font-light text-vp-text-muted">
-            <p className="m-0">{excerpt}</p>
-          </div>
-        ) : null}
+      <div className="vp-blog-card__body">
+        <div className="vp-blog-card__copy">
+          <h2 className="vp-blog-card__title vp-blog-card__title--legacy">
+            <Link href={{ pathname: '/[slug]', params: { slug: slugParam } }}>
+              {title}
+            </Link>
+          </h2>
+
+          {post.publishedAt ? (
+            <div className="vp-blog-card__legacy-meta">
+              <BlogPostedOn publishedAt={post.publishedAt} locale={locale} />
+            </div>
+          ) : null}
+
+          {excerpt ? (
+            <div className="vp-blog-card__excerpt">
+              <p>{excerpt}</p>
+            </div>
+          ) : null}
+        </div>
       </div>
     </article>
   );
