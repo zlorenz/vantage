@@ -15,6 +15,7 @@ import {
   type PointerEvent,
   type ReactNode,
 } from 'react';
+import {createPortal} from 'react-dom';
 import './bottom-sheet.css';
 
 /** Mobile sheet slide-down exit (enter is ~380ms — see CSS). */
@@ -161,13 +162,21 @@ export function BottomSheet({
   };
 
   if (!mounted) return null;
+  if (typeof document === 'undefined') return null;
 
   const bodyClass = ['vp-bottom-sheet__body', bodyClassName]
     .filter(Boolean)
     .join(' ');
   const dialogLabel = ariaLabel ?? title ?? closeAriaLabel;
 
-  return (
+  /*
+   * Render into document.body so the sheet's `position: fixed` is anchored to
+   * the viewport, not any ancestor that has established a containing block
+   * (e.g. `backdrop-filter` / `transform` / `filter` on the sticky toolbar).
+   * Without the portal, the sheet gets trapped inside the toolbar's box and
+   * appears as a tiny sliver at the top of the screen.
+   */
+  return createPortal(
     <div
       className={`vp-bottom-sheet${visible ? ' is-open' : ''}`}
       role="presentation"
@@ -225,6 +234,7 @@ export function BottomSheet({
 
         <div className={bodyClass}>{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

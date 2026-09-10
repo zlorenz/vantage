@@ -3583,10 +3583,23 @@ body:has(.vp-work-index) #header.navbar::before {
 /* Work-internal mobile layout (<768px) */
 
 @media (max-width: 767.98px) {
+  /*
+   * Fixed nav grows to include the safe-area inset on notched devices, so
+   * the page's padding-top must include that same inset — otherwise content
+   * (and the sticky toolbar) render underneath the nav and get clipped.
+   *
+   * Note: we intentionally do NOT set overflow-x here. Setting overflow-x on
+   * the page turns it into a scroll container (per the CSS spec, if either
+   * axis is non-visible the other computes to `auto`), which would break
+   * the sticky toolbar's positioning relative to the viewport. Instead we
+   * clip individual children that might exceed the viewport width.
+   */
   .vp-internal-page {
-    padding: calc(var(--vp-internal-nav-height) + 0.35rem) 0
+    padding: calc(
+        var(--vp-internal-nav-height) + env(safe-area-inset-top, 0px)
+      )
+      0
       calc(3.5rem + env(safe-area-inset-bottom, 0px));
-    overflow-x: hidden;
   }
 
   .vp-internal-nav {
@@ -3612,8 +3625,8 @@ body:has(.vp-work-index) #header.navbar::before {
 
   .vp-internal-toolbar {
     top: calc(var(--vp-internal-nav-height) + env(safe-area-inset-top, 0px));
-    margin-bottom: 0.65rem;
-    padding: 0.45rem 0.75rem 0.55rem;
+    margin-bottom: 0.85rem;
+    padding: 0.55rem 0.75rem 0.65rem;
   }
 
   .vp-internal-toolbar__desktop {
