@@ -1774,13 +1774,20 @@ body:has(.vp-work-index) #header.navbar::before {
    News index — page title + multi-column post grid
    ========================================================================== */
 
-/* Figma Blog 2050:5242 — eyebrow + H1 + intro stack; filter stays end-aligned. */
+/* Figma Blog 2050:5242 — eyebrow + H1 + intro stack; desktop filter bottom-aligned. */
 .vp-news-page__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem 1.5rem;
   margin-bottom: 2rem;
+}
+
+/* Desktop Categories trigger sits at the bottom of the header band (Figma y≈531). */
+@media (min-width: 576px) {
+  .vp-news-page__header {
+    align-items: flex-end;
+  }
 }
 
 .vp-news-page__heading {
