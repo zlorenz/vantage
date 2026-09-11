@@ -69,6 +69,25 @@ export function isWorkInternalPath(pathname: string): boolean {
   )
 }
 
+/**
+ * Showreel editor utility routes (locale-stripped pathname from next-intl).
+ * Public `/showreel/[id]` is intentionally excluded — marketing chrome stays.
+ */
+export function isShowreelEditorChromePath(pathname: string): boolean {
+  if (
+    pathname === '/showreel/login' ||
+    pathname.startsWith('/showreel/login/')
+  ) {
+    return true
+  }
+  return /^\/showreel\/(?!login(?:\/|$))[^/]+\/edit\/?$/.test(pathname)
+}
+
+/** Routes that use the minimal internal nav + footer instead of marketing chrome. */
+export function isInternalAppChromePath(pathname: string): boolean {
+  return isWorkInternalPath(pathname) || isShowreelEditorChromePath(pathname)
+}
+
 export function isWorkInternalLibraryPath(pathname: string): boolean {
   return pathname === WORK_INTERNAL_PATH_PREFIX
 }

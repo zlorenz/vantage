@@ -8,6 +8,7 @@ import {Link} from '@/i18n/navigation'
 import {workInternalLibraryHref} from '@/lib/internal-app-paths'
 import type {Locale} from '@/i18n/routing'
 import {ShowreelEditor} from '@/components/showreel/ShowreelEditor'
+import {WorkInternalUtilityChrome} from '@/components/work-internal/WorkInternalUtilityChrome'
 import {sanityFetch} from '@/sanity/lib/live'
 import {INTERNAL_LIBRARY_QUERY} from '@/sanity/queries/portfolio'
 import {SHOWREEL_EDITOR_QUERY} from '@/sanity/queries/showreel'
@@ -55,23 +56,28 @@ export default async function ShowreelEditPage({params}: Props) {
 
   if (!showreel?._id || !showreel.title) {
     return (
-      <div className="vp-internal-page">
-        <div className="vp-showreel-editor">
-          <header className="vp-showreel-editor__header">
-            <h1 className="vp-internal-app__title">Showreel not found</h1>
-          </header>
-          <p className="vp-showreel-editor__hint">
-            This showreel doesn’t exist or was already deleted.
-          </p>
-          <p className="vp-showreel-editor__id">
-            <code>{id}</code>
-          </p>
-          <p>
-            <Link href={workInternalLibraryHref()} className="vp-internal-clear">
-              Back to Work Library
-            </Link>
-          </p>
-        </div>
+      <div className="vp-internal-page vp-internal-page--utility">
+        <WorkInternalUtilityChrome navTitle="Showreel editor" showBack>
+          <div className="vp-showreel-editor">
+            <header className="vp-showreel-editor__header">
+              <h1 className="vp-internal-app__title">Showreel not found</h1>
+            </header>
+            <p className="vp-showreel-editor__hint">
+              This showreel doesn’t exist or was already deleted.
+            </p>
+            <p className="vp-showreel-editor__id">
+              <code>{id}</code>
+            </p>
+            <p>
+              <Link
+                href={workInternalLibraryHref()}
+                className="vp-internal-clear"
+              >
+                Back to Work Library
+              </Link>
+            </p>
+          </div>
+        </WorkInternalUtilityChrome>
       </div>
     )
   }
@@ -82,17 +88,19 @@ export default async function ShowreelEditPage({params}: Props) {
   )
 
   return (
-    <div className="vp-internal-page">
-      <ShowreelEditor
-        locale={typedLocale}
-        showreel={{
-          _id: showreel._id,
-          title: showreel.title,
-          description: showreel.description,
-          items,
-        }}
-        library={library}
-      />
+    <div className="vp-internal-page vp-internal-page--utility">
+      <WorkInternalUtilityChrome navTitle="Showreel editor" showBack>
+        <ShowreelEditor
+          locale={typedLocale}
+          showreel={{
+            _id: showreel._id,
+            title: showreel.title,
+            description: showreel.description,
+            items,
+          }}
+          library={library}
+        />
+      </WorkInternalUtilityChrome>
     </div>
   )
 }

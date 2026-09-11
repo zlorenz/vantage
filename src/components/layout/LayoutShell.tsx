@@ -2,9 +2,9 @@
  * LayoutShell — composes global site chrome around page content.
  *
  * Server component. SiteHeader and SiteFooter are server components
- * passed into LayoutChrome (client) so /work-internal can hide the
- * marketing header without affecting other routes. Contact is a normal
- * /contact route now — no modal provider/mount here anymore.
+ * passed into LayoutChrome (client) so internal app routes
+ * (/work-internal, showreel editor/login) can hide marketing chrome.
+ * Contact is a normal /contact route now — no modal provider/mount here.
  */
 
 import type { ReactNode } from 'react';

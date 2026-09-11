@@ -1,8 +1,8 @@
 /**
  * ShowreelEditor — password-gated utility editor for a showreel document.
  *
- * Item mutations PATCH the full ordered `portfolioItemIds` list on
- * `/api/showreel/[id]` (same existence checks as create). Reorder uses
+ * Item mutations update local order immediately, then debounced-PATCH the full
+ * ordered `portfolioItemIds` list on `/api/showreel/[id]`. Reorder uses
  * up/down buttons — @dnd-kit is only a Sanity transitive dep, not used in
  * the Next app.
  */
@@ -14,8 +14,10 @@ import {
   useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
   useTransition,
+  type CSSProperties,
   type FormEvent,
 } from 'react'
 import {useRouter} from '@/i18n/navigation'
@@ -28,6 +30,8 @@ import type {InternalLibraryEntry} from '@/types/sanity'
 import {buildSearchTextByEntryId} from '@/components/work-internal/filter-entries'
 import {getDisplayTitle} from '@/components/work-internal/text'
 import {ShowreelItemPicker} from './ShowreelItemPicker'
+
+const ITEMS_PERSIST_DEBOUNCE_MS = 450
 
 export type ShowreelEditorItem = {
   _id: string
@@ -50,6 +54,28 @@ interface ShowreelEditorProps {
   locale: Locale
   showreel: ShowreelEditorData
   library: InternalLibraryEntry[]
+}
+
+function itemOrderKey(list: ShowreelEditorItem[]): string {
+  return list.map((item) => item._id).join('\0')
+}
+
+function viewTransitionNameFor(id: string): string {
+  return `vp-showreel-row-${id.replace(/[^a-zA-Z0-9_-]/g, '_')}`
+}
+
+function runWithOptionalViewTransition(update: () => void) {
+  const reduceMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const doc = document as Document & {
+    startViewTransition?: (callback: () => void) => unknown
+  }
+  if (!reduceMotion && typeof doc.startViewTransition === 'function') {
+    doc.startViewTransition(update)
+    return
+  }
+  update()
 }
 
 async function patchShowreel(
@@ -143,6 +169,8 @@ export function ShowreelEditor({
   const [fieldsError, setFieldsError] = useState<string | null>(null)
   const [fieldsSaved, setFieldsSaved] = useState(false)
   const [itemsError, setItemsError] = useState<string | null>(null)
+  const [itemsSaving, setItemsSaving] = useState(false)
+  const [movedItemId, setMovedItemId] = useState<string | null>(null)
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
     'idle',
   )
@@ -152,17 +180,40 @@ export function ShowreelEditor({
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [savingFields, startSaveFields] = useTransition()
-  const [savingItems, startSaveItems] = useTransition()
   const [deleting, startDeleting] = useTransition()
   const deleteDialogTitleId = useId()
 
-  const publicPath = showreelPublicPath(showreel._id, locale)
-  const busy = savingFields || savingItems || deleting
+  const itemsRef = useRef(items)
+  const savedItemsRef = useRef(items)
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const persistEpochRef = useRef(0)
+  const movedClearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const publicPath = showreelPublicPath(showreel._id, locale)
+  const destructiveBusy = savingFields || itemsSaving || deleting
+
+  useEffect(() => {
+    itemsRef.current = items
+  }, [items])
 
   useEffect(() => {
     setPublicUrl(`${window.location.origin}${publicPath}`)
   }, [publicPath])
+
+  useEffect(() => {
+    return () => {
+      if (movedClearTimerRef.current) clearTimeout(movedClearTimerRef.current)
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current)
+        persistTimerRef.current = null
+      }
+      const snapshot = itemsRef.current
+      if (itemOrderKey(snapshot) === itemOrderKey(savedItemsRef.current)) return
+      void patchShowreel(showreel._id, {
+        portfolioItemIds: snapshot.map((item) => item._id),
+      })
+    }
+  }, [showreel._id])
 
   const libraryById = useMemo(() => {
     const map = new Map<string, InternalLibraryEntry>()
@@ -184,26 +235,97 @@ export function ShowreelEditor({
     title.trim() !== savedTitle.trim() ||
     description.trim() !== savedDescription.trim()
 
-  function persistItems(
+  async function flushPersistItems() {
+    const epoch = ++persistEpochRef.current
+    const snapshot = itemsRef.current
+    if (itemOrderKey(snapshot) === itemOrderKey(savedItemsRef.current)) {
+      if (epoch === persistEpochRef.current) setItemsSaving(false)
+      return
+    }
+
+    setItemsSaving(true)
+    setItemsError(null)
+    const result = await patchShowreel(showreel._id, {
+      portfolioItemIds: snapshot.map((item) => item._id),
+    })
+
+    if (epoch !== persistEpochRef.current) return
+
+    if (!result.ok) {
+      setItemsSaving(false)
+      setItemsError(result.error)
+      // Only roll back if the UI still matches what we tried to save —
+      // otherwise keep newer local edits and reschedule.
+      if (itemOrderKey(itemsRef.current) === itemOrderKey(snapshot)) {
+        itemsRef.current = savedItemsRef.current
+        setItems(savedItemsRef.current)
+      } else if (
+        itemOrderKey(itemsRef.current) !== itemOrderKey(savedItemsRef.current)
+      ) {
+        schedulePersistItems()
+      }
+      return
+    }
+
+    savedItemsRef.current = snapshot
+    if (itemOrderKey(itemsRef.current) !== itemOrderKey(savedItemsRef.current)) {
+      void flushPersistItems()
+      return
+    }
+    setItemsSaving(false)
+  }
+
+  function schedulePersistItems() {
+    if (persistTimerRef.current) clearTimeout(persistTimerRef.current)
+    persistTimerRef.current = setTimeout(() => {
+      persistTimerRef.current = null
+      void flushPersistItems()
+    }, ITEMS_PERSIST_DEBOUNCE_MS)
+  }
+
+  function cancelPendingItemPersist() {
+    if (persistTimerRef.current) {
+      clearTimeout(persistTimerRef.current)
+      persistTimerRef.current = null
+    }
+    persistEpochRef.current += 1
+    setItemsSaving(false)
+  }
+
+  function commitItemsLocally(
     nextItems: ShowreelEditorItem[],
-    previous: ShowreelEditorItem[],
+    options?: {movedId?: string; animate?: boolean},
   ) {
     if (nextItems.length < 1) {
       setItemsError('A showreel needs at least one portfolio item.')
-      setItems(previous)
       return
     }
-    setItems(nextItems)
+
+    persistEpochRef.current += 1
+
+    const apply = () => {
+      itemsRef.current = nextItems
+      setItems(nextItems)
+    }
+
+    if (options?.animate) {
+      runWithOptionalViewTransition(apply)
+    } else {
+      apply()
+    }
+
+    if (options?.movedId) {
+      setMovedItemId(options.movedId)
+      if (movedClearTimerRef.current) clearTimeout(movedClearTimerRef.current)
+      movedClearTimerRef.current = setTimeout(() => {
+        setMovedItemId((current) =>
+          current === options.movedId ? null : current,
+        )
+      }, 280)
+    }
+
     setItemsError(null)
-    startSaveItems(async () => {
-      const result = await patchShowreel(showreel._id, {
-        portfolioItemIds: nextItems.map((item) => item._id),
-      })
-      if (!result.ok) {
-        setItems(previous)
-        setItemsError(result.error)
-      }
-    })
+    schedulePersistItems()
   }
 
   function onSaveFields(event: FormEvent) {
@@ -237,11 +359,10 @@ export function ShowreelEditor({
   function moveItem(index: number, delta: -1 | 1) {
     const target = index + delta
     if (target < 0 || target >= items.length) return
-    const previous = items
     const next = [...items]
     const [row] = next.splice(index, 1)
     next.splice(target, 0, row)
-    persistItems(next, previous)
+    commitItemsLocally(next, {movedId: row._id, animate: true})
   }
 
   function removeItem(id: string) {
@@ -249,16 +370,12 @@ export function ShowreelEditor({
       setItemsError('A showreel needs at least one portfolio item.')
       return
     }
-    const previous = items
-    persistItems(
-      items.filter((item) => item._id !== id),
-      previous,
-    )
+    commitItemsLocally(items.filter((item) => item._id !== id))
   }
 
   function addItems(ids: string[]) {
-    const previous = items
     const next = [...items]
+    let added = 0
     for (const id of ids) {
       if (itemIdSet.has(id)) continue
       const fromLibrary = libraryById.get(id)
@@ -272,9 +389,10 @@ export function ShowreelEditor({
         slug: fromLibrary.slug,
         slugZh: fromLibrary.slugZh,
       })
+      added += 1
     }
-    if (next.length === previous.length) return
-    persistItems(next, previous)
+    if (added === 0) return
+    commitItemsLocally(next)
   }
 
   async function copyPublicUrl() {
@@ -302,6 +420,7 @@ export function ShowreelEditor({
   function onConfirmDelete() {
     if (deleting) return
     setDeleteError(null)
+    cancelPendingItemPersist()
     startDeleting(async () => {
       const result = await deleteShowreel(showreel._id)
       if (!result.ok) {
@@ -417,7 +536,7 @@ export function ShowreelEditor({
           <h2 className="vp-showreel-editor__section-title">Items</h2>
           <span className="vp-internal-count">
             {items.length === 1 ? '1 item' : `${items.length} items`}
-            {savingItems ? ' · Saving…' : ''}
+            {itemsSaving ? ' · Saving…' : ''}
           </span>
         </div>
         {itemsError ? (
@@ -439,7 +558,19 @@ export function ShowreelEditor({
                   .url()
               : null
             return (
-              <li key={item._id} className="vp-showreel-editor__row">
+              <li
+                key={item._id}
+                className={
+                  movedItemId === item._id
+                    ? 'vp-showreel-editor__row is-moved'
+                    : 'vp-showreel-editor__row'
+                }
+                style={
+                  {
+                    viewTransitionName: viewTransitionNameFor(item._id),
+                  } as CSSProperties
+                }
+              >
                 <span className="vp-showreel-editor__thumb">
                   {imageUrl ? (
                     <Image
@@ -457,7 +588,7 @@ export function ShowreelEditor({
                     type="button"
                     className="vp-showreel-editor__icon-btn"
                     aria-label="Move up"
-                    disabled={busy || index === 0}
+                    disabled={deleting || index === 0}
                     onClick={() => moveItem(index, -1)}
                   >
                     ↑
@@ -466,7 +597,7 @@ export function ShowreelEditor({
                     type="button"
                     className="vp-showreel-editor__icon-btn"
                     aria-label="Move down"
-                    disabled={busy || index === items.length - 1}
+                    disabled={deleting || index === items.length - 1}
                     onClick={() => moveItem(index, 1)}
                   >
                     ↓
@@ -474,7 +605,7 @@ export function ShowreelEditor({
                   <button
                     type="button"
                     className="vp-internal-clear"
-                    disabled={busy || items.length <= 1}
+                    disabled={deleting || items.length <= 1}
                     onClick={() => removeItem(item._id)}
                     title={
                       items.length <= 1
@@ -496,7 +627,7 @@ export function ShowreelEditor({
         library={library}
         searchCtx={searchCtx}
         excludedIds={itemIdSet}
-        disabled={busy}
+        disabled={deleting}
         onAdd={addItems}
       />
 
@@ -515,7 +646,7 @@ export function ShowreelEditor({
           type="button"
           className="vp-showreel-editor__danger-btn"
           onClick={openDeleteConfirm}
-          disabled={busy}
+          disabled={destructiveBusy}
         >
           Delete Showreel
         </button>

@@ -47,17 +47,14 @@ export function ShowreelLoginForm() {
   }
 
   return (
-    <form
-      className="mx-auto flex w-full max-w-sm flex-col gap-3"
-      onSubmit={onSubmit}
-    >
-      <label className="block">
-        <span className="sr-only">Password</span>
+    <form className="vp-showreel-login__form" onSubmit={onSubmit}>
+      <label className="vp-showreel-editor__field">
+        <span className="vp-internal-filter__label">Password</span>
         <input
           type="password"
           name="password"
           autoComplete="current-password"
-          className="w-full rounded border border-[var(--color-vp-input-border)] bg-[var(--color-vp-input-bg)] px-3 py-2 text-vp-text outline-none focus:border-[var(--color-vp-input-border-focus)] focus:bg-[var(--color-vp-input-bg-focus)]"
+          className="vp-internal-search__input"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -66,17 +63,19 @@ export function ShowreelLoginForm() {
         />
       </label>
       {error ? (
-        <p className="text-sm text-[var(--vp-form-error)]" role="alert">
+        <p className="vp-showreel-editor__error" role="alert">
           {error}
         </p>
       ) : null}
-      <button
-        type="submit"
-        className="rounded bg-white px-4 py-2 font-medium text-[var(--vp-black)] disabled:opacity-50"
-        disabled={pending || !password}
-      >
-        {pending ? 'Signing in…' : 'Sign in'}
-      </button>
+      <div className="vp-showreel-editor__field-actions">
+        <button
+          type="submit"
+          className="vp-internal-showreel-bar__create"
+          disabled={pending || !password}
+        >
+          {pending ? 'Signing in…' : 'Sign in'}
+        </button>
+      </div>
     </form>
   )
 }

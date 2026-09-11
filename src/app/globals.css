@@ -2122,6 +2122,31 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 }
 
+/* Utility pages (showreel editor/login): extra air under the fixed nav */
+.vp-internal-page--utility {
+  padding-top: calc(var(--vp-internal-nav-height) + 3rem);
+}
+
+@media (min-width: 768px) {
+  .vp-internal-page--utility {
+    padding-top: calc(var(--vp-internal-nav-height) + 3.5rem);
+  }
+}
+
+.vp-internal-utility__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin: 0 0 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .vp-internal-utility__toolbar {
+    margin-bottom: 2rem;
+  }
+}
+
 .vp-internal-nav {
   position: fixed;
   top: 0;
@@ -3886,6 +3911,13 @@ body:has(.vp-work-index) #header.navbar::before {
       calc(3.5rem + env(safe-area-inset-bottom, 0px));
   }
 
+  .vp-internal-page--utility {
+    padding-top: calc(
+      var(--vp-internal-nav-height) + env(safe-area-inset-top, 0px) + 2rem
+    );
+    padding-inline: 0.75rem;
+  }
+
   .vp-internal-nav {
     padding-top: env(safe-area-inset-top, 0px);
     height: calc(var(--vp-internal-nav-height) + env(safe-area-inset-top, 0px));
@@ -3899,6 +3931,14 @@ body:has(.vp-work-index) #header.navbar::before {
 
   .vp-internal-nav__title {
     display: none;
+  }
+
+  .vp-internal-page--utility .vp-internal-nav__inner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .vp-internal-page--utility .vp-internal-nav__title {
+    display: block;
   }
 
   .vp-internal-nav__search {
@@ -4203,6 +4243,27 @@ body:has(.vp-work-index) #header.navbar::before {
 
 /* Showreel editor (utility — matches work-internal) */
 
+.vp-showreel-login {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vp-showreel-login__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vp-showreel-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
 .vp-showreel-editor {
   width: 100%;
   max-width: 52rem;
@@ -4314,6 +4375,31 @@ body:has(.vp-work-index) #header.navbar::before {
   align-items: center;
   padding: 0.55rem 0.75rem;
   border-bottom: 1px solid var(--color-vp-border-soft);
+}
+
+.vp-showreel-editor__row.is-moved {
+  animation: vp-showreel-row-moved 280ms ease;
+}
+
+@keyframes vp-showreel-row-moved {
+  from {
+    background: rgba(125, 154, 179, 0.18);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(*) {
+    animation-duration: 220ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-showreel-editor__row.is-moved {
+    animation: none;
+  }
 }
 
 .vp-showreel-editor__row:last-child,

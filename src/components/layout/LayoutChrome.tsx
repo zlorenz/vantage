@@ -3,14 +3,15 @@
  *
  * Locale layouts are shared and cached across sibling routes, so a server-only
  * pathname check would not update on client navigations. usePathname keeps
- * SiteHeader / SiteFooter in sync when entering/leaving /work-internal.
+ * SiteHeader / SiteFooter in sync when entering/leaving internal app routes
+ * (`/work-internal`, showreel editor/login).
  */
 
 'use client';
 
 import type { ReactNode } from 'react';
 import { usePathname } from '@/i18n/navigation';
-import { isWorkInternalPath } from '@/lib/internal-app-paths';
+import { isInternalAppChromePath } from '@/lib/internal-app-paths';
 import '@/components/work-internal/work-internal-theme.css';
 
 interface LayoutChromeProps {
@@ -32,15 +33,15 @@ function WorkInternalFooter() {
 
 export function LayoutChrome({ header, footer, children }: LayoutChromeProps) {
   const pathname = usePathname();
-  const isWorkInternal = isWorkInternalPath(pathname);
+  const useInternalChrome = isInternalAppChromePath(pathname);
 
   return (
     <>
-      {isWorkInternal ? null : header}
+      {useInternalChrome ? null : header}
       <main id="main" className="site-main flex-1">
         {children}
       </main>
-      {isWorkInternal ? <WorkInternalFooter /> : footer}
+      {useInternalChrome ? <WorkInternalFooter /> : footer}
     </>
   );
 }
