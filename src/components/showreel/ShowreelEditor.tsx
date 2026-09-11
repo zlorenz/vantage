@@ -447,39 +447,75 @@ export function ShowreelEditor({
     <div className="vp-showreel-editor">
       <header className="vp-showreel-editor__header">
         <h1 className="vp-internal-app__title">Showreel editor</h1>
-        <p className="vp-showreel-editor__id">
-          <code>{showreel._id}</code>
-        </p>
       </header>
 
       <section
         className="vp-showreel-editor__share"
-        aria-label="Public showreel link"
+        aria-label="Client link"
       >
-        <span className="vp-internal-filter__label">Public URL</span>
-        <div className="vp-showreel-editor__share-row">
+        <span className="vp-internal-filter__label">Client Link</span>
+        <div className="vp-showreel-editor__share-field">
           <input
-            className="vp-internal-search__input"
+            className="vp-showreel-editor__share-input"
             readOnly
             value={publicUrl}
-            aria-label="Public showreel URL"
+            aria-label="Client showreel link"
             onFocus={(e) => e.currentTarget.select()}
           />
           <button
             type="button"
-            className="vp-internal-showreel-bar__create"
+            className={
+              copyState === 'copied'
+                ? 'vp-showreel-editor__copy-btn is-copied'
+                : copyState === 'failed'
+                  ? 'vp-showreel-editor__copy-btn is-failed'
+                  : 'vp-showreel-editor__copy-btn'
+            }
             onClick={copyPublicUrl}
+            aria-label={
+              copyState === 'copied'
+                ? 'Copied'
+                : copyState === 'failed'
+                  ? 'Copy failed'
+                  : 'Copy client link'
+            }
+            title={
+              copyState === 'copied'
+                ? 'Copied'
+                : copyState === 'failed'
+                  ? 'Copy failed'
+                  : 'Copy'
+            }
           >
-            {copyState === 'copied'
-              ? 'Copied'
-              : copyState === 'failed'
-                ? 'Copy failed'
-                : 'Copy'}
+            {copyState === 'copied' ? (
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9.55 17.6 4.9 12.95l1.4-1.4 3.25 3.25 7.15-7.15 1.4 1.4z"
+                />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  fill="currentColor"
+                  d="M16 1H4c-1.1 0-2 .9-2 2v12h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+                />
+              </svg>
+            )}
           </button>
         </div>
-        <p className="vp-showreel-editor__hint">
-          Share this link with the client. The public page may still be a stub.
-        </p>
       </section>
 
       <form className="vp-showreel-editor__fields" onSubmit={onSaveFields}>
