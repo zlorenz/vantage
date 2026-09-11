@@ -28,7 +28,7 @@ import {showreelLoginPathFor} from '@/lib/showreel-auth-paths'
 import {showreelPublicPath} from '@/lib/showreel-urls'
 import type {InternalLibraryEntry} from '@/types/sanity'
 import {buildSearchTextByEntryId} from '@/components/work-internal/filter-entries'
-import {getDisplayTitle} from '@/components/work-internal/text'
+import {getDisplayTitle, getDisplayTitleParts} from '@/components/work-internal/text'
 import {ShowreelItemPicker} from './ShowreelItemPicker'
 
 const ITEMS_PERSIST_DEBOUNCE_MS = 450
@@ -562,7 +562,7 @@ export function ShowreelEditor({
             className="vp-internal-showreel-bar__create"
             disabled={savingFields || deleting || !title.trim() || !fieldsDirty}
           >
-            {savingFields ? 'Saving…' : 'Save details'}
+            {savingFields ? 'Saving…' : 'Save'}
           </button>
         </div>
       </form>
@@ -586,6 +586,11 @@ export function ShowreelEditor({
               item as InternalLibraryEntry,
               locale,
             )
+            const {brandLine, campaignLine} = getDisplayTitleParts(
+              item as InternalLibraryEntry,
+              locale,
+            )
+            const campaignText = campaignLine || titleText
             const imageUrl = item.featuredImage
               ? urlForImage(item.featuredImage)
                   .width(160)
@@ -618,7 +623,14 @@ export function ShowreelEditor({
                     />
                   ) : null}
                 </span>
-                <span className="vp-showreel-editor__row-title">{titleText}</span>
+                <span className="vp-showreel-editor__row-title">
+                  {brandLine ? (
+                    <span className="vp-internal-list__brand">{brandLine}</span>
+                  ) : null}
+                  <span className="vp-internal-list__campaign">
+                    {campaignText}
+                  </span>
+                </span>
                 <div className="vp-showreel-editor__row-actions">
                   <button
                     type="button"
@@ -640,7 +652,8 @@ export function ShowreelEditor({
                   </button>
                   <button
                     type="button"
-                    className="vp-internal-clear"
+                    className="vp-showreel-editor__remove-btn"
+                    aria-label="Remove"
                     disabled={deleting || items.length <= 1}
                     onClick={() => removeItem(item._id)}
                     title={
@@ -649,7 +662,7 @@ export function ShowreelEditor({
                         : 'Remove'
                     }
                   >
-                    Remove
+                    ×
                   </button>
                 </div>
               </li>

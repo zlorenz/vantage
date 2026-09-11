@@ -11,7 +11,7 @@ import {urlForImage} from '@/lib/sanity'
 import type {Locale} from '@/i18n/routing'
 import type {InternalLibraryEntry} from '@/types/sanity'
 import type {LibraryFilterContext} from '@/components/work-internal/filter-entries'
-import {getDisplayTitle} from '@/components/work-internal/text'
+import {getDisplayTitle, getDisplayTitleParts} from '@/components/work-internal/text'
 import {WorkInternalSelectCheckbox} from '@/components/work-internal/WorkInternalSelectCheckbox'
 
 const MAX_RESULTS = 40
@@ -106,16 +106,14 @@ export function ShowreelItemPicker({
         />
       </label>
 
-      {!deferredQuery.trim() ? (
-        <p className="vp-showreel-editor__hint">
-          Type to search the work library, then select items to add.
-        </p>
-      ) : candidates.length === 0 ? (
+      {!deferredQuery.trim() ? null : candidates.length === 0 ? (
         <p className="vp-internal-empty">No matching projects to add.</p>
       ) : (
         <ul className="vp-showreel-editor__picker-list">
           {candidates.map((entry) => {
             const title = getDisplayTitle(entry, locale)
+            const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale)
+            const campaignText = campaignLine || title
             const checked = selected.has(entry._id)
             const imageUrl = urlForImage(entry.featuredImage)
               .width(120)
@@ -145,7 +143,14 @@ export function ShowreelItemPicker({
                     className="object-cover"
                   />
                 </span>
-                <span className="vp-showreel-editor__row-title">{title}</span>
+                <span className="vp-showreel-editor__row-title">
+                  {brandLine ? (
+                    <span className="vp-internal-list__brand">{brandLine}</span>
+                  ) : null}
+                  <span className="vp-internal-list__campaign">
+                    {campaignText}
+                  </span>
+                </span>
               </li>
             )
           })}
