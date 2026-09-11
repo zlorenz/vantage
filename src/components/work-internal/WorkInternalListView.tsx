@@ -180,117 +180,119 @@ export function WorkInternalListView({
           <span className="sr-only">Actions</span>
         </span>
       </div>
-      {entries.map((entry) => {
-        const imageUrl = urlForImage(entry.featuredImage)
-          .width(160)
-          .height(160)
-          .fit('crop')
-          .url();
-        const title = getDisplayTitle(entry, locale);
-        const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
-        // Mirror the portfolio case header: small yellow Brand/Product line
-        // above the larger white Campaign line. When Brand can't compile,
-        // fall back to the single-line combined `title`.
-        const campaignText = campaignLine || title;
-        const selected = selectedIds.has(entry._id);
+      <div className="vp-internal-list__body" role="rowgroup">
+        {entries.map((entry) => {
+          const imageUrl = urlForImage(entry.featuredImage)
+            .width(320)
+            .height(180)
+            .fit('crop')
+            .url();
+          const title = getDisplayTitle(entry, locale);
+          const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
+          // Mirror the portfolio case header: small yellow Brand/Product line
+          // above the larger white Campaign line. When Brand can't compile,
+          // fall back to the single-line combined `title`.
+          const campaignText = campaignLine || title;
+          const selected = selectedIds.has(entry._id);
 
-        return (
-          <div
-            key={entry._id}
-            role="row"
-            className={
-              selected
-                ? 'vp-internal-list__row is-selected'
-                : 'vp-internal-list__row'
-            }
-          >
-            <span className="vp-internal-list__select-col" role="cell">
-              <WorkInternalSelectCheckbox
-                checked={selected}
-                label={`Select ${title}`}
-                onChange={(checked) => onToggleSelect(entry._id, checked)}
-              />
-            </span>
-            <Link
-              href={getWorkInternalDetailHref(entry)}
-              className="vp-internal-list__hit"
-              onClick={() => {
-                prepareWorkInternalDetailNavigation(entry);
-              }}
+          return (
+            <div
+              key={entry._id}
+              role="row"
+              className={
+                selected
+                  ? 'vp-internal-list__row is-selected'
+                  : 'vp-internal-list__row'
+              }
             >
-              <span className="vp-internal-list__thumb-col" role="cell">
-                <span className="vp-internal-list__thumb">
-                  <Image
-                    src={imageUrl}
-                    alt=""
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                  />
-                </span>
+              <span className="vp-internal-list__select-col" role="cell">
+                <WorkInternalSelectCheckbox
+                  checked={selected}
+                  label={`Select ${title}`}
+                  onChange={(checked) => onToggleSelect(entry._id, checked)}
+                />
               </span>
-              <span role="cell" className="vp-internal-list__title">
-                {brandLine ? (
-                  <span className="vp-internal-list__brand">{brandLine}</span>
-                ) : null}
-                <span className="vp-internal-list__campaign">
-                  {campaignText}
-                </span>
-              </span>
-              <span role="cell" className="vp-internal-list__date">
-                {formatPublishDate(entry.publishedAt)}
-              </span>
-              <span
-                role="cell"
-                className="vp-internal-list__client vp-internal-list__desktop-col"
+              <Link
+                href={getWorkInternalDetailHref(entry)}
+                className="vp-internal-list__hit"
+                onClick={() => {
+                  prepareWorkInternalDetailNavigation(entry);
+                }}
               >
-                {getPrimaryClientName(entry)}
-              </span>
-              <span
-                role="cell"
-                className="vp-internal-list__desktop-col"
-              >
-                {getCrewName(entry, 'director')}
-              </span>
-              <span
-                role="cell"
-                className="vp-internal-list__desktop-col"
-              >
-                {getCrewName(entry, 'dop')}
-              </span>
-              <span
-                role="cell"
-                className="vp-internal-list__desktop-col"
-              >
-                {getArtName(entry)}
-              </span>
-              <span
-                role="cell"
-                className="vp-internal-list__desktop-col"
-              >
-                {getEditorName(entry)}
-              </span>
-              <span
-                role="cell"
-                className="vp-internal-list__desktop-col"
-              >
-                {entry.isHidden ? (
-                  <span className="vp-internal-badge vp-internal-badge--hidden">
-                    Hidden
+                <span className="vp-internal-list__thumb-col" role="cell">
+                  <span className="vp-internal-list__thumb">
+                    <Image
+                      src={imageUrl}
+                      alt=""
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
                   </span>
-                ) : (
-                  <span className="vp-internal-badge vp-internal-badge--public">
-                    Public
+                </span>
+                <span role="cell" className="vp-internal-list__title">
+                  {brandLine ? (
+                    <span className="vp-internal-list__brand">{brandLine}</span>
+                  ) : null}
+                  <span className="vp-internal-list__campaign">
+                    {campaignText}
                   </span>
-                )}
+                </span>
+                <span role="cell" className="vp-internal-list__date">
+                  {formatPublishDate(entry.publishedAt)}
+                </span>
+                <span
+                  role="cell"
+                  className="vp-internal-list__client vp-internal-list__desktop-col"
+                >
+                  {getPrimaryClientName(entry)}
+                </span>
+                <span
+                  role="cell"
+                  className="vp-internal-list__desktop-col"
+                >
+                  {getCrewName(entry, 'director')}
+                </span>
+                <span
+                  role="cell"
+                  className="vp-internal-list__desktop-col"
+                >
+                  {getCrewName(entry, 'dop')}
+                </span>
+                <span
+                  role="cell"
+                  className="vp-internal-list__desktop-col"
+                >
+                  {getArtName(entry)}
+                </span>
+                <span
+                  role="cell"
+                  className="vp-internal-list__desktop-col"
+                >
+                  {getEditorName(entry)}
+                </span>
+                <span
+                  role="cell"
+                  className="vp-internal-list__desktop-col"
+                >
+                  {entry.isHidden ? (
+                    <span className="vp-internal-badge vp-internal-badge--hidden">
+                      Hidden
+                    </span>
+                  ) : (
+                    <span className="vp-internal-badge vp-internal-badge--public">
+                      Public
+                    </span>
+                  )}
+                </span>
+              </Link>
+              <span className="vp-internal-list__menu-col" role="cell">
+                <WorkInternalItemMenu entry={entry} locale={locale} />
               </span>
-            </Link>
-            <span className="vp-internal-list__menu-col" role="cell">
-              <WorkInternalItemMenu entry={entry} locale={locale} />
-            </span>
-          </div>
-        );
-      })}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

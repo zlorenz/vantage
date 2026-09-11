@@ -2875,8 +2875,17 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-internal-list {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--color-vp-border-soft);
+  background: transparent;
+  border: 0;
   overflow-x: auto;
+}
+
+/* Table chrome lives on the body so headers sit above the bordered surface. */
+.vp-internal-list__body {
+  display: flex;
+  flex-direction: column;
+  background: #111;
+  border: 1px solid var(--color-vp-border-soft);
 }
 
 .vp-internal-list__head,
@@ -2903,7 +2912,7 @@ body:has(.vp-work-index) #header.navbar::before {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-vp-text-soft);
-  background: #111;
+  background: #0c0c0d;
   border-bottom: 1px solid var(--color-vp-border-soft);
 }
 
@@ -3178,6 +3187,11 @@ body:has(.vp-work-index) #header.navbar::before {
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+/* Open menus stack above later rows' action buttons (same base z-index). */
+.vp-internal-menu.is-open {
+  z-index: 10;
 }
 
 .vp-internal-list__row .vp-internal-menu {
@@ -3954,10 +3968,14 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 
   .vp-internal-list {
+    overflow-x: hidden;
+  }
+
+  .vp-internal-list__body {
     border-radius: 0;
+    border-top: 0;
     border-left: 0;
     border-right: 0;
-    overflow-x: hidden;
   }
 
   .vp-internal-list__head,

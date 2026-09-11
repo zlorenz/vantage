@@ -178,7 +178,7 @@ export function WorkInternalNav({
               ref={inputRef}
               type="search"
               className="vp-internal-search__input"
-              placeholder="Search title, client, crew…"
+              placeholder="Search brand, title, or key crew..."
               value={searchQuery}
               role="combobox"
               aria-expanded={showList}

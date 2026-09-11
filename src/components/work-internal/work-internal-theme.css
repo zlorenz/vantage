@@ -415,10 +415,16 @@ body:has(.vp-internal-page) .vp-internal-badge--public {
    -------------------------------------------------------------------------- */
 
 body:has(.vp-internal-page) .vp-internal-list {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow-x: auto;
+}
+
+body:has(.vp-internal-page) .vp-internal-list__body {
   background: var(--vp-wi-surface);
   border: 1px solid var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-lg);
-  overflow-x: auto;
 }
 
 body:has(.vp-internal-page) .vp-internal-list__head, body:has(.vp-internal-page) .vp-internal-list__row {
@@ -440,8 +446,16 @@ body:has(.vp-internal-page) .vp-internal-list__select-col {
 
 body:has(.vp-internal-page) .vp-internal-list__head {
   color: var(--vp-wi-text-faint);
-  background: var(--vp-wi-surface-raised);
-  border-bottom-color: var(--vp-wi-border);
+  background: var(--vp-wi-bg);
+  border-bottom: 1px solid var(--vp-wi-border);
+}
+
+@media (min-width: 768px) {
+  /* Headers sit above the panel; gap lets the body's top radius read clearly. */
+  body:has(.vp-internal-page) .vp-internal-list__head {
+    border-bottom: 0;
+    margin-bottom: 0.5rem;
+  }
 }
 
 body:has(.vp-internal-page) .vp-internal-list__sort-btn {
@@ -625,10 +639,14 @@ body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea:focus {
 
 @media (max-width: 767.98px) {
   body:has(.vp-internal-page) .vp-internal-list {
+    overflow-x: hidden;
+  }
+
+  body:has(.vp-internal-page) .vp-internal-list__body {
     border-radius: 0;
+    border-top: 0;
     border-left: 0;
     border-right: 0;
-    overflow-x: hidden;
   }
 
   body:has(.vp-internal-page) .vp-internal-toolbar__icon-btn {
