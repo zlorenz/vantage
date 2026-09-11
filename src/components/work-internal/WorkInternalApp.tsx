@@ -16,6 +16,8 @@ import {
   useMemo,
   useState,
 } from 'react';
+// useDeferredValue also drives search suggestions so the dropdown never
+// blocks keystrokes (same pattern as deferred grid filtering).
 import { useSearchParams } from 'next/navigation';
 import type { Locale } from '@/i18n/routing';
 import type {
@@ -45,6 +47,10 @@ import {
   readSort,
   readView,
 } from './url-state';
+import {
+  buildSearchSuggestionIndex,
+  getSearchSuggestions,
+} from './search-suggestions';
 import { takeShowreelCreatePending } from './showreel-create-pending';
 import { WorkInternalCardView } from './WorkInternalCardView';
 import { WorkInternalListView } from './WorkInternalListView';
@@ -95,6 +101,8 @@ export function WorkInternalApp({
   const deferredFilters = useDeferredValue(filters);
   const deferredSort = useDeferredValue(sort);
   const filtersPending = deferredFilters !== filters;
+  // Suggestions track a deferred query so ranking stays off keystrokes.
+  const deferredSearchQuery = useDeferredValue(filters.q);
 
   // Restore selection + open create form after login?next= round-trip.
   useEffect(() => {
@@ -150,6 +158,16 @@ export function WorkInternalApp({
     };
   }, [clientOptions, peopleOptionsByKey, entries]);
 
+  const searchSuggestionIndex = useMemo(
+    () => buildSearchSuggestionIndex(entries),
+    [entries],
+  );
+
+  const searchSuggestions = useMemo(
+    () => getSearchSuggestions(searchSuggestionIndex, deferredSearchQuery),
+    [searchSuggestionIndex, deferredSearchQuery],
+  );
+
   const filteredSorted = useMemo(() => {
     return sortLibraryEntries(
       filterLibraryEntries(entries, deferredFilters, filterCtx),
@@ -192,6 +210,7 @@ export function WorkInternalApp({
       <WorkInternalNav
         searchQuery={filters.q}
         onSearchChange={(q) => setFilters((prev) => ({...prev, q}))}
+        suggestions={searchSuggestions}
       />
 
       <WorkInternalToolbar

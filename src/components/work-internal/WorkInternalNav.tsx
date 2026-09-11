@@ -1,17 +1,27 @@
 /**
  * WorkInternalNav — minimal fixed header for the internal work library.
  *
- * Brand mark → homepage. Centered library search. Page title on the right.
+ * Brand mark → homepage. Centered library search with typeahead suggestions.
+ * Page title on the right.
  */
 
 'use client';
 
-import {useEffect, useRef, type TouchEvent} from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type TouchEvent,
+} from 'react';
 import {Link} from '@/i18n/navigation';
 
 interface WorkInternalNavProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
+  /** Ranked suggestion phrases for the current (deferred) query. */
+  suggestions?: string[];
 }
 
 /**
@@ -67,8 +77,79 @@ function useIosFixedInputFocus() {
 export function WorkInternalNav({
   searchQuery,
   onSearchChange,
+  suggestions = [],
 }: WorkInternalNavProps) {
-  const {inputRef, onTouchEnd, onBlur} = useIosFixedInputFocus();
+  const {inputRef, onTouchEnd, onBlur: onIosBlur} = useIosFixedInputFocus();
+  const listId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const showList = open && suggestions.length > 0 && searchQuery.trim().length > 0;
+
+  useEffect(() => {
+    // Reset highlight when the suggestion set changes.
+    setActiveIndex(-1);
+  }, [suggestions]);
+
+  useEffect(() => {
+    if (!showList) return;
+
+    function onPointerDown(event: MouseEvent | TouchEvent | PointerEvent) {
+      const root = rootRef.current;
+      if (!root) return;
+      if (event.target instanceof Node && root.contains(event.target)) return;
+      setOpen(false);
+      setActiveIndex(-1);
+    }
+
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [showList]);
+
+  const selectSuggestion = (phrase: string) => {
+    onSearchChange(phrase);
+    setOpen(false);
+    setActiveIndex(-1);
+    // Keep focus in the field so the user can refine immediately.
+    inputRef.current?.focus({preventScroll: true});
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (!showList) {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        setActiveIndex(-1);
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setActiveIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : 0,
+      );
+      return;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActiveIndex((prev) =>
+        prev <= 0 ? suggestions.length - 1 : prev - 1,
+      );
+      return;
+    }
+    if (event.key === 'Enter' && activeIndex >= 0) {
+      event.preventDefault();
+      const phrase = suggestions[activeIndex];
+      if (phrase) selectSuggestion(phrase);
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setOpen(false);
+      setActiveIndex(-1);
+    }
+  };
 
   return (
     <header className="vp-internal-nav" aria-label="Work library">
@@ -90,23 +171,84 @@ export function WorkInternalNav({
           />
         </Link>
 
-        <label className="vp-internal-nav__search">
-          <span className="sr-only">Search library</span>
-          <input
-            ref={inputRef}
-            type="search"
-            className="vp-internal-search__input"
-            placeholder="Search title, client, crew…"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            onTouchEnd={onTouchEnd}
-            onBlur={onBlur}
-            enterKeyHint="search"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-          />
-        </label>
+        <div className="vp-internal-nav__search" ref={rootRef}>
+          <label className="vp-internal-nav__search-label">
+            <span className="sr-only">Search library</span>
+            <input
+              ref={inputRef}
+              type="search"
+              className="vp-internal-search__input"
+              placeholder="Search title, client, crew…"
+              value={searchQuery}
+              role="combobox"
+              aria-expanded={showList}
+              aria-controls={listId}
+              aria-autocomplete="list"
+              aria-activedescendant={
+                showList && activeIndex >= 0
+                  ? `${listId}-opt-${activeIndex}`
+                  : undefined
+              }
+              onChange={(e) => {
+                onSearchChange(e.target.value);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={onKeyDown}
+              onTouchEnd={onTouchEnd}
+              onBlur={(e) => {
+                onIosBlur();
+                // Delay so option mousedown/click can commit first.
+                const next = e.relatedTarget;
+                if (next instanceof Node && rootRef.current?.contains(next)) {
+                  return;
+                }
+                window.setTimeout(() => {
+                  setOpen(false);
+                  setActiveIndex(-1);
+                }, 120);
+              }}
+              enterKeyHint="search"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+            />
+          </label>
+
+          {showList ? (
+            <ul
+              id={listId}
+              className="vp-internal-search__suggestions"
+              role="listbox"
+              aria-label="Search suggestions"
+            >
+              {suggestions.map((phrase, index) => {
+                const active = index === activeIndex;
+                return (
+                  <li key={phrase} role="presentation">
+                    <button
+                      type="button"
+                      id={`${listId}-opt-${index}`}
+                      role="option"
+                      aria-selected={active}
+                      className={
+                        active
+                          ? 'vp-internal-search__suggestion is-active'
+                          : 'vp-internal-search__suggestion'
+                      }
+                      // preventDefault keeps input focus; select on pointer down
+                      // so blur-delay races don't swallow the click on iOS.
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => selectSuggestion(phrase)}
+                    >
+                      {phrase}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+        </div>
 
         <h1 className="vp-internal-nav__title">Full Work Library</h1>
       </div>
