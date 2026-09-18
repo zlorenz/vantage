@@ -29,8 +29,7 @@ import type {
   TaxonomyTerm,
 } from '@/types/sanity';
 import {openPortfolioEntry} from './entry-url';
-import {getPrimaryClientName} from './filter-entries';
-import {formatPublishDate, getDisplayTitle} from './text';
+import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
 
 interface WorkInternalDetailProps {
   entry: InternalLibraryEntry;
@@ -323,7 +322,8 @@ function BackToLibraryButton() {
 
 export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
   const title = getDisplayTitle(entry, locale);
-  const client = getPrimaryClientName(entry);
+  const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
+  const campaignText = campaignLine || title;
   const platforms = namedLabels(entry.platforms);
   const formats = (entry.videoFormats ?? []).map((t) =>
     taxonomyLabel(t, locale),
@@ -436,20 +436,21 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
         </div>
 
         <div className="vp-internal-detail__body">
-          <h1 className="vp-internal-detail__title">{title}</h1>
+          <h1 className="vp-internal-detail__title">
+            {brandLine ? (
+              <span className="vp-internal-list__brand">{brandLine}</span>
+            ) : null}
+            <span className="vp-internal-list__campaign">{campaignText}</span>
+          </h1>
 
-          <dl className="vp-internal-detail__facts">
-            <div>
-              <dt>Client</dt>
-              <dd>{client === '—' ? '—' : client}</dd>
-            </div>
-            {platforms.length > 0 ? (
+          {platforms.length > 0 ? (
+            <dl className="vp-internal-detail__facts">
               <div>
                 <dt>Platform</dt>
                 <dd>{platforms.join(', ')}</dd>
               </div>
-            ) : null}
-          </dl>
+            </dl>
+          ) : null}
 
           {(formats.length > 0 ||
             industries.length > 0 ||

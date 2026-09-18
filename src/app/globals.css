@@ -3444,11 +3444,24 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-detail__title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
   margin: 0 0 1rem;
   font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
   font-weight: 600;
   line-height: 1.25;
   color: var(--color-vp-text);
+}
+
+.vp-internal-detail__title .vp-internal-list__brand {
+  font-size: 0.75rem;
+}
+
+.vp-internal-detail__title .vp-internal-list__campaign {
+  display: block;
+  color: inherit;
 }
 
 .vp-internal-detail__facts {
@@ -3482,17 +3495,24 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 .vp-internal-detail__taxonomy {
-  display: grid;
-  gap: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem 1.25rem;
   margin-bottom: 1.25rem;
 }
 
 .vp-internal-detail__tax-group {
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1 1 9rem;
+  min-width: min(100%, 8.5rem);
+  max-width: 100%;
 }
 
 .vp-internal-detail__tax-heading {
-  margin: 0 0 0.35rem;
+  margin: 0;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -3503,7 +3523,7 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-internal-detail__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.3rem;
   margin: 0;
 }
 
