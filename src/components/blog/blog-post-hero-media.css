@@ -22,7 +22,7 @@
 }
 
 .vp-blog-hero-media--embed > .aspect-video,
-.vp-blog-hero-media--embed > * {
+.vp-blog-hero-media--embed > *:not(.vp-blog-hero-media__overlay) {
   width: 100%;
   height: 100%;
 }

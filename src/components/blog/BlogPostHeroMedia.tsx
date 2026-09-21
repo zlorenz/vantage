@@ -1,6 +1,7 @@
 /**
  * BlogPostHeroMedia — relatedCase PortfolioCaseMedia, else mainVideo, else featuredImage.
- * Brand/campaign overlay only when relatedCase is set (Figma 2281:13248).
+ * Overlay: relatedCase → brand + campaign from displayTitleParts; mainVideo →
+ * campaign-line only from mainVideo.title when present (Figma 2281:13248).
  */
 
 import Image from 'next/image';
@@ -96,9 +97,15 @@ export async function BlogPostHeroMedia({
 
   const videoUrl = mainVideo?.url?.trim();
   if (videoUrl) {
+    const videoTitle = mainVideo?.title?.trim();
     return (
       <div className="vp-blog-hero-media vp-blog-hero-media--embed">
         <PortableTextVideoEmbed url={videoUrl} />
+        {videoTitle ? (
+          <div className="vp-blog-hero-media__overlay">
+            <p className="vp-blog-hero__campaign">{videoTitle}</p>
+          </div>
+        ) : null}
       </div>
     );
   }
