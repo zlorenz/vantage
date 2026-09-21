@@ -102,7 +102,18 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
           />
 
           <Link href={href} className="vp-featured-post__cta">
-            {t('readMore')}
+            <span className="vp-featured-post__cta-label">{t('readMore')}</span>
+            <svg
+              className="vp-featured-post__cta-arrow"
+              viewBox="0 0 18 18"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="currentColor"
+                d="M4.2 12.9 11.4 5.7H6.75V4.2H14.1v7.35h-1.5V6.9L5.4 14.1z"
+              />
+            </svg>
           </Link>
         </div>
 

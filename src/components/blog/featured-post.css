@@ -138,22 +138,33 @@ a.vp-featured-post__pill:focus-visible {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 1rem;
   box-sizing: border-box;
   width: 100%;
-  height: 5rem; /* 80px */
-  padding-inline: 1rem;
+  height: 5rem; /* 80px — featured bar; type matches nav brief CTA */
+  padding: 1rem 1.875rem;
   background: #fdb913;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  font-family: var(--font-vp-heading);
-  font-size: 1rem;
-  font-weight: var(--font-vp-heading-weight);
-  line-height: 1.25rem;
   color: #000;
-  text-transform: uppercase;
   text-decoration: none;
   transition: filter var(--vp-transition);
+}
+
+.vp-featured-post__cta-label {
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-btn-font-size);
+  font-weight: 700;
+  line-height: var(--vp-btn-line-height);
+  text-transform: uppercase;
+  color: #000;
+}
+
+.vp-featured-post__cta-arrow {
+  display: block;
+  width: var(--vp-btn-arrow-size);
+  height: var(--vp-btn-arrow-size);
+  flex-shrink: 0;
+  color: #000;
 }
 
 .vp-featured-post__cta:hover,
