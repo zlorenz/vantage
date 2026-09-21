@@ -1878,8 +1878,8 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-news-page__intro {
   margin: 0;
   max-width: 61.375rem;
-  /* Air above the divider — header/filter/motif stay flush; only the copy lifts. */
-  padding-bottom: 3.5rem;
+  /* Filter and motif stay flush — only this copy gets the space. */
+  padding-bottom: 5.5rem; /* 88px */
   font-family: var(--font-vp-sans);
   font-size: 1.125rem;
   font-weight: 400;
