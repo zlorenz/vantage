@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link, permanentRedirect } from '@/i18n/navigation';
 import { BlogPostHeroMedia } from '@/components/blog/BlogPostHeroMedia';
+import { BlogShareRow } from '@/components/blog/BlogShareRow';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
@@ -22,6 +23,7 @@ import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
+import { absoluteUrl } from '@/lib/sitemap-urls';
 import {
   buildArticle,
   buildBreadcrumbs,
@@ -244,6 +246,11 @@ export default async function BlogPostPage({ params }: Props) {
 
           <div className="vp-blog-post__body entry-content">
             <PortableTextContent blocks={bodyBlocks} />
+            <BlogShareRow
+              url={absoluteUrl(blogPostPageUrl(typedLocale, post.slug, post.slugZh))}
+              title={title}
+              shareLabel={t('share')}
+            />
           </div>
         </article>
       </SectionWrapper>

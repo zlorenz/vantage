@@ -1,0 +1,51 @@
+/**
+ * Blog share row — Figma 2281:13120.
+ */
+
+.vp-blog-share {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 6.25rem; /* 100px */
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+}
+
+.vp-blog-share__label {
+  margin: 0;
+  padding: 0 1.5rem;
+  font-family: var(--font-vp-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.vp-blog-share__icons {
+  display: flex;
+  align-items: stretch;
+  height: 6.25rem;
+}
+
+.vp-blog-share__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 6.25rem;
+  height: 6.25rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-decoration: none;
+  transition: color var(--vp-duration-default, 0.2s) ease;
+}
+
+.vp-blog-share__icon:hover,
+.vp-blog-share__icon:focus-visible {
+  color: #fdb913;
+  outline: none;
+}
