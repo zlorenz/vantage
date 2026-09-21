@@ -199,6 +199,10 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
     antialias: false,
     depth: false,
     premultipliedAlpha: false,
+    // The stage draws once on mount, outside rAF. Without this, some browsers
+    // clear the buffer before compositing and the hero stays blank until a
+    // later redraw (pointer move / reload).
+    preserveDrawingBuffer: true,
   });
   if (!gl) {
     throw new Error('WebGL2 unavailable for gradient background');
@@ -340,7 +344,11 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
       gl.deleteProgram(program);
       gl.deleteShader(vs);
       gl.deleteShader(fs);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      // Do not call WEBGL_lose_context.loseContext(). A canvas hands out one
+      // context for its lifetime; React Strict Mode (and any remount that
+      // reuses this element) would get that same, permanently lost context
+      // back from getContext(), and the gradient would stay blank until a
+      // full reload created a new canvas.
     },
   };
 }

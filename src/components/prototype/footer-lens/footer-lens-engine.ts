@@ -2013,12 +2013,14 @@ function paintGlassOverlay(
 }
 
 function loadCollageImage(): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.decoding = "async";
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Failed to load collage: ${COLLAGE_SRC}`));
-    img.src = COLLAGE_SRC;
+  const img = new Image();
+  img.decoding = "async";
+  img.src = COLLAGE_SRC;
+  // decode() resolves only once the bitmap is safe to drawImage. onload can
+  // fire earlier under decoding:"async", which paints an empty reveal.
+  return img.decode().then(() => img).catch((err: unknown) => {
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to load collage: ${COLLAGE_SRC} (${reason})`);
   });
 }
 
@@ -2053,6 +2055,17 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       cache = null;
       return;
     }
+
+    try {
+      rebuildCacheFromCollage();
+    } catch (err) {
+      console.error("[footer-lens] cache rebuild failed", err);
+      cache = null;
+    }
+  };
+
+  const rebuildCacheFromCollage = () => {
+    if (!collage) return;
 
     const path = ensurePath();
     const vbW = SYMBOL_VIEWBOX_W;

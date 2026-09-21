@@ -57,15 +57,30 @@ export function FooterLensStage({
       const rect = wrap.getBoundingClientRect();
       cssW = Math.max(1, Math.floor(rect.width));
       cssH = Math.max(1, Math.floor(rect.height));
-      lens.setSize(cssW, cssH);
-      gradient?.setSize(cssW, cssH);
       if (!seeded) {
         targetX = smoothX = cssW / 2;
         targetY = smoothY = cssH / 2;
         seeded = true;
       }
-      gradient?.frame();
-      lens.drawAt(smoothX, smoothY, pointerActive);
+      // Gradient first so a lens rebuild throw cannot skip the background paint.
+      try {
+        gradient?.setSize(cssW, cssH);
+        gradient?.frame();
+      } catch (err) {
+        console.warn('[footer-lens] gradient resize failed', err);
+      }
+      try {
+        lens.setSize(cssW, cssH);
+        lens.drawAt(smoothX, smoothY, pointerActive);
+      } catch (err) {
+        console.error('[footer-lens] lens resize failed', err);
+      }
+      // A single synchronous draw can be dropped before the canvas is
+      // composited. Keep painting a few frames so the hero cannot stick blank.
+      if (!pointerActive) {
+        idleSettleFrames = Math.max(idleSettleFrames, 3);
+        startLoop();
+      }
     };
 
     const stopLoop = () => {
