@@ -417,12 +417,37 @@ export interface BlogPostCard {
 }
 
 /** Full blog post shape. */
+export interface BlogPostRelatedCase {
+  _id: string;
+  featuredImage?: SanityImage;
+  description?: string;
+  descriptionZh?: string;
+  displayTitleParts?: DisplayTitlePartsValue;
+  videos?: PortfolioVideo[];
+  vimeoUrl?: string;
+  xinpianchangUrl?: string;
+  previewCleanVimeoUrl?: string;
+  previewStartSeconds?: number;
+  previewEndSeconds?: number;
+  additionalVideos?: PortfolioVideo[];
+  heroFilmTitle?: string;
+  heroFilmTitleZh?: string;
+}
+
+export interface BlogPostMainVideo {
+  url?: string;
+  title?: string;
+}
+
+/** Full blog post shape. */
 export interface BlogPost extends BlogPostCard {
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
   _updatedAt?: string;
   seo?: SeoFields;
   noIndex?: boolean;
+  relatedCase?: BlogPostRelatedCase | null;
+  mainVideo?: BlogPostMainVideo | null;
 }
 
 export interface CategoryTerm {
