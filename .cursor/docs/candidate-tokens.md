@@ -62,3 +62,14 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 |---|---|---|---|---|---|
 | `--vp-candidate-image-pair-caption-bg` | `rgba(255,255,255,0.1)` | `.vp-image-pair__caption` | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2281-12989 | pending | |
 | `--vp-candidate-image-pair-caption-color` | `rgba(255,255,255,0.6)` | `.vp-image-pair__caption` | same | pending | |
+
+## Blog single — hero band (pending)
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-blog-rail-width` | `327px` | `.vp-blog-hero__rail` | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2281-12897 | pending | |
+| `--vp-candidate-blog-pill-bg` | `rgba(255,255,255,0.1)` | hero pills | same | pending | |
+| `--vp-candidate-blog-dek-color` | `rgba(255,255,255,0.6)` | `.vp-blog-hero__dek` | same | pending | |
+| `--vp-candidate-blog-back-color` | `rgba(255,255,255,0.5)` | `.vp-blog-hero__back-label` | same | pending | |
+
+**Figma vs prompt:** Frame 2281:12897 shows a date chip as the first label above the title. Phase 5 prompt drops hero date entirely — implemented without date; flag for product decision.

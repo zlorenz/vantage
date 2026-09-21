@@ -1,0 +1,187 @@
+/**
+ * Blog single hero — Figma option 1 (2281:12895 / 2281:12897).
+ * Left rail “all blog” + right title band; media full-bleed below.
+ */
+
+.vp-blog-post {
+  --vp-candidate-blog-rail-width: 20.4375rem; /* 327px */
+  --vp-candidate-blog-hero-pad-x: 1.875rem; /* 30px */
+  --vp-candidate-blog-pill-bg: rgba(255, 255, 255, 0.1);
+  --vp-candidate-blog-pill-color: rgba(255, 255, 255, 0.8);
+  --vp-candidate-blog-dek-color: rgba(255, 255, 255, 0.6);
+  --vp-candidate-blog-back-color: rgba(255, 255, 255, 0.5);
+}
+
+.vp-blog-hero__top {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-blog-hero__rail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 7.25rem;
+  padding: var(--vp-candidate-blog-hero-pad-x);
+}
+
+.vp-blog-hero__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: var(--vp-candidate-blog-back-color);
+}
+
+.vp-blog-hero__back-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--vp-candidate-blog-pill-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: 0;
+  color: #fff;
+}
+
+.vp-blog-hero__back-label {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: 0.875rem;
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.25rem;
+  letter-spacing: -0.0175rem;
+  text-transform: uppercase;
+}
+
+.vp-blog-hero__motif {
+  display: none;
+  width: min(100%, 12rem);
+  height: auto;
+  margin-top: auto;
+  opacity: 0.08;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+}
+
+.vp-blog-hero__copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 3rem var(--vp-candidate-blog-hero-pad-x) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-blog-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+  margin-bottom: 2.5rem; /* 40px */
+}
+
+.vp-blog-hero__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--vp-candidate-blog-pill-bg);
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+  border-radius: 0;
+  font-family: var(--font-vp-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  letter-spacing: 0.00875rem;
+  color: var(--vp-candidate-blog-pill-color);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.vp-blog-hero__pill:hover,
+a.vp-blog-hero__pill:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.vp-blog-hero__title {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: clamp(2.25rem, 5vw, 4rem); /* Figma h1 64 */
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.vp-blog-hero__rule {
+  width: 100%;
+  margin-top: 3rem;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-blog-hero__dek {
+  margin: 0;
+  padding: 2.5rem 0; /* 40px */
+  font-family: var(--font-vp-heading);
+  font-size: clamp(1rem, 1.5vw, 1.25rem); /* 20px */
+  font-weight: var(--font-vp-heading-weight);
+  line-height: 1.6;
+  letter-spacing: -0.025rem;
+  text-transform: uppercase;
+  color: var(--vp-candidate-blog-dek-color);
+}
+
+.vp-blog-post__body {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 79.1875rem; /* ~1267 */
+  margin-inline: auto;
+  padding: 5rem var(--vp-candidate-blog-hero-pad-x) 3rem;
+}
+
+@media (min-width: 992px) {
+  .vp-blog-hero__top {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 46.125rem; /* ~738 */
+  }
+
+  .vp-blog-hero__rail {
+    flex: 0 0 var(--vp-candidate-blog-rail-width);
+    width: var(--vp-candidate-blog-rail-width);
+    min-height: 100%;
+  }
+
+  .vp-blog-hero__motif {
+    display: block;
+  }
+
+  .vp-blog-hero__copy {
+    border-top: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 12.5rem; /* Figma pt 200 */
+  }
+
+  .vp-blog-post__body {
+    /* Align body column with hero copy (right of rail). */
+    margin-left: var(--vp-candidate-blog-rail-width);
+    margin-right: auto;
+    max-width: calc(100% - var(--vp-candidate-blog-rail-width));
+    padding-left: var(--vp-candidate-blog-hero-pad-x);
+    padding-right: max(var(--vp-candidate-blog-hero-pad-x), calc((100vw - 79.1875rem - var(--vp-candidate-blog-rail-width)) / 2));
+  }
+}

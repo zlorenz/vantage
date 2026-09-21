@@ -4,8 +4,9 @@
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link, permanentRedirect } from '@/i18n/navigation';
+import { BlogPostHeroMedia } from '@/components/blog/BlogPostHeroMedia';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
@@ -21,7 +22,6 @@ import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { sanityClient } from '@/lib/sanity';
-import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
 import {
   buildArticle,
   buildBreadcrumbs,
@@ -35,6 +35,7 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
 import { POST_BY_SLUG_QUERY, POST_SLUGS_QUERY, RESERVED_PAGE_SLUGS } from '@/sanity/queries/blog';
 import type { BlogPost, PostSlug } from '@/types/sanity';
+import '@/components/blog/blog-post-page.css';
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -79,6 +80,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
+function BackArrowIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false">
+      <path
+        d="M8.5 2.5 3.5 7l5 4.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+    </svg>
+  );
+}
+
 export default async function BlogPostPage({ params }: Props) {
   const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
@@ -90,10 +106,11 @@ export default async function BlogPostPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [postResult, phrases, organization] = await Promise.all([
+  const [postResult, phrases, organization, t] = await Promise.all([
     sanityFetch({query: POST_BY_SLUG_QUERY, params: {slug}}),
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
+    getTranslations('Blog'),
   ]);
   const post = postResult.data as BlogPost | null;
 
@@ -119,6 +136,12 @@ export default async function BlogPostPage({ params }: Props) {
     typedLocale,
     post.title,
     post.titleZh,
+    phrases,
+  );
+  const excerpt = pickLocaleFieldWithPhrases(
+    typedLocale,
+    post.excerpt,
+    post.excerptZh,
     phrases,
   );
   const bodyBlocks =
@@ -151,53 +174,79 @@ export default async function BlogPostPage({ params }: Props) {
           },
         ])}
       />
-      <SectionWrapper className="vp-single-post" fullBleed={true}>
-      <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
+      <SectionWrapper
+        className="vp-blog-post !pt-[var(--vp-section-y-header-condensed)]"
+        fullBleed={true}
+      >
         <article>
-          <header className="entry-header mb-8">
-            <h1 className="entry-title mb-4 font-vp-heading text-[clamp(2.375rem,4.3vw,3.4375rem)] font-bold uppercase leading-tight tracking-vp-heading">
-              {title}
-            </h1>
-            {post.publishedAt || post.categories?.length ? (
-              <div className="entry-meta flex flex-wrap items-center gap-2 text-sm text-vp-text-soft">
-                {post.publishedAt ? (
-                  <BlogPostedOn publishedAt={post.publishedAt} locale={typedLocale} />
-                ) : null}
-                {post.publishedAt && post.categories?.length ? (
-                  <span aria-hidden>·</span>
-                ) : null}
-                {post.categories?.map((category) => {
-                    const catSlug =
-                      typedLocale === 'zh'
-                        ? category.slugZh || category.slug
-                        : category.slug;
-                    const catLabel =
-                      typedLocale === 'zh' && category.titleZh
-                        ? category.titleZh
-                        : category.title;
-                    return (
-                      <Link
-                        key={category._id}
-                        href={{
-                          pathname: '/category/[slug]',
-                          params: { slug: catSlug },
-                        }}
-                        className="vp-category-pill rounded-sm border border-vp-border-soft px-2 py-0.5 text-xs uppercase no-underline transition-colors duration-vp-default hover:border-vp-border"
-                      >
-                        {catLabel}
-                      </Link>
-                    );
-                  })}
+          <header className="vp-blog-hero">
+            <div className="vp-blog-hero__top">
+              <div className="vp-blog-hero__rail">
+                <Link href="/news" className="vp-blog-hero__back">
+                  <span className="vp-blog-hero__back-icon">
+                    <BackArrowIcon />
+                  </span>
+                  <span className="vp-blog-hero__back-label">{t('allBlog')}</span>
+                </Link>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="vp-blog-hero__motif"
+                  src="/brand/vap-pattern.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
               </div>
-            ) : null}
+
+              <div className="vp-blog-hero__copy">
+                {post.categories?.length ? (
+                  <div className="vp-blog-hero__pills">
+                    {post.categories.map((category) => {
+                      const catSlug =
+                        typedLocale === 'zh'
+                          ? category.slugZh || category.slug
+                          : category.slug;
+                      const catLabel = pickLocaleFieldWithPhrases(
+                        typedLocale,
+                        category.title,
+                        category.titleZh,
+                        phrases,
+                      );
+                      return (
+                        <Link
+                          key={category._id}
+                          href={{
+                            pathname: '/category/[slug]',
+                            params: { slug: catSlug },
+                          }}
+                          className="vp-blog-hero__pill"
+                        >
+                          {catLabel}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ) : null}
+
+                <h1 className="vp-blog-hero__title">{title}</h1>
+                <hr className="vp-blog-hero__rule" />
+                {excerpt ? <p className="vp-blog-hero__dek">{excerpt}</p> : null}
+              </div>
+            </div>
+
+            <BlogPostHeroMedia
+              locale={typedLocale}
+              phrases={phrases}
+              relatedCase={post.relatedCase}
+              mainVideo={post.mainVideo}
+              featuredImage={post.featuredImage}
+            />
           </header>
 
-          <div className="entry-content">
+          <div className="vp-blog-post__body entry-content">
             <PortableTextContent blocks={bodyBlocks} />
           </div>
         </article>
-      </div>
-    </SectionWrapper>
+      </SectionWrapper>
     </>
   );
 }
