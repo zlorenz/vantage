@@ -28,13 +28,23 @@
   justify-content: space-between;
   box-sizing: border-box;
   min-height: 7.25rem;
-  padding: var(--vp-candidate-blog-hero-pad-x);
+  /*
+   * No inline/bottom pad — motif spans rail edge→divider flush.
+   * Back-link inset lives on .vp-blog-hero__back (portfolio case-rail parity).
+   */
+  padding-top: var(--vp-candidate-blog-hero-pad-x);
+  padding-inline: 0;
+  padding-bottom: 0;
 }
 
 .vp-blog-hero__back {
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   gap: 1rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-inline: var(--vp-candidate-blog-hero-pad-x);
   text-decoration: none;
   color: var(--vp-candidate-blog-back-color);
 }
@@ -64,12 +74,14 @@
 
 .vp-blog-hero__motif {
   display: none;
-  width: min(100%, 12rem);
+  width: 100%;
+  max-width: none;
   height: auto;
   margin-top: auto;
   opacity: 0.08;
   mix-blend-mode: luminosity;
   pointer-events: none;
+  user-select: none;
 }
 
 .vp-blog-hero__copy {
@@ -78,7 +90,8 @@
   flex-direction: column;
   box-sizing: border-box;
   min-width: 0;
-  padding: 3rem var(--vp-candidate-blog-hero-pad-x) 0;
+  /* Horizontal pad lives on pills/title/dek so .vp-blog-hero__rule can span edge→edge. */
+  padding: 3rem 0 0;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -88,6 +101,7 @@
   gap: 0.25rem;
   align-items: center;
   margin-bottom: 2.5rem; /* 40px */
+  padding-inline: var(--vp-candidate-blog-hero-pad-x);
 }
 
 .vp-blog-hero__date-chip,
@@ -130,6 +144,7 @@ a.vp-blog-hero__pill:focus-visible {
 
 .vp-blog-hero__title {
   margin: 0;
+  padding-inline: var(--vp-candidate-blog-hero-pad-x);
   font-family: var(--font-vp-heading);
   font-size: clamp(2.25rem, 5vw, 4rem); /* Figma h1 64 */
   font-weight: var(--font-vp-heading-weight);
@@ -139,16 +154,18 @@ a.vp-blog-hero__pill:focus-visible {
   color: #fff;
 }
 
+/* Full-bleed within the copy column — meets sidebar divider + viewport right. */
 .vp-blog-hero__rule {
   width: 100%;
-  margin-top: 3rem;
+  margin: 3rem 0 0;
   border: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .vp-blog-hero__dek {
   margin: 0;
-  padding: 2.5rem 0; /* 40px */
+  /* Figma 2281:12942 — py 40, equal; no extra band below. */
+  padding: 2.5rem var(--vp-candidate-blog-hero-pad-x);
   font-family: var(--font-vp-heading);
   font-size: clamp(1rem, 1.5vw, 1.25rem); /* 20px */
   font-weight: var(--font-vp-heading-weight);
@@ -167,10 +184,22 @@ a.vp-blog-hero__pill:focus-visible {
 }
 
 @media (min-width: 992px) {
+  /*
+   * Pad only past the fixed navbar so .vp-blog-hero__copy’s border-left
+   * meets the nav bottom flush — same pattern as .vp-case-shell.
+   * Title-band air (Figma ~200px) stays on .vp-blog-hero__copy padding-top.
+   */
+  .vp-blog-post {
+    --vp-section-y-header-condensed: var(
+      --vp-header-height,
+      var(--vp-nav-bar-height)
+    );
+  }
+
   .vp-blog-hero__top {
     flex-direction: row;
     align-items: stretch;
-    min-height: 46.125rem; /* ~738 */
+    /* Height from content (pt 200 + title + dek band) — no forced empty below dek. */
   }
 
   .vp-blog-hero__rail {
