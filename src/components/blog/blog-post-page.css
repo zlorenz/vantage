@@ -4,7 +4,8 @@
  */
 
 .vp-blog-post {
-  --vp-candidate-blog-rail-width: 20.4375rem; /* 327px */
+  /* Aligns with logo cell — see --vp-page-rail-width in globals.css */
+  --vp-candidate-blog-rail-width: var(--vp-page-rail-width, 14.5rem);
   --vp-candidate-blog-hero-pad-x: 1.875rem; /* 30px */
   --vp-candidate-blog-pill-bg: rgba(255, 255, 255, 0.1);
   --vp-candidate-blog-pill-color: rgba(255, 255, 255, 0.8);
@@ -41,20 +42,21 @@
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  gap: 1rem;
+  gap: 0.5rem;
   max-width: 100%;
   box-sizing: border-box;
-  padding-inline: var(--vp-candidate-blog-hero-pad-x);
+  padding-inline: 1rem;
   text-decoration: none;
   color: var(--vp-candidate-blog-back-color);
 }
 
 .vp-blog-hero__back-icon {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   background: var(--vp-candidate-blog-pill-bg);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);

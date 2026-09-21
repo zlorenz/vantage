@@ -232,6 +232,11 @@
   --vp-nav-bar-height: 80px;
   --vp-nav-cell-width: 94px;
   --vp-nav-cell-tracking: -0.28px;
+  /*
+   * Logo cell + page rails (blog hero, case shell, carousel rail-nav).
+   * 14.5rem = 232px — matches measured .navbar-brand (30+171+30+1px border).
+   */
+  --vp-page-rail-width: 14.5rem;
 
   /* Colour Palette — Overlays */
 
@@ -1108,6 +1113,10 @@ body:has(.vp-work-index) #header.navbar::before {
   #header .navbar-brand {
     display: flex;
     align-items: center;
+    box-sizing: border-box;
+    width: var(--vp-page-rail-width);
+    min-width: var(--vp-page-rail-width);
+    max-width: var(--vp-page-rail-width);
     border-right: var(--vp-struct-line);
     padding-inline: 1.875rem;
   }
@@ -1640,7 +1649,7 @@ body:has(.vp-work-index) #header.navbar::before {
 
 @media (min-width: 992px) {
   .vp-case-credits-band {
-    margin-left: var(--vp-case-rail-width, 20.5rem);
+    margin-left: var(--vp-case-rail-width, var(--vp-page-rail-width, 14.5rem));
     margin-right: 0;
     width: auto;
     max-width: none;

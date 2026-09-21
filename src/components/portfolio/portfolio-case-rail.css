@@ -8,8 +8,8 @@
  */
 
 .vp-case-shell {
-  /* Figma left inset ~328px → 20.5rem at 16px root (spacing-scale rem). */
-  --vp-case-rail-width: 20.5rem;
+  /* Aligns with logo cell — see --vp-page-rail-width in globals.css */
+  --vp-case-rail-width: var(--vp-page-rail-width, 14.5rem);
   /* Figma right-column horizontal pad (30px). */
   --vp-case-shell-pad-x: 1.875rem;
 }
@@ -133,10 +133,10 @@
     display: inline-flex;
     align-items: center;
     align-self: flex-start;
-    gap: 1rem;
+    gap: 0.5rem;
     max-width: 100%;
     margin: 0;
-    padding-inline: var(--vp-case-shell-pad-x);
+    padding-inline: 1rem;
     box-sizing: border-box;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.5);
@@ -158,8 +158,8 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
     background: var(--vp-overlay-light);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
