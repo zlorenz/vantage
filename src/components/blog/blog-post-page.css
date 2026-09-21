@@ -8,6 +8,9 @@
   --vp-candidate-blog-hero-pad-x: 1.875rem; /* 30px */
   --vp-candidate-blog-pill-bg: rgba(255, 255, 255, 0.1);
   --vp-candidate-blog-pill-color: rgba(255, 255, 255, 0.8);
+  /* Yellow/black date chip — no --vp-color-yellow / --vp-yellow-100 yet; bg = site yellow. */
+  --vp-candidate-blog-date-chip-bg: var(--vp-link); /* #fdb913 */
+  --vp-candidate-blog-date-chip-color: var(--vp-black); /* #0a0a0a */
   --vp-candidate-blog-dek-color: rgba(255, 255, 255, 0.6);
   --vp-candidate-blog-back-color: rgba(255, 255, 255, 0.5);
 }
@@ -87,26 +90,36 @@
   margin-bottom: 2.5rem; /* 40px */
 }
 
+.vp-blog-hero__date-chip,
 .vp-blog-hero__pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-height: 2.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--vp-candidate-blog-pill-bg);
-  -webkit-backdrop-filter: blur(50px);
-  backdrop-filter: blur(50px);
+  min-height: 2.5rem; /* Figma label h 40 */
+  padding: 0.5rem 1rem; /* 8×16 */
   border-radius: 0;
   font-family: var(--font-vp-sans);
-  font-size: 0.875rem;
+  font-size: 0.875rem; /* caption_4 14 */
   font-weight: 700;
   line-height: 1.25rem;
   letter-spacing: 0.00875rem;
-  color: var(--vp-candidate-blog-pill-color);
   text-transform: uppercase;
-  text-decoration: none;
   white-space: nowrap;
+}
+
+/* Date first in row — yellow fill / black type (distinct from category glass pills). */
+.vp-blog-hero__date-chip {
+  background: var(--vp-candidate-blog-date-chip-bg);
+  color: var(--vp-candidate-blog-date-chip-color);
+}
+
+.vp-blog-hero__pill {
+  background: var(--vp-candidate-blog-pill-bg);
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+  color: var(--vp-candidate-blog-pill-color);
+  text-decoration: none;
 }
 
 a.vp-blog-hero__pill:hover,

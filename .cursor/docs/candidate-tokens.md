@@ -68,8 +68,10 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
 | `--vp-candidate-blog-rail-width` | `327px` | `.vp-blog-hero__rail` | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2281-12897 | pending | |
-| `--vp-candidate-blog-pill-bg` | `rgba(255,255,255,0.1)` | hero pills | same | pending | |
+| `--vp-candidate-blog-pill-bg` | `rgba(255,255,255,0.1)` | hero category pills | same | pending | |
+| `--vp-candidate-blog-date-chip-bg` | `var(--vp-link)` / `#fdb913` | `.vp-blog-hero__date-chip` | same + product (yellow/black vs glass) | pending | No `--vp-color-yellow` / `--vp-yellow-100` in tokens; aliases `--vp-link`. |
+| `--vp-candidate-blog-date-chip-color` | `var(--vp-black)` / `#0a0a0a` | `.vp-blog-hero__date-chip` | same | pending | Soft black, not true `#000`. |
 | `--vp-candidate-blog-dek-color` | `rgba(255,255,255,0.6)` | `.vp-blog-hero__dek` | same | pending | |
 | `--vp-candidate-blog-back-color` | `rgba(255,255,255,0.5)` | `.vp-blog-hero__back-label` | same | pending | |
 
-**Figma vs prompt:** Frame 2281:12897 shows a date chip as the first label above the title. Phase 5 prompt drops hero date entirely — implemented without date; flag for product decision.
+**Figma note:** MCP `get_design_context` for `2281:12897` / label `2281:12938` still emits the glass `white/10` fill for the date label (same as category chips). Screenshot + product call for yellow bg / black text — implemented as yellow/black via candidates above.

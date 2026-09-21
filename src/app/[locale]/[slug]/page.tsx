@@ -19,6 +19,7 @@ import {
   seoDescription,
   seoMetaTitle,
 } from '@/lib/metadata';
+import { formatBlogPublishDate } from '@/lib/blog-date';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
@@ -201,9 +202,17 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
 
               <div className="vp-blog-hero__copy">
-                {post.categories?.length ? (
+                {post.publishedAt || post.categories?.length ? (
                   <div className="vp-blog-hero__pills">
-                    {post.categories.map((category) => {
+                    {post.publishedAt ? (
+                      <time
+                        className="vp-blog-hero__date-chip"
+                        dateTime={post.publishedAt}
+                      >
+                        {formatBlogPublishDate(post.publishedAt, typedLocale)}
+                      </time>
+                    ) : null}
+                    {post.categories?.map((category) => {
                       const catSlug =
                         typedLocale === 'zh'
                           ? category.slugZh || category.slug
