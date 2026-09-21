@@ -1774,7 +1774,8 @@ body:has(.vp-work-index) #header.navbar::before {
    News index — page title + multi-column post grid
    ========================================================================== */
 
-/* Figma Blog 2050:5242 — eyebrow + H1 + intro stack; desktop filter bottom-aligned. */
+/* Figma Blog 2050:5242 — eyebrow + H1 + intro stack; desktop filter bottom-aligned.
+ * Full-bleed with 30px side inset — same as featured/grid (not .vp-content-rail). */
 .vp-news-page__header {
   position: relative;
   display: flex;
@@ -1782,6 +1783,7 @@ body:has(.vp-work-index) #header.navbar::before {
   justify-content: space-between;
   gap: 1rem 1.5rem;
   margin-bottom: 0;
+  padding-inline: 1.875rem; /* 30px — Figma header x=30 */
 }
 
 /* Desktop Categories trigger sits at the bottom of the header band (Figma y≈531). */
@@ -1895,7 +1897,7 @@ body:has(.vp-work-index) #header.navbar::before {
   margin-top: 0.75em;
 }
 
-/* Featured + grid sit outside .vp-content-rail so structural borders are full-bleed. */
+/* Header + featured + grid — full viewport width; borders span edge-to-edge. */
 .vp-news-page__chrome {
   width: 100%;
 }

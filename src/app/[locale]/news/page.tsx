@@ -106,7 +106,8 @@ export default async function NewsPage({ params }: Props) {
         className="vp-news-page !pt-[var(--vp-section-y-header-condensed)]"
         fullBleed={true}
       >
-        <div className="vp-content-rail">
+        {/* Full-bleed page chrome — header + featured + grid share Figma’s 30px side inset. */}
+        <div className="vp-news-page__chrome">
           <header className="vp-news-page__header">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -133,10 +134,7 @@ export default async function NewsPage({ params }: Props) {
               phrases={phrases}
             />
           </header>
-        </div>
 
-        {/* Full-bleed chrome — outside .vp-content-rail so borders span the viewport. */}
-        <div className="vp-news-page__chrome">
           <div className="vp-news-page__rule" aria-hidden="true" />
           {featuredPost ? (
             <FeaturedPost
