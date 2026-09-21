@@ -84,8 +84,22 @@ const videoBlock = defineArrayMember({
   },
 })
 
+const pullQuoteBlock = defineArrayMember({
+  type: 'pullQuote',
+})
+
+const imagePairBlock = defineArrayMember({
+  type: 'imagePair',
+})
+
 /** Shared `of` members — also usable when extending page bodies later. */
-export const portableTextBodyMembers = [textBlock, imageBlock, videoBlock]
+export const portableTextBodyMembers = [
+  textBlock,
+  imageBlock,
+  videoBlock,
+  pullQuoteBlock,
+  imagePairBlock,
+]
 
 export const portableTextBody = defineType({
   name: 'portableTextBody',

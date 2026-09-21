@@ -85,6 +85,25 @@ export const blogPost = defineType({
     }),
 
     defineField({
+      name: 'relatedCase',
+      title: 'Related Case',
+      type: 'reference',
+      to: [{type: 'portfolioEntry'}],
+      description:
+        'Optional. When set, the post hero plays this portfolio entry’s videos (same carousel as the case page).',
+      hidden: hiddenForTranslator,
+    }),
+
+    defineField({
+      name: 'mainVideo',
+      title: 'Main Video',
+      type: 'videoEmbed',
+      description:
+        'Fallback hero video when Related Case is empty. Vimeo or YouTube URL. Mid-body videos stay in the body.',
+      hidden: hiddenForTranslator,
+    }),
+
+    defineField({
       name: 'body',
       title: 'Body (English)',
       type: 'portableTextBody',

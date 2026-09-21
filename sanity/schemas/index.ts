@@ -39,6 +39,8 @@ import { pdfDownload } from './objects/pdfDownload'
 import { imageGallery } from './objects/imageGallery'
 import { ctaButton } from './objects/ctaButton'
 import { videoEmbed } from './objects/videoEmbed'
+import { pullQuote } from './objects/pullQuote'
+import { imagePair } from './objects/imagePair'
 import { portableTextBody, pagePortableText, plainPortableText } from './objects/portableTextBody'
 
 export const schemaTypes = [
@@ -57,6 +59,8 @@ export const schemaTypes = [
   imageGallery,
   ctaButton,
   videoEmbed,
+  pullQuote,
+  imagePair,
   portableTextBody,
   pagePortableText,
   plainPortableText,

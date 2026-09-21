@@ -24,7 +24,7 @@ export type SanityImageAssetReference = {
 
 export type GalleryImageImage = {
   asset?: SanityImageAssetReference;
-  media?: unknown; // Unable to locate the referenced type "media" in schema
+  media?: unknown; // Unable to locate the referenced type "image.media" in schema
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   _type: "image";
@@ -50,6 +50,32 @@ export type Showreel = {
       _key: string;
     } & PortfolioEntryReference
   >;
+};
+
+export type InteractionEvent = {
+  _id: string;
+  _type: "interactionEvent";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  eventType?: "search_submit" | "filter_change" | "result_click";
+  sourceSurface?:
+    | "nav_search"
+    | "work_carousel"
+    | "taxonomy_archive"
+    | "search_page";
+  query?: string;
+  filters?: {
+    format?: string;
+    industry?: string;
+    market?: string;
+  };
+  resultSlug?: string;
+  resultType?: "portfolio" | "news";
+  pagePath?: string;
+  locale?: string;
+  sessionId?: string;
+  createdAt?: string;
 };
 
 export type VideoEvent = {
@@ -331,6 +357,8 @@ export type BlogPost = {
       _key: string;
     } & CategoryReference
   >;
+  relatedCase?: PortfolioEntryReference;
+  mainVideo?: VideoEmbed;
   body?: PortableTextBody;
   bodyZh?: PortableTextBody;
   noIndex?: boolean;
@@ -370,7 +398,19 @@ export type PortableTextBody = Array<
   | ({
       _key: string;
     } & VideoEmbed)
+  | ({
+      _key: string;
+    } & PullQuote)
+  | ({
+      _key: string;
+    } & ImagePair)
 >;
+
+export type VideoEmbed = {
+  _type: "videoEmbed";
+  url?: string;
+  title?: string;
+};
 
 export type Platform = {
   _id: string;
@@ -565,10 +605,39 @@ export type PlainPortableText = Array<{
   _key: string;
 }>;
 
-export type VideoEmbed = {
-  _type: "videoEmbed";
-  url?: string;
-  title?: string;
+export type ImagePair = {
+  _type: "imagePair";
+  left?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    _type: "image";
+  };
+  right?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    _type: "image";
+  };
+};
+
+export type PullQuote = {
+  _type: "pullQuote";
+  text?: string;
+  attribution?: string;
+  headshot?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
 };
 
 export type CtaButton = {
@@ -1031,6 +1100,7 @@ export type AllSanitySchemaTypes =
   | GalleryImageImage
   | PortfolioEntryReference
   | Showreel
+  | InteractionEvent
   | VideoEvent
   | SanityFileAssetReference
   | CampaignBriefAttachment
@@ -1047,6 +1117,7 @@ export type AllSanitySchemaTypes =
   | CategoryReference
   | BlogPost
   | PortableTextBody
+  | VideoEmbed
   | Platform
   | TranslatedPhrase
   | CrewMember
@@ -1061,7 +1132,8 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | CampaignCta
   | PlainPortableText
-  | VideoEmbed
+  | ImagePair
+  | PullQuote
   | CtaButton
   | ImageGallery
   | BrandLogoItem
@@ -1147,6 +1219,43 @@ export type POST_BY_SLUG_QUERY_RESULT = {
       }
     | {
         _key: string;
+        _type: "imagePair";
+        left?: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          caption?: string;
+          _type: "image";
+        };
+        right?: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          caption?: string;
+          _type: "image";
+        };
+        asset: null;
+      }
+    | {
+        _key: string;
+        _type: "pullQuote";
+        text?: string;
+        attribution?: string;
+        headshot?: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        };
+        asset: null;
+      }
+    | {
+        _key: string;
         _type: "videoEmbed";
         url?: string;
         title?: string;
@@ -1189,6 +1298,43 @@ export type POST_BY_SLUG_QUERY_RESULT = {
         caption?: string;
         _type: "image";
         _key: string;
+      }
+    | {
+        _key: string;
+        _type: "imagePair";
+        left?: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          caption?: string;
+          _type: "image";
+        };
+        right?: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          caption?: string;
+          _type: "image";
+        };
+        asset: null;
+      }
+    | {
+        _key: string;
+        _type: "pullQuote";
+        text?: string;
+        attribution?: string;
+        headshot?: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        };
+        asset: null;
       }
     | {
         _key: string;
