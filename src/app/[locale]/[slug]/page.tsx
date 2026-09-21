@@ -230,7 +230,7 @@ export default async function BlogPostPage({ params }: Props) {
                   </div>
                 ) : null}
 
-                <h1 className="vp-blog-hero__title">{title}</h1>
+                <h1 className="vp-blog-hero__title leading-tight">{title}</h1>
                 <hr className="vp-blog-hero__rule" />
                 {excerpt ? <p className="vp-blog-hero__dek">{excerpt}</p> : null}
               </div>
