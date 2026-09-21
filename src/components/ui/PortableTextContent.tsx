@@ -12,6 +12,7 @@ import {
 } from '@portabletext/react';
 import { ImageGalleryBlock } from '@/components/ui/ImageGalleryBlock';
 import { PortableTextVideoEmbed } from '@/components/ui/PortableTextVideoEmbed';
+import { PullQuoteBlock, type PullQuoteValue } from '@/components/ui/PullQuoteBlock';
 import { Link } from '@/i18n/navigation';
 import { isAppExternalUrl, normalizeInternalPath } from '@/lib/internal-url';
 import { urlForImage } from '@/lib/sanity';
@@ -165,6 +166,9 @@ function createComponents(relaxed = false): PortableTextComponents {
         </div>
       );
     },
+    pullQuote: ({ value }) => (
+      <PullQuoteBlock value={value as PullQuoteValue} />
+    ),
     image: ({ value }) => {
       const image = value as SanityImage & {
         alt?: string;
