@@ -255,7 +255,9 @@ export default async function BlogPostPage({ params }: Props) {
           </header>
 
           <div className="vp-blog-post__body entry-content">
-            <PortableTextContent blocks={bodyBlocks} />
+            <div className="vp-blog-post__prose">
+              <PortableTextContent blocks={bodyBlocks} />
+            </div>
             <BlogShareRow
               url={absoluteUrl(blogPostPageUrl(typedLocale, post.slug, post.slugZh))}
               title={title}

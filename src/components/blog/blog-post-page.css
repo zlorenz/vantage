@@ -182,7 +182,16 @@ a.vp-blog-hero__pill:focus-visible {
   width: 100%;
   max-width: 79.1875rem; /* ~1267 */
   margin-inline: auto;
-  padding: 5rem var(--vp-candidate-blog-hero-pad-x) 3rem;
+  /* Structural column wrap — share top/bottom rules meet these edges (Figma). */
+  border-left: var(--vp-struct-line);
+  border-right: var(--vp-struct-line);
+  padding: 5rem 0 0;
+}
+
+.vp-blog-post__prose {
+  box-sizing: border-box;
+  padding-inline: var(--vp-candidate-blog-hero-pad-x);
+  padding-bottom: 3rem;
 }
 
 @media (min-width: 992px) {
@@ -220,12 +229,8 @@ a.vp-blog-hero__pill:focus-visible {
     padding-top: 12.5rem; /* Figma pt 200 */
   }
 
-  .vp-blog-post__body {
-    /* Align body column with hero copy (right of rail). */
-    margin-left: var(--vp-candidate-blog-rail-width);
-    margin-right: auto;
-    max-width: calc(100% - var(--vp-candidate-blog-rail-width));
-    padding-left: var(--vp-candidate-blog-hero-pad-x);
-    padding-right: max(var(--vp-candidate-blog-hero-pad-x), calc((100vw - 79.1875rem - var(--vp-candidate-blog-rail-width)) / 2));
-  }
+  /*
+   * Body stays viewport-centered (max-width + margin-inline:auto) — do not
+   * rail-offset. Hero band keeps the left rail; post body does not.
+   */
 }

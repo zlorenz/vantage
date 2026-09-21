@@ -1,5 +1,6 @@
 /**
  * Blog share row — Figma 2281:13120.
+ * Outer L/R edges come from .vp-blog-post__body struct borders.
  */
 
 .vp-blog-share {
@@ -8,9 +9,9 @@
   justify-content: space-between;
   width: 100%;
   min-height: 6.25rem; /* 100px */
-  margin-top: 4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 0;
+  border-top: var(--vp-struct-line);
+  border-bottom: var(--vp-struct-line);
   border-radius: 0;
 }
 
@@ -38,7 +39,7 @@
   box-sizing: border-box;
   width: 6.25rem;
   height: 6.25rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: var(--vp-struct-line);
   color: #fff;
   text-decoration: none;
   transition: color var(--vp-duration-default, 0.2s) ease;
