@@ -26,6 +26,7 @@ export function isPortableTextMediaBlock(block: PtBlock | null | undefined): boo
   if (
     block._type === 'image' ||
     block._type === 'imageGallery' ||
+    block._type === 'imagePair' ||
     block._type === 'videoEmbed'
   ) {
     return true;

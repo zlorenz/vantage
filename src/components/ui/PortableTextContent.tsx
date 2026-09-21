@@ -12,6 +12,7 @@ import {
 } from '@portabletext/react';
 import { ImageGalleryBlock } from '@/components/ui/ImageGalleryBlock';
 import { PortableTextVideoEmbed } from '@/components/ui/PortableTextVideoEmbed';
+import { ImagePairBlock, type ImagePairValue } from '@/components/ui/ImagePairBlock';
 import { PullQuoteBlock, type PullQuoteValue } from '@/components/ui/PullQuoteBlock';
 import { Link } from '@/i18n/navigation';
 import { isAppExternalUrl, normalizeInternalPath } from '@/lib/internal-url';
@@ -168,6 +169,9 @@ function createComponents(relaxed = false): PortableTextComponents {
     },
     pullQuote: ({ value }) => (
       <PullQuoteBlock value={value as PullQuoteValue} />
+    ),
+    imagePair: ({ value }) => (
+      <ImagePairBlock value={value as ImagePairValue} />
     ),
     image: ({ value }) => {
       const image = value as SanityImage & {

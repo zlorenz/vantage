@@ -1,0 +1,124 @@
+/**
+ * Image pair — Figma 2281:12989.
+ * Two equal columns, 30px pad, caption on white/10, stacks on mobile.
+ */
+
+.vp-image-pair {
+  --vp-candidate-image-pair-caption-bg: rgba(255, 255, 255, 0.1);
+  --vp-candidate-image-pair-caption-color: rgba(255, 255, 255, 0.6);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  margin: 2.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+}
+
+.vp-image-pair__slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* 4px — Figma gap image → caption */
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 1.875rem; /* 30px */
+  border-radius: 0;
+}
+
+.vp-image-pair__slot + .vp-image-pair__slot {
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vp-image-pair__brackets {
+  position: absolute;
+  inset: 0.9375rem; /* 15px */
+  z-index: 2;
+  pointer-events: none;
+}
+
+.vp-image-pair__bracket {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0 solid #d9d9d9;
+}
+
+.vp-image-pair__bracket--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-image-pair__bracket--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.vp-image-pair__bracket--br {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.vp-image-pair__bracket--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-image-pair__media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  aspect-ratio: 571.5 / 624; /* Figma slot media */
+}
+
+.vp-image-pair__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.vp-image-pair__caption {
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1rem; /* 16px */
+  background: var(--vp-candidate-image-pair-caption-bg);
+  border-radius: 0;
+  font-family: var(--font-vp-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--vp-candidate-image-pair-caption-color);
+}
+
+@media (max-width: 767.98px) {
+  .vp-image-pair {
+    grid-template-columns: 1fr;
+    margin: 2rem 0;
+  }
+
+  .vp-image-pair__slot {
+    padding: 1.25rem;
+  }
+
+  .vp-image-pair__slot + .vp-image-pair__slot {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .vp-image-pair__brackets {
+    inset: 0.5rem;
+  }
+}
