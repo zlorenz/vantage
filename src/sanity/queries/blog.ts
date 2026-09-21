@@ -21,17 +21,28 @@ const BLOG_CARD_FIELDS = `
   "bodyTextZh": pt::text(bodyZh)
 `;
 
+const BLOG_CARD_WITH_CATEGORIES = `
+  ${BLOG_CARD_FIELDS},
+  "categories": categories[]->{
+    _id,
+    title,
+    titleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current
+  }
+`;
+
+/** Exported for blog next-post nav ring (same projection as news cards). */
+export const BLOG_NAV_RING_QUERY = `
+  *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
+    ${BLOG_CARD_WITH_CATEGORIES}
+  }
+`;
+
 /** All published blog posts for the news index. */
 export const ALL_POSTS_QUERY = `
   *[_type == "blogPost" && !defined(trash.trashedAt)] | order(publishedAt desc) {
-    ${BLOG_CARD_FIELDS},
-    "categories": categories[]->{
-      _id,
-      title,
-      titleZh,
-      "slug": slug.current,
-      "slugZh": slugZh.current
-    }
+    ${BLOG_CARD_WITH_CATEGORIES}
   }
 `;
 

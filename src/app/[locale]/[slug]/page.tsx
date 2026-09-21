@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link, permanentRedirect } from '@/i18n/navigation';
 import { BlogPostHeroMedia } from '@/components/blog/BlogPostHeroMedia';
+import { BlogPostNav } from '@/components/blog/BlogPostNav';
 import { BlogShareRow } from '@/components/blog/BlogShareRow';
 import { PortableTextContent } from '@/components/ui/PortableTextContent';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
@@ -252,6 +253,12 @@ export default async function BlogPostPage({ params }: Props) {
               shareLabel={t('share')}
             />
           </div>
+
+          <BlogPostNav
+            currentId={post._id}
+            locale={typedLocale}
+            readMore={t('readMore')}
+          />
         </article>
       </SectionWrapper>
     </>

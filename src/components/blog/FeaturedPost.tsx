@@ -1,10 +1,9 @@
 /**
- * FeaturedPost — full-width featured blog block on /news.
+ * FeaturedPost — full-width featured blog block on /news (and BlogPostNav slides).
  * Figma Blog 2050:5488: 770px text / image split, 680px tall, READ MORE CTA.
  */
 
 import Image from 'next/image';
-import {getTranslations} from 'next-intl/server';
 import {Link} from '@/i18n/navigation';
 import {resolveBlogCardExcerpt} from '@/lib/blog-excerpt';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
@@ -17,6 +16,11 @@ interface FeaturedPostProps {
   post: BlogPostCardData;
   locale: Locale;
   phrases?: Record<string, string>;
+  /** Translated CTA label — passed from the parent so this stays sync/client-safe. */
+  readMore: string;
+  /** Only the news-index featured instance should eager-load. */
+  priority?: boolean;
+  className?: string;
 }
 
 /** Local short-month pill date — shared BlogPostedOn unchanged. */
@@ -28,8 +32,14 @@ function formatFeaturedPillDate(dateString: string, locale: Locale): string {
   });
 }
 
-export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
-  const t = await getTranslations('Blog');
+export function FeaturedPost({
+  post,
+  locale,
+  phrases,
+  readMore,
+  priority = false,
+  className = '',
+}: FeaturedPostProps) {
   const slugParam = locale === 'zh' ? post.slugZh || post.slug : post.slug;
   const title = pickLocaleFieldWithPhrases(locale, post.title, post.titleZh, phrases);
   const excerpt = resolveBlogCardExcerpt(
@@ -43,7 +53,7 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
   const href = {pathname: '/[slug]' as const, params: {slug: slugParam}};
 
   return (
-    <article className="vp-featured-post">
+    <article className={`vp-featured-post ${className}`.trim()}>
       <div className="vp-featured-post__brackets" aria-hidden="true">
         <span className="vp-featured-post__bracket vp-featured-post__bracket--tl" />
         <span className="vp-featured-post__bracket vp-featured-post__bracket--tr" />
@@ -102,7 +112,7 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
           />
 
           <Link href={href} className="vp-featured-post__cta">
-            <span className="vp-featured-post__cta-label">{t('readMore')}</span>
+            <span className="vp-featured-post__cta-label">{readMore}</span>
             <svg
               className="vp-featured-post__cta-arrow"
               viewBox="0 0 18 18"
@@ -118,7 +128,6 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
         </div>
 
         <div className="vp-featured-post__media">
-          {/* Date overlaid on image — intentional deviation from Figma 2050:4920 (Zach). */}
           {post.publishedAt ? (
             <time className="vp-featured-post__date-pill" dateTime={post.publishedAt}>
               {formatFeaturedPillDate(post.publishedAt, locale)}
@@ -132,7 +141,7 @@ export async function FeaturedPost({post, locale, phrases}: FeaturedPostProps) {
               height={680}
               className="vp-featured-post__image"
               sizes="(max-width: 1023px) 100vw, 60vw"
-              priority
+              priority={priority}
             />
           ) : (
             <div className="vp-featured-post__image-fallback" aria-hidden="true" />

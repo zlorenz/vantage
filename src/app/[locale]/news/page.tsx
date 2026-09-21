@@ -141,6 +141,8 @@ export default async function NewsPage({ params }: Props) {
               post={featuredPost}
               locale={typedLocale}
               phrases={phrases}
+              readMore={t('readMore')}
+              priority
             />
           ) : null}
 
