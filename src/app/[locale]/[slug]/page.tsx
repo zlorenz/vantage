@@ -5,6 +5,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { resolveMainPortfolioVideo } from '@portfolio-videos';
 import { Link, permanentRedirect } from '@/i18n/navigation';
 import { BlogPostHeroMedia } from '@/components/blog/BlogPostHeroMedia';
 import { BlogPostNav } from '@/components/blog/BlogPostNav';
@@ -44,6 +45,18 @@ import '@/components/blog/blog-post-page.css';
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
+
+/** Hero film URL — same source PortfolioCaseMedia / mainVideo embed would use. */
+function resolveBlogHeroVideoUrl(post: BlogPost): string | undefined {
+  if (post.relatedCase?._id) {
+    const main = resolveMainPortfolioVideo(post.relatedCase);
+    const url =
+      main?.vimeoUrl?.trim() || post.relatedCase.vimeoUrl?.trim() || '';
+    return url || undefined;
+  }
+  const mainUrl = post.mainVideo?.url?.trim();
+  return mainUrl || undefined;
+}
 
 export async function generateStaticParams() {
   const slugs = await sanityClient.fetch<PostSlug[]>(POST_SLUGS_QUERY);
@@ -152,6 +165,7 @@ export default async function BlogPostPage({ params }: Props) {
     typedLocale === 'zh' && post.bodyZh?.length
       ? mergeChineseBodyWithEnglishMedia(post.bodyZh, post.body)
       : post.body;
+  const suppressVideoUrl = resolveBlogHeroVideoUrl(post);
 
   return (
     <>
@@ -256,7 +270,10 @@ export default async function BlogPostPage({ params }: Props) {
 
           <div className="vp-blog-post__body entry-content">
             <div className="vp-blog-post__prose">
-              <PortableTextContent blocks={bodyBlocks} />
+              <PortableTextContent
+                blocks={bodyBlocks}
+                suppressVideoUrl={suppressVideoUrl}
+              />
             </div>
             <BlogShareRow
               url={absoluteUrl(blogPostPageUrl(typedLocale, post.slug, post.slugZh))}

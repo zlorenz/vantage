@@ -19,6 +19,8 @@ import { isAppExternalUrl, normalizeInternalPath } from '@/lib/internal-url';
 import { urlForImage } from '@/lib/sanity';
 import {
   extractVideoUrls,
+  extractVimeoId,
+  extractYouTubeId,
   getPortableTextBlockPlainText,
   isVideoUrlOnlyText,
 } from '@/lib/video-url';
@@ -26,6 +28,13 @@ import type { GalleryImageItem } from '@/components/ui/ImageGalleryBlock';
 import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '@/types/sanity';
 
 type LinkHref = ComponentProps<typeof Link>['href'];
+
+/** Provider+id match — same idea as Studio resolveVideoTitle urlsMatch. */
+function videoUrlsMatch(a: string, b: string): boolean {
+  const idA = extractVimeoId(a) || extractYouTubeId(a);
+  const idB = extractVimeoId(b) || extractYouTubeId(b);
+  return Boolean(idA && idB && idA === idB);
+}
 
 /** NFC + strip migration NBSP/ZW* so NFD Vietnamese hits precomposed glyphs
  *  and leftover WordPress `&nbsp;` doesn't glue words into awkward wraps. */
@@ -54,7 +63,10 @@ function normalizePortableTextSpans(
   });
 }
 
-function createComponents(relaxed = false): PortableTextComponents {
+function createComponents(
+  relaxed = false,
+  suppressVideoUrl?: string,
+): PortableTextComponents {
   const h1Class = relaxed
     ? 'mb-8 mt-10 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading first:mt-0'
     : 'mb-6 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading';
@@ -65,6 +77,9 @@ function createComponents(relaxed = false): PortableTextComponents {
     ? 'mb-6 font-normal leading-relaxed text-vp-text-muted last:mb-0'
     : 'mb-4 font-normal leading-relaxed text-vp-text-muted last:mb-0';
   const ctaWrapClass = relaxed ? 'vp-pt-cta-button' : 'my-6';
+
+  /** Suppress only the first body videoEmbed that matches the hero URL. */
+  let suppressedHeroDuplicate = false;
 
   return {
   block: {
@@ -161,6 +176,14 @@ function createComponents(relaxed = false): PortableTextComponents {
     videoEmbed: ({ value }) => {
       const url = (value as { url?: string })?.url;
       if (!url) return null;
+      if (
+        suppressVideoUrl &&
+        !suppressedHeroDuplicate &&
+        videoUrlsMatch(url, suppressVideoUrl)
+      ) {
+        suppressedHeroDuplicate = true;
+        return null;
+      }
       return (
         <div className="vp-pt-videos my-6">
           <PortableTextVideoEmbed url={url} />
@@ -262,16 +285,23 @@ interface PortableTextContentProps {
   className?: string;
   /** Extra vertical rhythm for long-form CMS pages (e.g. Vietnam production service). */
   relaxed?: boolean;
+  /**
+   * When set, the first body videoEmbed whose provider+id matches this URL
+   * is omitted (hero already shows that film). Later embeds always render.
+   */
+  suppressVideoUrl?: string | null;
 }
 
 export function PortableTextContent({
   blocks,
   className = '',
   relaxed = false,
+  suppressVideoUrl = null,
 }: PortableTextContentProps) {
   if (!blocks?.length) return null;
 
-  const components = createComponents(relaxed);
+  const suppress = suppressVideoUrl?.trim() || undefined;
+  const components = createComponents(relaxed, suppress);
   const normalizedBlocks = normalizePortableTextSpans(blocks);
 
   return (
