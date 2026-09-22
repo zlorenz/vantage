@@ -1,25 +1,26 @@
 /**
- * BlogPostHeroMedia — relatedCase PortfolioCaseMedia, else mainVideo, else featuredImage.
+ * BlogPostHeroMedia — relatedCase PortfolioCaseMedia, else mainVideo embed.
+ * No featuredImage fallback — if neither video source is set, render nothing.
  * Overlay: relatedCase → brand + campaign from displayTitleParts; mainVideo →
  * campaign-line only from mainVideo.title when present (Figma 2281:13248).
  */
 
-import Image from 'next/image';
 import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
 import {PortfolioCaseMedia} from '@/components/portfolio/PortfolioCaseMedia';
 import {buildPortfolioCaseSlides} from '@/components/portfolio/prepare-portfolio-case-slides';
 import {PortableTextVideoEmbed} from '@/components/ui/PortableTextVideoEmbed';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
-import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {PhraseLookup} from '@display-titles';
 import type {PortfolioEntry} from '@/types/sanity';
 import type {
   BlogPostMainVideo,
   BlogPostRelatedCase,
-  SanityImage,
 } from '@/types/sanity';
-import type {PortfolioVideoSource} from '@portfolio-videos';
+import {
+  resolveMainPortfolioVideo,
+  type PortfolioVideoSource,
+} from '@portfolio-videos';
 import './blog-post-hero-media.css';
 
 type CaseMediaEntry = Pick<
@@ -33,17 +34,25 @@ type BlogPostHeroMediaProps = {
   phrases?: Record<string, string> | null;
   relatedCase?: BlogPostRelatedCase | null;
   mainVideo?: BlogPostMainVideo | null;
-  featuredImage?: SanityImage | null;
 };
+
+function relatedCaseHasPlayableVideo(relatedCase: BlogPostRelatedCase): boolean {
+  const main = resolveMainPortfolioVideo(relatedCase);
+  return Boolean(
+    main?.vimeoUrl?.trim() ||
+      main?.xinpianchangUrl?.trim() ||
+      relatedCase.vimeoUrl?.trim() ||
+      relatedCase.xinpianchangUrl?.trim(),
+  );
+}
 
 export async function BlogPostHeroMedia({
   locale,
   phrases,
   relatedCase,
   mainVideo,
-  featuredImage,
 }: BlogPostHeroMediaProps) {
-  if (relatedCase?._id) {
+  if (relatedCase?._id && relatedCaseHasPlayableVideo(relatedCase)) {
     const caseCarouselSlides = await buildPortfolioCaseSlides({
       locale,
       phrases: phrases ?? null,
@@ -106,23 +115,6 @@ export async function BlogPostHeroMedia({
             <p className="vp-blog-hero__campaign">{videoTitle}</p>
           </div>
         ) : null}
-      </div>
-    );
-  }
-
-  if (featuredImage) {
-    const imageUrl = urlForImage(featuredImage).width(1920).height(1080).fit('crop').url();
-    return (
-      <div className="vp-blog-hero-media vp-blog-hero-media--image">
-        <Image
-          src={imageUrl}
-          alt=""
-          width={1920}
-          height={1080}
-          className="vp-blog-hero-media__image"
-          sizes="100vw"
-          priority
-        />
       </div>
     );
   }

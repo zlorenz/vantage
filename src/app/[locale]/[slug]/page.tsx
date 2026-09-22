@@ -264,7 +264,6 @@ export default async function BlogPostPage({ params }: Props) {
               phrases={phrases}
               relatedCase={post.relatedCase}
               mainVideo={post.mainVideo}
-              featuredImage={post.featuredImage}
             />
           </header>
 

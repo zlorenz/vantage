@@ -10,8 +10,7 @@
   border-radius: 0;
 }
 
-.vp-blog-hero-media--embed,
-.vp-blog-hero-media--image {
+.vp-blog-hero-media--embed {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -25,14 +24,6 @@
 .vp-blog-hero-media--embed > *:not(.vp-blog-hero-media__overlay) {
   width: 100%;
   height: 100%;
-}
-
-.vp-blog-hero-media__image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
 }
 
 .vp-blog-hero-media__overlay {
