@@ -151,10 +151,11 @@ a.vp-project-nav__card:focus-visible {
 .vp-project-nav__label {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: 4rem; /* 64 */
+  /* ~7% under prior 4rem */
+  font-size: 3.72rem;
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.08rem; /* -1.28px */
+  line-height: 1.15;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fff;
   overflow-wrap: break-word;
@@ -200,7 +201,7 @@ a.vp-project-nav__card:focus-visible {
   font-size: var(--vp-btn-font-size);
   font-weight: 700;
   line-height: var(--vp-btn-line-height);
-  letter-spacing: -0.026rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   text-decoration: none;
   color: #000;
@@ -348,7 +349,7 @@ a.vp-project-nav__explore:focus-visible {
   font-size: 1rem; /* 16 */
   font-weight: 700;
   line-height: 1.25;
-  letter-spacing: -0.02rem; /* -0.32px */
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
   white-space: pre;
@@ -369,7 +370,7 @@ a.vp-project-nav__explore:focus-visible {
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.25;
-  letter-spacing: -0.02rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fff;
   text-box-trim: trim-both;
@@ -382,7 +383,7 @@ a.vp-project-nav__explore:focus-visible {
   font-size: 2.75rem; /* 44 */
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.055rem; /* -0.88px */
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fff;
   overflow-wrap: break-word;
@@ -450,8 +451,9 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   .vp-project-nav__label {
-    font-size: 2.5rem;
-    letter-spacing: -0.05rem;
+    /* ~7% under prior 2.5rem */
+    font-size: 2.325rem;
+    letter-spacing: 0;
   }
 
   .vp-project-nav__mark {
@@ -461,6 +463,6 @@ a.vp-project-nav__explore:focus-visible {
 
   .vp-project-nav__title {
     font-size: 1.75rem;
-    letter-spacing: -0.035rem;
+    letter-spacing: 0;
   }
 }

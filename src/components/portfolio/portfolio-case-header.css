@@ -34,7 +34,7 @@
   /* Beat globals heading-weight 900 — brand is Regular in Figma. */
   font-weight: 400;
   line-height: 1.25rem;
-  letter-spacing: -0.02rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
 }
@@ -46,11 +46,11 @@
 .vp-case-header__campaign {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: 4rem;
+  font-size: var(--vp-display-title-size);
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
-  letter-spacing: -0.16rem;
-  line-height: 1.2;
+  letter-spacing: var(--vp-display-title-tracking);
+  line-height: 1.15;
   text-transform: uppercase;
   overflow-wrap: break-word;
 }
@@ -108,7 +108,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  letter-spacing: -0.02rem;
+  letter-spacing: 0;
   line-height: 1.5;
   text-transform: uppercase;
 }
@@ -170,7 +170,7 @@
 
   .vp-case-header__brand {
     font-size: 1rem;
-    letter-spacing: -0.02rem;
+    letter-spacing: 0;
   }
 
   .vp-case-header__credits {

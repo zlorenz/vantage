@@ -66,7 +66,7 @@ export function AboutTabbedPanelInteractive({
     <div aria-labelledby={headingId}>
       <h2
         id={headingId}
-        className="m-0 mb-8 font-vp-heading text-[clamp(2.5rem,4.375vw,3.75rem)] font-bold uppercase leading-tight tracking-vp-heading lg:mb-10"
+        className="m-0 mb-8 font-vp-heading text-[clamp(2.325rem,4.07vw,3.49rem)] font-bold uppercase leading-[1.15] tracking-normal lg:mb-10"
       >
         {heading}
       </h2>

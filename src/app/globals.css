@@ -101,12 +101,30 @@
 
   --tracking-vp-navbar: 0.125rem;
   --tracking-vp-uppercase: 0.08em;
-  --tracking-vp-heading: 0.01em;
+  /* Neutral default — display titles no longer run tight negative tracking. */
+  --tracking-vp-heading: 0;
+  --tracking-vp-display: 0;
+  --tracking-vp-page-hero: 0;
   /* Requested weight for display heading stack. Special Gothic only ships 400
    * but reads heavy; Zalando Sans Expanded (variable fallback) needs ~900 to
    * match. Latin glyphs still resolve to Special Gothic 400. */
   --font-vp-heading-weight: 900;
   --leading-tight: 1.1;
+
+  /*
+   * Title scales (Special Gothic). Tracking floor is 0 everywhere.
+   * Do NOT upscale smaller heroes to match the largest band.
+   *
+   * display — blog post H1 / case campaign H1 / news H1
+   *   (~7% under prior blog max clamp … 4rem)
+   * page-hero — PageHero, about, campaign-brief, mobile nav
+   *   (~7% under prior clamp(2.375rem, 4.3vw, 3.4375rem))
+   * media-overlay — titles on video frames (blog embed + blog multi carousel)
+   *   (~7% under prior clamp(1.75rem, 4vw, 3rem))
+   */
+  --text-vp-display: clamp(2.1rem, 4.65vw, 3.7rem);
+  --text-vp-page-hero: clamp(2.21rem, 4vw, 3.2rem);
+  --text-vp-media-overlay: clamp(1.63rem, 3.72vw, 2.79rem);
 
   /* Transitions & Animation
    *
@@ -231,7 +249,7 @@
   /* Sitewide desktop nav chrome (proven across every page via NavBar) */
   --vp-nav-bar-height: 80px;
   --vp-nav-cell-width: 94px;
-  --vp-nav-cell-tracking: -0.28px;
+  --vp-nav-cell-tracking: 0;
   /*
    * Logo cell + page rails (blog hero, case shell, carousel rail-nav).
    * 14.5rem = 232px — matches measured .navbar-brand (30+171+30+1px border).
@@ -287,7 +305,14 @@
 
   --vp-navbar-link-spacing: 0.125rem;
   --vp-uppercase-spacing: 0.08em;
-  --vp-heading-spacing: 0.01em;
+  --vp-heading-spacing: 0;
+  /* Title scales — mirrors @theme --text-vp-display / page-hero / media-overlay. */
+  --vp-display-title-size: clamp(2.1rem, 4.65vw, 3.7rem);
+  --vp-display-title-tracking: 0;
+  --vp-page-hero-title-size: clamp(2.21rem, 4vw, 3.2rem);
+  --vp-page-hero-title-tracking: 0;
+  --vp-media-overlay-title-size: clamp(1.63rem, 3.72vw, 2.79rem);
+  --vp-media-overlay-title-tracking: 0;
 
   /* Transitions & Animation
    *
@@ -515,8 +540,37 @@
 .vp-about-statement__heading,
 .vp-how-we-move__heading,
 .vp-how-we-move__trigger-label,
-.vp-credits__dept-name {
+.vp-credits__dept-name,
+.vp-display-title,
+.vp-page-hero-title,
+.vp-blog-hero__title,
+.vp-blog-hero__campaign,
+.vp-project-nav__label {
   font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+}
+
+/*
+ * Large page H1 band only (blog post title, case campaign, news).
+ * Smaller heroes use --vp-page-hero-title-size / --vp-media-overlay-title-size.
+ */
+.vp-display-title {
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-display-title-size);
+  font-weight: var(--font-vp-heading-weight);
+  letter-spacing: var(--vp-display-title-tracking);
+  line-height: 1.15;
+  text-transform: uppercase;
+  font-synthesis: none;
+}
+
+.vp-page-hero-title {
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-page-hero-title-size);
+  font-weight: var(--font-vp-heading-weight);
+  letter-spacing: var(--vp-page-hero-title-tracking);
+  line-height: 1.15;
+  text-transform: uppercase;
   font-synthesis: none;
 }
 
@@ -906,7 +960,7 @@ body:has(.vp-work-index) #header.navbar::before {
     font-size: 0.75rem; /* 12px */
     font-weight: 700;
     line-height: 1.25rem; /* 20px */
-    letter-spacing: -0.015rem; /* -0.24px */
+    letter-spacing: 0;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.3);
   }
@@ -918,7 +972,7 @@ body:has(.vp-work-index) #header.navbar::before {
     font-size: 2rem; /* 32px */
     font-weight: 700;
     line-height: 1.2;
-    letter-spacing: -0.04rem; /* -0.64px */
+    letter-spacing: 0;
     text-transform: uppercase;
     color: #fff;
   }
@@ -1563,7 +1617,7 @@ body:has(.vp-work-index) #header.navbar::before {
   font-family: var(--font-vp-heading);
   font-size: 1.625rem;
   font-weight: 700;
-  letter-spacing: -0.0325rem;
+  letter-spacing: 0;
   line-height: 1.2;
   text-transform: uppercase;
   color: #fdb913;
@@ -1620,7 +1674,7 @@ body:has(.vp-work-index) #header.navbar::before {
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.5;
-  letter-spacing: -0.02rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #ffffff;
 }
@@ -1696,7 +1750,7 @@ body:has(.vp-work-index) #header.navbar::before {
   .vp-credits__dept-name {
     padding-inline: 0;
     font-size: 1.25rem;
-    letter-spacing: -0.025rem;
+    letter-spacing: 0;
   }
 
   .vp-credits__rows {
@@ -1859,7 +1913,7 @@ body:has(.vp-work-index) #header.navbar::before {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.25rem;
-  letter-spacing: -0.02rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
 }
@@ -1869,17 +1923,17 @@ body:has(.vp-work-index) #header.navbar::before {
   font-weight: 400;
 }
 
-/* Figma Production Log — 80px / lh 1.2 / tracking −3.2px (desktop). */
+/* Figma Production Log — display title token (was 80px / −3.2px tracking). */
 .vp-news-page__title {
   margin: 0;
   min-width: 0;
   width: 100%;
   font-family: var(--font-vp-heading);
-  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-size: var(--vp-display-title-size);
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
-  letter-spacing: -0.2rem;
-  line-height: 1.2;
+  letter-spacing: var(--vp-display-title-tracking);
+  line-height: 1.15;
   text-transform: uppercase;
   text-align: left;
   overflow-wrap: break-word;
@@ -1887,8 +1941,8 @@ body:has(.vp-work-index) #header.navbar::before {
 
 @media (min-width: 768px) {
   .vp-news-page__title {
-    font-size: 5rem;
-    letter-spacing: -0.2rem;
+    font-size: var(--vp-display-title-size);
+    letter-spacing: var(--vp-display-title-tracking);
   }
 }
 
@@ -2019,7 +2073,7 @@ body:has(.vp-work-index) #header.navbar::before {
   font-size: 2.5rem; /* 40px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.2;
-  letter-spacing: -0.05rem; /* -0.8px */
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fff;
 }

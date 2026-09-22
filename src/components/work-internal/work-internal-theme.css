@@ -157,7 +157,7 @@ body:has(.vp-internal-page) .vp-internal-nav__title {
 
 body:has(.vp-internal-page) .vp-internal-app__title {
   color: var(--vp-wi-text);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 body:has(.vp-internal-page) .vp-internal-toolbar {

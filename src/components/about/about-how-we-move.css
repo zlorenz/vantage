@@ -30,10 +30,11 @@
 .vp-how-we-move__heading {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: clamp(2.5rem, 4.375vw, 3.75rem);
+  /* ~7% under prior clamp(2.5rem, 4.375vw, 3.75rem) */
+  font-size: clamp(2.325rem, 4.07vw, 3.49rem);
   font-weight: var(--font-vp-heading-weight);
-  line-height: 1.1;
-  letter-spacing: var(--tracking-vp-heading);
+  line-height: 1.15;
+  letter-spacing: 0;
   text-transform: uppercase;
   text-align: left;
   color: var(--vp-black);

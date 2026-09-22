@@ -44,7 +44,7 @@
   font-size: 1rem; /* caption_1 16px */
   font-weight: 400;
   line-height: 1.6;
-  letter-spacing: -0.02rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
 }
@@ -52,10 +52,10 @@
 .vp-blog-hero__campaign {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: clamp(1.75rem, 4vw, 3rem); /* Figma h2 48px desktop */
+  font-size: var(--vp-media-overlay-title-size);
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.2;
-  letter-spacing: -0.06rem;
+  letter-spacing: var(--vp-media-overlay-title-tracking);
   text-transform: uppercase;
   color: #fff;
   overflow-wrap: break-word;

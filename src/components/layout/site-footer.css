@@ -54,7 +54,7 @@ body:has(.vp-work-index) .vp-site-footer {
   font-family: var(--font-vp-heading);
   font-size: 1.25rem; /* 20px */
   font-weight: 700;
-  letter-spacing: -0.025em; /* -0.4px at 20px */
+  letter-spacing: 0;
   line-height: 1.5;
   text-decoration: none;
   text-transform: uppercase;

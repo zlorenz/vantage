@@ -89,7 +89,7 @@ a.vp-featured-post__pill:focus-visible {
   font-size: 2rem; /* 32px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.4;
-  letter-spacing: -0.04rem; /* −0.64px */
+  letter-spacing: 0;
   color: #fff;
   text-transform: uppercase;
   overflow-wrap: break-word;

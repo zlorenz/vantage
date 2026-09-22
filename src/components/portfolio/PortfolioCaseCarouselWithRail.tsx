@@ -8,6 +8,7 @@
 import {useCallback, useState} from 'react';
 import {
   PortfolioCaseCarousel,
+  type CaseCarouselBlogTitleOverlay,
   type PortfolioCaseCarouselApi,
 } from '@/components/portfolio/PortfolioCaseCarousel';
 import {PortfolioCaseCarouselRailNav} from '@/components/portfolio/PortfolioCaseCarouselRailNav';
@@ -15,10 +16,12 @@ import type {PortfolioCaseSlide} from '@/components/portfolio/prepare-portfolio-
 
 type PortfolioCaseCarouselWithRailProps = {
   slides: PortfolioCaseSlide[];
+  blogTitleOverlay?: CaseCarouselBlogTitleOverlay | null;
 };
 
 export function PortfolioCaseCarouselWithRail({
   slides,
+  blogTitleOverlay = null,
 }: PortfolioCaseCarouselWithRailProps) {
   const [api, setApi] = useState<PortfolioCaseCarouselApi | null>(null);
 
@@ -37,7 +40,11 @@ export function PortfolioCaseCarouselWithRail({
         scrollNext={api?.scrollNext}
       />
       <div className="vp-case-carousel-row__media">
-        <PortfolioCaseCarousel slides={slides} onApiChange={onApiChange} />
+        <PortfolioCaseCarousel
+          slides={slides}
+          onApiChange={onApiChange}
+          blogTitleOverlay={blogTitleOverlay}
+        />
       </div>
     </div>
   );

@@ -15,9 +15,9 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 | `--vp-home-carousel-title-tag-gap` | `24px` | Brand-row → campaign title | Intentional vs Figma `32px`. |
 | `--vp-home-carousel-brand-dot-size` | `0.8em` | Brand `::before` bullet | Corrected from undersized `0.4em`. |
 | `--vp-home-carousel-brand-accent` | `#fdb913` | Brand colour + bullet fill | Same hex as `--vp-link`. |
-| `--vp-home-carousel-tracking-tight-16` | `-0.32px` | Brand/format + credit names | |
-| `--vp-home-carousel-tracking-tight-48` | `-0.96px` | Campaign title 48px | |
-| `--vp-home-carousel-tracking-tight-14` | `-0.28px` | Slide counter | |
+| `--vp-home-carousel-tracking-tight-16` | `0` | Brand/format + credit names (was −0.32px; Special Gothic minimum tracking is 0) | |
+| `--vp-home-carousel-tracking-tight-48` | `0` | Campaign title 48px (was −0.96px) | |
+| `--vp-home-carousel-tracking-tight-14` | `0` | Slide counter (was −0.28px) | |
 | `--vp-home-carousel-credit-role` | `rgba(255,255,255,0.5)` | DIRECTOR / DOP labels | |
 | `--vp-home-carousel-credit-col-gap` | `80px` | Gap between credit columns | |
 | `--vp-home-carousel-counter-muted` | `rgba(255,255,255,0.6)` | Counter numerals + rule | |
@@ -65,7 +65,7 @@ Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `g
 |---|---|---|
 | `--vp-nav-bar-height` | `80px` | Desktop `#header` min-height (intentional vs Figma `100px`) |
 | `--vp-nav-cell-width` | `94px` | EN / 中文 / hamburger cell width (height tracks bar; not square) |
-| `--vp-nav-cell-tracking` | `-0.28px` | Lang-cell letter-spacing |
+| `--vp-nav-cell-tracking` | `0` | Lang-cell letter-spacing (was −0.28px) |
 
 ---
 
@@ -140,25 +140,43 @@ Do **not** load Mona 500 / 600 / 800 / 900. Prefer remapping UI that needs empha
 
 ### Heading Scale
 
-Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px desktop / ~38px mobile.
+Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~59px desktop / ~34px mobile.
 
 | Element | Size | Face |
 |---|---|---|
-| Display / hero / entry h1 | `clamp(2.375rem, …, 3.4375rem)` (~38–55px) | `font-vp-heading` |
+| Display / hero / entry h1 | `var(--vp-display-title-size)` / `text-vp-display` — `clamp(2.1rem, 4.65vw, 3.7rem)` (~34–59px) | `font-vp-heading` |
 | Section h2 | `clamp(1.75rem, 2.5vw, 2.25rem)` (~28–36px) | Mona Sans |
 | Portable Text h3 | `clamp(1.5rem, 2.2vw, 1.75rem)` (~24–28px) | Mona Sans, weight 700 |
 | Portable Text h4 | `clamp(1.15rem, 1.4vw, 1.25rem)` (~18–20px) | Mona Sans, weight 700 |
 
 ### Display / Hero Sizes
 
-| Context | Size |
-|---|---|
-| Hero carousel h1 | `clamp(2.375rem, 1.25rem + 2.7vw, 3.4375rem)` + `font-vp-heading` |
-| Page hero title | `clamp(2.375rem, 4.3vw, 3.4375rem)` + `font-vp-heading` |
-| Entry / campaign-brief h1 | `clamp(2.375rem, 4.3vw, 3.4375rem)` + `font-vp-heading` |
-| Intro / quote / hero desc | `clamp(1.25rem, 2.2vw, 1.75rem)` (~20–28px), weight 300 |
-| Search empty title | `clamp(2rem, 4vw, 3.5rem)` |
-| Search card title | `clamp(1.5rem, 1.9vw, 2.4rem)` — `line-height: 0.98`, `letter-spacing: -0.02em` |
+Title scales are **tiered** — smaller heroes must not inherit the largest band.
+
+| Token / utility | Value | Use for |
+|---|---|---|
+| `--vp-display-title-size` / `text-vp-display` | `clamp(2.1rem, 4.65vw, 3.7rem)` | Blog post H1, case campaign H1, news H1 (~7% under prior blog max 4rem) |
+| `--vp-page-hero-title-size` / `text-vp-page-hero` | `clamp(2.21rem, 4vw, 3.2rem)` | PageHero, about, campaign-brief, mobile nav (~7% under prior 2.375–3.4375) |
+| `--vp-media-overlay-title-size` | `clamp(1.63rem, 3.72vw, 2.79rem)` | Static titles on video frames — `.vp-blog-hero__campaign` only (~7% under prior 1.75–3rem) |
+| Tracking | `0` on all three (`--vp-*-title-tracking` / `tracking-vp-display` / `tracking-vp-page-hero`) | Special Gothic floor |
+| Classes | `.vp-display-title`, `.vp-page-hero-title` | Prefer over one-off clamps |
+| Intro / quote / hero desc | `clamp(1.25rem, 2.2vw, 1.75rem)` (~20–28px), weight 300 | |
+| Search empty title | `clamp(2rem, 4vw, 3.5rem)` | unchanged |
+| Search card title | `clamp(1.5rem, 1.9vw, 2.4rem)` — `line-height: 0.98` | unchanged |
+| Case carousel title (portfolio + blog multi) | `2rem` | unchanged — never inherit display/media-overlay |
+| About “How we move” / tabbed panel | `clamp(2.325rem, 4.07vw, 3.49rem)` | ~7% under prior 2.5–3.75 |
+| Project-nav “Previous/Next” label | `3.72rem` / `2.325rem` mobile | ~7% under prior 4rem / 2.5rem |
+
+### Letter Spacing Tokens
+
+| Token | Value | Usage |
+|---|---|---|
+| `vp-navbar-link-spacing` | `0.125rem` | Nav and dropdown links |
+| `vp-uppercase-spacing` | `0.08em` | Filter tabs, filterbar selects |
+| `vp-heading-spacing` / `--tracking-vp-heading` | `0` | General headings (neutral; Special Gothic floor) |
+| `vp-display-title-tracking` / `--tracking-vp-display` | `0` | Display / page-hero titles |
+
+**Rule:** Special Gothic Expanded One (`font-vp-heading`) must not use negative letter-spacing. Minimum is `0` (default). Positive tracking (e.g. buttons, uppercase UI) is fine.
 
 ### UI Text Sizes
 
@@ -174,14 +192,6 @@ Display h1 (Special Gothic Expanded One via `font-vp-heading`): uppercase, ~55px
 | Credits role label | `0.75rem` | 700 | Uppercase, `rgba(255,255,255,0.4)` |
 | Search card meta | `0.8rem` | 700 | Uppercase, `letter-spacing: 0.06em` |
 | Search card excerpt | `0.98rem` | — | `line-height: 1.45` |
-
-### Letter Spacing Tokens
-
-| Token | Value | Usage |
-|---|---|---|
-| `vp-navbar-link-spacing` | `0.125rem` | Nav and dropdown links |
-| `vp-uppercase-spacing` | `0.08em` | Filter tabs, filterbar selects |
-| `vp-heading-spacing` | `0.01em` | All headings |
 
 ---
 

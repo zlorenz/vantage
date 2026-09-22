@@ -14,6 +14,7 @@ import {
   type PortfolioVideoSource,
 } from '@portfolio-videos'
 import {PortfolioCaseCarouselWithRail} from '@/components/portfolio/PortfolioCaseCarouselWithRail'
+import type {CaseCarouselBlogTitleOverlay} from '@/components/portfolio/PortfolioCaseCarousel'
 import {PortfolioVideoEmbed} from '@/components/portfolio/PortfolioVideoEmbed'
 import {
   buildPortfolioCaseSlides,
@@ -39,12 +40,18 @@ type PortfolioCaseMediaProps = {
    * Omit to resolve slides inside this component (legacy / fallback).
    */
   caseCarouselSlides?: PortfolioCaseSlide[] | null
+  /**
+   * Blog multi-video hero only — combined brand/campaign titles, no info btn.
+   * Portfolio case pages omit this.
+   */
+  blogTitleOverlay?: CaseCarouselBlogTitleOverlay | null
 }
 
 async function PortfolioCaseMediaContent({
   locale,
   entry,
   caseCarouselSlides: slidesProp,
+  blogTitleOverlay = null,
 }: PortfolioCaseMediaProps) {
   let caseCarouselSlides = slidesProp
   if (caseCarouselSlides === undefined) {
@@ -66,7 +73,12 @@ async function PortfolioCaseMediaContent({
   }
 
   if (caseCarouselSlides) {
-    return <PortfolioCaseCarouselWithRail slides={caseCarouselSlides} />
+    return (
+      <PortfolioCaseCarouselWithRail
+        slides={caseCarouselSlides}
+        blogTitleOverlay={blogTitleOverlay}
+      />
+    )
   }
 
   const main = resolveMainPortfolioVideo(entry)

@@ -49,6 +49,15 @@ export type PortfolioCaseCarouselApi = {
   scrollNext: () => void;
 };
 
+/**
+ * Blog multi-video hero only — brand + campaign composed into the slide
+ * overlay (portfolio case pages omit this and keep episode titles alone).
+ */
+export type CaseCarouselBlogTitleOverlay = {
+  brandLine?: string;
+  campaignLine?: string;
+};
+
 interface PortfolioCaseCarouselProps {
   slides: PortfolioCaseSlide[];
   /**
@@ -56,33 +65,56 @@ interface PortfolioCaseCarouselProps {
    * same instance (mirrors portfolio-index passing emblaApi to chrome).
    */
   onApiChange?: (api: PortfolioCaseCarouselApi) => void;
+  /** When set, blog hero title mode — combined titles, no info control. */
+  blogTitleOverlay?: CaseCarouselBlogTitleOverlay | null;
+}
+
+function composeBlogSlideTitle(
+  campaignLine: string | undefined,
+  episodeTitle: string | undefined,
+): string | undefined {
+  const campaign = campaignLine?.trim() || '';
+  const episode = episodeTitle?.trim() || '';
+  if (campaign && episode) return `${campaign}: ${episode}`;
+  return campaign || episode || undefined;
 }
 
 function SlideTitleOverlay({
+  brand,
   title,
   description,
   infoControl,
+  blogMode = false,
 }: {
+  brand?: string;
   title?: string;
   description?: string;
   infoControl?: ReactNode;
+  blogMode?: boolean;
 }) {
-  if (!title && !description && !infoControl) return null;
+  if (!brand && !title && !description && !infoControl) return null;
   return (
     <div
       className={`vp-case-carousel__overlay${
         description ? ' has-description' : ''
-      }`}
+      }${blogMode ? ' vp-case-carousel__overlay--blog' : ''}`}
     >
       <div className="vp-case-carousel__overlay-scrim" aria-hidden />
       <div className="vp-case-carousel__overlay-body">
         {description ? (
           <p className="vp-case-carousel__info-text">{description}</p>
         ) : null}
-        {title || infoControl ? (
+        {brand || title || infoControl ? (
           <div className="vp-case-carousel__bottom-bar">
-            {title ? (
-              <p className="vp-case-carousel__title">{title}</p>
+            {brand || title ? (
+              <div className="vp-case-carousel__title-stack">
+                {brand ? (
+                  <p className="vp-case-carousel__brand">{`●  ${brand}`}</p>
+                ) : null}
+                {title ? (
+                  <p className="vp-case-carousel__title">{title}</p>
+                ) : null}
+              </div>
             ) : (
               <span className="vp-case-carousel__title-spacer" aria-hidden />
             )}
@@ -187,8 +219,10 @@ function ActiveSlidePlayer({
 export function PortfolioCaseCarousel({
   slides,
   onApiChange,
+  blogTitleOverlay = null,
 }: PortfolioCaseCarouselProps) {
   const slideCount = slides.length;
+  const blogMode = Boolean(blogTitleOverlay);
   // Rail-aligned start at every breakpoint so the next card peeks on the right.
   const [emblaRef, emblaApi] = useEmblaCarousel(caseEmblaOptions('start'));
   const [activeIndex, setActiveIndex] = useState(0);
@@ -433,12 +467,25 @@ export function PortfolioCaseCarousel({
               const active = index === activeIndex;
               const showChrome = active && !isPlaying;
               const showInfo =
-                showChrome && Boolean(slide.description?.trim());
+                !blogMode &&
+                showChrome &&
+                Boolean(slide.description?.trim());
               // Desktop overlay only — mobile uses BottomSheet.
               const overlayDescription =
-                showChrome && isDesktop && isInfoOpen
+                !blogMode && showChrome && isDesktop && isInfoOpen
                   ? slide.description
                   : undefined;
+              const brand = showChrome
+                ? blogTitleOverlay?.brandLine?.trim() || undefined
+                : undefined;
+              const title = showChrome
+                ? blogMode
+                  ? composeBlogSlideTitle(
+                      blogTitleOverlay?.campaignLine,
+                      slide.overlayTitle,
+                    )
+                  : slide.overlayTitle
+                : undefined;
               return (
                 <div
                   key={slide.key}
@@ -462,14 +509,18 @@ export function PortfolioCaseCarousel({
                         onPlay={active ? onSlidePlay : undefined}
                         onStop={active ? onSlideStop : undefined}
                         hidePlayButton={
-                          active && (isDesktop ? isInfoOpen : descSheetOpen)
+                          active &&
+                          !blogMode &&
+                          (isDesktop ? isInfoOpen : descSheetOpen)
                         }
                         posterPriority={index === 0}
                       />
                     ) : null}
                     <SlideTitleOverlay
-                      title={showChrome ? slide.overlayTitle : undefined}
+                      brand={brand}
+                      title={title}
                       description={overlayDescription}
+                      blogMode={blogMode}
                       infoControl={
                         showInfo ? (
                           <button
@@ -509,7 +560,7 @@ export function PortfolioCaseCarousel({
         </div>
       </div>
 
-      {!isDesktop ? (
+      {!blogMode && !isDesktop ? (
         <BottomSheet
           open={descSheetOpen && Boolean(activeDescription)}
           onClose={closeDescSheet}

@@ -70,7 +70,7 @@
   font-size: 0.875rem;
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.25rem;
-  letter-spacing: -0.0175rem;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -148,10 +148,10 @@ a.vp-blog-hero__pill:focus-visible {
   margin: 0;
   padding-inline: var(--vp-candidate-blog-hero-pad-x);
   font-family: var(--font-vp-heading);
-  font-size: clamp(2.25rem, 5vw, 4rem); /* Figma h1 64 */
+  font-size: var(--vp-display-title-size);
   font-weight: var(--font-vp-heading-weight);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
+  line-height: 1.15;
+  letter-spacing: var(--vp-display-title-tracking);
   text-transform: uppercase;
   color: #fff;
 }
@@ -172,7 +172,7 @@ a.vp-blog-hero__pill:focus-visible {
   font-size: clamp(1rem, 1.5vw, 1.25rem); /* 20px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.6;
-  letter-spacing: -0.025rem;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--vp-candidate-blog-dek-color);
 }

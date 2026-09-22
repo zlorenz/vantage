@@ -40,7 +40,7 @@
   font-size: 0.875rem; /* 14px */
   font-weight: 400;
   line-height: 1.25rem; /* 20px */
-  letter-spacing: -0.0175rem; /* -0.28px */
+  letter-spacing: 0;
   text-transform: uppercase;
   user-select: none;
 }

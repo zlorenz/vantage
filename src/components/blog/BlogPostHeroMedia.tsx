@@ -1,8 +1,10 @@
 /**
  * BlogPostHeroMedia — relatedCase PortfolioCaseMedia, else mainVideo embed.
  * No featuredImage fallback — if neither video source is set, render nothing.
- * Overlay: relatedCase → brand + campaign from displayTitleParts; mainVideo →
- * campaign-line only from mainVideo.title when present (Figma 2281:13248).
+ *
+ * Multi-video relatedCase: titles live on each carousel slide (brand +
+ * "campaign: episode") via blogTitleOverlay — no static overlay on top.
+ * Single relatedCase / mainVideo: static brand/campaign overlay as before.
  */
 
 import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
@@ -74,12 +76,13 @@ export async function BlogPostHeroMedia({
       phrases as PhraseLookup | null | undefined,
     );
     const {brandLine, campaignLine} = composeOverlayCopy(parts);
+    const isMulti = Boolean(caseCarouselSlides?.length);
 
     return (
       <div className="vp-blog-hero-media">
         <div
           className={
-            caseCarouselSlides
+            isMulti
               ? 'vp-blog-hero-media__case'
               : 'vp-blog-hero-media__case vp-blog-hero-media__case--single'
           }
@@ -88,9 +91,17 @@ export async function BlogPostHeroMedia({
             locale={locale}
             entry={relatedCase as CaseMediaEntry}
             caseCarouselSlides={caseCarouselSlides}
+            blogTitleOverlay={
+              isMulti
+                ? {
+                    brandLine: brandLine || undefined,
+                    campaignLine: campaignLine || undefined,
+                  }
+                : null
+            }
           />
         </div>
-        {brandLine || campaignLine ? (
+        {!isMulti && (brandLine || campaignLine) ? (
           <div className="vp-blog-hero-media__overlay">
             {brandLine ? (
               <p className="vp-blog-hero__brand">{`●  ${brandLine}`}</p>

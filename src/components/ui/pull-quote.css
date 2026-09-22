@@ -8,7 +8,7 @@
   --vp-candidate-pull-quote-size: 1.5rem;
   --vp-candidate-pull-quote-tracking: -0.03rem;
   --vp-candidate-pull-quote-attribution-size: 1rem;
-  --vp-candidate-pull-quote-attribution-tracking: -0.02rem;
+  --vp-candidate-pull-quote-attribution-tracking: 0;
   --vp-candidate-pull-quote-panel-bg: rgba(255, 255, 255, 0.1);
   --vp-candidate-pull-quote-attribution-color: rgba(255, 255, 255, 0.5);
   --vp-candidate-pull-quote-headshot: 20.25rem; /* 324px */

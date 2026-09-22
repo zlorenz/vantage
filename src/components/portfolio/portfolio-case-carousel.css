@@ -347,6 +347,26 @@
   min-width: 0;
 }
 
+.vp-case-carousel__title-stack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  justify-content: center;
+}
+
+.vp-case-carousel__brand {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: #fdb913;
+}
+
 .vp-case-carousel__title {
   margin: 0;
   flex: 1 1 auto;
@@ -355,10 +375,26 @@
   font-size: 2rem; /* 32px */
   font-weight: var(--font-vp-heading-weight);
   color: #fff;
-  letter-spacing: -0.04rem; /* -0.64px */
+  letter-spacing: 0;
   line-height: 1.2;
   text-transform: uppercase;
   overflow-wrap: break-word;
+}
+
+/*
+ * Blog multi-video hero — taller bar for brand+title stack only.
+ * Title size stays at the base 2rem episode scale (do not upscale to
+ * display / media-overlay bands).
+ */
+.vp-case-carousel__overlay--blog .vp-case-carousel__bottom-bar {
+  height: auto;
+  min-height: 8rem;
+  padding-block: 1.5rem;
+  align-items: flex-end;
+}
+
+.vp-case-carousel__overlay--blog .vp-case-carousel__title-stack {
+  gap: 1rem;
 }
 
 /*
@@ -409,7 +445,7 @@
   font-size: 0.875rem; /* 14px */
   font-weight: var(--font-vp-heading-weight);
   line-height: 1.25rem; /* 20px */
-  letter-spacing: -0.0175rem; /* -0.28px */
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 

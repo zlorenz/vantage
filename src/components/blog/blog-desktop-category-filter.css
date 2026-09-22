@@ -62,7 +62,7 @@
     font-size: 0.875rem;
     font-weight: 700;
     line-height: 1;
-    letter-spacing: -0.0175rem;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: #fff;
     transition: opacity var(--vp-transition);
@@ -139,7 +139,7 @@
   .vp-blog-desktop-filter__term-label {
     min-width: 0;
     text-transform: uppercase;
-    letter-spacing: -0.0175rem;
+    letter-spacing: 0;
   }
 
   .vp-blog-desktop-filter__term-count {
