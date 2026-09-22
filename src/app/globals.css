@@ -1129,6 +1129,15 @@ body:has(.vp-work-index) #header.navbar::before {
     align-self: stretch;
   }
 
+  /* Slot stretches for full-height lang/hamburger cells; center the icon
+   * (and expanded input) vertically inside that tall row. */
+  #header .vp-desktop-lang-slot .vp-search-form {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    margin-inline: 0.5rem 0.25rem;
+  }
+
   #header .vp-lang-cells {
     display: flex;
     align-items: stretch;

@@ -44,7 +44,7 @@ export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean
       className={
         alwaysExpanded
           ? 'vp-search-form vp-nav-panel-search w-full'
-          : 'vp-search-form ml-2 hidden md:block'
+          : 'vp-search-form hidden md:block'
       }
       role="search"
       onSubmit={handleSubmit}
