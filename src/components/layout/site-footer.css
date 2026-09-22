@@ -1,7 +1,7 @@
 /**
  * Site footer chrome — Figma 149:21611
  * 100px structural bar: email | orange mark | social cells.
- * Soft black via --vp-bg. Hairlines via --vp-struct-line.
+ * Page black via --vp-bg. Hairlines via --vp-struct-line.
  * No mobile reflow until designer delivers mobile frames.
  *
  * Hide rules must stay unlayered (same as `.vp-site-footer` below).

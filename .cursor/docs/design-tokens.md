@@ -33,9 +33,9 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-black` | `#0a0a0a` | Soft black — neutral gray, never true `#000` |
-| `vp-black-rgb` | `10, 10, 10` | Channel form for `rgba(var(--vp-black-rgb), α)` overlays/scrims |
-| `vp-bg` | `var(--vp-black)` / `#0a0a0a` | Page background |
+| `vp-black` | `#000000` | Pure black — page chrome, primary button text |
+| `vp-black-rgb` | `0, 0, 0` | Channel form for `rgba(var(--vp-black-rgb), α)` overlays/scrims |
+| `vp-bg` | `var(--vp-black)` / `#000000` | Page background |
 | `vp-text` | `#ffffff` | Primary text — pure white |
 | `vp-text-muted` | `rgba(255,255,255,0.85)` | Secondary text, filter labels |
 | `vp-text-soft` | `rgba(255,255,255,0.75)` | Tertiary text |
@@ -94,8 +94,8 @@ Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `g
 
 | State | Background | Text | Border |
 |---|---|---|---|
-| Primary default | `#ffffff` | `#0a0a0a` (`vp-black`) | — |
-| Primary hover | `#a6a6a6` | `#0a0a0a` (`vp-black`) | — |
+| Primary default | `#ffffff` | `#000000` (`vp-black`) | — |
+| Primary hover | `#a6a6a6` | `#000000` (`vp-black`) | — |
 | Ghost (hero slide) | `rgba(255,255,255,0.08)` | `#ffffff` | `rgba(255,255,255,0.25)` |
 | Ghost hover | `rgba(255,255,255,0.12)` | `#ffffff` | `rgba(255,255,255,0.5)` |
 

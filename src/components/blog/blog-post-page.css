@@ -11,7 +11,7 @@
   --vp-candidate-blog-pill-color: rgba(255, 255, 255, 0.8);
   /* Yellow/black date chip — no --vp-color-yellow / --vp-yellow-100 yet; bg = site yellow. */
   --vp-candidate-blog-date-chip-bg: var(--vp-link); /* #fdb913 */
-  --vp-candidate-blog-date-chip-color: var(--vp-black); /* #0a0a0a */
+  --vp-candidate-blog-date-chip-color: var(--vp-black); /* #000000 */
   --vp-candidate-blog-dek-color: rgba(255, 255, 255, 0.6);
   --vp-candidate-blog-back-color: rgba(255, 255, 255, 0.5);
 }

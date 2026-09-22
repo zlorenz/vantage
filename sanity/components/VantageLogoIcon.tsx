@@ -13,7 +13,7 @@ export function VantageLogoIcon() {
       height="1em"
       aria-hidden
     >
-      <rect width="36" height="36" fill="#0a0a0a" />
+      <rect width="36" height="36" fill="#000000" />
       <g transform="translate(3.6 3.6) scale(0.8)">
         <polygon
           fill="#fff"

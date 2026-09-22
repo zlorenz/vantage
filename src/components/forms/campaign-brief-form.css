@@ -567,7 +567,7 @@
   height: var(--vp-form-step-circle-size);
   border: 1px solid var(--vp-form-step-border);
   border-radius: 50%;
-  background: var(--vp-bg, #0a0a0a);
+  background: var(--vp-bg, #000000);
   color: var(--vp-form-step-pending-text);
   font-size: 0.85rem;
   font-weight: 700;

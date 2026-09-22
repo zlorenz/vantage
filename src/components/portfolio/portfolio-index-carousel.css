@@ -437,7 +437,7 @@
   height: 100%;
   width: auto;
   max-width: 100%;
-  background: var(--vp-bg, #0a0a0a);
+  background: var(--vp-bg, #000000);
   color: #fff;
   /* Overlay type/padding use cqi against this box so layout tracks card width
    * (not vw) as height-driven cards shrink on short desktop viewports. */

@@ -5,7 +5,7 @@
  */
 
 /** Brand palette: vp-black, warm deep (from orange), vp-link, vp-orange. */
-const COLOR_1 = new Float32Array([0.039, 0.039, 0.039]); // #0a0a0a
+const COLOR_1 = new Float32Array([0, 0, 0]); // #000000
 const COLOR_2 = new Float32Array([0.165, 0.094, 0.078]); // #2a1814
 const COLOR_3 = new Float32Array([0.976, 0.859, 0.141]); // #f9db24
 const COLOR_4 = new Float32Array([0.941, 0.306, 0.137]); // #f04e23

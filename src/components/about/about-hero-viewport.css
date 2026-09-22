@@ -6,7 +6,7 @@
   height: 100svh;
   min-height: 100svh;
   overflow: hidden;
-  background-color: var(--color-vp-bg, #0a0a0a);
+  background-color: var(--color-vp-bg, #000000);
 }
 
 .vp-about-hero__lens {

@@ -19,8 +19,8 @@
 @theme {
   /* Colour Palette — Core (design-tokens.md §Colour Palette › Core) */
 
-  /* Soft black — never true #000. Channel form for rgba(var(--vp-black-rgb), α). */
-  --color-vp-bg: #0a0a0a;
+  /* Pure black. Channel form for rgba(var(--vp-black-rgb), α). */
+  --color-vp-bg: #000000;
   --color-vp-text: #ffffff;
   --color-vp-text-muted: rgba(255, 255, 255, 0.85);
   --color-vp-text-soft: rgba(255, 255, 255, 0.75);
@@ -40,7 +40,7 @@
 
   /* Colour Palette — Overlays */
 
-  --color-vp-overlay-dark: rgba(10, 10, 10, 0.45);
+  --color-vp-overlay-dark: rgba(0, 0, 0, 0.45);
   --color-vp-overlay-light: rgba(255, 255, 255, 0.1);
 
   /* Colour Palette — Form & Input */
@@ -58,7 +58,7 @@
   /* Colour Palette — Button */
 
   --color-vp-btn-primary-bg: #ffffff;
-  --color-vp-btn-primary-text: #0a0a0a;
+  --color-vp-btn-primary-text: #000000;
   --color-vp-btn-primary-hover-bg: #a6a6a6;
   --color-vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
   --color-vp-btn-ghost-text: #ffffff;
@@ -71,8 +71,8 @@
   --color-vp-logo-grid-border: #5c5c5c;
   --color-vp-credits-text: #bfbfbf;
   --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --color-vp-dropdown-bg: rgba(10, 10, 10, 0.4);
-  --color-vp-navbar-gradient-start: rgba(10, 10, 10, 0.65);
+  --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
+  --color-vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
   --color-vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family
@@ -206,9 +206,9 @@
 :root {
   /* Colour Palette — Core */
 
-  /* Soft black — never true #000. Use --vp-black-rgb for translucent overlays. */
-  --vp-black: #0a0a0a;
-  --vp-black-rgb: 10, 10, 10;
+  /* Pure black. Use --vp-black-rgb for translucent overlays. */
+  --vp-black: #000000;
+  --vp-black-rgb: 0, 0, 0;
   --vp-bg: var(--vp-black);
   --vp-text: #ffffff;
   --vp-text-muted: rgba(255, 255, 255, 0.85);
@@ -4768,7 +4768,7 @@ body:has(.vp-work-index) #header.navbar::before {
   width: min(1100px, 100%);
   max-height: min(92vh, 100%);
   overflow: auto;
-  background: #0a0a0a;
+  background: var(--vp-bg);
   border: 1px solid var(--color-vp-border-soft);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
