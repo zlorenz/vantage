@@ -31,6 +31,9 @@ Base URLs, API endpoints, and environment-specific values must come from environ
 **Never modify Sanity schemas without approval.**
 Schema changes affect the CMS editor interface and can break existing content. Always present proposed schema changes for review before implementing them.
 
+**Never edit live `blogPost.body` / `bodyZh` for redesign-branch-only content work.**
+The production dataset is shared by `main` and `redesign`. Use parallel `redesignBody` / `redesignBodyZh` (and the same pattern for future doc types). Full policy: `.cursor/docs/redesign-content-fields.md`.
+
 **Never write GROQ queries inline in page or component files.**
 All GROQ queries are defined as named exports in `/sanity/queries/` and imported where needed. Inline queries cannot be reused, audited, or maintained cleanly.
 

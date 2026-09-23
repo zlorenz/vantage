@@ -57,6 +57,10 @@ Two active users. A third (digital marketing hire) will be added in the future.
 
 Sanity permissions should be configured so that the Editor role cannot modify schemas, global settings, navigation structure, or delete published content without admin approval.
 
+### Redesign branch — parallel body fields
+
+`main` and `redesign` share the same Sanity dataset. Blog body work that is redesign-only must use `redesignBody` / `redesignBodyZh`, not live `body` / `bodyZh`. See `.cursor/docs/redesign-content-fields.md` (also linked from `.cursor/rules/stack-guardrails.mdc` so Cursor agents load the rule automatically).
+
 ---
 
 ## Content & Language

@@ -4,6 +4,10 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+## Cursor app sessions (not pen.dev)
+
+Hard stack constraints live in `.cursor/rules/` (always applied). Redesign-branch parallel CMS fields: `.cursor/docs/redesign-content-fields.md` (linked from `stack-guardrails.mdc`).
+
 ## Scope for this session
 
 This Claude Code session is used exclusively for pen.dev / .pen design work.
