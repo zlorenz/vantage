@@ -11,8 +11,6 @@
   grid-template-columns: 1fr 1fr;
   width: 100%;
   margin: 2.5rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0;
 }
 
