@@ -59,8 +59,16 @@
 /* Mobile: modest height cut, bottom-anchored so only the top edge moves. */
 @media (max-width: 575px) {
   .vp-portfolio-index {
-    /* Mobile height cut — independent of desktop Figma scale. */
-    --vp-index-height-scale: 0.80;
+    /*
+     * Mobile height cut — toward Figma 520 face on ~402 artboard without
+     * forcing a fixed 320×520 box (CDN bake stays 2:3).
+     */
+    --vp-index-height-scale: 0.76;
+    /* Figma Work card gap 20px (2282:28478). */
+    --vp-index-slide-gap: var(
+      --vp-candidate-work-index-mobile-card-gap,
+      20px
+    );
     /*
      * Mobile SEARCH/FILTER chrome under 64px nav (Figma 2282:28478):
      * py-24 + 20px icon = 68px. Reserved so viewport height calc stays honest.
@@ -842,6 +850,49 @@
   /* Normal wrap only — mid-word breaks were a side effect of vw-sized type
    * outgrowing height-driven card width. */
   overflow-wrap: normal;
+}
+
+/*
+ * Mobile card overlay type/pad toward Figma Work 2282:28478.
+ * Keep CDN 2:3 bake; do not retarget 320×520 crops. Skip brackets/+ (decision 5).
+ */
+@media (max-width: 575px) {
+  .vp-portfolio-index__card--styled::before {
+    /* Near-peer wash mid of Figma 0.2–0.5 band. */
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .vp-portfolio-index__overlay-copy {
+    gap: var(--vp-candidate-work-index-mobile-copy-stack-gap, 20px);
+    padding: 0 var(--vp-candidate-work-index-mobile-overlay-pad-inline, 15px)
+      var(--vp-candidate-work-index-mobile-overlay-pad-block, 30px);
+  }
+
+  .vp-portfolio-index__brand-row {
+    gap: var(--vp-candidate-work-index-mobile-brand-gap, 24px);
+  }
+
+  .vp-portfolio-index__brand {
+    font-size: var(
+      --vp-candidate-home-carousel-mobile-caption-size,
+      12px
+    );
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.6;
+    color: var(--vp-home-carousel-brand-accent, #fdb913);
+  }
+
+  .vp-portfolio-index__brand::before {
+    background: var(--vp-home-carousel-brand-accent, #fdb913);
+  }
+
+  .vp-portfolio-index__campaign {
+    font-size: var(--vp-candidate-work-index-mobile-title-size, 22px);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
 }
 
 /* Bottom chrome: filter (left) · scrubber · search (right).
