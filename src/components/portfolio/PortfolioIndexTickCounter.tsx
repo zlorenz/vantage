@@ -1,9 +1,10 @@
 'use client';
 
 /**
- * Desktop tick-marked slide readout (Figma 78:30581 / 78:30463).
+ * Tick-marked slide readout (Figma 78:30581 desktop / 2282:28478 mobile).
  * Fixed to the viewport bottom; aligns cells under live card boxes.
  * Non-interactive — PortfolioIndexScrubber remains the only bottom control.
+ * Visible on mobile ≤575 and desktop ≥576.
  */
 
 import {useCallback, useEffect, useState} from 'react';

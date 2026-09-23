@@ -1,5 +1,5 @@
 /* Desktop (≥576px) filter row + independent taxonomy panels for /work.
- * Hidden below 576px — mobile keeps funnel + PortfolioIndexFilterSheet.
+ * Hidden below 576px — mobile uses top SEARCH/FILTER chrome + BottomSheet.
  */
 
 .vp-portfolio-index-desktop-filters {

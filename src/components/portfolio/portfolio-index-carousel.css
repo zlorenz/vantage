@@ -61,9 +61,20 @@
   .vp-portfolio-index {
     /* Mobile height cut — independent of desktop Figma scale. */
     --vp-index-height-scale: 0.80;
+    /*
+     * Mobile SEARCH/FILTER chrome under 64px nav (Figma 2282:28478):
+     * py-24 + 20px icon = 68px. Reserved so viewport height calc stays honest.
+     */
+    --vp-index-top-row-height: 4.25rem;
+    /* Decision 6: omit active-filter pills on mobile for now. */
+    --vp-index-active-filters-height: 0px;
     justify-content: flex-end;
     /* Prior padding + ~half leftover from centering — keeps bottom edge put. */
     padding-bottom: calc(max(1.25rem, 5vh) + 0.55rem);
+  }
+
+  .vp-portfolio-index.has-active-filters {
+    --vp-index-active-filters-height: 0px;
   }
 }
 
@@ -111,6 +122,122 @@
   align-items: stretch;
   width: 100%;
   gap: 0.75rem;
+}
+
+/*
+ * Mobile top SEARCH + FILTER [count] chrome (Figma Work 2282:28478).
+ * Desktop (≥576) keeps PortfolioIndexDesktopFilterRow; this row stays hidden.
+ */
+.vp-portfolio-index__mobile-chrome {
+  display: none;
+}
+
+@media (max-width: 575px) {
+  .vp-portfolio-index__mobile-chrome {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--vp-index-top-row-height, 4.25rem);
+    padding-inline: var(
+      --vp-candidate-home-carousel-mobile-overlay-pad-inline,
+      16px
+    );
+    padding-block: var(
+      --vp-candidate-work-index-mobile-chrome-pad-block,
+      24px
+    );
+    pointer-events: none;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search,
+  .vp-portfolio-index__mobile-chrome-filter-wrap,
+  .vp-portfolio-index__mobile-chrome-filter {
+    pointer-events: auto;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search,
+  .vp-portfolio-index__mobile-chrome-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search {
+    color: var(--vp-candidate-search-muted, rgba(255, 255, 255, 0.4));
+    transition: color var(--vp-transition);
+  }
+
+  .vp-portfolio-index__mobile-chrome-search:hover,
+  .vp-portfolio-index__mobile-chrome-search:focus-visible,
+  .vp-portfolio-index__mobile-chrome-search.is-active {
+    color: rgba(255, 255, 255, 0.72);
+    outline: none;
+  }
+
+  .vp-portfolio-index__mobile-chrome-icon,
+  .vp-portfolio-index__mobile-chrome-chevron {
+    display: block;
+    width: 1.25rem; /* 20px */
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search-label,
+  .vp-portfolio-index__mobile-chrome-filter-label {
+    font-family: var(--font-vp-heading);
+    font-size: var(
+      --vp-candidate-home-carousel-mobile-caption-size,
+      12px
+    );
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .vp-portfolio-index__mobile-chrome-filter {
+    gap: 0.35rem;
+    color: #fff;
+  }
+
+  .vp-portfolio-index__mobile-chrome-filter-label {
+    color: #fff;
+  }
+
+  .vp-portfolio-index__mobile-chrome-filter-count {
+    color: var(--vp-candidate-search-muted, rgba(255, 255, 255, 0.4));
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-filter-count-size, 9px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .vp-portfolio-index__mobile-chrome-chevron {
+    transition: transform 0.18s ease;
+  }
+
+  .vp-portfolio-index__mobile-chrome-filter.is-open
+    .vp-portfolio-index__mobile-chrome-chevron {
+    transform: rotate(180deg);
+  }
+
+  .vp-portfolio-index__mobile-chrome-filter-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
 }
 
 /* Desktop: filter→card = Figma 16px via stage gap (counter removed; was
@@ -1051,6 +1178,17 @@
   .vp-portfolio-index__scrubber-thumb {
     width: 1.85rem;
     height: 0.78rem;
+  }
+}
+
+/*
+ * Mobile (≤575): Figma moves SEARCH/FILTER to top chrome — hide bottom icon
+ * tools. Scrubber stays. FilterSheet mounts under mobile chrome (portals).
+ */
+@media (max-width: 575px) {
+  .vp-portfolio-index__tool--filter,
+  .vp-portfolio-index__tool--search {
+    display: none;
   }
 }
 

@@ -123,6 +123,13 @@
   color: #fff;
 }
 
+/* Decision 6: omit active-filter pills on mobile work index for now. */
+@media (max-width: 575px) {
+  .vp-portfolio-index__active-filters {
+    display: none;
+  }
+}
+
 @media (min-width: 576px) {
   .vp-portfolio-index__active-filters {
     padding: 0 var(--spacing-vp-gutter, 1.875rem);

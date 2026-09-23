@@ -197,6 +197,45 @@ function SearchIcon() {
   );
 }
 
+/** Mobile top SEARCH glyph — 20px face (Figma Work 2282:28478). */
+function MobileChromeSearchIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index__mobile-chrome-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M10.5 3.75a6.75 6.75 0 1 0 4.248 12.032l3.735 3.735a.75.75 0 1 0 1.06-1.06l-3.734-3.735A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z"
+      />
+    </svg>
+  );
+}
+
+/** Mobile top FILTER chevron — flips when sheet open. */
+function MobileChromeChevronIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index__mobile-chrome-chevron"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M6.22 9.97a.75.75 0 0 1 1.06 0L12 14.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 0-1.06Z"
+      />
+    </svg>
+  );
+}
+
+/** Figma FILTER count chrome: `[ 100 ]` (spaces). */
+function formatFilterCount(n: number): string {
+  return `[ ${n} ]`;
+}
+
 function SearchSubmitIcon() {
   return (
     <svg
@@ -812,6 +851,79 @@ export function PortfolioIndexCarousel({
     />
   );
 
+  /*
+   * Mobile (≤575) top chrome — Figma Work 2282:28478.
+   * SEARCH opens the existing overlay; FILTER toggles PortfolioIndexFilterSheet
+   * (BottomSheet). Count = full library length (not filtered). Hidden ≥576
+   * where PortfolioIndexDesktopFilterRow owns entry points.
+   */
+  const mobileTopChrome = (
+    <div className="vp-portfolio-index__mobile-chrome" data-mobile-chrome>
+      <button
+        type="button"
+        className={`vp-portfolio-index__mobile-chrome-search${
+          hasActiveSearch ? ' is-active' : ''
+        }`}
+        aria-label={tSearch('openAria')}
+        aria-expanded={searchOpen}
+        aria-pressed={hasActiveSearch}
+        onClick={() => {
+          setFilterSheetOpen(false);
+          openSearch();
+        }}
+      >
+        <MobileChromeSearchIcon />
+        <span className="vp-portfolio-index__mobile-chrome-search-label">
+          {tSearch('title')}
+        </span>
+      </button>
+      <div className="vp-portfolio-index__mobile-chrome-filter-wrap">
+        <button
+          type="button"
+          className={`vp-portfolio-index__mobile-chrome-filter${
+            filterSheetOpen ? ' is-open' : ''
+          }${hasActiveFilters ? ' is-active' : ''}`}
+          aria-label={t('filter')}
+          aria-expanded={filterSheetOpen}
+          aria-pressed={hasActiveFilters}
+          onClick={() => {
+            setSearchOpen(false);
+            setFilterSheetOpen((open) => !open);
+          }}
+        >
+          <span className="vp-portfolio-index__mobile-chrome-filter-label">
+            {t('filter')}
+          </span>
+          <span
+            className="vp-portfolio-index__mobile-chrome-filter-count"
+            aria-hidden="true"
+          >
+            {formatFilterCount(librarySlides.length)}
+          </span>
+          <MobileChromeChevronIcon />
+        </button>
+        <PortfolioIndexFilterSheet
+          open={filterSheetOpen}
+          onClose={closeFilterSheet}
+          locale={locale}
+          phrases={phrases}
+          slides={librarySlides}
+          filters={publicFilters}
+          onChangeFilter={updatePublicFilter}
+          onClearAll={clearAllActive}
+          videoFormats={videoFormats}
+          industries={industries}
+          markets={markets}
+        />
+      </div>
+    </div>
+  );
+
+  /*
+   * Bottom bar: scrubber only on mobile (tools hidden ≤575). Funnel/search
+   * icon tools remain mounted for ≥576 parity with prior desktop hide path,
+   * but FilterSheet now lives under mobileTopChrome.
+   */
   const filterTrigger = (
     <div className="vp-portfolio-index__bottom-bar">
       <div className="vp-portfolio-index__tool vp-portfolio-index__tool--filter">
@@ -831,19 +943,6 @@ export function PortfolioIndexCarousel({
           >
             <FunnelIcon />
           </button>
-          <PortfolioIndexFilterSheet
-            open={filterSheetOpen}
-            onClose={closeFilterSheet}
-            locale={locale}
-            phrases={phrases}
-            slides={librarySlides}
-            filters={publicFilters}
-            onChangeFilter={updatePublicFilter}
-            onClearAll={clearAllActive}
-            videoFormats={videoFormats}
-            industries={industries}
-            markets={markets}
-          />
         </div>
       </div>
       <PortfolioIndexScrubber
@@ -938,6 +1037,7 @@ export function PortfolioIndexCarousel({
     return (
       <div className={indexRootClassName}>
         <div className="vp-portfolio-index__stage">
+          {mobileTopChrome}
           <PortfolioIndexDesktopFilterRow
             locale={locale}
             phrases={phrases}
@@ -964,6 +1064,7 @@ export function PortfolioIndexCarousel({
   return (
     <div className={indexRootClassName}>
       <div className="vp-portfolio-index__stage">
+        {mobileTopChrome}
         <PortfolioIndexDesktopFilterRow
           locale={locale}
           phrases={phrases}
