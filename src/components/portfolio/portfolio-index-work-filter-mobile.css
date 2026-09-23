@@ -42,15 +42,31 @@
   align-items: stretch;
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+}
+
+.vp-work-index-filter__tab-label {
+  font-family: var(--font-vp-heading);
+  font-size: var(
+    --vp-candidate-home-carousel-mobile-caption-size,
+    12px
+  );
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .vp-work-index-filter__tab {
   display: inline-flex;
-  flex-shrink: 0;
+  flex: 1 1 0;
+  min-width: 0;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.35rem;
   margin: 0;
   padding: var(--vp-candidate-work-index-mobile-tab-pad-block, 20px)
     var(--vp-candidate-work-index-mobile-tab-pad-inline, 16px);
