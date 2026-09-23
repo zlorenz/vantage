@@ -60,10 +60,13 @@
 @media (max-width: 575px) {
   .vp-portfolio-index {
     /*
-     * Mobile height cut — toward Figma 520 face on ~402 artboard without
-     * forcing a fixed 320×520 box (CDN bake stays 2:3).
+     * Phone QC: a little larger than 0.76 Figma-face tune; keep peeks.
+     * CDN bake stays 2:3.
      */
-    --vp-index-height-scale: 0.76;
+    --vp-index-height-scale: var(
+      --vp-candidate-work-index-mobile-height-scale,
+      0.84
+    );
     /* Figma Work card gap 20px (2282:28478). */
     --vp-index-slide-gap: var(
       --vp-candidate-work-index-mobile-card-gap,
@@ -726,25 +729,13 @@
 }
 
 /*
- * Mobile ≤575 — Figma Work 2282:28478 phone QC Fix 1:
- * square cards + wireframe brackets / dashed rails / center + (decision 5 reversed).
- * Desktop ≥576 bracket rules above stay locked.
+ * Mobile ≤575 — square cards + wireframe that HUGS the poster box
+ * (phone QC: no floating gap outside the image). Desktop ≥576 locked.
  */
 @media (max-width: 575px) {
   .vp-portfolio-index {
-    /*
-     * Mobile wireframe outset ≈10px on a 320×520 face (Figma frame pad).
-     * Uses live card height via 10/520; width via 10/320.
-     */
-    --vp-index-bracket-outset: calc(
-      (
-          100svh - var(--vp-header-height, 4.5rem) -
-            var(--vp-index-top-row-height, 0px) -
-            var(--vp-index-active-filters-height, 0px) -
-            var(--vp-index-bottom-bar-height, 5rem) -
-            env(safe-area-inset-bottom, 0px)
-        ) * var(--vp-index-height-scale, 0.76) * 10 / 520
-    );
+    /* 1px bleed so non-scaling strokes aren’t clipped at the face edge. */
+    --vp-index-bracket-outset: 1px;
   }
 
   .vp-portfolio-index__card--styled {
@@ -760,11 +751,15 @@
     clip-path: inset(calc(-1 * var(--vp-index-bracket-outset)) 0);
   }
 
+  /*
+   * Full-bleed H guides align to the card band top/bottom (= poster edges
+   * when the active face fills the viewport height).
+   */
   .vp-portfolio-index__band-guides {
     display: block;
     position: absolute;
-    top: calc(100% * -10 / 520);
-    bottom: calc(100% * -10 / 520);
+    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     z-index: 2;
@@ -796,11 +791,14 @@
     overflow: visible;
   }
 
+  /*
+   * Active-frame maps 1:1 to the poster box (inset 0). Rails/brackets/+
+   * sit on the face edges — not on a larger padded stage.
+   */
   .vp-portfolio-index__active-frame {
     display: block;
     position: absolute;
-    /* Figma mobile pad ~10px outside 320×520 face. */
-    inset: calc(100% * -10 / 520) calc(100% * -10 / 320);
+    inset: 0;
     z-index: 3;
     width: auto;
     height: auto;
