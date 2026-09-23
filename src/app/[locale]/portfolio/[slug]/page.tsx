@@ -231,21 +231,25 @@ export default async function PortfolioEntryPage({ params }: Props) {
           </>
         ) : (
           /*
-           * Single-video: header row stays rail-inset; media is a full-bleed
-           * sibling; credits use an explicit inset wrapper (not rail-adjacent).
-           * Key Visuals is a near-full-bleed sibling (30px gutters), not rail-inset.
+           * Single-video: header row stays rail-inset; media is an empty
+           * rail column + framed 16:9 (same width as the header rail), so
+           * the embed is not viewport-wide. Credits stay rail-inset.
+           * Key Visuals is a near-full-bleed sibling (30px gutters).
            */
           <>
             <div className="vp-case-shell__layout">
               <PortfolioCaseRail />
               <div className="vp-case-shell__main">{caseHeader}</div>
             </div>
-            <div className="vp-case-media-bleed">
-              <PortfolioCaseMedia
-                locale={typedLocale}
-                entry={entry}
-                caseCarouselSlides={null}
-              />
+            <div className="vp-case-video-row">
+              <div className="vp-case-video-row__rail" aria-hidden />
+              <div className="vp-case-video-row__media">
+                <PortfolioCaseMedia
+                  locale={typedLocale}
+                  entry={entry}
+                  caseCarouselSlides={null}
+                />
+              </div>
             </div>
           </>
         )}

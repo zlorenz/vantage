@@ -32,12 +32,29 @@
 }
 
 /*
- * Single-video full-bleed slot — sibling of the header layout row, not
- * inside the rail-offset main column. Edge-to-edge within the fullBleed shell.
+ * Single-video row — empty rail column + framed 16:9.
+ * Same width as the header rail / .vp-blog-hero-media--with-rail.
+ * Below 992px the rail is hidden and the video stays full-bleed.
  */
-.vp-case-media-bleed {
+.vp-case-video-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
-  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.vp-case-video-row__rail {
+  display: none;
+  box-sizing: border-box;
+}
+
+.vp-case-video-row__media {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -126,6 +143,35 @@
     margin-left: var(--vp-case-rail-width);
     padding-inline: var(--vp-case-shell-pad-x);
     border-left: var(--vp-struct-line);
+  }
+
+  /*
+   * Desktop single-video: row owns the hairlines so they cross the empty
+   * rail. The player’s own top/bottom rules would stop at the frame edge.
+   */
+  .vp-case-video-row {
+    flex-direction: row;
+    align-items: stretch;
+    border-top: var(--vp-struct-line);
+    border-bottom: var(--vp-struct-line);
+  }
+
+  .vp-case-video-row__rail {
+    display: block;
+    flex: 0 0 var(--vp-case-rail-width);
+    width: var(--vp-case-rail-width);
+    max-width: var(--vp-case-rail-width);
+    min-height: 1px;
+    align-self: stretch;
+  }
+
+  .vp-case-video-row__media {
+    border-left: var(--vp-struct-line);
+  }
+
+  .vp-case-video-row .vp-case-video {
+    border-top: 0;
+    border-bottom: 0;
   }
 
   .vp-case-rail__back {

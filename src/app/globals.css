@@ -1575,8 +1575,8 @@ body:has(.vp-work-index) #header.navbar::before {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  /* Was Figma gap-100; ~25% tighter below each credit panel. */
-  gap: 4.6875rem;
+  /* Space between department panels in a column (was 4.6875rem). */
+  gap: 3rem;
 }
 
 .vp-credits--split .vp-credits__col {
@@ -1593,23 +1593,23 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credits__dept {
   display: flex;
   flex-direction: column;
-  /* Was Figma gap-48; ~15% tighter above the row list. */
-  gap: 2.55rem;
+  /* Space between the department title block and its rows (was 2.55rem). */
+  gap: 1.75rem;
   margin-bottom: 0;
 }
 
 .vp-credits__dept:last-child {
   /* Space below the final credit rows before the next section hairline
-   * (Key Visuals border-top / page end). Matches dept head→rows gap. */
+   * (Key Visuals border-top / page end). Matches the dept gap above. */
   margin-bottom: 0;
-  padding-bottom: 2.55rem;
+  padding-bottom: 1.75rem;
 }
 
 .vp-credits__dept-head {
   display: flex;
   flex-direction: column;
-  /* Was Figma gap-32; ~25% tighter around the department title. */
-  gap: 1.5rem;
+  /* Space around the department title, between its hairlines (was 1.5rem). */
+  gap: 1.125rem;
 }
 
 .vp-credits__dept-name {
@@ -1639,8 +1639,8 @@ body:has(.vp-work-index) #header.navbar::before {
 .vp-credits__rows {
   display: flex;
   flex-direction: column;
-  /* Figma gap-16 between credit rows. */
-  gap: 1rem;
+  /* Space between role/name rows (was 1rem). */
+  gap: 0.5rem;
   padding-inline: 1.875rem;
   box-sizing: border-box;
 }

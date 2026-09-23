@@ -200,8 +200,9 @@
 }
 
 /*
- * Main case video frame — full-bleed when nested in .vp-case-media-bleed
- * (single-video layout); otherwise inherits the parent column width.
+ * Main case video frame — fills .vp-case-video-row__media on single-video
+ * pages (rail column sits beside it at ≥992px). Otherwise inherits the
+ * parent column width.
  */
 .vp-case-video {
   position: relative;
