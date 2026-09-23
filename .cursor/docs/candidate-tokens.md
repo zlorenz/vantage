@@ -85,6 +85,12 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | `--vp-candidate-index-title-size` | `26px` / bold / uppercase | Work card campaign title | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-filter-count-size` | `9px` | `[ 100 ]` count badges on filter triggers (mobile top FILTER + desktop) | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Snapped from Figma ≈9.03px (Work `2282:28478` / prior `77:12472`). Decision 7 — cleaner 9px. |
 | `--vp-candidate-work-index-mobile-chrome-pad-block` | `24px` | Mobile SEARCH/FILTER top row `padding-block` ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Figma `py-24`. Inline pad reuses `--vp-candidate-home-carousel-mobile-overlay-pad-inline` (16px). |
+| `--vp-candidate-work-index-mobile-card-gap` | `20px` | Embla slide gap ≤575 | same | pending | Figma gap between 320 cards. Aspect stays CDN 2:3. |
+| `--vp-candidate-work-index-mobile-title-size` | `22px` | Campaign title ≤575 | same | pending | Figma `h5`. Tracking floor 0. |
+| `--vp-candidate-work-index-mobile-overlay-pad-inline` | `15px` | Active card copy inset L/R ≤575 | same | pending | Figma `px-15`. |
+| `--vp-candidate-work-index-mobile-overlay-pad-block` | `30px` | Active card copy inset bottom ≤575 | same | pending | Figma `pb-30`. |
+| `--vp-candidate-work-index-mobile-brand-gap` | `24px` | Brand \| category gap ≤575 | same | pending | |
+| `--vp-candidate-work-index-mobile-copy-stack-gap` | `20px` | Brand row → title ≤575 | same | pending | |
 | `--vp-candidate-filter-panel-width` | `530px` | Open filter panel | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | |
 | `--vp-candidate-index-peer-scrim` | `rgba(0,0,0,0.2–0.5)` even wash on inactive cards | Work peek cards | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | Active card has no wash; text sits on open media + corner brackets. |
 

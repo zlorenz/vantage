@@ -48,13 +48,24 @@
   padding: 0;
   color: var(--vp-candidate-index-inactive, rgba(255, 255, 255, 0.3));
   font-family: var(--font-vp-heading);
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem; /* 14px desktop */
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: 0;
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* Mobile Work 2282:28478 — caption_2 12px for ( 02 ) labels. */
+@media (max-width: 575px) {
+  .vp-portfolio-index__tick-counter-label {
+    font-size: var(
+      --vp-candidate-home-carousel-mobile-caption-size,
+      12px
+    );
+    line-height: 20px;
+  }
 }
 
 .vp-portfolio-index__tick-counter-cell.is-active
