@@ -154,6 +154,114 @@
   white-space: nowrap;
 }
 
+/*
+ * Phone ≤575 — Figma 2283:29693. No left hairline (decision 5).
+ * Agency credit hidden (decision 4). Key credits L/R rows.
+ */
+@media (max-width: 575.98px) {
+  .vp-case-header {
+    margin-bottom: 0;
+  }
+
+  .vp-case-header__title-block {
+    gap: var(--vp-candidate-portfolio-case-mobile-brand-campaign-gap, 32px);
+    padding-block: var(
+      --vp-candidate-portfolio-case-mobile-title-block-pad-block,
+      48px
+    );
+    padding-inline: 0;
+  }
+
+  .vp-case-header__brand {
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    font-weight: 700;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  .vp-case-header .vp-case-header__brand {
+    font-weight: 700;
+  }
+
+  .vp-case-header__campaign {
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
+    font-weight: 700;
+    line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
+    letter-spacing: 0;
+  }
+
+  .vp-case-header__rule {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .vp-case-header__meta {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--vp-candidate-portfolio-case-mobile-credit-row-gap, 16px);
+    padding-block: var(
+      --vp-candidate-portfolio-case-mobile-meta-pad-block,
+      40px
+    );
+    padding-inline: 0;
+  }
+
+  .vp-case-header__credits {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--vp-candidate-portfolio-case-mobile-credit-row-gap, 16px);
+  }
+
+  .vp-case-header__credit--agency {
+    display: none;
+  }
+
+  .vp-case-header__credit {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .vp-case-header__credit dt {
+    flex: 0 1 auto;
+    font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
+    font-weight: 700;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+  }
+
+  .vp-case-header__credit dd {
+    flex: 0 1 auto;
+    align-items: flex-end;
+    text-align: right;
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    font-weight: 700;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  .vp-case-header__pills {
+    width: 100%;
+    justify-content: flex-start;
+    margin: 0;
+    gap: var(--vp-candidate-portfolio-case-mobile-pill-gap, 2px);
+  }
+
+  .vp-case-header__pill {
+    height: var(--vp-candidate-portfolio-case-mobile-pill-height, 48px);
+    padding-inline: 1rem; /* 16px */
+    padding-block: 0;
+    font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
+    line-height: 1.25rem;
+  }
+}
+
 @media (min-width: 768px) {
   .vp-case-header {
     margin-bottom: 2.5rem;

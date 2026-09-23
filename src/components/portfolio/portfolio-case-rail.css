@@ -76,6 +76,79 @@
   display: none;
 }
 
+/* Mobile ≤575 — compact back (Figma 2283:29693); desktop rail stays ≥992. */
+.vp-case-mobile-back {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .vp-case-shell__main,
+  .vp-case-shell__below {
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+    );
+  }
+
+  .vp-case-mobile-back {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+    );
+  }
+
+  .vp-case-mobile-back__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem; /* 16px */
+    max-width: 100%;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.5);
+    transition: color var(--vp-transition);
+  }
+
+  .vp-case-mobile-back__link:hover,
+  .vp-case-mobile-back__link:focus-visible {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .vp-case-mobile-back__link:focus-visible {
+    outline: 1px solid var(--vp-border);
+    outline-offset: 4px;
+  }
+
+  .vp-case-mobile-back__btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--vp-candidate-portfolio-case-mobile-back-btn-size, 56px);
+    height: var(--vp-candidate-portfolio-case-mobile-back-btn-size, 56px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .vp-case-mobile-back__btn .vp-case-rail__back-icon {
+    display: block;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .vp-case-mobile-back__label {
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    font-weight: 700;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}
+
 @media (min-width: 768px) and (max-width: 991.98px) {
   .vp-case-shell__main,
   .vp-case-shell__below {

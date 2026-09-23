@@ -142,3 +142,34 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | `--vp-candidate-blog-back-color` | `rgba(255,255,255,0.5)` | `.vp-blog-hero__back-label` | same | pending | |
 
 **Figma note:** MCP `get_design_context` for `2281:12897` / label `2281:12938` still emits the glass `white/10` fill for the date label (same as category chips). Screenshot + product call for yellow bg / black text — implemented as yellow/black via candidates above.
+
+## Portfolio case study — mobile ≤575 (pending)
+
+Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2283-29693  
+Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline; blog scoped out of case shell; tracking floor 0; project-nav approximate.
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-portfolio-case-mobile-inline-pad` | `16px` | `.vp-case-shell` pad / back / header / credits / KV ≤575 | `2283:29693` gutters | pending | Prefer alias of `--vp-candidate-home-carousel-mobile-overlay-pad-inline` when equal. |
+| `--vp-candidate-portfolio-case-mobile-back-btn-size` | `56px` | `.vp-case-mobile-back__btn` | `2283:29746` | pending | |
+| `--vp-candidate-portfolio-case-mobile-title-size` | `30px` | `.vp-case-header__campaign` ≤575 | h1 fallback on frame | pending | `--font-vp-heading`; tracking floor 0. |
+| `--vp-candidate-portfolio-case-mobile-title-lh` | `1.1` | campaign | same | pending | |
+| `--vp-candidate-portfolio-case-mobile-brand-size` | `12px` | brand / credit names / explore | caption_1 | pending | |
+| `--vp-candidate-portfolio-case-mobile-label-size` | `12px` | credit roles / pills | caption_3/4 | pending | |
+| `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block py | `py-48` | pending | |
+| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | `32px` | title stack gap | gap 32 | pending | |
+| `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | meta band | `py-40` | pending | |
+| `--vp-candidate-portfolio-case-mobile-credit-row-gap` | `16px` | key + dept rows | gap 16 | pending | |
+| `--vp-candidate-portfolio-case-mobile-pill-height` | `48px` | pills ≤575 | h-48 | pending | Desktop stays 64px. |
+| `--vp-candidate-portfolio-case-mobile-pill-gap` | `2px` | pills | gap-2 | pending | |
+| `--vp-candidate-portfolio-case-mobile-play-size` | `64px` | play chrome ≤575 under `.vp-case-shell` | `2283:30842` | pending | Desktop/peek stay 80px. |
+| `--vp-candidate-portfolio-case-mobile-dept-title-size` | `22px` | `.vp-credits__dept-name` ≤575 | h5 | pending | |
+| `--vp-candidate-portfolio-case-mobile-credits-pad-top` | `60px` | `.vp-case-credits-band` ≤575 | `pt-60` | pending | |
+| `--vp-candidate-portfolio-case-mobile-section-gap` | `80px` | credits↔KV rhythm | gap-80 | pending | |
+| `--vp-candidate-portfolio-case-mobile-dept-gap` | `60px` | between depts | gap-60 | pending | |
+| `--vp-candidate-portfolio-case-mobile-kv-title-size` | `26px` | Key Visuals h2 ≤575 | h3 white | pending | |
+| `--vp-candidate-portfolio-case-mobile-kv-gap` | `12px` | KV stack | gap-12 | pending | |
+| `--vp-candidate-portfolio-case-mobile-kv-cell-aspect` | `370 / 180` | KV cells ≤575 | cells | pending | |
+| `--vp-candidate-portfolio-case-mobile-next-card-aspect` | `2 / 3` | project-nav card ≤575 | 370×600 | pending | Approximate. |
+| `--vp-candidate-portfolio-case-mobile-explore-height` | `60px` | explore row | h-60 | pending | Approximate. |
+| `--vp-candidate-portfolio-case-mobile-overlay-pad` | `16px` | multi carousel overlay ≤575 | frame inline | pending | Scoped `.vp-case-shell`. |

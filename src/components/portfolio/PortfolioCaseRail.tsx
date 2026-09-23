@@ -1,10 +1,10 @@
 /**
  * PortfolioCaseRail — structural left column for the case-study shell.
  *
- * Desktop: in-flow rail with low-opacity VAP geometric mark + “all work”
- * back control (scrolls away with the header; not sticky/fixed). Mobile
- * collapse is handled by portfolio-case-rail.css (reuses the redesign’s
- * 992px Figma-desktop split).
+ * Desktop ≥992: in-flow rail with low-opacity VAP geometric mark + “all work”
+ * back control (scrolls away with the header; not sticky/fixed).
+ * Mobile ≤575: compact back row above the header (Figma 2283:29693).
+ * 576–991: no back chrome (scaffolding; desktop rail still hidden).
  */
 
 import {getTranslations} from 'next-intl/server';
@@ -29,23 +29,35 @@ function BackArrowIcon() {
 
 export async function PortfolioCaseRail() {
   const t = await getTranslations('Navigation');
+  const label = t('backToWork');
 
   return (
-    <aside className="vp-case-rail" aria-label={t('backToWork')}>
-      <Link href="/work" className="vp-case-rail__back">
-        <span className="vp-case-rail__back-btn">
-          <BackArrowIcon />
-        </span>
-        <span className="vp-case-rail__back-label">{t('backToWork')}</span>
-      </Link>
+    <>
+      <div className="vp-case-mobile-back">
+        <Link href="/work" className="vp-case-mobile-back__link">
+          <span className="vp-case-mobile-back__btn">
+            <BackArrowIcon />
+          </span>
+          <span className="vp-case-mobile-back__label">{label}</span>
+        </Link>
+      </div>
 
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="vp-case-rail__mark"
-        src="/brand/vap-pattern.svg"
-        alt=""
-        aria-hidden="true"
-      />
-    </aside>
+      <aside className="vp-case-rail" aria-label={label}>
+        <Link href="/work" className="vp-case-rail__back">
+          <span className="vp-case-rail__back-btn">
+            <BackArrowIcon />
+          </span>
+          <span className="vp-case-rail__back-label">{label}</span>
+        </Link>
+
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="vp-case-rail__mark"
+          src="/brand/vap-pattern.svg"
+          alt=""
+          aria-hidden="true"
+        />
+      </aside>
+    </>
   );
 }

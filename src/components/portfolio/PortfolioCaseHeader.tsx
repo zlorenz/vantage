@@ -41,6 +41,9 @@ const CREDIT_ROLES = [
   {roleKey: 'art_director', label: 'Art Director'},
 ] as const;
 
+/** Agency is desktop-only — hidden ≤575 via CSS (decision 4). */
+const AGENCY_ROLE_KEY = 'agency';
+
 function termLabel(
   term: Pick<TaxonomyTerm, 'title' | 'titleZh'> | null | undefined,
   locale: Locale,
@@ -187,7 +190,14 @@ export function PortfolioCaseHeader({
             {credits.length > 0 ? (
               <dl className="vp-case-header__credits">
                 {credits.map((credit) => (
-                  <div key={credit.roleKey} className="vp-case-header__credit">
+                  <div
+                    key={credit.roleKey}
+                    className={
+                      credit.roleKey === AGENCY_ROLE_KEY
+                        ? 'vp-case-header__credit vp-case-header__credit--agency'
+                        : 'vp-case-header__credit'
+                    }
+                  >
                     <dt>{credit.label}</dt>
                     <dd>
                       {credit.names.map((name, index) => (
