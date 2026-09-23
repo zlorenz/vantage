@@ -436,6 +436,10 @@ a.vp-project-nav__explore:focus-visible {
   .vp-project-nav__card {
     position: relative;
     inset: auto;
+    /* Block + full width: <a> defaults to inline and collapses when
+     * position switches from absolute (desktop inset:0) to relative. */
+    display: block;
+    width: 100%;
     min-height: 18rem;
     aspect-ratio: 1250 / 624;
   }
@@ -538,11 +542,26 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   .vp-project-nav__card {
+    /* Keep display:block + width:100% from ≤991 — do not collapse.
+     * Prior min-height:0 + inline <a> → 0×0 box; Next/Image fill invisible. */
+    display: block;
+    width: 100%;
     min-height: 0;
     aspect-ratio: var(
       --vp-candidate-portfolio-case-mobile-next-card-aspect,
       2 / 3
     );
+  }
+
+  .vp-project-nav__slide {
+    height: auto;
+  }
+
+  .vp-project-nav__viewport {
+    height: auto;
+    /* Let the card aspect define height; clip horizontal peeks only. */
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .vp-project-nav__meta {
