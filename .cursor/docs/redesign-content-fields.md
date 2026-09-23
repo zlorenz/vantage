@@ -28,6 +28,17 @@ Parallel fields let redesign evolve body content without touching live documents
 
 ---
 
+## Authoring policy
+
+For the duration of the redesign period:
+
+- **New blog posts continue to be authored into `body` / `bodyZh`** (the live fields) as normal. Chi / Karen / Hien’s workflow is unchanged — they should never be pointed at `redesignBody` / `redesignBodyZh` directly.
+- **`redesignBody` / `redesignBodyZh` are populated only via the backfill script** (`scripts/migration/patch/backfill-blog-redesign-body.ts`), run periodically or on demand. Editors do not touch these fields in Studio, even after a Studio deploy eventually exposes the “Redesign Content” field group.
+- **At final launch / cutover (merge to `main`)**, `body` / `bodyZh` get retired/removed and `redesignBody` / `redesignBodyZh` content becomes canonical. That is a planned future cleanup step — not yet scheduled.
+- **Until cutover**, any post edited on live `body` / `bodyZh` after its last backfill will not reflect that edit in `redesignBody` / `redesignBodyZh` until the script is re-run. That is the accepted drift tradeoff (see [Drift policy](#drift-policy-current) below).
+
+---
+
 ## Drift policy (current)
 
 After the initial backfill (`scripts/migration/patch/backfill-blog-redesign-body.ts`):
