@@ -59,10 +59,10 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
   return (
     <header>
       <SiteHeaderNav
-        className="navbar fixed top-0 z-50 w-full py-[0.9rem] md:py-0"
+        className="navbar fixed top-0 z-50 w-full py-0"
         aria-label={t('primaryAria')}
       >
-        <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-center px-[1.0625rem] md:h-full md:min-h-[var(--vp-nav-bar-height,80px)] md:flex-nowrap md:items-stretch md:px-0">
+        <div className="container-fluid relative z-[1] mx-auto flex w-full max-w-[100%] flex-wrap items-stretch px-0 md:h-full md:min-h-[var(--vp-nav-bar-height,80px)] md:flex-nowrap md:items-stretch">
           <Link className="navbar-brand shrink-0 md:flex md:items-center" href={homeHref} rel="home">
             {/* SVG via <img> — next/image does not optimize SVGs */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -71,7 +71,7 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
               alt="Vantage Pictures"
               width={220}
               height={36}
-              className="block h-5 w-auto sm:h-7 md:h-7"
+              className="block h-[18px] w-auto md:h-7"
             />
           </Link>
 

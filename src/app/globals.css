@@ -1147,6 +1147,86 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /*
+ * Mobile nav bar ≤767 — Figma 2282:27788 / 2282:29325 (64px bar, 64×64 orange
+ * hamburger). Lang toggle stays in the bar (product deviation). Desktop ≥768
+ * chrome below is locked at --vp-nav-bar-height (80px).
+ */
+@media (max-width: 767.98px) {
+  #header.navbar {
+    --vp-candidate-nav-bar-height-mobile: 64px;
+    box-sizing: border-box;
+    height: var(--vp-candidate-nav-bar-height-mobile);
+    min-height: var(--vp-candidate-nav-bar-height-mobile);
+    padding-block: 0;
+    border-bottom: var(--vp-struct-line);
+  }
+
+  #header .container-fluid {
+    align-items: stretch;
+    box-sizing: border-box;
+    height: 100%;
+    min-height: var(--vp-candidate-nav-bar-height-mobile);
+    padding-inline: 0;
+  }
+
+  #header .navbar-brand {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    align-self: stretch;
+    box-sizing: border-box;
+    min-width: 0;
+    height: 100%;
+    padding-inline: 1rem; /* 16px — Figma logo cell */
+    border-right: var(--vp-struct-line);
+  }
+
+  /* Keep toggle left of hamburger; stretch to bar height. */
+  #header .vp-mobile-lang-slot {
+    align-self: stretch;
+    margin-left: 0;
+    margin-right: 0;
+    padding-inline: 0.5rem;
+  }
+
+  #header .vp-nav-toggler-cell {
+    display: flex;
+    flex-shrink: 0;
+    align-self: stretch;
+    box-sizing: border-box;
+    width: var(--vp-candidate-nav-bar-height-mobile);
+    min-width: var(--vp-candidate-nav-bar-height-mobile);
+    height: var(--vp-candidate-nav-bar-height-mobile);
+  }
+
+  #header .navbar-toggler {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background-color: var(--vp-orange);
+  }
+
+  #header .navbar-toggler .navbar-toggler-icon {
+    width: 1.75rem;
+    height: 1.25rem;
+  }
+
+  /* Measured --vp-header-height wins; fallback matches 64px candidate. */
+  #header .vp-mobile-nav-panel__inner {
+    padding-top: var(
+      --vp-header-height,
+      var(--vp-candidate-nav-bar-height-mobile, 64px)
+    );
+  }
+}
+
+/*
  * Desktop nav chrome (Figma 77:12462) — sitewide cell strip.
  * wordmark | EN | 中文 | orange hamburger, full-height hairlines between cells.
  * Orange fill: --vp-orange. Hairlines: --vp-struct-line (distinct from --vp-border-soft).

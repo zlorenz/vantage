@@ -24,6 +24,16 @@ Naming: `--vp-candidate-[name]`
 
 ---
 
+## Site nav — mobile bar (pending)
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-nav-bar-height-mobile` | `64px` | `#header.navbar` ≤767.98; hamburger cell 64×64 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-29325 | pending | Desktop keeps `--vp-nav-bar-height: 80px` ≥768. |
+
+**Reuse (no candidate):** `--vp-orange` hamburger fill; `--vp-struct-line` bar/logo hairlines.
+
+---
+
 ## Open product decision (not a colour/spacing candidate)
 
 | Name | Value | Used in | Source | Status | Notes |
