@@ -4,7 +4,23 @@ Values observed in Figma (or proposed structural overrides) that are **not** yet
 
 Naming: `--vp-candidate-[name]`
 
-**Homepage carousel + sitewide nav are locked.** Their former candidates now live in `design-tokens.md` as either sitewide `--vp-*` or component-scoped `--vp-home-carousel-*`. Do not re-open them here.
+**Homepage carousel desktop + sitewide nav are locked.** Do not re-open desktop `--vp-home-carousel-*` spacing/type here. **Mobile (≤767) carousel overlay** uses `--vp-candidate-home-carousel-mobile-*` below until confirmed across surfaces.
+
+---
+
+## Homepage carousel — mobile overlay (pending)
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-home-carousel-mobile-title-size` | `28px` | `.vp-proto-carousel__campaign` ≤767 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-27788 | pending | Figma `h2`. Tracking floor 0. |
+| `--vp-candidate-home-carousel-mobile-caption-size` | `12px` | Brand, format, counter ≤767 | same | pending | Figma `caption_1` / `caption_2`. |
+| `--vp-candidate-home-carousel-mobile-overlay-pad-inline` | `16px` | Overlay L/R + counter `right` ≤767 | same (`px-16`) | pending | |
+| `--vp-candidate-home-carousel-mobile-overlay-pad-block` | `40px` | Overlay top/bottom ≤767 | same (`py-40`); credits removed | pending | Bottom = 40px + safe-area. |
+| `--vp-candidate-home-carousel-mobile-counter-offset` | `69px` | Counter `top: calc(var(--vp-header-height) + 69px)` | `2282:27788`: center ≈133px − 64px bar | pending | |
+
+**Reuse (no candidate):** `--vp-home-carousel-brand-accent`, `--vp-home-carousel-counter-muted`, `--vp-home-carousel-brand-dot-size`, `--vp-home-carousel-title-tag-gap` (shared on `.vp-proto-carousel` base).
+
+**Dropped for mobile:** credit-col-gap, credit-role-lh, section-gap, Figma −2% tracking.
 
 ---
 

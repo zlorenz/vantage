@@ -11,13 +11,25 @@
   background: var(--vp-bg);
   color: #fff;
   /*
-   * Color tokens hoisted from the ≥768 block so mobile can reference them
-   * without duplicating values. Desktop computed styles unchanged — same
-   * hex/rgba as before; spacing/type tokens stay desktop-scoped.
+   * Shared with desktop (≥768): colors + brand-dot / title-tag-gap so mobile
+   * can reuse without duplicating. Desktop visual still owned by the media
+   * query block below.
    */
   --vp-home-carousel-brand-accent: #fdb913;
   --vp-home-carousel-credit-role: rgba(255, 255, 255, 0.5);
   --vp-home-carousel-counter-muted: rgba(255, 255, 255, 0.6);
+  --vp-home-carousel-brand-dot-size: 0.8em;
+  --vp-home-carousel-title-tag-gap: 24px;
+  /*
+   * Mobile-only candidates (≤767) — Figma 2282:27788 family. Not promoted.
+   * Pad-block 40px = Figma overlay `py-40` with credits removed.
+   * Counter offset 69px = center 133px from top − 64px bar on 874 artboard.
+   */
+  --vp-candidate-home-carousel-mobile-title-size: 28px;
+  --vp-candidate-home-carousel-mobile-caption-size: 12px;
+  --vp-candidate-home-carousel-mobile-overlay-pad-inline: 16px;
+  --vp-candidate-home-carousel-mobile-overlay-pad-block: 40px;
+  --vp-candidate-home-carousel-mobile-counter-offset: 69px;
 }
 
 .vp-proto-carousel__viewport {
@@ -170,6 +182,7 @@
   );
 }
 
+/* Mobile (default ≤767): Figma 2282:27788 — brand+title band; credits hidden. */
 .vp-proto-carousel__overlay-copy {
   position: relative;
   z-index: 1;
@@ -177,41 +190,65 @@
   height: 100%;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 8px;
-  padding: 1.5rem var(--spacing-vp-gutter)
-    calc(3.25rem + env(safe-area-inset-bottom, 0px));
+  gap: 0;
+  padding: var(--vp-candidate-home-carousel-mobile-overlay-pad-block)
+    var(--vp-candidate-home-carousel-mobile-overlay-pad-inline)
+    calc(
+      var(--vp-candidate-home-carousel-mobile-overlay-pad-block) +
+        env(safe-area-inset-bottom, 0px)
+    );
 }
 
-/* display:contents so the left-group wrapper does not change the mobile stack. */
 .vp-proto-carousel__overlay-main {
-  display: contents;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--vp-home-carousel-title-tag-gap);
 }
-
 
 .vp-proto-carousel__brand-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.75rem; /* 12px — Figma brand | category gap */
 }
 
-/* Desktop-only brand/category divider — keep mobile stack unchanged. */
+/* Brand/category hairline — shown on mobile + desktop (Figma both). */
 .vp-proto-carousel__brand-rule {
-  display: none;
+  display: block;
+  width: 1px;
+  height: 20px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .vp-proto-carousel__brand,
 .vp-proto-carousel__format {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 1.2px;
+  font-size: var(--vp-candidate-home-carousel-mobile-caption-size);
+  font-weight: 700;
+  letter-spacing: 0; /* Special Gothic floor */
+  line-height: 1.6;
   text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 .vp-proto-carousel__brand {
-  color: #fdb913;
+  color: var(--vp-home-carousel-brand-accent);
+}
+
+.vp-proto-carousel__brand::before {
+  content: "";
+  display: inline-block;
+  width: var(--vp-home-carousel-brand-dot-size);
+  height: var(--vp-home-carousel-brand-dot-size);
+  margin-right: 0.55em;
+  border-radius: 50%;
+  background: var(--vp-home-carousel-brand-accent);
+  vertical-align: 0.05em;
 }
 
 .vp-proto-carousel__format {
@@ -220,21 +257,22 @@
 
 .vp-proto-carousel__campaign {
   margin: 0;
-  font-family: var(--font-vp-heading);
-  font-size: 32px;
-  font-weight: 400;
+  font-family: var(--font-vp-heading); /* never heading-fallback alone */
+  font-size: var(--vp-candidate-home-carousel-mobile-title-size);
+  font-weight: 700;
   color: #fff;
-  letter-spacing: 1px;
-  line-height: 1;
+  letter-spacing: 0; /* Special Gothic floor */
+  line-height: 1.2;
   text-transform: uppercase;
   overflow-wrap: break-word;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
+/* Credits + under-title rule: hidden on mobile; markup/data unchanged. */
 .vp-proto-carousel__credits {
+  display: none;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .vp-proto-carousel__credit {
@@ -264,28 +302,66 @@
   color: #fff;
 }
 
-/* Desktop-only slide index. */
+/*
+ * Slide counter — visible on mobile. Vertical center under header:
+ * calc(var(--vp-header-height) + 69px). Desktop overrides to mid-right 50%.
+ */
 .vp-proto-carousel__counter {
-  display: none;
+  display: flex;
+  position: absolute;
+  top: calc(
+    var(--vp-header-height, 4.5rem) +
+      var(--vp-candidate-home-carousel-mobile-counter-offset)
+  );
+  right: var(--vp-candidate-home-carousel-mobile-overlay-pad-inline);
+  left: auto;
+  z-index: 4;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem; /* 12px */
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-home-carousel-mobile-caption-size);
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--vp-home-carousel-counter-muted);
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+.vp-proto-carousel__counter-current,
+.vp-proto-carousel__counter-total {
+  display: block;
+  min-width: 1.25em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.vp-proto-carousel__counter-rule {
+  display: block;
+  width: 1px;
+  height: 2rem; /* 32px — Figma */
+  background: var(--vp-home-carousel-counter-muted);
 }
 
 @media (min-width: 768px) {
   /*
-   * Locked home-carousel tokens (Figma 77:12462). Component-scoped — not
-   * sitewide --vp-* until a second surface needs them. Mobile keeps prior
-   * stacked layout/type. Typeface: Special Gothic / Mona; Zalando is VN
-   * glyph fallback in the heading stack, and primary only for credit names.
+   * Locked home-carousel desktop tokens (Figma 77:12462). Component-scoped.
+   * Mobile overlay is the ≤767 base rules above (Figma 2282:27788 family).
+   * Typeface: Special Gothic / Mona; Zalando is VN glyph fallback in the
+   * heading stack, and primary only for credit names (desktop).
    */
   .vp-proto-carousel {
-    /* Colors live on the base rule (hoisted) — available to mobile too. */
-    --vp-home-carousel-brand-dot-size: 0.8em;
+    /* Colors + brand-dot + title-tag-gap live on the base rule (shared). */
     --vp-home-carousel-tracking-tight-16: 0;
     --vp-home-carousel-tracking-tight-48: 0;
     --vp-home-carousel-tracking-tight-14: 0;
     --vp-home-carousel-overlay-pad-inline: 30px;
     /* Was 60px (Figma); −40% so bottom inset reads closer to the 30px sides. */
     --vp-home-carousel-overlay-pad-block: 36px;
-    --vp-home-carousel-title-tag-gap: 24px;
     --vp-home-carousel-credit-col-gap: 80px;
   }
 
@@ -337,7 +413,7 @@
     align-items: center;
   }
 
-  /* Short vertical hairline between brand and category (Figma). Mobile: hidden. */
+  /* Short vertical hairline between brand and category (Figma). */
   .vp-proto-carousel__brand-rule {
     display: block;
     width: 1px;
@@ -377,6 +453,7 @@
 
   .vp-proto-carousel__campaign {
     font-size: 48px;
+    font-weight: 400;
     letter-spacing: var(--vp-home-carousel-tracking-tight-48);
     line-height: 1.2;
     text-box-trim: trim-start;
@@ -385,44 +462,25 @@
     margin-bottom: -0.1em;
   }
 
-  /* Mid-right vertical counter (supersedes mid-left TEMP placement). */
+  /* Mid-right vertical counter — desktop centers in the viewport. */
   .vp-proto-carousel__counter {
-    display: flex;
-    position: absolute;
     top: 50%;
     right: var(--vp-home-carousel-overlay-pad-inline);
-    left: auto;
-    z-index: 4;
-    flex-direction: column;
-    align-items: center;
     gap: 0.5rem;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-family: var(--font-vp-heading);
     font-size: 14px;
     font-weight: 400;
     line-height: 1.25;
     letter-spacing: var(--vp-home-carousel-tracking-tight-14);
-    text-transform: uppercase;
-    color: var(--vp-home-carousel-counter-muted);
-  }
-
-  .vp-proto-carousel__counter-current,
-  .vp-proto-carousel__counter-total {
-    display: block;
-    min-width: 1.25em;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
+    text-box-trim: unset;
+    text-box-edge: unset;
   }
 
   .vp-proto-carousel__counter-rule {
-    display: block;
-    width: 1px;
     height: 2rem;
-    background: var(--vp-home-carousel-counter-muted);
   }
 
   .vp-proto-carousel__credits {
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
     flex-shrink: 0;
