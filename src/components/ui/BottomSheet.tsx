@@ -50,6 +50,10 @@ export type BottomSheetProps = {
   headerStart?: ReactNode;
   closeAriaLabel: string;
   bodyClassName?: string;
+  /** Extra class on the portal root (`.vp-bottom-sheet`). */
+  className?: string;
+  /** Extra class on the panel (`.vp-bottom-sheet__panel`) — work-scoped skins. */
+  panelClassName?: string;
   /** Fires after exit animation finishes and the sheet unmounts. */
   onClosed?: () => void;
 };
@@ -63,6 +67,8 @@ export function BottomSheet({
   headerStart,
   closeAriaLabel,
   bodyClassName,
+  className,
+  panelClassName,
   onClosed,
 }: BottomSheetProps) {
   const [mounted, setMounted] = useState(false);
@@ -167,6 +173,12 @@ export function BottomSheet({
   const bodyClass = ['vp-bottom-sheet__body', bodyClassName]
     .filter(Boolean)
     .join(' ');
+  const rootClass = ['vp-bottom-sheet', visible ? 'is-open' : '', className]
+    .filter(Boolean)
+    .join(' ');
+  const panelClass = ['vp-bottom-sheet__panel', panelClassName]
+    .filter(Boolean)
+    .join(' ');
   const dialogLabel = ariaLabel ?? title ?? closeAriaLabel;
 
   /*
@@ -177,10 +189,7 @@ export function BottomSheet({
    * appears as a tiny sliver at the top of the screen.
    */
   return createPortal(
-    <div
-      className={`vp-bottom-sheet${visible ? ' is-open' : ''}`}
-      role="presentation"
-    >
+    <div className={rootClass} role="presentation">
       <button
         type="button"
         className="vp-bottom-sheet__scrim"
@@ -189,7 +198,7 @@ export function BottomSheet({
       />
       <div
         ref={panelRef}
-        className="vp-bottom-sheet__panel"
+        className={panelClass}
         role="dialog"
         aria-modal="true"
         aria-label={dialogLabel}

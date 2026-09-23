@@ -3,14 +3,10 @@
 /**
  * Filter UI for the /work PortfolioIndexCarousel.
  *
- * Mobile (<576px): shared BottomSheet shell (scrim + drag-to-dismiss).
- * Desktop (≥576px): anchored popout above the filter trigger (nav-dropdown
- * pattern — max-content width, fade + translate, no scrim). Same drill-in
- * view state either way.
- *
- * Nested taxonomy views: compositor-only horizontal push/pop on the body
- * (header/handle stay put). Menu height follows content when each view
- * settles — no height tween (that dropped frames).
+ * Mobile (<576px): shared BottomSheet shell + work-scoped FORMAT / INDUSTRY /
+ * MARKET tabs (Figma 2282:28724). Desktop (≥576px): anchored popout above the
+ * filter trigger with root→taxonomy drill (unchanged). BlogCategoryFilter
+ * keeps its own BottomSheet + shared __term chrome — do not restyle those.
  */
 
 import {
@@ -28,10 +24,12 @@ import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 import {
   publicFilterOptions,
+  countForPublicFilterValue,
   type PublicFilters,
 } from './PortfolioGrid';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import './portfolio-index-filter-sheet.css';
+import './portfolio-index-work-filter-mobile.css';
 
 type TaxonomyKey = keyof PublicFilters;
 type SheetView = 'root' | TaxonomyKey;
@@ -80,6 +78,31 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/** Figma panel / tab counts: bare n → "(n)" or "[ n ]". */
+function formatParenCount(n: number): string {
+  return `( ${n} )`;
+}
+
+function formatBracketCount(n: number): string {
+  return `[ ${n} ]`;
+}
+
+function TabChevronIcon({open}: {open: boolean}) {
+  return (
+    <svg
+      className={`vp-work-index-filter__tab-chevron${open ? ' is-open' : ''}`}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M6.22 9.97a.75.75 0 0 1 1.06 0L12 14.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 0-1.06Z"
+      />
+    </svg>
+  );
+}
+
 function CloseIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -118,6 +141,8 @@ export function PortfolioIndexFilterSheet({
   const t = useTranslations('Filters');
   const [activeView, setActiveView] = useState<SheetView>('root');
   const [drill, setDrill] = useState<DrillTransition | null>(null);
+  /** Mobile work tabs — FORMAT / INDUSTRY / MARKET (Figma 2282:28724). */
+  const [activeTab, setActiveTab] = useState<TaxonomyKey>('format');
   const [isDesktop, setIsDesktop] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -190,8 +215,15 @@ export function PortfolioIndexFilterSheet({
     }
     setDrill(null);
     setActiveView('root');
+    setActiveTab('format');
     drillRunIdRef.current += 1;
   }, []);
+
+  /* Mobile: land on FORMAT whenever the sheet opens. */
+  useEffect(() => {
+    if (!open || isDesktop) return;
+    setActiveTab('format');
+  }, [open, isDesktop]);
 
   const goToView = (next: SheetView) => {
     if (drill) return;
@@ -353,16 +385,129 @@ export function PortfolioIndexFilterSheet({
 
   const onTermActivate = (key: TaxonomyKey, value: string) => {
     onChangeFilter(key, filters[key] === value ? '' : value);
-    goToView('root');
+    if (isDesktop) goToView('root');
   };
 
   const onSelectAll = (key: TaxonomyKey) => {
     onChangeFilter(key, '');
-    goToView('root');
+    if (isDesktop) goToView('root');
   };
 
   const title =
     chromeView === 'root' ? t('filter') : t(TAXONOMY_LABEL_KEY[chromeView]);
+
+  const renderMobileTabbedBody = (): ReactNode => {
+    const options = optionsByKey[activeTab];
+    const allCount = countForPublicFilterValue(
+      filterEntries,
+      filters,
+      activeTab,
+      '',
+    );
+
+    return (
+      <div className="vp-work-index-filter">
+        <div
+          className="vp-work-index-filter__tabs"
+          role="tablist"
+          aria-label={t('filter')}
+        >
+          {TAXONOMY_ORDER.map((key) => {
+            const selected = activeTab === key;
+            const tabCount = countForPublicFilterValue(
+              filterEntries,
+              filters,
+              key,
+              '',
+            );
+            return (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                id={`vp-work-filter-tab-${key}`}
+                aria-selected={selected}
+                aria-controls={`vp-work-filter-panel-${key}`}
+                className={`vp-work-index-filter__tab${
+                  selected ? ' is-active' : ''
+                }`}
+                onClick={() => setActiveTab(key)}
+              >
+                <TabChevronIcon open={selected} />
+                <span className="vp-work-index-filter__tab-label">
+                  {t(TAXONOMY_LABEL_KEY[key])}
+                </span>
+                <span
+                  className="vp-work-index-filter__tab-count"
+                  aria-hidden="true"
+                >
+                  {formatBracketCount(tabCount)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div
+          id={`vp-work-filter-panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`vp-work-filter-tab-${activeTab}`}
+          className="vp-work-index-filter__panel-body"
+        >
+          <ul className="vp-work-index-filter__terms" role="listbox">
+            <li>
+              <button
+                type="button"
+                className={`vp-work-index-filter__term${
+                  !filters[activeTab] ? ' is-selected' : ''
+                }`}
+                role="option"
+                aria-selected={!filters[activeTab]}
+                onClick={() => onSelectAll(activeTab)}
+              >
+                <span className="vp-work-index-filter__term-label">
+                  → {t('all')}
+                </span>
+                <span className="vp-work-index-filter__term-count">
+                  {formatParenCount(allCount)}
+                </span>
+              </button>
+            </li>
+            {options.map((opt) => {
+              const selected = filters[activeTab] === opt.value;
+              const termCount = countForPublicFilterValue(
+                filterEntries,
+                filters,
+                activeTab,
+                opt.value,
+              );
+              return (
+                <li key={opt.value}>
+                  <button
+                    type="button"
+                    className={`vp-work-index-filter__term${
+                      selected ? ' is-selected' : ''
+                    }`}
+                    role="option"
+                    aria-selected={selected}
+                    disabled={opt.disabled && !selected}
+                    onClick={() => onTermActivate(activeTab, opt.value)}
+                  >
+                    <span className="vp-work-index-filter__term-label">
+                      {stripOptionChrome(opt.label)}
+                    </span>
+                    <span className="vp-work-index-filter__term-count">
+                      {formatParenCount(termCount)}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  };
 
   const renderView = (view: SheetView): ReactNode => {
     if (view === 'root') {
@@ -425,6 +570,18 @@ export function PortfolioIndexFilterSheet({
       </ul>
     );
   };
+
+  const mobileHeaderStart = hasActiveFilters ? (
+    <button
+      type="button"
+      className="vp-index-filter-sheet__clear"
+      onClick={onClearAll}
+    >
+      {t('clearAll')}
+    </button>
+  ) : (
+    <span className="vp-bottom-sheet__header-spacer" aria-hidden />
+  );
 
   const headerStart =
     chromeView === 'root' ? (
@@ -494,19 +651,22 @@ export function PortfolioIndexFilterSheet({
     </div>
   );
 
-  // Mobile: shared BottomSheet shell.
+  // Mobile: shared BottomSheet + work-scoped tabbed taxonomy (Figma 2282:28724).
+  // Blog keeps its own BottomSheet + shared __term classes — untouched here.
   if (!isDesktop) {
     return (
       <BottomSheet
         open={open}
         onClose={onClose}
-        title={title}
+        ariaLabel={t('filter')}
         closeAriaLabel={t('closeFilterAria')}
-        headerStart={headerStart}
-        bodyClassName={drill ? 'is-drilling' : undefined}
+        headerStart={mobileHeaderStart}
+        className="vp-work-index-filter-sheet"
+        panelClassName="vp-work-index-filter__panel"
+        bodyClassName="vp-work-index-filter__sheet-body"
         onClosed={resetFilterView}
       >
-        {drillBody}
+        {renderMobileTabbedBody()}
       </BottomSheet>
     );
   }
