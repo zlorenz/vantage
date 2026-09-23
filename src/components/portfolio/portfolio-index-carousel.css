@@ -729,13 +729,17 @@
 }
 
 /*
- * Mobile ≤575 — square cards + wireframe that HUGS the poster box
- * (phone QC: no floating gap outside the image). Desktop ≥576 locked.
+ * Mobile ≤575 — square cards + wireframe with Figma gutter outside poster.
+ * Frame tracks the poster box, outset by --vp-candidate-work-index-mobile-frame-gutter
+ * (10px from 2282:28235 p-[10px]). Fill expanded box so 4:5 SVG can’t float.
+ * Desktop ≥576 locked.
  */
 @media (max-width: 575px) {
   .vp-portfolio-index {
-    /* 1px bleed so non-scaling strokes aren’t clipped at the face edge. */
-    --vp-index-bracket-outset: 1px;
+    --vp-index-bracket-outset: var(
+      --vp-candidate-work-index-mobile-frame-gutter,
+      10px
+    );
   }
 
   .vp-portfolio-index__card--styled {
@@ -751,15 +755,16 @@
     clip-path: inset(calc(-1 * var(--vp-index-bracket-outset)) 0);
   }
 
-  /*
-   * Full-bleed H guides align to the card band top/bottom (= poster edges
-   * when the active face fills the viewport height).
-   */
+  /* H guides sit on the wireframe top/bottom (= poster ± gutter). */
   .vp-portfolio-index__band-guides {
     display: block;
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: calc(
+      -1 * var(--vp-candidate-work-index-mobile-frame-gutter, 10px)
+    );
+    bottom: calc(
+      -1 * var(--vp-candidate-work-index-mobile-frame-gutter, 10px)
+    );
     left: 0;
     right: 0;
     z-index: 2;
@@ -792,17 +797,25 @@
   }
 
   /*
-   * Active-frame maps 1:1 to the poster box. Must set width/height 100% —
-   * SVG intrinsic viewBox is 4:5; with width/height:auto it kept that ratio
-   * on 2:3 cards and left a large bottom gap (phone QC).
+   * Outset by Figma gutter; width/height explicitly fill the expanded box
+   * (poster + 2×gutter) so the 4:5 viewBox stretches to 2:3 — no floating gap.
    */
   .vp-portfolio-index__active-frame {
     display: block;
     position: absolute;
-    inset: 0;
+    top: calc(
+      -1 * var(--vp-candidate-work-index-mobile-frame-gutter, 10px)
+    );
+    left: calc(
+      -1 * var(--vp-candidate-work-index-mobile-frame-gutter, 10px)
+    );
     z-index: 3;
-    width: 100%;
-    height: 100%;
+    width: calc(
+      100% + 2 * var(--vp-candidate-work-index-mobile-frame-gutter, 10px)
+    );
+    height: calc(
+      100% + 2 * var(--vp-candidate-work-index-mobile-frame-gutter, 10px)
+    );
     pointer-events: none;
     overflow: visible;
   }

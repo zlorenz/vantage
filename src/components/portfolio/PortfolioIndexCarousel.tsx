@@ -256,7 +256,7 @@ function SearchSubmitIcon() {
  * Active-card chrome from Figma 78:30485 (desktop) / 2282:28478 (mobile).
  * SVG so 1px strokes stay crisp via non-scaling-stroke.
  * Desktop: viewBox 542×670 on 512×640 face (15px outside) via CSS inset.
- * Mobile ≤575: CSS inset 0 — frame hugs the poster box (phone QC).
+ * Mobile ≤575: frame tracks poster, outset by Figma gutter (10px / p-[10px]).
  */
 function PortfolioIndexActiveFrame() {
   return (
