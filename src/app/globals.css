@@ -2071,6 +2071,95 @@ body:has(.vp-work-index) #header.navbar::before {
   }
 }
 
+/*
+ * Case credits ≤575 — denser L/R rows (Figma 2283:29693). Scoped to
+ * `.vp-case-credits-band` (portfolio entry only).
+ */
+@media (max-width: 575.98px) {
+  .vp-case-credits-band {
+    padding-top: var(
+      --vp-candidate-portfolio-case-mobile-credits-pad-top,
+      60px
+    );
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+    );
+    box-sizing: border-box;
+  }
+
+  .vp-case-credits-band .mt-24 {
+    margin-top: 0;
+  }
+
+  .vp-case-credits-band .vp-credits {
+    flex-direction: column;
+    gap: var(--vp-candidate-portfolio-case-mobile-dept-gap, 60px);
+  }
+
+  .vp-case-credits-band .vp-credits__divider {
+    display: none;
+  }
+
+  .vp-case-credits-band .vp-credits__col {
+    gap: var(--vp-candidate-portfolio-case-mobile-dept-gap, 60px);
+  }
+
+  .vp-case-credits-band .vp-credits__dept {
+    gap: 2rem; /* 32px header→rows */
+  }
+
+  .vp-case-credits-band .vp-credits__dept:last-child {
+    padding-bottom: 0;
+  }
+
+  .vp-case-credits-band .vp-credits__dept-head {
+    gap: 1.5rem; /* 24px around title */
+  }
+
+  .vp-case-credits-band .vp-credits__dept-name {
+    padding-inline: 0;
+    font-size: var(
+      --vp-candidate-portfolio-case-mobile-dept-title-size,
+      22px
+    );
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .vp-case-credits-band .vp-credits__rows {
+    padding-inline: 0;
+    gap: var(--vp-candidate-portfolio-case-mobile-credit-row-gap, 16px);
+  }
+
+  .vp-case-credits-band .vp-credit-pair {
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .vp-case-credits-band .vp-credit-role {
+    flex: 1 1 0;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
+    line-height: 1.25rem;
+    letter-spacing: 0;
+  }
+
+  .vp-case-credits-band .vp-credit-names {
+    flex: 1 1 0;
+    text-align: right;
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    font-weight: 700;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+}
+
 /* Curated featured-work grids (home, VPS, search) — match /work edge-to-edge on mobile */
 @media (max-width: 575.98px) {
   .vp-curated-gallery {
@@ -2455,6 +2544,58 @@ body:has(.vp-work-index) #header.navbar::before {
 @media (max-width: 639px) {
   .vp-key-visuals-gallery__pair {
     flex-direction: column;
+  }
+}
+
+/*
+ * Case Key Visuals ≤575 — single stack, 16px inset, 370/180 cells
+ * (Figma 2283:30969). Section only appears on portfolio entry pages.
+ */
+@media (max-width: 575.98px) {
+  .vp-case-shell .vp-key-visuals {
+    padding: 0
+      var(
+        --vp-candidate-portfolio-case-mobile-inline-pad,
+        var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+      )
+      var(--vp-candidate-portfolio-case-mobile-section-gap, 80px);
+    border-top: 0;
+    border-bottom: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+  }
+
+  .vp-case-shell .vp-key-visuals__title {
+    margin: 0 0 2.5rem; /* 40px title→grid */
+    font-size: var(--vp-candidate-portfolio-case-mobile-kv-title-size, 26px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+    color: #fff;
+  }
+
+  .vp-case-shell .vp-key-visuals-gallery--rhythm,
+  .vp-case-shell .vp-key-visuals-gallery--compact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--vp-candidate-portfolio-case-mobile-kv-gap, 12px);
+  }
+
+  .vp-case-shell .vp-key-visuals-gallery__col--left,
+  .vp-case-shell .vp-key-visuals-gallery__col--right {
+    flex: 1 1 auto;
+    width: 100%;
+    gap: var(--vp-candidate-portfolio-case-mobile-kv-gap, 12px);
+  }
+
+  .vp-case-shell .vp-key-visuals-gallery__pair {
+    flex-direction: column;
+    gap: var(--vp-candidate-portfolio-case-mobile-kv-gap, 12px);
+  }
+
+  .vp-case-shell .vp-key-visuals-gallery__item {
+    aspect-ratio: var(
+      --vp-candidate-portfolio-case-mobile-kv-cell-aspect,
+      370 / 180
+    ) !important;
   }
 }
 
