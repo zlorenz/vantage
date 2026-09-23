@@ -10,6 +10,14 @@
   height: 100svh;
   background: var(--vp-bg);
   color: #fff;
+  /*
+   * Color tokens hoisted from the ≥768 block so mobile can reference them
+   * without duplicating values. Desktop computed styles unchanged — same
+   * hex/rgba as before; spacing/type tokens stay desktop-scoped.
+   */
+  --vp-home-carousel-brand-accent: #fdb913;
+  --vp-home-carousel-credit-role: rgba(255, 255, 255, 0.5);
+  --vp-home-carousel-counter-muted: rgba(255, 255, 255, 0.6);
 }
 
 .vp-proto-carousel__viewport {
@@ -269,10 +277,8 @@
    * glyph fallback in the heading stack, and primary only for credit names.
    */
   .vp-proto-carousel {
-    --vp-home-carousel-brand-accent: #fdb913;
+    /* Colors live on the base rule (hoisted) — available to mobile too. */
     --vp-home-carousel-brand-dot-size: 0.8em;
-    --vp-home-carousel-credit-role: rgba(255, 255, 255, 0.5);
-    --vp-home-carousel-counter-muted: rgba(255, 255, 255, 0.6);
     --vp-home-carousel-tracking-tight-16: 0;
     --vp-home-carousel-tracking-tight-48: 0;
     --vp-home-carousel-tracking-tight-14: 0;
