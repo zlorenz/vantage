@@ -106,8 +106,8 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
         descriptionZh
       }
     },
-    "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
-    "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
+    "redesignBody": redesignBody${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
+    "redesignBodyZh": redesignBodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
     "categories": categories[]->{
       _id,
       title,

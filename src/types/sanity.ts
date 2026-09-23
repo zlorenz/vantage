@@ -441,8 +441,12 @@ export interface BlogPostMainVideo {
 
 /** Full blog post shape. */
 export interface BlogPost extends BlogPostCard {
+  /** Live body — not selected by POST_BY_SLUG_QUERY on redesign (cards use bodyText). */
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
+  /** Redesign-branch article body (parallel to live body/bodyZh). */
+  redesignBody?: PortableTextBlock[];
+  redesignBodyZh?: PortableTextBlock[];
   _updatedAt?: string;
   seo?: SeoFields;
   noIndex?: boolean;
