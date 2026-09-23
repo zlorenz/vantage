@@ -26,6 +26,8 @@ import {
 } from '@/lib/video-url';
 import type { GalleryImageItem } from '@/components/ui/ImageGalleryBlock';
 import type { PortableTextBlock as SanityPortableTextBlock, SanityImage } from '@/types/sanity';
+import './image-pair.css';
+import './pt-image.css';
 
 type LinkHref = ComponentProps<typeof Link>['href'];
 
@@ -215,19 +217,25 @@ function createComponents(
       const caption =
         image.caption?.trim() || image.asset.description?.trim() || '';
       return (
-        <figure className="vp-pt-image my-6">
-          <Image
-            src={imageUrl}
-            alt={alt}
-            width={1200}
-            height={675}
-            className="h-auto w-full"
-            sizes="(max-width: 992px) 100vw, 900px"
-          />
+        <figure className="vp-pt-image">
+          <div className="vp-image-pair__brackets" aria-hidden="true">
+            <span className="vp-image-pair__bracket vp-image-pair__bracket--tl" />
+            <span className="vp-image-pair__bracket vp-image-pair__bracket--tr" />
+            <span className="vp-image-pair__bracket vp-image-pair__bracket--br" />
+            <span className="vp-image-pair__bracket vp-image-pair__bracket--bl" />
+          </div>
+          <div className="vp-pt-image__media">
+            <Image
+              src={imageUrl}
+              alt={alt}
+              width={1200}
+              height={675}
+              className="vp-pt-image__img"
+              sizes="(max-width: 992px) 100vw, 900px"
+            />
+          </div>
           {caption ? (
-            <figcaption className="mt-2 text-sm font-light text-vp-text-soft">
-              {caption}
-            </figcaption>
+            <figcaption className="vp-image-pair__caption">{caption}</figcaption>
           ) : null}
         </figure>
       );

@@ -1,0 +1,39 @@
+/**
+ * Single Portable Text image embed — Figma 2281:13011.
+ * Brackets + caption bar reuse ImagePairBlock patterns (image-pair.css).
+ */
+
+.vp-pt-image {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* 4px — Figma gap image → caption */
+  box-sizing: border-box;
+  width: 100%;
+  margin: 2.5rem 0;
+  padding: 1.875rem; /* 30px */
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+}
+
+.vp-pt-image__media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.vp-pt-image__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+@media (max-width: 767.98px) {
+  .vp-pt-image {
+    margin: 2rem 0;
+    padding: 1.25rem;
+  }
+}
