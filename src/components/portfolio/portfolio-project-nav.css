@@ -466,3 +466,105 @@ a.vp-project-nav__explore:focus-visible {
     letter-spacing: 0;
   }
 }
+
+/*
+ * Case project-nav ≤575 — approximate Figma 2283:30988 (decision 8):
+ * restore corner ticks, 2:3 card, denser explore chrome. Structure kept.
+ */
+@media (max-width: 575.98px) {
+  .vp-project-nav {
+    padding: var(
+        --vp-candidate-portfolio-case-mobile-inline-pad,
+        var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+      );
+  }
+
+  .vp-project-nav__ticks {
+    display: block;
+    inset: 0.5rem; /* ~8px — Figma bracket pad */
+  }
+
+  .vp-project-nav__tick {
+    width: 0.5rem; /* 8px */
+    height: 0.5rem;
+  }
+
+  .vp-project-nav__left {
+    min-height: 0;
+    background: #0f0f0f;
+  }
+
+  .vp-project-nav__heading {
+    padding: 2.5rem
+      var(
+        --vp-candidate-portfolio-case-mobile-inline-pad,
+        16px
+      )
+      1rem;
+  }
+
+  .vp-project-nav__label {
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
+    font-weight: 700;
+    line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .vp-project-nav__mark {
+    width: 10rem;
+    bottom: calc(
+      var(--vp-candidate-portfolio-case-mobile-explore-height, 60px) + 1rem
+    );
+  }
+
+  .vp-project-nav__chrome {
+    height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+  }
+
+  .vp-project-nav__explore {
+    height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    padding-inline: 1rem;
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    line-height: 1.6;
+  }
+
+  .vp-project-nav__arrow {
+    flex-basis: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    width: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    padding: 1rem;
+  }
+
+  .vp-project-nav__card {
+    min-height: 0;
+    aspect-ratio: var(
+      --vp-candidate-portfolio-case-mobile-next-card-aspect,
+      2 / 3
+    );
+  }
+
+  .vp-project-nav__meta {
+    padding: 1rem
+      var(
+        --vp-candidate-portfolio-case-mobile-inline-pad,
+        16px
+      )
+      2.5rem;
+  }
+
+  .vp-project-nav__title {
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
+    font-weight: 700;
+    line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
+    letter-spacing: 0;
+  }
+
+  .vp-project-nav__brand,
+  .vp-project-nav__format {
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    letter-spacing: 0;
+  }
+}
