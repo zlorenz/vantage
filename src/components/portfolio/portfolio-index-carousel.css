@@ -390,7 +390,7 @@
   pointer-events: none;
 }
 
-/* Desktop-only chrome — hide the SVG shell on mobile so it can't affect layout. */
+/* Desktop-only chrome by default — mobile enables frame in ≤575 block below. */
 .vp-portfolio-index__active-frame {
   display: none;
   pointer-events: none;
@@ -725,6 +725,99 @@
   }
 }
 
+/*
+ * Mobile ≤575 — Figma Work 2282:28478 phone QC Fix 1:
+ * square cards + wireframe brackets / dashed rails / center + (decision 5 reversed).
+ * Desktop ≥576 bracket rules above stay locked.
+ */
+@media (max-width: 575px) {
+  .vp-portfolio-index {
+    /*
+     * Mobile wireframe outset ≈10px on a 320×520 face (Figma frame pad).
+     * Uses live card height via 10/520; width via 10/320.
+     */
+    --vp-index-bracket-outset: calc(
+      (
+          100svh - var(--vp-header-height, 4.5rem) -
+            var(--vp-index-top-row-height, 0px) -
+            var(--vp-index-active-filters-height, 0px) -
+            var(--vp-index-bottom-bar-height, 5rem) -
+            env(safe-area-inset-bottom, 0px)
+        ) * var(--vp-index-height-scale, 0.76) * 10 / 520
+    );
+  }
+
+  .vp-portfolio-index__card--styled {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .vp-portfolio-index__card--styled::after {
+    content: none;
+  }
+
+  .vp-portfolio-index__carousel-band {
+    clip-path: inset(calc(-1 * var(--vp-index-bracket-outset)) 0);
+  }
+
+  .vp-portfolio-index__band-guides {
+    display: block;
+    position: absolute;
+    top: calc(100% * -10 / 520);
+    bottom: calc(100% * -10 / 520);
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .vp-portfolio-index__band-guide {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.15) 0,
+      rgba(255, 255, 255, 0.15) 5px,
+      transparent 5px,
+      transparent 7px
+    );
+  }
+
+  .vp-portfolio-index__band-guide--top {
+    top: 0;
+  }
+
+  .vp-portfolio-index__band-guide--bottom {
+    bottom: 0;
+  }
+
+  .vp-portfolio-index__viewport {
+    overflow: visible;
+  }
+
+  .vp-portfolio-index__active-frame {
+    display: block;
+    position: absolute;
+    /* Figma mobile pad ~10px outside 320×520 face. */
+    inset: calc(100% * -10 / 520) calc(100% * -10 / 320);
+    z-index: 3;
+    width: auto;
+    height: auto;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .vp-portfolio-index__slide.is-active .vp-portfolio-index__card--styled {
+    overflow: visible;
+  }
+
+  .vp-portfolio-index__slide.is-active {
+    overflow: visible;
+    z-index: 2;
+  }
+}
+
 .vp-portfolio-index__poster-wrap {
   position: absolute;
   inset: 0;
@@ -854,7 +947,8 @@
 
 /*
  * Mobile card overlay type/pad toward Figma Work 2282:28478.
- * Keep CDN 2:3 bake; do not retarget 320×520 crops. Skip brackets/+ (decision 5).
+ * Keep CDN 2:3 bake; do not retarget 320×520 crops.
+ * Wireframe brackets/+ enabled in ≤575 card-chrome block (phone QC Fix 1).
  */
 @media (max-width: 575px) {
   .vp-portfolio-index__card--styled::before {
