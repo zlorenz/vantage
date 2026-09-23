@@ -474,3 +474,76 @@
     --vp-case-slide-gap: 0.5rem;
   }
 }
+
+/*
+ * Case-page multi carousel ≤575 — restyle chrome from 2283:29693 while
+ * keeping 16:9 (decision 2/3). Scoped under `.vp-case-shell` so blog
+ * relatedCase multi heroes (same carousel CSS) do not shift.
+ */
+@media (max-width: 575.98px) {
+  .vp-case-shell .vp-case-carousel {
+    --vp-case-overlay-pad-x: var(
+      --vp-candidate-portfolio-case-mobile-overlay-pad,
+      16px
+    );
+    --vp-case-overlay-pad-bottom: var(
+      --vp-candidate-portfolio-case-mobile-overlay-pad,
+      16px
+    );
+    --vp-case-card-width: 100cqw;
+    --vp-case-slide-gap: 0.5rem;
+  }
+
+  .vp-case-shell .vp-case-carousel__viewport {
+    padding-right: 12%;
+  }
+
+  .vp-case-shell .vp-case-carousel__card {
+    aspect-ratio: 16 / 9;
+  }
+
+  .vp-case-shell .vp-case-carousel__play-circle {
+    width: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
+    height: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
+  }
+
+  .vp-case-shell .vp-case-carousel__play-triangle {
+    border-width: 0.5rem 0 0.5rem 0.85rem;
+  }
+
+  .vp-case-shell .vp-case-carousel .h-20.w-20 {
+    width: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
+    height: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
+  }
+
+  .vp-case-shell .vp-case-carousel__bottom-bar {
+    height: auto;
+    min-height: 0;
+    padding-block: var(
+      --vp-candidate-portfolio-case-mobile-overlay-pad,
+      16px
+    );
+  }
+
+  .vp-case-shell .vp-case-carousel__brand {
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .vp-case-shell .vp-case-carousel__title {
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
+    font-weight: 700;
+    line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
+    letter-spacing: 0;
+  }
+
+  .vp-case-shell .vp-case-carousel__title-stack {
+    gap: 0.75rem;
+  }
+
+  .vp-case-shell .vp-case-carousel__info-label {
+    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+  }
+}
