@@ -189,9 +189,40 @@ a.vp-blog-hero__pill:focus-visible {
 }
 
 .vp-blog-post__prose {
+  /*
+   * Body type — Figma 2281:12954 (body_large) / 2281:12971 + 2281:13022 (h2).
+   * Frame applies the same 48px h2 token to every in-body section title
+   * (CMS often authors these as h3 on BRINC). Column max-width left at
+   * 79.1875rem (~1267) — within 2px of Figma 1265.
+   */
+  --vp-candidate-blog-body-size: 1.375rem; /* 22px body_large */
+  --vp-candidate-blog-body-color: rgba(255, 255, 255, 0.6);
+  --vp-candidate-blog-body-lh: 1.6;
+  --vp-candidate-blog-h2-size: 3rem; /* 48px */
+  --vp-candidate-blog-h2-lh: 1.2;
+  --vp-candidate-blog-h2-tracking: -0.96px;
+
   box-sizing: border-box;
   padding-inline: var(--vp-candidate-blog-hero-pad-x);
   padding-bottom: 3rem;
+}
+
+/* Overrides PortableTextContent utilities — blog body only. */
+.vp-blog-post__prose :is(p, ul, ol) {
+  font-size: var(--vp-candidate-blog-body-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-blog-body-lh);
+  letter-spacing: 0;
+  color: var(--vp-candidate-blog-body-color);
+}
+
+.vp-blog-post__prose :is(h2, h3) {
+  font-size: var(--vp-candidate-blog-h2-size);
+  font-weight: 700;
+  line-height: var(--vp-candidate-blog-h2-lh);
+  letter-spacing: var(--vp-candidate-blog-h2-tracking);
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 @media (min-width: 992px) {
