@@ -34,6 +34,23 @@ Naming: `--vp-candidate-[name]`
 
 ---
 
+## Site nav — mobile panel (pending)
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-mobile-nav-link-size` | `24px` | `.vp-desktop-nav-label` inside mobile panel | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-29325 | pending | Figma `h4`. Tracking floor 0. |
+| `--vp-candidate-mobile-nav-list-gap` | `32px` | `.vp-mobile-nav-list` | same | pending | |
+| `--vp-candidate-mobile-nav-list-pad-inline` | `30px` | List + search + brief/email pad | same | pending | |
+| `--vp-candidate-mobile-nav-list-pad-block` | `60px` | `.vp-mobile-nav-list` | same (`py-60`) | pending | |
+| `--vp-candidate-mobile-nav-social-row-height` | `80px` | `.vp-mobile-nav-socials` | same | pending | Desktop rail socials stay 100px. |
+| `--vp-candidate-mobile-nav-cta-height` | `80px` | `.vp-mobile-nav-brief` | same | pending | Desktop brief stays 100px. |
+
+**Reuse (no candidate):** Panel bg `#0f0f0f` (same as desktop rail); index `12px` / `rgba(255,255,255,0.3)` (desktop rail values); CTA yellow `var(--vp-link)`; index markup via shared `NavRailIndexLabel` / `formatNavRailIndex`.
+
+**Not introduced:** `--vp-candidate-mobile-nav-panel-bg`, `--vp-candidate-mobile-nav-index-size`, `--vp-candidate-mobile-nav-index-color` (reuse above).
+
+---
+
 ## Open product decision (not a colour/spacing candidate)
 
 | Name | Value | Used in | Source | Status | Notes |

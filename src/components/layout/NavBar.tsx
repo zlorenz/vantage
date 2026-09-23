@@ -54,21 +54,43 @@ interface NavBarProps {
   closeMenuAria: string;
 }
 
-const MOBILE_LINK_CLASS =
-  'vp-mobile-nav-link font-vp-heading text-vp-page-hero font-bold uppercase leading-[1.15] tracking-vp-page-hero text-white no-underline';
-
-const MOBILE_BRIEF_CLASS =
-  'inline-flex items-center rounded-full border-0 bg-vp-btn-primary-bg px-8 py-3 font-vp-heading text-vp-btn font-semibold leading-vp-btn uppercase tracking-vp-btn text-vp-btn-primary-text no-underline transition-colors duration-vp-default hover:bg-vp-btn-primary-hover-bg';
+const MOBILE_LINK_CLASS = 'vp-mobile-nav-link';
 
 const CLOSE_MS = 180;
 
 /** Keep 992 split — Figma rail is desktop-only; mobile keeps full-viewport panel. */
 const MOBILE_MQ = '(max-width: 991.98px)';
 
-function BriefArrowIcon() {
+/** Desktop rail + mobile panel share the same 01. / 02. index formatting. */
+function formatNavRailIndex(index: number): string {
+  return `${String(index + 1).padStart(2, '0')}.`;
+}
+
+function NavRailIndexLabel({
+  index,
+  label,
+}: {
+  index: number;
+  label: string;
+}) {
+  return (
+    <>
+      <span className="vp-desktop-nav-index" aria-hidden="true">
+        {formatNavRailIndex(index)}
+      </span>
+      <span className="vp-desktop-nav-label">{label}</span>
+    </>
+  );
+}
+
+function BriefArrowIcon({
+  className = 'vp-desktop-nav-brief__arrow',
+}: {
+  className?: string;
+}) {
   return (
     <svg
-      className="vp-desktop-nav-brief__arrow"
+      className={className}
       viewBox="0 0 18 18"
       aria-hidden="true"
       focusable="false"
@@ -254,7 +276,7 @@ export function NavBar({
           style={staggerStyle(i)}
         >
           <Link href={item.href} className={MOBILE_LINK_CLASS} onClick={closeMenu}>
-            {item.label}
+            <NavRailIndexLabel index={i} label={item.label} />
           </Link>
         </li>,
       );
@@ -264,7 +286,8 @@ export function NavBar({
   }
 
   const mobileItems = renderMobileItems();
-  const briefStaggerIndex = mobileItems.length;
+  const socialStaggerIndex = mobileItems.length;
+  const briefStaggerIndex = socialStaggerIndex + 1;
   const emailStaggerIndex = briefStaggerIndex + 1;
 
   return (
@@ -325,10 +348,7 @@ export function NavBar({
                   className="vp-desktop-nav-link"
                   onClick={closeMenu}
                 >
-                  <span className="vp-desktop-nav-index" aria-hidden="true">
-                    {String(index + 1).padStart(2, '0')}.
-                  </span>
-                  <span className="vp-desktop-nav-label">{item.label}</span>
+                  <NavRailIndexLabel index={index} label={item.label} />
                 </Link>
               </li>
             ))}
@@ -381,19 +401,44 @@ export function NavBar({
             <ul className="vp-mobile-nav-list navbar-nav m-0 w-full list-none p-0">
               {mobileItems}
             </ul>
+            {navSocials.length ? (
+              <ul
+                className="vp-mobile-nav-socials vp-mobile-nav-item m-0 list-none p-0"
+                style={staggerStyle(socialStaggerIndex)}
+              >
+                {navSocials.map((s) => (
+                  <li key={s.key} className="vp-mobile-nav-social">
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={s.label}
+                      aria-label={s.label}
+                      className="vp-mobile-nav-social__link"
+                    >
+                      <SocialGlyph
+                        icon={s.icon}
+                        className="vp-mobile-nav-social__icon"
+                      />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             <div className="vp-mobile-nav-footer">
               <Link
                 href={briefHref}
-                className={`${MOBILE_BRIEF_CLASS} vp-mobile-nav-item`}
+                className="vp-mobile-nav-brief vp-mobile-nav-item"
                 style={staggerStyle(briefStaggerIndex)}
                 onClick={closeMenu}
               >
-                {briefLabel}
+                <span className="vp-mobile-nav-brief__label">{briefLabel}</span>
+                <BriefArrowIcon className="vp-mobile-nav-brief__arrow" />
               </Link>
               {email ? (
                 <a
                   href={`mailto:${email}`}
-                  className="vp-mobile-nav-email vp-mobile-nav-item text-xl font-bold text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
+                  className="vp-mobile-nav-email vp-mobile-nav-item"
                   style={staggerStyle(emailStaggerIndex)}
                 >
                   {email}
