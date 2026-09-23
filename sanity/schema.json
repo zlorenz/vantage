@@ -2090,6 +2090,22 @@
         },
         "optional": true
       },
+      "redesignBody": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "portableTextBody"
+        },
+        "optional": true
+      },
+      "redesignBodyZh": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "portableTextBody"
+        },
+        "optional": true
+      },
       "noIndex": {
         "type": "objectAttribute",
         "value": {
