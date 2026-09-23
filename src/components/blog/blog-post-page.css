@@ -201,6 +201,9 @@ a.vp-blog-hero__pill:focus-visible {
   --vp-candidate-blog-h2-size: 3rem; /* 48px */
   --vp-candidate-blog-h2-lh: 1.2;
   --vp-candidate-blog-h2-tracking: -0.96px;
+  /* Figma 2281:12952 section stack — 120px before each headed section, 60px heading→body. */
+  --vp-candidate-blog-h2-mt: 7.5rem; /* 120px */
+  --vp-candidate-blog-h2-mb: 3.75rem; /* 60px */
 
   box-sizing: border-box;
   padding-inline: var(--vp-candidate-blog-hero-pad-x);
@@ -216,13 +219,19 @@ a.vp-blog-hero__pill:focus-visible {
   color: var(--vp-candidate-blog-body-color);
 }
 
-.vp-blog-post__prose :is(h2, h3) {
+.vp-blog-post__prose :is(h2, h3, h4) {
   font-size: var(--vp-candidate-blog-h2-size);
   font-weight: 700;
   line-height: var(--vp-candidate-blog-h2-lh);
   letter-spacing: var(--vp-candidate-blog-h2-tracking);
   text-transform: uppercase;
   color: #ffffff;
+  margin-top: var(--vp-candidate-blog-h2-mt);
+  margin-bottom: var(--vp-candidate-blog-h2-mb);
+}
+
+.vp-blog-post__prose :is(h2, h3, h4):first-child {
+  margin-top: 0;
 }
 
 @media (min-width: 992px) {

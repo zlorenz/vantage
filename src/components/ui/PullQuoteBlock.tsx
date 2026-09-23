@@ -1,6 +1,6 @@
 /**
  * PullQuoteBlock — blog body pull-quote (Figma Quotes 2281:13297 / 2281:13345).
- * Optional square headshot; layout stays text-only when absent.
+ * Optional headshot keeps natural aspect; fixed display height, width scales.
  */
 
 import Image from 'next/image';
@@ -11,12 +11,34 @@ import './pull-quote.css';
 export type PullQuoteValue = {
   text?: string | null;
   attribution?: string | null;
-  headshot?: SanityImageSource | null;
+  headshot?: (SanityImageSource & {
+    asset?: {
+      metadata?: {
+        dimensions?: {
+          width?: number | null;
+          height?: number | null;
+        } | null;
+      } | null;
+    } | null;
+  }) | null;
 };
 
 type PullQuoteBlockProps = {
   value: PullQuoteValue;
 };
+
+/** Display height (2× for CDN). Width follows intrinsic aspect. */
+const HEADSHOT_HEIGHT = 240;
+const HEADSHOT_FALLBACK = {width: 648, height: 648} as const;
+
+function headshotIntrinsicSize(headshot: NonNullable<PullQuoteValue['headshot']>) {
+  const width = headshot.asset?.metadata?.dimensions?.width;
+  const height = headshot.asset?.metadata?.dimensions?.height;
+  if (width && height && width > 0 && height > 0) {
+    return {width: Math.round(width), height: Math.round(height)};
+  }
+  return HEADSHOT_FALLBACK;
+}
 
 export function PullQuoteBlock({value}: PullQuoteBlockProps) {
   const text = value.text?.trim();
@@ -24,9 +46,11 @@ export function PullQuoteBlock({value}: PullQuoteBlockProps) {
 
   const attribution = value.attribution?.trim();
   const headshot = value.headshot;
-  const headshotUrl = headshot
-    ? urlForImage(headshot).width(648).height(648).fit('crop').url()
-    : null;
+  const intrinsic = headshot ? headshotIntrinsicSize(headshot) : null;
+  const headshotUrl =
+    headshot && intrinsic
+      ? urlForImage(headshot).height(HEADSHOT_HEIGHT * 2).fit('max').url()
+      : null;
 
   return (
     <figure
@@ -44,15 +68,20 @@ export function PullQuoteBlock({value}: PullQuoteBlockProps) {
       </div>
 
       <div className="vp-pull-quote__panel">
-        {headshotUrl ? (
-          <div className="vp-pull-quote__headshot">
+        {headshotUrl && intrinsic ? (
+          <div
+            className="vp-pull-quote__headshot"
+            style={{
+              aspectRatio: `${intrinsic.width} / ${intrinsic.height}`,
+            }}
+          >
             <Image
               src={headshotUrl}
               alt={attribution || ''}
-              width={648}
-              height={648}
+              width={intrinsic.width}
+              height={intrinsic.height}
               className="vp-pull-quote__headshot-img"
-              sizes="(max-width: 767px) 100vw, 324px"
+              sizes="(max-width: 767px) 100vw, 260px"
             />
           </div>
         ) : null}

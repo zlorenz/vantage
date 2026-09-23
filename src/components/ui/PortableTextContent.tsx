@@ -210,7 +210,7 @@ function createComponents(
         };
       };
       if (!image?.asset) return null;
-      const imageUrl = urlForImage(image).width(1200).url();
+      const imageUrl = urlForImage(image).width(2400).quality(90).url();
       // Block fields are optional per-instance overrides; Media metadata is the default.
       const alt =
         image.alt?.trim() || image.asset.altText?.trim() || '';
@@ -228,10 +228,11 @@ function createComponents(
             <Image
               src={imageUrl}
               alt={alt}
-              width={1200}
-              height={675}
+              width={2400}
+              height={1350}
+              quality={90}
               className="vp-pt-image__img"
-              sizes="(max-width: 992px) 100vw, 900px"
+              sizes="(max-width: 991.98px) 100vw, 1267px"
             />
           </div>
           {caption ? (
