@@ -1,7 +1,9 @@
 /**
  * Blog hero media — relatedCase player + optional brand/campaign overlay.
- * Brand/campaign values copied from .vp-case-header__* (portfolio-case-header.css)
- * onto blog-scoped classes so styles can diverge later.
+ *
+ * Single-video: logo-aligned left rail (same width as .vp-blog-hero__rail /
+ * .vp-case-carousel-row) + framed 16:9 media with struct hairlines.
+ * Multi-video: carousel-row owns the rail; this file only styles the overlay.
  */
 
 .vp-blog-hero-media {
@@ -10,32 +12,103 @@
   border-radius: 0;
 }
 
-.vp-blog-hero-media--embed {
-  position: relative;
+/*
+ * Single-video row — mirrors .vp-case-carousel-row:
+ * empty rail column + media frame, full-width top/bottom hairlines.
+ */
+.vp-blog-hero-media--with-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Mobile: own top/bottom rules. Desktop: same, spanning rail + frame. */
+  border-top: var(--vp-struct-line);
+  border-bottom: var(--vp-struct-line);
 }
 
-.vp-blog-hero-media--embed > .aspect-video,
-.vp-blog-hero-media--embed > *:not(.vp-blog-hero-media__overlay) {
+.vp-blog-hero-media__rail {
+  display: none;
+  box-sizing: border-box;
+}
+
+.vp-blog-hero-media__frame {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* mainVideo PortableText embed — keep 16:9 inside the framed column. */
+.vp-blog-hero-media__frame--embed {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.vp-blog-hero-media__frame--embed > .aspect-video,
+.vp-blog-hero-media__frame--embed > *:not(.vp-blog-hero-media__overlay) {
   width: 100%;
   height: 100%;
 }
 
+@media (min-width: 992px) {
+  .vp-blog-hero-media--with-rail {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .vp-blog-hero-media__rail {
+    display: block;
+    flex: 0 0 var(--vp-candidate-blog-rail-width, var(--vp-page-rail-width, 14.5rem));
+    width: var(--vp-candidate-blog-rail-width, var(--vp-page-rail-width, 14.5rem));
+    max-width: var(--vp-candidate-blog-rail-width, var(--vp-page-rail-width, 14.5rem));
+    min-height: 1px;
+    align-self: stretch;
+  }
+
+  .vp-blog-hero-media__frame {
+    /* Vertical hairline at the rail/media seam — continues from hero copy. */
+    border-left: var(--vp-struct-line);
+  }
+}
+
+/* Full-frame shell — scrim + bottom copy (same pattern as case / home carousel). */
 .vp-blog-hero-media__overlay {
   position: absolute;
+  inset: 0;
   z-index: 2;
-  right: 1.875rem;
-  bottom: 3.75rem; /* Figma pb 60 */
-  left: 1.875rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem; /* Figma 32px */
   pointer-events: none;
+}
+
+.vp-blog-hero-media__overlay-scrim {
+  position: absolute;
+  inset: 0;
+  /* Match .vp-case-carousel__overlay-scrim — bottom-weighted legibility. */
+  background: linear-gradient(
+    to top,
+    rgba(var(--vp-black-rgb), 0.72) 0%,
+    rgba(var(--vp-black-rgb), 0.28) 42%,
+    transparent 70%
+  );
+}
+
+.vp-blog-hero-media__overlay-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  /* Homepage --vp-home-carousel-title-tag-gap (24px); was 32px / 2rem. */
+  gap: 1.5rem;
+  padding: 0 1.875rem 3.75rem; /* Figma inset 30 / pb 60 */
+  text-align: left;
 }
 
 .vp-blog-hero__brand {
@@ -43,10 +116,13 @@
   font-family: var(--font-vp-heading);
   font-size: 1rem; /* caption_1 16px */
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.25;
   letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
+  /* Trim ascent/descent so the 24px gap reads edge-to-edge (homepage). */
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 .vp-blog-hero__campaign {
@@ -59,4 +135,6 @@
   text-transform: uppercase;
   color: #fff;
   overflow-wrap: break-word;
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
 }

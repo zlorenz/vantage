@@ -361,10 +361,12 @@
   font-family: var(--font-vp-heading);
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.25;
   letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 .vp-case-carousel__title {
@@ -394,7 +396,13 @@
 }
 
 .vp-case-carousel__overlay--blog .vp-case-carousel__title-stack {
-  gap: 1rem;
+  /* Match homepage / blog single overlay brand→title gap (24px). */
+  gap: 1.5rem;
+}
+
+.vp-case-carousel__overlay--blog .vp-case-carousel__title {
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
 }
 
 /*
