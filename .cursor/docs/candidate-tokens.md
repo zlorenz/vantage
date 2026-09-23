@@ -93,7 +93,7 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | `--vp-candidate-work-index-mobile-copy-stack-gap` | `20px` | Brand row → title ≤575 | same | pending | |
 | `--vp-candidate-work-index-mobile-filter-panel-height` | `76vh` | Work filter BottomSheet max-height | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | pending | Figma panel 667/874 ≈ 76%. |
 | `--vp-candidate-work-index-mobile-term-muted` | `rgba(255,255,255,0.2)` | Inactive term rows in mobile work filter | same | pending | Distinct from desktop `--vp-candidate-filter-item-muted` (0.25). |
-| `--vp-candidate-work-index-mobile-tab-pad-inline` | `16px` | Taxonomy tab cell pad-inline | same | pending | |
+| `--vp-candidate-work-index-mobile-tab-pad-inline` | `8px` (impl) / Figma `16px` | Taxonomy tab cell pad-inline | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | pending | Figma 16px assumes short “FORMAT”; EN “Formats” needs 8px to keep three tabs readable on 390. |
 | `--vp-candidate-work-index-mobile-tab-pad-block` | `20px` | Taxonomy tab cell pad-block | same | pending | Figma `py-20`. |
 | `--vp-candidate-filter-panel-width` | `530px` | Open filter panel | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | |
 | `--vp-candidate-index-peer-scrim` | `rgba(0,0,0,0.2–0.5)` even wash on inactive cards | Work peek cards | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | Active card has no wash; text sits on open media + corner brackets. |

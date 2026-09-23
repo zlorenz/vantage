@@ -42,6 +42,8 @@
   align-items: stretch;
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .vp-work-index-filter__tab-label {
@@ -55,21 +57,19 @@
   letter-spacing: 0;
   text-transform: uppercase;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
 }
 
 .vp-work-index-filter__tab {
   display: inline-flex;
   flex: 1 1 0;
-  min-width: 0;
+  min-width: max-content;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.25rem;
   margin: 0;
+  /* 8px inline — EN “Formats” + count needs room on 390; Figma 16px assumes shorter “FORMAT”. */
   padding: var(--vp-candidate-work-index-mobile-tab-pad-block, 20px)
-    var(--vp-candidate-work-index-mobile-tab-pad-inline, 16px);
+    8px;
   border: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
@@ -101,19 +101,6 @@
 /* Active tab: chevron points up (Figma −90° from down). */
 .vp-work-index-filter__tab-chevron.is-open {
   transform: rotate(180deg);
-}
-
-.vp-work-index-filter__tab-label {
-  font-family: var(--font-vp-heading);
-  font-size: var(
-    --vp-candidate-home-carousel-mobile-caption-size,
-    12px
-  );
-  font-weight: 700;
-  line-height: 20px;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  white-space: nowrap;
 }
 
 .vp-work-index-filter__tab-count {
