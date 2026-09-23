@@ -49,6 +49,23 @@ export function extractYouTubeId(url: string): string | null {
   return null
 }
 
+function normalizeVideoUrl(url: string): string {
+  return cleanUrlInput(url).trim().replace(/\/+$/, '').toLowerCase()
+}
+
+/**
+ * Same provider+id (and normalized-string) match as Studio
+ * `resolveVideoTitle` — shared so migrations / PT suppress stay in sync.
+ */
+export function urlsMatch(a: string, b: string): boolean {
+  const na = normalizeVideoUrl(a)
+  const nb = normalizeVideoUrl(b)
+  if (na === nb) return true
+  const idA = extractVimeoId(a) || extractYouTubeId(a)
+  const idB = extractVimeoId(b) || extractYouTubeId(b)
+  return Boolean(idA && idB && idA === idB)
+}
+
 export function extractVideoUrls(text: string): string[] {
   return [...cleanUrlInput(text).matchAll(VIDEO_URL_PATTERN)].map((match) => match[0])
 }

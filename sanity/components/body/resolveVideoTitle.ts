@@ -4,7 +4,7 @@
 
 import {compileDisplayTitles, trimPart} from '@display-titles'
 import {resolvePortfolioVideos} from '@portfolio-videos'
-import {extractVimeoId, extractYouTubeId, fetchVideoOEmbedTitle} from '@video-url'
+import {extractVimeoId, extractYouTubeId, fetchVideoOEmbedTitle, urlsMatch} from '@video-url'
 import type {SanityClient} from 'sanity'
 
 type PortfolioHit = {
@@ -37,19 +37,6 @@ function entryLabel(doc: PortfolioHit): string {
     if (trimPart(compiled)) return compiled
   }
   return doc.title?.trim() || ''
-}
-
-function normalizeUrl(url: string): string {
-  return url.trim().replace(/\/+$/, '').toLowerCase()
-}
-
-function urlsMatch(a: string, b: string): boolean {
-  const na = normalizeUrl(a)
-  const nb = normalizeUrl(b)
-  if (na === nb) return true
-  const idA = extractVimeoId(a) || extractYouTubeId(a)
-  const idB = extractVimeoId(b) || extractYouTubeId(b)
-  return Boolean(idA && idB && idA === idB)
 }
 
 /** Match portfolio video URL → best available title from portfolio. */

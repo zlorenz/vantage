@@ -1,8 +1,13 @@
 /**
  * Backfill blogPost.redesignBody / redesignBodyZh from live body / bodyZh.
  *
- * Copies each portable-text array verbatim, then converts blockquote-style
- * blocks into pullQuote objects **only inside the redesign copies**.
+ * Copies each portable-text array, then **only inside the redesign copies**:
+ *  1. Convert blockquote-style blocks → pullQuote objects.
+ *  2. Strip the first videoEmbed that matches the hero film URL
+ *     (relatedCase main video, else mainVideo.url) — same resolution as
+ *     BlogPostHeroMedia / page.tsx resolveBlogHeroVideoUrl; match via
+ *     shared urlsMatch (Studio resolveVideoTitle).
+ *
  * Never patches body / bodyZh.
  *
  * Dry-run (default):
@@ -18,7 +23,14 @@
  */
 
 import {createClient} from '@sanity/client'
-import {getPortableTextBlockPlainText} from '../../../shared/video-url'
+import {
+  resolveMainPortfolioVideo,
+  type PortfolioVideoSource,
+} from '../../../shared/portfolio-videos'
+import {
+  getPortableTextBlockPlainText,
+  urlsMatch,
+} from '../../../shared/video-url'
 import {SANITY} from '../config'
 import {getWriteClient} from '../lib/sanity-client'
 
@@ -47,7 +59,12 @@ type PtBlock = Record<string, unknown> & {
   _type?: string
   _key?: string
   style?: string
+  url?: string
   children?: unknown
+}
+
+type RelatedCaseRow = PortfolioVideoSource & {
+  _id?: string
 }
 
 type BlogRow = {
@@ -56,11 +73,25 @@ type BlogRow = {
   slug?: string | null
   body?: PtBlock[] | null
   bodyZh?: PtBlock[] | null
+  mainVideo?: {url?: string | null} | null
+  relatedCase?: RelatedCaseRow | null
   hasRedesignBody?: boolean
   hasRedesignBodyZh?: boolean
 }
 
 type QuoteSample = {key: string; text: string}
+
+type VideoStripResult = {
+  stripped: boolean
+  /** Hero URL used for matching; null when no relatedCase/mainVideo. */
+  heroUrl: string | null
+  /** Why strip was skipped when not stripped. */
+  skipReason?: 'no-hero' | 'no-matching-embed'
+  matchedUrl?: string
+  blockIndex?: number
+  blockKey?: string
+  remainingVideoEmbeds: number
+}
 
 type DocReport = {
   id: string
@@ -70,9 +101,15 @@ type DocReport = {
   zhConversions: number
   enSamples: QuoteSample[]
   zhSamples: QuoteSample[]
+  enVideo: VideoStripResult
+  zhVideo: VideoStripResult
   redesignBody: PtBlock[]
   redesignBodyZh: PtBlock[]
   alreadyHasRedesign: boolean
+  /** Hero linked but body still has embeds — ok after strip, or no match. */
+  hasHeroLink: boolean
+  /** No hero link yet; embeds left in place — re-run after Studio linking. */
+  needsRerunAfterLink: boolean
 }
 
 function newKey(): string {
@@ -112,6 +149,80 @@ function convertBlockquotes(blocks: PtBlock[]): {
   return {next, conversions, samples}
 }
 
+/**
+ * Same source as page.tsx resolveBlogHeroVideoUrl /
+ * BlogPostHeroMedia relatedCase path.
+ */
+function resolveHeroVideoUrl(row: BlogRow): string | undefined {
+  if (row.relatedCase?._id) {
+    const main = resolveMainPortfolioVideo(row.relatedCase)
+    const url =
+      main?.vimeoUrl?.trim() || row.relatedCase.vimeoUrl?.trim() || ''
+    return url || undefined
+  }
+  const mainUrl = row.mainVideo?.url?.trim()
+  return mainUrl || undefined
+}
+
+function countVideoEmbeds(blocks: PtBlock[]): number {
+  return blocks.filter((b) => b._type === 'videoEmbed').length
+}
+
+/** Splice out the first videoEmbed whose url matches heroUrl (urlsMatch). */
+function stripFirstMatchingVideoEmbed(
+  blocks: PtBlock[],
+  heroUrl: string | null,
+): {next: PtBlock[]; result: VideoStripResult} {
+  const remainingBefore = countVideoEmbeds(blocks)
+
+  if (!heroUrl) {
+    return {
+      next: blocks,
+      result: {
+        stripped: false,
+        heroUrl: null,
+        skipReason: 'no-hero',
+        remainingVideoEmbeds: remainingBefore,
+      },
+    }
+  }
+
+  const index = blocks.findIndex((block) => {
+    if (block._type !== 'videoEmbed') return false
+    const url = typeof block.url === 'string' ? block.url.trim() : ''
+    return Boolean(url && urlsMatch(url, heroUrl))
+  })
+
+  if (index < 0) {
+    return {
+      next: blocks,
+      result: {
+        stripped: false,
+        heroUrl,
+        skipReason: 'no-matching-embed',
+        remainingVideoEmbeds: remainingBefore,
+      },
+    }
+  }
+
+  const matched = blocks[index]!
+  const matchedUrl =
+    typeof matched.url === 'string' ? matched.url.trim() : ''
+  const next = [...blocks.slice(0, index), ...blocks.slice(index + 1)]
+
+  return {
+    next,
+    result: {
+      stripped: true,
+      heroUrl,
+      matchedUrl,
+      blockIndex: index,
+      blockKey: typeof matched._key === 'string' ? matched._key : undefined,
+      remainingVideoEmbeds: countVideoEmbeds(next),
+    },
+  }
+}
+
 function getReadClient() {
   return createClient({
     projectId: SANITY.projectId,
@@ -120,6 +231,26 @@ function getReadClient() {
     token: SANITY.token || undefined,
     useCdn: false,
   })
+}
+
+function formatVideoStrip(label: string, v: VideoStripResult): void {
+  if (v.stripped) {
+    console.log(
+      `  video strip ${label}: YES — index ${v.blockIndex}` +
+        (v.blockKey ? ` key=${v.blockKey}` : '') +
+        ` matched=${v.matchedUrl} (hero=${v.heroUrl}); remaining embeds=${v.remainingVideoEmbeds}`,
+    )
+    return
+  }
+  if (v.skipReason === 'no-hero') {
+    console.log(
+      `  video strip ${label}: NO — no relatedCase/mainVideo (embeds kept=${v.remainingVideoEmbeds})`,
+    )
+    return
+  }
+  console.log(
+    `  video strip ${label}: NO — hero set (${v.heroUrl}) but no matching videoEmbed (embeds=${v.remainingVideoEmbeds})`,
+  )
 }
 
 async function main() {
@@ -132,6 +263,34 @@ async function main() {
       "slug": slug.current,
       body,
       bodyZh,
+      mainVideo{ url },
+      relatedCase->{
+        _id,
+        videos[]{
+          _key,
+          vimeoUrl,
+          xinpianchangUrl,
+          videoTitle,
+          videoTitleZh,
+          previewCleanVimeoUrl,
+          previewStartSeconds,
+          previewEndSeconds
+        },
+        vimeoUrl,
+        xinpianchangUrl,
+        previewCleanVimeoUrl,
+        previewStartSeconds,
+        previewEndSeconds,
+        heroFilmTitle,
+        heroFilmTitleZh,
+        additionalVideos[]{
+          _key,
+          vimeoUrl,
+          xinpianchangUrl,
+          videoTitle,
+          videoTitleZh
+        }
+      },
       "hasRedesignBody": defined(redesignBody),
       "hasRedesignBodyZh": defined(redesignBodyZh)
     }`,
@@ -158,42 +317,62 @@ async function main() {
   for (const row of rows) {
     const slug = row.slug ?? '(no-slug)'
     const title = row.title ?? '(untitled)'
-    const enCopy = deepCopyBlocks(row.body)
-    const zhCopy = deepCopyBlocks(row.bodyZh)
-    const en = convertBlockquotes(enCopy)
-    const zh = convertBlockquotes(zhCopy)
-    totalConversions += en.conversions + zh.conversions
+    const heroUrl = resolveHeroVideoUrl(row) ?? null
+    const hasHeroLink = Boolean(heroUrl)
+
+    const enQuotes = convertBlockquotes(deepCopyBlocks(row.body))
+    const zhQuotes = convertBlockquotes(deepCopyBlocks(row.bodyZh))
+    totalConversions += enQuotes.conversions + zhQuotes.conversions
+
+    const enStrip = stripFirstMatchingVideoEmbed(enQuotes.next, heroUrl)
+    const zhStrip = stripFirstMatchingVideoEmbed(zhQuotes.next, heroUrl)
 
     const expected = EXPECTED_BY_SLUG.get(slug)
     if (expected) {
-      if (en.conversions !== expected.en || zh.conversions !== expected.zh) {
+      if (
+        enQuotes.conversions !== expected.en ||
+        zhQuotes.conversions !== expected.zh
+      ) {
         drift.push(
-          `${slug}: expected EN ${expected.en} / ZH ${expected.zh}, got EN ${en.conversions} / ZH ${zh.conversions}`,
+          `${slug}: expected EN ${expected.en} / ZH ${expected.zh}, got EN ${enQuotes.conversions} / ZH ${zhQuotes.conversions}`,
         )
       }
-    } else if (en.conversions !== 0 || zh.conversions !== 0) {
+    } else if (enQuotes.conversions !== 0 || zhQuotes.conversions !== 0) {
       drift.push(
-        `${slug}: expected 0 conversions, got EN ${en.conversions} / ZH ${zh.conversions}`,
+        `${slug}: expected 0 conversions, got EN ${enQuotes.conversions} / ZH ${zhQuotes.conversions}`,
       )
     }
+
+    const embedsLeftWithoutHero =
+      !hasHeroLink &&
+      (enStrip.result.remainingVideoEmbeds > 0 ||
+        zhStrip.result.remainingVideoEmbeds > 0)
 
     reports.push({
       id: row._id,
       title,
       slug,
-      enConversions: en.conversions,
-      zhConversions: zh.conversions,
-      enSamples: en.samples,
-      zhSamples: zh.samples,
-      redesignBody: en.next,
-      redesignBodyZh: zh.next,
+      enConversions: enQuotes.conversions,
+      zhConversions: zhQuotes.conversions,
+      enSamples: enQuotes.samples,
+      zhSamples: zhQuotes.samples,
+      enVideo: enStrip.result,
+      zhVideo: zhStrip.result,
+      redesignBody: enStrip.next,
+      redesignBodyZh: zhStrip.next,
       alreadyHasRedesign: Boolean(row.hasRedesignBody || row.hasRedesignBodyZh),
+      hasHeroLink,
+      needsRerunAfterLink: embedsLeftWithoutHero,
     })
   }
 
   for (const report of reports) {
     const flag =
-      report.enConversions + report.zhConversions > 0 ? ' ★' : ''
+      report.enConversions + report.zhConversions > 0 ||
+      report.enVideo.stripped ||
+      report.zhVideo.stripped
+        ? ' ★'
+        : ''
     console.log('─'.repeat(72))
     console.log(`${report.title}${flag}`)
     console.log(`  slug: ${report.slug}`)
@@ -201,22 +380,35 @@ async function main() {
     console.log(
       `  conversions: EN ${report.enConversions} + ZH ${report.zhConversions} = ${report.enConversions + report.zhConversions}`,
     )
+    formatVideoStrip('EN', report.enVideo)
+    formatVideoStrip('ZH', report.zhVideo)
+    if (report.needsRerunAfterLink) {
+      console.log(
+        '  FLAG: no relatedCase/mainVideo yet but body still has videoEmbed(s) — re-run this backfill after Studio linking so the hero duplicate can be stripped.',
+      )
+    }
     if (report.alreadyHasRedesign) {
-      console.log('  note: redesignBody* already defined — --apply would overwrite')
+      console.log(
+        '  note: redesignBody* already defined — --apply would overwrite',
+      )
     }
     if (report.enSamples.length) {
-      console.log('  EN samples:')
+      console.log('  EN quote samples:')
       for (const sample of report.enSamples) {
         console.log(`    [${sample.key}] ${sample.text}`)
       }
     }
     if (report.zhSamples.length) {
-      console.log('  ZH samples:')
+      console.log('  ZH quote samples:')
       for (const sample of report.zhSamples) {
         console.log(`    [${sample.key}] ${sample.text}`)
       }
     }
   }
+
+  const strippedEn = reports.filter((r) => r.enVideo.stripped).length
+  const strippedZh = reports.filter((r) => r.zhVideo.stripped).length
+  const needsRerun = reports.filter((r) => r.needsRerunAfterLink)
 
   console.log('\n' + '═'.repeat(72))
   console.log(
@@ -225,6 +417,17 @@ async function main() {
   console.log(
     `Docs with quotes: ${reports.filter((r) => r.enConversions + r.zhConversions > 0).length}`,
   )
+  console.log(
+    `Video strips: EN ${strippedEn} docs, ZH ${strippedZh} docs`,
+  )
+  console.log(
+    `Needs re-run after relatedCase/mainVideo link: ${needsRerun.length} docs`,
+  )
+  for (const r of needsRerun) {
+    console.log(
+      `  • ${r.slug} (EN embeds=${r.enVideo.remainingVideoEmbeds}, ZH embeds=${r.zhVideo.remainingVideoEmbeds})`,
+    )
+  }
 
   if (drift.length) {
     console.error('\nQuote-count drift:')
@@ -246,6 +449,9 @@ async function main() {
     console.log(
       'Backup: npx sanity dataset export production <path>/vantage-production-$(date +%Y%m%d).tar.gz --no-assets',
     )
+    console.log(
+      'Phase 5 (remove suppressVideoUrl render logic): HELD until apply + query/render swap verified.',
+    )
     return
   }
 
@@ -260,7 +466,7 @@ async function main() {
       .commit()
     patched += 1
     console.log(
-      `PATCHED ${report.slug} (EN ${report.enConversions}, ZH ${report.zhConversions})`,
+      `PATCHED ${report.slug} (quotes EN ${report.enConversions}/ZH ${report.zhConversions}; video strip EN ${report.enVideo.stripped}/ZH ${report.zhVideo.stripped})`,
     )
   }
 
