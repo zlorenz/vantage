@@ -792,16 +792,17 @@
   }
 
   /*
-   * Active-frame maps 1:1 to the poster box (inset 0). Rails/brackets/+
-   * sit on the face edges — not on a larger padded stage.
+   * Active-frame maps 1:1 to the poster box. Must set width/height 100% —
+   * SVG intrinsic viewBox is 4:5; with width/height:auto it kept that ratio
+   * on 2:3 cards and left a large bottom gap (phone QC).
    */
   .vp-portfolio-index__active-frame {
     display: block;
     position: absolute;
     inset: 0;
     z-index: 3;
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     overflow: visible;
   }
