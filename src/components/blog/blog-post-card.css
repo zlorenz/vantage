@@ -192,3 +192,60 @@ a.vp-blog-card__pill:focus-visible {
 .vp-blog-card__excerpt p {
   margin: 0;
 }
+
+/* Blog cards — phone ≤575 (Figma ArticleCard scale-down). */
+@media (max-width: 575.98px) {
+  .vp-blog-card {
+    gap: 0.75rem;
+    padding-bottom: 3.75rem; /* 60px */
+  }
+
+  .vp-blog-card__media {
+    padding: var(--vp-overlay-mobile-pad-inline, 16px);
+  }
+
+  .vp-blog-card__thumb {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    min-height: 12.5rem; /* ~200 — toward Figma ~240 band */
+  }
+
+  .vp-blog-card__date-pill {
+    top: calc(var(--vp-overlay-mobile-pad-inline, 16px) + 0.75rem);
+    left: calc(var(--vp-overlay-mobile-pad-inline, 16px) + 0.75rem);
+    min-height: var(--vp-candidate-blog-mobile-pill-height, 32px);
+    padding: 0.35rem 0.75rem;
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
+  }
+
+  .vp-blog-card__brackets {
+    inset: 0.5rem;
+  }
+
+  .vp-blog-card__body {
+    gap: 1rem;
+    padding: 0 var(--vp-overlay-mobile-pad-inline, 16px);
+  }
+
+  .vp-blog-card__pill {
+    min-height: var(--vp-candidate-blog-mobile-pill-height, 32px);
+    padding: 0.35rem 0.75rem;
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
+  }
+
+  .vp-blog-card__copy {
+    gap: 0.75rem;
+  }
+
+  .vp-blog-card__title {
+    font-size: var(--vp-candidate-blog-mobile-card-title-size, 16px);
+    line-height: 1.35;
+  }
+
+  .vp-blog-card__excerpt {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.45;
+  }
+}

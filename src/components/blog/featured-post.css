@@ -263,11 +263,12 @@ a.vp-featured-post__pill:focus-visible {
   border-left-width: 1px;
 }
 
-/* Desktop-only pass — stack as a simple block below Figma desktop split. */
+/* Desktop-only pass — stack as a simple block below Figma desktop split.
+ * Decision: keep media → copy → CTA (media order:-1), not Figma copy-first. */
 @media (max-width: 575.98px) {
   .vp-featured-post {
     margin-bottom: 3rem;
-    padding: 1rem;
+    padding: var(--vp-overlay-mobile-pad-inline, 16px);
   }
 
   .vp-featured-post__inner {
@@ -283,10 +284,41 @@ a.vp-featured-post__pill:focus-visible {
   }
 
   .vp-featured-post__copy {
-    padding: 1.5rem 1.25rem 1.25rem;
+    gap: 1rem;
+    padding: 1.5rem
+      var(--vp-overlay-mobile-pad-inline, 16px)
+      1.25rem;
+  }
+
+  .vp-featured-post__pill,
+  .vp-featured-post__date-pill {
+    min-height: var(--vp-candidate-blog-mobile-pill-height, 32px);
+    padding: 0.35rem 0.75rem;
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
   }
 
   .vp-featured-post__title {
-    font-size: 1.5rem;
+    font-size: var(--vp-candidate-blog-mobile-featured-title-size, 24px);
+    line-height: 1.3;
+  }
+
+  .vp-featured-post__excerpt {
+    font-size: 1rem; /* 16px */
+    -webkit-line-clamp: 4;
+  }
+
+  .vp-featured-post__cta {
+    height: 3.75rem; /* 60px — Figma featured CTA */
+    padding: 0.75rem
+      var(--vp-overlay-mobile-pad-inline, 16px);
+  }
+
+  .vp-featured-post__cta-label {
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+  }
+
+  .vp-featured-post__brackets {
+    inset: 0.5rem;
   }
 }
