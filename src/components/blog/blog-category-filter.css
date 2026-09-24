@@ -16,13 +16,13 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--vp-candidate-chrome-chip-size, 2.75rem);
+  height: var(--vp-candidate-chrome-chip-size, 2.75rem);
   margin: 0;
   padding: 0;
-  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
-  border-radius: 9999px;
-  background: rgba(var(--vp-black-rgb), 0.45);
+  border: var(--vp-candidate-chrome-chip-border);
+  border-radius: var(--vp-candidate-chrome-chip-radius, 9999px);
+  background: var(--vp-candidate-chrome-chip-bg);
   color: #fff;
   cursor: pointer;
   vertical-align: baseline;
@@ -38,8 +38,8 @@
 
 .vp-news-page__filter-trigger-icon {
   display: block;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
+  height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
 }
 
 /* Term rows are <a> Links — keep button-like interaction chrome. */

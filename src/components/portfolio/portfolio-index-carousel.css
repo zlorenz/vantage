@@ -73,8 +73,8 @@
       20px
     );
     /*
-     * Mobile SEARCH/FILTER chrome under 64px nav: circular chips (2.75rem,
-     * matching blog `.vp-news-page__filter-trigger`) + py-24 = 5.75rem.
+     * Mobile SEARCH/FILTER chrome under 64px nav: circular chips
+     * (--vp-candidate-chrome-chip-size) + py-24 = 5.75rem.
      */
     --vp-index-top-row-height: 5.75rem;
     /* Decision 6: omit active-filter pills on mobile for now. */
@@ -184,8 +184,8 @@
   }
 
   /*
-   * Match blog index `.vp-news-page__filter-trigger` — circular glass chip,
-   * white icon, soft border that brightens on hover/focus.
+   * Circular glass chip — shared with blog `.vp-news-page__filter-trigger`
+   * via --vp-candidate-chrome-chip-*.
    */
   .vp-portfolio-index__mobile-chrome-search,
   .vp-portfolio-index__mobile-chrome-filter {
@@ -193,13 +193,13 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: var(--vp-candidate-chrome-chip-size, 2.75rem);
+    height: var(--vp-candidate-chrome-chip-size, 2.75rem);
     margin: 0;
     padding: 0;
-    border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
-    border-radius: 9999px;
-    background: rgba(var(--vp-black-rgb), 0.45);
+    border: var(--vp-candidate-chrome-chip-border);
+    border-radius: var(--vp-candidate-chrome-chip-radius, 9999px);
+    background: var(--vp-candidate-chrome-chip-bg);
     color: #fff;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -223,8 +223,8 @@
 
   .vp-portfolio-index__mobile-chrome-icon {
     display: block;
-    width: 1.25rem; /* 20px — same as blog filter trigger */
-    height: 1.25rem;
+    width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
+    height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
     flex-shrink: 0;
   }
 
@@ -1089,8 +1089,8 @@
 .vp-portfolio-index__tool--search {
   margin-inline-end: 0.35rem;
   /* Empty spacer mirrors filter-trigger width when search button is gone. */
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--vp-candidate-chrome-chip-size, 2.75rem);
+  height: var(--vp-candidate-chrome-chip-size, 2.75rem);
 }
 
 /* Positions the desktop filter popout above the funnel (mobile sheet is fixed). */
@@ -1106,13 +1106,13 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--vp-candidate-chrome-chip-size, 2.75rem);
+  height: var(--vp-candidate-chrome-chip-size, 2.75rem);
   margin: 0;
   padding: 0;
-  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
-  border-radius: 9999px;
-  background: rgba(var(--vp-black-rgb), 0.45);
+  border: var(--vp-candidate-chrome-chip-border);
+  border-radius: var(--vp-candidate-chrome-chip-radius, 9999px);
+  background: var(--vp-candidate-chrome-chip-bg);
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1134,8 +1134,8 @@
 
 .vp-portfolio-index__filter-trigger-icon {
   display: block;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
+  height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
 }
 
 /* Scrubber — Siena-like ticks + dark pill; decorative ticks (not 1:1 slides). */

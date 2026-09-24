@@ -25,6 +25,22 @@ Naming: `--vp-candidate-[name]`
 
 ---
 
+## Chrome — circular glass chip (pending)
+
+Exact match across work mobile SEARCH/FILTER, work bottom-bar filter trigger, and blog `.vp-news-page__filter-trigger`. Defined on `:root` in `globals.css`.
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-chrome-chip-size` | `2.75rem` | Work SEARCH/FILTER chips; blog filter trigger; work filter-trigger + search spacer | product parity | pending | Sheet close / header spacer share this size only. |
+| `--vp-candidate-chrome-chip-icon-size` | `1.25rem` | Chip icons (work + blog) | same | pending | |
+| `--vp-candidate-chrome-chip-radius` | `9999px` | Glass chips | same | pending | Sheet icon-btn also circular but transparent. |
+| `--vp-candidate-chrome-chip-border` | `1px solid var(--vp-border-soft)` | Glass chips | same | pending | **Not** sheet close (`border: 0`). |
+| `--vp-candidate-chrome-chip-bg` | `rgba(var(--vp-black-rgb), 0.45)` | Glass chips | same | pending | Same channel as `--vp-overlay-dark`; **not** sheet close (`transparent`). |
+
+**Intentional non-wire:** `.vp-bottom-sheet__icon-btn` / `.vp-index-filter-sheet__icon-btn` — same size/radius, different border + fill. Do not force glass tokens onto sheet chrome.
+
+---
+
 ## Site nav — mobile bar (pending)
 
 | Candidate name | Value | Used in | Source | Status | Notes |

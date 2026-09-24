@@ -272,6 +272,18 @@
   --vp-overlay-mobile-pad-block: 40px;
   --vp-overlay-mobile-title-tag-gap: 12px;
 
+  /*
+   * Circular glass chrome chips — work SEARCH/FILTER + blog filter trigger
+   * (exact match). Sheet close buttons share size/radius only (transparent,
+   * no border) — see candidate-tokens.md.
+   */
+  --vp-candidate-chrome-chip-size: 2.75rem;
+  --vp-candidate-chrome-chip-icon-size: 1.25rem;
+  --vp-candidate-chrome-chip-radius: 9999px;
+  --vp-candidate-chrome-chip-border: 1px solid
+    var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+  --vp-candidate-chrome-chip-bg: rgba(var(--vp-black-rgb), 0.45);
+
   /* Colour Palette — Form & Input */
 
   --vp-input-bg: rgba(255, 255, 255, 0.08);
