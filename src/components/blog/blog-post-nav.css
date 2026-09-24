@@ -414,3 +414,24 @@ a.vp-blog-nav__pill:focus-visible {
     min-height: 14rem;
   }
 }
+
+/* Next/related posts — light ≤575 tighten toward index card scale. */
+@media (max-width: 575.98px) {
+  .vp-blog-nav {
+    padding: 2rem var(--vp-overlay-mobile-pad-inline, 16px) 0;
+  }
+
+  .vp-blog-nav__copy {
+    padding: 1.25rem var(--vp-overlay-mobile-pad-inline, 16px);
+    padding-bottom: calc(var(--vp-blog-nav-chrome) + 1rem);
+  }
+
+  .vp-blog-nav__title {
+    font-size: var(--vp-candidate-blog-mobile-featured-title-size, 24px);
+    line-height: 1.3;
+  }
+
+  .vp-blog-nav__left {
+    min-height: 16rem;
+  }
+}

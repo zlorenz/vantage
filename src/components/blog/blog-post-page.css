@@ -335,3 +335,28 @@ a.vp-blog-hero__pill:focus-visible {
     line-height: 1.5;
   }
 }
+
+/* Single post body — phone ≤575 type scale. */
+@media (max-width: 575.98px) {
+  .vp-blog-post__body {
+    padding-top: 3rem;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .vp-blog-post__prose {
+    --vp-candidate-blog-body-size: var(
+      --vp-candidate-blog-mobile-body-size,
+      16px
+    );
+    --vp-candidate-blog-h2-size: var(
+      --vp-candidate-blog-mobile-h2-size,
+      28px
+    );
+    --vp-candidate-blog-h2-tracking: -0.56px;
+    --vp-candidate-blog-h2-mt: 4.5rem; /* toward gap-120 / 48 rhythm */
+    --vp-candidate-blog-h2-mb: 1.5rem;
+    padding-inline: var(--vp-overlay-mobile-pad-inline, 16px);
+    padding-bottom: 2.5rem;
+  }
+}
