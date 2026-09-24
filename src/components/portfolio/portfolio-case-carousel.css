@@ -397,7 +397,7 @@
 
 .vp-case-carousel__overlay--blog .vp-case-carousel__title-stack {
   /* Match homepage mobile brand→title gap (12px); desktop 24px below. */
-  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
+  gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
 }
 
 @media (min-width: 768px) {
@@ -546,7 +546,7 @@
   }
 
   .vp-case-shell .vp-case-carousel__title-stack {
-    gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
+    gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
   }
 
   .vp-case-shell .vp-case-carousel__info-label {

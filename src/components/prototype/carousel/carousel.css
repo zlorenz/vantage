@@ -21,18 +21,11 @@
   --vp-home-carousel-brand-dot-size: 0.8em;
   --vp-home-carousel-title-tag-gap: 24px;
   /*
-   * Mobile-only candidates (≤767) — Figma 2282:27788 family. Not promoted.
-   * Pad-block 40px = Figma overlay `py-40` with credits removed.
-   * Counter offset 69px = center 133px from top − 64px bar on 874 artboard.
-   * Title-tag gap 12px = half of desktop 24px so brand→campaign reads
-   * proportionally tight against the smaller mobile type.
+   * Mobile overlay type/pad/gap live on :root as --vp-overlay-mobile-*.
+   * Counter offset stays candidate — counter is display:none on mobile.
+   * 69px = center 133px from top − 64px bar on Figma 874 artboard.
    */
-  --vp-candidate-home-carousel-mobile-title-size: 28px;
-  --vp-candidate-home-carousel-mobile-caption-size: 12px;
-  --vp-candidate-home-carousel-mobile-overlay-pad-inline: 16px;
-  --vp-candidate-home-carousel-mobile-overlay-pad-block: 40px;
   --vp-candidate-home-carousel-mobile-counter-offset: 69px;
-  --vp-candidate-home-carousel-mobile-title-tag-gap: 12px;
 }
 
 .vp-proto-carousel__viewport {
@@ -194,10 +187,10 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: 0;
-  padding: var(--vp-candidate-home-carousel-mobile-overlay-pad-block)
-    var(--vp-candidate-home-carousel-mobile-overlay-pad-inline)
+  padding: var(--vp-overlay-mobile-pad-block)
+    var(--vp-overlay-mobile-pad-inline)
     calc(
-      var(--vp-candidate-home-carousel-mobile-overlay-pad-block) +
+      var(--vp-overlay-mobile-pad-block) +
         env(safe-area-inset-bottom, 0px)
     );
 }
@@ -207,7 +200,7 @@
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap);
+  gap: var(--vp-overlay-mobile-title-tag-gap);
 }
 
 .vp-proto-carousel__brand-row {
@@ -230,7 +223,7 @@
 .vp-proto-carousel__format {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-home-carousel-mobile-caption-size);
+  font-size: var(--vp-overlay-mobile-caption-size);
   font-weight: 700;
   letter-spacing: 0; /* Special Gothic floor */
   line-height: 1.6;
@@ -261,7 +254,7 @@
 .vp-proto-carousel__campaign {
   margin: 0;
   font-family: var(--font-vp-heading); /* never heading-fallback alone */
-  font-size: var(--vp-candidate-home-carousel-mobile-title-size);
+  font-size: var(--vp-overlay-mobile-title-size);
   font-weight: 700;
   color: #fff;
   letter-spacing: 0; /* Special Gothic floor */
@@ -316,7 +309,7 @@
     var(--vp-header-height, 4.5rem) +
       var(--vp-candidate-home-carousel-mobile-counter-offset)
   );
-  right: var(--vp-candidate-home-carousel-mobile-overlay-pad-inline);
+  right: var(--vp-overlay-mobile-pad-inline);
   left: auto;
   z-index: 4;
   flex-direction: column;
@@ -325,7 +318,7 @@
   transform: translateY(-50%);
   pointer-events: none;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-home-carousel-mobile-caption-size);
+  font-size: var(--vp-overlay-mobile-caption-size);
   font-weight: 700;
   line-height: 20px;
   letter-spacing: 0;

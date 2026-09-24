@@ -157,7 +157,7 @@
     min-height: var(--vp-index-top-row-height, 4.25rem);
     height: auto;
     padding-inline: var(
-      --vp-candidate-home-carousel-mobile-overlay-pad-inline,
+      --vp-overlay-mobile-pad-inline,
       16px
     );
     padding-block: var(
@@ -262,7 +262,7 @@
     color: rgba(255, 255, 255, 0.85);
     font-family: var(--font-vp-heading);
     font-size: var(
-      --vp-candidate-home-carousel-mobile-caption-size,
+      --vp-overlay-mobile-caption-size,
       12px
     );
     font-weight: 700;
@@ -963,9 +963,9 @@
    * ≤767) — same type, brand→title gap, and inset. Desktop work cards
    * reuse these metrics for cohesion; tokens fall back when not inherited.
    */
-  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
-  padding: var(--vp-candidate-home-carousel-mobile-overlay-pad-block, 40px)
-    var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px);
+  gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
+  padding: var(--vp-overlay-mobile-pad-block, 40px)
+    var(--vp-overlay-mobile-pad-inline, 16px);
   text-align: left;
 }
 
@@ -980,7 +980,7 @@
 .vp-portfolio-index__format {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-home-carousel-mobile-caption-size, 12px);
+  font-size: var(--vp-overlay-mobile-caption-size, 12px);
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.6;
@@ -1025,7 +1025,7 @@
 .vp-portfolio-index__campaign {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-home-carousel-mobile-title-size, 28px);
+  font-size: var(--vp-overlay-mobile-title-size, 28px);
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.2;

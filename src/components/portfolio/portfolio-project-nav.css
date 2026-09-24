@@ -452,7 +452,7 @@ a.vp-project-nav__explore:focus-visible {
     left: 0;
     padding: 1.25rem 1.5rem 1.5rem;
     /* Match homepage mobile brand→campaign gap */
-    gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
+    gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
   }
 
   .vp-project-nav__label {
@@ -480,7 +480,7 @@ a.vp-project-nav__explore:focus-visible {
   .vp-project-nav {
     padding: var(
         --vp-candidate-portfolio-case-mobile-inline-pad,
-        var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+        var(--vp-overlay-mobile-pad-inline, 16px)
       );
   }
 

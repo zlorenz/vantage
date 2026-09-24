@@ -86,7 +86,7 @@
   .vp-case-shell__below {
     padding-inline: var(
       --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+      var(--vp-overlay-mobile-pad-inline, 16px)
     );
   }
 
@@ -96,7 +96,7 @@
     box-sizing: border-box;
     padding: var(
       --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+      var(--vp-overlay-mobile-pad-inline, 16px)
     );
   }
 

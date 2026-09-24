@@ -260,6 +260,18 @@
   --vp-overlay-dark: rgba(var(--vp-black-rgb), 0.45);
   --vp-overlay-light: rgba(255, 255, 255, 0.1);
 
+  /*
+   * Shared mobile media-overlay kit — home carousel ≤767, work-index cards,
+   * blog hero title gap, case carousel / project-nav (where values match).
+   * Desktop homepage keeps locked --vp-home-carousel-*. Case header
+   * brand→campaign stays 0.35rem (intentional split from the 12px family).
+   */
+  --vp-overlay-mobile-title-size: 28px;
+  --vp-overlay-mobile-caption-size: 12px;
+  --vp-overlay-mobile-pad-inline: 16px;
+  --vp-overlay-mobile-pad-block: 40px;
+  --vp-overlay-mobile-title-tag-gap: 12px;
+
   /* Colour Palette — Form & Input */
 
   --vp-input-bg: rgba(255, 255, 255, 0.08);
@@ -2087,7 +2099,7 @@
     );
     padding-inline: var(
       --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+      var(--vp-overlay-mobile-pad-inline, 16px)
     );
     box-sizing: border-box;
   }
@@ -2560,7 +2572,7 @@
     padding: 0
       var(
         --vp-candidate-portfolio-case-mobile-inline-pad,
-        var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px)
+        var(--vp-overlay-mobile-pad-inline, 16px)
       )
       var(--vp-candidate-portfolio-case-mobile-section-gap, 80px);
     border-top: 0;

@@ -61,7 +61,7 @@
 @media (max-width: 575px) {
   .vp-portfolio-index__tick-counter-label {
     font-size: var(
-      --vp-candidate-home-carousel-mobile-caption-size,
+      --vp-overlay-mobile-caption-size,
       12px
     );
     line-height: 20px;

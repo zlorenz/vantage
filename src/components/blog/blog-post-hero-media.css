@@ -105,8 +105,8 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  /* Homepage mobile title-tag gap (12px); desktop restores 24px below. */
-  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
+  /* Shared mobile overlay title-tag gap (12px); desktop restores 24px below. */
+  gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
   padding: 0 1.875rem 3.75rem; /* Figma inset 30 / pb 60 */
   text-align: left;
 }

@@ -10,9 +10,9 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 
 | Token | Value | Usage | Notes |
 |---|---|---|---|
-| `--vp-home-carousel-overlay-pad-inline` | `30px` | Overlay L/R inset | |
-| `--vp-home-carousel-overlay-pad-block` | `36px` | Overlay top/bottom inset | Intentional vs Figma `60px` (~40% tighter). |
-| `--vp-home-carousel-title-tag-gap` | `24px` | Brand-row → campaign title | Intentional vs Figma `32px`. |
+| `--vp-home-carousel-overlay-pad-inline` | `30px` | Overlay L/R inset | Desktop ≥768 |
+| `--vp-home-carousel-overlay-pad-block` | `36px` | Overlay top/bottom inset | Intentional vs Figma `60px` (~40% tighter). Desktop ≥768 |
+| `--vp-home-carousel-title-tag-gap` | `24px` | Brand-row → campaign title | Intentional vs Figma `32px`. Desktop ≥768; mobile uses `--vp-overlay-mobile-title-tag-gap` |
 | `--vp-home-carousel-brand-dot-size` | `0.8em` | Brand `::before` bullet | Corrected from undersized `0.4em`. |
 | `--vp-home-carousel-brand-accent` | `#fdb913` | Brand colour + bullet fill | Same hex as `--vp-link`. |
 | `--vp-home-carousel-tracking-tight-16` | `0` | Brand/format + credit names (was −0.32px; Special Gothic minimum tracking is 0) | |
@@ -27,6 +27,19 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 
 ---
 
+## Shared mobile media overlay (`--vp-overlay-mobile-*`)
+
+Proven across home carousel ≤767, work-index cards, blog hero title gap, case carousel overlay, and project-nav (where values already matched). On `:root` in `globals.css`.
+
+| Token | Value | Usage | Notes |
+|---|---|---|---|
+| `--vp-overlay-mobile-title-size` | `28px` | Campaign title — home ≤767; work cards ≥576 | Work ≤575 uses `--vp-candidate-work-index-mobile-title-size` (18px) |
+| `--vp-overlay-mobile-caption-size` | `12px` | Brand / format / counter captions | |
+| `--vp-overlay-mobile-pad-inline` | `16px` | Overlay L/R inset (+ shared case gutters via alias) | |
+| `--vp-overlay-mobile-pad-block` | `40px` | Overlay top/bottom inset | Homepage adds safe-area on bottom |
+| `--vp-overlay-mobile-title-tag-gap` | `12px` | Brand-row → campaign | Half of desktop home 24px. **Not** case header (`0.35rem` — intentional split) |
+
+---
 ## Colour Palette
 
 ### Core
