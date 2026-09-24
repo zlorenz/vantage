@@ -1,0 +1,147 @@
+/*
+ * Blog-index mobile filter — nested drill visual skin.
+ * Mirrors work filter colors/type under .vp-blog-index-filter* so
+ * .vp-work-index-filter* stays untouched.
+ */
+
+.vp-blog-index-filter-sheet .vp-bottom-sheet__scrim {
+  background: var(--vp-candidate-filter-dim, rgba(0, 0, 0, 0.7));
+}
+
+.vp-bottom-sheet__panel.vp-blog-index-filter__panel {
+  max-height: var(
+    --vp-candidate-work-index-mobile-filter-panel-height,
+    76vh
+  );
+  border-radius: 0;
+  background: var(--vp-candidate-filter-panel-bg, #0f0f0f);
+}
+
+.vp-blog-index-filter__sheet-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.vp-blog-index-filter__sheet-body.is-drilling {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vp-blog-index-filter-sheet .vp-index-filter-sheet__pane {
+  padding: 0 1rem 1.5rem;
+}
+
+.vp-blog-index-filter__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Root row — Categories */
+.vp-blog-index-filter__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: calc(24px + 20px);
+  padding-block: 12px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-overlay-mobile-caption-size, 12px);
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-blog-index-filter__row-label {
+  min-width: 0;
+}
+
+.vp-blog-index-filter__row-value {
+  flex-shrink: 0;
+  color: var(
+    --vp-candidate-work-index-mobile-term-muted,
+    rgba(255, 255, 255, 0.2)
+  );
+  font-variant-numeric: tabular-nums;
+}
+
+/* Nested term rows — Links styled as term buttons */
+.vp-blog-index-filter__term {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: calc(24px + 20px);
+  padding-block: 12px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(
+    --vp-candidate-work-index-mobile-term-muted,
+    rgba(255, 255, 255, 0.2)
+  );
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-overlay-mobile-caption-size, 12px);
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--vp-transition);
+}
+
+.vp-blog-index-filter__term.is-selected {
+  color: #fff;
+}
+
+.vp-blog-index-filter__term-label {
+  min-width: 0;
+}
+
+.vp-blog-index-filter__term-count {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vp-blog-index-filter__row:hover,
+  .vp-blog-index-filter__row:focus-visible {
+    color: rgba(255, 255, 255, 0.85);
+    outline: none;
+  }
+
+  .vp-blog-index-filter__term:hover,
+  .vp-blog-index-filter__term:focus-visible {
+    color: rgba(255, 255, 255, 0.7);
+    outline: none;
+  }
+
+  .vp-blog-index-filter__term.is-selected:hover,
+  .vp-blog-index-filter__term.is-selected:focus-visible {
+    color: #fff;
+  }
+}
