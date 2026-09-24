@@ -396,8 +396,14 @@
 }
 
 .vp-case-carousel__overlay--blog .vp-case-carousel__title-stack {
-  /* Match homepage / blog single overlay brand→title gap (24px). */
-  gap: 1.5rem;
+  /* Match homepage mobile brand→title gap (12px); desktop 24px below. */
+  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
+}
+
+@media (min-width: 768px) {
+  .vp-case-carousel__overlay--blog .vp-case-carousel__title-stack {
+    gap: 1.5rem;
+  }
 }
 
 .vp-case-carousel__overlay--blog .vp-case-carousel__title {
@@ -540,7 +546,7 @@
   }
 
   .vp-case-shell .vp-case-carousel__title-stack {
-    gap: 0.75rem;
+    gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
   }
 
   .vp-case-shell .vp-case-carousel__info-label {

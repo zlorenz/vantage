@@ -164,7 +164,9 @@
   }
 
   .vp-case-header__title-block {
-    gap: var(--vp-candidate-portfolio-case-mobile-brand-campaign-gap, 32px);
+    /* Match desktop title-block gap (0.35rem) — was 32px Figma candidate,
+     * which read oversized against 12/30 type. */
+    gap: 0.35rem;
     padding-block: var(
       --vp-candidate-portfolio-case-mobile-title-block-pad-block,
       48px
@@ -177,6 +179,8 @@
     font-weight: 700;
     line-height: 1.6;
     letter-spacing: 0;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
 
   .vp-case-header .vp-case-header__brand {
@@ -189,6 +193,8 @@
     font-weight: 700;
     line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
     letter-spacing: 0;
+    text-box-trim: trim-start;
+    text-box-edge: cap alphabetic;
   }
 
   .vp-case-header__rule {

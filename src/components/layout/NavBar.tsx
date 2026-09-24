@@ -46,7 +46,6 @@ interface NavBarProps {
   locale: Locale;
   items: NavItem[];
   toggleAria: string;
-  contactEmail?: string;
   briefLabel: string;
   briefHref: LinkHref;
   siteSettings: SiteSettings;
@@ -106,7 +105,6 @@ function BriefArrowIcon({
 export function NavBar({
   items,
   toggleAria,
-  contactEmail,
   briefLabel,
   briefHref,
   siteSettings,
@@ -119,7 +117,6 @@ export function NavBar({
   const togglerRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reopenSnapRef = useRef(false);
-  const email = contactEmail?.trim();
 
   const navSocials = useMemo(
     () => resolveSiteSocials(siteSettings, NAV_MENU_SOCIAL_ORDER),
@@ -288,20 +285,15 @@ export function NavBar({
   const mobileItems = renderMobileItems();
   const socialStaggerIndex = mobileItems.length;
   const briefStaggerIndex = socialStaggerIndex + 1;
-  const emailStaggerIndex = briefStaggerIndex + 1;
 
   return (
     <>
-      <div className="vp-mobile-lang-slot ml-auto mr-1 flex items-center md:hidden">
-        <LanguageSwitcher variant="toggle" />
-      </div>
-
-      {/* Desktop: search + EN/中文 cells (Figma nav chrome) — sibling before hamburger.
-          NavSearch's non-alwaysExpanded mode is `hidden md:block`; mobile keeps
-          the panel-mounted alwaysExpanded instance below. */}
-      <div className="vp-desktop-lang-slot ml-auto hidden items-center gap-2 md:flex">
+      {/* Search (desktop only) + EN/中文 cells — sole language switcher for all
+          viewports, sibling before hamburger. NavSearch stays `hidden md:block`;
+          mobile keeps the panel-mounted alwaysExpanded instance below. */}
+      <div className="vp-lang-slot ml-auto flex items-center gap-2">
         <NavSearch />
-        <LanguageSwitcher variant="cells" />
+        <LanguageSwitcher />
       </div>
 
       <div className="vp-nav-toggler-cell relative z-50 flex">
@@ -435,15 +427,6 @@ export function NavBar({
                 <span className="vp-mobile-nav-brief__label">{briefLabel}</span>
                 <BriefArrowIcon className="vp-mobile-nav-brief__arrow" />
               </Link>
-              {email ? (
-                <a
-                  href={`mailto:${email}`}
-                  className="vp-mobile-nav-email vp-mobile-nav-item"
-                  style={staggerStyle(emailStaggerIndex)}
-                >
-                  {email}
-                </a>
-              ) : null}
             </div>
           </div>
         </div>

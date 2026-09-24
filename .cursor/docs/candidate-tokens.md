@@ -17,8 +17,9 @@ Naming: `--vp-candidate-[name]`
 | `--vp-candidate-home-carousel-mobile-overlay-pad-inline` | `16px` | Overlay L/R + counter `right` ≤767 | same (`px-16`) | pending | |
 | `--vp-candidate-home-carousel-mobile-overlay-pad-block` | `40px` | Overlay top/bottom ≤767 | same (`py-40`); credits removed | pending | Bottom = 40px + safe-area. |
 | `--vp-candidate-home-carousel-mobile-counter-offset` | `69px` | Counter `top: calc(var(--vp-header-height) + 69px)` | `2282:27788`: center ≈133px − 64px bar | pending | |
+| `--vp-candidate-home-carousel-mobile-title-tag-gap` | `12px` | Brand-row → campaign ≤767 | product: half of desktop 24px for proportional type | pending | Shared by blog hero, case carousel overlay, project-nav, work-index mobile. Desktop keeps `--vp-home-carousel-title-tag-gap: 24px`. |
 
-**Reuse (no candidate):** `--vp-home-carousel-brand-accent`, `--vp-home-carousel-counter-muted`, `--vp-home-carousel-brand-dot-size`, `--vp-home-carousel-title-tag-gap` (shared on `.vp-proto-carousel` base).
+**Reuse (no candidate):** `--vp-home-carousel-brand-accent`, `--vp-home-carousel-counter-muted`, `--vp-home-carousel-brand-dot-size`, `--vp-home-carousel-title-tag-gap` (desktop + shared colors/dot).
 
 **Dropped for mobile:** credit-col-gap, credit-role-lh, section-gap, Figma −2% tracking.
 
@@ -38,7 +39,7 @@ Naming: `--vp-candidate-[name]`
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-mobile-nav-link-size` | `24px` | `.vp-desktop-nav-label` inside mobile panel | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-29325 | pending | Figma `h4`. Tracking floor 0. |
+| `--vp-candidate-mobile-nav-link-size` | `32px` (was `24px`) | `.vp-desktop-nav-label` inside mobile panel | product: ~33% bump over Figma `h4` | pending | Index scaled 12→16px in lockstep. Desktop rail unchanged. |
 | `--vp-candidate-mobile-nav-list-gap` | `32px` | `.vp-mobile-nav-list` | same | pending | |
 | `--vp-candidate-mobile-nav-list-pad-inline` | `30px` | List + search + brief/email pad | same | pending | |
 | `--vp-candidate-mobile-nav-list-pad-block` | `60px` | `.vp-mobile-nav-list` | same (`py-60`) | pending | |
@@ -88,11 +89,11 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | `--vp-candidate-work-index-mobile-card-gap` | `20px` | Embla slide gap ≤575 | same | pending | Figma gap between 320 cards. Aspect stays CDN 2:3. |
 | `--vp-candidate-work-index-mobile-height-scale` | `0.84` | `.vp-portfolio-index` `--vp-index-height-scale` ≤575 | phone QC (Zacharia: posts a little larger) | pending | Was 0.76 (Figma 520-face tune); bumped for usable peeks. Still 2:3. |
 | `--vp-candidate-work-index-mobile-frame-gutter` | `10px` | Active-frame / band-guide outset outside poster ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Figma `2282:28235` wireframe wrapper `p-[10px]` around dashed rails vs 320×520 poster. Uniform 10px (H gutter exact; V ≈6.5–10). Frame still tracks poster via `width/height: calc(100% + 2×gutter)`. |
-| `--vp-candidate-work-index-mobile-title-size` | `22px` | Campaign title ≤575 | same | pending | Figma `h5`. Tracking floor 0. |
+| `--vp-candidate-work-index-mobile-title-size` | `18px` (was `22px`) | Campaign title ≤575 | product: card-scaled vs homepage 28px full-bleed | pending | Pair with homepage `title-tag-gap` 12px + text-box-trim. |
 | `--vp-candidate-work-index-mobile-overlay-pad-inline` | `15px` | Active card copy inset L/R ≤575 | same | pending | Figma `px-15`. |
 | `--vp-candidate-work-index-mobile-overlay-pad-block` | `30px` | Active card copy inset bottom ≤575 | same | pending | Figma `pb-30`. |
 | `--vp-candidate-work-index-mobile-brand-gap` | `24px` | Brand \| category gap ≤575 | same | pending | |
-| `--vp-candidate-work-index-mobile-copy-stack-gap` | `20px` | Brand row → title ≤575 | same | pending | |
+| `--vp-candidate-work-index-mobile-copy-stack-gap` | `12px` (was `20px`) | Brand row → title ≤575 | product: align homepage mobile title-tag gap | pending | Implementation reuses `--vp-candidate-home-carousel-mobile-title-tag-gap`. |
 | `--vp-candidate-work-index-mobile-filter-panel-height` | `76vh` | Work filter BottomSheet max-height | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | pending | Figma panel 667/874 ≈ 76%. |
 | `--vp-candidate-work-index-mobile-term-muted` | `rgba(255,255,255,0.2)` | Inactive term rows in mobile work filter | same | pending | Distinct from desktop `--vp-candidate-filter-item-muted` (0.25). |
 | `--vp-candidate-work-index-mobile-tab-pad-inline` | `8px` (impl) / Figma `16px` | ~~Taxonomy tab pad~~ — **superseded** | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | superseded | Phone QC Fix 2 removed horizontal tabs; root→nested drill restored. Keep logged for audit. |
@@ -157,7 +158,7 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-brand-size` | `12px` | brand / credit names / explore | caption_1 | pending | |
 | `--vp-candidate-portfolio-case-mobile-label-size` | `12px` | credit roles / pills | caption_3/4 | pending | |
 | `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block py | `py-48` | pending | |
-| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | `32px` | title stack gap | gap 32 | pending | |
+| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → `0.35rem` | title stack gap ≤575 | product: match desktop `.vp-case-header__title-block` | superseded | Mobile now inherits desktop `gap: 0.35rem`; candidate unused. |
 | `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | meta band | `py-40` | pending | |
 | `--vp-candidate-portfolio-case-mobile-credit-row-gap` | `16px` | key + dept rows | gap 16 | pending | |
 | `--vp-candidate-portfolio-case-mobile-pill-height` | `48px` | pills ≤575 | h-48 | pending | Desktop stays 64px. |

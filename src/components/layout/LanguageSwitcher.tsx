@@ -4,8 +4,8 @@
  * LanguageSwitcher — locale control that preserves the current path.
  * Prefers link[rel=alternate][hreflang] so bilingual slugs (EN ↔ ZH) swap correctly.
  *
- * - `cells` (desktop): both EN and 中文 cells with flag + label (Figma nav chrome)
- * - `toggle` (mobile): compact control that switches to the other locale
+ * EN + 中文 cells with flag + label (Figma nav chrome) — same control on
+ * desktop and mobile, left of the hamburger.
  */
 
 import Image from 'next/image';
@@ -58,66 +58,38 @@ function useLocaleSwitch() {
   };
 }
 
-export function LanguageSwitcher({
-  className = '',
-  variant = 'toggle',
-}: {
-  className?: string;
-  variant?: 'toggle' | 'cells';
-}) {
+export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const locale = useLocale() as Locale;
   const t = useTranslations('Nav');
   const switchTo = useLocaleSwitch();
 
-  if (variant === 'cells') {
-    return (
-      <div className={`vp-lang-cells ${className}`.trim()} role="group">
-        {LOCALES.map((code) => {
-          const active = code === locale;
-          return (
-            <button
-              key={code}
-              type="button"
-              className={`vp-lang-cell${active ? ' is-active' : ''}`}
-              aria-label={code === 'en' ? t('switchToEnglish') : t('switchToChinese')}
-              aria-current={active ? 'true' : undefined}
-              disabled={active}
-              onClick={() => {
-                if (!active) switchTo(code);
-              }}
-            >
-              <Image
-                src={LOCALE_FLAG[code]}
-                alt=""
-                width={16}
-                height={16}
-                className="vp-lang-cell__flag"
-              />
-              <span className="vp-lang-cell__label">{LOCALE_LABEL[code]}</span>
-            </button>
-          );
-        })}
-      </div>
-    );
-  }
-
-  const target: Locale = locale === 'en' ? 'zh' : 'en';
-  const label = locale === 'zh' ? t('switchToEnglish') : t('switchToChinese');
-
   return (
-    <button
-      type="button"
-      className={`nav-link inline-flex cursor-pointer items-center border-0 bg-transparent p-2 uppercase ${className}`}
-      aria-label={label}
-      onClick={() => switchTo(target)}
-    >
-      <Image
-        src={LOCALE_FLAG[target]}
-        alt=""
-        width={20}
-        height={20}
-        className="h-5 w-5 rounded-full object-cover object-left"
-      />
-    </button>
+    <div className={`vp-lang-cells ${className}`.trim()} role="group">
+      {LOCALES.map((code) => {
+        const active = code === locale;
+        return (
+          <button
+            key={code}
+            type="button"
+            className={`vp-lang-cell${active ? ' is-active' : ''}`}
+            aria-label={code === 'en' ? t('switchToEnglish') : t('switchToChinese')}
+            aria-current={active ? 'true' : undefined}
+            disabled={active}
+            onClick={() => {
+              if (!active) switchTo(code);
+            }}
+          >
+            <Image
+              src={LOCALE_FLAG[code]}
+              alt=""
+              width={16}
+              height={16}
+              className="vp-lang-cell__flag"
+            />
+            <span className="vp-lang-cell__label">{LOCALE_LABEL[code]}</span>
+          </button>
+        );
+      })}
+    </div>
   );
 }

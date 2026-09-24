@@ -73,10 +73,10 @@
       20px
     );
     /*
-     * Mobile SEARCH/FILTER chrome under 64px nav (Figma 2282:28478):
-     * py-24 + 20px icon = 68px. Reserved so viewport height calc stays honest.
+     * Mobile SEARCH/FILTER chrome under 64px nav: circular chips (2.75rem,
+     * matching blog `.vp-news-page__filter-trigger`) + py-24 = 5.75rem.
      */
-    --vp-index-top-row-height: 4.25rem;
+    --vp-index-top-row-height: 5.75rem;
     /* Decision 6: omit active-filter pills on mobile for now. */
     --vp-index-active-filters-height: 0px;
     justify-content: flex-end;
@@ -136,7 +136,8 @@
 }
 
 /*
- * Mobile top SEARCH + FILTER [count] chrome (Figma Work 2282:28478).
+ * Mobile top SEARCH + FILTER chrome — icon-only.
+ * SEARCH expands an inline field to the right of the magnifying glass.
  * Desktop (≥576) keeps PortfolioIndexDesktopFilterRow; this row stays hidden.
  */
 .vp-portfolio-index__mobile-chrome {
@@ -150,9 +151,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
     box-sizing: border-box;
     width: 100%;
-    height: var(--vp-index-top-row-height, 4.25rem);
+    min-height: var(--vp-index-top-row-height, 4.25rem);
+    height: auto;
     padding-inline: var(
       --vp-candidate-home-carousel-mobile-overlay-pad-inline,
       16px
@@ -164,90 +167,144 @@
     pointer-events: none;
   }
 
+  .vp-portfolio-index__mobile-chrome-search-wrap,
   .vp-portfolio-index__mobile-chrome-search,
   .vp-portfolio-index__mobile-chrome-filter-wrap,
   .vp-portfolio-index__mobile-chrome-filter {
     pointer-events: auto;
   }
 
+  .vp-portfolio-index__mobile-chrome-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /*
+   * Match blog index `.vp-news-page__filter-trigger` — circular glass chip,
+   * white icon, soft border that brightens on hover/focus.
+   */
   .vp-portfolio-index__mobile-chrome-search,
   .vp-portfolio-index__mobile-chrome-filter {
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
     margin: 0;
     padding: 0;
-    border: 0;
-    background: transparent;
+    border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
+    border-radius: 9999px;
+    background: rgba(var(--vp-black-rgb), 0.45);
+    color: #fff;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  .vp-portfolio-index__mobile-chrome-search {
-    color: var(--vp-candidate-search-muted, rgba(255, 255, 255, 0.4));
-    transition: color var(--vp-transition);
+    transition:
+      border-color var(--vp-transition),
+      background-color var(--vp-transition);
   }
 
   .vp-portfolio-index__mobile-chrome-search:hover,
   .vp-portfolio-index__mobile-chrome-search:focus-visible,
-  .vp-portfolio-index__mobile-chrome-search.is-active {
-    color: rgba(255, 255, 255, 0.72);
+  .vp-portfolio-index__mobile-chrome-search.is-active,
+  .vp-portfolio-index__mobile-chrome-search-wrap.is-open
+    .vp-portfolio-index__mobile-chrome-search,
+  .vp-portfolio-index__mobile-chrome-filter:hover,
+  .vp-portfolio-index__mobile-chrome-filter:focus-visible,
+  .vp-portfolio-index__mobile-chrome-filter.is-active,
+  .vp-portfolio-index__mobile-chrome-filter.is-open {
+    border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
     outline: none;
   }
 
-  .vp-portfolio-index__mobile-chrome-icon,
-  .vp-portfolio-index__mobile-chrome-chevron {
+  .vp-portfolio-index__mobile-chrome-icon {
     display: block;
-    width: 1.25rem; /* 20px */
+    width: 1.25rem; /* 20px — same as blog filter trigger */
     height: 1.25rem;
     flex-shrink: 0;
   }
 
-  .vp-portfolio-index__mobile-chrome-search-label,
-  .vp-portfolio-index__mobile-chrome-filter-label {
+  /* Collapsed → expands to the right of the search chip. */
+  .vp-portfolio-index__mobile-chrome-search-field {
+    flex: 0 1 0;
+    min-width: 0;
+    max-width: 0;
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      max-width 0.28s ease,
+      opacity 0.2s ease;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search-wrap.is-open
+    .vp-portfolio-index__mobile-chrome-search-field {
+    flex: 1 1 auto;
+    max-width: 12rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
     font-family: var(--font-vp-heading);
     font-size: var(
       --vp-candidate-home-carousel-mobile-caption-size,
       12px
     );
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.25rem;
     letter-spacing: 0;
     text-transform: uppercase;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
-  .vp-portfolio-index__mobile-chrome-filter {
-    gap: 0.35rem;
-    color: #fff;
-  }
-
-  .vp-portfolio-index__mobile-chrome-filter-label {
-    color: #fff;
-  }
-
-  .vp-portfolio-index__mobile-chrome-filter-count {
+  .vp-portfolio-index__mobile-chrome-search-input::placeholder {
     color: var(--vp-candidate-search-muted, rgba(255, 255, 255, 0.4));
-    font-family: var(--font-vp-heading);
-    font-size: var(--vp-candidate-filter-count-size, 9px);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0;
     text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
   }
 
-  .vp-portfolio-index__mobile-chrome-chevron {
-    transition: transform 0.18s ease;
+  .vp-portfolio-index__mobile-chrome-search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
   }
 
-  .vp-portfolio-index__mobile-chrome-filter.is-open
-    .vp-portfolio-index__mobile-chrome-chevron {
-    transform: rotate(180deg);
+  .vp-portfolio-index__mobile-chrome-search-no-results {
+    position: absolute;
+    left: 3.4rem; /* past 2.75rem chip + gap */
+    top: calc(100% + 0.35rem);
+    margin: 0;
+    max-width: min(12rem, 70vw);
+    color: var(--vp-orange, #f04e23);
+    font-family: var(--vp-font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
   }
 
   .vp-portfolio-index__mobile-chrome-filter-wrap {
     position: relative;
     flex-shrink: 0;
+  }
+
+  /* Fullscreen search overlay is desktop/bottom-bar only — chrome owns mobile. */
+  .vp-portfolio-index__search-overlay {
+    display: none;
   }
 }
 
@@ -929,6 +986,8 @@
   line-height: 1.2;
   text-transform: uppercase;
   color: #fdb913;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 /* Figma ● before brand — ~0.8em relative to brand text. */
@@ -955,12 +1014,14 @@
   /* Normal wrap only — mid-word breaks were a side effect of vw-sized type
    * outgrowing height-driven card width. */
   overflow-wrap: normal;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 /*
  * Mobile card overlay type/pad toward Figma Work 2282:28478.
  * Keep CDN 2:3 bake; do not retarget 320×520 crops.
- * Wireframe brackets/+ enabled in ≤575 card-chrome block (phone QC Fix 1).
+ * Wireframe brackets enabled in ≤575 card-chrome block (phone QC Fix 1).
  */
 @media (max-width: 575px) {
   .vp-portfolio-index__card--styled::before {
@@ -969,7 +1030,8 @@
   }
 
   .vp-portfolio-index__overlay-copy {
-    gap: var(--vp-candidate-work-index-mobile-copy-stack-gap, 20px);
+    /* Match homepage mobile brand→campaign gap (12px, with trim below). */
+    gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
     padding: 0 var(--vp-candidate-work-index-mobile-overlay-pad-inline, 15px)
       var(--vp-candidate-work-index-mobile-overlay-pad-block, 30px);
   }
@@ -987,6 +1049,9 @@
     letter-spacing: 0;
     line-height: 1.6;
     color: var(--vp-home-carousel-brand-accent, #fdb913);
+    /* Cap-trim so 12px gap reads like homepage, not ascent-inflated. */
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
 
   .vp-portfolio-index__brand::before {
@@ -994,10 +1059,14 @@
   }
 
   .vp-portfolio-index__campaign {
-    font-size: var(--vp-candidate-work-index-mobile-title-size, 22px);
+    /* Card face is narrower than homepage full-bleed — ~18px keeps the
+     * homepage 12→28 brand:title proportion optically (~1.5× brand). */
+    font-size: var(--vp-candidate-work-index-mobile-title-size, 18px);
     font-weight: 700;
     letter-spacing: 0;
-    line-height: 1.4;
+    line-height: 1.2;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
 }
 
@@ -1258,12 +1327,12 @@
 .vp-portfolio-index__scrubber-track {
   position: relative;
   width: 100%;
-  height: 1.35rem;
+  height: 1.6rem;
   display: flex;
   align-items: center;
   pointer-events: auto;
   box-sizing: border-box;
-  padding-inline: 0.825rem;
+  padding-inline: 1.1rem;
 }
 
 .vp-portfolio-index__scrubber-ticks {
@@ -1287,20 +1356,42 @@
   background: rgba(255, 255, 255, 0.32);
 }
 
+/*
+ * Draggable pill — larger hit target + subtle L/R carets for drag affordance.
+ * Wireframe border matches --vp-struct-line; #0f0f0f fill matches nav chrome.
+ */
 .vp-portfolio-index__scrubber-thumb {
   position: absolute;
   top: 50%;
   left: 0;
   z-index: 1;
-  width: 1.65rem;
-  height: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  box-sizing: border-box;
+  width: 2.55rem;
+  height: 1.15rem;
   border-radius: 9999px;
-  background: rgba(28, 28, 28, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 1px 4px rgba(var(--vp-black-rgb), 0.45);
+  background: #0f0f0f;
+  border: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+  box-shadow: 0 1px 6px rgba(var(--vp-black-rgb), 0.5);
+  color: rgba(255, 255, 255, 0.4);
   transform: translate(-50%, -50%);
   pointer-events: none;
   will-change: left;
+}
+
+.vp-portfolio-index__scrubber:active .vp-portfolio-index__scrubber-thumb {
+  color: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.vp-portfolio-index__scrubber-thumb-caret {
+  display: block;
+  width: 0.4rem;
+  height: 0.6rem;
+  flex-shrink: 0;
 }
 
 .vp-portfolio-index__scrubber-thumb.is-returning {
@@ -1329,12 +1420,18 @@
   }
 
   .vp-portfolio-index__scrubber-track {
-    padding-inline: 0.925rem;
+    padding-inline: 1.2rem;
   }
 
   .vp-portfolio-index__scrubber-thumb {
-    width: 1.85rem;
-    height: 0.78rem;
+    width: 2.75rem;
+    height: 1.2rem;
+    gap: 0.32rem;
+  }
+
+  .vp-portfolio-index__scrubber-thumb-caret {
+    width: 0.42rem;
+    height: 0.65rem;
   }
 }
 
@@ -1351,7 +1448,7 @@
 
 @media (min-width: 992px) {
   .vp-portfolio-index__scrubber-track {
-    padding-inline: 1rem;
+    padding-inline: 1.35rem;
   }
 
   .vp-portfolio-index__scrubber-tick {
@@ -1363,8 +1460,8 @@
   }
 
   .vp-portfolio-index__scrubber-thumb {
-    width: 2rem;
-    height: 0.82rem;
+    width: 3rem;
+    height: 1.25rem;
   }
 }
 

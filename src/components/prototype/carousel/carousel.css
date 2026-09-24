@@ -24,12 +24,15 @@
    * Mobile-only candidates (≤767) — Figma 2282:27788 family. Not promoted.
    * Pad-block 40px = Figma overlay `py-40` with credits removed.
    * Counter offset 69px = center 133px from top − 64px bar on 874 artboard.
+   * Title-tag gap 12px = half of desktop 24px so brand→campaign reads
+   * proportionally tight against the smaller mobile type.
    */
   --vp-candidate-home-carousel-mobile-title-size: 28px;
   --vp-candidate-home-carousel-mobile-caption-size: 12px;
   --vp-candidate-home-carousel-mobile-overlay-pad-inline: 16px;
   --vp-candidate-home-carousel-mobile-overlay-pad-block: 40px;
   --vp-candidate-home-carousel-mobile-counter-offset: 69px;
+  --vp-candidate-home-carousel-mobile-title-tag-gap: 12px;
 }
 
 .vp-proto-carousel__viewport {
@@ -204,7 +207,7 @@
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--vp-home-carousel-title-tag-gap);
+  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap);
 }
 
 .vp-proto-carousel__brand-row {
@@ -303,11 +306,11 @@
 }
 
 /*
- * Slide counter — visible on mobile. Vertical center under header:
- * calc(var(--vp-header-height) + 69px). Desktop overrides to mid-right 50%.
+ * Slide counter — hidden on mobile for now (design rethink). Desktop restores
+ * mid-right vertical counter below.
  */
 .vp-proto-carousel__counter {
-  display: flex;
+  display: none;
   position: absolute;
   top: calc(
     var(--vp-header-height, 4.5rem) +
@@ -464,6 +467,7 @@
 
   /* Mid-right vertical counter — desktop centers in the viewport. */
   .vp-proto-carousel__counter {
+    display: flex;
     top: 50%;
     right: var(--vp-home-carousel-overlay-pad-inline);
     gap: 0.5rem;

@@ -607,6 +607,20 @@
   pointer-events: none;
 }
 
+/* Bottom hairline above the mobile panel (z-40). A border on #header itself
+ * paints under fixed panel children and disappears when the menu is open.
+ * Use a 1px fill + z-index above chrome so the rule stays visible. */
+#header.navbar::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 60;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
 /* /work only: fully clear nav backdrop so the page top glow shows through. */
 body:has(.vp-work-index) #header.navbar::before {
   opacity: 0;
@@ -615,8 +629,7 @@ body:has(.vp-work-index) #header.navbar::before {
 /* Header chrome above the sliding panel (panel is a descendant of
  * .container-fluid, so its z-40 competes with siblings — not the wrapper). */
 #header .navbar-brand,
-#header .vp-mobile-lang-slot,
-#header .vp-desktop-lang-slot,
+#header .vp-lang-slot,
 #header .navbar-toggler {
   position: relative;
   z-index: 50;
@@ -719,7 +732,8 @@ body:has(.vp-work-index) #header.navbar::before {
  * lang stays in top bar). Candidates scoped here for ≤991.98 panel only.
  */
 #header .vp-mobile-nav-panel__inner {
-  --vp-candidate-mobile-nav-link-size: 24px;
+  /* ~33% over Figma h4 24px — product bump for mobile panel readability. */
+  --vp-candidate-mobile-nav-link-size: 32px;
   --vp-candidate-mobile-nav-list-gap: 32px;
   --vp-candidate-mobile-nav-list-pad-inline: 30px;
   --vp-candidate-mobile-nav-list-pad-block: 60px;
@@ -745,7 +759,7 @@ body:has(.vp-work-index) #header.navbar::before {
   flex: 1 1 auto;
   flex-direction: column;
   gap: var(--vp-candidate-mobile-nav-list-gap);
-  justify-content: flex-start;
+  justify-content: center;
   box-sizing: border-box;
   margin: 0;
   padding: var(--vp-candidate-mobile-nav-list-pad-block)
@@ -780,17 +794,20 @@ body:has(.vp-work-index) #header.navbar::before {
   outline: none;
 }
 
-/* Reuse desktop rail index/label classnames; size for mobile h4 / caption. */
+/* Reuse desktop rail index/label classnames; sized ~33% up from Figma h4/12.
+ * text-box-trim so 16px index caps share a topline with 32px labels. */
 #header .vp-mobile-nav-panel .vp-desktop-nav-index {
   flex-shrink: 0;
-  width: 1.75rem; /* 28px — same as desktop rail */
+  width: 2.25rem; /* 36px — scaled with 16px index */
   font-family: var(--font-vp-heading);
-  font-size: 0.75rem; /* 12px — same as desktop */
+  font-size: 1rem; /* 16px — was 12px */
   font-weight: 700;
-  line-height: 1.25rem;
+  line-height: 1.3;
   letter-spacing: 0;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.3);
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
 }
 
 #header .vp-mobile-nav-panel .vp-desktop-nav-label {
@@ -803,6 +820,8 @@ body:has(.vp-work-index) #header.navbar::before {
   letter-spacing: 0;
   text-transform: uppercase;
   color: #fff;
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
 }
 
 #header .vp-mobile-nav-socials {
@@ -907,33 +926,6 @@ body:has(.vp-work-index) #header.navbar::before {
   height: var(--vp-btn-arrow-size);
   flex-shrink: 0;
   color: #000;
-}
-
-#header .vp-mobile-nav-email {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 3rem;
-  margin: 0;
-  padding: 0.75rem var(--vp-candidate-mobile-nav-list-pad-inline);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  background: #0f0f0f;
-  color: rgba(255, 255, 255, 0.6);
-  font-family: var(--font-vp-heading);
-  font-size: 0.75rem; /* 12px caption */
-  font-weight: 700;
-  letter-spacing: 0;
-  text-decoration: none;
-  text-transform: none;
-  transition: color var(--vp-transition);
-}
-
-#header .vp-mobile-nav-email:hover,
-#header .vp-mobile-nav-email:focus-visible {
-  color: #fff;
-  outline: none;
 }
 
 /* Staggered item reveal — delayed into the slide so total feel stays under ~500ms */
@@ -1131,6 +1123,9 @@ body:has(.vp-work-index) #header.navbar::before {
     letter-spacing: 0;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.3);
+    /* Cap topline with label — same treatment as mobile panel. */
+    text-box-trim: trim-start;
+    text-box-edge: cap alphabetic;
   }
 
   #header .vp-desktop-nav-label {
@@ -1143,6 +1138,8 @@ body:has(.vp-work-index) #header.navbar::before {
     letter-spacing: 0;
     text-transform: uppercase;
     color: #fff;
+    text-box-trim: trim-start;
+    text-box-edge: cap alphabetic;
   }
 
   #header .vp-desktop-nav-socials {
@@ -1366,17 +1363,18 @@ body:has(.vp-work-index) #header.navbar::before {
 
 /*
  * Mobile nav bar ≤767 — Figma 2282:27788 / 2282:29325 (64px bar, 64×64 orange
- * hamburger). Lang toggle stays in the bar (product deviation). Desktop ≥768
+ * hamburger). EN/中文 cells stay in the bar left of hamburger. Desktop ≥768
  * chrome below is locked at --vp-nav-bar-height (80px).
  */
 @media (max-width: 767.98px) {
   #header.navbar {
     --vp-candidate-nav-bar-height-mobile: 64px;
+    /* Narrower lang cells so logo + EN + 中文 + 64px hamburger fit ~390. */
+    --vp-nav-cell-width: 72px;
     box-sizing: border-box;
     height: var(--vp-candidate-nav-bar-height-mobile);
     min-height: var(--vp-candidate-nav-bar-height-mobile);
     padding-block: 0;
-    border-bottom: var(--vp-struct-line);
   }
 
   #header .container-fluid {
@@ -1399,12 +1397,12 @@ body:has(.vp-work-index) #header.navbar::before {
     border-right: var(--vp-struct-line);
   }
 
-  /* Keep toggle left of hamburger; stretch to bar height. */
-  #header .vp-mobile-lang-slot {
+  /* EN/中文 cells left of hamburger; stretch to bar height. */
+  #header .vp-lang-slot {
     align-self: stretch;
-    margin-left: 0;
+    margin-left: auto;
     margin-right: 0;
-    padding-inline: 0.5rem;
+    align-items: stretch;
   }
 
   #header .vp-nav-toggler-cell {
@@ -1445,6 +1443,63 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /*
+ * EN / 中文 lang cells — shared desktop + mobile (sole language switcher).
+ * Cell width: --vp-nav-cell-width (94px desktop; 72px override ≤767).
+ */
+#header .vp-lang-cells {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+#header .vp-lang-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  box-sizing: border-box;
+  width: var(--vp-nav-cell-width);
+  min-width: var(--vp-nav-cell-width);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  /* Right edge only — brand already supplies the logo|EN hairline; a left
+   * border here would double it. */
+  border-right: var(--vp-struct-line);
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-vp-heading);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: var(--vp-nav-cell-tracking);
+  line-height: 1.25;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#header .vp-lang-cell:not(.is-active) {
+  opacity: 0.5;
+}
+
+#header .vp-lang-cell:disabled {
+  cursor: default;
+}
+
+#header .vp-lang-cell__flag {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0;
+  object-fit: cover;
+}
+
+#header .vp-lang-cell__label {
+  display: block;
+}
+
+/*
  * Desktop nav chrome (Figma 77:12462) — sitewide cell strip.
  * wordmark | EN | 中文 | orange hamburger, full-height hairlines between cells.
  * Orange fill: --vp-orange. Hairlines: --vp-struct-line (distinct from --vp-border-soft).
@@ -1453,7 +1508,6 @@ body:has(.vp-work-index) #header.navbar::before {
   #header.navbar {
     min-height: var(--vp-nav-bar-height);
     padding-block: 0;
-    border-bottom: var(--vp-struct-line);
   }
 
   #header .container-fluid {
@@ -1473,7 +1527,7 @@ body:has(.vp-work-index) #header.navbar::before {
     padding-inline: 1.875rem;
   }
 
-  #header .vp-desktop-lang-slot {
+  #header .vp-lang-slot {
     margin-left: auto;
     margin-right: 0;
     display: flex;
@@ -1483,66 +1537,11 @@ body:has(.vp-work-index) #header.navbar::before {
 
   /* Slot stretches for full-height lang/hamburger cells; center the icon
    * (and expanded input) vertically inside that tall row. */
-  #header .vp-desktop-lang-slot .vp-search-form {
+  #header .vp-lang-slot .vp-search-form {
     display: flex;
     align-items: center;
     align-self: stretch;
     margin-inline: 0.5rem 0.25rem;
-  }
-
-  #header .vp-lang-cells {
-    display: flex;
-    align-items: stretch;
-    height: 100%;
-  }
-
-  #header .vp-lang-cell {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    box-sizing: border-box;
-    width: var(--vp-nav-cell-width);
-    min-width: var(--vp-nav-cell-width);
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-left: var(--vp-struct-line);
-    border-radius: 0;
-    background: transparent;
-    color: #fff;
-    font-family: var(--font-vp-heading);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: var(--vp-nav-cell-tracking);
-    line-height: 1.25;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  #header .vp-lang-cell:last-child {
-    border-right: var(--vp-struct-line);
-  }
-
-  #header .vp-lang-cell:not(.is-active) {
-    opacity: 0.5;
-  }
-
-  #header .vp-lang-cell:disabled {
-    cursor: default;
-  }
-
-  #header .vp-lang-cell__flag {
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0;
-    object-fit: cover;
-  }
-
-  #header .vp-lang-cell__label {
-    display: block;
   }
 
   /*

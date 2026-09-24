@@ -197,7 +197,7 @@ function SearchIcon() {
   );
 }
 
-/** Mobile top SEARCH glyph — 20px face (Figma Work 2282:28478). */
+/** Mobile top SEARCH glyph — 20px face. */
 function MobileChromeSearchIcon() {
   return (
     <svg
@@ -214,26 +214,21 @@ function MobileChromeSearchIcon() {
   );
 }
 
-/** Mobile top FILTER chevron — flips when sheet open. */
-function MobileChromeChevronIcon() {
+/** Mobile top FILTER funnel — same glyph as bottom-bar tool. */
+function MobileChromeFilterIcon() {
   return (
     <svg
-      className="vp-portfolio-index__mobile-chrome-chevron"
+      className="vp-portfolio-index__mobile-chrome-icon"
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"
     >
       <path
         fill="currentColor"
-        d="M6.22 9.97a.75.75 0 0 1 1.06 0L12 14.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 0-1.06Z"
+        d="M3.5 5.25A.75.75 0 0 1 4.25 4.5h15.5a.75.75 0 0 1 .53 1.28l-5.78 5.78v5.69a.75.75 0 0 1-1.13.65l-3.5-2a.75.75 0 0 1-.37-.65v-3.69L3.72 5.78A.75.75 0 0 1 3.5 5.25Z"
       />
     </svg>
   );
-}
-
-/** Figma FILTER count chrome: `[ 100 ]` (spaces). */
-function formatFilterCount(n: number): string {
-  return `[ ${n} ]`;
 }
 
 function SearchSubmitIcon() {
@@ -317,25 +312,6 @@ function PortfolioIndexActiveFrame() {
         strokeWidth="1"
         vectorEffect="non-scaling-stroke"
       />
-      {/* Crosshair — 40×40 centered, solid white 1px */}
-      <line
-        x1="251"
-        y1="335"
-        x2="291"
-        y2="335"
-        stroke="#ffffff"
-        strokeWidth="1"
-        vectorEffect="non-scaling-stroke"
-      />
-      <line
-        x1="271"
-        y1="315"
-        x2="271"
-        y2="355"
-        stroke="#ffffff"
-        strokeWidth="1"
-        vectorEffect="non-scaling-stroke"
-      />
     </svg>
   );
 }
@@ -374,6 +350,7 @@ export function PortfolioIndexCarousel({
   const [searchNoResultsQuery, setSearchNoResultsQuery] = useState('');
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const searchCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
@@ -716,8 +693,16 @@ export function PortfolioIndexCarousel({
       setSearchMounted(true);
       setSearchOpen(true);
     });
-    searchInputRef.current?.focus({preventScroll: true});
-    searchInputRef.current?.select();
+    // Mobile chrome field is always in the DOM (display:none ≥576) — only
+    // focus it on the phone breakpoint; otherwise use the overlay input.
+    const preferMobile =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 575px)').matches;
+    const input = preferMobile
+      ? (mobileSearchInputRef.current ?? searchInputRef.current)
+      : searchInputRef.current;
+    input?.focus({preventScroll: true});
+    input?.select();
   }, [committedSearch]);
 
   const closeSearch = useCallback(() => {
@@ -853,31 +838,71 @@ export function PortfolioIndexCarousel({
   );
 
   /*
-   * Mobile (≤575) top chrome — Figma Work 2282:28478.
-   * SEARCH opens the existing overlay; FILTER toggles PortfolioIndexFilterSheet
-   * (BottomSheet). Count = full library length (not filtered). Hidden ≥576
+   * Mobile (≤575) top chrome — icon-only SEARCH + FILTER.
+   * SEARCH expands an inline field to the right of the magnifying glass.
+   * FILTER opens PortfolioIndexFilterSheet (BottomSheet). Hidden ≥576
    * where PortfolioIndexDesktopFilterRow owns entry points.
    */
   const mobileTopChrome = (
     <div className="vp-portfolio-index__mobile-chrome" data-mobile-chrome>
-      <button
-        type="button"
-        className={`vp-portfolio-index__mobile-chrome-search${
-          hasActiveSearch ? ' is-active' : ''
-        }`}
-        aria-label={tSearch('openAria')}
-        aria-expanded={searchOpen}
-        aria-pressed={hasActiveSearch}
-        onClick={() => {
-          setFilterSheetOpen(false);
-          openSearch();
-        }}
+      <div
+        className={`vp-portfolio-index__mobile-chrome-search-wrap${
+          searchOpen ? ' is-open' : ''
+        }${hasActiveSearch ? ' is-active' : ''}`}
       >
-        <MobileChromeSearchIcon />
-        <span className="vp-portfolio-index__mobile-chrome-search-label">
-          {tSearch('title')}
-        </span>
-      </button>
+        <button
+          type="button"
+          className={`vp-portfolio-index__mobile-chrome-search${
+            hasActiveSearch || searchOpen ? ' is-active' : ''
+          }`}
+          aria-label={tSearch('openAria')}
+          aria-expanded={searchOpen}
+          aria-pressed={hasActiveSearch}
+          onClick={() => {
+            if (searchOpen) {
+              closeSearch();
+              return;
+            }
+            openSearch();
+          }}
+        >
+          <MobileChromeSearchIcon />
+        </button>
+        <form
+          className="vp-portfolio-index__mobile-chrome-search-field"
+          role="search"
+          aria-hidden={!searchOpen}
+          onSubmit={(event) => {
+            event.preventDefault();
+            submitSearch();
+          }}
+        >
+          <input
+            ref={mobileSearchInputRef}
+            type="search"
+            className="vp-portfolio-index__mobile-chrome-search-input"
+            value={draftSearch}
+            tabIndex={searchOpen ? 0 : -1}
+            onChange={(event) => {
+              setDraftSearch(event.target.value);
+              if (searchNoResultsQuery) setSearchNoResultsQuery('');
+            }}
+            placeholder={tSearch('placeholder')}
+            aria-label={tSearch('placeholder')}
+            autoComplete="off"
+            enterKeyHint="search"
+          />
+        </form>
+        {searchNoResultsQuery ? (
+          <p
+            className="vp-portfolio-index__mobile-chrome-search-no-results"
+            role="status"
+            aria-live="polite"
+          >
+            {tSearch('noResults', {query: searchNoResultsQuery})}
+          </p>
+        ) : null}
+      </div>
       <div className="vp-portfolio-index__mobile-chrome-filter-wrap">
         <button
           type="button"
@@ -892,16 +917,7 @@ export function PortfolioIndexCarousel({
             setFilterSheetOpen((open) => !open);
           }}
         >
-          <span className="vp-portfolio-index__mobile-chrome-filter-label">
-            {t('filter')}
-          </span>
-          <span
-            className="vp-portfolio-index__mobile-chrome-filter-count"
-            aria-hidden="true"
-          >
-            {formatFilterCount(librarySlides.length)}
-          </span>
-          <MobileChromeChevronIcon />
+          <MobileChromeFilterIcon />
         </button>
         <PortfolioIndexFilterSheet
           open={filterSheetOpen}

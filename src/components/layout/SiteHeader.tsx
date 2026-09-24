@@ -71,7 +71,7 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
               alt="Vantage Pictures"
               width={220}
               height={36}
-              className="block h-[18px] w-auto md:h-7"
+              className="block h-[18px] w-auto sm:h-7"
             />
           </Link>
 
@@ -79,7 +79,6 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
             locale={locale}
             items={navItems}
             toggleAria={t('toggleAria')}
-            contactEmail={siteSettings.contactEmail}
             briefLabel={t('sendBrief')}
             briefHref={
               pagePath(locale, 'video-campaign-brief', navPages) as LinkHref

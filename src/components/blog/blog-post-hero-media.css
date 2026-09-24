@@ -105,10 +105,16 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  /* Homepage --vp-home-carousel-title-tag-gap (24px); was 32px / 2rem. */
-  gap: 1.5rem;
+  /* Homepage mobile title-tag gap (12px); desktop restores 24px below. */
+  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
   padding: 0 1.875rem 3.75rem; /* Figma inset 30 / pb 60 */
   text-align: left;
+}
+
+@media (min-width: 768px) {
+  .vp-blog-hero-media__overlay-copy {
+    gap: 1.5rem; /* Match homepage desktop --vp-home-carousel-title-tag-gap */
+  }
 }
 
 .vp-blog-hero__brand {
@@ -120,7 +126,7 @@
   letter-spacing: 0;
   text-transform: uppercase;
   color: #fdb913;
-  /* Trim ascent/descent so the 24px gap reads edge-to-edge (homepage). */
+  /* Trim ascent/descent so the brand→campaign gap reads edge-to-edge. */
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
 }

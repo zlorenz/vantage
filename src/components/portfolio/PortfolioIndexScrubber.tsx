@@ -234,7 +234,36 @@ export function PortfolioIndexScrubber({
           }`}
           style={{left: `${thumbPercent}%`}}
           aria-hidden
-        />
+        >
+          <svg
+            className="vp-portfolio-index__scrubber-thumb-caret"
+            viewBox="0 0 8 12"
+            focusable="false"
+          >
+            <path
+              d="M5.6 1.2 1.8 6l3.8 4.8"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="square"
+              strokeLinejoin="miter"
+            />
+          </svg>
+          <svg
+            className="vp-portfolio-index__scrubber-thumb-caret"
+            viewBox="0 0 8 12"
+            focusable="false"
+          >
+            <path
+              d="M2.4 1.2 6.2 6l-3.8 4.8"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="square"
+              strokeLinejoin="miter"
+            />
+          </svg>
+        </div>
       </div>
     </div>
   );
