@@ -144,3 +144,28 @@
   text-box-trim: trim-start;
   text-box-edge: cap alphabetic;
 }
+
+/*
+ * Blog hero media overlay — phone ≤575.
+ * Keep 16:9 frame; reuse --vp-overlay-mobile-* (pad-block 40, not Figma 60).
+ * Do not scope under .vp-case-shell — case media stays separate.
+ */
+@media (max-width: 575.98px) {
+  .vp-blog-hero-media__overlay-copy {
+    gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
+    padding: 0
+      var(--vp-overlay-mobile-pad-inline, 16px)
+      var(--vp-overlay-mobile-pad-block, 40px);
+  }
+
+  .vp-blog-hero__brand {
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
+  }
+
+  .vp-blog-hero__campaign {
+    font-size: var(--vp-overlay-mobile-title-size, 28px);
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+}

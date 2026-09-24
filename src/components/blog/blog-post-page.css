@@ -274,3 +274,64 @@ a.vp-blog-hero__pill:focus-visible {
    * rail-offset. Hero band keeps the left rail; post body does not.
    */
 }
+
+/* Single post hero band — phone ≤575 (Figma 2304:39785; 16:9 + yellow date locked). */
+@media (max-width: 575.98px) {
+  .vp-blog-post {
+    --vp-candidate-blog-hero-pad-x: var(
+      --vp-candidate-blog-mobile-hero-pad-x,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+  }
+
+  .vp-blog-hero__rail {
+    padding-top: 1.875rem; /* 30px — Figma py-30 back row */
+  }
+
+  .vp-blog-hero__back {
+    padding-inline: var(--vp-overlay-mobile-pad-inline, 16px);
+  }
+
+  .vp-blog-hero__back-icon {
+    width: 3.5rem; /* 56px */
+    height: 3.5rem;
+  }
+
+  .vp-blog-hero__back-label {
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
+  }
+
+  .vp-blog-hero__copy {
+    padding-top: 2.5rem; /* py-40 title band */
+  }
+
+  .vp-blog-hero__pills {
+    margin-bottom: 1.5rem;
+  }
+
+  .vp-blog-hero__date-chip,
+  .vp-blog-hero__pill {
+    min-height: var(--vp-candidate-blog-mobile-post-pill-height, 40px);
+    padding: 0.5rem 1rem;
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
+    letter-spacing: 0;
+  }
+
+  .vp-blog-hero__title {
+    font-size: var(--vp-candidate-blog-mobile-post-title-size, 30px);
+    letter-spacing: -1.2px;
+    line-height: 1.1;
+  }
+
+  .vp-blog-hero__rule {
+    margin-top: 2rem;
+  }
+
+  .vp-blog-hero__dek {
+    padding: 2.5rem var(--vp-overlay-mobile-pad-inline, 16px);
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.5;
+  }
+}
