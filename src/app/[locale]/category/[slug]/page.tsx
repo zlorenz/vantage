@@ -1,10 +1,13 @@
 /**
  * Blog category archive — filtered post grid with sidebar.
+ * Mobile ≤575: chrome-chip filter (nested sheet) + full-bleed cards;
+ * sidebar hidden. Desktop keeps PageHero + sidebar.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
+import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
 import { BlogPostGrid } from '@/components/blog/BlogPostGrid';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { PageHero } from '@/components/ui/PageHero';
@@ -29,6 +32,7 @@ import {
 import { JsonLd } from '@/components/seo/JsonLd';
 import {
   ALL_CATEGORIES_QUERY,
+  ALL_POSTS_QUERY,
   CATEGORY_BY_SLUG_QUERY,
   CATEGORY_HERO_IMAGE_QUERY,
   CATEGORY_SLUGS_QUERY,
@@ -104,8 +108,9 @@ export default async function CategoryArchivePage({ params }: Props) {
     });
   }
 
-  const [posts, categories, heroImage, phrases, organization] = await Promise.all([
+  const [posts, allPosts, categories, heroImage, phrases, organization] = await Promise.all([
     sanityClient.fetch<BlogPostCardData[]>(POSTS_BY_CATEGORY_QUERY, { slug }),
+    sanityClient.fetch<BlogPostCardData[]>(ALL_POSTS_QUERY),
     sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
     sanityClient.fetch<SanityImage | null>(CATEGORY_HERO_IMAGE_QUERY, { slug }),
     getPhraseRecord(),
@@ -148,12 +153,23 @@ export default async function CategoryArchivePage({ params }: Props) {
           },
         ])}
       />
-      <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
+      <div className="vp-category-archive">
+        <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
 
-      <SectionWrapper className="vp-news-page" fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-8">
+        <SectionWrapper className="vp-news-page vp-category-archive__body" fullBleed={true}>
+          {/* Mobile-only filter chip — desktop keeps BlogSidebar. */}
+          <div className="vp-category-archive__toolbar">
+            <BlogCategoryFilter
+              categories={categories}
+              posts={allPosts}
+              locale={typedLocale}
+              phrases={phrases}
+              activeSlug={activeSlug}
+            />
+          </div>
+
+          <div className="vp-category-archive__layout">
+            <div className="vp-category-archive__main">
               <BlogPostGrid
                 posts={posts}
                 locale={typedLocale}
@@ -161,7 +177,7 @@ export default async function CategoryArchivePage({ params }: Props) {
               />
             </div>
 
-            <div className="lg:col-span-4">
+            <div className="vp-category-archive__aside">
               <BlogSidebar
                 categories={categories}
                 locale={typedLocale}
@@ -170,8 +186,8 @@ export default async function CategoryArchivePage({ params }: Props) {
               />
             </div>
           </div>
-        </div>
-      </SectionWrapper>
+        </SectionWrapper>
+      </div>
     </>
   );
 }

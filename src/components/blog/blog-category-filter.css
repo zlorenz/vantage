@@ -1,8 +1,8 @@
 /* Production Log category filter — trigger + desktop popout placement.
  *
- * Reuses .vp-index-filter-sheet__* list/panel chrome from
- * portfolio-index-filter-sheet.css. Desktop popout opens *downward*
- * (trigger is in the page header, not a bottom bar).
+ * Mobile nested drill skin lives in blog-index-filter-mobile.css
+ * (.vp-blog-index-filter* — work filter classes untouched).
+ * Desktop popout opens *downward* (trigger is in the page header).
  */
 
 .vp-news-page__filter-anchor {
@@ -40,13 +40,6 @@
   display: block;
   width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
   height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
-}
-
-/* Term rows are <a> Links — keep button-like interaction chrome. */
-.vp-news-page__filter-anchor .vp-index-filter-sheet__term {
-  text-decoration: none;
-  color: inherit;
-  box-sizing: border-box;
 }
 
 @media (min-width: 576px) {
