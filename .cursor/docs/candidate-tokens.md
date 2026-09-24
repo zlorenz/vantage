@@ -168,6 +168,24 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 
 **Figma note:** MCP `get_design_context` for `2281:12897` / label `2281:12938` still emits the glass `white/10` fill for the date label (same as category chips). Screenshot + product call for yellow bg / black text — implemented as yellow/black via candidates above.
 
+## Blog — mobile ≤575 (pending)
+
+Frames: index `2301:38421`, single `2304:39785`. Decisions locked: chrome-chip filter; media-first featured; 16:9 hero; yellow/black date; overlay pad kit 40; category archive in; no SEARCH. Do **not** promote this pass.
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-blog-mobile-display-size` | `40px` | `.vp-news-page__title` ≤575 | `2301:38421` display | pending | Tracking −1.6px optional; floor 0 if conflict. |
+| `--vp-candidate-blog-mobile-card-title-size` | `16px` | `.vp-blog-card__title` ≤575 | ArticleCard instances | pending | |
+| `--vp-candidate-blog-mobile-featured-title-size` | `24px` | `.vp-featured-post__title` ≤575 | featured stack | pending | Media→copy→CTA order kept. |
+| `--vp-candidate-blog-mobile-post-title-size` | `30px` | `.vp-blog-hero__title` ≤575 | `2304:39785` h1 | pending | |
+| `--vp-candidate-blog-mobile-body-size` | `16px` | `.vp-blog-post__prose` p/ul/ol ≤575 | body_large mobile | pending | Desktop stays `--vp-candidate-blog-body-size` 22px. |
+| `--vp-candidate-blog-mobile-h2-size` | `28px` | `.vp-blog-post__prose` h2–h4 ≤575 | `--h2` on frame | pending | Desktop stays 48px candidate. |
+| `--vp-candidate-blog-mobile-pill-height` | `32px` | Index/featured/card pills ≤575 | h-32 | pending | |
+| `--vp-candidate-blog-mobile-post-pill-height` | `40px` | `.vp-blog-hero__*` pills ≤575 | h-40 | pending | Date chip stays yellow/black. |
+| `--vp-candidate-blog-mobile-hero-pad-x` | `16px` | Blog hero/index gutters ≤575 | alias | pending | Prefer `--vp-overlay-mobile-pad-inline` when equal. |
+
+**Reuse (no new names):** `--vp-overlay-mobile-pad-inline` / `pad-block` / `title-size` / `caption-size` / `title-tag-gap`; `--vp-candidate-chrome-chip-*`; filter panel bg/dim/height via blog-scoped classes mirroring work (do not edit `.vp-work-index-filter*`).
+
 ## Portfolio case study — mobile ≤575 (pending)
 
 Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2283-29693  
