@@ -245,7 +245,7 @@
   .vp-portfolio-index__mobile-chrome-search-wrap.is-open
     .vp-portfolio-index__mobile-chrome-search-field {
     flex: 1 1 auto;
-    max-width: 12rem;
+    max-width: 100%; /* fill wrap — right of chip, left of FILTER */
     opacity: 1;
     pointer-events: auto;
   }
@@ -289,7 +289,7 @@
     left: 3.4rem; /* past 2.75rem chip + gap */
     top: calc(100% + 0.35rem);
     margin: 0;
-    max-width: min(12rem, 70vw);
+    max-width: min(18rem, calc(100% - 3.4rem));
     color: var(--vp-orange, #f04e23);
     font-family: var(--vp-font-sans);
     font-size: 0.75rem;
@@ -302,10 +302,6 @@
     flex-shrink: 0;
   }
 
-  /* Fullscreen search overlay is desktop/bottom-bar only — chrome owns mobile. */
-  .vp-portfolio-index__search-overlay {
-    display: none;
-  }
 }
 
 /* Desktop: filter→card = Figma 16px via stage gap (counter removed; was
@@ -962,10 +958,14 @@
   height: 100%;
   flex-direction: column;
   justify-content: flex-end;
-  /* ~0.35 / 1.25 / 1.35 rem at a ~420px card; scales with card width. */
-  gap: clamp(0.25rem, 1.35cqi, 0.35rem);
-  padding: clamp(0.95rem, 5.2cqi, 1.35rem) clamp(0.9rem, 4.8cqi, 1.25rem)
-    clamp(0.85rem, 4.6cqi, 1.2rem);
+  /*
+   * Shared with homepage mobile carousel overlay (`.vp-proto-carousel`
+   * ≤767) — same type, brand→title gap, and inset. Desktop work cards
+   * reuse these metrics for cohesion; tokens fall back when not inherited.
+   */
+  gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
+  padding: var(--vp-candidate-home-carousel-mobile-overlay-pad-block, 40px)
+    var(--vp-candidate-home-carousel-mobile-overlay-pad-inline, 16px);
   text-align: left;
 }
 
@@ -973,55 +973,73 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(0.5rem, 2.9cqi, 0.75rem);
+  gap: 0.75rem; /* 12px — homepage mobile brand | category */
 }
 
-.vp-portfolio-index__brand {
+.vp-portfolio-index__brand,
+.vp-portfolio-index__format {
   margin: 0;
-  font-family: var(--vp-font-heading);
-  /* Prefer % of card width so Air-sized cards shrink type with the face. */
-  font-size: clamp(0.55rem, 2.85cqi, 0.75rem);
-  font-weight: var(--font-vp-heading-weight);
-  letter-spacing: 0.08em;
-  line-height: 1.2;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-home-carousel-mobile-caption-size, 12px);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.6;
   text-transform: uppercase;
-  color: #fdb913;
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
 }
 
-/* Figma ● before brand — ~0.8em relative to brand text. */
+.vp-portfolio-index__brand {
+  color: var(--vp-home-carousel-brand-accent, #fdb913);
+}
+
+.vp-portfolio-index__format {
+  color: #fff;
+}
+
+/*
+ * Homepage mobile uses the same 20px hairline between brand and format.
+ * Cap-trimmed 12px type is shorter than this rule, so the brand-row height
+ * (and thus brand→title gap) tracks the homepage carousel when format is shown.
+ */
+.vp-portfolio-index__brand-rule {
+  display: block;
+  width: 1px;
+  height: 20px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Figma ● before brand — same relative size as homepage carousel. */
 .vp-portfolio-index__brand::before {
   content: "";
   display: inline-block;
-  width: 0.8em;
-  height: 0.8em;
+  width: var(--vp-home-carousel-brand-dot-size, 0.8em);
+  height: var(--vp-home-carousel-brand-dot-size, 0.8em);
   margin-right: 0.55em;
   border-radius: 50%;
-  background: #fdb913;
+  background: var(--vp-home-carousel-brand-accent, #fdb913);
   vertical-align: 0.05em;
 }
 
 .vp-portfolio-index__campaign {
   margin: 0;
-  font-family: var(--vp-font-heading);
-  font-size: clamp(0.95rem, 6.1cqi, 1.6rem);
-  font-weight: var(--font-vp-heading-weight);
-  letter-spacing: 0.04em;
-  line-height: 1.05;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-home-carousel-mobile-title-size, 28px);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
   text-transform: uppercase;
   color: #fff;
-  /* Normal wrap only — mid-word breaks were a side effect of vw-sized type
-   * outgrowing height-driven card width. */
   overflow-wrap: normal;
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
 }
 
 /*
- * Mobile card overlay type/pad toward Figma Work 2282:28478.
- * Keep CDN 2:3 bake; do not retarget 320×520 crops.
- * Wireframe brackets enabled in ≤575 card-chrome block (phone QC Fix 1).
+ * Mobile ≤575 — peer wash; hide format + rule (brand alone on narrow cards).
+ * Campaign title scoped smaller than homepage 28px — card face is narrow;
+ * brand caption stays on the shared 12px token.
  */
 @media (max-width: 575px) {
   .vp-portfolio-index__card--styled::before {
@@ -1029,44 +1047,13 @@
     background: rgba(0, 0, 0, 0.35);
   }
 
-  .vp-portfolio-index__overlay-copy {
-    /* Match homepage mobile brand→campaign gap (12px, with trim below). */
-    gap: var(--vp-candidate-home-carousel-mobile-title-tag-gap, 12px);
-    padding: 0 var(--vp-candidate-work-index-mobile-overlay-pad-inline, 15px)
-      var(--vp-candidate-work-index-mobile-overlay-pad-block, 30px);
-  }
-
-  .vp-portfolio-index__brand-row {
-    gap: var(--vp-candidate-work-index-mobile-brand-gap, 24px);
-  }
-
-  .vp-portfolio-index__brand {
-    font-size: var(
-      --vp-candidate-home-carousel-mobile-caption-size,
-      12px
-    );
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.6;
-    color: var(--vp-home-carousel-brand-accent, #fdb913);
-    /* Cap-trim so 12px gap reads like homepage, not ascent-inflated. */
-    text-box-trim: trim-both;
-    text-box-edge: cap alphabetic;
-  }
-
-  .vp-portfolio-index__brand::before {
-    background: var(--vp-home-carousel-brand-accent, #fdb913);
+  .vp-portfolio-index__brand-rule,
+  .vp-portfolio-index__format {
+    display: none;
   }
 
   .vp-portfolio-index__campaign {
-    /* Card face is narrower than homepage full-bleed — ~18px keeps the
-     * homepage 12→28 brand:title proportion optically (~1.5× brand). */
     font-size: var(--vp-candidate-work-index-mobile-title-size, 18px);
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.2;
-    text-box-trim: trim-both;
-    text-box-edge: cap alphabetic;
   }
 }
 
@@ -1101,6 +1088,9 @@
 
 .vp-portfolio-index__tool--search {
   margin-inline-end: 0.35rem;
+  /* Empty spacer mirrors filter-trigger width when search button is gone. */
+  width: 2.75rem;
+  height: 2.75rem;
 }
 
 /* Positions the desktop filter popout above the funnel (mobile sheet is fixed). */
@@ -1146,157 +1136,6 @@
   display: block;
   width: 1.25rem;
   height: 1.25rem;
-}
-
-/* Centered search field — no panel chrome; scrim dismisses. */
-.vp-portfolio-index__search-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.25rem;
-  pointer-events: none;
-}
-
-.vp-portfolio-index__search-scrim {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: rgba(var(--vp-black-rgb), 0.5);
-  cursor: pointer;
-  pointer-events: auto;
-  -webkit-tap-highlight-color: transparent;
-  opacity: 0;
-  transition: opacity 0.28s ease;
-}
-
-.vp-portfolio-index__search-overlay.is-open .vp-portfolio-index__search-scrim {
-  opacity: 1;
-}
-
-.vp-portfolio-index__search-overlay:not(.is-open)
-  .vp-portfolio-index__search-scrim {
-  transition: opacity 0.22s ease;
-}
-
-.vp-portfolio-index__search-stack {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.85rem;
-  width: min(36rem, calc(100vw - 2.5rem));
-  pointer-events: auto;
-  opacity: 0;
-  transform: translate3d(0, 1.25rem, 0);
-  will-change: opacity, transform;
-  transition:
-    opacity 0.32s ease,
-    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.vp-portfolio-index__search-overlay.is-open .vp-portfolio-index__search-stack {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-.vp-portfolio-index__search-overlay:not(.is-open)
-  .vp-portfolio-index__search-stack {
-  transition:
-    opacity 0.22s ease,
-    transform 0.22s ease;
-}
-
-.vp-portfolio-index__search-no-results {
-  margin: 0;
-  padding: 0 0.25rem;
-  color: var(--vp-orange, #f04e23);
-  font-family: var(--vp-font-sans);
-  font-size: clamp(1.25rem, 3.2vw, 1.65rem);
-  font-weight: 700;
-  line-height: 1.3;
-  text-align: center;
-  pointer-events: none;
-}
-
-.vp-portfolio-index__search-field {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-}
-
-.vp-portfolio-index__search-input {
-  flex: 1 1 auto;
-  min-width: 0;
-  margin: 0;
-  padding: 1.1rem 1.25rem;
-  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
-  border-right: 0;
-  border-radius: 9999px 0 0 9999px;
-  background: rgba(var(--vp-black-rgb), 0.72);
-  color: #fff;
-  font-family: var(--vp-font-sans);
-  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
-  font-weight: 400;
-  line-height: 1.2;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.vp-portfolio-index__search-input::placeholder {
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.vp-portfolio-index__search-input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.vp-portfolio-index__search-input:focus {
-  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
-}
-
-.vp-portfolio-index__search-submit {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.75rem;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--vp-border-soft, rgba(255, 255, 255, 0.12));
-  border-left: 0;
-  border-radius: 0 9999px 9999px 0;
-  background: rgba(var(--vp-black-rgb), 0.72);
-  color: #fff;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    background-color var(--vp-transition),
-    border-color var(--vp-transition);
-}
-
-.vp-portfolio-index__search-input:focus + .vp-portfolio-index__search-submit {
-  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
-}
-
-.vp-portfolio-index__search-submit:hover,
-.vp-portfolio-index__search-submit:focus-visible {
-  background: rgba(255, 255, 255, 0.12);
-  outline: none;
-}
-
-.vp-portfolio-index__search-submit-icon {
-  display: block;
-  width: 1.5rem;
-  height: 1.5rem;
 }
 
 /* Scrubber — Siena-like ticks + dark pill; decorative ticks (not 1:1 slides). */
@@ -1410,13 +1249,13 @@
   }
 
   /*
-   * Desktop filter/search entry points move to PortfolioIndexDesktopFilterRow.
-   * Keep the nodes mounted so mobile sheet/search logic stays intact; hide
-   * only the funnel + bottom search icon visually.
+   * Desktop filter/search entry points live in PortfolioIndexDesktopFilterRow.
+   * Bottom-bar tool slots stay as scrubber spacers (hidden).
    */
   .vp-portfolio-index__tool--filter,
   .vp-portfolio-index__tool--search {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .vp-portfolio-index__scrubber-track {
@@ -1442,7 +1281,8 @@
 @media (max-width: 575px) {
   .vp-portfolio-index__tool--filter,
   .vp-portfolio-index__tool--search {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
   }
 }
 
@@ -1483,22 +1323,4 @@
     transition: none;
   }
 
-  .vp-portfolio-index__search-scrim,
-  .vp-portfolio-index__search-overlay.is-open .vp-portfolio-index__search-scrim,
-  .vp-portfolio-index__search-overlay:not(.is-open)
-    .vp-portfolio-index__search-scrim,
-  .vp-portfolio-index__search-stack,
-  .vp-portfolio-index__search-overlay.is-open .vp-portfolio-index__search-stack,
-  .vp-portfolio-index__search-overlay:not(.is-open)
-    .vp-portfolio-index__search-stack {
-    transition: none;
-  }
-
-  .vp-portfolio-index__search-stack {
-    transform: none;
-  }
-
-  .vp-portfolio-index__search-overlay.is-open .vp-portfolio-index__search-stack {
-    opacity: 1;
-  }
 }

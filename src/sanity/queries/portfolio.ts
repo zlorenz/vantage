@@ -51,11 +51,16 @@ const PORTFOLIO_DISPLAY_TITLE_FIELDS = `
 `;
 
 /** Taxonomy slug arrays for public filter bar (format / industry / market).
- * Includes EN + ZH slugs so URL filters work on both locales. */
+ * Includes EN + ZH slugs so URL filters work on both locales.
+ * videoFormats titles feed desktop /work card overlay (brand | format). */
 const PORTFOLIO_FILTER_FIELDS = `
   "videoFormatSlugs": array::compact((videoFormats[]->slug.current) + (videoFormats[]->slugZh.current)),
   "industrySlugs": array::compact((industries[]->slug.current) + (industries[]->slugZh.current)),
-  "marketSlugs": array::compact((markets[]->slug.current) + (markets[]->slugZh.current))
+  "marketSlugs": array::compact((markets[]->slug.current) + (markets[]->slugZh.current)),
+  videoFormats[]->{
+    title,
+    titleZh
+  }
 `;
 
 /** Crew/client slug data for work-internal AND-logic filters. */

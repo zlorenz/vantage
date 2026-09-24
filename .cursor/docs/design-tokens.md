@@ -108,7 +108,7 @@ Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `g
 | `rgba(255,255,255,0.4)` | Credit role labels |
 | `rgba(var(--vp-black-rgb), 0.2)` | Hero carousel image overlay (light) |
 | `rgba(var(--vp-black-rgb), 0.4)` | Dropdown menu background |
-| `rgba(var(--vp-black-rgb), 0.65–0)` | Navbar gradient (top to transparent) |
+| Transparent | Navbar (no backdrop fill) |
 | `#111` | Search card thumbnail placeholder background |
 
 ---
@@ -217,8 +217,7 @@ Title scales are **tiered** — smaller heroes must not inherit the largest band
 | Logo height (desktop) | `90px` |
 | Logo height (tablet, ≤767px) | `51px` |
 | Logo height (mobile, ≤575px) | `46px` |
-| Navbar backdrop blur | `blur(16px)` |
-| Navbar gradient | `rgba(var(--vp-black-rgb), 0.65)` → `rgba(var(--vp-black-rgb), 0)` top to bottom |
+| Navbar backdrop | Fully transparent (no scrim / blur) |
 
 ### Footer
 
@@ -326,13 +325,7 @@ Inputs, filter tabs, modals, dropdowns: `border-radius: 0`
 ## Special Visual Treatments
 
 ### Navbar Backdrop
-The navbar uses a pseudo-element (`::before`) for its background — a gradient + blur combination that fades to transparent at the bottom, so it doesn't create a hard edge over hero content. This must be replicated exactly in the new navbar component.
-
-```
-background: linear-gradient(180deg, rgba(var(--vp-black-rgb), 0.65), rgba(var(--vp-black-rgb), 0))
-backdrop-filter: blur(16px)
-mask-image: linear-gradient(to bottom, black, transparent)
-```
+Navbar chrome is fully transparent — no `::before` scrim, blur, or fade mask. Contrast comes from type/icons and the bottom hairline only.
 
 ### Outline Text Effect
 `.vp-outline` — text rendered as a white outline with transparent fill:

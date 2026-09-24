@@ -72,7 +72,6 @@
   --color-vp-credits-text: #bfbfbf;
   --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
   --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
-  --color-vp-navbar-gradient-start: rgba(0, 0, 0, 0.65);
   --color-vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family
@@ -290,7 +289,6 @@
   --vp-credits-text: #bfbfbf;
   --vp-credit-role-label: rgba(255, 255, 255, 0.4);
   --vp-dropdown-bg: rgba(var(--vp-black-rgb), 0.4);
-  --vp-navbar-gradient-start: rgba(var(--vp-black-rgb), 0.65);
   --vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family — see --font-vp-sans note above */
@@ -386,6 +384,30 @@
 
   --vp-file-block-padding-top: 1.25rem;
   --vp-file-block-button-gap: 1.25rem;
+}
+
+/*
+ * iOS Safari auto-zooms focused fields when computed font-size < 16px and
+ * does not restore zoom on blur — leaving sideways page scroll. Floor text
+ * controls at 16px on narrow viewports sitewide. Pinch-zoom stays available
+ * (unlike maximum-scale=1). !important beats utility classes (e.g. text-sm)
+ * and component caption sizes on search fields.
+ */
+@media (max-width: 767.98px) {
+  :root {
+    --vp-form-input-size: 1rem;
+    --text-vp-form-input-size: 1rem;
+  }
+
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not(
+      [type='file']
+    ):not([type='submit']):not([type='button']):not([type='reset']):not(
+      [type='image']
+    ):not([type='hidden']):not([type='color']),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
 
 /* /work index shell.
@@ -575,8 +597,7 @@
 }
 
 /* ================================================================
- * Navbar — gradient backdrop, dropdowns, hamburger (design-tokens.md)
- * Tailwind cannot express pseudo-element gradient + mask; custom CSS required.
+ * Navbar — transparent chrome, dropdowns, hamburger (design-tokens.md)
  * ================================================================ */
 
 #header.navbar {
@@ -588,23 +609,6 @@
 
 #header.navbar.vp-header--hidden {
   transform: translateY(-100%);
-}
-
-#header.navbar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: linear-gradient(
-    180deg,
-    var(--vp-navbar-gradient-start),
-    rgba(var(--vp-black-rgb), 0)
-  );
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
-  mask-image: linear-gradient(to bottom, black, transparent);
-  pointer-events: none;
 }
 
 /* Bottom hairline above the mobile panel (z-40). A border on #header itself
@@ -619,11 +623,6 @@
   height: 1px;
   background-color: rgba(255, 255, 255, 0.15);
   pointer-events: none;
-}
-
-/* /work only: fully clear nav backdrop so the page top glow shows through. */
-body:has(.vp-work-index) #header.navbar::before {
-  opacity: 0;
 }
 
 /* Header chrome above the sliding panel (panel is a descendant of
@@ -1263,7 +1262,7 @@ body:has(.vp-work-index) #header.navbar::before {
   background: transparent;
   color: #fff;
   font-family: var(--font-vp-heading);
-  font-size: 0.75rem; /* 12px caption */
+  font-size: 1rem; /* ≥16px — avoids iOS focus zoom (see globals mobile floor) */
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.25rem;
@@ -1362,9 +1361,10 @@ body:has(.vp-work-index) #header.navbar::before {
 }
 
 /*
- * Mobile nav bar ≤767 — Figma 2282:27788 / 2282:29325 (64px bar, 64×64 orange
- * hamburger). EN/中文 cells stay in the bar left of hamburger. Desktop ≥768
- * chrome below is locked at --vp-nav-bar-height (80px).
+ * Mobile nav bar ≤767 — Figma 2282:27788 / 2282:29325 (64px bar; hamburger
+ * cell is transparent — desktop keeps the orange fill). EN/中文 cells stay
+ * in the bar left of hamburger. Desktop ≥768 chrome below is locked at
+ * --vp-nav-bar-height (80px).
  */
 @media (max-width: 767.98px) {
   #header.navbar {
@@ -1425,7 +1425,7 @@ body:has(.vp-work-index) #header.navbar::before {
     margin: 0;
     padding: 0;
     border-radius: 0;
-    background-color: var(--vp-orange);
+    background-color: transparent;
   }
 
   #header .navbar-toggler .navbar-toggler-icon {
@@ -1464,8 +1464,8 @@ body:has(.vp-work-index) #header.navbar::before {
   margin: 0;
   padding: 0;
   border: 0;
-  /* Right edge only — brand already supplies the logo|EN hairline; a left
-   * border here would double it. */
+  /* Right edge only by default — on mobile the brand cell already draws
+   * logo|EN. Desktop adds a left hairline on :first-child (search|EN). */
   border-right: var(--vp-struct-line);
   border-radius: 0;
   background: transparent;
@@ -1533,6 +1533,11 @@ body:has(.vp-work-index) #header.navbar::before {
     display: flex;
     align-items: stretch;
     align-self: stretch;
+  }
+
+  /* Search sits left of EN on desktop — left hairline separates icon | EN. */
+  #header .vp-lang-cell:first-child {
+    border-left: var(--vp-struct-line);
   }
 
   /* Slot stretches for full-height lang/hamburger cells; center the icon

@@ -58,9 +58,6 @@ const EMPTY_PUBLIC_PRESETS: PublicFilters = {
 
 /** In-gesture |delta| before paging; gesture bounds come from wheel-gestures. */
 const WHEEL_GESTURE_THRESHOLD_PX = 30;
-/** Search overlay fade/slide-out before unmount. */
-const SEARCH_CLOSE_MS = 220;
-
 /**
  * How far from the active snap a decoded <picture>/<img> may remain in the DOM.
  * Outside this radius the poster unmounts (memory bound). Inside it, the node
@@ -181,22 +178,6 @@ function FunnelIcon() {
   );
 }
 
-function SearchIcon() {
-  return (
-    <svg
-      className="vp-portfolio-index__filter-trigger-icon"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        fill="currentColor"
-        d="M10.5 3.75a6.75 6.75 0 1 0 4.248 12.032l3.735 3.735a.75.75 0 1 0 1.06-1.06l-3.734-3.735A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z"
-      />
-    </svg>
-  );
-}
-
 /** Mobile top SEARCH glyph — 20px face. */
 function MobileChromeSearchIcon() {
   return (
@@ -231,21 +212,6 @@ function MobileChromeFilterIcon() {
   );
 }
 
-function SearchSubmitIcon() {
-  return (
-    <svg
-      className="vp-portfolio-index__search-submit-icon"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        fill="currentColor"
-        d="M13.28 5.22a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06L18.44 12.75H3.75a.75.75 0 0 1 0-1.5h14.69l-5.16-5.03a.75.75 0 0 1 0-1.06Z"
-      />
-    </svg>
-  );
-}
 
 /**
  * Active-card chrome from Figma 78:30485 (desktop) / 2282:28478 (mobile).
@@ -344,16 +310,10 @@ export function PortfolioIndexCarousel({
     readWorkIndexSearch(searchParams),
   );
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchMounted, setSearchMounted] = useState(false);
-  const [searchVisible, setSearchVisible] = useState(false);
   const [draftSearch, setDraftSearch] = useState('');
   const [searchNoResultsQuery, setSearchNoResultsQuery] = useState('');
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
-  const searchCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
   const [activeIndex, setActiveIndex] = useState(() =>
     resolveWorkIndexStartIndex(
       slides,
@@ -433,57 +393,6 @@ export function PortfolioIndexCarousel({
   }, []);
 
   useEffect(() => {
-    if (searchCloseTimerRef.current) {
-      clearTimeout(searchCloseTimerRef.current);
-      searchCloseTimerRef.current = null;
-    }
-
-    if (searchOpen) {
-      setSearchMounted(true);
-      return;
-    }
-
-    if (!searchMounted) return;
-
-    setSearchVisible(false);
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-    if (prefersReduced) {
-      setSearchMounted(false);
-      return;
-    }
-
-    searchCloseTimerRef.current = setTimeout(() => {
-      setSearchMounted(false);
-      searchCloseTimerRef.current = null;
-    }, SEARCH_CLOSE_MS);
-  }, [searchOpen, searchMounted]);
-
-  useEffect(() => {
-    if (!searchOpen || !searchMounted) return;
-
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-    if (prefersReduced) {
-      setSearchVisible(true);
-      return;
-    }
-
-    const id = window.requestAnimationFrame(() => setSearchVisible(true));
-    return () => window.cancelAnimationFrame(id);
-  }, [searchOpen, searchMounted]);
-
-  useEffect(() => {
-    return () => {
-      if (searchCloseTimerRef.current) {
-        clearTimeout(searchCloseTimerRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     if (!searchOpen) return;
 
     function onKeyDown(event: KeyboardEvent) {
@@ -496,6 +405,7 @@ export function PortfolioIndexCarousel({
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [searchOpen]);
+
   /**
    * Bleed-track sync (progress-proportional, not pixel-copy).
    *
@@ -688,32 +598,19 @@ export function PortfolioIndexCarousel({
     setFilterSheetOpen(false);
     setDraftSearch(committedSearch);
     setSearchNoResultsQuery('');
-    // Mount + focus in the same tap so iOS will raise the keyboard.
+    // Always show + focus (not a toggle). Re-tapping after dismissing the
+    // keyboard re-focuses so iOS raises it again in this same gesture.
     flushSync(() => {
-      setSearchMounted(true);
       setSearchOpen(true);
     });
-    // Mobile chrome field is always in the DOM (display:none ≥576) — only
-    // focus it on the phone breakpoint; otherwise use the overlay input.
-    const preferMobile =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(max-width: 575px)').matches;
-    const input = preferMobile
-      ? (mobileSearchInputRef.current ?? searchInputRef.current)
-      : searchInputRef.current;
-    input?.focus({preventScroll: true});
-    input?.select();
+    mobileSearchInputRef.current?.focus({preventScroll: true});
+    mobileSearchInputRef.current?.select();
   }, [committedSearch]);
-
-  const closeSearch = useCallback(() => {
-    setSearchNoResultsQuery('');
-    setSearchOpen(false);
-  }, []);
 
   const commitSearchQuery = useCallback((raw: string): 'empty' | 'none' | 'ok' => {
     const next = raw.trim();
 
-    // Empty commit clears any committed search (and closes the mobile overlay).
+    // Empty commit clears any committed search (and collapses the inline field).
     if (!next) {
       setCommittedSearch('');
       setSearchNoResultsQuery('');
@@ -755,10 +652,10 @@ export function PortfolioIndexCarousel({
   const submitSearch = useCallback(() => {
     const result = commitSearchQuery(draftSearch);
     if (result === 'none') {
-      // Keep mobile overlay open + re-focus the overlay field.
+      // Keep the inline field open + re-focus for another try.
       window.requestAnimationFrame(() => {
-        searchInputRef.current?.focus();
-        searchInputRef.current?.select();
+        mobileSearchInputRef.current?.focus();
+        mobileSearchInputRef.current?.select();
       });
     }
   }, [commitSearchQuery, draftSearch]);
@@ -839,7 +736,8 @@ export function PortfolioIndexCarousel({
 
   /*
    * Mobile (≤575) top chrome — icon-only SEARCH + FILTER.
-   * SEARCH expands an inline field to the right of the magnifying glass.
+   * SEARCH always opens/focuses the inline field (not a toggle). Escape /
+   * empty submit / successful commit / opening FILTER still collapses it.
    * FILTER opens PortfolioIndexFilterSheet (BottomSheet). Hidden ≥576
    * where PortfolioIndexDesktopFilterRow owns entry points.
    */
@@ -858,13 +756,7 @@ export function PortfolioIndexCarousel({
           aria-label={tSearch('openAria')}
           aria-expanded={searchOpen}
           aria-pressed={hasActiveSearch}
-          onClick={() => {
-            if (searchOpen) {
-              closeSearch();
-              return;
-            }
-            openSearch();
-          }}
+          onClick={openSearch}
         >
           <MobileChromeSearchIcon />
         </button>
@@ -937,9 +829,8 @@ export function PortfolioIndexCarousel({
   );
 
   /*
-   * Bottom bar: scrubber only on mobile (tools hidden ≤575). Funnel/search
-   * icon tools remain mounted for ≥576 parity with prior desktop hide path,
-   * but FilterSheet now lives under mobileTopChrome.
+   * Bottom bar: scrubber + hidden side spacers. SEARCH/FILTER live in
+   * mobileTopChrome (≤575) / PortfolioIndexDesktopFilterRow (≥576).
    */
   const filterTrigger = (
     <div className="vp-portfolio-index__bottom-bar">
@@ -966,80 +857,13 @@ export function PortfolioIndexCarousel({
         snapCount={slideCount}
         emblaApi={emblaApi}
       />
-      <div className="vp-portfolio-index__tool vp-portfolio-index__tool--search">
-        <button
-          type="button"
-          className={`vp-portfolio-index__filter-trigger${
-            hasActiveSearch ? ' is-active' : ''
-          }`}
-          aria-label={tSearch('openAria')}
-          aria-expanded={searchOpen}
-          aria-pressed={hasActiveSearch}
-          onClick={openSearch}
-        >
-          <SearchIcon />
-        </button>
-      </div>
+      {/* Symmetry spacer — mirrors hidden filter tool width on the left. */}
+      <div
+        className="vp-portfolio-index__tool vp-portfolio-index__tool--search"
+        aria-hidden
+      />
     </div>
   );
-
-  const searchOverlay = searchMounted ? (
-    <div
-      className={`vp-portfolio-index__search-overlay${
-        searchVisible ? ' is-open' : ''
-      }`}
-      role="presentation"
-    >
-      <button
-        type="button"
-        className="vp-portfolio-index__search-scrim"
-        aria-label={tSearch('closeAria')}
-        tabIndex={-1}
-        onClick={closeSearch}
-      />
-      <div className="vp-portfolio-index__search-stack">
-        {searchNoResultsQuery ? (
-          <p
-            className="vp-portfolio-index__search-no-results"
-            role="status"
-            aria-live="polite"
-          >
-            {tSearch('noResults', {query: searchNoResultsQuery})}
-          </p>
-        ) : null}
-        <form
-          className="vp-portfolio-index__search-field"
-          role="search"
-          onSubmit={(event) => {
-            event.preventDefault();
-            submitSearch();
-          }}
-        >
-          <input
-            ref={searchInputRef}
-            type="search"
-            className="vp-portfolio-index__search-input"
-            value={draftSearch}
-            onChange={(event) => {
-              setDraftSearch(event.target.value);
-              if (searchNoResultsQuery) setSearchNoResultsQuery('');
-            }}
-            placeholder={tSearch('placeholder')}
-            aria-label={tSearch('placeholder')}
-            autoComplete="off"
-            enterKeyHint="search"
-          />
-          <button
-            type="submit"
-            className="vp-portfolio-index__search-submit"
-            aria-label={tSearch('submitAria')}
-          >
-            <SearchSubmitIcon />
-          </button>
-        </form>
-      </div>
-    </div>
-  ) : null;
 
   const hasActiveChrome = hasActiveFilters || hasActiveSearch;
   const indexRootClassName = [
@@ -1073,7 +897,6 @@ export function PortfolioIndexCarousel({
           <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
           {filterTrigger}
         </div>
-        {searchOverlay}
       </div>
     );
   }
@@ -1244,11 +1067,25 @@ export function PortfolioIndexCarousel({
                               aria-hidden
                             />
                             <div className="vp-portfolio-index__overlay-copy">
-                              {slide.brandLine ? (
+                              {slide.brandLine || slide.formatLine ? (
                                 <div className="vp-portfolio-index__brand-row">
-                                  <p className="vp-portfolio-index__brand">
-                                    {slide.brandLine}
-                                  </p>
+                                  {slide.brandLine ? (
+                                    <p className="vp-portfolio-index__brand">
+                                      {slide.brandLine}
+                                    </p>
+                                  ) : null}
+                                  {/* Format + hairline: desktop only (CSS ≤575 hides). */}
+                                  {slide.brandLine && slide.formatLine ? (
+                                    <span
+                                      className="vp-portfolio-index__brand-rule"
+                                      aria-hidden
+                                    />
+                                  ) : null}
+                                  {slide.formatLine ? (
+                                    <p className="vp-portfolio-index__format">
+                                      {slide.formatLine}
+                                    </p>
+                                  ) : null}
                                 </div>
                               ) : null}
                               {slide.campaignLine ? (
@@ -1275,7 +1112,6 @@ export function PortfolioIndexCarousel({
         slideCount={slideCount}
         emblaApi={emblaApi}
       />
-      {searchOverlay}
     </div>
   );
 }

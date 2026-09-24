@@ -121,6 +121,11 @@ export interface PortfolioGridEntry extends PortfolioCard {
   videoFormatSlugs?: string[];
   industrySlugs?: string[];
   marketSlugs?: string[];
+  /** Locale titles for desktop /work card brand | format row. */
+  videoFormats?: Array<{
+    title?: string | null;
+    titleZh?: string | null;
+  }> | null;
   /** Present on /work index fetch — used to build client-side search haystacks. */
   crewCredits?: CrewCredit[];
 }

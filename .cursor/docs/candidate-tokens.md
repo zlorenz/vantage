@@ -12,12 +12,12 @@ Naming: `--vp-candidate-[name]`
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-home-carousel-mobile-title-size` | `28px` | `.vp-proto-carousel__campaign` ≤767 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-27788 | pending | Figma `h2`. Tracking floor 0. |
-| `--vp-candidate-home-carousel-mobile-caption-size` | `12px` | Brand, format, counter ≤767 | same | pending | Figma `caption_1` / `caption_2`. |
-| `--vp-candidate-home-carousel-mobile-overlay-pad-inline` | `16px` | Overlay L/R + counter `right` ≤767 | same (`px-16`) | pending | |
-| `--vp-candidate-home-carousel-mobile-overlay-pad-block` | `40px` | Overlay top/bottom ≤767 | same (`py-40`); credits removed | pending | Bottom = 40px + safe-area. |
+| `--vp-candidate-home-carousel-mobile-title-size` | `28px` | `.vp-proto-carousel__campaign` ≤767; `.vp-portfolio-index__campaign` ≥576 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-27788 | pending | Figma `h2`. Work desktop reuses; mobile work uses `--vp-candidate-work-index-mobile-title-size`. |
+| `--vp-candidate-home-carousel-mobile-caption-size` | `12px` | Brand, format, counter ≤767; also `.vp-portfolio-index__brand` (all breakpoints) | same | pending | Figma `caption_1` / `caption_2`. |
+| `--vp-candidate-home-carousel-mobile-overlay-pad-inline` | `16px` | Overlay L/R + counter `right` ≤767; also work-index card overlay | same (`px-16`) | pending | |
+| `--vp-candidate-home-carousel-mobile-overlay-pad-block` | `40px` | Overlay top/bottom ≤767; also work-index card overlay | same (`py-40`); credits removed | pending | Bottom = 40px + safe-area on homepage; work-index uses same pad (no counter). |
 | `--vp-candidate-home-carousel-mobile-counter-offset` | `69px` | Counter `top: calc(var(--vp-header-height) + 69px)` | `2282:27788`: center ≈133px − 64px bar | pending | |
-| `--vp-candidate-home-carousel-mobile-title-tag-gap` | `12px` | Brand-row → campaign ≤767 | product: half of desktop 24px for proportional type | pending | Shared by blog hero, case carousel overlay, project-nav, work-index mobile. Desktop keeps `--vp-home-carousel-title-tag-gap: 24px`. |
+| `--vp-candidate-home-carousel-mobile-title-tag-gap` | `12px` | Brand-row → campaign ≤767 | product: half of desktop 24px for proportional type | pending | Shared by blog hero, case carousel overlay, project-nav, **work-index cards (desktop + mobile)**. Homepage desktop keeps `--vp-home-carousel-title-tag-gap: 24px`. |
 
 **Reuse (no candidate):** `--vp-home-carousel-brand-accent`, `--vp-home-carousel-counter-muted`, `--vp-home-carousel-brand-dot-size`, `--vp-home-carousel-title-tag-gap` (desktop + shared colors/dot).
 
@@ -82,18 +82,18 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | `--vp-candidate-tracking-tight-26` | `-0.52px` | Work card title 26px | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-index-card-size` | `512×640` | Work carousel card | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | Aspect 4:5. Impl uses height-driven aspect tokens instead. |
 | `--vp-candidate-index-card-gap` | `30px` | Gap between work cards | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
-| `--vp-candidate-index-overlay-pad` | `30px` inline / `48px` bottom | Work active-card copy inset | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
-| `--vp-candidate-index-title-size` | `26px` / bold / uppercase | Work card campaign title | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
+| `--vp-candidate-index-overlay-pad` | `30px` inline / `48px` bottom | ~~Work active-card copy inset~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded | Work cards reuse homepage mobile overlay pad (16 / 40). |
+| `--vp-candidate-index-title-size` | `26px` / bold / uppercase | ~~Work card campaign title~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded | Desktop work cards reuse homepage mobile title 28px; mobile ≤575 uses `--vp-candidate-work-index-mobile-title-size` (18px). |
 | `--vp-candidate-filter-count-size` | `9px` | `[ 100 ]` count badges on filter triggers (mobile top FILTER + desktop) | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Snapped from Figma ≈9.03px (Work `2282:28478` / prior `77:12472`). Decision 7 — cleaner 9px. |
 | `--vp-candidate-work-index-mobile-chrome-pad-block` | `24px` | Mobile SEARCH/FILTER top row `padding-block` ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Figma `py-24`. Inline pad reuses `--vp-candidate-home-carousel-mobile-overlay-pad-inline` (16px). |
 | `--vp-candidate-work-index-mobile-card-gap` | `20px` | Embla slide gap ≤575 | same | pending | Figma gap between 320 cards. Aspect stays CDN 2:3. |
 | `--vp-candidate-work-index-mobile-height-scale` | `0.84` | `.vp-portfolio-index` `--vp-index-height-scale` ≤575 | phone QC (Zacharia: posts a little larger) | pending | Was 0.76 (Figma 520-face tune); bumped for usable peeks. Still 2:3. |
 | `--vp-candidate-work-index-mobile-frame-gutter` | `10px` | Active-frame / band-guide outset outside poster ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Figma `2282:28235` wireframe wrapper `p-[10px]` around dashed rails vs 320×520 poster. Uniform 10px (H gutter exact; V ≈6.5–10). Frame still tracks poster via `width/height: calc(100% + 2×gutter)`. |
-| `--vp-candidate-work-index-mobile-title-size` | `18px` (was `22px`) | Campaign title ≤575 | product: card-scaled vs homepage 28px full-bleed | pending | Pair with homepage `title-tag-gap` 12px + text-box-trim. |
-| `--vp-candidate-work-index-mobile-overlay-pad-inline` | `15px` | Active card copy inset L/R ≤575 | same | pending | Figma `px-15`. |
-| `--vp-candidate-work-index-mobile-overlay-pad-block` | `30px` | Active card copy inset bottom ≤575 | same | pending | Figma `pb-30`. |
-| `--vp-candidate-work-index-mobile-brand-gap` | `24px` | Brand \| category gap ≤575 | same | pending | |
-| `--vp-candidate-work-index-mobile-copy-stack-gap` | `12px` (was `20px`) | Brand row → title ≤575 | product: align homepage mobile title-tag gap | pending | Implementation reuses `--vp-candidate-home-carousel-mobile-title-tag-gap`. |
+| `--vp-candidate-work-index-mobile-title-size` | `18px` | `.vp-portfolio-index__campaign` ≤575 | product: card-scaled vs homepage 28px full-bleed | pending | Scoped override — brand stays on homepage caption 12px. |
+| `--vp-candidate-work-index-mobile-overlay-pad-inline` | `15px` | ~~Active card copy inset L/R ≤575~~ | same | superseded | Reuses `--vp-candidate-home-carousel-mobile-overlay-pad-inline` (16px). |
+| `--vp-candidate-work-index-mobile-overlay-pad-block` | `30px` | ~~Active card copy inset bottom ≤575~~ | same | superseded | Reuses `--vp-candidate-home-carousel-mobile-overlay-pad-block` (40px). |
+| `--vp-candidate-work-index-mobile-brand-gap` | `24px` | ~~Brand \| category gap ≤575~~ | same | superseded | Matches homepage mobile brand-row `0.75rem` (12px). |
+| `--vp-candidate-work-index-mobile-copy-stack-gap` | `12px` | ~~Brand row → title ≤575~~ | product | superseded | Alias of `--vp-candidate-home-carousel-mobile-title-tag-gap`; used for desktop work cards too. |
 | `--vp-candidate-work-index-mobile-filter-panel-height` | `76vh` | Work filter BottomSheet max-height | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | pending | Figma panel 667/874 ≈ 76%. |
 | `--vp-candidate-work-index-mobile-term-muted` | `rgba(255,255,255,0.2)` | Inactive term rows in mobile work filter | same | pending | Distinct from desktop `--vp-candidate-filter-item-muted` (0.25). |
 | `--vp-candidate-work-index-mobile-tab-pad-inline` | `8px` (impl) / Figma `16px` | ~~Taxonomy tab pad~~ — **superseded** | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | superseded | Phone QC Fix 2 removed horizontal tabs; root→nested drill restored. Keep logged for audit. |

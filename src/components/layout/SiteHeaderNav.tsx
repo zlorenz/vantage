@@ -3,9 +3,8 @@
 /**
  * SiteHeaderNav — client wrapper for the fixed #header nav.
  *
- * Owns hide/show-on-scroll (translateY). The transparent gradient + blur
- * backdrop is pure CSS on #header::before — no scroll class for that —
- * so this only toggles visibility, leaving the backdrop untouched.
+ * Owns hide/show-on-scroll (translateY). Navbar chrome is fully transparent
+ * (no ::before scrim) — this only toggles visibility.
  *
  * Also publishes --vp-header-height from the real rendered header size so
  * the mobile full-screen nav can pad its content below the chrome, and so

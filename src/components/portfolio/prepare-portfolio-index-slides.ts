@@ -4,9 +4,13 @@
  */
 
 import {phraseRecordToMap} from '@phrase-book';
-import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
+import {
+  composeOverlayCopy,
+  joinOverlayList,
+} from '@/components/prototype/carousel/overlay';
 import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
+import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry} from '@/types/sanity';
@@ -58,6 +62,11 @@ export type PortfolioIndexSlide = {
   brandLine: string;
   /** Campaign title, or brand+product when campaign is absent. */
   campaignLine: string;
+  /**
+   * Video format label(s) for desktop brand | format row (homepage carousel
+   * parity). Hidden on ≤575 work cards — too much copy on the narrow face.
+   */
+  formatLine: string;
   /**
    * Lowercased brand + product + campaign + director names for /work search.
    * Built once on the server so Enter-submit filtering stays sync.
@@ -122,6 +131,11 @@ export function preparePortfolioIndexSlideFromEntry(
 
   const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
   const {brandLine, campaignLine} = composeOverlayCopy(parts);
+  const formatLine = joinOverlayList(
+    (entry.videoFormats ?? []).map((format) =>
+      pickLocaleFieldWithPhrases(locale, format.title, format.titleZh, phraseMap),
+    ),
+  );
   const directorNames = getStructuredRoleNames(
     entry.crewCredits ?? [],
     'director',
@@ -136,6 +150,7 @@ export function preparePortfolioIndexSlideFromEntry(
     objectPosition: objectPositionFromHotspot(entry.featuredImage.hotspot),
     brandLine,
     campaignLine,
+    formatLine,
     searchHaystack: buildSearchHaystack(
       parts.brandName,
       parts.productName,

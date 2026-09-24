@@ -6,7 +6,8 @@
  * SEARCH (left) is an always-visible inline field (Figma 77:12478 = icon +
  * “SEARCH” label chrome — no border/fill box). FORMAT / INDUSTRY / MARKET
  * (right) open accordion-style right-rail panels — only one open at a time.
- * Does not replace PortfolioIndexFilterSheet or the mobile search overlay.
+ * Does not replace PortfolioIndexFilterSheet. Mobile search expands inline
+ * beside the top-chrome SEARCH chip (no fullscreen overlay).
  */
 
 import {useEffect, useMemo, useRef, useState, type FormEvent} from 'react';
@@ -31,9 +32,9 @@ interface PortfolioIndexDesktopFilterRowProps {
   onChangeFilter: (key: TaxonomyKey, value: string) => void;
   /** Committed `q` — seeds the field on load / popstate / filter-clear. */
   searchValue: string;
-  /** Enter/submit — same commit path as the mobile overlay. */
+  /** Enter/submit — same commit path as the mobile inline search field. */
   onCommitSearch: (query: string) => void;
-  /** Overlay-shared no-results string; shown inline under the field when set. */
+  /** Shared no-results string; shown inline under the field when set. */
   searchNoResultsQuery?: string;
   onClearSearchNoResults?: () => void;
   videoFormats: TaxonomyTerm[];
