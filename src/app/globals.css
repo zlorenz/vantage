@@ -2398,6 +2398,47 @@
   border-top: var(--vp-struct-line);
 }
 
+/* Blog index chrome — phone ≤575 (Figma 2301:38421; decisions: chip filter, no SEARCH). */
+@media (max-width: 575.98px) {
+  .vp-news-page__header {
+    align-items: flex-start;
+    gap: 0.75rem 1rem;
+    padding-inline: var(--vp-overlay-mobile-pad-inline, 16px);
+    padding-top: 3.75rem; /* 60px — Figma pt-60 under nav */
+  }
+
+  .vp-news-page__motif {
+    max-width: 55%;
+    width: 12rem;
+  }
+
+  .vp-news-page__eyebrow {
+    font-size: var(--vp-overlay-mobile-caption-size, 12px);
+    line-height: 1rem;
+  }
+
+  .vp-news-page__title {
+    font-size: var(--vp-candidate-blog-mobile-display-size, 40px);
+    letter-spacing: -1.6px;
+    line-height: 1.2;
+  }
+
+  .vp-news-page__title-block {
+    gap: 1rem;
+  }
+
+  .vp-news-page__intro {
+    padding-bottom: 2.5rem; /* tighten before filter/rule */
+    font-size: 1rem; /* 16px body_medium */
+    line-height: 1.5;
+  }
+
+  .vp-news-page__filter-anchor {
+    align-self: flex-start;
+    margin-top: 0.15rem;
+  }
+}
+
 /* Blog / search card title links — shade via opacity at the sitewide timing. */
 .vp-post-card__title a {
   transition: opacity var(--vp-transition);
