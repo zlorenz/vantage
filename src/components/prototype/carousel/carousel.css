@@ -22,8 +22,8 @@
   --vp-home-carousel-title-tag-gap: 24px;
   /*
    * Mobile overlay type/pad/gap live on :root as --vp-overlay-mobile-*.
-   * Counter offset stays candidate — counter is display:none on mobile.
-   * 69px = center 133px from top − 64px bar on Figma 874 artboard.
+   * Counter offset stays on this scope (superseded candidate) — counter is
+   * display:none on mobile; keep for restore without re-deriving 69px.
    */
   --vp-candidate-home-carousel-mobile-counter-offset: 69px;
 }

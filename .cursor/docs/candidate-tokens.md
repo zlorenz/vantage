@@ -16,7 +16,7 @@ Naming: `--vp-candidate-[name]`
 | `--vp-candidate-home-carousel-mobile-caption-size` | `12px` | ~~Brand, format, counter ≤767~~ | same | superseded → `--vp-overlay-mobile-caption-size` | |
 | `--vp-candidate-home-carousel-mobile-overlay-pad-inline` | `16px` | ~~Overlay L/R ≤767~~ | same (`px-16`) | superseded → `--vp-overlay-mobile-pad-inline` | |
 | `--vp-candidate-home-carousel-mobile-overlay-pad-block` | `40px` | ~~Overlay top/bottom ≤767~~ | same (`py-40`) | superseded → `--vp-overlay-mobile-pad-block` | |
-| `--vp-candidate-home-carousel-mobile-counter-offset` | `69px` | Counter `top: calc(… + 69px)` (rule kept; UI `display:none` on mobile) | `2282:27788` | pending | Counter hidden on mobile — see cleanup pass. |
+| `--vp-candidate-home-carousel-mobile-counter-offset` | `69px` | ~~Counter `top` offset~~ (rule kept; UI `display:none` on mobile) | `2282:27788` | superseded | Counter hidden on mobile — restore UI before re-promoting. |
 | `--vp-candidate-home-carousel-mobile-title-tag-gap` | `12px` | ~~Brand-row → campaign ≤767~~ | product | superseded → `--vp-overlay-mobile-title-tag-gap` | Case header stays `0.35rem` (intentional split). |
 
 **Reuse (no candidate):** `--vp-home-carousel-brand-accent`, `--vp-home-carousel-counter-muted`, `--vp-home-carousel-brand-dot-size`, `--vp-home-carousel-title-tag-gap` (desktop + shared colors/dot).
@@ -83,6 +83,14 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | Candidate name | Value | Status | Notes |
 |---|---|---|---|
 | `--vp-candidate-home-carousel-counter-beside-left-arrow` | Counter beside LEFT arrow | superseded | Current Figma (`77:12462`) places vertical `01 \| 09` mid-RIGHT. |
+| `--vp-candidate-home-carousel-mobile-title-size` / `caption-size` / `overlay-pad-*` / `title-tag-gap` | see overlay kit | superseded → `--vp-overlay-mobile-*` | Promoted 2026-09-24. |
+| `--vp-candidate-home-carousel-mobile-counter-offset` | `69px` | superseded | Mobile counter `display:none`; CSS var remains on carousel for restore. |
+| `--vp-candidate-index-overlay-pad` / `index-title-size` | Figma 30/48 · 26px | superseded | Work cards use overlay-mobile kit / 18px mobile title. |
+| `--vp-candidate-work-index-mobile-overlay-pad-*` / `brand-gap` / `copy-stack-gap` | 15/30 · 24 · 12 | superseded | Aliased to overlay-mobile pad / brand-row 12px / title-tag-gap. |
+| `--vp-candidate-work-index-mobile-tab-pad-*` | 8/20 | superseded | Horizontal taxonomy tabs removed. |
+| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | 32px → 0.35rem | superseded | Case header ≠ overlay 12px family. |
+| `--vp-candidate-filter-count-size` | `9px` | superseded | No live CSS; icon-only FILTER chrome. |
+| `--vp-navbar-gradient-*` / blur scrim | removed | superseded | Dropped in `992aadff`; navbar fully transparent. |
 
 ---
 
@@ -98,9 +106,9 @@ Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria 
 | `--vp-candidate-tracking-tight-26` | `-0.52px` | Work card title 26px | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-index-card-size` | `512×640` | Work carousel card | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | Aspect 4:5. Impl uses height-driven aspect tokens instead. |
 | `--vp-candidate-index-card-gap` | `30px` | Gap between work cards | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
-| `--vp-candidate-index-overlay-pad` | `30px` inline / `48px` bottom | ~~Work active-card copy inset~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded | Work cards reuse homepage mobile overlay pad (16 / 40). |
-| `--vp-candidate-index-title-size` | `26px` / bold / uppercase | ~~Work card campaign title~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded | Desktop work cards reuse homepage mobile title 28px; mobile ≤575 uses `--vp-candidate-work-index-mobile-title-size` (18px). |
-| `--vp-candidate-filter-count-size` | `9px` | `[ 100 ]` count badges on filter triggers (mobile top FILTER + desktop) | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Snapped from Figma ≈9.03px (Work `2282:28478` / prior `77:12472`). Decision 7 — cleaner 9px. |
+| `--vp-candidate-index-overlay-pad` | `30px` inline / `48px` bottom | ~~Work active-card copy inset~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded | Work cards use `--vp-overlay-mobile-pad-*` (16 / 40). |
+| `--vp-candidate-index-title-size` | `26px` / bold / uppercase | ~~Work card campaign title~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded | Desktop work → `--vp-overlay-mobile-title-size` (28px); ≤575 → `--vp-candidate-work-index-mobile-title-size` (18px). |
+| `--vp-candidate-filter-count-size` | `9px` | ~~`[ 100 ]` count badges~~ — no live CSS | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | superseded | Mobile FILTER is icon-only; desktop filter row has no `[ n ]` badge either. Orphaned candidate — keep for audit. |
 | `--vp-candidate-work-index-mobile-chrome-pad-block` | `24px` | Mobile SEARCH/FILTER top row `padding-block` ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28478 | pending | Figma `py-24`. Inline pad reuses `--vp-overlay-mobile-pad-inline` (16px). |
 | `--vp-candidate-work-index-mobile-card-gap` | `20px` | Embla slide gap ≤575 | same | pending | Figma gap between 320 cards. Aspect stays CDN 2:3. |
 | `--vp-candidate-work-index-mobile-height-scale` | `0.84` | `.vp-portfolio-index` `--vp-index-height-scale` ≤575 | phone QC (Zacharia: posts a little larger) | pending | Was 0.76 (Figma 520-face tune); bumped for usable peeks. Still 2:3. |
@@ -174,7 +182,7 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-brand-size` | `12px` | brand / credit names / explore | caption_1 | pending | |
 | `--vp-candidate-portfolio-case-mobile-label-size` | `12px` | credit roles / pills | caption_3/4 | pending | |
 | `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block py | `py-48` | pending | |
-| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → `0.35rem` | title stack gap ≤575 | product: match desktop `.vp-case-header__title-block` | superseded | Mobile now inherits desktop `gap: 0.35rem`; candidate unused. |
+| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → `0.35rem` | ~~title stack gap ≤575~~ | product: match desktop `.vp-case-header__title-block` | superseded | Intentional split from overlay `--vp-overlay-mobile-title-tag-gap` (12px). Header inherits desktop `gap: 0.35rem`; candidate unused. |
 | `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | meta band | `py-40` | pending | |
 | `--vp-candidate-portfolio-case-mobile-credit-row-gap` | `16px` | key + dept rows | gap 16 | pending | |
 | `--vp-candidate-portfolio-case-mobile-pill-height` | `48px` | pills ≤575 | h-48 | pending | Desktop stays 64px. |
