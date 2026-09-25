@@ -317,14 +317,14 @@ export function PortfolioProjectNavClient({
       data-slide-count={count}
     >
       <div className="vp-project-nav__frame">
-        <div className="vp-project-nav__ticks" aria-hidden="true">
-          <span className="vp-project-nav__tick vp-project-nav__tick--tl" />
-          <span className="vp-project-nav__tick vp-project-nav__tick--tr" />
-          <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
-          <span className="vp-project-nav__tick vp-project-nav__tick--br" />
-        </div>
-
         <div className="vp-project-nav__widget">
+          <div className="vp-project-nav__ticks" aria-hidden="true">
+            <span className="vp-project-nav__tick vp-project-nav__tick--tl" />
+            <span className="vp-project-nav__tick vp-project-nav__tick--tr" />
+            <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
+            <span className="vp-project-nav__tick vp-project-nav__tick--br" />
+          </div>
+
           <div className="vp-project-nav__left">
             <div className="vp-project-nav__heading">
               <p className="vp-project-nav__label">Next Project</p>

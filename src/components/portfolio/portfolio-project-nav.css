@@ -473,7 +473,7 @@ a.vp-project-nav__explore:focus-visible {
 }
 
 /*
- * Case project-nav ≤575 — QC: brackets outside, no VAP mark, 4:5 poster,
+ * Case project-nav ≤575 — QC: brackets outside poster, no VAP mark, 4:5,
  * explore/arrows below poster. Structure kept for desktop ≥992.
  */
 @media (max-width: 575.98px) {
@@ -484,27 +484,20 @@ a.vp-project-nav__explore:focus-visible {
       );
   }
 
-  .vp-project-nav__ticks {
-    display: block;
-    /* Slightly outside the carousel frame (not inset inside). */
-    inset: calc(
-      -1 * var(--vp-candidate-portfolio-case-mobile-nav-bracket-outset, 8px)
-    );
-  }
-
   .vp-project-nav__tick {
     width: 0.5rem; /* 8px */
     height: 0.5rem;
   }
 
   .vp-project-nav__widget {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
     gap: 0;
   }
 
   /*
-   * Flatten left chrome so heading / chrome / viewport are siblings for order:
+   * Flatten left chrome so heading / chrome / viewport are siblings:
    * NEXT PROJECT → poster → explore+arrows.
    */
   .vp-project-nav__left {
@@ -514,7 +507,7 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   .vp-project-nav__heading {
-    order: 1;
+    grid-row: 1;
     padding: 2.5rem
       var(
         --vp-candidate-portfolio-case-mobile-inline-pad,
@@ -538,14 +531,32 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   .vp-project-nav__viewport {
-    order: 2;
+    grid-row: 2;
     height: auto;
     overflow-x: hidden;
     overflow-y: visible;
   }
 
+  /*
+   * Brackets hug the poster row only (not heading / explore), sitting
+   * slightly outside via negative margin on the shared grid row.
+   */
+  .vp-project-nav__ticks {
+    display: block;
+    grid-row: 2;
+    position: relative;
+    inset: auto;
+    z-index: 3;
+    width: auto;
+    height: auto;
+    margin: calc(
+      -1 * var(--vp-candidate-portfolio-case-mobile-nav-bracket-outset, 8px)
+    );
+    pointer-events: none;
+  }
+
   .vp-project-nav__chrome {
-    order: 3;
+    grid-row: 3;
     position: relative;
     left: auto;
     right: auto;
