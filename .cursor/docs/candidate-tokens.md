@@ -41,6 +41,12 @@ Exact match across work mobile SEARCH/FILTER, work bottom-bar filter trigger, an
 
 ---
 
+## Site footer — mobile stack (pending)
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-site-footer-mobile-band-height` | `80px` | `.vp-site-footer__mark` + `__socials` ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2283-31053 | pending | Desktop bar stays 100px. Email row is content-height (py 26). Same `.vp-site-footer` markup — column stack only. |
+
 ## Site nav — mobile bar (pending)
 
 | Candidate name | Value | Used in | Source | Status | Notes |

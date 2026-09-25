@@ -2,7 +2,7 @@
  * Site footer chrome — Figma 149:21611
  * 100px structural bar: email | orange mark | social cells.
  * Page black via --vp-bg. Hairlines via --vp-struct-line.
- * No mobile reflow until designer delivers mobile frames.
+ * Mobile ≤575 stacks to Figma 2283:31053 (email / mark / socials).
  *
  * Hide rules must stay unlayered (same as `.vp-site-footer` below).
  * The previous copy lived in `@layer base` and lost to this file’s
@@ -133,4 +133,66 @@ body:has(.vp-work-index) .vp-site-footer {
   background-color: currentColor;
   -webkit-mask: var(--vp-footer-social-icon) center / contain no-repeat;
   mask: var(--vp-footer-social-icon) center / contain no-repeat;
+}
+
+/*
+ * Mobile page footer ≤575 — Figma 2283:31053 (portfolio case frame).
+ * Stack email → orange mark → equal social cells so the desktop 100px
+ * bar (500px email + 160px mark + N×100px socials) does not overflow.
+ * Same .vp-site-footer markup; homepage/work still hide via rules above.
+ */
+@media (max-width: 575.98px) {
+  .vp-site-footer {
+    --vp-footer-height: auto;
+    --vp-candidate-site-footer-mobile-band-height: 80px;
+
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .vp-site-footer__email {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    justify-content: center;
+    padding: 1.625rem 1.875rem; /* 26px 30px — Figma */
+    border-right: 0;
+    border-bottom: var(--vp-struct-line);
+  }
+
+  .vp-site-footer__email-link {
+    justify-content: center;
+    font-size: 1.25rem; /* 20px */
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  .vp-site-footer__mail-icon {
+    width: 1.625rem; /* 26px — Figma */
+    height: 1.625rem;
+  }
+
+  .vp-site-footer__mark {
+    width: 100%;
+    height: var(--vp-candidate-site-footer-mobile-band-height, 80px);
+  }
+
+  .vp-site-footer__socials {
+    width: 100%;
+    height: var(--vp-candidate-site-footer-mobile-band-height, 80px);
+  }
+
+  .vp-site-footer__social {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 100%;
+  }
 }
