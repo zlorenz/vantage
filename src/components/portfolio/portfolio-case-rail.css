@@ -82,6 +82,18 @@
 }
 
 @media (max-width: 575.98px) {
+  /*
+   * Hug BACK under the 64px mobile nav. Global condensed pad is 9.5rem
+   * (desktop title-band air) — that pushed the back control down. Title
+   * stays put via a larger back→title gap below (do not shrink title pad).
+   */
+  .vp-case-shell {
+    --vp-section-y-header-condensed: var(
+      --vp-header-height,
+      var(--vp-candidate-nav-bar-height-mobile, 64px)
+    );
+  }
+
   .vp-case-shell__main,
   .vp-case-shell__below {
     padding-inline: var(
@@ -94,9 +106,15 @@
     display: block;
     width: 100%;
     box-sizing: border-box;
-    padding: var(
+    /* Top flush to nav; bottom grows the back→title gap only. */
+    padding-top: 0;
+    padding-inline: var(
       --vp-candidate-portfolio-case-mobile-inline-pad,
       var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-back-title-gap,
+      32px
     );
   }
 

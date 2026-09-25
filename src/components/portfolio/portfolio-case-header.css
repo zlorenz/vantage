@@ -164,9 +164,10 @@
   }
 
   .vp-case-header__title-block {
-    /* Match desktop title-block gap (0.35rem) — was 32px Figma candidate,
-     * which read oversized against 12/30 type. */
-    gap: 0.35rem;
+    /* Match carousel overlays — promoted --vp-overlay-mobile-title-tag-gap.
+     * Do not change other carousels or desktop title-block gap. */
+    gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
+    /* Keep title pad-top (do not pull campaign up toward back). */
     padding-block: var(
       --vp-candidate-portfolio-case-mobile-title-block-pad-block,
       48px
@@ -206,7 +207,7 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    gap: var(--vp-candidate-portfolio-case-mobile-credit-row-gap, 16px);
+    gap: 0;
     padding-block: var(
       --vp-candidate-portfolio-case-mobile-meta-pad-block,
       40px
@@ -214,42 +215,9 @@
     padding-inline: 0;
   }
 
+  /* QC: remove key crew on mobile — title → rule → category tags → media. */
   .vp-case-header__credits {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: var(--vp-candidate-portfolio-case-mobile-credit-row-gap, 16px);
-  }
-
-  .vp-case-header__credit--agency {
     display: none;
-  }
-
-  .vp-case-header__credit {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-  }
-
-  .vp-case-header__credit dt {
-    flex: 0 1 auto;
-    font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
-    font-weight: 700;
-    line-height: 1.25rem;
-    letter-spacing: 0;
-  }
-
-  .vp-case-header__credit dd {
-    flex: 0 1 auto;
-    align-items: flex-end;
-    text-align: right;
-    font-family: var(--font-vp-heading);
-    font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
-    font-weight: 700;
-    line-height: 1.6;
-    letter-spacing: 0;
   }
 
   .vp-case-header__pills {

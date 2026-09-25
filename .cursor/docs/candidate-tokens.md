@@ -206,7 +206,8 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-brand-size` | `12px` | brand / credit names / explore | caption_1 | pending | |
 | `--vp-candidate-portfolio-case-mobile-label-size` | `12px` | credit roles / pills | caption_3/4 | pending | |
 | `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block py | `py-48` | pending | |
-| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → `0.35rem` | ~~title stack gap ≤575~~ | product: match desktop `.vp-case-header__title-block` | superseded | Intentional split from overlay `--vp-overlay-mobile-title-tag-gap` (12px). Header inherits desktop `gap: 0.35rem`; candidate unused. |
+| `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → ~~`0.35rem`~~ → `--vp-overlay-mobile-title-tag-gap` (`12px`) | `.vp-case-header__title-block` gap ≤575 | QC / carousel parity | pending | Case header mobile only — other carousels + desktop title-block unchanged. |
+| `--vp-candidate-portfolio-case-mobile-back-title-gap` | `32px` | `.vp-case-mobile-back` pad-bottom ≤575 | QC: larger back→title gap after hugging nav | pending | Title-block pad-top stays 48px (do not pull campaign up). |
 | `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | meta band | `py-40` | pending | |
 | `--vp-candidate-portfolio-case-mobile-credit-row-gap` | `16px` | key + dept rows | gap 16 | pending | |
 | `--vp-candidate-portfolio-case-mobile-pill-height` | `48px` | pills ≤575 | h-48 | pending | Desktop stays 64px. |
