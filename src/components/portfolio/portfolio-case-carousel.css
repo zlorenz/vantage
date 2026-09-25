@@ -498,6 +498,9 @@
     );
     --vp-case-card-width: 100cqw;
     --vp-case-slide-gap: 0.5rem;
+    /* QC: no wireframe borders on mobile media (desktop keeps them). */
+    border-top: 0;
+    border-bottom: 0;
   }
 
   .vp-case-shell .vp-case-carousel__viewport {

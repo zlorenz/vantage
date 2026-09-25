@@ -314,6 +314,9 @@
 @media (max-width: 575.98px) {
   .vp-case-shell .vp-case-video {
     aspect-ratio: 16 / 9; /* decision 2 — keep 16:9 */
+    /* QC: no wireframe borders on mobile embed (desktop keeps them). */
+    border-top: 0;
+    border-bottom: 0;
   }
 
   .vp-case-shell .vp-case-video .h-20.w-20 {
