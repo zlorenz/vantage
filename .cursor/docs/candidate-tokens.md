@@ -222,6 +222,7 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-kv-title-size` | `26px` | Key Visuals h2 ≤575 | h3 white | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-gap` | `12px` | KV stack | gap-12 | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-cell-aspect` | `370 / 180` | KV cells ≤575 | cells | pending | |
-| `--vp-candidate-portfolio-case-mobile-next-card-aspect` | `2 / 3` | project-nav card ≤575 | 370×600 | pending | Approximate. |
+| `--vp-candidate-portfolio-case-mobile-next-card-aspect` | ~~`2 / 3`~~ → `4 / 5` | project-nav card ≤575 | QC: not too tall | pending | Approximate; desktop widget unchanged. |
 | `--vp-candidate-portfolio-case-mobile-explore-height` | `60px` | explore row | h-60 | pending | Approximate. |
+| `--vp-candidate-portfolio-case-mobile-nav-bracket-outset` | `8px` | `.vp-project-nav__ticks` inset ≤575 | QC: brackets outside frame | pending | Negative inset = outside. |
 | `--vp-candidate-portfolio-case-mobile-overlay-pad` | `16px` | multi carousel overlay ≤575 | frame inline | pending | Scoped `.vp-case-shell`. |

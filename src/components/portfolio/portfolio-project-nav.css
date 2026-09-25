@@ -473,8 +473,8 @@ a.vp-project-nav__explore:focus-visible {
 }
 
 /*
- * Case project-nav ≤575 — approximate Figma 2283:30988 (decision 8):
- * restore corner ticks, 2:3 card, denser explore chrome. Structure kept.
+ * Case project-nav ≤575 — QC: brackets outside, no VAP mark, 4:5 poster,
+ * explore/arrows below poster. Structure kept for desktop ≥992.
  */
 @media (max-width: 575.98px) {
   .vp-project-nav {
@@ -486,7 +486,10 @@ a.vp-project-nav__explore:focus-visible {
 
   .vp-project-nav__ticks {
     display: block;
-    inset: 0.5rem; /* ~8px — Figma bracket pad */
+    /* Slightly outside the carousel frame (not inset inside). */
+    inset: calc(
+      -1 * var(--vp-candidate-portfolio-case-mobile-nav-bracket-outset, 8px)
+    );
   }
 
   .vp-project-nav__tick {
@@ -494,12 +497,24 @@ a.vp-project-nav__explore:focus-visible {
     height: 0.5rem;
   }
 
+  .vp-project-nav__widget {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /*
+   * Flatten left chrome so heading / chrome / viewport are siblings for order:
+   * NEXT PROJECT → poster → explore+arrows.
+   */
   .vp-project-nav__left {
+    display: contents;
     min-height: 0;
-    background: #0f0f0f;
+    background: transparent;
   }
 
   .vp-project-nav__heading {
+    order: 1;
     padding: 2.5rem
       var(
         --vp-candidate-portfolio-case-mobile-inline-pad,
@@ -517,15 +532,26 @@ a.vp-project-nav__explore:focus-visible {
     text-transform: uppercase;
   }
 
+  /* Cut off / unused on phone — hide VAP pattern above explore. */
   .vp-project-nav__mark {
-    width: 10rem;
-    bottom: calc(
-      var(--vp-candidate-portfolio-case-mobile-explore-height, 60px) + 1rem
-    );
+    display: none;
+  }
+
+  .vp-project-nav__viewport {
+    order: 2;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .vp-project-nav__chrome {
+    order: 3;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
     height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    border-top: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
   }
 
   .vp-project-nav__explore {
@@ -544,25 +570,18 @@ a.vp-project-nav__explore:focus-visible {
 
   .vp-project-nav__card {
     /* Keep display:block + width:100% from ≤991 — do not collapse.
-     * Prior min-height:0 + inline <a> → 0×0 box; Next/Image fill invisible. */
+     * QC: 4:5 (not 2:3) so the poster is not too tall on phone. */
     display: block;
     width: 100%;
     min-height: 0;
     aspect-ratio: var(
       --vp-candidate-portfolio-case-mobile-next-card-aspect,
-      2 / 3
+      4 / 5
     );
   }
 
   .vp-project-nav__slide {
     height: auto;
-  }
-
-  .vp-project-nav__viewport {
-    height: auto;
-    /* Let the card aspect define height; clip horizontal peeks only. */
-    overflow-x: hidden;
-    overflow-y: visible;
   }
 
   .vp-project-nav__meta {
