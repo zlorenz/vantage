@@ -77,6 +77,11 @@
   container-type: inline-size;
 }
 
+/* Passthrough on desktop so ticks still position against the widget box. */
+.vp-project-nav__poster {
+  display: contents;
+}
+
 /*
  * Fixed left chrome sits above the Embla track (z-index 2) and blocks
  * pointer events so only the uncovered right band is swipeable. Outgoing
@@ -490,10 +495,10 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   .vp-project-nav__widget {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto;
+    display: flex;
+    flex-direction: column;
     gap: 0;
+    overflow: visible;
   }
 
   /*
@@ -507,7 +512,7 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   .vp-project-nav__heading {
-    grid-row: 1;
+    order: 1;
     padding: 2.5rem
       var(
         --vp-candidate-portfolio-case-mobile-inline-pad,
@@ -530,33 +535,28 @@ a.vp-project-nav__explore:focus-visible {
     display: none;
   }
 
+  .vp-project-nav__poster {
+    display: block;
+    order: 2;
+    position: relative;
+  }
+
   .vp-project-nav__viewport {
-    grid-row: 2;
     height: auto;
     overflow-x: hidden;
     overflow-y: visible;
   }
 
-  /*
-   * Brackets hug the poster row only (not heading / explore), sitting
-   * slightly outside via negative margin on the shared grid row.
-   */
+  /* Brackets hug the poster wrap, slightly outside. */
   .vp-project-nav__ticks {
     display: block;
-    grid-row: 2;
-    position: relative;
-    inset: auto;
-    z-index: 3;
-    width: auto;
-    height: auto;
-    margin: calc(
+    inset: calc(
       -1 * var(--vp-candidate-portfolio-case-mobile-nav-bracket-outset, 8px)
     );
-    pointer-events: none;
   }
 
   .vp-project-nav__chrome {
-    grid-row: 3;
+    order: 3;
     position: relative;
     left: auto;
     right: auto;

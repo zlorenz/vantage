@@ -318,13 +318,6 @@ export function PortfolioProjectNavClient({
     >
       <div className="vp-project-nav__frame">
         <div className="vp-project-nav__widget">
-          <div className="vp-project-nav__ticks" aria-hidden="true">
-            <span className="vp-project-nav__tick vp-project-nav__tick--tl" />
-            <span className="vp-project-nav__tick vp-project-nav__tick--tr" />
-            <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
-            <span className="vp-project-nav__tick vp-project-nav__tick--br" />
-          </div>
-
           <div className="vp-project-nav__left">
             <div className="vp-project-nav__heading">
               <p className="vp-project-nav__label">Next Project</p>
@@ -375,11 +368,18 @@ export function PortfolioProjectNavClient({
             </div>
           </div>
 
-          <div
-            ref={emblaRef}
-            className="vp-project-nav__viewport"
-            aria-roledescription="carousel"
-          >
+          <div className="vp-project-nav__poster">
+            <div className="vp-project-nav__ticks" aria-hidden="true">
+              <span className="vp-project-nav__tick vp-project-nav__tick--tl" />
+              <span className="vp-project-nav__tick vp-project-nav__tick--tr" />
+              <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
+              <span className="vp-project-nav__tick vp-project-nav__tick--br" />
+            </div>
+            <div
+              ref={emblaRef}
+              className="vp-project-nav__viewport"
+              aria-roledescription="carousel"
+            >
             <div className="vp-project-nav__container">
               {slides.map((slide, index) => {
                 const card = cardsById[slide._id]
@@ -462,6 +462,7 @@ export function PortfolioProjectNavClient({
                 )
               })}
             </div>
+          </div>
           </div>
         </div>
       </div>
