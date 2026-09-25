@@ -46,6 +46,7 @@ Exact match across work mobile SEARCH/FILTER, work bottom-bar filter trigger, an
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
 | `--vp-candidate-site-footer-mobile-band-height` | `80px` | `.vp-site-footer__mark` + `__socials` ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2283-31053 | pending | Desktop bar stays 100px. Email row is content-height (py 26). Same `.vp-site-footer` markup — column stack only. |
+| `--vp-candidate-site-footer-mobile-email-size` | `16px` | `.vp-site-footer__email-link` ≤575 | product: fit nowrap email @390 | pending | Figma h6 20px overflowed Expanded Bold + icon; keep nowrap. |
 
 ## Site nav — mobile bar (pending)
 

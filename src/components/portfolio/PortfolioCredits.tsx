@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * PortfolioCredits — two equal columns of department blocks with a
  * vertical hairline between them (Figma 84:37512).
@@ -6,10 +8,11 @@
  * (Production / Camera / G&E) on the left; Art and later on the right —
  * matching Figma’s grouped-by-column layout rather than CSS-columns masonry.
  *
- * Mobile ≤575: department headers are exclusive `<details name>` accordion
- * panels (one open at a time). Desktop keeps all rows visible via CSS.
+ * Mobile ≤575: department headers toggle exclusive accordion panels
+ * (one open at a time). Desktop keeps all rows visible via CSS.
  */
 
+import {useId, useState} from 'react';
 import {CREW_DEPARTMENTS} from '@crew-credits';
 import { resolveCreditsForDisplay } from '@/lib/credits-config';
 import { phraseRecordToMap, resolveLocalizedString } from '@phrase-book';
@@ -29,9 +32,6 @@ const LEFT_COLUMN_KEYS = new Set(
     (dept) => dept.key,
   ),
 );
-
-/** Exclusive accordion group for case credits on mobile. */
-const CREDITS_ACCORDION_NAME = 'vp-case-credits-accordion';
 
 function creditDisplayName(
   person: CrewPerson,
@@ -95,25 +95,45 @@ function DepartmentBlock({
   row,
   locale,
   phrases,
-  defaultOpen,
+  expanded,
+  panelId,
+  triggerId,
+  onToggle,
 }: {
   row: ReturnType<typeof resolveCreditsForDisplay>[number];
   locale: Locale;
   phrases?: Record<string, string>;
-  defaultOpen?: boolean;
+  expanded: boolean;
+  panelId: string;
+  triggerId: string;
+  onToggle: () => void;
 }) {
   return (
-    <details
-      className="vp-credits__dept"
-      name={CREDITS_ACCORDION_NAME}
-      {...(defaultOpen ? {defaultOpen: true} : {})}
-    >
-      <summary className="vp-credits__dept-head">
-        <div className="vp-credits__rule" aria-hidden="true" />
-        <div className="vp-credits__dept-name">{`●  ${row.label}`}</div>
-        <div className="vp-credits__rule" aria-hidden="true" />
-      </summary>
-      <div className="vp-credits__rows">
+    <div className="vp-credits__dept" data-open={expanded ? 'true' : 'false'}>
+      <h3 className="vp-credits__dept-heading">
+        <button
+          type="button"
+          id={triggerId}
+          className="vp-credits__dept-head"
+          aria-expanded={expanded}
+          aria-controls={panelId}
+          onClick={onToggle}
+        >
+          <span className="vp-credits__rule" aria-hidden="true" />
+          <span className="vp-credits__dept-name">{`●  ${row.label}`}</span>
+          <span className="vp-credits__rule" aria-hidden="true" />
+        </button>
+      </h3>
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={triggerId}
+        className={
+          expanded
+            ? 'vp-credits__rows vp-credits__rows--open'
+            : 'vp-credits__rows'
+        }
+      >
         {row.pairs.map((pair, index) => (
           <div key={index} className="vp-credit-pair">
             <span className="vp-credit-role">{pair.role}</span>
@@ -127,7 +147,7 @@ function DepartmentBlock({
           </div>
         ))}
       </div>
-    </details>
+    </div>
   );
 }
 
@@ -137,12 +157,34 @@ export function PortfolioCredits({
   phrases,
 }: PortfolioCreditsProps) {
   const rows = resolveCreditsForDisplay({ crewCredits, locale, phrases });
+  const baseId = useId();
+  const firstKey = rows[0]?.key ?? null;
+  const [openKey, setOpenKey] = useState<string | null>(firstKey);
+
   if (!rows.length) return null;
 
   const left = rows.filter((row) => LEFT_COLUMN_KEYS.has(row.key));
   const right = rows.filter((row) => !LEFT_COLUMN_KEYS.has(row.key));
   const showDivider = left.length > 0 && right.length > 0;
-  const firstKey = left[0]?.key ?? right[0]?.key;
+
+  function toggleDept(key: string) {
+    setOpenKey((current) => (current === key ? null : key));
+  }
+
+  function renderDept(row: (typeof rows)[number]) {
+    return (
+      <DepartmentBlock
+        key={row.key}
+        row={row}
+        locale={locale}
+        phrases={phrases}
+        expanded={openKey === row.key}
+        panelId={`${baseId}-panel-${row.key}`}
+        triggerId={`${baseId}-trigger-${row.key}`}
+        onToggle={() => toggleDept(row.key)}
+      />
+    );
+  }
 
   return (
     <div
@@ -151,33 +193,13 @@ export function PortfolioCredits({
       }
     >
       {left.length > 0 ? (
-        <div className="vp-credits__col">
-          {left.map((row) => (
-            <DepartmentBlock
-              key={row.key}
-              row={row}
-              locale={locale}
-              phrases={phrases}
-              defaultOpen={row.key === firstKey}
-            />
-          ))}
-        </div>
+        <div className="vp-credits__col">{left.map(renderDept)}</div>
       ) : null}
       {showDivider ? (
         <div className="vp-credits__divider" aria-hidden="true" />
       ) : null}
       {right.length > 0 ? (
-        <div className="vp-credits__col">
-          {right.map((row) => (
-            <DepartmentBlock
-              key={row.key}
-              row={row}
-              locale={locale}
-              phrases={phrases}
-              defaultOpen={row.key === firstKey}
-            />
-          ))}
-        </div>
+        <div className="vp-credits__col">{right.map(renderDept)}</div>
       ) : null}
     </div>
   );

@@ -1931,22 +1931,24 @@
   padding-bottom: 1.75rem;
 }
 
+.vp-credits__dept-heading {
+  margin: 0;
+  font: inherit;
+}
+
 .vp-credits__dept-head {
   display: flex;
   flex-direction: column;
   /* Space around the department title, between its hairlines (was 1.5rem). */
   gap: 1.125rem;
-  /* details > summary — kill UA marker; desktop non-interactive via MQ. */
-  list-style: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
   cursor: default;
-}
-
-.vp-credits__dept-head::-webkit-details-marker {
-  display: none;
-}
-
-.vp-credits__dept-head::marker {
-  content: '';
 }
 
 .vp-credits__dept-name {
@@ -2175,6 +2177,11 @@
     cursor: pointer;
   }
 
+  /* Accordion: only the open panel shows rows on phone. */
+  .vp-case-credits-band .vp-credits__rows:not(.vp-credits__rows--open) {
+    display: none;
+  }
+
   .vp-case-credits-band .vp-credits__dept-name {
     padding-inline: 0;
     font-size: var(
@@ -2222,14 +2229,10 @@
 }
 
 /*
- * Desktop / tablet: accordion markup stays in the DOM, but every department
- * shows its rows and headers are non-interactive (mirror always-open layout).
+ * Desktop / tablet: every department shows its rows; headers are
+ * non-interactive (always-open layout). Mobile accordion class is ignored.
  */
 @media (min-width: 576px) {
-  .vp-credits__dept > .vp-credits__rows {
-    display: flex !important;
-  }
-
   .vp-credits__dept-head {
     pointer-events: none;
     cursor: default;

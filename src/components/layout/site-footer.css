@@ -168,9 +168,10 @@ body:has(.vp-work-index) .vp-site-footer {
 
   .vp-site-footer__email-link {
     justify-content: center;
-    font-size: 1.25rem; /* 20px */
-    white-space: normal;
-    overflow-wrap: anywhere;
+    /* 20px Expanded Bold does not fit 390 with icon + pad — scale to fit. */
+    font-size: var(--vp-candidate-site-footer-mobile-email-size, 16px);
+    white-space: nowrap;
+    overflow-wrap: normal;
     text-align: center;
   }
 
