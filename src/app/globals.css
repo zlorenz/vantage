@@ -1936,6 +1936,17 @@
   flex-direction: column;
   /* Space around the department title, between its hairlines (was 1.5rem). */
   gap: 1.125rem;
+  /* details > summary — kill UA marker; desktop non-interactive via MQ. */
+  list-style: none;
+  cursor: default;
+}
+
+.vp-credits__dept-head::-webkit-details-marker {
+  display: none;
+}
+
+.vp-credits__dept-head::marker {
+  content: '';
 }
 
 .vp-credits__dept-name {
@@ -2100,8 +2111,9 @@
 }
 
 /*
- * Case credits ≤575 — denser L/R rows (Figma 2283:29693). Scoped to
- * `.vp-case-credits-band` (portfolio entry only).
+ * Case credits ≤575 — denser L/R rows (Figma 2283:29693 + QC).
+ * Scoped to `.vp-case-credits-band` (portfolio entry only).
+ * Accordion: exclusive <details name>; desktop forces rows open below.
  */
 @media (max-width: 575.98px) {
   .vp-case-credits-band {
@@ -2113,6 +2125,11 @@
       --vp-candidate-portfolio-case-mobile-inline-pad,
       var(--vp-overlay-mobile-pad-inline, 16px)
     );
+    /* Air before project-nav / key visuals — final divider was too tight. */
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-credits-pad-bottom,
+      48px
+    );
     box-sizing: border-box;
   }
 
@@ -2122,7 +2139,11 @@
 
   .vp-case-credits-band .vp-credits {
     flex-direction: column;
-    gap: var(--vp-candidate-portfolio-case-mobile-dept-gap, 60px);
+    /* Match desktop compact col gap (3rem), not Figma 60. */
+    gap: var(
+      --vp-candidate-portfolio-case-mobile-dept-gap,
+      3rem
+    );
   }
 
   .vp-case-credits-band .vp-credits__divider {
@@ -2130,19 +2151,28 @@
   }
 
   .vp-case-credits-band .vp-credits__col {
-    gap: var(--vp-candidate-portfolio-case-mobile-dept-gap, 60px);
+    gap: var(
+      --vp-candidate-portfolio-case-mobile-dept-gap,
+      3rem
+    );
   }
 
   .vp-case-credits-band .vp-credits__dept {
-    gap: 2rem; /* 32px header→rows */
+    /* Match desktop compact header→rows (1.75rem). */
+    gap: 1.75rem;
   }
 
   .vp-case-credits-band .vp-credits__dept:last-child {
-    padding-bottom: 0;
+    /* Extra space below last names before band pad / next section. */
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-credits-last-pad,
+      2.5rem
+    );
   }
 
   .vp-case-credits-band .vp-credits__dept-head {
-    gap: 1.5rem; /* 24px around title */
+    gap: 1.125rem; /* match desktop compact hairline rhythm */
+    cursor: pointer;
   }
 
   .vp-case-credits-band .vp-credits__dept-name {
@@ -2152,39 +2182,57 @@
       22px
     );
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1.2; /* denser — match desktop 1.2, was 1.4 */
     letter-spacing: 0;
   }
 
   .vp-case-credits-band .vp-credits__rows {
     padding-inline: 0;
-    gap: var(--vp-candidate-portfolio-case-mobile-credit-row-gap, 16px);
+    /* Match desktop compact row gap (0.5rem), was 16px. */
+    gap: 0.5rem;
   }
 
   .vp-case-credits-band .vp-credit-pair {
     align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
+    justify-content: flex-start; /* both columns left-aligned */
+    gap: 0.9375rem; /* match desktop pair gap */
   }
 
   .vp-case-credits-band .vp-credit-role {
-    flex: 1 1 0;
+    /* Narrower than names — roles are short; names often many entries. */
+    flex: 0 1 auto;
     width: auto;
-    max-width: none;
-    min-width: 0;
+    max-width: 38%;
+    min-width: 5.5rem;
     font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
     line-height: 1.25rem;
     letter-spacing: 0;
   }
 
   .vp-case-credits-band .vp-credit-names {
-    flex: 1 1 0;
-    text-align: right;
-    font-family: var(--font-vp-heading);
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+    font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
     font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
-    font-weight: 700;
-    line-height: 1.6;
+    font-weight: 600;
+    line-height: 1.5; /* denser desktop rhythm (was 1.6) */
     letter-spacing: 0;
+  }
+}
+
+/*
+ * Desktop / tablet: accordion markup stays in the DOM, but every department
+ * shows its rows and headers are non-interactive (mirror always-open layout).
+ */
+@media (min-width: 576px) {
+  .vp-credits__dept > .vp-credits__rows {
+    display: flex !important;
+  }
+
+  .vp-credits__dept-head {
+    pointer-events: none;
+    cursor: default;
   }
 }
 

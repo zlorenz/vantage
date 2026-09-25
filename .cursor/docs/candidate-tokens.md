@@ -216,7 +216,9 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-dept-title-size` | `22px` | `.vp-credits__dept-name` ≤575 | h5 | pending | |
 | `--vp-candidate-portfolio-case-mobile-credits-pad-top` | `60px` | `.vp-case-credits-band` ≤575 | `pt-60` | pending | |
 | `--vp-candidate-portfolio-case-mobile-section-gap` | `80px` | credits↔KV rhythm | gap-80 | pending | |
-| `--vp-candidate-portfolio-case-mobile-dept-gap` | `60px` | between depts | gap-60 | pending | |
+| `--vp-candidate-portfolio-case-mobile-dept-gap` | ~~`60px`~~ → `3rem` (48px) | between depts ≤575 | desktop compact parity (Zacharia) | pending | Was Figma 60; now mirrors desktop `.vp-credits__col` gap. |
+| `--vp-candidate-portfolio-case-mobile-credits-pad-bottom` | `48px` | `.vp-case-credits-band` pad-bottom ≤575 | QC: air before project-nav | pending | |
+| `--vp-candidate-portfolio-case-mobile-credits-last-pad` | `2.5rem` | last `.vp-credits__dept` pad-bottom ≤575 | QC: space below last names | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-title-size` | `26px` | Key Visuals h2 ≤575 | h3 white | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-gap` | `12px` | KV stack | gap-12 | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-cell-aspect` | `370 / 180` | KV cells ≤575 | cells | pending | |

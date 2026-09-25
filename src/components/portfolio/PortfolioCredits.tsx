@@ -5,6 +5,9 @@
  * Column assignment follows catalog order: departments before `art`
  * (Production / Camera / G&E) on the left; Art and later on the right —
  * matching Figma’s grouped-by-column layout rather than CSS-columns masonry.
+ *
+ * Mobile ≤575: department headers are exclusive `<details name>` accordion
+ * panels (one open at a time). Desktop keeps all rows visible via CSS.
  */
 
 import {CREW_DEPARTMENTS} from '@crew-credits';
@@ -26,6 +29,9 @@ const LEFT_COLUMN_KEYS = new Set(
     (dept) => dept.key,
   ),
 );
+
+/** Exclusive accordion group for case credits on mobile. */
+const CREDITS_ACCORDION_NAME = 'vp-case-credits-accordion';
 
 function creditDisplayName(
   person: CrewPerson,
@@ -89,18 +95,24 @@ function DepartmentBlock({
   row,
   locale,
   phrases,
+  defaultOpen,
 }: {
   row: ReturnType<typeof resolveCreditsForDisplay>[number];
   locale: Locale;
   phrases?: Record<string, string>;
+  defaultOpen?: boolean;
 }) {
   return (
-    <div className="vp-credits__dept">
-      <div className="vp-credits__dept-head">
+    <details
+      className="vp-credits__dept"
+      name={CREDITS_ACCORDION_NAME}
+      {...(defaultOpen ? {defaultOpen: true} : {})}
+    >
+      <summary className="vp-credits__dept-head">
         <div className="vp-credits__rule" aria-hidden="true" />
         <div className="vp-credits__dept-name">{`●  ${row.label}`}</div>
         <div className="vp-credits__rule" aria-hidden="true" />
-      </div>
+      </summary>
       <div className="vp-credits__rows">
         {row.pairs.map((pair, index) => (
           <div key={index} className="vp-credit-pair">
@@ -115,7 +127,7 @@ function DepartmentBlock({
           </div>
         ))}
       </div>
-    </div>
+    </details>
   );
 }
 
@@ -130,6 +142,7 @@ export function PortfolioCredits({
   const left = rows.filter((row) => LEFT_COLUMN_KEYS.has(row.key));
   const right = rows.filter((row) => !LEFT_COLUMN_KEYS.has(row.key));
   const showDivider = left.length > 0 && right.length > 0;
+  const firstKey = left[0]?.key ?? right[0]?.key;
 
   return (
     <div
@@ -145,6 +158,7 @@ export function PortfolioCredits({
               row={row}
               locale={locale}
               phrases={phrases}
+              defaultOpen={row.key === firstKey}
             />
           ))}
         </div>
@@ -160,6 +174,7 @@ export function PortfolioCredits({
               row={row}
               locale={locale}
               phrases={phrases}
+              defaultOpen={row.key === firstKey}
             />
           ))}
         </div>
