@@ -4,8 +4,8 @@
  * LanguageSwitcher — locale control that preserves the current path.
  * Prefers link[rel=alternate][hreflang] so bilingual slugs (EN ↔ ZH) swap correctly.
  *
- * EN + 中文 cells with flag + label (Figma nav chrome) — same control on
- * desktop and mobile, left of the hamburger.
+ * Desktop: EN + 中文 cells (flag + label). Mobile ≤767: CSS hides the active
+ * cell so only the other locale shows as a toggle (same cell chrome).
  */
 
 import Image from 'next/image';

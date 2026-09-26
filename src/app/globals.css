@@ -1393,7 +1393,7 @@
 @media (max-width: 767.98px) {
   #header.navbar {
     --vp-candidate-nav-bar-height-mobile: 64px;
-    /* Narrower lang cells so logo + EN + 中文 + 64px hamburger fit ~390. */
+    /* Narrower lang cell so logo + toggle + 64px hamburger fit ~390. */
     --vp-nav-cell-width: 72px;
     box-sizing: border-box;
     height: var(--vp-candidate-nav-bar-height-mobile);
@@ -1421,12 +1421,25 @@
     border-right: var(--vp-struct-line);
   }
 
-  /* EN/中文 cells left of hamburger; stretch to bar height. */
+  /* Lang toggle left of hamburger; stretch to bar height. */
   #header .vp-lang-slot {
     align-self: stretch;
     margin-left: auto;
     margin-right: 0;
     align-items: stretch;
+  }
+
+  /*
+   * Mobile language toggle — same cell chrome as desktop, but only the
+   * other locale is shown (EN page → 中文, ZH page → EN). Active cell stays
+   * in the DOM for desktop parity; hide it here.
+   */
+  #header .vp-lang-cell.is-active {
+    display: none;
+  }
+
+  #header .vp-lang-cell:not(.is-active) {
+    opacity: 1;
   }
 
   #header .vp-nav-toggler-cell {
@@ -1467,7 +1480,9 @@
 }
 
 /*
- * EN / 中文 lang cells — shared desktop + mobile (sole language switcher).
+ * EN / 中文 lang cells — sole language switcher.
+ * Desktop ≥768: both cells (active + other). Mobile ≤767: toggle — only the
+ * inactive cell is visible (see media query above).
  * Cell width: --vp-nav-cell-width (94px desktop; 72px override ≤767).
  */
 #header .vp-lang-cells {
