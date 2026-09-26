@@ -8,9 +8,9 @@
  * (Production / Camera / G&E) on the left; Art and later on the right —
  * matching Figma’s grouped-by-column layout rather than CSS-columns masonry.
  *
- * Mobile ≤575: department headers toggle exclusive accordion panels
- * (one open at a time; all closed on load). Desktop keeps all rows
- * visible via CSS.
+ * ≤991: department headers toggle exclusive accordion panels (one open
+ * at a time; all closed on load; single column). Desktop ≥992 keeps the
+ * two-column always-open layout via CSS.
  */
 
 import {useId, useState} from 'react';

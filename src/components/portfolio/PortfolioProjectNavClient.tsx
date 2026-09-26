@@ -318,6 +318,18 @@ export function PortfolioProjectNavClient({
     >
       <div className="vp-project-nav__frame">
         <div className="vp-project-nav__widget">
+          {/*
+           * Ticks live on the widget (not the poster) so mobile brackets wrap
+           * label → poster → explore. Desktop: poster is display:contents so
+           * this matches the prior containing block.
+           */}
+          <div className="vp-project-nav__ticks" aria-hidden="true">
+            <span className="vp-project-nav__tick vp-project-nav__tick--tl" />
+            <span className="vp-project-nav__tick vp-project-nav__tick--tr" />
+            <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
+            <span className="vp-project-nav__tick vp-project-nav__tick--br" />
+          </div>
+
           <div className="vp-project-nav__left">
             <div className="vp-project-nav__heading">
               <p className="vp-project-nav__label">Next Project</p>
@@ -369,12 +381,6 @@ export function PortfolioProjectNavClient({
           </div>
 
           <div className="vp-project-nav__poster">
-            <div className="vp-project-nav__ticks" aria-hidden="true">
-              <span className="vp-project-nav__tick vp-project-nav__tick--tl" />
-              <span className="vp-project-nav__tick vp-project-nav__tick--tr" />
-              <span className="vp-project-nav__tick vp-project-nav__tick--bl" />
-              <span className="vp-project-nav__tick vp-project-nav__tick--br" />
-            </div>
             <div
               ref={emblaRef}
               className="vp-project-nav__viewport"

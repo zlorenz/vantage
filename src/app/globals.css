@@ -2085,24 +2085,6 @@
   }
 }
 
-/*
- * Mid-width scaffolding (576–991): credits band is outside shell__main and
- * ≤767 zeros .vp-credits row padding — without band gutters, roles go flush
- * to the viewport. Match .vp-case-shell__main pad until the desktop rail.
- */
-@media (max-width: 991.98px) {
-  .vp-case-credits-band {
-    padding-inline: 1rem;
-    box-sizing: border-box;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-  .vp-case-credits-band {
-    padding-inline: 1.5rem;
-  }
-}
-
 @media (max-width: 767.98px) {
   /*
    * Single-column collapse — independent of the old CSS-columns mechanism.
@@ -2157,22 +2139,20 @@
 }
 
 /*
- * Case credits ≤575 — denser L/R rows (Figma 2283:29693 + QC).
+ * Case credits accordion ≤991 — single-column list until the desktop rail
+ * (≥992). Fixes mid-width two-column crush (fixed 17.625rem roles) and the
+ * G&E gap (left-col :last-child kept desktop pad-bottom when stacked).
  * Scoped to `.vp-case-credits-band` (portfolio entry only).
- * Accordion: exclusive panels, all closed on load; desktop forces open ≥576.
  */
-@media (max-width: 575.98px) {
+@media (max-width: 991.98px) {
   .vp-case-credits-band {
-    --vp-case-credits-mobile-inline-pad: var(
-      --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-overlay-mobile-pad-inline, 16px)
-    );
+    /* Keep in sync with padding-inline — rules break out by this amount. */
+    --vp-case-credits-mobile-inline-pad: 1rem;
     padding-top: var(
       --vp-candidate-portfolio-case-mobile-credits-pad-top,
       60px
     );
     padding-inline: var(--vp-case-credits-mobile-inline-pad);
-    /* Air before project-nav / key visuals — final divider was too tight. */
     padding-bottom: var(
       --vp-candidate-portfolio-case-mobile-credits-pad-bottom,
       48px
@@ -2186,7 +2166,6 @@
 
   .vp-case-credits-band .vp-credits {
     flex-direction: column;
-    /* Collapsed list — no gutters between departments. */
     gap: 0;
   }
 
@@ -2199,13 +2178,20 @@
   }
 
   .vp-case-credits-band .vp-credits__dept {
-    /* Head→rows air lives on open panel pad-block, not dept gap. */
     gap: 0;
+    /* Kill desktop last-dept pad — was the G&E→ART gutter when cols stack. */
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .vp-case-credits-band .vp-credits__dept:last-child {
+    padding-bottom: 0;
   }
 
   .vp-case-credits-band .vp-credits__dept-head {
-    gap: 1.125rem; /* title air between its hairlines */
+    gap: 1.125rem;
     cursor: pointer;
+    pointer-events: auto;
   }
 
   /*
@@ -2237,7 +2223,7 @@
     display: block;
   }
 
-  /* Accordion: only the open panel shows rows on phone. */
+  /* Accordion: only the open panel shows rows below the rail breakpoint. */
   .vp-case-credits-band .vp-credits__rows:not(.vp-credits__rows--open) {
     display: none;
   }
@@ -2249,20 +2235,15 @@
       22px
     );
     font-weight: 700;
-    line-height: 1.2; /* denser — match desktop 1.2, was 1.4 */
+    line-height: 1.2;
     letter-spacing: 0;
   }
 
   .vp-case-credits-band .vp-credits__rows {
     padding-inline: 0;
-    /* Match desktop compact row gap (0.5rem), was 16px. */
     gap: 0.5rem;
   }
 
-  /*
-   * Former inter-dept gutter + head→rows gap — pad around roles/names
-   * when expanded only.
-   */
   .vp-case-credits-band .vp-credits__rows--open {
     padding-top: 1.75rem;
     padding-bottom: var(
@@ -2283,12 +2264,11 @@
 
   .vp-case-credits-band .vp-credit-pair {
     align-items: flex-start;
-    justify-content: flex-start; /* both columns left-aligned */
-    gap: 0.9375rem; /* match desktop pair gap */
+    justify-content: flex-start;
+    gap: 0.9375rem;
   }
 
   .vp-case-credits-band .vp-credit-role {
-    /* Narrower than names — roles are short; names often many entries. */
     flex: 0 1 auto;
     width: auto;
     max-width: 38%;
@@ -2305,19 +2285,39 @@
     font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
     font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
     font-weight: 600;
-    line-height: 1.5; /* denser desktop rhythm (was 1.6) */
+    line-height: 1.5;
     letter-spacing: 0;
   }
 }
 
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .vp-case-credits-band {
+    --vp-case-credits-mobile-inline-pad: 1.5rem;
+  }
+}
+
+/* Phone keeps the tighter 16px band pad. */
+@media (max-width: 575.98px) {
+  .vp-case-credits-band {
+    --vp-case-credits-mobile-inline-pad: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+  }
+}
+
 /*
- * Desktop / tablet: every department shows its rows; headers are
- * non-interactive (always-open layout). Mobile accordion class is ignored.
+ * Desktop rail ≥992: every department shows its rows; headers are
+ * non-interactive (always-open layout).
  */
-@media (min-width: 576px) {
+@media (min-width: 992px) {
   .vp-credits__dept-head {
     pointer-events: none;
     cursor: default;
+  }
+
+  .vp-case-credits-band .vp-credits__rows {
+    display: flex;
   }
 }
 
