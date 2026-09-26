@@ -2203,7 +2203,9 @@
   }
 
   .vp-case-credits-band .vp-credits__dept-head {
-    gap: 1.125rem;
+    /* Air lives on the title row so collapsed rows stay optically centered
+     * between hairlines (hiding the bottom rule used to kill bottom pad). */
+    gap: 0;
     cursor: pointer;
     pointer-events: auto;
   }
@@ -2216,6 +2218,7 @@
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    padding-block: 1.125rem;
   }
 
   .vp-case-credits-band .vp-credits__dept-name {
@@ -2263,17 +2266,21 @@
   }
 
   /*
-   * Single shared hairline between collapsed depts: hide each block’s
-   * bottom rule unless open (needs a rule under the title before rows)
-   * or it’s the visual last dept (closes the list).
+   * Collapsed list: one hairline between rows = each dept’s top rule
+   * (next top sits under this title’s equal pad-bottom). Bottom rule
+   * only for the open panel (under title before roles) and the last
+   * dept (closes the list).
    */
   .vp-case-credits-band
-    .vp-credits__dept:not([data-open='true'])
     .vp-credits__dept-head
     .vp-credits__rule:last-of-type {
     display: none;
   }
 
+  .vp-case-credits-band
+    .vp-credits__dept[data-open='true']
+    .vp-credits__dept-head
+    .vp-credits__rule:last-of-type,
   .vp-case-credits-band
     .vp-credits__col:last-child
     .vp-credits__dept:last-child
