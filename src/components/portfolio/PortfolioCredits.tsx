@@ -92,6 +92,23 @@ function CreditNames({
   );
 }
 
+function DeptCaret() {
+  return (
+    <span className="vp-credits__caret" aria-hidden="true">
+      <svg
+        className="vp-credits__caret-icon"
+        viewBox="0 0 24 24"
+        focusable="false"
+      >
+        <path
+          fill="currentColor"
+          d="M6.22 9.97a.75.75 0 0 1 1.06 0L12 14.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 0-1.06Z"
+        />
+      </svg>
+    </span>
+  );
+}
+
 function DepartmentBlock({
   row,
   locale,
@@ -121,7 +138,10 @@ function DepartmentBlock({
           onClick={onToggle}
         >
           <span className="vp-credits__rule" aria-hidden="true" />
-          <span className="vp-credits__dept-name">{`●  ${row.label}`}</span>
+          <span className="vp-credits__dept-title-row">
+            <span className="vp-credits__dept-name">{`●  ${row.label}`}</span>
+            <DeptCaret />
+          </span>
           <span className="vp-credits__rule" aria-hidden="true" />
         </button>
       </h3>

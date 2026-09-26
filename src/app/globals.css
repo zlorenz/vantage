@@ -1994,6 +1994,16 @@
   font-weight: 700;
 }
 
+/* Accordion caret — hidden on desktop always-open layout. */
+.vp-credits__dept-title-row {
+  display: block;
+  min-width: 0;
+}
+
+.vp-credits__caret {
+  display: none;
+}
+
 .vp-credits__rule {
   height: 0;
   width: 100%;
@@ -2192,6 +2202,51 @@
     gap: 1.125rem;
     cursor: pointer;
     pointer-events: auto;
+  }
+
+  .vp-case-credits-band .vp-credits__dept-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .vp-case-credits-band .vp-credits__dept-name {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .vp-case-credits-band .vp-credits__caret {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #fdb913;
+    transform: rotate(0deg);
+    transition: transform 180ms ease;
+  }
+
+  .vp-case-credits-band .vp-credits__caret-icon {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .vp-case-credits-band
+    .vp-credits__dept[data-open='true']
+    .vp-credits__caret {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vp-case-credits-band .vp-credits__caret {
+      transition: none;
+    }
   }
 
   /*
