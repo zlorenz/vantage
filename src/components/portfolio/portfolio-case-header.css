@@ -198,9 +198,9 @@
     text-box-edge: cap alphabetic;
   }
 
+  /* Phone: drop title↔meta hairline — tags follow campaign directly. */
   .vp-case-header__rule {
-    width: 100%;
-    margin-inline: 0;
+    display: none;
   }
 
   .vp-case-header__meta {

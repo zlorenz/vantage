@@ -3,8 +3,7 @@
  *
  * Desktop breakpoint: 992px (min-width) — reuses NavBar’s Figma-desktop
  * split / --vp-breakpoint-md. Below that the rail is hidden and the main
- * column keeps the prior single-column gutters; mobile header/credits
- * rules in portfolio-case-header.css are left untouched.
+ * column keeps single-column gutters; compact back stays visible ≤991.
  */
 
 .vp-case-shell {
@@ -76,29 +75,20 @@
   display: none;
 }
 
-/* Mobile ≤575 — compact back (Figma 2283:29693); desktop rail stays ≥992. */
+/* Compact back — hidden until ≤991 (desktop rail owns back ≥992). */
 .vp-case-mobile-back {
   display: none;
 }
 
-@media (max-width: 575.98px) {
-  /*
-   * Hug BACK under the 64px mobile nav. Global condensed pad is 9.5rem
-   * (desktop title-band air) — that pushed the back control down. Title
-   * stays put via a larger back→title gap below (do not shrink title pad).
-   */
+/*
+ * ≤991 scaffolding: keep Back visible until the desktop rail appears.
+ * Phone (≤575) tightens pad-top / gutters below.
+ */
+@media (max-width: 991.98px) {
   .vp-case-shell {
     --vp-section-y-header-condensed: var(
       --vp-header-height,
-      var(--vp-candidate-nav-bar-height-mobile, 64px)
-    );
-  }
-
-  .vp-case-shell__main,
-  .vp-case-shell__below {
-    padding-inline: var(
-      --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-overlay-mobile-pad-inline, 16px)
+      var(--vp-nav-bar-height, 80px)
     );
   }
 
@@ -106,12 +96,8 @@
     display: block;
     width: 100%;
     box-sizing: border-box;
-    /* Top flush to nav; bottom grows the back→title gap only. */
-    padding-top: 0;
-    padding-inline: var(
-      --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-overlay-mobile-pad-inline, 16px)
-    );
+    padding-top: 1rem;
+    padding-inline: 1rem;
     padding-bottom: var(
       --vp-candidate-portfolio-case-mobile-back-title-gap,
       32px
@@ -167,9 +153,44 @@
   }
 }
 
+@media (max-width: 767.98px) {
+  .vp-case-shell {
+    --vp-section-y-header-condensed: var(
+      --vp-header-height,
+      var(--vp-candidate-nav-bar-height-mobile, 64px)
+    );
+  }
+}
+
+@media (max-width: 575.98px) {
+  .vp-case-shell__main,
+  .vp-case-shell__below {
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+  }
+
+  .vp-case-mobile-back {
+    /* Small air under the 64px nav — not flush. */
+    padding-top: var(
+      --vp-candidate-portfolio-case-mobile-back-pad-top,
+      12px
+    );
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+  }
+}
+
 @media (min-width: 768px) and (max-width: 991.98px) {
   .vp-case-shell__main,
   .vp-case-shell__below {
+    padding-inline: 1.5rem;
+  }
+
+  .vp-case-mobile-back {
     padding-inline: 1.5rem;
   }
 }

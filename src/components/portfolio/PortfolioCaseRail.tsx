@@ -3,8 +3,8 @@
  *
  * Desktop ≥992: in-flow rail with low-opacity VAP geometric mark + “all work”
  * back control (scrolls away with the header; not sticky/fixed).
- * Mobile ≤575: compact back row above the header (Figma 2283:29693).
- * 576–991: no back chrome (scaffolding; desktop rail still hidden).
+ * ≤991: compact `.vp-case-mobile-back` above the header (phone chrome;
+ * tablet/mid-width keeps the same control until the desktop rail appears).
  */
 
 import {getTranslations} from 'next-intl/server';
