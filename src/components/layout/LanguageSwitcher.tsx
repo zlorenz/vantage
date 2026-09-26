@@ -4,8 +4,9 @@
  * LanguageSwitcher — locale control that preserves the current path.
  * Prefers link[rel=alternate][hreflang] so bilingual slugs (EN ↔ ZH) swap correctly.
  *
- * Desktop: EN + 中文 cells (flag + label). Mobile ≤767: CSS hides the active
- * cell so only the other locale shows as a toggle (same cell chrome).
+ * Desktop ≥768: EN + 中文 cells (flag + label).
+ * Mobile ≤767: single toggle cell for the *other* locale only (EN page → 中文,
+ * ZH page → EN). Separate markup — do not rely on hiding `.is-active`.
  */
 
 import Image from 'next/image';
@@ -58,10 +59,26 @@ function useLocaleSwitch() {
   };
 }
 
+function LangCellContent({ code }: { code: Locale }) {
+  return (
+    <>
+      <Image
+        src={LOCALE_FLAG[code]}
+        alt=""
+        width={16}
+        height={16}
+        className="vp-lang-cell__flag"
+      />
+      <span className="vp-lang-cell__label">{LOCALE_LABEL[code]}</span>
+    </>
+  );
+}
+
 export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const locale = useLocale() as Locale;
   const t = useTranslations('Nav');
   const switchTo = useLocaleSwitch();
+  const other: Locale = locale === 'zh' ? 'en' : 'zh';
 
   return (
     <div className={`vp-lang-cells ${className}`.trim()} role="group">
@@ -69,9 +86,9 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
         const active = code === locale;
         return (
           <button
-            key={code}
+            key={`desktop-${code}`}
             type="button"
-            className={`vp-lang-cell${active ? ' is-active' : ''}`}
+            className={`vp-lang-cell vp-lang-cell--desktop${active ? ' is-active' : ''}`}
             aria-label={code === 'en' ? t('switchToEnglish') : t('switchToChinese')}
             aria-current={active ? 'true' : undefined}
             disabled={active}
@@ -79,17 +96,18 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
               if (!active) switchTo(code);
             }}
           >
-            <Image
-              src={LOCALE_FLAG[code]}
-              alt=""
-              width={16}
-              height={16}
-              className="vp-lang-cell__flag"
-            />
-            <span className="vp-lang-cell__label">{LOCALE_LABEL[code]}</span>
+            <LangCellContent code={code} />
           </button>
         );
       })}
+      <button
+        type="button"
+        className="vp-lang-cell vp-lang-cell--mobile"
+        aria-label={other === 'en' ? t('switchToEnglish') : t('switchToChinese')}
+        onClick={() => switchTo(other)}
+      >
+        <LangCellContent code={other} />
+      </button>
     </div>
   );
 }

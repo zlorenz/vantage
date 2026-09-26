@@ -85,7 +85,7 @@ Exact match across work mobile SEARCH/FILTER, work bottom-bar filter trigger, an
 
 Language switcher Chinese cell label: `CN` → `中文` (`8df7b0e1`). EN / aria unchanged. Not a style candidate.
 
-Mobile ≤767 language switcher: both cells remain in markup; `.is-active` is `display: none` so only the other locale shows as a toggle (EN page → 中文, ZH → EN). Inactive cell opacity restored to `1`. Desktop ≥768 unchanged. Not a style candidate.
+Mobile ≤767 language switcher: dedicated `.vp-lang-cell--mobile` toggle for the other locale (EN page → 中文, ZH → EN); desktop pair uses `.vp-lang-cell--desktop` and is hidden ≤767. Earlier `.is-active { display: none }` approach failed on ZH pages in phone Chrome — do not revert to it. Not a style candidate.
 
 ### Audit trail (do not implement)
 

@@ -1429,19 +1429,6 @@
     align-items: stretch;
   }
 
-  /*
-   * Mobile language toggle — same cell chrome as desktop, but only the
-   * other locale is shown (EN page → 中文, ZH page → EN). Active cell stays
-   * in the DOM for desktop parity; hide it here.
-   */
-  #header .vp-lang-cell.is-active {
-    display: none;
-  }
-
-  #header .vp-lang-cell:not(.is-active) {
-    opacity: 1;
-  }
-
   #header .vp-nav-toggler-cell {
     display: flex;
     flex-shrink: 0;
@@ -1481,9 +1468,9 @@
 
 /*
  * EN / 中文 lang cells — sole language switcher.
- * Desktop ≥768: both cells (active + other). Mobile ≤767: toggle — only the
- * inactive cell is visible (see media query above).
- * Cell width: --vp-nav-cell-width (94px desktop; 72px override ≤767).
+ * Desktop ≥768: `.vp-lang-cell--desktop` pair. Mobile ≤767: one
+ * `.vp-lang-cell--mobile` toggle (other locale). Cell width:
+ * --vp-nav-cell-width (94px desktop; 72px override ≤767).
  */
 #header .vp-lang-cells {
   display: flex;
@@ -1504,7 +1491,7 @@
   padding: 0;
   border: 0;
   /* Right edge only by default — on mobile the brand cell already draws
-   * logo|EN. Desktop adds a left hairline on :first-child (search|EN). */
+   * logo|toggle. Desktop adds a left hairline on :first-child (search|EN). */
   border-right: var(--vp-struct-line);
   border-radius: 0;
   background: transparent;
@@ -1518,12 +1505,36 @@
   cursor: pointer;
 }
 
-#header .vp-lang-cell:not(.is-active) {
+/*
+ * Visibility — double-class selectors (1,2,0) so they beat the shared
+ * `#header .vp-lang-cell { display: inline-flex }` above. Must stay AFTER
+ * that rule; an earlier equal-specificity hide loses the cascade.
+ */
+#header .vp-lang-cell.vp-lang-cell--desktop {
+  display: inline-flex;
+}
+
+#header .vp-lang-cell.vp-lang-cell--mobile {
+  display: none;
+}
+
+#header .vp-lang-cell--desktop:not(.is-active) {
   opacity: 0.5;
 }
 
 #header .vp-lang-cell:disabled {
   cursor: default;
+}
+
+@media (max-width: 767.98px) {
+  #header .vp-lang-cell.vp-lang-cell--desktop {
+    display: none;
+  }
+
+  #header .vp-lang-cell.vp-lang-cell--mobile {
+    display: inline-flex;
+    opacity: 1;
+  }
 }
 
 #header .vp-lang-cell__flag {
@@ -1575,7 +1586,7 @@
   }
 
   /* Search sits left of EN on desktop — left hairline separates icon | EN. */
-  #header .vp-lang-cell:first-child {
+  #header .vp-lang-cell--desktop:first-child {
     border-left: var(--vp-struct-line);
   }
 
