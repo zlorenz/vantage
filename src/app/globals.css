@@ -2183,13 +2183,17 @@
     display: none;
   }
 
+  /*
+   * Flatten the desktop two-col wrappers so Production→Post is one flex
+   * list. Styling `gap: 0` on the cols was not enough — the left col’s
+   * box (G&E = :last-child) still introduced a G&E→ART seam when stacked.
+   */
   .vp-case-credits-band .vp-credits__col {
-    gap: 0;
+    display: contents;
   }
 
   .vp-case-credits-band .vp-credits__dept {
     gap: 0;
-    /* Kill desktop last-dept pad — was the G&E→ART gutter when cols stack. */
     padding-bottom: 0;
     margin-bottom: 0;
   }
