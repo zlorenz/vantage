@@ -478,8 +478,8 @@ a.vp-project-nav__explore:focus-visible {
 }
 
 /*
- * Case project-nav ≤575 — QC: brackets outside poster, no VAP mark, 4:5,
- * explore/arrows below poster. Structure kept for desktop ≥992.
+ * Case project-nav ≤575 — QC: brackets wrap full widget (label → poster →
+ * explore), no VAP mark, 4:5, explore/arrows below poster. Desktop ≥992 kept.
  */
 @media (max-width: 575.98px) {
   .vp-project-nav {
@@ -535,10 +535,14 @@ a.vp-project-nav__explore:focus-visible {
     display: none;
   }
 
+  /*
+   * Poster stays in-flow for order/stacking, but is NOT a positioning
+   * context — ticks stay absolute against `.vp-project-nav__widget` so
+   * brackets wrap label + poster + explore (not the thumbnail alone).
+   */
   .vp-project-nav__poster {
     display: block;
     order: 2;
-    position: relative;
   }
 
   .vp-project-nav__viewport {
@@ -547,7 +551,7 @@ a.vp-project-nav__explore:focus-visible {
     overflow-y: visible;
   }
 
-  /* Brackets hug the poster wrap, slightly outside. */
+  /* Brackets hug the full widget, slightly outside. */
   .vp-project-nav__ticks {
     display: block;
     inset: calc(
