@@ -9,7 +9,8 @@
  * matching Figma’s grouped-by-column layout rather than CSS-columns masonry.
  *
  * Mobile ≤575: department headers toggle exclusive accordion panels
- * (one open at a time). Desktop keeps all rows visible via CSS.
+ * (one open at a time; all closed on load). Desktop keeps all rows
+ * visible via CSS.
  */
 
 import {useId, useState} from 'react';
@@ -158,8 +159,7 @@ export function PortfolioCredits({
 }: PortfolioCreditsProps) {
   const rows = resolveCreditsForDisplay({ crewCredits, locale, phrases });
   const baseId = useId();
-  const firstKey = rows[0]?.key ?? null;
-  const [openKey, setOpenKey] = useState<string | null>(firstKey);
+  const [openKey, setOpenKey] = useState<string | null>(null);
 
   if (!rows.length) return null;
 

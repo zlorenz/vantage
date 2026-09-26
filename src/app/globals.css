@@ -2159,18 +2159,19 @@
 /*
  * Case credits ≤575 — denser L/R rows (Figma 2283:29693 + QC).
  * Scoped to `.vp-case-credits-band` (portfolio entry only).
- * Accordion: exclusive <details name>; desktop forces rows open below.
+ * Accordion: exclusive panels, all closed on load; desktop forces open ≥576.
  */
 @media (max-width: 575.98px) {
   .vp-case-credits-band {
+    --vp-case-credits-mobile-inline-pad: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
     padding-top: var(
       --vp-candidate-portfolio-case-mobile-credits-pad-top,
       60px
     );
-    padding-inline: var(
-      --vp-candidate-portfolio-case-mobile-inline-pad,
-      var(--vp-overlay-mobile-pad-inline, 16px)
-    );
+    padding-inline: var(--vp-case-credits-mobile-inline-pad);
     /* Air before project-nav / key visuals — final divider was too tight. */
     padding-bottom: var(
       --vp-candidate-portfolio-case-mobile-credits-pad-bottom,
@@ -2185,11 +2186,8 @@
 
   .vp-case-credits-band .vp-credits {
     flex-direction: column;
-    /* Match desktop compact col gap (3rem), not Figma 60. */
-    gap: var(
-      --vp-candidate-portfolio-case-mobile-dept-gap,
-      3rem
-    );
+    /* Collapsed list — no gutters between departments. */
+    gap: 0;
   }
 
   .vp-case-credits-band .vp-credits__divider {
@@ -2197,28 +2195,46 @@
   }
 
   .vp-case-credits-band .vp-credits__col {
-    gap: var(
-      --vp-candidate-portfolio-case-mobile-dept-gap,
-      3rem
-    );
+    gap: 0;
   }
 
   .vp-case-credits-band .vp-credits__dept {
-    /* Match desktop compact header→rows (1.75rem). */
-    gap: 1.75rem;
-  }
-
-  .vp-case-credits-band .vp-credits__dept:last-child {
-    /* Extra space below last names before band pad / next section. */
-    padding-bottom: var(
-      --vp-candidate-portfolio-case-mobile-credits-last-pad,
-      2.5rem
-    );
+    /* Head→rows air lives on open panel pad-block, not dept gap. */
+    gap: 0;
   }
 
   .vp-case-credits-band .vp-credits__dept-head {
-    gap: 1.125rem; /* match desktop compact hairline rhythm */
+    gap: 1.125rem; /* title air between its hairlines */
     cursor: pointer;
+  }
+
+  /*
+   * Full-bleed department hairlines — break out of band inline pad so
+   * rules meet the viewport edges; titles/rows stay inset.
+   */
+  .vp-case-credits-band .vp-credits__rule {
+    width: auto;
+    margin-inline: calc(-1 * var(--vp-case-credits-mobile-inline-pad));
+  }
+
+  /*
+   * Single shared hairline between collapsed depts: hide each block’s
+   * bottom rule unless open (needs a rule under the title before rows)
+   * or it’s the visual last dept (closes the list).
+   */
+  .vp-case-credits-band
+    .vp-credits__dept:not([data-open='true'])
+    .vp-credits__dept-head
+    .vp-credits__rule:last-of-type {
+    display: none;
+  }
+
+  .vp-case-credits-band
+    .vp-credits__col:last-child
+    .vp-credits__dept:last-child
+    .vp-credits__dept-head
+    .vp-credits__rule:last-of-type {
+    display: block;
   }
 
   /* Accordion: only the open panel shows rows on phone. */
@@ -2241,6 +2257,28 @@
     padding-inline: 0;
     /* Match desktop compact row gap (0.5rem), was 16px. */
     gap: 0.5rem;
+  }
+
+  /*
+   * Former inter-dept gutter + head→rows gap — pad around roles/names
+   * when expanded only.
+   */
+  .vp-case-credits-band .vp-credits__rows--open {
+    padding-top: 1.75rem;
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-dept-gap,
+      3rem
+    );
+  }
+
+  .vp-case-credits-band
+    .vp-credits__col:last-child
+    .vp-credits__dept:last-child
+    .vp-credits__rows--open {
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-credits-last-pad,
+      2.5rem
+    );
   }
 
   .vp-case-credits-band .vp-credit-pair {
