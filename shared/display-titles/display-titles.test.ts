@@ -7,6 +7,7 @@ import assert from 'node:assert/strict'
 
 import {
   compileDisplayTitles,
+  documentTitleLines,
   resolveDisplayTitleParts,
   resolveDisplayTitles,
 } from './index'
@@ -247,6 +248,30 @@ function testResolveDisplayTitleParts() {
   assert.equal(zh.campaignTitle, 'Shining with Govee')
 }
 
+function testDocumentTitleLines() {
+  assert.deepEqual(
+    documentTitleLines({
+      brandName: 'Mondo Robotics',
+      productName: 'Beni',
+      campaignTitle: 'All-Terrain Camera Robot',
+    }),
+    {brandLine: 'Mondo Robotics Beni', campaignLine: 'All-Terrain Camera Robot'},
+  )
+  assert.deepEqual(
+    documentTitleLines({
+      brandName: '妙动科技',
+      productName: 'Beni',
+      campaignTitle: '你的首款全地形摄影机器人 Beni',
+    }),
+    {brandLine: '妙动科技 Beni', campaignLine: '你的首款全地形摄影机器人 Beni'},
+  )
+  assert.equal(documentTitleLines({brandName: 'Aquafina'}), null)
+  assert.deepEqual(
+    documentTitleLines({brandName: 'Ulike', productName: 'Air 10'}),
+    {brandLine: 'Ulike', campaignLine: 'Air 10'},
+  )
+}
+
 function testResolveZhFallback() {
   const result = resolveDisplayTitles(
     {
@@ -271,6 +296,7 @@ const tests = [
   testCompileHeaderMatchesThumbPartsWithoutCapOrBreak,
   testCompileDualBrand,
   testCompileHeroFilmTitle,
+  testDocumentTitleLines,
   testResolveOverride,
   testResolveZhFallback,
   testResolveDisplayTitleParts,

@@ -16,20 +16,24 @@ import {
   Stack,
   Text,
   TextInput,
+  Tooltip,
   useToast,
   type Placement,
 } from '@sanity/ui'
 import {
   AddIcon,
+  CheckmarkCircleIcon,
   ChevronDownIcon,
   CloseIcon,
+  ErrorOutlineIcon,
   EyeClosedIcon,
   FilterIcon,
   SearchIcon,
+  TranslateIcon,
   TrashIcon,
   WarningOutlineIcon,
 } from '@sanity/icons'
-import {compileDisplayTitles, trimPart} from '@display-titles'
+import {compileDisplayTitles, documentTitleLines, trimPart} from '@display-titles'
 import {
   CREW_DEPARTMENTS,
   CREW_ROLE_BY_KEY,
@@ -57,6 +61,15 @@ import {
   type TrashPreflightItem,
 } from './document-lifecycle'
 import {getStudioRole} from '../../lib/studio-roles'
+import {
+  TRANSLATION_FILTERS,
+  portableTextHasText,
+  translationAriaLabel,
+  translationSortRank,
+  translationStatus,
+  type TranslationFilter,
+  type TranslationStatus,
+} from './translation-status'
 import {studioRoleLabel} from './crew-member-labels'
 import {
   countPendingIdentityReviewItems,
@@ -94,10 +107,28 @@ function titleFromDoc(doc: Record<string, unknown>): string {
   return String(doc.title ?? '')
 }
 
+/**
+ * Same Brand/Product vs Campaign split as the work-internal list.
+ * Brand is omitted when it would repeat the line underneath.
+ */
+function portfolioTitleLines(doc: Record<string, unknown>): {
+  titleBrand?: string
+  titleCampaign?: string
+} {
+  if (String(doc._type) !== 'portfolioEntry') return {}
+  const lines = documentTitleLines(doc.displayTitleParts as DisplayTitlePartsDoc | undefined)
+  if (!lines) return {}
+  return {titleBrand: lines.brandLine, titleCampaign: lines.campaignLine}
+}
+
 type Row = {
   _id: string
   _type: string
   title: string
+  /** Yellow brand/product line. Set only for portfolio rows with a distinct campaign. */
+  titleBrand?: string
+  /** White campaign (or product) line under titleBrand. */
+  titleCampaign?: string
   titleZh?: string
   url?: string
   slug?: string
@@ -129,6 +160,7 @@ type Row = {
   roleKeys?: string[]
   /** Portfolio-entry counts per roleKey for creditIdentity rows. */
   usageByRole?: Partial<Record<string, number>>
+  translation?: TranslationStatus | null
 }
 
 type TaxonomyKind = 'videoFormat' | 'industry' | 'market'
@@ -387,9 +419,41 @@ function buildQuery(documentType: string): string {
         displayTitleParts{
           brandName,
           productName,
-          campaignTitle
+          campaignTitle,
+          brandNameZh,
+          productNameZh,
+          campaignTitleZh
+        },
+        thumbTitleOverride,
+        thumbTitleOverrideZh,
+        headerTitleOverride,
+        headerTitleOverrideZh,
+        longTitleOverride,
+        longTitleOverrideZh,
+        heroFilmTitle,
+        heroFilmTitleZh,
+        excerpt,
+        excerptZh,
+        description,
+        descriptionZh,
+        videos[]{
+          videoTitle,
+          videoTitleZh,
+          description,
+          descriptionZh
+        },
+        additionalVideos[]{
+          videoTitle,
+          videoTitleZh,
+          description,
+          descriptionZh
         },
         "slug": slug.current,
+        "slugZh": slugZh.current,
+        "metaTitle": seo.metaTitle,
+        "metaTitleZh": seo.metaTitleZh,
+        "metaDescription": seo.metaDescription,
+        "metaDescriptionZh": seo.metaDescriptionZh,
         publishedAt,
         "_updatedAt": _updatedAt,
         "categories": array::join(
@@ -420,11 +484,19 @@ function buildQuery(documentType: string): string {
         _type,
         title,
         titleZh,
+        excerpt,
+        excerptZh,
         "slug": slug.current,
+        "slugZh": slugZh.current,
         publishedAt,
         "_createdAt": _createdAt,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,
+        "metaDescriptionZh": seo.metaDescriptionZh,
+        "metaTitle": seo.metaTitle,
+        "metaTitleZh": seo.metaTitleZh,
+        "bodyHasText": ${portableTextHasText('body')},
+        "bodyZhHasText": ${portableTextHasText('bodyZh')},
         trash,
         "hasDraft": count(*[_id == "drafts." + ^._id]) > 0,
         "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop",
@@ -436,9 +508,36 @@ function buildQuery(documentType: string): string {
         _type,
         title,
         titleZh,
+        navLabel,
+        navLabelZh,
+        excerpt,
+        excerptZh,
+        heroTitle,
+        heroTitleZh,
         "slug": slug.current,
+        "slugZh": slugZh.current,
         "_updatedAt": _updatedAt,
         "metaDescription": seo.metaDescription,
+        "metaDescriptionZh": seo.metaDescriptionZh,
+        "metaTitle": seo.metaTitle,
+        "metaTitleZh": seo.metaTitleZh,
+        "bodyHasText": ${portableTextHasText('body')},
+        "bodyZhHasText": ${portableTextHasText('bodyZh')},
+        founders[]{
+          name,
+          jobTitle,
+          jobTitleZh,
+          professionalTitle,
+          professionalTitleZh,
+          bio,
+          bioZh
+        },
+        awardItems[]{
+          title,
+          titleZh,
+          category,
+          categoryZh
+        },
         trash,
         "hasDraft": count(*[_id == "drafts." + ^._id]) > 0,
         "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop"
@@ -449,7 +548,10 @@ function buildQuery(documentType: string): string {
         _type,
         title,
         titleZh,
+        description,
+        descriptionZh,
         "slug": slug.current,
+        "slugZh": slugZh.current,
         "parent": parent->title,
         "usage": count(*[references(^._id)])
       }`
@@ -461,7 +563,10 @@ function buildQuery(documentType: string): string {
         _type,
         title,
         titleZh,
+        description,
+        descriptionZh,
         "slug": slug.current,
+        "slugZh": slugZh.current,
         "usage": count(*[references(^._id)])
       }`
     case 'platform':
@@ -493,10 +598,28 @@ function buildQuery(documentType: string): string {
         "slug": zh
       }`
     case 'siteSettings':
-      return `*[_type == "siteSettings"]{
+      return `*[_type == "siteSettings" && !(_id in path("versions.**"))]{
         _id,
         _type,
-        "title": "Site Settings"
+        "title": "Site Settings",
+        contactAddress,
+        contactAddressZh,
+        contactModalTitle,
+        contactModalTitleZh,
+        contactModalIntro,
+        contactModalIntroZh,
+        contactCtaText,
+        contactCtaTextZh,
+        "contactModalHasText": ${portableTextHasText('contactModalContent')},
+        "contactModalZhHasText": ${portableTextHasText('contactModalContentZh')},
+        campaignCta{
+          heading,
+          headingZh,
+          paragraphs,
+          paragraphsZh,
+          buttonLabel,
+          buttonLabelZh
+        }
       }`
     default:
       return `*[_type == $type && !(_id in path("versions.**"))] | order(_updatedAt desc) {
@@ -575,6 +698,7 @@ function normalizeRows(
       _id: publishedId,
       _type: String(doc._type),
       title: titleFromDoc(doc),
+      ...portfolioTitleLines(doc),
       titleZh: doc.titleZh
         ? String(doc.titleZh)
         : doc.nameZh
@@ -608,6 +732,7 @@ function normalizeRows(
       parent: doc.parent ? String(doc.parent) : undefined,
       usage: typeof doc.usage === 'number' ? doc.usage : undefined,
       role: doc.role ? String(doc.role) : undefined,
+      translation: translationStatus(doc),
     }
   })
 }
@@ -718,9 +843,56 @@ function sortValue(
       return (row.parent || '').toLowerCase()
     case 'role':
       return (row.role || '').toLowerCase()
+    case 'translation':
+      return translationSortRank(row.translation?.level)
     default:
       return ''
   }
+}
+
+function TranslationStatusIcon({status}: {status?: TranslationStatus | null}) {
+  if (!status) return null
+  const Icon =
+    status.level === 'green'
+      ? CheckmarkCircleIcon
+      : status.level === 'yellow'
+        ? WarningOutlineIcon
+        : ErrorOutlineIcon
+  const color =
+    status.level === 'green'
+      ? 'var(--card-badge-positive-fg-color)'
+      : status.level === 'yellow'
+        ? 'var(--card-badge-caution-fg-color)'
+        : 'var(--card-badge-critical-fg-color)'
+
+  return (
+    <Tooltip
+      portal
+      placement="left"
+      content={
+        <Box padding={2} style={{maxWidth: 280}}>
+          <Stack space={2}>
+            {status.level === 'green' ? (
+              <Text size={1}>All fields translated</Text>
+            ) : (
+              status.missing.map((gap, index) => (
+                <Text key={`${gap.label}-${index}`} size={1}>
+                  {gap.label}
+                </Text>
+              ))
+            )}
+          </Stack>
+        </Box>
+      }
+    >
+      <span
+        aria-label={translationAriaLabel(status)}
+        style={{color, display: 'inline-flex', lineHeight: 0}}
+      >
+        <Icon style={{width: 24, height: 24}} />
+      </span>
+    </Tooltip>
+  )
 }
 
 function CellContent({
@@ -753,18 +925,38 @@ function CellContent({
         />
       )
     case 'title':
-      return (
-        <Stack space={1}>
-          <Text size={1} weight="semibold">
-            {row.title || 'Untitled'}
-          </Text>
-          {row.titleZh ? (
-            <Text size={0} muted>
-              {row.titleZh}
+      if (row.titleBrand && row.titleCampaign) {
+        return (
+          <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+            {/* Plain span, not Sanity Text: Text's line-box trim eats a normal stack gap. */}
+            <span
+              style={{
+                color: '#fdb913',
+                fontWeight: 600,
+                fontSize: 10,
+                lineHeight: 1.2,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {row.titleBrand}
+            </span>
+            <Text size={1} weight="semibold">
+              {row.titleCampaign}
             </Text>
-          ) : null}
-        </Stack>
+          </div>
+        )
+      }
+      return (
+        <Text size={1} weight="semibold">
+          {row.title || 'Untitled'}
+        </Text>
       )
+    case 'translation':
+      return <TranslationStatusIcon status={row.translation} />
     case 'status':
       return (
         <Badge tone={statusTone(row)} fontSize={0} style={statusStyle(row)}>
@@ -884,6 +1076,7 @@ export function DocumentTable({
     section.documentType === 'portfolioEntry' && !isTranslator
   const canPermanentlyDelete = supportsTrash && isAdmin
   const supportsStatusFilter = section.columns.some((col) => col.id === 'status')
+  const supportsTranslation = section.columns.some((col) => col.id === 'translation')
   const statusFilterTabs = useMemo(() => {
     if (!supportsStatusFilter) return []
     // Hidden is portfolio-only (`isHidden`); pages/posts have no equivalent.
@@ -911,6 +1104,7 @@ export function DocumentTable({
     targetId: string
   } | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [translationFilter, setTranslationFilter] = useState<TranslationFilter>('all')
   const [taxonomyFilter, setTaxonomyFilter] = useState<TaxonomyFilter>('all')
   const [taxonomyTerms, setTaxonomyTerms] = useState<TaxonomyTerm[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -939,6 +1133,7 @@ export function DocumentTable({
     setCrewRoleFilter('all')
     setDuplicatesOnly(false)
     setStatusFilter('all')
+    setTranslationFilter('all')
     setTaxonomyFilter('all')
     setSelected(new Set())
   }, [section.id, section.defaultSort])
@@ -961,7 +1156,7 @@ export function DocumentTable({
 
   useEffect(() => {
     setSelected(new Set())
-  }, [crewDeptTab, crewRoleFilter, statusFilter, taxonomyFilter])
+  }, [crewDeptTab, crewRoleFilter, statusFilter, taxonomyFilter, translationFilter])
 
   // Drop Hidden when leaving portfolio; keep a valid tab.
   useEffect(() => {
@@ -1056,15 +1251,86 @@ export function DocumentTable({
               _type,
               "title": coalesce(title, name),
               titleZh,
+              nameZh,
               displayTitleParts{
                 brandName,
                 productName,
-                campaignTitle
+                campaignTitle,
+                brandNameZh,
+                productNameZh,
+                campaignTitleZh
               },
+              thumbTitleOverride,
+              thumbTitleOverrideZh,
+              headerTitleOverride,
+              headerTitleOverrideZh,
+              longTitleOverride,
+              longTitleOverrideZh,
+              heroFilmTitle,
+              heroFilmTitleZh,
+              excerpt,
+              excerptZh,
+              description,
+              descriptionZh,
+              navLabel,
+              navLabelZh,
+              heroTitle,
+              heroTitleZh,
+              videos[]{
+                videoTitle,
+                videoTitleZh,
+                description,
+                descriptionZh
+              },
+              additionalVideos[]{
+                videoTitle,
+                videoTitleZh,
+                description,
+                descriptionZh
+              },
+              founders[]{
+                name,
+                jobTitle,
+                jobTitleZh,
+                professionalTitle,
+                professionalTitleZh,
+                bio,
+                bioZh
+              },
+              awardItems[]{
+                title,
+                titleZh,
+                category,
+                categoryZh
+              },
+              contactAddress,
+              contactAddressZh,
+              contactModalTitle,
+              contactModalTitleZh,
+              contactModalIntro,
+              contactModalIntroZh,
+              contactCtaText,
+              contactCtaTextZh,
+              "contactModalHasText": ${portableTextHasText('contactModalContent')},
+              "contactModalZhHasText": ${portableTextHasText('contactModalContentZh')},
+              campaignCta{
+                heading,
+                headingZh,
+                paragraphs,
+                paragraphsZh,
+                buttonLabel,
+                buttonLabelZh
+              },
+              "bodyHasText": ${portableTextHasText('body')},
+              "bodyZhHasText": ${portableTextHasText('bodyZh')},
               "slug": slug.current,
+              "slugZh": slugZh.current,
               publishedAt,
               "_updatedAt": _updatedAt,
               "metaDescription": seo.metaDescription,
+              "metaDescriptionZh": seo.metaDescriptionZh,
+              "metaTitle": seo.metaTitle,
+              "metaTitleZh": seo.metaTitleZh,
               isHidden,
               trash,
               "thumbnailUrl": featuredImage.asset->url + "?w=80&h=80&fit=crop",
@@ -1336,6 +1602,30 @@ export function DocumentTable({
     return taxonomyTerms.find((term) => term._id === taxonomyFilter) ?? null
   }, [taxonomyFilter, taxonomyTerms])
 
+  const translationCounts = useMemo(() => {
+    const counts: Record<TranslationFilter, number> = {
+      all: 0,
+      red: 0,
+      yellow: 0,
+      green: 0,
+    }
+    if (!supportsTranslation) return counts
+    let scope = statusScopedRows
+    if (isPortfolioSection && taxonomyFilter !== 'all') {
+      scope = scope.filter((row) => rowMatchesTaxonomy(row, taxonomyFilter))
+    }
+    for (const row of scope) {
+      counts.all += 1
+      const level = row.translation?.level
+      if (level) counts[level] += 1
+    }
+    return counts
+  }, [isPortfolioSection, statusScopedRows, supportsTranslation, taxonomyFilter])
+
+  const activeTranslationFilter = TRANSLATION_FILTERS.find(
+    (item) => item.id === translationFilter,
+  )
+
   const industryIdsInMenu = useMemo(
     () => new Set(taxonomyMenuGroups.industries.map((term) => term._id)),
     [taxonomyMenuGroups.industries],
@@ -1404,6 +1694,9 @@ export function DocumentTable({
     if (isPortfolioSection && !inTrash && taxonomyFilter !== 'all') {
       next = next.filter((row) => rowMatchesTaxonomy(row, taxonomyFilter))
     }
+    if (supportsTranslation && translationFilter !== 'all') {
+      next = next.filter((row) => row.translation?.level === translationFilter)
+    }
     if (isCrewMembersSection && !showCrewNotLinkedState) {
       if (crewDeptTab !== 'all') {
         next = next.filter((row) => rowMatchesDept(row, crewDeptTab))
@@ -1465,8 +1758,10 @@ export function DocumentTable({
     sort,
     statusFilter,
     supportsStatusFilter,
+    supportsTranslation,
     supportsTrash,
     taxonomyFilter,
+    translationFilter,
   ])
 
   const allVisibleSelected =
@@ -1476,7 +1771,13 @@ export function DocumentTable({
     setSort((prev) =>
       prev.field === field
         ? {field, direction: prev.direction === 'asc' ? 'desc' : 'asc'}
-        : {field, direction: field === 'title' || field === 'slug' ? 'asc' : 'desc'},
+        : {
+            field,
+            direction:
+              field === 'title' || field === 'slug' || field === 'translation'
+                ? 'asc'
+                : 'desc',
+          },
     )
   }, [])
 
@@ -1856,6 +2157,39 @@ export function DocumentTable({
               />
             </Flex>
           ) : null}
+          {supportsTranslation ? (
+            <Flex gap={2} align="center" wrap="wrap">
+              <MenuButton
+                id={`${section.id}-translation-filter`}
+                button={
+                  <Button
+                    text={
+                      translationFilter === 'all'
+                        ? 'Translation'
+                        : (activeTranslationFilter?.label ?? 'Translation')
+                    }
+                    icon={TranslateIcon}
+                    iconRight={ChevronDownIcon}
+                    mode="ghost"
+                    fontSize={1}
+                  />
+                }
+                menu={
+                  <Menu>
+                    {TRANSLATION_FILTERS.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        text={`${item.label} (${translationCounts[item.id]})`}
+                        pressed={translationFilter === item.id}
+                        onClick={() => setTranslationFilter(item.id)}
+                      />
+                    ))}
+                  </Menu>
+                }
+                popover={{portal: true, placement: 'bottom-start'}}
+              />
+            </Flex>
+          ) : null}
           {isCrewMembersSection ? (
             <Stack space={2}>
               <Flex gap={3} align="center" wrap="wrap">
@@ -2175,8 +2509,10 @@ export function DocumentTable({
                 {section.columns.map((col) => (
                   <th
                     key={col.id}
+                    aria-label={col.id === 'translation' ? 'Translation' : undefined}
                     style={{
-                      textAlign: 'left',
+                      textAlign: col.id === 'translation' ? 'center' : 'left',
+                      verticalAlign: 'middle',
                       padding: '10px 12px',
                       borderBottom: '1px solid var(--card-border-color)',
                       width: col.width,
@@ -2185,14 +2521,33 @@ export function DocumentTable({
                     }}
                     onClick={col.sortable ? () => toggleSort(col.id) : undefined}
                   >
-                    <Text size={0} weight="semibold" muted>
-                      {col.header}
-                      {col.sortable && sort.field === col.id
-                        ? sort.direction === 'asc'
-                          ? ' ↑'
-                          : ' ↓'
-                        : ''}
-                    </Text>
+                    {col.id === 'translation' ? (
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 2,
+                          color: 'var(--card-muted-fg-color)',
+                        }}
+                      >
+                        <TranslateIcon style={{display: 'block'}} />
+                        {sort.field === col.id ? (
+                          <span style={{fontSize: 13, lineHeight: 1}}>
+                            {sort.direction === 'asc' ? '↑' : '↓'}
+                          </span>
+                        ) : null}
+                      </span>
+                    ) : (
+                      <Text size={0} weight="semibold" muted>
+                        {col.header}
+                        {col.sortable && sort.field === col.id
+                          ? sort.direction === 'asc'
+                            ? ' ↑'
+                            : ' ↓'
+                          : ''}
+                      </Text>
+                    )}
                   </th>
                 ))}
               </tr>
@@ -2202,11 +2557,13 @@ export function DocumentTable({
                 <tr>
                   <td colSpan={colSpan} style={{padding: 24}}>
                     <Text size={1} muted>
-                      {inTrash
-                        ? 'Trash is empty.'
-                        : statusFilter !== 'all'
-                          ? `No ${STATUS_LABELS[statusFilter].toLowerCase()} items.`
-                          : 'No documents found.'}
+                      {translationFilter !== 'all'
+                        ? 'No documents match this translation filter.'
+                        : inTrash
+                          ? 'Trash is empty.'
+                          : statusFilter !== 'all'
+                            ? `No ${STATUS_LABELS[statusFilter].toLowerCase()} items.`
+                            : 'No documents found.'}
                     </Text>
                   </td>
                 </tr>
@@ -2250,6 +2607,7 @@ export function DocumentTable({
                             borderBottom: '1px solid var(--card-border-color)',
                             verticalAlign: 'middle',
                             overflow: 'hidden',
+                            textAlign: col.id === 'translation' ? 'center' : undefined,
                           }}
                         >
                           {col.id === 'title' && inTrash ? (

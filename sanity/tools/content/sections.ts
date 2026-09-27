@@ -30,6 +30,7 @@ export type ColumnId =
   | 'role'
   | 'roles'
   | 'thumbnail'
+  | 'translation'
 
 export type TableColumn = {
   id: ColumnId
@@ -71,12 +72,20 @@ export type ContentGroup = {
 
 export type ContentNavItem = ContentLeaf | ContentGroup
 
+const translationColumn: TableColumn = {
+  id: 'translation',
+  header: '',
+  width: '64px',
+  sortable: true,
+}
+
 const portfolioColumns: TableColumn[] = [
   {id: 'thumbnail', header: '', width: '56px'},
   {id: 'title', header: 'Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
   {id: 'publishedAt', header: 'Original Release', width: '180px', sortable: true},
   {id: 'categories', header: 'Categories', minWidth: '220px'},
+  translationColumn,
 ]
 
 const blogColumns: TableColumn[] = [
@@ -86,6 +95,7 @@ const blogColumns: TableColumn[] = [
   {id: 'publishedAt', header: 'Published', width: '140px', sortable: true},
   {id: 'categories', header: 'Categories', width: '160px'},
   {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
+  translationColumn,
 ]
 
 const pageColumns: TableColumn[] = [
@@ -93,12 +103,14 @@ const pageColumns: TableColumn[] = [
   {id: 'title', header: 'Page Title', minWidth: '240px', sortable: true},
   {id: 'status', header: 'Status', width: '110px', sortable: true},
   {id: 'metaDescription', header: 'Meta Description', minWidth: '220px'},
+  translationColumn,
 ]
 
 const taxonomyTitleColumns: TableColumn[] = [
   {id: 'title', header: 'Title', minWidth: '200px', sortable: true},
   {id: 'slug', header: 'Slug', width: '160px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
+  translationColumn,
 ]
 
 const industryColumns: TableColumn[] = [
@@ -106,6 +118,7 @@ const industryColumns: TableColumn[] = [
   {id: 'parent', header: 'Parent', width: '140px', sortable: true},
   {id: 'slug', header: 'Slug', width: '160px', sortable: true},
   {id: 'usage', header: 'Used by', width: '90px', sortable: true},
+  translationColumn,
 ]
 
 const namedTaxonomyColumns: TableColumn[] = [
@@ -256,8 +269,10 @@ export const NAV_ITEMS: ContentNavItem[] = [
     documentType: 'siteSettings',
     icon: CogIcon,
     canCreate: false,
-    singletonId: 'siteSettings',
-    columns: [{id: 'title', header: 'Title', sortable: true}],
+    columns: [
+      {id: 'title', header: 'Title', minWidth: '240px', sortable: true},
+      translationColumn,
+    ],
     defaultSort: {field: 'title', direction: 'asc'},
     searchFields: ['title'],
   },

@@ -15,6 +15,30 @@ export function joinParts(...parts: Array<string | null | undefined>): string {
     .join(' ')
 }
 
+/**
+ * Yellow brand/product line over the white campaign line.
+ * Same split as the work-internal list: with a campaign, the top line is the
+ * deduped brand + product; otherwise the top line is the brand and the line
+ * under it is the product. Returns null when the two lines would repeat
+ * (brand-only stays a single title).
+ */
+export function documentTitleLines(
+  parts:
+    | Pick<DisplayTitleParts, 'brandName' | 'productName' | 'campaignTitle'>
+    | null
+    | undefined,
+): {brandLine: string; campaignLine: string} | null {
+  if (!parts) return null
+  const brand = trimPart(parts.brandName)
+  if (!brand) return null
+  const product = trimPart(parts.productName)
+  const campaign = trimPart(parts.campaignTitle)
+  const brandLine = campaign ? dedupedBrandProduct(brand, product) : brand
+  const campaignLine = campaign || product || brand
+  if (!brandLine || brandLine.toLowerCase() === campaignLine.toLowerCase()) return null
+  return {brandLine, campaignLine}
+}
+
 export function dedupedBrandProduct(
   brand: string | null | undefined,
   product: string | null | undefined,

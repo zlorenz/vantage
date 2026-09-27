@@ -57,7 +57,8 @@ import {
   type Path,
   type SanityDocumentLike,
 } from 'sanity'
-import {compileDisplayTitles, trimPart} from '@display-titles'
+import {compileDisplayTitles, documentTitleLines, trimPart} from '@display-titles'
+import {SplitDocumentTitle} from '../../components/display-titles/SplitDocumentTitle'
 import {
   formatReferrerBlockList,
   hardDeleteDocuments,
@@ -105,6 +106,14 @@ function resolveChromeTitle(
   const name = (doc as {name?: string}).name
   if (typeof name === 'string' && name.trim()) return name
   return fallback || 'Untitled'
+}
+
+function resolveChromeLines(
+  doc: SanityDocumentLike | null | undefined,
+): {brandLine: string; campaignLine: string} | null {
+  if (!doc || doc._type !== 'portfolioEntry') return null
+  const parts = (doc as {displayTitleParts?: DisplayTitlePartsDoc}).displayTitleParts
+  return documentTitleLines(parts)
 }
 
 
@@ -319,11 +328,14 @@ export function DocumentEditor({
   // Fall back to nav title, then schema type title (singletons like siteSettings
   // have neither a title field nor a list-row cache on deep link / reload).
   const schemaTypeTitle = schema.get(documentType)?.title
-  const headerTitle = resolveChromeTitle(
+  const chromeDoc =
     (editState.draft as SanityDocumentLike | null) ??
-      (editState.published as SanityDocumentLike | null),
+    (editState.published as SanityDocumentLike | null)
+  const headerTitle = resolveChromeTitle(
+    chromeDoc,
     title || (typeof schemaTypeTitle === 'string' ? schemaTypeTitle : undefined),
   )
+  const headerLines = resolveChromeLines(chromeDoc)
 
   const canPublish = Boolean(ops.publish?.disabled) === false && Boolean(editState.draft)
   // Only when published exists to revert to — draft-only Discard would delete the doc.
@@ -663,9 +675,18 @@ export function DocumentEditor({
               onClick={onBack}
             />
             <Box style={{minWidth: 0}}>
-              <Text size={2} weight="semibold" textOverflow="ellipsis">
-                {headerTitle}
-              </Text>
+              {headerLines ? (
+                <SplitDocumentTitle
+                  brand={headerLines.brandLine}
+                  campaign={headerLines.campaignLine}
+                  size={2}
+                  ellipsis
+                />
+              ) : (
+                <Text size={2} weight="semibold" textOverflow="ellipsis">
+                  {headerTitle}
+                </Text>
+              )}
             </Box>
           </Flex>
 
