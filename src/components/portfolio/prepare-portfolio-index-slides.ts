@@ -26,6 +26,8 @@ const FEATURED_APPEND_EXCLUDE_HEAD = 12;
  */
 const WORK_MOBILE_POSTER = posterSize(CAROUSEL_RATIOS.workMobile);
 const WORK_DESKTOP_POSTER = posterSize(CAROUSEL_RATIOS.workDesktop);
+/** Grid-mode posters — 16:9, independent of the tall carousel card bake. */
+const WORK_GRID_POSTER = {width: 1280, height: 720} as const;
 
 /**
  * Desktop bleed-track bake — distinct from workDesktop poster (1024×1280).
@@ -51,6 +53,8 @@ export type PortfolioIndexSlide = {
   posterUrl: string;
   /** Desktop (≥576px) — 512:640 (4:5) Sanity crop matching the /work card. */
   posterUrlDesktop: string;
+  /** Grid mode — 16:9 Sanity crop. Not used by the carousel cards. */
+  posterUrlWide: string;
   /**
    * Desktop bleed-track URL — viewport-scale crop of featuredImage, pre-blurred
    * at the CDN. Only consumed inside the ±BLEED_WINDOW_RADIUS bleed window.
@@ -122,6 +126,12 @@ export function preparePortfolioIndexSlideFromEntry(
     .fit('crop')
     .url();
 
+  const posterUrlWide = urlForImage(entry.featuredImage)
+    .width(WORK_GRID_POSTER.width)
+    .height(WORK_GRID_POSTER.height)
+    .fit('crop')
+    .url();
+
   const bleedUrlDesktop = urlForImage(entry.featuredImage)
     .width(WORK_DESKTOP_BLEED.width)
     .height(WORK_DESKTOP_BLEED.height)
@@ -146,6 +156,7 @@ export function preparePortfolioIndexSlideFromEntry(
     hrefSlug,
     posterUrl,
     posterUrlDesktop,
+    posterUrlWide,
     bleedUrlDesktop,
     objectPosition: objectPositionFromHotspot(entry.featuredImage.hotspot),
     brandLine,

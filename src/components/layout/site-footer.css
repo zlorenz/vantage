@@ -16,6 +16,11 @@ body:has(.vp-work-index) .vp-site-footer {
   display: none;
 }
 
+/* Work grid mode scrolls like a normal page, so the footer returns. */
+body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
+  display: flex;
+}
+
 .vp-site-footer {
   --vp-footer-height: 6.25rem; /* 100px */
 

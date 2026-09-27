@@ -21,6 +21,9 @@
     pointer-events: none;
   }
 
+  .vp-portfolio-index-desktop-filters__leading,
+  .vp-portfolio-index-desktop-filters__view,
+  .vp-portfolio-index-desktop-filters__view-btn,
   .vp-portfolio-index-desktop-filters__search,
   .vp-portfolio-index-desktop-filters__triggers,
   .vp-portfolio-index-desktop-filters__trigger-wrap,
@@ -29,6 +32,13 @@
   .vp-portfolio-index-desktop-filters__all,
   .vp-portfolio-index-desktop-filters__term {
     pointer-events: auto;
+  }
+
+  .vp-portfolio-index-desktop-filters__leading {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    min-width: 0;
   }
 
   /*
@@ -288,5 +298,100 @@
     mix-blend-mode: luminosity;
     pointer-events: none;
     user-select: none;
+  }
+}
+
+/*
+ * Carousel/grid switch — shared by the desktop filter row and the mobile
+ * chrome. Size comes from --vp-index-view-toggle-size (row height on
+ * desktop, chip size on phones).
+ */
+.vp-portfolio-index-desktop-filters__view {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: var(--vp-index-view-toggle-size, 2.5rem);
+  border: var(--vp-struct-line);
+  pointer-events: auto;
+}
+
+.vp-portfolio-index-desktop-filters__view::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--vp-index-view-toggle-size, 2.5rem);
+  background: var(--vp-home-carousel-brand-accent, #fdb913);
+  transform: translateX(0);
+  transition: transform 0.28s ease;
+  pointer-events: none;
+}
+
+.vp-portfolio-index-desktop-filters__view.is-grid::before {
+  transform: translateX(100%);
+}
+
+.vp-portfolio-index-desktop-filters__view-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--vp-index-view-toggle-size, 2.5rem);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  opacity: 0.5;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
+  transition:
+    color 0.12s ease,
+    opacity 0.2s ease;
+}
+
+.vp-portfolio-index-desktop-filters__view-btn + .vp-portfolio-index-desktop-filters__view-btn {
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+.vp-portfolio-index-desktop-filters__view-btn:hover,
+.vp-portfolio-index-desktop-filters__view-btn:focus-visible {
+  opacity: 0.85;
+  outline: none;
+}
+
+.vp-portfolio-index-desktop-filters__view-btn.is-selected {
+  color: var(--vp-black, #000);
+  opacity: 1;
+  transition:
+    color 0.12s ease 0.16s,
+    opacity 0.15s ease;
+}
+
+.vp-portfolio-index-desktop-filters__view-btn.is-selected:hover,
+.vp-portfolio-index-desktop-filters__view-btn.is-selected:focus-visible {
+  opacity: 1;
+}
+
+.vp-portfolio-index-desktop-filters__view-icon {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-portfolio-index-desktop-filters__view::before,
+  .vp-portfolio-index-desktop-filters__view-btn {
+    transition: none;
   }
 }

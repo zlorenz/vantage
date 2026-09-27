@@ -490,6 +490,19 @@
     overscroll-behavior: none;
   }
 
+  /* Grid mode scrolls the document. Body stays overflow:visible so the
+   * filter row can stick; overflow-x:hidden on body would block that. */
+  html:has(.vp-portfolio-index.is-grid) {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  body:has(.vp-portfolio-index.is-grid) {
+    overflow: visible;
+    overscroll-behavior-y: auto;
+  }
+
   /* Outline text effect — hero and page titles.
    *
    * Default: -webkit-text-stroke (hollow outline). Works for Latin

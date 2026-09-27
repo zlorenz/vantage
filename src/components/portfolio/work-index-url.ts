@@ -8,12 +8,19 @@
  * `q` is a committed search string (Enter / →). Taxonomy filters and search are
  * mutually exclusive at the UI layer; this module still accepts both so URL
  * restore stays a single pipeline.
+ *
+ * `view=grid` keeps the desktop grid across reload. Carousel is the default
+ * and omits the param so a fresh /work URL stays clean.
  */
 
 import type {PublicFilters} from './PortfolioGrid';
 
 export const WORK_INDEX_ITEM_PARAM = 'item';
 export const WORK_INDEX_SEARCH_PARAM = 'q';
+export const WORK_INDEX_VIEW_PARAM = 'view';
+export const WORK_INDEX_GRID_VIEW = 'grid';
+
+export type WorkIndexBrowseMode = 'carousel' | 'grid';
 
 export type WorkIndexFilterSlide = {
   hrefSlug: string;
@@ -34,6 +41,13 @@ export function readWorkIndexItem(params: URLSearchParams): string {
 
 export function readWorkIndexSearch(params: URLSearchParams): string {
   return params.get(WORK_INDEX_SEARCH_PARAM)?.trim() || '';
+}
+
+/** Anything other than `view=grid` is the carousel. */
+export function readWorkIndexView(params: URLSearchParams): WorkIndexBrowseMode {
+  return params.get(WORK_INDEX_VIEW_PARAM) === WORK_INDEX_GRID_VIEW
+    ? 'grid'
+    : 'carousel';
 }
 
 function slideMatchesPublicFilters(
@@ -98,6 +112,14 @@ export function workIndexItemQuery(
 ): Record<string, string> {
   if (index <= 0 || !slug) return {};
   return {[WORK_INDEX_ITEM_PARAM]: slug};
+}
+
+/** Omit carousel so a fresh /work URL stays clean. */
+export function workIndexViewQuery(
+  mode: WorkIndexBrowseMode,
+): Record<string, string> {
+  if (mode !== 'grid') return {};
+  return {[WORK_INDEX_VIEW_PARAM]: WORK_INDEX_GRID_VIEW};
 }
 
 /** Omit empty search so a fresh /work URL stays clean. */

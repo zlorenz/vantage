@@ -24,6 +24,8 @@ import './portfolio-index-desktop-filter-row.css';
 
 type TaxonomyKey = keyof PublicFilters;
 
+export type PortfolioIndexBrowseMode = 'carousel' | 'grid';
+
 interface PortfolioIndexDesktopFilterRowProps {
   locale: Locale;
   phrases?: Record<string, string>;
@@ -40,6 +42,8 @@ interface PortfolioIndexDesktopFilterRowProps {
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
+  browseMode: PortfolioIndexBrowseMode;
+  onBrowseModeChange: (mode: PortfolioIndexBrowseMode) => void;
 }
 
 const TAXONOMY_ORDER: TaxonomyKey[] = ['format', 'industry', 'market'];
@@ -60,6 +64,108 @@ function stripOptionChrome(label: string): string {
 /** Figma panel counts: bare n → "(n)" */
 function formatPanelCount(n: number): string {
   return `(${n})`;
+}
+
+function CarouselViewIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index-desktop-filters__view-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect
+        x="2.25"
+        y="7"
+        width="4.75"
+        height="10"
+        rx="1.1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="8.75"
+        y="4.25"
+        width="6.5"
+        height="15.5"
+        rx="1.25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="17"
+        y="7"
+        width="4.75"
+        height="10"
+        rx="1.1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function GridViewIcon() {
+  return (
+    <svg
+      className="vp-portfolio-index-desktop-filters__view-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="3.25" y="3.25" width="7" height="7" rx="1.4" fill="currentColor" />
+      <rect x="13.75" y="3.25" width="7" height="7" rx="1.4" fill="currentColor" />
+      <rect x="3.25" y="13.75" width="7" height="7" rx="1.4" fill="currentColor" />
+      <rect x="13.75" y="13.75" width="7" height="7" rx="1.4" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function PortfolioIndexViewToggle({
+  browseMode,
+  onBrowseModeChange,
+}: {
+  browseMode: PortfolioIndexBrowseMode;
+  onBrowseModeChange: (mode: PortfolioIndexBrowseMode) => void;
+}) {
+  const t = useTranslations('Filters');
+  return (
+    <div
+      className={`vp-portfolio-index-desktop-filters__view${
+        browseMode === 'grid' ? ' is-grid' : ''
+      }`}
+      role="group"
+      aria-label={t('browseModeAria')}
+    >
+      <button
+        type="button"
+        className={`vp-portfolio-index-desktop-filters__view-btn${
+          browseMode === 'carousel' ? ' is-selected' : ''
+        }`}
+        aria-pressed={browseMode === 'carousel'}
+        aria-label={t('viewCarouselAria')}
+        title={t('viewCarouselTitle')}
+        onClick={() => onBrowseModeChange('carousel')}
+      >
+        <CarouselViewIcon />
+      </button>
+      <button
+        type="button"
+        className={`vp-portfolio-index-desktop-filters__view-btn${
+          browseMode === 'grid' ? ' is-selected' : ''
+        }`}
+        aria-pressed={browseMode === 'grid'}
+        aria-label={t('viewGridAria')}
+        title={t('viewGridTitle')}
+        onClick={() => onBrowseModeChange('grid')}
+      >
+        <GridViewIcon />
+      </button>
+    </div>
+  );
 }
 
 function SearchGlyph() {
@@ -107,6 +213,8 @@ export function PortfolioIndexDesktopFilterRow({
   videoFormats,
   industries,
   markets,
+  browseMode,
+  onBrowseModeChange,
 }: PortfolioIndexDesktopFilterRowProps) {
   const t = useTranslations('Filters');
   const tSearch = useTranslations('Search');
@@ -203,6 +311,11 @@ export function PortfolioIndexDesktopFilterRow({
       className="vp-portfolio-index-desktop-filters"
       data-desktop-filter-row
     >
+      <div className="vp-portfolio-index-desktop-filters__leading">
+        <PortfolioIndexViewToggle
+          browseMode={browseMode}
+          onBrowseModeChange={onBrowseModeChange}
+        />
       <form
         className="vp-portfolio-index-desktop-filters__search"
         role="search"
@@ -232,6 +345,7 @@ export function PortfolioIndexDesktopFilterRow({
           </p>
         ) : null}
       </form>
+      </div>
 
       <div className="vp-portfolio-index-desktop-filters__triggers">
         {TAXONOMY_ORDER.map((key) => {

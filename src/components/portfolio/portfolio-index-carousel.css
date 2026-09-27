@@ -35,6 +35,8 @@
   --vp-index-active-filters-height: 0px;
   /* Desktop default; mobile override below. Tuned to Figma 640/1080 (~0.59). */
   --vp-index-height-scale: 0.73;
+  /* Square view-switch cell. Phones override to the circular chip size. */
+  --vp-index-view-toggle-size: 2.5rem;
 
   position: relative;
   display: flex;
@@ -77,6 +79,7 @@
      * (--vp-candidate-chrome-chip-size) + py-24 = 5.75rem.
      */
     --vp-index-top-row-height: 5.75rem;
+    --vp-index-view-toggle-size: var(--vp-candidate-chrome-chip-size, 2.75rem);
     /* Decision 6: omit active-filter pills on mobile for now. */
     --vp-index-active-filters-height: 0px;
     justify-content: flex-end;
@@ -167,6 +170,7 @@
     pointer-events: none;
   }
 
+  .vp-portfolio-index__mobile-chrome-end,
   .vp-portfolio-index__mobile-chrome-search-wrap,
   .vp-portfolio-index__mobile-chrome-search,
   .vp-portfolio-index__mobile-chrome-filter-wrap,
@@ -174,13 +178,29 @@
     pointer-events: auto;
   }
 
+  .vp-portfolio-index__mobile-chrome-end {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-left: 0.75rem;
+    pointer-events: none;
+  }
+
   .vp-portfolio-index__mobile-chrome-search-wrap {
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.65rem;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     min-width: 0;
+  }
+
+  .vp-portfolio-index__mobile-chrome-search-wrap.is-open {
+    flex: 1 1 auto;
   }
 
   /*
@@ -228,7 +248,7 @@
     flex-shrink: 0;
   }
 
-  /* Collapsed → expands to the right of the search chip. */
+  /* Collapsed → expands to the left of the search chip. */
   .vp-portfolio-index__mobile-chrome-search-field {
     flex: 0 1 0;
     min-width: 0;
@@ -245,7 +265,7 @@
   .vp-portfolio-index__mobile-chrome-search-wrap.is-open
     .vp-portfolio-index__mobile-chrome-search-field {
     flex: 1 1 auto;
-    max-width: 100%; /* fill wrap — right of chip, left of FILTER */
+    max-width: 100%;
     opacity: 1;
     pointer-events: auto;
   }
@@ -286,10 +306,10 @@
 
   .vp-portfolio-index__mobile-chrome-search-no-results {
     position: absolute;
-    left: 3.4rem; /* past 2.75rem chip + gap */
+    left: 0;
     top: calc(100% + 0.35rem);
     margin: 0;
-    max-width: min(18rem, calc(100% - 3.4rem));
+    max-width: min(18rem, 100%);
     color: var(--vp-orange, #f04e23);
     font-family: var(--vp-font-sans);
     font-size: 0.75rem;
@@ -304,11 +324,16 @@
 
 }
 
-/* Desktop: filter→card = Figma 16px via stage gap (counter removed; was
- * previously absolutized out of flow so this gap already owned the spacing). */
+/* Desktop: filter→card = Figma 16px via stage gap, plus extra room so the
+ * view-toggle box does not sit on the dashed card frame (that frame paints
+ * ~15/640 of the band above the cards). */
 @media (min-width: 576px) {
   .vp-portfolio-index__stage {
     gap: 1rem; /* 16px — filter row → carousel band (card top) */
+  }
+
+  .vp-portfolio-index__carousel-band {
+    margin-top: 1rem;
   }
 }
 
@@ -1323,4 +1348,322 @@
     transition: none;
   }
 
+}
+
+/*
+ * Grid mode — ordinary vertical page. Carousel chrome stays mounted (so
+ * Embla can be re-measured on the way back) but is taken out of layout.
+ * Posters are plain 16:9 frames: no bracket corners, no hairline rules.
+ */
+.vp-portfolio-index.is-grid {
+  height: auto;
+  min-height: calc(
+    100svh - var(--vp-header-height, 4.5rem) - env(safe-area-inset-bottom, 0px)
+  );
+  justify-content: flex-start;
+}
+
+.vp-portfolio-index.is-grid .vp-portfolio-index__bleed,
+.vp-portfolio-index.is-grid .vp-portfolio-index__carousel-band,
+.vp-portfolio-index.is-grid .vp-portfolio-index__bottom-bar,
+.vp-portfolio-index.is-grid .vp-portfolio-index__tick-counter {
+  display: none;
+}
+
+@media (min-width: 576px) {
+  /*
+   * Carousel centers the whole stage in the viewport. Grid used to start
+   * at the top, so the toolbar jumped up under the nav. This padding is
+   * the same free space the carousel leaves above the toolbar.
+   * Two stage gaps (filter→cards, cards→bottom bar) plus the band's extra
+   * top margin. A third gap appears when the active-filter row is in the stage.
+   */
+  .vp-portfolio-index.is-grid {
+    --vp-index-carousel-stage-gaps: 3rem;
+    padding-top: max(
+      0px,
+      calc(
+        (
+            100svh - var(--vp-header-height, 4.5rem) -
+              env(safe-area-inset-bottom, 0px) - max(1.25rem, 5vh) -
+              var(--vp-index-top-row-height, 2.5rem) -
+              var(--vp-index-active-filters-height, 0px) -
+              var(--vp-index-bottom-bar-height, 5rem) -
+              var(--vp-index-carousel-stage-gaps) -
+              var(--vp-index-height-scale, 0.73) *
+              (
+                100svh - var(--vp-header-height, 4.5rem) -
+                  var(--vp-index-top-row-height, 2.5rem) -
+                  var(--vp-index-active-filters-height, 0px) -
+                  var(--vp-index-bottom-bar-height, 5rem) -
+                  env(safe-area-inset-bottom, 0px)
+              )
+          ) / 2
+      )
+    );
+  }
+
+  .vp-portfolio-index.is-grid.has-active-filters {
+    --vp-index-carousel-stage-gaps: 4rem;
+  }
+}
+
+/*
+ * Phone carousel is bottom-anchored, so all leftover space sits above the
+ * toolbar (not split, unlike desktop). Grid mode uses that same offset so
+ * the button row does not jump.
+ * Stage is chrome + card band + bottom bar, with two 0.75rem gaps.
+ */
+@media (max-width: 575px) {
+  .vp-portfolio-index.is-grid {
+    --vp-index-carousel-stage-gaps: 1.5rem;
+    padding-top: max(
+      0px,
+      calc(
+        100svh - var(--vp-header-height, 4.5rem) -
+          env(safe-area-inset-bottom, 0px) -
+          (max(1.25rem, 5vh) + 0.55rem) -
+          var(--vp-index-top-row-height, 5.75rem) -
+          var(--vp-index-bottom-bar-height, 5rem) -
+          var(--vp-index-carousel-stage-gaps) -
+          var(--vp-index-height-scale, 0.84) *
+          (
+            100svh - var(--vp-header-height, 4.5rem) -
+              var(--vp-index-top-row-height, 5.75rem) -
+              var(--vp-index-bottom-bar-height, 5rem) -
+              env(safe-area-inset-bottom, 0px)
+          )
+      )
+    );
+  }
+
+  .vp-portfolio-index__grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: var(--vp-overlay-mobile-pad-inline, 16px);
+  }
+}
+
+.vp-portfolio-index__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.75rem var(--spacing-vp-gutter, 1.875rem) 3.5rem;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .vp-portfolio-index__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .vp-portfolio-index__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Rare ultrawide viewports (3440-class). 2560-wide screens stay at 3. */
+@media (min-width: 2800px) {
+  .vp-portfolio-index__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.vp-portfolio-index__grid-link {
+  position: relative;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.vp-portfolio-index__grid-link:hover,
+.vp-portfolio-index__grid-link:focus-visible {
+  z-index: 1;
+}
+
+/* Brackets sit just outside the poster, the way the carousel frame does. */
+.vp-portfolio-index__grid-hover {
+  position: absolute;
+  inset: -8px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.vp-portfolio-index__grid-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  border-color: #d9d9d9;
+  border-style: solid;
+  border-width: 0;
+  opacity: 0;
+  transition: opacity var(--vp-transition);
+}
+
+.vp-portfolio-index__grid-corner--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-portfolio-index__grid-corner--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.vp-portfolio-index__grid-corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.vp-portfolio-index__grid-corner--br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.vp-portfolio-index__grid-plus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.72);
+  transition:
+    opacity var(--vp-transition),
+    transform var(--vp-transition);
+}
+
+.vp-portfolio-index__grid-plus line {
+  stroke: #fff;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vp-portfolio-index__grid-link:hover .vp-portfolio-index__grid-corner,
+  .vp-portfolio-index__grid-link:focus-visible .vp-portfolio-index__grid-corner,
+  .vp-portfolio-index__grid-link:hover .vp-portfolio-index__grid-plus,
+  .vp-portfolio-index__grid-link:focus-visible .vp-portfolio-index__grid-plus {
+    opacity: 1;
+  }
+
+  .vp-portfolio-index__grid-link:hover .vp-portfolio-index__grid-plus,
+  .vp-portfolio-index__grid-link:focus-visible .vp-portfolio-index__grid-plus {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-portfolio-index__grid-corner,
+  .vp-portfolio-index__grid-plus {
+    transition: none;
+  }
+}
+
+.vp-portfolio-index__grid-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.vp-portfolio-index__grid-poster {
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.vp-portfolio-index__grid-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(var(--vp-black-rgb), 0.78) 0%,
+    rgba(var(--vp-black-rgb), 0.28) 46%,
+    transparent 72%
+  );
+}
+
+.vp-portfolio-index__grid-copy {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.7rem 0.85rem 0.8rem;
+  pointer-events: none;
+}
+
+.vp-portfolio-index__grid-brand,
+.vp-portfolio-index__grid-campaign {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.vp-portfolio-index__grid-brand {
+  color: var(--vp-home-carousel-brand-accent, #fdb913);
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vp-portfolio-index__grid-brand::before {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: var(--vp-home-carousel-brand-accent, #fdb913);
+  vertical-align: 0.08em;
+}
+
+.vp-portfolio-index__grid-campaign {
+  color: #fff;
+  font-size: 0.9375rem;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+@media (min-width: 1200px) {
+  .vp-portfolio-index__grid-campaign {
+    font-size: 1.0625rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .vp-portfolio-index__grid-brand {
+    font-size: 0.75rem;
+  }
+
+  .vp-portfolio-index__grid-campaign {
+    font-size: 1.25rem;
+  }
 }

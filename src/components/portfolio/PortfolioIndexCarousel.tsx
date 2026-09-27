@@ -10,6 +10,7 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {flushSync} from 'react-dom';
+import Image from 'next/image';
 import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -24,7 +25,11 @@ import {
   type PublicFilters,
 } from './PortfolioGrid';
 import {PortfolioIndexActiveFilters} from './PortfolioIndexActiveFilters';
-import {PortfolioIndexDesktopFilterRow} from './PortfolioIndexDesktopFilterRow';
+import {
+  PortfolioIndexDesktopFilterRow,
+  PortfolioIndexViewToggle,
+  type PortfolioIndexBrowseMode,
+} from './PortfolioIndexDesktopFilterRow';
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
 import {PortfolioIndexTickCounter} from './PortfolioIndexTickCounter';
@@ -34,9 +39,11 @@ import {
   filterPortfolioIndexSlides,
   readWorkIndexItem,
   readWorkIndexSearch,
+  readWorkIndexView,
   resolveWorkIndexStartIndex,
   workIndexItemQuery,
   workIndexSearchQuery,
+  workIndexViewQuery,
 } from './work-index-url';
 import './portfolio-index-carousel.css';
 
@@ -282,6 +289,26 @@ function PortfolioIndexActiveFrame() {
   );
 }
 
+/** Hover chrome for a grid card: corner brackets + the 40px center plus (Figma 78:30490). */
+function PortfolioIndexGridHover() {
+  return (
+    <div className="vp-portfolio-index__grid-hover" aria-hidden="true">
+      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--tl" />
+      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--tr" />
+      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--bl" />
+      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--br" />
+      <svg
+        className="vp-portfolio-index__grid-plus"
+        viewBox="0 0 40 40"
+        focusable="false"
+      >
+        <line x1="0" y1="20" x2="40" y2="20" />
+        <line x1="20" y1="0" x2="20" y2="40" />
+      </svg>
+    </div>
+  );
+}
+
 /** Full-bleed dashed guides at the bracket band’s top/bottom (Figma 78:30494/96). */
 function PortfolioIndexBandGuides() {
   return (
@@ -313,7 +340,13 @@ export function PortfolioIndexCarousel({
   const [draftSearch, setDraftSearch] = useState('');
   const [searchNoResultsQuery, setSearchNoResultsQuery] = useState('');
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [browseMode, setBrowseModeState] =
+    useState<PortfolioIndexBrowseMode>(() => readWorkIndexView(searchParams));
+  const gridActive = browseMode === 'grid';
+  const wasGridRef = useRef(false);
+  const activeIndexRef = useRef(0);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+
   const [activeIndex, setActiveIndex] = useState(() =>
     resolveWorkIndexStartIndex(
       slides,
@@ -322,6 +355,7 @@ export function PortfolioIndexCarousel({
       readWorkIndexSearch(searchParams),
     ),
   );
+  activeIndexRef.current = activeIndex;
   const restoredStartIndexRef = useRef(activeIndex);
   const gestureAccumRef = useRef(0);
   const gestureFiredRef = useRef(false);
@@ -336,6 +370,10 @@ export function PortfolioIndexCarousel({
   const filteredSlides = useMemo(
     () => filterPortfolioIndexSlides(slides, publicFilters, committedSearch),
     [slides, publicFilters, committedSearch],
+  );
+  const gridSlides = useMemo(
+    () => filteredSlides.filter((slide) => !slide.isAppendedFeatured),
+    [filteredSlides],
   );
   const librarySlides = useMemo(
     () => slides.filter((slide) => !slide.isAppendedFeatured),
@@ -362,9 +400,10 @@ export function PortfolioIndexCarousel({
       replacePublicFiltersUrl(filters, EMPTY_PUBLIC_PRESETS, {
         ...workIndexSearchQuery(search),
         ...workIndexItemQuery(itemSlug, index),
+        ...workIndexViewQuery(browseMode),
       });
     },
-    [],
+    [browseMode],
   );
 
   useEffect(() => {
@@ -379,6 +418,7 @@ export function PortfolioIndexCarousel({
     committedSearch,
     activeItemSlugForUrl,
     activeIndex,
+    browseMode,
     writeWorkIndexUrl,
   ]);
 
@@ -387,6 +427,7 @@ export function PortfolioIndexCarousel({
       const params = new URLSearchParams(window.location.search);
       setPublicFilters(readPublicFilters(params));
       setCommittedSearch(readWorkIndexSearch(params));
+      setBrowseModeState(readWorkIndexView(params));
     }
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
@@ -511,8 +552,36 @@ export function PortfolioIndexCarousel({
     };
   }, [emblaApi, filterSignature, filteredSlides, slideCount]);
 
+  /**
+   * Grid mode hides the strip (display:none) so Embla's measurements go stale.
+   * Re-measure only when coming back, and jump the page to the top so the
+   * locked stage is not left mid-scroll.
+   */
   useEffect(() => {
+    const wasGrid = wasGridRef.current;
+    wasGridRef.current = gridActive;
+    if (!wasGrid || gridActive) return;
+
+    window.scrollTo(0, 0);
     if (!emblaApi) return;
+
+    const restore = () => {
+      emblaApi.off('reInit', restore);
+      emblaApi.scrollTo(activeIndexRef.current, true);
+      syncBleedTransform();
+    };
+    const frame = window.requestAnimationFrame(() => {
+      emblaApi.on('reInit', restore);
+      emblaApi.reInit();
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      emblaApi.off('reInit', restore);
+    };
+  }, [gridActive, emblaApi, syncBleedTransform]);
+
+  useEffect(() => {
+    if (!emblaApi || gridActive) return;
 
     const viewport = emblaApi.rootNode();
     const wheelGestures = WheelGestures({
@@ -559,10 +628,10 @@ export function PortfolioIndexCarousel({
       unobserve();
       wheelGestures.disconnect();
     };
-  }, [emblaApi]);
+  }, [emblaApi, gridActive]);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    if (!emblaApi || gridActive) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (filterSheetOpen || searchOpen) return;
@@ -592,7 +661,7 @@ export function PortfolioIndexCarousel({
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [emblaApi, filterSheetOpen, searchOpen]);
+  }, [emblaApi, filterSheetOpen, searchOpen, gridActive]);
 
   const openSearch = useCallback(() => {
     setFilterSheetOpen(false);
@@ -743,59 +812,64 @@ export function PortfolioIndexCarousel({
    */
   const mobileTopChrome = (
     <div className="vp-portfolio-index__mobile-chrome" data-mobile-chrome>
-      <div
-        className={`vp-portfolio-index__mobile-chrome-search-wrap${
-          searchOpen ? ' is-open' : ''
-        }${hasActiveSearch ? ' is-active' : ''}`}
-      >
-        <button
-          type="button"
-          className={`vp-portfolio-index__mobile-chrome-search${
-            hasActiveSearch || searchOpen ? ' is-active' : ''
-          }`}
-          aria-label={tSearch('openAria')}
-          aria-expanded={searchOpen}
-          aria-pressed={hasActiveSearch}
-          onClick={openSearch}
+      <PortfolioIndexViewToggle
+        browseMode={browseMode}
+        onBrowseModeChange={setBrowseModeState}
+      />
+      <div className="vp-portfolio-index__mobile-chrome-end">
+        <div
+          className={`vp-portfolio-index__mobile-chrome-search-wrap${
+            searchOpen ? ' is-open' : ''
+          }${hasActiveSearch ? ' is-active' : ''}`}
         >
-          <MobileChromeSearchIcon />
-        </button>
-        <form
-          className="vp-portfolio-index__mobile-chrome-search-field"
-          role="search"
-          aria-hidden={!searchOpen}
-          onSubmit={(event) => {
-            event.preventDefault();
-            submitSearch();
-          }}
-        >
-          <input
-            ref={mobileSearchInputRef}
-            type="search"
-            className="vp-portfolio-index__mobile-chrome-search-input"
-            value={draftSearch}
-            tabIndex={searchOpen ? 0 : -1}
-            onChange={(event) => {
-              setDraftSearch(event.target.value);
-              if (searchNoResultsQuery) setSearchNoResultsQuery('');
+          <form
+            className="vp-portfolio-index__mobile-chrome-search-field"
+            role="search"
+            aria-hidden={!searchOpen}
+            onSubmit={(event) => {
+              event.preventDefault();
+              submitSearch();
             }}
-            placeholder={tSearch('placeholder')}
-            aria-label={tSearch('placeholder')}
-            autoComplete="off"
-            enterKeyHint="search"
-          />
-        </form>
-        {searchNoResultsQuery ? (
-          <p
-            className="vp-portfolio-index__mobile-chrome-search-no-results"
-            role="status"
-            aria-live="polite"
           >
-            {tSearch('noResults', {query: searchNoResultsQuery})}
-          </p>
-        ) : null}
-      </div>
-      <div className="vp-portfolio-index__mobile-chrome-filter-wrap">
+            <input
+              ref={mobileSearchInputRef}
+              type="search"
+              className="vp-portfolio-index__mobile-chrome-search-input"
+              value={draftSearch}
+              tabIndex={searchOpen ? 0 : -1}
+              onChange={(event) => {
+                setDraftSearch(event.target.value);
+                if (searchNoResultsQuery) setSearchNoResultsQuery('');
+              }}
+              placeholder={tSearch('placeholder')}
+              aria-label={tSearch('placeholder')}
+              autoComplete="off"
+              enterKeyHint="search"
+            />
+          </form>
+          <button
+            type="button"
+            className={`vp-portfolio-index__mobile-chrome-search${
+              hasActiveSearch || searchOpen ? ' is-active' : ''
+            }`}
+            aria-label={tSearch('openAria')}
+            aria-expanded={searchOpen}
+            aria-pressed={hasActiveSearch}
+            onClick={openSearch}
+          >
+            <MobileChromeSearchIcon />
+          </button>
+          {searchNoResultsQuery ? (
+            <p
+              className="vp-portfolio-index__mobile-chrome-search-no-results"
+              role="status"
+              aria-live="polite"
+            >
+              {tSearch('noResults', {query: searchNoResultsQuery})}
+            </p>
+          ) : null}
+        </div>
+        <div className="vp-portfolio-index__mobile-chrome-filter-wrap">
         <button
           type="button"
           className={`vp-portfolio-index__mobile-chrome-filter${
@@ -824,6 +898,7 @@ export function PortfolioIndexCarousel({
           industries={industries}
           markets={markets}
         />
+      </div>
       </div>
     </div>
   );
@@ -870,6 +945,7 @@ export function PortfolioIndexCarousel({
     'vp-portfolio-index',
     slideCount <= 3 ? 'is-sparse' : '',
     hasActiveChrome ? 'has-active-filters' : '',
+    gridActive ? 'is-grid' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -892,6 +968,8 @@ export function PortfolioIndexCarousel({
             videoFormats={videoFormats}
             industries={industries}
             markets={markets}
+            browseMode={browseMode}
+            onBrowseModeChange={setBrowseModeState}
           />
           {activeFiltersBar}
           <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
@@ -918,8 +996,65 @@ export function PortfolioIndexCarousel({
           videoFormats={videoFormats}
           industries={industries}
           markets={markets}
+          browseMode={browseMode}
+          onBrowseModeChange={setBrowseModeState}
         />
         {activeFiltersBar}
+        {gridActive ? (
+          <ul className="vp-portfolio-index__grid">
+            {gridSlides.map((slide) => {
+              const campaign =
+                slide.campaignLine && slide.campaignLine !== slide.brandLine
+                  ? slide.campaignLine
+                  : '';
+              const carouselIndex = filteredSlides.findIndex(
+                (entry) => entry.id === slide.id,
+              );
+              return (
+                <li key={slide.id} className="vp-portfolio-index__grid-item">
+                  <PortfolioEntryLink
+                    slug={slide.hrefSlug}
+                    className="vp-portfolio-index__grid-link"
+                    onClick={() => {
+                      writeWorkIndexUrl(
+                        publicFilters,
+                        committedSearch,
+                        slide.hrefSlug,
+                        carouselIndex < 0 ? 0 : carouselIndex,
+                      );
+                    }}
+                  >
+                    <div className="vp-portfolio-index__grid-media">
+                      <Image
+                        src={slide.posterUrlWide}
+                        alt=""
+                        fill
+                        sizes="(min-width: 2800px) 25vw, (min-width: 1200px) 33vw, (min-width: 768px) 50vw, 100vw"
+                        className="vp-portfolio-index__grid-poster"
+                        style={{objectPosition: slide.objectPosition}}
+                      />
+                      {slide.brandLine || campaign ? (
+                        <div className="vp-portfolio-index__grid-copy">
+                          {slide.brandLine ? (
+                            <p className="vp-portfolio-index__grid-brand">
+                              {slide.brandLine}
+                            </p>
+                          ) : null}
+                          {campaign ? (
+                            <p className="vp-portfolio-index__grid-campaign">
+                              {campaign}
+                            </p>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                    <PortfolioIndexGridHover />
+                  </PortfolioEntryLink>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
         {/*
          * Full-viewport bleed track behind the Embla viewport. Each slide is
          * 100vw (not card-width); transform is progress-proportional

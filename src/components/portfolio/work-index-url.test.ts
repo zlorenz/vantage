@@ -6,12 +6,15 @@ import assert from 'node:assert/strict';
 import {
   WORK_INDEX_ITEM_PARAM,
   WORK_INDEX_SEARCH_PARAM,
+  WORK_INDEX_VIEW_PARAM,
   filterPortfolioIndexSlides,
   readWorkIndexItem,
   readWorkIndexSearch,
+  readWorkIndexView,
   resolveWorkIndexStartIndex,
   workIndexItemQuery,
   workIndexSearchQuery,
+  workIndexViewQuery,
   type WorkIndexFilterSlide,
 } from './work-index-url';
 
@@ -62,6 +65,22 @@ function testItemQueryOmitsFirstSnap() {
     [WORK_INDEX_ITEM_PARAM]: 'campaign-one',
   });
   assert.deepEqual(workIndexItemQuery(undefined, 4), {});
+}
+
+function testViewQueryOmitsCarousel() {
+  assert.equal(readWorkIndexView(new URLSearchParams('')), 'carousel');
+  assert.equal(
+    readWorkIndexView(new URLSearchParams(`${WORK_INDEX_VIEW_PARAM}=grid`)),
+    'grid',
+  );
+  assert.equal(
+    readWorkIndexView(new URLSearchParams(`${WORK_INDEX_VIEW_PARAM}=carousel`)),
+    'carousel',
+  );
+  assert.deepEqual(workIndexViewQuery('carousel'), {});
+  assert.deepEqual(workIndexViewQuery('grid'), {
+    [WORK_INDEX_VIEW_PARAM]: 'grid',
+  });
 }
 
 function testSearchQueryOmitsEmpty() {
@@ -128,6 +147,7 @@ function testSearchMatchesHaystackAndDropsFeatured() {
 testReadWorkIndexItem();
 testReadWorkIndexSearch();
 testItemQueryOmitsFirstSnap();
+testViewQueryOmitsCarousel();
 testSearchQueryOmitsEmpty();
 testStartIndexFromSlug();
 testStartIndexHonorsFiltersAndPrefersLibraryCopy();
