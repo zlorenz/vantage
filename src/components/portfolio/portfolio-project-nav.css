@@ -290,6 +290,31 @@ a.vp-project-nav__explore:focus-visible {
   object-fit: cover;
 }
 
+/*
+ * Dual poster bake (@carousel-ratios): phone = workDesktop 4:5, wide = homeDesktop 16:9.
+ * Slot wrappers hide the whole Next/Image fill layer (img + absolute span).
+ * Switch matches /work index carousel (576px).
+ */
+.vp-project-nav__cover-slot {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.vp-project-nav__cover-slot--wide {
+  display: none;
+}
+
+@media (min-width: 576px) {
+  .vp-project-nav__cover-slot--phone {
+    display: none;
+  }
+
+  .vp-project-nav__cover-slot--wide {
+    display: block;
+  }
+}
+
 .vp-project-nav__cover-fallback {
   position: absolute;
   inset: 0;
@@ -446,7 +471,8 @@ a.vp-project-nav__explore:focus-visible {
     display: block;
     width: 100%;
     min-height: 18rem;
-    aspect-ratio: 1250 / 624;
+    /* @carousel-ratios homeDesktop — locks CSS to Sanity CDN 16:9 bake. */
+    aspect-ratio: 16 / 9;
   }
 
   .vp-project-nav__crosshair {
@@ -483,10 +509,18 @@ a.vp-project-nav__explore:focus-visible {
  */
 @media (max-width: 575.98px) {
   .vp-project-nav {
-    padding: var(
-        --vp-candidate-portfolio-case-mobile-inline-pad,
-        var(--vp-overlay-mobile-pad-inline, 16px)
-      );
+    /* Pad-top lives under .vp-case-credits-vap (flipped mark + air). */
+    padding-top: 0;
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-inline-pad,
+      var(--vp-overlay-mobile-pad-inline, 16px)
+    );
+    /* Section rule above carousel — redundant with credits list close. */
+    border-top: 0;
   }
 
   .vp-project-nav__tick {
@@ -502,8 +536,8 @@ a.vp-project-nav__explore:focus-visible {
   }
 
   /*
-   * Flatten left chrome so heading / chrome / viewport are siblings:
-   * NEXT PROJECT → poster → explore+arrows.
+   * Flatten left chrome so poster / explore are siblings of the widget:
+   * poster → explore+arrows (heading hidden on phone).
    */
   .vp-project-nav__left {
     display: contents;
@@ -511,23 +545,9 @@ a.vp-project-nav__explore:focus-visible {
     background: transparent;
   }
 
+  /* Phone: drop “NEXT PROJECT” — poster + explore/arrows only. */
   .vp-project-nav__heading {
-    order: 1;
-    padding: 2.5rem
-      var(
-        --vp-candidate-portfolio-case-mobile-inline-pad,
-        16px
-      )
-      1rem;
-  }
-
-  .vp-project-nav__label {
-    font-family: var(--font-vp-heading);
-    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
-    font-weight: 700;
-    line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
-    letter-spacing: 0;
-    text-transform: uppercase;
+    display: none;
   }
 
   /* Cut off / unused on phone — hide VAP pattern above explore. */
@@ -538,7 +558,7 @@ a.vp-project-nav__explore:focus-visible {
   /*
    * Poster stays in-flow for order/stacking, but is NOT a positioning
    * context — ticks stay absolute against `.vp-project-nav__widget` so
-   * brackets wrap label + poster + explore (not the thumbnail alone).
+   * brackets wrap poster + explore (not the thumbnail alone).
    */
   .vp-project-nav__poster {
     display: block;
@@ -565,34 +585,47 @@ a.vp-project-nav__explore:focus-visible {
     left: auto;
     right: auto;
     bottom: auto;
+    box-sizing: border-box;
     height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
-    border-top: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+    /* Bottom rule only on the bar — top lives on arrow cells (not Explore). */
+    border-top: 0;
+    border-bottom: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
   }
 
   .vp-project-nav__explore {
-    height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    box-sizing: border-box;
+    height: 100%;
     padding-inline: 1rem;
     font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
     line-height: 1.6;
   }
 
+  .vp-project-nav__arrows {
+    height: 100%;
+  }
+
   .vp-project-nav__arrow {
+    box-sizing: border-box;
     flex-basis: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
     width: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
-    height: var(--vp-candidate-portfolio-case-mobile-explore-height, 60px);
+    height: 100%;
     padding: 1rem;
+    border-top: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
+  }
+
+  /* Close the trailing cell (prev already has the mid divider). */
+  .vp-project-nav__arrow--next {
+    border-right: var(--vp-struct-line, 1px solid rgba(255, 255, 255, 0.15));
   }
 
   .vp-project-nav__card {
     /* Keep display:block + width:100% from ≤991 — do not collapse.
-     * QC: 4:5 (not 2:3) so the poster is not too tall on phone. */
+     * @carousel-ratios workDesktop (512:640) — Studio “Full Portfolio Cards
+     * (Desktop)” guide; CDN phone bake matches so hotspot isn’t re-cropped. */
     display: block;
     width: 100%;
     min-height: 0;
-    aspect-ratio: var(
-      --vp-candidate-portfolio-case-mobile-next-card-aspect,
-      4 / 5
-    );
+    aspect-ratio: 512 / 640;
   }
 
   .vp-project-nav__slide {
@@ -608,16 +641,24 @@ a.vp-project-nav__explore:focus-visible {
       2.5rem;
   }
 
+  /* Phone: brand only — drop format + divider (desktop meta row unchanged). */
+  .vp-project-nav__format,
+  .vp-project-nav__meta-rule {
+    display: none;
+  }
+
   .vp-project-nav__title {
     font-family: var(--font-vp-heading);
-    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
+    font-size: var(
+      --vp-candidate-portfolio-case-mobile-nav-title-size,
+      26px
+    );
     font-weight: 700;
     line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
     letter-spacing: 0;
   }
 
-  .vp-project-nav__brand,
-  .vp-project-nav__format {
+  .vp-project-nav__brand {
     font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
     letter-spacing: 0;
   }

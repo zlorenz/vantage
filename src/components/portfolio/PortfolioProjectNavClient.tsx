@@ -25,11 +25,25 @@ import {
   type PortfolioNavCard,
   type PortfolioNavSlideRef,
 } from '@/lib/portfolio-nav'
+import {
+  CAROUSEL_RATIOS,
+  objectPositionFromHotspot,
+  posterSize,
+} from '@carousel-ratios'
 
 /** Same threshold as PortfolioCaseCarousel horizontal wheel paging. */
 const WHEEL_GESTURE_THRESHOLD_PX = 30
 /** Only mount <Image> for slides this close to the active index (loop-aware). */
 const IMAGE_MOUNT_RADIUS = 2
+
+/**
+ * Poster bakes from @carousel-ratios — same guides Studio shows on featuredImage.
+ * Phone card = Full Portfolio Cards (Desktop) 4:5 (shorter stacked poster).
+ * Wide (≥576) = Homepage Cards (Desktop) 16:9 for tablet stack + desktop band.
+ * homeDesktop is stored as 16×9 units — scale 120 → 1920×1080 (homepage parity).
+ */
+const NAV_PHONE_POSTER = posterSize(CAROUSEL_RATIOS.workDesktop)
+const NAV_WIDE_POSTER = posterSize(CAROUSEL_RATIOS.homeDesktop, 120)
 
 export type PortfolioProjectNavClientProps = {
   locale: Locale
@@ -117,14 +131,30 @@ function slideCopy(
     card.primaryFormat?.titleZh,
     phraseMap,
   ).trim()
-  const imageUrl = card.featuredImage
-    ? urlForImage(card.featuredImage)
-        .width(1250)
-        .height(624)
+  const featured = card.featuredImage
+  const imageUrlPhone = featured
+    ? urlForImage(featured)
+        .width(NAV_PHONE_POSTER.width)
+        .height(NAV_PHONE_POSTER.height)
         .fit('crop')
         .url()
     : null
-  return {brandLine, titleLine, formatLine, imageUrl}
+  const imageUrlWide = featured
+    ? urlForImage(featured)
+        .width(NAV_WIDE_POSTER.width)
+        .height(NAV_WIDE_POSTER.height)
+        .fit('crop')
+        .url()
+    : null
+  const objectPosition = objectPositionFromHotspot(featured?.hotspot)
+  return {
+    brandLine,
+    titleLine,
+    formatLine,
+    imageUrlPhone,
+    imageUrlWide,
+    objectPosition,
+  }
 }
 
 function slugForSlide(slide: PortfolioNavSlideRef, locale: Locale): string {
@@ -400,16 +430,33 @@ export function PortfolioProjectNavClient({
 
                 const cardMedia = (
                   <>
-                    {mountImage && copy?.imageUrl ? (
-                      <Image
-                        className="vp-project-nav__cover"
-                        src={copy.imageUrl}
-                        alt=""
-                        fill
-                        sizes="(max-width: 991px) 100vw, 65vw"
-                        priority={index === startIndex}
-                        draggable={false}
-                      />
+                    {mountImage && copy?.imageUrlPhone && copy?.imageUrlWide ? (
+                      <>
+                        <span className="vp-project-nav__cover-slot vp-project-nav__cover-slot--phone">
+                          <Image
+                            className="vp-project-nav__cover"
+                            src={copy.imageUrlPhone}
+                            alt=""
+                            fill
+                            sizes="100vw"
+                            priority={index === startIndex}
+                            draggable={false}
+                            style={{objectPosition: copy.objectPosition}}
+                          />
+                        </span>
+                        <span className="vp-project-nav__cover-slot vp-project-nav__cover-slot--wide">
+                          <Image
+                            className="vp-project-nav__cover"
+                            src={copy.imageUrlWide}
+                            alt=""
+                            fill
+                            sizes="(max-width: 991px) 100vw, 65vw"
+                            priority={index === startIndex}
+                            draggable={false}
+                            style={{objectPosition: copy.objectPosition}}
+                          />
+                        </span>
+                      </>
                     ) : (
                       <div
                         className="vp-project-nav__cover-fallback"

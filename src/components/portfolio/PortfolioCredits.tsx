@@ -95,16 +95,16 @@ function CreditNames({
 function DeptCaret() {
   return (
     <span className="vp-credits__caret" aria-hidden="true">
-      <svg
+      {/* Figma 2283:31613 — solid white down triangle (not chevron). */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         className="vp-credits__caret-icon"
-        viewBox="0 0 24 24"
-        focusable="false"
-      >
-        <path
-          fill="currentColor"
-          d="M6.22 9.97a.75.75 0 0 1 1.06 0L12 14.69l4.72-4.72a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 0-1.06Z"
-        />
-      </svg>
+        src="/brand/credits-accordion-caret.svg"
+        alt=""
+        width={20}
+        height={20}
+        draggable={false}
+      />
     </span>
   );
 }

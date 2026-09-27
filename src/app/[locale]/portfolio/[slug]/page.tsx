@@ -258,6 +258,18 @@ export default async function PortfolioEntryPage({ params }: Props) {
          * (optional, near-full-bleed), project-nav (always last).
          */}
         <div className="vp-case-credits-band">{caseCredits}</div>
+        {/*
+         * Phone: flipped VAP mark flush under the last credits rule, then
+         * air before Key Visuals / project-nav (see .vp-case-credits-vap).
+         */}
+        <div className="vp-case-credits-vap" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="vp-case-credits-vap__mark"
+            src="/brand/vap-pattern.svg"
+            alt=""
+          />
+        </div>
         {caseKeyVisuals}
         <PortfolioProjectNav currentId={entry._id} locale={typedLocale} />
       </SectionWrapper>
