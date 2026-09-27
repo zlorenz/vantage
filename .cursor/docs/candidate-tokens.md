@@ -208,13 +208,16 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-title-lh` | `1.1` | campaign | same | pending | |
 | `--vp-candidate-portfolio-case-mobile-brand-size` | `12px` | brand / credit names / explore | caption_1 | pending | |
 | `--vp-candidate-portfolio-case-mobile-label-size` | `12px` | credit roles / pills | caption_3/4 | pending | |
-| `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block py | `py-48` | pending | |
+| `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block **pad-top** only ≤575 | `py-48` | pending | Pad-bottom dropped — was stacking with meta pad. |
+| `--vp-candidate-portfolio-case-mobile-title-pills-gap` | `16px` | `.vp-case-header__meta` pad-top ≤575 | QC: tighten campaign→pills | pending | Was effectively ~88px (48+40). |
 | `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → ~~`0.35rem`~~ → `--vp-overlay-mobile-title-tag-gap` (`12px`) | `.vp-case-header__title-block` gap ≤575 | QC / carousel parity | pending | Case header mobile only — other carousels + desktop title-block unchanged. |
 | `--vp-candidate-portfolio-case-mobile-back-title-gap` | `32px` | `.vp-case-mobile-back` pad-bottom ≤991 | QC: larger back→title gap after hugging nav | pending | Title-block pad-top stays 48px (do not pull campaign up). |
 | `--vp-candidate-portfolio-case-mobile-back-pad-top` | `12px` | `.vp-case-mobile-back` pad-top ≤575 | QC: small air under 64px nav (not flush) | pending | Mid-width ≤991 uses `1rem` pad-top; desktop rail unchanged. |
-| `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | meta band | `py-40` | pending | |
+| `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | `.vp-case-header__meta` **pad-bottom** ≤575 | `py-40` | pending | Pad-top superseded by title-pills-gap. |
+| `--vp-candidate-portfolio-case-mobile-credit-role-width` | `8.75rem` | `.vp-credit-pair` grid col 1 ≤991 | QC: table-like role\|names | pending | Desktop stays `17.625rem`. |
 | `--vp-candidate-portfolio-case-mobile-credit-row-gap` | `16px` | key + dept rows | gap 16 | pending | |
-| `--vp-candidate-portfolio-case-mobile-pill-height` | `48px` | pills ≤575 | h-48 | pending | Desktop stays 64px. |
+| `--vp-candidate-portfolio-case-mobile-pill-height` | ~~`48px`~~ → `36px` | pills ≤575 | QC: a little smaller | pending | Desktop stays 64px. |
+| `--vp-candidate-portfolio-case-mobile-pill-pad-inline` | `12px` | pills pad-x ≤575 | QC with height 36 | pending | Was 16px. |
 | `--vp-candidate-portfolio-case-mobile-pill-gap` | `2px` | pills | gap-2 | pending | |
 | `--vp-candidate-portfolio-case-mobile-play-size` | `64px` | play chrome ≤575 under `.vp-case-shell` | `2283:30842` | pending | Desktop/peek stay 80px. |
 | `--vp-candidate-portfolio-case-mobile-dept-title-size` | `22px` | `.vp-credits__dept-name` ≤575 | h5 | pending | |
@@ -226,7 +229,9 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-kv-title-size` | `26px` | Key Visuals h2 ≤575 | h3 white | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-gap` | `12px` | KV stack | gap-12 | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-cell-aspect` | `370 / 180` | KV cells ≤575 | cells | pending | |
-| `--vp-candidate-portfolio-case-mobile-next-card-aspect` | ~~`2 / 3`~~ → `4 / 5` | project-nav card ≤575 | QC: not too tall | pending | Approximate; desktop widget unchanged. |
+| `--vp-candidate-portfolio-case-mobile-next-card-aspect` | ~~`2 / 3`~~ → ~~`4 / 5`~~ → `512 / 640` (`CAROUSEL_RATIOS.workDesktop`) | project-nav card ≤575 | wired to @carousel-ratios | pending | CDN phone bake + CSS lock; wide ≥576 uses `homeDesktop` 16:9. |
+| `--vp-candidate-portfolio-case-mobile-nav-title-size` | `26px` | `.vp-project-nav__title` ≤575 | QC: slightly under case title 30px | pending | Format taxonomy hidden on phone overlays. |
+| `--vp-candidate-portfolio-case-mobile-nav-pad-top` | `5rem` (80px) | `.vp-case-credits-vap` pad-bottom ≤575 | QC: air under flipped VAP before carousel | pending | Was nav pad-top; mark is flush under POST. |
 | `--vp-candidate-portfolio-case-mobile-explore-height` | `60px` | explore row | h-60 | pending | Approximate. |
-| `--vp-candidate-portfolio-case-mobile-nav-bracket-outset` | `8px` | `.vp-project-nav__ticks` inset ≤575 | QC: brackets outside full widget (label→explore), not poster-only | pending | Negative inset = outside; poster must not be a positioning context on phone. |
+| `--vp-candidate-portfolio-case-mobile-nav-bracket-outset` | `8px` | `.vp-project-nav__ticks` inset ≤575 | QC: brackets outside full widget (poster→explore); heading hidden on phone | pending | Negative inset = outside; poster must not be a positioning context on phone. |
 | `--vp-candidate-portfolio-case-mobile-overlay-pad` | `16px` | multi carousel overlay ≤575 | frame inline | pending | Scoped `.vp-case-shell`. |

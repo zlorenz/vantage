@@ -167,11 +167,12 @@
     /* Match carousel overlays — promoted --vp-overlay-mobile-title-tag-gap.
      * Do not change other carousels or desktop title-block gap. */
     gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
-    /* Keep title pad-top (do not pull campaign up toward back). */
-    padding-block: var(
+    /* Pad-top only — former pad-bottom stacked with meta pad-top (≈88px). */
+    padding-top: var(
       --vp-candidate-portfolio-case-mobile-title-block-pad-block,
       48px
     );
+    padding-bottom: 0;
     padding-inline: 0;
   }
 
@@ -208,7 +209,12 @@
     align-items: stretch;
     justify-content: flex-start;
     gap: 0;
-    padding-block: var(
+    /* Tight title→pills; keep bottom air before media. */
+    padding-top: var(
+      --vp-candidate-portfolio-case-mobile-title-pills-gap,
+      16px
+    );
+    padding-bottom: var(
       --vp-candidate-portfolio-case-mobile-meta-pad-block,
       40px
     );
@@ -228,8 +234,11 @@
   }
 
   .vp-case-header__pill {
-    height: var(--vp-candidate-portfolio-case-mobile-pill-height, 48px);
-    padding-inline: 1rem; /* 16px */
+    height: var(--vp-candidate-portfolio-case-mobile-pill-height, 36px);
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-pill-pad-inline,
+      12px
+    );
     padding-block: 0;
     font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
     line-height: 1.25rem;

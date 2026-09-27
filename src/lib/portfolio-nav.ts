@@ -5,8 +5,8 @@
  * `portfolio-nav.server.ts`.
  */
 
-import type {SanityImageSource} from '@sanity/image-url'
 import {PORTFOLIO_NAV_PREFETCH_RADIUS} from '@/sanity/queries/portfolioNav'
+import type {SanityImage} from '@/types/sanity'
 
 export type PortfolioNavSlideRef = {
   _id: string
@@ -30,7 +30,7 @@ export type PortfolioNavCard = {
     productNameZh?: string | null
     campaignTitleZh?: string | null
   } | null
-  featuredImage: SanityImageSource | null
+  featuredImage: SanityImage | null
   primaryFormat: {
     title: string | null
     titleZh: string | null
