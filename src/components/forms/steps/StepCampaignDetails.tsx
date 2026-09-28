@@ -130,6 +130,7 @@ export function StepCampaignDetails({
             label={labels.campaign_description}
             htmlFor="campaign_description"
             hint={hints.campaign_description}
+            fullWidth
           >
             <FormTextarea
               id="campaign_description"
@@ -144,6 +145,7 @@ export function StepCampaignDetails({
             label={labels.reference_videos}
             htmlFor="reference_videos"
             hint={hints.reference_videos}
+            fullWidth
           >
             <FormTextarea
               id="reference_videos"
@@ -238,6 +240,7 @@ export function StepCampaignDetails({
             label={labels.campaign_description}
             htmlFor="campaign_description"
             hint={hints.campaign_description}
+            fullWidth
           >
             <FormTextarea
               id="campaign_description"
@@ -252,6 +255,7 @@ export function StepCampaignDetails({
             label={labels.reference_videos}
             htmlFor="reference_videos"
             hint={hints.reference_videos}
+            fullWidth
           >
             <FormTextarea
               id="reference_videos"

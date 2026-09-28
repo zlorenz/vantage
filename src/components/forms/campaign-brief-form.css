@@ -8,17 +8,24 @@
 .vp-form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--vp-form-row-gap) var(--vp-form-gap);
+  gap: var(--vp-candidate-brief-field-gap) var(--vp-form-gap);
 }
 
 @media (min-width: 768px) {
   .vp-form-grid {
     grid-template-columns: 1fr 1fr;
-    gap: var(--vp-form-gap, 1.5rem);
+    gap: var(--vp-candidate-brief-field-gap) var(--vp-form-gap);
   }
 
   .vp-form-grid--3col {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .vp-form-option-list:has(.vp-form-radio) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--vp-candidate-brief-check-gap);
+    row-gap: var(--vp-candidate-brief-option-gap);
   }
 }
 
@@ -168,8 +175,13 @@
 }
 
 .vp-field-hint--before {
-  margin-top: 0.25rem;
-  margin-bottom: 0.65rem;
+  margin-top: var(--vp-candidate-brief-option-gap);
+  margin-bottom: var(--vp-candidate-brief-group-gap);
+  color: var(--vp-form-placeholder);
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-brief-caption-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-brief-control-lh);
 }
 
 .vp-form-select-wrap {
@@ -527,7 +539,9 @@
       right bottom / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat;
 }
 
-.vp-form-step-heading {
+.vp-brief-card--tight .vp-form-step-heading {
+  margin-bottom: var(--vp-candidate-brief-field-gap-tight);
+}
   margin: 0 0 var(--vp-candidate-brief-field-gap);
   color: var(--vp-text);
   font-family: var(--font-vp-heading);
@@ -737,8 +751,12 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 2rem;
+  gap: var(--vp-candidate-brief-btn-gap);
+  margin-top: var(--vp-candidate-brief-field-gap);
+}
+
+.vp-brief-card--tight .vp-form-nav {
+  margin-top: var(--vp-candidate-brief-field-gap-tight);
 }
 
 @media (max-width: 575px) {

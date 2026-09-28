@@ -126,7 +126,11 @@ export function CampaignBriefForm() {
         locale={locale}
       />
 
-      <div className="vp-brief-card">
+      <div
+        className={`vp-brief-card${
+          currentStep === 2 && values.campaign_type === '' ? ' vp-brief-card--tight' : ''
+        }`}
+      >
         <h2 className="vp-form-step-heading">{currentStepConfig.title}</h2>
 
         <form onSubmit={handleSubmit} noValidate>
