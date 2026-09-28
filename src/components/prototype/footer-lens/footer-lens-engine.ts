@@ -90,10 +90,17 @@ const EDGE_BLUR_START = 0.82;
 /** Base blur radius in CSS px; multiplied by dpr for the device-pixel disc. */
 const EDGE_BLUR_CSS_PX = 5;
 /**
+ * 1 = the previous full rim treatment (blur replaces the sharp photo at the
+ * edge). 0.5 is half that blend, with the sharp collage still showing through.
+ */
+const RIM_SOFT_FOCUS_STRENGTH = 0.5;
+/** Set false to draw the sharp collage only, with no rim blur. */
+const RIM_SOFT_FOCUS = true;
+/**
  * Lens radius as fraction of symbol width.
  * Slightly larger than the wordmark loupe so the collage reads on a square mark.
  */
-const LENS_R_FRAC = 0.161;
+const LENS_R_FRAC = 0.19;
 /**
  * Reveal-buffer supersample vs logo CSS size (× devicePixelRatio).
  * Sized so ~ZOOM_CENTER magnification still has spare source pixels on Retina.
@@ -1612,9 +1619,9 @@ function buildLensDisc(
       const sy = py - pad;
       if (sx < 0 || sy < 0 || sx >= size || sy >= size) continue;
       const edge = radiusPx - distPxRaw;
-      const feather = 1.75;
-      const circleCover =
-        edge >= feather ? 1 : Math.max(0, (edge + feather) / (2 * feather));
+      // ~1px of antialiasing inside the circle. Coverage stays 0 outside the radius.
+      const feather = 0.75;
+      const circleCover = edge <= 0 ? 0 : edge >= feather ? 1 : edge / feather;
       const outA = sampleA * circleCover;
       if (outA < 1) continue;
       const si = (sy * size + sx) * 4;
@@ -1812,7 +1819,15 @@ function buildLensDisc(
   sharpRasterCtx.clearRect(0, 0, size, size);
   sharpRasterCtx.drawImage(scratch.sharp, 0, 0);
 
-  applyRimSoftFocus(scratch, blurPx);
+  if (RIM_SOFT_FOCUS) {
+    applyRimSoftFocus(scratch, blurPx);
+  } else {
+    // applyRimSoftFocus is also what copies the sharp disc onto scratch.out.
+    // Skipping the call without this blit leaves the loupe blank.
+    const octx = scratch.out.getContext("2d")!;
+    octx.clearRect(0, 0, size, size);
+    octx.drawImage(scratch.sharpRaster, 0, 0);
+  }
   const blitMs = performance.now() - tBlit0;
   const buildMs = performance.now() - t0;
   const g = globalThis as unknown as {
@@ -1905,7 +1920,9 @@ function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
   cctx.globalCompositeOperation = "source-over";
   cctx.drawImage(scratch.blurredPadded, -pad, -pad);
 
-  // Rim visibility for the soft layer (0 at center → peak near rim → 0 at edge).
+  // Rim visibility for the soft layer (0 at center → full at the circle).
+  // It must stay on through the radius. Cutting it off early leaves a clear
+  // photo ring between the effect and the hard edge.
   cctx.globalCompositeOperation = "destination-in";
   const blurMask = cctx.createRadialGradient(
     cx,
@@ -1915,10 +1932,11 @@ function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
     cy,
     radiusPx,
   );
-  blurMask.addColorStop(0, "rgba(0,0,0,0)");
-  blurMask.addColorStop(0.4, "rgba(0,0,0,0.35)");
-  blurMask.addColorStop(0.75, "rgba(0,0,0,0.85)");
-  blurMask.addColorStop(1, "rgba(0,0,0,0)");
+  const blurAt = (amount: number) => `rgba(0,0,0,${amount * RIM_SOFT_FOCUS_STRENGTH})`;
+  blurMask.addColorStop(0, blurAt(0));
+  blurMask.addColorStop(0.4, blurAt(0.35));
+  blurMask.addColorStop(0.75, blurAt(0.85));
+  blurMask.addColorStop(1, blurAt(1));
   cctx.fillStyle = blurMask;
   cctx.beginPath();
   cctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
@@ -1937,10 +1955,12 @@ function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
     cy,
     radiusPx,
   );
-  sharpMask.addColorStop(0, "rgba(0,0,0,1)");
-  sharpMask.addColorStop(0.4, "rgba(0,0,0,0.85)");
-  sharpMask.addColorStop(0.75, "rgba(0,0,0,0.25)");
-  sharpMask.addColorStop(1, "rgba(0,0,0,0)");
+  const sharpAt = (amount: number) =>
+    `rgba(0,0,0,${1 - RIM_SOFT_FOCUS_STRENGTH * (1 - amount)})`;
+  sharpMask.addColorStop(0, sharpAt(1));
+  sharpMask.addColorStop(0.4, sharpAt(0.85));
+  sharpMask.addColorStop(0.75, sharpAt(0.25));
+  sharpMask.addColorStop(1, sharpAt(0));
   sctx.fillStyle = sharpMask;
   sctx.beginPath();
   sctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
@@ -1967,20 +1987,21 @@ function paintGlassOverlay(
   ly: number,
   lensR: number,
 ): void {
-  const outer = lensR * 1.06;
-  const inner = lensR * 0.82;
+  const outer = lensR;
+  const inner = lensR * 0.9;
 
-  // Soft annular rim wash (glass edge thickness).
+  // Glass edge wash stays inside the circle so it cannot halo past the rim.
   const ring = ctx.createRadialGradient(lx, ly, inner, lx, ly, outer);
   ring.addColorStop(0, "rgba(255,255,255,0)");
-  ring.addColorStop(0.55, "rgba(255,255,255,0)");
-  ring.addColorStop(0.78, "rgba(255,255,255,0.14)");
-  ring.addColorStop(0.92, "rgba(255,255,255,0.06)");
+  ring.addColorStop(0.62, "rgba(255,255,255,0.1)");
   ring.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = ring;
+  ctx.save();
   ctx.beginPath();
-  ctx.arc(lx, ly, outer, 0, Math.PI * 2);
+  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = ring;
   ctx.fill();
+  ctx.restore();
 
   // Offset specular highlight — the "sphere" cue on empty background.
   ctx.save();
@@ -2232,10 +2253,13 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     const cxDev = lx * dpr;
     const cyDev = ly * dpr;
     const rDev = blitPx / 2;
-    // No hard circle clip — clipping soft disc alpha makes a second crisp rim
-    // (ghost edge). The disc already carries soft circular coverage.
+    // Hard clip at the circle. The rim blur reaches this boundary on purpose;
+    // without the clip its smear would read as an outer halo.
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.beginPath();
+    ctx.arc(cxDev, cyDev, rDev, 0, Math.PI * 2);
+    ctx.clip();
     ctx.imageSmoothingEnabled = workPx < blitPx;
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(disc, cxDev - rDev, cyDev - rDev, blitPx, blitPx);
