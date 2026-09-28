@@ -454,25 +454,27 @@
 .vp-form-file-remove {
   flex-shrink: 0;
   padding: 0.25rem 0.75rem;
-  border: 1px solid var(--vp-btn-ghost-border);
-  border-radius: 9999px;
+  border: 1px solid var(--vp-candidate-brief-btn-ghost-border);
+  border-radius: var(--vp-radius);
   background: transparent;
   color: var(--vp-text);
-  font-family: var(--vp-font-heading);
+  font-family: var(--font-vp-heading);
   font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: var(--vp-uppercase-spacing);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background-color var(--vp-transition);
+  transition: border-color var(--vp-candidate-brief-transition);
 }
 
 .vp-form-file-remove:hover:not(:disabled) {
-  background: var(--vp-btn-ghost-hover-bg);
+  background: transparent;
+  border-color: var(--vp-candidate-brief-control-hover);
 }
 
 .vp-form-file-remove:disabled {
-  opacity: 0.55;
+  opacity: var(--vp-candidate-brief-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -882,4 +884,91 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Derived interaction states — no Figma frame. White alphas + yellow only. */
+.vp-form-control,
+.vp-form-radio-box,
+.vp-form-checkbox-box,
+.vp-brief-btn,
+.vp-form-step-progress-label,
+.vp-form-file-remove,
+.vp-form-dropzone,
+.vp-form-attach-btn {
+  transition:
+    border-color var(--vp-candidate-brief-transition),
+    background-color var(--vp-candidate-brief-transition),
+    color var(--vp-candidate-brief-transition),
+    opacity var(--vp-candidate-brief-transition);
+}
+
+.vp-form-control:hover:not(:disabled):not(:focus) {
+  border-bottom-color: var(--vp-candidate-brief-control-hover);
+}
+
+.vp-form-control:focus {
+  border-bottom-color: var(--vp-candidate-brief-control-focus);
+  border-bottom-style: solid;
+}
+
+.vp-form-control--error,
+.vp-form-control--error:hover,
+.vp-form-control--error:focus {
+  background: transparent;
+  border-bottom-color: var(--vp-form-error);
+}
+
+.vp-form-control:disabled,
+.vp-brief-btn:disabled,
+.vp-form-attach-btn:disabled,
+.vp-form-radio input:disabled ~ .vp-form-radio-label,
+.vp-form-checkbox input:disabled ~ .vp-form-checkbox-label,
+.vp-form-dropzone--disabled {
+  opacity: var(--vp-candidate-brief-disabled-opacity);
+}
+
+.vp-form-control:disabled:hover,
+.vp-brief-btn:disabled:hover {
+  background-color: inherit;
+  border-color: inherit;
+}
+
+.vp-form-nav .vp-brief-btn--primary:hover:not(:disabled) {
+  background: var(--vp-candidate-brief-primary-hover);
+  color: var(--vp-black);
+}
+
+.vp-form-nav .vp-brief-btn--previous:hover:not(:disabled) {
+  border-color: var(--vp-candidate-brief-control-hover);
+  background: transparent;
+  color: var(--vp-link);
+}
+
+.vp-brief-btn:focus-visible,
+.vp-form-file-remove:focus-visible,
+.vp-form-attach-btn:focus-visible,
+.vp-form-step-progress-circle:focus-visible,
+.vp-form-radio input:focus-visible + .vp-form-radio-box,
+.vp-form-checkbox input:focus-visible + .vp-form-checkbox-box {
+  outline: var(--vp-candidate-brief-focus-ring);
+  outline-offset: var(--vp-candidate-brief-focus-offset);
+}
+
+.vp-form-step-progress-item--completed:hover .vp-form-step-progress-label {
+  color: var(--vp-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-form-control,
+  .vp-form-radio-box,
+  .vp-form-checkbox-box,
+  .vp-brief-btn,
+  .vp-form-step-progress-label,
+  .vp-form-file-remove,
+  .vp-form-dropzone,
+  .vp-form-attach-btn,
+  .vp-form-submit-spinner {
+    transition: none;
+    animation: none;
+  }
 }
