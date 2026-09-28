@@ -76,53 +76,88 @@
 
 .vp-form-control {
   width: 100%;
-  min-height: var(--vp-form-input-min-height);
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--vp-input-border);
-  border-radius: 0;
-  background: var(--vp-input-bg);
+  min-height: 0;
+  padding: var(--vp-candidate-brief-control-pad-top) 0
+    var(--vp-candidate-brief-control-pad-bottom);
+  border: 0;
+  border-radius: var(--vp-radius);
+  border-bottom: var(--vp-candidate-brief-rule);
+  background: transparent;
   color: var(--vp-text, #ffffff);
-  font-size: var(--vp-form-input-size);
-  font-family: inherit;
-  line-height: 1.4;
-  transition:
-    background-color var(--vp-transition),
-    border-color var(--vp-transition);
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-brief-control-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-brief-control-lh);
 }
 
 .vp-form-control::placeholder {
-  color: var(--vp-form-helper-muted);
+  color: var(--vp-candidate-brief-muted-30);
   opacity: 1;
 }
 
 .vp-form-control:focus {
   outline: none;
-  background: var(--vp-input-bg-focus);
-  border-color: var(--vp-input-border-focus);
+  background: transparent;
 }
 
 .vp-form-control:disabled {
-  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .vp-form-control--error {
-  background: var(--vp-form-error-bg);
-  border-color: var(--vp-form-error-border);
+  background: transparent;
+  border-bottom-color: var(--vp-form-error);
 }
 
 .vp-form-control--date {
   color-scheme: dark;
+  padding-right: calc(var(--vp-candidate-brief-chip-size) + 8px);
 }
 
 .vp-form-date-field {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--vp-candidate-brief-option-gap);
+}
+
+.vp-form-date-control {
+  position: relative;
+}
+
+/* Native picker stays clickable; the glyph is hidden so our chip is the visible control. */
+.vp-form-control--date::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0;
+  bottom: var(--vp-candidate-brief-control-pad-bottom);
+  width: var(--vp-candidate-brief-chip-size);
+  height: var(--vp-candidate-brief-chip-size);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.vp-form-chip {
+  position: absolute;
+  right: 0;
+  bottom: var(--vp-candidate-brief-control-pad-bottom);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--vp-candidate-brief-chip-size);
+  height: var(--vp-candidate-brief-chip-size);
+  background: var(--vp-candidate-brief-chip-bg);
+  color: var(--vp-text);
+  pointer-events: none;
+}
+
+.vp-form-chip svg {
+  width: var(--vp-candidate-brief-chip-glyph);
+  height: var(--vp-candidate-brief-chip-glyph);
 }
 
 .vp-form-textarea {
-  min-height: var(--vp-form-textarea-min-height);
+  min-height: 0;
+  padding-bottom: var(--vp-candidate-brief-textarea-pad-bottom);
   resize: vertical;
 }
 
@@ -142,27 +177,43 @@
   position: relative;
 }
 
+.vp-form-select-wrap::before,
 .vp-form-select-wrap::after {
   content: "";
   position: absolute;
-  top: 50%;
-  right: 1rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-right: 2px solid var(--vp-text);
-  border-bottom: 2px solid var(--vp-text);
-  transform: translateY(-65%) rotate(45deg);
+  right: 0;
+  bottom: var(--vp-candidate-brief-control-pad-bottom);
   pointer-events: none;
+}
+
+.vp-form-select-wrap::before {
+  width: var(--vp-candidate-brief-chip-size);
+  height: var(--vp-candidate-brief-chip-size);
+  background: var(--vp-candidate-brief-chip-bg);
+}
+
+.vp-form-select-wrap::after {
+  right: 11px;
+  bottom: calc(var(--vp-candidate-brief-control-pad-bottom) + 11px);
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid var(--vp-text);
+  border-bottom: 1.5px solid var(--vp-text);
+  transform: rotate(45deg);
 }
 
 .vp-form-select {
   appearance: none;
   cursor: pointer;
-  padding-right: 2.25rem;
+  padding-right: calc(var(--vp-candidate-brief-chip-size) + 8px);
+}
+
+.vp-form-select:has(option[value=""]:checked) {
+  color: var(--vp-candidate-brief-muted-30);
 }
 
 .vp-form-select option {
-  background: #111;
+  background: var(--vp-search-thumb-bg);
   color: var(--vp-text);
 }
 

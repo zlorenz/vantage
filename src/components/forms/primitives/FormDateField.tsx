@@ -50,15 +50,23 @@ export function FormDateField({
           placeholder={notePlaceholder}
         />
       ) : (
-        <input
-          id={id}
-          name={name}
-          type="date"
-          className={`vp-form-control vp-form-control--date${hasError ? ' vp-form-control--error' : ''}`}
-          value={dateValue}
-          onChange={(e) => onDateChange(e.target.value)}
-          disabled={disabled}
-        />
+        <div className="vp-form-date-control">
+          <input
+            id={id}
+            name={name}
+            type="date"
+            className={`vp-form-control vp-form-control--date${hasError ? ' vp-form-control--error' : ''}`}
+            value={dateValue}
+            onChange={(e) => onDateChange(e.target.value)}
+            disabled={disabled}
+          />
+          <span className="vp-form-chip" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none">
+              <rect x="2.25" y="3.25" width="13.5" height="12.5" stroke="currentColor" strokeWidth="1.25" />
+              <path d="M2.25 7.25h13.5M6 2v2.5M12 2v2.5" stroke="currentColor" strokeWidth="1.25" />
+            </svg>
+          </span>
+        </div>
       )}
 
       <label className="vp-form-checkbox vp-form-date-unknown" htmlFor={unknownId}>
