@@ -23,7 +23,6 @@ export function FormField({
   htmlFor,
   required = false,
   error,
-  helper,
   hint,
   hintBeforeControls = false,
   fullWidth = false,
@@ -32,10 +31,8 @@ export function FormField({
 }: FormFieldProps) {
   const spanClass = fullWidth ? 'vp-form-col-span-2' : '';
   const hintEl =
-    hint && !error ? (
-      <p className={`vp-field-hint${hintBeforeControls ? ' vp-field-hint--before' : ''}`}>
-        {hint}
-      </p>
+    hint && hintBeforeControls && !error ? (
+      <p className="vp-field-hint vp-field-hint--before">{hint}</p>
     ) : null;
 
   return (
@@ -44,10 +41,8 @@ export function FormField({
         {label}
         {required && <span className="vp-form-label-required"> *</span>}
       </label>
-      {hintBeforeControls && hintEl}
+      {hintEl}
       {children}
-      {!hintBeforeControls && hintEl}
-      {helper && !error && <p className="vp-form-helper">{helper}</p>}
       {error && <p className="vp-form-error-msg">{error}</p>}
     </div>
   );
