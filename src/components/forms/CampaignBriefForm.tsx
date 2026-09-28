@@ -52,13 +52,11 @@ export function CampaignBriefForm() {
   if (submissionState === 'success') {
     return (
       <div className="vp-form-shell">
-        <div className="vp-form-success" role="status">
-          <p>{ui.successMessage}</p>
-          <div className="vp-form-success-actions">
-            <button type="button" className="vp-form-reset-link" onClick={resetForm}>
-              {ui.submitAnother}
-            </button>
-          </div>
+        <div className="vp-brief-card vp-brief-confirm" role="status">
+          <p className="vp-brief-confirm__message">{ui.successMessage}</p>
+          <button type="button" className="vp-brief-btn--confirm" onClick={resetForm}>
+            {ui.submitAnother}
+          </button>
         </div>
       </div>
     );

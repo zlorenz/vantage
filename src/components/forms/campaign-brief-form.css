@@ -891,6 +891,56 @@
   justify-content: center;
 }
 
+.vp-brief-confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--vp-candidate-brief-field-gap);
+  text-align: center;
+}
+
+.vp-brief-confirm__message {
+  max-width: 22rem;
+  margin: 0;
+  color: var(--vp-link);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-section-title-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-brief-section-title-lh);
+  text-transform: uppercase;
+}
+
+.vp-brief-btn--confirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--vp-candidate-brief-btn-height);
+  padding: 0 var(--vp-candidate-brief-btn-pad-inline);
+  border: 1px solid var(--vp-candidate-brief-btn-ghost-border);
+  border-radius: var(--vp-radius);
+  background: transparent;
+  color: var(--vp-text);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-btn-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-brief-btn-lh);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.vp-brief-btn--confirm:hover {
+  border-color: var(--vp-candidate-brief-control-hover);
+}
+
+.vp-brief-btn--confirm:focus-visible {
+  outline: var(--vp-candidate-brief-focus-ring);
+  outline-offset: var(--vp-candidate-brief-focus-offset);
+}
+
 /* Derived interaction states — no Figma frame. White alphas + yellow only. */
 .vp-form-control,
 .vp-form-radio-box,
