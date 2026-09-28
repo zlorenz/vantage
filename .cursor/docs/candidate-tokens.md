@@ -235,3 +235,76 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-explore-height` | `60px` | explore row | h-60 | pending | Approximate. |
 | `--vp-candidate-portfolio-case-mobile-nav-bracket-outset` | `8px` | `.vp-project-nav__ticks` inset ≤575 | QC: brackets outside full widget (poster→explore); heading hidden on phone | pending | Negative inset = outside; poster must not be a positioning context on phone. |
 | `--vp-candidate-portfolio-case-mobile-overlay-pad` | `16px` | multi carousel overlay ≤575 | frame inline | pending | Scoped `.vp-case-shell`. |
+
+## Campaign brief form — desktop restyle (pending)
+
+Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, Confirm `2382:26839`. Content column stays the existing **900px** (Figma 922px was not adopted). Special Gothic tracking stays **0** (Figma −2% was not adopted). Display layers use `--font-vp-heading` at `--font-vp-heading-weight` with `font-synthesis: none`.
+
+**Reuse (no new name):** `--vp-link` (`#fdb913`), `--vp-orange` (`#f04e23`), `--vp-form-placeholder` (white 0.5, above-control hints), `--vp-form-gap` (16px column gap), `--vp-radius` (0), `--vp-form-error` / error border+bg, `--vp-black` / `--vp-text`. Do not reuse `--vp-form-step-completed-bg` outside the old stepper.
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-brief-title-size` | `48px` | Campaign brief H1 | S1 `2426:4349` h2 | pending | Same size as `--vp-candidate-blog-h2-size`. Tracking 0, not the blog −0.96px exception. |
+| `--vp-candidate-brief-title-lh` | `1.2` | same | same | pending | |
+| `--vp-candidate-brief-intro-size` | `18px` | Intro under the H1 | S1 `2426:4350` body_medium | pending | Mona Sans Regular. |
+| `--vp-candidate-brief-intro-lh` | `1.5` | same | same | pending | |
+| `--vp-candidate-brief-intro-color` | `rgba(255,255,255,0.6)` | same | same | pending | Same alpha as `--vp-home-carousel-counter-muted`; kept separate so the brief does not depend on carousel scope. |
+| `--vp-candidate-brief-title-intro-gap` | `40px` | H1 → intro | S1 title block gap | pending | Does not stack on condensed-header clearance. |
+| `--vp-candidate-brief-intro-step-gap` | `60px` | Intro → stepper | S1 header block gap | pending | |
+| `--vp-candidate-brief-step-card-gap` | `80px` | Stepper → card | S1 column gap | pending | |
+| `--vp-candidate-brief-section-title-size` | `26px` | In-card section title + confirm heading | S1 `2426:4372` h5 | pending | |
+| `--vp-candidate-brief-section-title-lh` | `1.4` | same | same | pending | |
+| `--vp-candidate-brief-card-pad` | `30px` | Corner-tick card | S1 `2426:4368` | pending | |
+| `--vp-candidate-brief-tick-size` | `12px` | Corner ticks | SVG `Rectangle 65` viewBox 12.5 | pending | |
+| `--vp-candidate-brief-tick-stroke` | `1px` | same | SVG default stroke (no `stroke-width`) | pending | |
+| `--vp-candidate-brief-tick-color` | `rgba(255,255,255,0.3)` | same | `stroke="white" stroke-opacity="0.3"` | pending | |
+| `--vp-candidate-brief-step-size` | `60px` | Step squares | S1 `2426:4353` | pending | ≤767 may still shrink; radius stays 0. |
+| `--vp-candidate-brief-step-label-gap` | `20px` | Square → label | S1 step column gap | pending | |
+| `--vp-candidate-brief-caption-size` | `14px` | Step numbers, step labels, field labels, Browse | caption_2 | pending | |
+| `--vp-candidate-brief-caption-lh` | `20px` | same | same | pending | |
+| `--vp-candidate-brief-label-color` | `rgba(255,255,255,0.8)` | Field labels | white/80 | pending | |
+| `--vp-candidate-brief-muted-30` | `rgba(255,255,255,0.3)` | Placeholders, pending step numbers | white/30 | pending | Not `--vp-form-placeholder` (0.5). |
+| `--vp-candidate-brief-line` | `rgba(255,255,255,0.15)` | Underlines, pending borders, connectors | white/15 | pending | Alpha matches `--vp-struct-line`; width differs. |
+| `--vp-candidate-brief-rule` | `0.6px solid` that line | Field underlines | input border-b 0.6px | pending | |
+| `--vp-candidate-brief-control-pad-top` | `20px` | Controls | input pt | pending | |
+| `--vp-candidate-brief-control-pad-bottom` | `12px` | Controls | input pb | pending | |
+| `--vp-candidate-brief-control-size` | `18px` | Values, placeholders, dropzone prompt | body_medium | pending | Mobile floor `16px` in `globals.css` still wins ≤767.98px. |
+| `--vp-candidate-brief-control-lh` | `1.5` | same | same | pending | |
+| `--vp-candidate-brief-textarea-pad-bottom` | `60px` | Textareas | S2.2 / S3 pb-60 | pending | |
+| `--vp-candidate-brief-field-gap` | `60px` | Field rows; S1 title → fields | S1 / S2.2 | pending | |
+| `--vp-candidate-brief-field-gap-tight` | `48px` | Step 2 title → fields, fields → buttons | S2.1 | pending | |
+| `--vp-candidate-brief-check-size` | `24px` | Checkbox / budget square | S2.2 | pending | |
+| `--vp-candidate-brief-check-icon-size` | `20px` | Checked glyph | S2.2 check.1 | pending | Step-complete check is 24px (separate). |
+| `--vp-candidate-brief-check-bg` | `rgba(255,255,255,0.05)` | Unchecked fill | white/5 | pending | |
+| `--vp-candidate-brief-check-border` | `rgba(255,255,255,0.1)` | Unchecked border | white/10 | pending | |
+| `--vp-candidate-brief-check-gap` | `16px` | Box → option label | S2.2 | pending | |
+| `--vp-candidate-brief-option-gap` | `12px` | Options in a group | S2.2 | pending | |
+| `--vp-candidate-brief-group-gap` | `24px` | Label block → options | S2.2 | pending | |
+| `--vp-candidate-brief-chip-size` | `32px` | Select chevron / date icon chip | S1 select | pending | |
+| `--vp-candidate-brief-chip-bg` | `rgba(255,255,255,0.15)` | Chip fill | white/15 | pending | |
+| `--vp-candidate-brief-chip-glyph` | `18px` | Glyph inside the chip | S1 | pending | |
+| `--vp-candidate-brief-btn-height` | `80px` | Form buttons | S1 Next | pending | Form-scoped. Does not change `VpButton`. |
+| `--vp-candidate-brief-btn-pad-inline` | `32px` | same | px-32 | pending | |
+| `--vp-candidate-brief-btn-size` | `16px` | Button label | S1 Next | pending | |
+| `--vp-candidate-brief-btn-lh` | `20px` | same | leading 20 | pending | |
+| `--vp-candidate-brief-btn-gap` | `8px` | Previous \| Next | S2.1 | pending | |
+| `--vp-candidate-brief-btn-ghost-border` | `rgba(255,255,255,0.2)` | Previous, confirm CTA | white/20 | pending | Not `--vp-form-step-completed-bg`. |
+| `--vp-candidate-brief-btn-arrow-size` | `24px` | Previous arrow | S2.1 | pending | |
+| `--vp-candidate-brief-btn-arrow-gap` | `16px` | Arrow → label | S2.1 | pending | |
+| `--vp-candidate-brief-connector-width` | `0.6px` | Stepper connectors | connector SVGs | pending | |
+| `--vp-candidate-brief-connector-dash` | `4px` | Pending connector dash | `stroke-dasharray="4 2"` | pending | |
+| `--vp-candidate-brief-connector-gap` | `2px` | Pending connector gap | same | pending | Pending stroke is white 0.15. Into the active step: solid white. Between two completed steps: solid `--vp-link`. |
+| `--vp-candidate-brief-step-pending-border-width` | `0.6px` | Pending square | S1 dashed 0.6px | pending | Color is `--vp-candidate-brief-line`. |
+| `--vp-candidate-brief-step-completed-border-width` | `1px` | Completed square | S2.1 `border` dashed white/15 | pending | Fill is `--vp-link`. |
+| `--vp-candidate-brief-dropzone-pad-block` | `56px` | Dropzone | S3 | pending | |
+| `--vp-candidate-brief-dropzone-pad-inline` | `24px` | Dropzone | S3 | pending | |
+| `--vp-candidate-brief-dropzone-gap` | `16px` | Icon / prompt / Browse | S3 | pending | |
+| `--vp-candidate-brief-browse-pad` | `16px` | Browse files | S3 | pending | Border `--vp-orange`, radius 0. |
+| `--vp-candidate-brief-control-hover` | `rgba(255,255,255,0.4)` | Control + ghost hover | **derived — no Figma frame** | pending | |
+| `--vp-candidate-brief-control-focus` | `#ffffff` | Focused underline | **derived — no Figma frame** | pending | Solid white. |
+| `--vp-candidate-brief-focus-ring` | `1px solid var(--vp-link)` | Keyboard focus-visible | **derived — no Figma frame** | pending | Buttons, checks, radios, step squares. |
+| `--vp-candidate-brief-focus-offset` | `3px` | same | **derived — no Figma frame** | pending | |
+| `--vp-candidate-brief-disabled-opacity` | `0.4` | Disabled controls and buttons | **derived — no Figma frame** | pending | No hover shift while disabled. |
+| `--vp-candidate-brief-primary-hover` | `#ffcb55` | Next / Submit hover | **derived — no Figma frame** | pending | No `--vp-yellow-80` token exists. |
+| `--vp-candidate-brief-dropzone-active-fill` | `rgba(255,255,255,0.03)` | Dropzone drag-over | **derived — no Figma frame** | pending | Border becomes `--vp-link`. |
+| `--vp-candidate-brief-transition` | `0.3s ease-out` | Form interaction | **derived — no Figma frame** | pending | Distinct from `--vp-transition` (`0.3s ease`). Honors `prefers-reduced-motion`. |
