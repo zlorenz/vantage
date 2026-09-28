@@ -233,7 +233,7 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-credits-last-pad` | `2.5rem` | last `.vp-credits__dept` pad-bottom ≤575 | QC: space below last names | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-title-size` | `26px` | Key Visuals h2 ≤575 | h3 white | pending | |
 | `--vp-candidate-portfolio-case-mobile-kv-gap` | `12px` | KV stack | gap-12 | pending | |
-| `--vp-candidate-portfolio-case-mobile-kv-cell-aspect` | `370 / 180` | KV cells ≤575 | cells | pending | |
+| `--vp-candidate-portfolio-case-mobile-kv-cell-aspect` | ~~`370 / 180`~~ | ~~KV cells ≤575~~ | cells | superseded | Phone uses each asset’s intrinsic ratio (`--vp-kv-native-aspect` on the figure) so the full frame shows. |
 | `--vp-candidate-portfolio-case-mobile-next-card-aspect` | ~~`2 / 3`~~ → ~~`4 / 5`~~ → `512 / 640` (`CAROUSEL_RATIOS.workDesktop`) | project-nav card ≤575 | wired to @carousel-ratios | pending | CDN phone bake + CSS lock; wide ≥576 uses `homeDesktop` 16:9. |
 | `--vp-candidate-portfolio-case-mobile-nav-title-size` | `26px` | `.vp-project-nav__title` ≤575 | QC: slightly under case title 30px | pending | Format taxonomy hidden on phone overlays. |
 | `--vp-candidate-portfolio-case-mobile-nav-pad-top` | `5rem` (80px) | `.vp-case-credits-vap` pad-bottom ≤575 | QC: air under flipped VAP before carousel | pending | Was nav pad-top; mark is flush under POST. |

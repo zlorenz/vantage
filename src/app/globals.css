@@ -3022,11 +3022,21 @@
   .vp-key-visuals-gallery__pair {
     flex-direction: column;
   }
+
+  /*
+   * Pair tiles use flex-basis 0 so desktop rows split width evenly.
+   * In a column that basis is height, so both images collapse and the
+   * empty pair reads as a large gap between the tiles around it.
+   */
+  .vp-key-visuals-gallery__pair > .vp-key-visuals-gallery__item {
+    flex: none;
+    width: 100%;
+  }
 }
 
 /*
- * Case Key Visuals ≤575 — single stack, 16px inset, 370/180 cells
- * (Figma 2283:30969). Section only appears on portfolio entry pages.
+ * Case Key Visuals ≤575 — single stack, 16px inset, each image at its
+ * own aspect (full frame). Section only appears on portfolio entry pages.
  */
 @media (max-width: 575.98px) {
   .vp-case-shell .vp-key-visuals {
@@ -3069,10 +3079,12 @@
   }
 
   .vp-case-shell .vp-key-visuals-gallery__item {
-    aspect-ratio: var(
-      --vp-candidate-portfolio-case-mobile-kv-cell-aspect,
-      370 / 180
-    ) !important;
+    aspect-ratio: var(--vp-kv-native-aspect) !important;
+  }
+
+  .vp-case-shell .vp-key-visuals-gallery__img {
+    object-fit: contain;
+    object-position: center;
   }
 }
 

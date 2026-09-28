@@ -59,21 +59,25 @@ function KeyVisualFigure({
 }) {
   const {asset} = item;
   const width = asset.metadata?.dimensions?.width || FALLBACK_WIDTH;
+  const height =
+    asset.metadata?.dimensions?.height ||
+    Math.max(1, Math.round(width / aspect));
   const displayWidth = snapNextImageWidth(Math.min(width, 1600));
-  const displayHeight = Math.max(1, Math.round(displayWidth / aspect));
+  /* Full frame — desktop crops via object-fit on the layout box. */
   const imageUrl = urlForImage({
     _type: 'image',
     asset: {_type: 'reference', _ref: asset._id},
   })
     .width(displayWidth)
-    .height(displayHeight)
-    .fit('crop')
     .url();
 
   return (
     <figure
       className="vp-key-visuals-gallery__item"
-      style={{aspectRatio: `${aspect}`}}
+      style={{
+        aspectRatio: `${aspect}`,
+        ['--vp-kv-native-aspect' as string]: `${width} / ${height}`,
+      }}
     >
       <Image
         src={imageUrl}
