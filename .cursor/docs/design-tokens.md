@@ -214,12 +214,12 @@ Title scales are **tiered** — smaller heroes must not inherit the largest band
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-section-y` | `5.5rem` | Default section padding |
+| `vp-section-y` | `7rem` | Default section padding |
 | `vp-section-y-tight` | `3.5rem` | Tight sections |
 | `vp-section-y-loose` | `6.5rem` | Loose sections |
 | `vp-section-y-header-condensed` | `9.5rem` | Page header (no hero) top padding |
 
-**Mobile override** (`max-width: 575.98px`): `--vp-section-y` (and `--spacing-vp-section-y`) collapse to `4rem` so `SectionWrapper`’s `py-[var(--vp-section-y)]` picks it up
+**Mobile override** (`max-width: 575.98px`): `--vp-section-y` (and `--spacing-vp-section-y`) collapse to `5rem` so `SectionWrapper`’s `py-[var(--vp-section-y)]` picks it up. Live values are in `src/app/globals.css`.
 
 ### Navbar
 
