@@ -615,13 +615,23 @@
 }
 
 .vp-form-step-progress-item--active::before,
-.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--active)::after {
-  background: var(--vp-text);
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--active)::after,
+.vp-form-step-progress-item.vp-form-step-progress-item--active:not(:first-child):not(:last-child)::before,
+.vp-form-step-progress-item.vp-form-step-progress-item--active:last-child:not(:first-child)::before,
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--active):first-child:not(:last-child)::after,
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--active):not(:first-child):not(:last-child)::after {
+  background-color: var(--vp-text);
+  background-image: none;
 }
 
 .vp-form-step-progress-item--completed::before,
-.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--completed)::after {
-  background: var(--vp-link);
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--completed)::after,
+.vp-form-step-progress-item.vp-form-step-progress-item--completed:not(:first-child):not(:last-child)::before,
+.vp-form-step-progress-item.vp-form-step-progress-item--completed:last-child:not(:first-child)::before,
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--completed):first-child:not(:last-child)::after,
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--completed):not(:first-child):not(:last-child)::after {
+  background-color: var(--vp-link);
+  background-image: none;
 }
 
 .vp-form-step-progress-node {
@@ -682,7 +692,7 @@
 }
 
 .vp-form-step-progress-item--active .vp-form-step-progress-circle {
-  border-color: transparent;
+  border: none;
   background: var(--vp-text);
   color: var(--vp-black);
 }
