@@ -900,7 +900,7 @@
 }
 
 .vp-brief-confirm__message {
-  max-width: 22rem;
+  max-width: 36rem;
   margin: 0;
   color: var(--vp-link);
   font-family: var(--font-vp-heading);
