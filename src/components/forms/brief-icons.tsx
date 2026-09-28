@@ -12,6 +12,19 @@ export function BriefCaretIcon() {
   );
 }
 
+export function BriefCalendarIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="currentColor" d="M13.5 7.5H4.5V6H13.5V7.5Z" />
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M4.5 3V1.5H6V3H12V1.5H13.5V3H16.5V16.5H1.5V3H4.5ZM3 4.5V15H15V4.5H3Z"
+      />
+    </svg>
+  );
+}
+
 /**
  * Figma check.1 path. Translated so the painted ink center sits on the
  * viewBox center, then scaled via width/height (20 in boxes, 24 on steps).

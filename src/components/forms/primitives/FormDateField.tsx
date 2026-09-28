@@ -4,7 +4,7 @@
  * (same slot / no layout shift) with a placeholder for rough timeframe.
  */
 
-import { BriefCheckIcon } from '@/components/forms/brief-icons';
+import { BriefCalendarIcon, BriefCheckIcon } from '@/components/forms/brief-icons';
 import { FormTextInput } from '@/components/forms/primitives/FormTextInput';
 
 export interface FormDateFieldProps {
@@ -62,10 +62,7 @@ export function FormDateField({
             disabled={disabled}
           />
           <span className="vp-form-chip" aria-hidden="true">
-            <svg viewBox="0 0 18 18" fill="none">
-              <rect x="2.25" y="3.25" width="13.5" height="12.5" stroke="currentColor" strokeWidth="1.25" />
-              <path d="M2.25 7.25h13.5M6 2v2.5M12 2v2.5" stroke="currentColor" strokeWidth="1.25" />
-            </svg>
+            <BriefCalendarIcon />
           </span>
         </div>
       )}
