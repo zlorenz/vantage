@@ -162,15 +162,23 @@ export function CampaignBriefForm() {
           </div>
         )}
 
-        <nav className="vp-form-nav" aria-label="Form navigation">
+        <nav
+          className={`vp-form-nav${currentStep === 1 ? ' vp-form-nav--solo' : ''}`}
+          aria-label="Form navigation"
+        >
           {currentStep > 1 && (
             <VpButton
               type="button"
               variant="ghost"
-              className="vp-form-nav-btn"
+              className="vp-form-nav-btn vp-brief-btn vp-brief-btn--previous"
               disabled={isDisabled}
               onClick={prevStep}
             >
+              <span className="vp-brief-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M14.5 6 L8.5 12 L14.5 18" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+              </span>
               {ui.previous}
             </VpButton>
           )}
@@ -179,7 +187,7 @@ export function CampaignBriefForm() {
             <VpButton
               type="button"
               variant="primary"
-              className="vp-form-nav-btn"
+              className="vp-form-nav-btn vp-brief-btn vp-brief-btn--primary"
               disabled={isDisabled}
               onClick={nextStep}
             >
@@ -191,7 +199,7 @@ export function CampaignBriefForm() {
             <VpButton
               type="submit"
               variant="primary"
-              className="vp-form-nav-btn"
+              className="vp-form-nav-btn vp-brief-btn vp-brief-btn--primary"
               disabled={isDisabled}
             >
               <span className="vp-form-nav-btn-inner">

@@ -752,7 +752,7 @@
 .vp-form-nav {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: stretch;
   gap: var(--vp-candidate-brief-btn-gap);
   margin-top: var(--vp-candidate-brief-field-gap);
 }
@@ -761,14 +761,59 @@
   margin-top: var(--vp-candidate-brief-field-gap-tight);
 }
 
+.vp-form-nav .vp-brief-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vp-candidate-brief-btn-arrow-gap);
+  height: var(--vp-candidate-brief-btn-height);
+  padding: 0 var(--vp-candidate-brief-btn-pad-inline);
+  border-radius: var(--vp-radius) !important;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-btn-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-brief-btn-lh);
+  text-transform: uppercase;
+}
+
+.vp-form-nav--solo .vp-brief-btn--primary,
+.vp-form-nav .vp-brief-btn--primary {
+  flex: 1 1 auto;
+  background: var(--vp-link);
+  color: var(--vp-black);
+}
+
+.vp-form-nav--solo .vp-brief-btn--primary {
+  width: 100%;
+}
+
+.vp-form-nav .vp-brief-btn--previous {
+  flex: 0 0 auto;
+  border: 1px solid var(--vp-candidate-brief-btn-ghost-border);
+  background: transparent;
+  color: var(--vp-link);
+}
+
+.vp-brief-btn__icon {
+  display: flex;
+  width: var(--vp-candidate-brief-btn-arrow-size);
+  height: var(--vp-candidate-brief-btn-arrow-size);
+}
+
+.vp-brief-btn__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
 @media (max-width: 575px) {
   .vp-form-nav {
     flex-direction: column;
   }
 
-  .vp-form-nav .vp-form-nav-btn {
+  .vp-form-nav .vp-brief-btn {
     width: 100%;
-    text-align: center;
   }
 }
 
@@ -827,7 +872,7 @@
   height: 1rem;
   margin-right: 0.5rem;
   border: 2px solid rgba(var(--vp-black-rgb), 0.15);
-  border-top-color: var(--vp-btn-primary-text);
+  border-top-color: var(--vp-black);
   border-radius: var(--vp-radius-spinner);
   animation: vpSpin 0.8s linear infinite;
   vertical-align: -0.15em;
