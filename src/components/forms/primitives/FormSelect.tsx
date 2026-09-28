@@ -1,6 +1,8 @@
 /**
- * FormSelect — native select with custom chevron.
+ * FormSelect — native select with a filled caret in the chip.
  */
+
+import { BriefCaretIcon } from '@/components/forms/brief-icons';
 
 export type FormSelectOption = string | { value: string; label: string };
 
@@ -49,6 +51,9 @@ export function FormSelect({
           );
         })}
       </select>
+      <span className="vp-form-chip vp-form-chip--caret" aria-hidden="true">
+        <BriefCaretIcon />
+      </span>
     </div>
   );
 }

@@ -188,29 +188,9 @@
   position: relative;
 }
 
-.vp-form-select-wrap::before,
-.vp-form-select-wrap::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: var(--vp-candidate-brief-control-pad-bottom);
-  pointer-events: none;
-}
-
-.vp-form-select-wrap::before {
-  width: var(--vp-candidate-brief-chip-size);
-  height: var(--vp-candidate-brief-chip-size);
-  background: var(--vp-candidate-brief-chip-bg);
-}
-
-.vp-form-select-wrap::after {
-  right: 11px;
-  bottom: calc(var(--vp-candidate-brief-control-pad-bottom) + 11px);
+.vp-form-chip--caret svg {
   width: 8px;
-  height: 8px;
-  border-right: 1.5px solid var(--vp-text);
-  border-bottom: 1.5px solid var(--vp-text);
-  transform: rotate(45deg);
+  height: 6.5px;
 }
 
 .vp-form-select {
