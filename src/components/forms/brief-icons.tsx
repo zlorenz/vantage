@@ -16,6 +16,27 @@ export function BriefCaretIcon() {
  * Figma check.1 path. Translated so the painted ink center sits on the
  * viewBox center, then scaled via width/height (20 in boxes, 24 on steps).
  */
+export function BriefPreviousArrow() {
+  return (
+    <svg
+      className="vp-brief-btn__arrow"
+      width="16.971"
+      height="16.971"
+      viewBox="0 0 16.9706 16.9706"
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="M3.76056 15.64L1.33069 13.2101L10.5102 3.76061H1.0607L4.03055 1.0607H13.75L15.9099 3.22063V12.9401L13.21 15.9099V6.19048L3.76056 15.64Z"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Figma check.1 path. Translated so the painted ink center sits on the
+ * viewBox center, then scaled via width/height (20 in boxes, 24 on steps).
+ */
 export function BriefCheckIcon({ size }: { size: 20 | 24 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">

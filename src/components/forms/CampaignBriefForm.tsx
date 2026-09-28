@@ -9,6 +9,7 @@ import { useLocale } from 'next-intl';
 import type { Locale } from '@/i18n/routing';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { VpButton } from '@/components/ui/VpButton';
+import { BriefPreviousArrow } from '@/components/forms/brief-icons';
 import { FormStepIndicator } from '@/components/forms/FormStepIndicator';
 import { useCampaignBriefForm } from '@/components/forms/useCampaignBriefForm';
 import {
@@ -173,9 +174,7 @@ export function CampaignBriefForm() {
               onClick={prevStep}
             >
               <span className="vp-brief-btn__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M14.5 6 L8.5 12 L14.5 18" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
+                <BriefPreviousArrow />
               </span>
               {ui.previous}
             </VpButton>
