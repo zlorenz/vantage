@@ -422,37 +422,67 @@
 
 .vp-form-shell {
   width: 100%;
-  margin-bottom: 3rem;
 }
 
-@media (max-width: 575px) {
-  .vp-form-shell {
-    margin-bottom: 2.5rem;
-  }
+.vp-brief-section {
+  padding-top: var(--vp-candidate-brief-title-intro-gap) !important;
+}
+
+.vp-brief-title {
+  margin: 0;
+  font-size: var(--vp-candidate-brief-title-size);
+  line-height: var(--vp-candidate-brief-title-lh);
+  letter-spacing: 0;
+}
+
+.vp-brief-intro {
+  margin: 0 0 var(--vp-candidate-brief-intro-step-gap);
+  color: var(--vp-candidate-brief-intro-color);
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-brief-intro-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-brief-intro-lh);
+}
+
+.vp-brief-card {
+  position: relative;
+  padding: var(--vp-candidate-brief-card-pad);
+}
+
+.vp-brief-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      left top / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      left top / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      right top / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      right top / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      left bottom / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      left bottom / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      right bottom / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
+      right bottom / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat;
 }
 
 .vp-form-step-heading {
-  margin: 0 0 2rem;
+  margin: 0 0 var(--vp-candidate-brief-field-gap);
   color: var(--vp-text);
-  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-  font-weight: 700;
-  letter-spacing: var(--vp-uppercase-spacing);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-section-title-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-brief-section-title-lh);
   text-transform: uppercase;
-}
-
-@media (max-width: 767px) {
-  .vp-form-step-heading {
-    padding-bottom: 2rem;
-  }
-}
-
-.vp-form-step-count {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: var(--vp-form-helper-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: var(--vp-btn-letter-spacing);
 }
 
 /* Full-width timeline step progress — first/last align to container edges */
@@ -460,7 +490,7 @@
   display: flex;
   width: 100%;
   align-items: flex-start;
-  margin: 0 0 2rem;
+  margin: 0 0 var(--vp-candidate-brief-step-card-gap);
   padding: 0;
   list-style: none;
 }

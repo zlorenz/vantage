@@ -64,9 +64,6 @@ export function CampaignBriefForm() {
     );
   }
 
-  const stepTitle =
-    locale === 'zh' ? currentStepConfig.title : currentStepConfig.title.toUpperCase();
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (currentStep === TOTAL_STEPS) {
@@ -129,12 +126,10 @@ export function CampaignBriefForm() {
         locale={locale}
       />
 
-      <h2 className="vp-form-step-heading">
-        <span className="vp-form-step-count">{ui.stepCount(currentStep)}</span>
-        {stepTitle}
-      </h2>
+      <div className="vp-brief-card">
+        <h2 className="vp-form-step-heading">{currentStepConfig.title}</h2>
 
-      <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} noValidate>
         <input
           type="text"
           name="website"
@@ -204,7 +199,8 @@ export function CampaignBriefForm() {
             </VpButton>
           )}
         </nav>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

@@ -84,15 +84,15 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
       />
       <CondensedPageHeader>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h1 className="font-vp-heading text-vp-page-hero font-bold uppercase tracking-vp-page-hero">
+          <h1 className="vp-brief-title font-vp-heading font-bold uppercase tracking-vp-page-hero">
             {title}
           </h1>
         </div>
       </CondensedPageHeader>
 
-      <SectionWrapper fullBleed={true}>
+      <SectionWrapper fullBleed={true} className="vp-brief-section">
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <p className="mb-8 font-light text-vp-text-muted">{ui.formDescription}</p>
+          <p className="vp-brief-intro">{ui.formDescription}</p>
           <CampaignBriefForm />
         </div>
       </SectionWrapper>
