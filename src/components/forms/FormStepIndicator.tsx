@@ -24,13 +24,13 @@ export function FormStepIndicator({
   steps,
   currentStep,
   onGoToStep,
-  locale = 'en',
 }: FormStepIndicatorProps) {
   return (
     <ol className="vp-form-step-progress" aria-label="Form progress">
       {steps.map((step) => {
         const state = getStepState(step.step, currentStep);
-        const title = locale === 'zh' ? step.title : step.title.toUpperCase();
+        const title = step.title;
+        const index = String(step.step).padStart(2, '0');
 
         return (
           <li
@@ -45,7 +45,7 @@ export function FormStepIndicator({
                   onClick={() => onGoToStep(step.step)}
                   aria-label={`Go to step ${step.step}: ${step.title}`}
                 >
-                  ✓
+                  <span className="vp-form-step-check" aria-hidden="true" />
                 </button>
               ) : (
                 <span
@@ -53,7 +53,7 @@ export function FormStepIndicator({
                   aria-current={state === 'active' ? 'step' : undefined}
                   aria-label={`Step ${step.step}: ${step.title}`}
                 >
-                  {step.step}
+                  {index}
                 </span>
               )}
 

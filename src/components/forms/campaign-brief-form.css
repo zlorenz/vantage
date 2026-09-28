@@ -487,6 +487,7 @@
 
 /* Full-width timeline step progress — first/last align to container edges */
 .vp-form-step-progress {
+  --vp-brief-step-size: var(--vp-candidate-brief-step-size);
   display: flex;
   width: 100%;
   align-items: flex-start;
@@ -515,54 +516,57 @@
   align-items: center;
 }
 
-/* Connector segments — start outside each circle so lines don't overlap nodes */
-.vp-form-step-progress-item:first-child:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: calc(var(--vp-form-step-circle-size) / 2);
-  left: calc(var(--vp-form-step-circle-size) + 0.5rem);
-  right: 0;
-  height: 1px;
-  background: var(--vp-form-step-border);
-}
-
-.vp-form-step-progress-item:not(:first-child):not(:last-child)::before {
-  content: '';
-  position: absolute;
-  top: calc(var(--vp-form-step-circle-size) / 2);
-  left: 0;
-  width: calc(50% - var(--vp-form-step-circle-size) / 2 - 0.5rem);
-  height: 1px;
-  background: var(--vp-form-step-border);
-}
-
-.vp-form-step-progress-item:not(:first-child):not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: calc(var(--vp-form-step-circle-size) / 2);
-  left: calc(50% + var(--vp-form-step-circle-size) / 2 + 0.5rem);
-  right: 0;
-  height: 1px;
-  background: var(--vp-form-step-border);
-}
-
+/* Connectors meet the square edge. Squares sit above them (z-index).
+   Pending: 0.6px, white 0.15, dash 4px / gap 2px (Figma stroke-dasharray="4 2").
+   Into the active step: solid 0.6px white.
+   Between two completed steps: solid 0.6px --vp-link. */
+.vp-form-step-progress-item:first-child:not(:last-child)::after,
+.vp-form-step-progress-item:not(:first-child):not(:last-child)::before,
+.vp-form-step-progress-item:not(:first-child):not(:last-child)::after,
 .vp-form-step-progress-item:last-child:not(:first-child)::before {
   content: '';
   position: absolute;
-  top: calc(var(--vp-form-step-circle-size) / 2);
-  left: 0;
-  right: calc(var(--vp-form-step-circle-size) + 0.5rem);
-  height: 1px;
-  background: var(--vp-form-step-border);
+  top: calc(var(--vp-brief-step-size) / 2);
+  height: var(--vp-candidate-brief-connector-width);
+  background: repeating-linear-gradient(
+    to right,
+    var(--vp-candidate-brief-line) 0 var(--vp-candidate-brief-connector-dash),
+    transparent var(--vp-candidate-brief-connector-dash)
+      calc(
+        var(--vp-candidate-brief-connector-dash) +
+          var(--vp-candidate-brief-connector-gap)
+      )
+  );
 }
 
-.vp-form-step-progress-item--completed:first-child:not(:last-child)::after,
-.vp-form-step-progress-item--completed:not(:first-child):not(:last-child)::before,
-.vp-form-step-progress-item--completed:not(:first-child):not(:last-child)::after,
-.vp-form-step-progress-item--completed:last-child:not(:first-child)::before,
-.vp-form-step-progress-item--active:not(:first-child):not(:last-child)::before,
-.vp-form-step-progress-item--active:last-child:not(:first-child)::before {
+.vp-form-step-progress-item:first-child:not(:last-child)::after {
+  left: var(--vp-brief-step-size);
+  right: 0;
+}
+
+.vp-form-step-progress-item:not(:first-child):not(:last-child)::after {
+  left: calc(50% + var(--vp-brief-step-size) / 2);
+  right: 0;
+}
+
+.vp-form-step-progress-item:not(:first-child):not(:last-child)::before {
+  left: 0;
+  width: calc(50% - var(--vp-brief-step-size) / 2);
+}
+
+.vp-form-step-progress-item:last-child:not(:first-child)::before {
+  left: 0;
+  right: var(--vp-brief-step-size);
+}
+
+.vp-form-step-progress-item--active::before,
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--active)::after {
   background: var(--vp-text);
+}
+
+.vp-form-step-progress-item--completed::before,
+.vp-form-step-progress-item:has(+ .vp-form-step-progress-item--completed)::after {
+  background: var(--vp-link);
 }
 
 .vp-form-step-progress-node {
@@ -570,8 +574,10 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  max-width: 100%;
+  gap: var(--vp-candidate-brief-step-label-gap);
+  width: var(--vp-brief-step-size);
+  min-width: var(--vp-brief-step-size);
+  max-width: var(--vp-brief-step-size);
 }
 
 .vp-form-step-progress-item:first-child .vp-form-step-progress-node {
@@ -593,88 +599,83 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--vp-form-step-circle-size);
-  height: var(--vp-form-step-circle-size);
-  border: 1px solid var(--vp-form-step-border);
-  border-radius: 50%;
-  background: var(--vp-bg, #000000);
-  color: var(--vp-form-step-pending-text);
-  font-size: 0.85rem;
-  font-weight: 700;
-  line-height: 1;
+  box-sizing: border-box;
+  width: var(--vp-brief-step-size);
+  height: var(--vp-brief-step-size);
+  border: var(--vp-candidate-brief-step-pending-border-width) dashed
+    var(--vp-candidate-brief-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--vp-candidate-brief-muted-30);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-caption-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  line-height: var(--vp-candidate-brief-caption-lh);
+  letter-spacing: 0;
   cursor: default;
   padding: 0;
-  font-family: inherit;
 }
 
 .vp-form-step-progress-item--completed .vp-form-step-progress-circle {
-  border-color: var(--vp-text);
-  background: var(--vp-form-step-completed-bg);
-  color: var(--vp-text);
+  border-width: var(--vp-candidate-brief-step-completed-border-width);
+  border-style: dashed;
+  border-color: var(--vp-candidate-brief-line);
+  background: var(--vp-link);
+  color: var(--vp-black);
   cursor: pointer;
 }
 
 .vp-form-step-progress-item--active .vp-form-step-progress-circle {
-  border-color: var(--vp-link);
-  background: var(--vp-link);
-  color: var(--vp-bg);
+  border-color: transparent;
+  background: var(--vp-text);
+  color: var(--vp-black);
 }
 
 .vp-form-step-progress-item--pending .vp-form-step-progress-circle {
   pointer-events: none;
 }
 
-.vp-form-step-progress-item--completed .vp-form-step-progress-circle:hover {
-  border-color: var(--vp-text);
+/* Same construction as .vp-internal-select__box::after, drawn in a 24px cell. */
+.vp-form-step-check {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.vp-form-step-check::before {
+  content: '';
+  width: 7px;
+  height: 13px;
+  border-right: 2px solid var(--vp-black);
+  border-bottom: 2px solid var(--vp-black);
+  transform: rotate(45deg) translate(-1px, -2px);
 }
 
 .vp-form-step-progress-label {
-  color: var(--vp-form-helper-muted);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: var(--vp-uppercase-spacing);
-  line-height: 1.25;
+  color: var(--vp-text);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-caption-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-brief-caption-lh);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.vp-form-step-progress-item--active .vp-form-step-progress-label,
+.vp-form-step-progress-item--pending .vp-form-step-progress-label {
+  color: var(--vp-candidate-brief-muted-30);
+}
+
 .vp-form-step-progress-item--completed .vp-form-step-progress-label {
-  color: var(--vp-text);
+  color: var(--vp-link);
 }
 
 @media (max-width: 767px) {
-  .vp-form-step-progress-circle {
-    width: 1.75rem;
-    height: 1.75rem;
-    font-size: 0.75rem;
-  }
-
-  .vp-form-step-progress-item:first-child:not(:last-child)::after,
-  .vp-form-step-progress-item:not(:first-child):not(:last-child)::before,
-  .vp-form-step-progress-item:not(:first-child):not(:last-child)::after,
-  .vp-form-step-progress-item:last-child:not(:first-child)::before {
-    top: calc(1.75rem / 2);
-  }
-
-  .vp-form-step-progress-item:first-child:not(:last-child)::after {
-    left: calc(1.75rem + 0.35rem);
-  }
-
-  .vp-form-step-progress-item:not(:first-child):not(:last-child)::before {
-    width: calc(50% - 1.75rem / 2 - 0.35rem);
-  }
-
-  .vp-form-step-progress-item:not(:first-child):not(:last-child)::after {
-    left: calc(50% + 1.75rem / 2 + 0.35rem);
-  }
-
-  .vp-form-step-progress-item:last-child:not(:first-child)::before {
-    right: calc(1.75rem + 0.35rem);
-  }
-
-  .vp-form-step-progress-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.04em;
+  .vp-form-step-progress {
+    --vp-brief-step-size: 1.75rem;
   }
 }
 
