@@ -4,6 +4,7 @@
 
 import type { CampaignBriefStepConfig } from '@/lib/campaign-brief-fields';
 import type { Locale } from '@/i18n/routing';
+import { BriefCheckIcon } from '@/components/forms/brief-icons';
 
 export interface FormStepIndicatorProps {
   steps: CampaignBriefStepConfig[];
@@ -45,7 +46,7 @@ export function FormStepIndicator({
                   onClick={() => onGoToStep(step.step)}
                   aria-label={`Go to step ${step.step}: ${step.title}`}
                 >
-                  <span className="vp-form-step-check" aria-hidden="true" />
+                  <BriefCheckIcon size={24} />
                 </button>
               ) : (
                 <span

@@ -4,6 +4,7 @@
  */
 
 import type { ReactNode } from 'react';
+import { BriefCheckIcon } from '@/components/forms/brief-icons';
 
 export type FormCheckboxOption = string | { value: string; label: string };
 
@@ -58,7 +59,9 @@ export function FormCheckboxGroup({
                 onChange={() => onToggle(option.value)}
                 disabled={disabled}
               />
-              <span className="vp-form-checkbox-box" aria-hidden="true" />
+              <span className="vp-form-checkbox-box" aria-hidden="true">
+                <BriefCheckIcon size={20} />
+              </span>
               <span className="vp-form-checkbox-label">{option.label}</span>
             </label>
             {showExtra && (

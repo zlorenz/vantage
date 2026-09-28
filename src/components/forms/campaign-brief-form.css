@@ -309,19 +309,17 @@
   border-color: var(--vp-link);
   background: var(--vp-link);
   box-shadow: none;
+  color: var(--vp-black);
 }
 
-/* Same CSS tick as .vp-internal-select__box::after / the step check. */
-.vp-form-radio input:checked + .vp-form-radio-box::after,
-.vp-form-checkbox input:checked + .vp-form-checkbox-box::after {
-  content: "";
+.vp-form-radio-box svg,
+.vp-form-checkbox-box svg {
+  display: none;
+}
+
+.vp-form-radio input:checked + .vp-form-radio-box svg,
+.vp-form-checkbox input:checked + .vp-form-checkbox-box svg {
   display: block;
-  width: 7px;
-  height: 12px;
-  margin-top: -2px;
-  border-right: 2px solid var(--vp-black);
-  border-bottom: 2px solid var(--vp-black);
-  transform: rotate(45deg);
 }
 
 .vp-form-radio input:disabled ~ .vp-form-radio-label,
@@ -693,21 +691,10 @@
   pointer-events: none;
 }
 
-/* Same construction as .vp-internal-select__box::after, drawn in a 24px cell. */
-.vp-form-step-check {
-  display: grid;
-  place-items: center;
+.vp-form-step-progress-circle svg {
   width: 24px;
   height: 24px;
-}
-
-.vp-form-step-check::before {
-  content: '';
-  width: 7px;
-  height: 13px;
-  border-right: 2px solid var(--vp-black);
-  border-bottom: 2px solid var(--vp-black);
-  transform: rotate(45deg) translate(-1px, -2px);
+  color: var(--vp-black);
 }
 
 .vp-form-step-progress-label {

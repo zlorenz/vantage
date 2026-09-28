@@ -2,6 +2,8 @@
  * FormRadioGroup — custom-styled radio button list for campaign brief form.
  */
 
+import { BriefCheckIcon } from '@/components/forms/brief-icons';
+
 export type FormRadioOption = string | { value: string; label: string };
 
 export interface FormRadioGroupProps {
@@ -44,7 +46,9 @@ export function FormRadioGroup({
               onChange={() => onChange(option.value)}
               disabled={disabled}
             />
-            <span className="vp-form-radio-box" aria-hidden="true" />
+            <span className="vp-form-radio-box" aria-hidden="true">
+              <BriefCheckIcon size={20} />
+            </span>
             <span className="vp-form-radio-label">{option.label}</span>
           </label>
         );

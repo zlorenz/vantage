@@ -4,6 +4,7 @@
  * (same slot / no layout shift) with a placeholder for rough timeframe.
  */
 
+import { BriefCheckIcon } from '@/components/forms/brief-icons';
 import { FormTextInput } from '@/components/forms/primitives/FormTextInput';
 
 export interface FormDateFieldProps {
@@ -83,7 +84,9 @@ export function FormDateField({
           }}
           disabled={disabled}
         />
-        <span className="vp-form-checkbox-box" aria-hidden="true" />
+        <span className="vp-form-checkbox-box" aria-hidden="true">
+          <BriefCheckIcon size={20} />
+        </span>
         <span className="vp-form-checkbox-label">{unknownLabel}</span>
       </label>
     </div>
