@@ -127,7 +127,7 @@ export function CampaignBriefForm() {
 
       <div
         className={`vp-brief-card${
-          currentStep === 2 && values.campaign_type === '' ? ' vp-brief-card--tight' : ''
+          currentStep > 1 ? ' vp-brief-card--tight' : ''
         }`}
       >
         <h2 className="vp-form-step-heading">{currentStepConfig.title}</h2>

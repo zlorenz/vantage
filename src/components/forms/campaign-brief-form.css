@@ -65,7 +65,7 @@
 
 .vp-form-label {
   display: block;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   color: var(--vp-candidate-brief-label-color);
   font-family: var(--font-vp-heading);
   font-size: var(--vp-candidate-brief-caption-size);
@@ -76,8 +76,24 @@
   text-transform: uppercase;
 }
 
+.vp-form-field:has(.vp-field-hint--before) > .vp-form-label {
+  margin-bottom: 0;
+}
+
 .vp-form-label-required {
   color: var(--vp-link);
+}
+
+.vp-form-control:not(.vp-form-textarea) {
+  box-sizing: border-box;
+  height: 64px;
+  min-height: 64px;
+  padding-top: calc(
+    var(--vp-candidate-brief-control-pad-top) + (32px - 1.5em) / 2
+  );
+  padding-bottom: calc(
+    var(--vp-candidate-brief-control-pad-bottom) + (32px - 1.5em) / 2
+  );
 }
 
 .vp-form-control {
