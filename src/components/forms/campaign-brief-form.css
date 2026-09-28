@@ -178,8 +178,12 @@
 }
 
 .vp-form-textarea {
-  min-height: 0;
+  height: auto;
+  min-height: 112px;
+  max-height: 20rem;
   padding-bottom: var(--vp-candidate-brief-textarea-pad-bottom);
+  overflow-y: auto;
+  field-sizing: content;
   resize: vertical;
 }
 

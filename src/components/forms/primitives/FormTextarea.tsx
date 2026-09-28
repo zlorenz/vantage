@@ -21,7 +21,6 @@ export function FormTextarea({
   disabled = false,
   hasError = false,
   placeholder,
-  rows = 5,
 }: FormTextareaProps) {
   return (
     <textarea
@@ -32,7 +31,6 @@ export function FormTextarea({
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
       placeholder={placeholder}
-      rows={rows}
     />
   );
 }
