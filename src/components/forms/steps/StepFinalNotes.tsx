@@ -8,6 +8,7 @@ import { useCallback, useRef, useState } from 'react';
 import { CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefFieldKey } from '@/lib/campaign-brief-fields';
 import type { CampaignBriefUi } from '@/lib/campaign-brief-i18n';
+import { BriefUploadIcon } from '@/components/forms/brief-icons';
 import { FormField, FormTextarea } from '@/components/forms/primitives';
 import type {
   CampaignBriefFieldErrors,
@@ -28,27 +29,6 @@ export interface StepFinalNotesProps {
 }
 
 const ACCEPTED_FILE_TYPES = CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS.map((ext) => `.${ext}`).join(',');
-
-function CloudUploadIcon() {
-  return (
-    <svg
-      className="vp-form-dropzone-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 16V7" />
-      <path d="m8.5 10.5 3.5-3.5 3.5 3.5" />
-      <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25" />
-      <path d="M8 19h8" />
-    </svg>
-  );
-}
 
 export function StepFinalNotes({
   ui,
@@ -162,7 +142,7 @@ export function StepFinalNotes({
           onDragOver={onDragOver}
           onDrop={onDrop}
         >
-          <CloudUploadIcon />
+          <BriefUploadIcon />
           <p className="vp-form-dropzone-title">{ui.dropzonePrompt}</p>
           <p className="vp-form-dropzone-or">{ui.dropzoneOr}</p>
           <button

@@ -12,6 +12,23 @@ export function BriefCaretIcon() {
   );
 }
 
+export function BriefUploadIcon() {
+  return (
+    <svg className="vp-form-dropzone-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+      <g transform="translate(0 -0.5)">
+        <path
+          fill="currentColor"
+          d="M7 10.5H9.62171L10.0285 9.64364C10.9129 7.78198 12.8082 6.5 15 6.5C18.0376 6.5 20.5 8.96243 20.5 12C20.5 14.332 19.0487 16.325 17 17.1251V18.7101C19.8915 17.8496 22 15.171 22 12C22 8.13401 18.866 5 15 5C12.2076 5 9.7971 6.63505 8.67363 9H7C4.23858 9 2 11.2386 2 14C2 16.7614 4.23858 19 7 19V17.5C5.067 17.5 3.5 15.933 3.5 14C3.5 12.067 5.067 10.5 7 10.5Z"
+        />
+        <path
+          fill="currentColor"
+          d="M9.53033 17.5303L8.46967 16.4697L12 12.9393L15.5303 16.4697L14.4697 17.5303L12.75 15.8107V20H11.25V15.8107L9.53033 17.5303Z"
+        />
+      </g>
+    </svg>
+  );
+}
+
 export function BriefCalendarIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">

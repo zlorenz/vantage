@@ -359,7 +359,7 @@
   width: var(--vp-candidate-brief-btn-arrow-size);
   height: var(--vp-candidate-brief-btn-arrow-size);
   margin: 0;
-  color: var(--vp-candidate-brief-muted-30);
+  color: var(--vp-form-placeholder);
 }
 
 .vp-form-dropzone--active .vp-form-dropzone-icon {
