@@ -100,7 +100,7 @@ const RIM_SOFT_FOCUS = true;
  * Lens radius as fraction of symbol width.
  * Slightly larger than the wordmark loupe so the collage reads on a square mark.
  */
-const LENS_R_FRAC = 0.19;
+const LENS_R_FRAC = 0.213;
 /**
  * Reveal-buffer supersample vs logo CSS size (× devicePixelRatio).
  * Sized so ~ZOOM_CENTER magnification still has spare source pixels on Retina.
@@ -2023,14 +2023,27 @@ function paintGlassOverlay(
   ctx.fillRect(lx - lensR, ly - lensR, lensR * 2, lensR * 2);
   ctx.restore();
 
-  ctx.strokeStyle = "rgba(255,255,255,0.28)";
-  ctx.lineWidth = Math.max(1, lensR * 0.018);
-  ctx.beginPath();
-  ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(0,0,0,0.18)";
-  ctx.lineWidth = Math.max(0.75, lensR * 0.012);
+  // Reflective rim: bright where it faces the light (lower-left), dark opposite.
+  // Replaces the flat white+black hairlines, which stacked into a gray ring.
+  const highlight = Math.PI * 0.75;
+  const rimWidth = Math.max(1.35, lensR * 0.014);
+  ctx.lineWidth = rimWidth;
+  ctx.lineJoin = "round";
+  if (typeof ctx.createConicGradient === "function") {
+    const rim = ctx.createConicGradient(highlight, lx, ly);
+    rim.addColorStop(0, "rgba(255,255,255,0.92)");
+    rim.addColorStop(0.08, "rgba(255,255,255,0.5)");
+    rim.addColorStop(0.18, "rgba(255,255,255,0.12)");
+    rim.addColorStop(0.36, "rgba(255,255,255,0.02)");
+    rim.addColorStop(0.5, "rgba(0,0,0,0.4)");
+    rim.addColorStop(0.64, "rgba(255,255,255,0.02)");
+    rim.addColorStop(0.82, "rgba(255,255,255,0.14)");
+    rim.addColorStop(0.92, "rgba(255,255,255,0.55)");
+    rim.addColorStop(1, "rgba(255,255,255,0.92)");
+    ctx.strokeStyle = rim;
+  } else {
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  }
   ctx.beginPath();
   ctx.arc(lx, ly, lensR, 0, Math.PI * 2);
   ctx.stroke();

@@ -10,8 +10,8 @@ import {createFooterLensEngine} from './footer-lens-engine';
 import {createGradientBgEngine} from './gradient-bg-engine';
 import './footer-lens.css';
 
-/** Near 1:1 follow — only a light ease vs OS cursor (was monopo 0.1). */
-const LERP = 0.4;
+/** Between the floaty 0.1 follow and the near 1:1 0.4 follow. */
+const LERP = 0.25;
 const SETTLE_PX = 0.12;
 
 type FooterLensStageProps = {
