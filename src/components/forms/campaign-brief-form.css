@@ -431,8 +431,12 @@
   border-color: var(--vp-orange);
 }
 
-.vp-form-attach-btn:disabled {
-  opacity: 0.55;
+.vp-form-attach-btn:disabled,
+.vp-form-attach-btn:disabled:hover {
+  border-color: var(--vp-orange);
+  background: transparent;
+  color: var(--vp-orange);
+  opacity: var(--vp-candidate-brief-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -932,7 +936,7 @@
   cursor: pointer;
 }
 
-.vp-brief-btn--confirm:hover {
+.vp-brief-btn--confirm:hover:not(:disabled) {
   border-color: var(--vp-candidate-brief-control-hover);
 }
 
@@ -975,6 +979,7 @@
 
 .vp-form-control:disabled,
 .vp-brief-btn:disabled,
+.vp-brief-btn--confirm:disabled,
 .vp-form-attach-btn:disabled,
 .vp-form-radio input:disabled ~ .vp-form-radio-label,
 .vp-form-checkbox input:disabled ~ .vp-form-checkbox-label,
@@ -982,10 +987,29 @@
   opacity: var(--vp-candidate-brief-disabled-opacity);
 }
 
-.vp-form-control:disabled:hover,
-.vp-brief-btn:disabled:hover {
+.vp-form-control:disabled:hover {
   background-color: inherit;
   border-color: inherit;
+}
+
+.vp-form-nav .vp-brief-btn--primary:disabled,
+.vp-form-nav .vp-brief-btn--primary:disabled:hover {
+  background: var(--vp-link);
+  color: var(--vp-black);
+}
+
+.vp-form-nav .vp-brief-btn--previous:disabled,
+.vp-form-nav .vp-brief-btn--previous:disabled:hover {
+  border-color: var(--vp-candidate-brief-btn-ghost-border);
+  background: transparent;
+  color: var(--vp-link);
+}
+
+.vp-brief-btn--confirm:disabled,
+.vp-brief-btn--confirm:disabled:hover {
+  border-color: var(--vp-candidate-brief-btn-ghost-border);
+  background: transparent;
+  color: var(--vp-text);
 }
 
 .vp-form-nav .vp-brief-btn--primary:hover:not(:disabled) {
