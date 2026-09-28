@@ -40,7 +40,8 @@
 }
 
 .vp-footer-lens-proto__gradient,
-.vp-footer-lens-proto__canvas {
+.vp-footer-lens-proto__canvas,
+.vp-footer-lens-proto__glass {
   position: absolute;
   left: 0;
   top: 0;
@@ -54,8 +55,14 @@
   pointer-events: none;
 }
 
-.vp-footer-lens-proto__canvas {
+.vp-footer-lens-proto__glass {
   z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.vp-footer-lens-proto__canvas {
+  z-index: 2;
   cursor: none;
   touch-action: none;
 }

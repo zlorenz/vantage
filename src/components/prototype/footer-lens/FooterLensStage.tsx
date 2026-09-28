@@ -25,6 +25,7 @@ export function FooterLensStage({
 }: FooterLensStageProps) {
   const lensCanvasRef = useRef<HTMLCanvasElement>(null);
   const gradientCanvasRef = useRef<HTMLCanvasElement>(null);
+  const glassRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export function FooterLensStage({
     if (!lensCanvas || !gradientCanvas || !wrap) return;
 
     const lens = createFooterLensEngine(lensCanvas);
+    lens.setGlassHost(glassRef.current);
     let gradient: ReturnType<typeof createGradientBgEngine> | null = null;
     try {
       gradient = createGradientBgEngine(gradientCanvas);
@@ -106,18 +108,18 @@ export function FooterLensStage({
         }
 
         lens.setPointer({x: targetX, y: targetY});
-        lens.drawAt(smoothX, smoothY, true);
         gradient?.setPointer({x: smoothX, y: smoothY}, cssW, cssH);
         gradient?.frame();
+        lens.drawAt(smoothX, smoothY, true);
 
         raf = requestAnimationFrame(tick);
         return;
       }
 
       lens.setPointer(null);
-      lens.drawAt(smoothX, smoothY, false);
       gradient?.setPointer(null, cssW, cssH);
       gradient?.frame();
+      lens.drawAt(smoothX, smoothY, false);
       idleSettleFrames -= 1;
       if (idleSettleFrames > 0) {
         raf = requestAnimationFrame(tick);
@@ -180,6 +182,7 @@ export function FooterLensStage({
         className="vp-footer-lens-proto__gradient"
         aria-hidden
       />
+      <div ref={glassRef} className="vp-footer-lens-proto__glass" aria-hidden />
       <canvas
         ref={lensCanvasRef}
         className="vp-footer-lens-proto__canvas"

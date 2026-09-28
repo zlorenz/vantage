@@ -1,7 +1,7 @@
 /**
  * Symbol loupe — Canvas 2D approximation of monopo.london's Pixi stack.
  * Prototype for the About hero: large Vantage mark as a collage canvas.
- * 1. White symbol with inverse circular hole (outside lens)
+ * 1. Inline glass symbol (crisp edge + inner rim) — the loupe canvas only draws the disc
  * 2. Photo-collage disc (inside lens) with displacement warp + rim RGB split
  * 3. Glass rim overlay
  * 4. Cursor lerp for organic tracking
@@ -36,6 +36,7 @@
  * ---------------------------------------------------------------------------
  */
 
+import {buildGlassMarkSvg, GLASS_PAD_VB} from "./glass-mark-svg";
 import {
   SYMBOL_PATH_D,
   SYMBOL_VIEWBOX_H,
@@ -48,6 +49,8 @@ export type FooterLensEngine = {
   setSize: (cssWidth: number, cssHeight: number) => void;
   /** Immediate target (used by rAF lerp in the component). */
   setPointer: (pointer: FooterLensPointer) => void;
+  /** Inline SVG host for the glass mark. The loupe canvas stays above it. */
+  setGlassHost: (host: HTMLElement | null) => void;
   /** Draw at a smoothed lens center (component owns lerp). */
   drawAt: (lx: number, ly: number, active: boolean) => void;
   destroy: () => void;
@@ -2044,6 +2047,8 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   let loupeScratch: LoupeScratch | null = null;
   let lastBuiltLx = Number.NaN;
   let lastBuiltLy = Number.NaN;
+  let glassHost: HTMLElement | null = null;
+  let glassKey = "";
 
   const ensurePath = () => {
     if (!path2d) path2d = new Path2D(SYMBOL_PATH_D);
@@ -2153,52 +2158,76 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
 
+  const glassPadCss = (logoW: number) => (logoW * GLASS_PAD_VB) / SYMBOL_VIEWBOX_W;
+
+  const syncGlass = (hole: {x: number; y: number; r: number} | null) => {
+    const host = glassHost;
+    if (!host) return;
+    if (!cache) {
+      host.replaceChildren();
+      glassKey = "";
+      return;
+    }
+    const {logoX, logoY, logoW, logoH} = cache;
+    const pad = glassPadCss(logoW);
+    const key = `${logoW.toFixed(2)}x${logoH.toFixed(2)}`;
+    host.style.left = `${logoX - pad}px`;
+    host.style.top = `${logoY - pad}px`;
+    host.style.width = `${logoW + pad * 2}px`;
+    host.style.height = `${logoH + pad * 2}px`;
+    if (glassKey !== key) {
+      glassKey = key;
+      host.innerHTML = buildGlassMarkSvg();
+    }
+    if (!hole) {
+      host.style.maskImage = "";
+      host.style.setProperty("-webkit-mask-image", "");
+      return;
+    }
+    const cx = hole.x - (logoX - pad);
+    const cy = hole.y - (logoY - pad);
+    const mask = `radial-gradient(circle ${hole.r}px at ${cx}px ${cy}px, transparent ${Math.max(0, hole.r - 1)}px, #000 ${hole.r + 1}px)`;
+    host.style.maskImage = mask;
+    host.style.setProperty("-webkit-mask-image", mask);
+  };
+
   const drawIdle = () => {
     if (!cache) return;
     clear();
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(cache.whiteWordmark, cache.logoX, cache.logoY, cache.logoW, cache.logoH);
+    syncGlass(null);
   };
 
-  const drawActive = (lx: number, ly: number) => {
+  const drawActive = (lx: number, ly: number, rebuildDisc: boolean) => {
     if (!cache) return;
-    const { logoX, logoY, logoW, logoH, whiteWordmark } = cache;
+    const { logoW } = cache;
     const lensR = logoW * LENS_R_FRAC;
     const blitPx = lensDiscDiameterPx(lensR, dpr);
     // Cap warp raster; blit still fills the full device-pixel disc.
     let workPx = Math.min(blitPx, MAX_LOUPE_WORK_PX);
     if (workPx % 2 !== 0) workPx -= 1;
     workPx = Math.max(2, workPx);
-    const workDpr = (workPx / blitPx) * dpr;
 
     clear();
+    syncGlass({x: lx, y: ly, r: lensR});
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    const { disc, scratch } = buildLensDisc(
-      cache,
-      lensR,
-      lx,
-      ly,
-      workDpr,
-      workPx,
-      loupeScratch,
-    );
-    loupeScratch = scratch;
-    lastBuiltLx = lx;
-    lastBuiltLy = ly;
-
-    // Wordmark with lens hole FIRST. If the disc is drawn first, evenodd-hole
-    // antialiasing fringes white into the circle and reads as a pale rim halo
-    // over pure background. Disc on top covers that fringe.
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(0, 0, cssW, cssH);
-    ctx.arc(lx, ly, lensR, 0, Math.PI * 2, true);
-    ctx.clip("evenodd");
-    ctx.drawImage(whiteWordmark, logoX, logoY, logoW, logoH);
-    ctx.restore();
+    if (rebuildDisc || !loupeScratch) {
+      const workDpr = (workPx / blitPx) * dpr;
+      const built = buildLensDisc(
+        cache,
+        lensR,
+        lx,
+        ly,
+        workDpr,
+        workPx,
+        loupeScratch,
+      );
+      loupeScratch = built.scratch;
+      lastBuiltLx = lx;
+      lastBuiltLy = ly;
+    }
+    const disc = loupeScratch.out;
 
     const cxDev = lx * dpr;
     const cyDev = ly * dpr;
@@ -2217,7 +2246,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
 
   const redraw = () => {
     if (lastActive && cache) {
-      drawActive(lastLx, lastLy);
+      drawActive(lastLx, lastLy, true);
     } else {
       drawIdle();
     }
@@ -2249,11 +2278,18 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     setPointer(next) {
       pointer = next;
     },
+    setGlassHost(host) {
+      glassHost = host;
+      glassKey = "";
+      if (lastActive && cache) syncGlass({x: lastLx, y: lastLy, r: cache.logoW * LENS_R_FRAC});
+      else syncGlass(null);
+    },
     drawAt(lx, ly, active) {
       if (
         active &&
         lastActive &&
-        cache &&
+        cache != null &&
+        loupeScratch != null &&
         Math.abs(lx - lastBuiltLx) < LOUPE_MOVE_EPS &&
         Math.abs(ly - lastBuiltLy) < LOUPE_MOVE_EPS
       ) {
@@ -2270,7 +2306,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
         drawIdle();
         return;
       }
-      drawActive(lx, ly);
+      drawActive(lx, ly, true);
     },
     destroy() {
       destroyed = true;
@@ -2279,6 +2315,9 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       pointer = null;
       collage = null;
       loupeScratch = null;
+      if (glassHost) glassHost.replaceChildren();
+      glassHost = null;
+      glassKey = "";
     },
     getDpr() {
       return dpr;
