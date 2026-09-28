@@ -512,17 +512,23 @@
   }
 
   .vp-case-shell .vp-case-carousel__play-circle {
-    width: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
-    height: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
+    width: var(--vp-candidate-portfolio-case-mobile-play-size, 48px);
+    height: var(--vp-candidate-portfolio-case-mobile-play-size, 48px);
   }
 
+  /* Same 0.3 / 0.25 glyph ratio as the 80px desktop square. */
   .vp-case-shell .vp-case-carousel__play-triangle {
-    border-width: 0.5rem 0 0.5rem 0.85rem;
+    border-width: 0.45rem 0 0.45rem 0.75rem;
   }
 
   .vp-case-shell .vp-case-carousel .h-20.w-20 {
-    width: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
-    height: var(--vp-candidate-portfolio-case-mobile-play-size, 64px);
+    width: var(--vp-candidate-portfolio-case-mobile-play-size, 48px);
+    height: var(--vp-candidate-portfolio-case-mobile-play-size, 48px);
+  }
+
+  .vp-case-shell .vp-case-carousel .h-20.w-20 > span {
+    border-block-width: 0.45rem;
+    border-inline-start-width: 0.75rem;
   }
 
   .vp-case-shell .vp-case-carousel__bottom-bar {
@@ -542,7 +548,7 @@
 
   .vp-case-shell .vp-case-carousel__title {
     font-family: var(--font-vp-heading);
-    font-size: var(--vp-candidate-portfolio-case-mobile-title-size, 30px);
+    font-size: var(--vp-candidate-portfolio-case-mobile-overlay-title-size, 22px);
     font-weight: 700;
     line-height: var(--vp-candidate-portfolio-case-mobile-title-lh, 1.1);
     letter-spacing: 0;
@@ -552,7 +558,22 @@
     gap: var(--vp-overlay-mobile-title-tag-gap, 12px);
   }
 
+  .vp-case-shell .vp-case-carousel__info-btn {
+    height: var(--vp-candidate-portfolio-case-mobile-info-btn-height, 32px);
+    gap: var(--vp-candidate-portfolio-case-mobile-info-btn-gap, 6px);
+    padding-inline: var(
+      --vp-candidate-portfolio-case-mobile-info-btn-pad,
+      10px
+    );
+  }
+
+  .vp-case-shell .vp-case-carousel__info-icon {
+    width: var(--vp-candidate-portfolio-case-mobile-info-icon-size, 16px);
+    height: var(--vp-candidate-portfolio-case-mobile-info-icon-size, 16px);
+  }
+
   .vp-case-shell .vp-case-carousel__info-label {
     font-size: var(--vp-candidate-portfolio-case-mobile-brand-size, 12px);
+    line-height: 1;
   }
 }

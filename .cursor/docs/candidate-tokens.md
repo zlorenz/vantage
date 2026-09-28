@@ -219,7 +219,12 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-pill-height` | ~~`48px`~~ → `36px` | pills ≤575 | QC: a little smaller | pending | Desktop stays 64px. |
 | `--vp-candidate-portfolio-case-mobile-pill-pad-inline` | `12px` | pills pad-x ≤575 | QC with height 36 | pending | Was 16px. |
 | `--vp-candidate-portfolio-case-mobile-pill-gap` | `2px` | pills | gap-2 | pending | |
-| `--vp-candidate-portfolio-case-mobile-play-size` | `64px` | play chrome ≤575 under `.vp-case-shell` | `2283:30842` | pending | Desktop/peek stay 80px. |
+| `--vp-candidate-portfolio-case-mobile-play-size` | ~~`64px`~~ → `48px` | play chrome ≤575 under `.vp-case-shell` (carousel + single embed) | `2283:30842` + QC | pending | Desktop stays 80px. Glyph scales with the square. |
+| `--vp-candidate-portfolio-case-mobile-overlay-title-size` | `22px` | `.vp-case-carousel__title` ≤575 | QC: poster title smaller than page h1 | pending | Page campaign title stays `--vp-candidate-portfolio-case-mobile-title-size` (30px). |
+| `--vp-candidate-portfolio-case-mobile-info-btn-height` | `32px` | `.vp-case-carousel__info-btn` ≤575 | QC | pending | Desktop chip stays 48px. |
+| `--vp-candidate-portfolio-case-mobile-info-icon-size` | `16px` | info icon ≤575 | QC | pending | Desktop icon stays 24px. |
+| `--vp-candidate-portfolio-case-mobile-info-btn-pad` | `10px` | info chip pad-inline ≤575 | QC | pending | Desktop pad stays 16px. |
+| `--vp-candidate-portfolio-case-mobile-info-btn-gap` | `6px` | icon→label gap ≤575 | QC | pending | Desktop gap stays 8px. |
 | `--vp-candidate-portfolio-case-mobile-dept-title-size` | `22px` | `.vp-credits__dept-name` ≤575 | h5 | pending | |
 | `--vp-candidate-portfolio-case-mobile-credits-pad-top` | `60px` | `.vp-case-credits-band` ≤575 | `pt-60` | pending | |
 | `--vp-candidate-portfolio-case-mobile-section-gap` | `80px` | credits↔KV rhythm | gap-80 | pending | |
