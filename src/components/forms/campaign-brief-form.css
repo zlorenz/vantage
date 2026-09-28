@@ -542,6 +542,8 @@
 .vp-brief-card--tight .vp-form-step-heading {
   margin-bottom: var(--vp-candidate-brief-field-gap-tight);
 }
+
+.vp-form-step-heading {
   margin: 0 0 var(--vp-candidate-brief-field-gap);
   color: var(--vp-text);
   font-family: var(--font-vp-heading);
