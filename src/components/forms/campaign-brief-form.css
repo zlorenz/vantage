@@ -358,74 +358,79 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  min-height: 11rem;
-  padding: 1.75rem 1.25rem;
-  border: 1px dashed var(--vp-input-border);
-  background: var(--vp-input-bg);
+  gap: var(--vp-candidate-brief-dropzone-gap);
+  min-height: 0;
+  padding: var(--vp-candidate-brief-dropzone-pad-block)
+    var(--vp-candidate-brief-dropzone-pad-inline);
+  border: var(--vp-candidate-brief-step-pending-border-width) dashed
+    var(--vp-candidate-brief-line);
+  background: transparent;
   text-align: center;
-  transition:
-    background-color var(--vp-transition),
-    border-color var(--vp-transition);
 }
 
 .vp-form-dropzone--active {
-  border-color: var(--vp-input-border-focus);
-  background: var(--vp-input-bg-focus);
+  border-color: var(--vp-link);
+  background: var(--vp-candidate-brief-dropzone-active-fill);
 }
 
 .vp-form-dropzone--disabled {
-  opacity: 0.55;
   pointer-events: none;
 }
 
 .vp-form-dropzone-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  color: var(--vp-form-helper-muted);
-  margin-bottom: 0.25rem;
+  width: var(--vp-candidate-brief-btn-arrow-size);
+  height: var(--vp-candidate-brief-btn-arrow-size);
+  margin: 0;
+  color: var(--vp-candidate-brief-muted-30);
 }
 
 .vp-form-dropzone--active .vp-form-dropzone-icon {
-  color: var(--vp-text);
+  color: var(--vp-link);
 }
 
 .vp-form-dropzone-title {
   margin: 0;
-  color: var(--vp-text);
-  font-size: var(--vp-form-input-size);
-  font-weight: 600;
+  color: var(--vp-candidate-brief-muted-30);
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-brief-control-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-brief-control-lh);
 }
 
 .vp-form-dropzone-or {
   margin: 0;
-  color: var(--vp-form-helper-muted);
-  font-size: 0.8rem;
+  color: var(--vp-form-placeholder);
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-brief-caption-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-brief-control-lh);
+}
+
+.vp-form-file-field .vp-field-hint--before {
+  margin-bottom: var(--vp-candidate-brief-dropzone-gap);
 }
 
 .vp-form-attach-btn {
   display: inline-block;
-  margin-top: 0.35rem;
-  padding: var(--vp-btn-padding);
-  border: 1px solid var(--vp-btn-ghost-border);
-  border-radius: 9999px;
-  background: var(--vp-btn-ghost-bg);
-  color: var(--vp-btn-ghost-text);
-  font-family: var(--vp-font-heading);
-  font-size: var(--vp-btn-font-size);
-  line-height: var(--vp-btn-line-height);
-  font-weight: 600;
-  letter-spacing: var(--vp-btn-select-files-spacing);
+  margin-top: 0;
+  padding: var(--vp-candidate-brief-browse-pad);
+  border: 1px solid var(--vp-orange);
+  border-radius: var(--vp-radius);
+  background: transparent;
+  color: var(--vp-orange);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-brief-caption-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-brief-caption-lh);
   text-transform: uppercase;
   cursor: pointer;
-  transition:
-    background-color var(--vp-transition),
-    border-color var(--vp-transition);
 }
 
 .vp-form-attach-btn:hover:not(:disabled) {
-  background: var(--vp-btn-ghost-hover-bg);
-  border-color: var(--vp-btn-ghost-hover-border);
+  background: transparent;
+  border-color: var(--vp-orange);
 }
 
 .vp-form-attach-btn:disabled {
