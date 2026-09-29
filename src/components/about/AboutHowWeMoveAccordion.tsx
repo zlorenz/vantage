@@ -20,6 +20,17 @@ type AboutHowWeMoveAccordionProps = {
   items: readonly HowWeMoveAccordionItem[];
 };
 
+function BracketToggle({ expanded }: { expanded: boolean }) {
+  return (
+    <span
+      className={`vp-how-we-move__bracket${expanded ? ' is-open' : ''}`}
+      aria-hidden="true"
+    >
+      <span className="vp-how-we-move__bracket-glyph" />
+    </span>
+  );
+}
+
 function ExpandToggle({ expanded }: { expanded: boolean }) {
   return (
     <span className="vp-how-we-move__toggle" aria-hidden="true">
@@ -52,7 +63,12 @@ export function AboutHowWeMoveAccordion({
   return (
     <div className="vp-how-we-move">
       <div className="vp-how-we-move__intro">
-        <p className="vp-how-we-move__subtitle">{subtitle}</p>
+        <p className="vp-how-we-move__subtitle">
+          <span className="vp-how-we-move__subtitle-mark" aria-hidden="true">
+            ●{' '}
+          </span>
+          {subtitle}
+        </p>
         <h2 className="vp-how-we-move__heading">{heading}</h2>
       </div>
 
@@ -80,6 +96,7 @@ export function AboutHowWeMoveAccordion({
                     {item.label}
                   </span>
                   <ExpandToggle expanded={expanded} />
+                  <BracketToggle expanded={expanded} />
                 </button>
               </h3>
 

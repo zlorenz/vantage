@@ -35,7 +35,7 @@ export async function AboutHowWeMoveSection() {
   });
 
   return (
-    <SectionWrapper fullBleed className="bg-white text-black">
+    <SectionWrapper fullBleed className="vp-about-workflow-section bg-white text-black">
       <div className="vp-content-rail">
         <AboutHowWeMoveAccordion
           subtitle={t('howWeMoveSubtitle')}
