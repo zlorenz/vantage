@@ -132,6 +132,15 @@ export const ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY = defineQuery(`
  * About statement film strips — ten portfolio posters after the tab slices.
  * Inclusive [8..17] is ten items. Same projection as the marker query.
  */
+/** One poster after the film-strip slice, for the services feature image. */
+export const ABOUT_FEATURE_POSTER_QUERY = defineQuery(`
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
+  | order(publishedAt desc) [18..18] {
+    title,
+    featuredImage
+  }
+`)
+
 export const ABOUT_STATEMENT_FILM_STRIP_QUERY = defineQuery(`
   *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
   | order(publishedAt desc) [8..17] {
