@@ -93,7 +93,7 @@ export function AboutHowWeMoveAccordion({
                     <span className="vp-how-we-move__trigger-number" aria-hidden="true">
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    {item.label}
+                    <span className="vp-how-we-move__trigger-title">{item.label}</span>
                   </span>
                   <ExpandToggle expanded={expanded} />
                   <BracketToggle expanded={expanded} />

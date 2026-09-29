@@ -233,13 +233,21 @@
   }
 
   .vp-how-we-move__trigger-label {
+    align-items: flex-start;
     gap: 20px;
     font-size: var(--vp-candidate-about-feature-title-size);
     line-height: var(--vp-candidate-about-feature-title-lh);
   }
 
+  .vp-how-we-move__trigger-number,
+  .vp-how-we-move__trigger-title {
+    text-box-trim: trim-start;
+    text-box-edge: cap alphabetic;
+  }
+
   .vp-how-we-move__trigger-number {
     width: 32px;
+    padding-top: 2px;
     font-size: var(--vp-candidate-about-step-size);
     line-height: var(--vp-candidate-about-step-lh);
     color: var(--vp-candidate-about-black-30);
