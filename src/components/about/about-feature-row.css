@@ -50,6 +50,12 @@
     border-top-color: transparent;
   }
 
+  section.vp-about-feature-section .vp-container {
+    width: 100%;
+    max-width: none;
+    padding-inline: 0;
+  }
+
   section.vp-about-feature-section + section.vp-about-feature-section .vp-about-feature__desktop,
   section.vp-about-feature-section .vp-about-feature__desktop {
     margin-top: var(--vp-candidate-about-section-pad-block);
@@ -72,7 +78,7 @@
 
   .vp-about-feature__media,
   .vp-about-feature__copy {
-    flex: 1 1 0;
+    flex: 0 1 640px;
     width: auto;
     max-width: 640px;
     min-width: 0;
@@ -122,6 +128,7 @@
     gap: 160px;
     justify-content: center;
     padding-block: var(--vp-candidate-about-cell-pad);
+    padding-inline-end: var(--vp-candidate-about-cell-pad);
   }
 
   .vp-about-feature--mirrored .vp-about-feature__copy {
