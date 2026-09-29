@@ -1,8 +1,11 @@
 'use client';
 
 /**
- * About tabbed panel — hover/focus-driven menu with image + description swap.
+ * About tabbed panel — click-driven menu with image + description swap.
  * Shared by Who We Are (menu left) and Production House (menu right) sections.
+ *
+ * Selection changes on click only. Hover restyles inactive rows so they
+ * still read as clickable; it does not change the active item.
  */
 
 import { useState } from 'react';
@@ -28,15 +31,20 @@ type AboutTabbedPanelInteractiveProps = {
 
 const THEME_CLASSES: Record<
   AboutTabbedPanelTheme,
-  { tabDefault: string; tabSelected: string; description: string }
+  { tabDefault: string; tabInactiveHover: string; tabSelected: string; description: string }
 > = {
   light: {
+    // Resting alpha stays at the pre-Figma 0.4. Commit 6 moves the rest
+    // state to 0.2; hover then lands on 0.4. Until then the same +0.2 step
+    // lifts 0.4 to 0.6 so the row still responds to the pointer.
     tabDefault: ' text-black/40',
+    tabInactiveHover: ' hover:text-black/60',
     tabSelected: ' is-selected bg-black text-white',
     description: ' text-black/75',
   },
   dark: {
     tabDefault: ' text-white/40',
+    tabInactiveHover: ' hover:text-white/60',
     tabSelected: ' is-selected bg-white text-black',
     description: ' text-vp-text-muted',
   },
@@ -86,12 +94,12 @@ export function AboutTabbedPanelInteractive({
                   id={`about-${sectionId}-tab-${index}`}
                   aria-controls={panelId}
                   aria-selected={selected}
-                  className={`w-full px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading${
-                    selected ? themeClasses.tabSelected : themeClasses.tabDefault
+                  className={`w-full cursor-pointer px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading [transition:color_var(--vp-transition)]${
+                    selected
+                      ? themeClasses.tabSelected
+                      : `${themeClasses.tabDefault}${themeClasses.tabInactiveHover}`
                   }`}
                   onClick={() => setActiveIndex(index)}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onFocus={() => setActiveIndex(index)}
                 >
                   {item.label}
                 </button>
