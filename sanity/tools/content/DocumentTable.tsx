@@ -2086,8 +2086,9 @@ export function DocumentTable({
               </button>
             </Flex>
           ) : null}
-          {isPortfolioSection && !inTrash ? (
+          {(isPortfolioSection && !inTrash) || supportsTranslation ? (
             <Flex gap={2} align="center" wrap="wrap">
+              {isPortfolioSection && !inTrash ? (
               <MenuButton
                 id={`${section.id}-taxonomy-filter`}
                 button={
@@ -2155,10 +2156,8 @@ export function DocumentTable({
                 }
                 popover={{portal: true, placement: 'bottom-start'}}
               />
-            </Flex>
-          ) : null}
-          {supportsTranslation ? (
-            <Flex gap={2} align="center" wrap="wrap">
+              ) : null}
+              {supportsTranslation ? (
               <MenuButton
                 id={`${section.id}-translation-filter`}
                 button={
@@ -2188,6 +2187,7 @@ export function DocumentTable({
                 }
                 popover={{portal: true, placement: 'bottom-start'}}
               />
+              ) : null}
             </Flex>
           ) : null}
           {isCrewMembersSection ? (
