@@ -1,0 +1,172 @@
+/*
+ * Decorative corner frame — 12px brackets, optional crosshair, optional tick rulers.
+ * Figma tick unit is component 78:30463: 16×8px, one 16px major, 16×8px,
+ * 1px wide, 15px apart (513px). Dark brackets and ruler color reuse the
+ * brief tick/line candidates. The parent must be position: relative.
+ */
+
+.vp-corner-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 0;
+}
+
+.vp-corner-frame--dark {
+  --vp-corner-bracket: var(--vp-candidate-brief-tick-color);
+  --vp-corner-ruler: var(--vp-candidate-brief-line);
+  --vp-corner-label: var(--vp-candidate-brief-muted-30);
+}
+
+.vp-corner-frame--light {
+  --vp-corner-bracket: var(--vp-candidate-about-black-50, rgba(0, 0, 0, 0.5));
+  --vp-corner-ruler: var(--vp-candidate-about-black-15, rgba(0, 0, 0, 0.15));
+  --vp-corner-label: var(--vp-candidate-about-black-30, rgba(0, 0, 0, 0.3));
+}
+
+.vp-corner-frame__bracket {
+  position: absolute;
+  width: var(--vp-candidate-brief-tick-size);
+  height: var(--vp-candidate-brief-tick-size);
+  border-color: var(--vp-corner-bracket);
+  border-style: solid;
+  border-width: 0;
+}
+
+.vp-corner-frame__bracket--tl {
+  top: 0;
+  left: 0;
+  border-top-width: var(--vp-candidate-brief-tick-stroke);
+  border-left-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+.vp-corner-frame__bracket--tr {
+  top: 0;
+  right: 0;
+  border-top-width: var(--vp-candidate-brief-tick-stroke);
+  border-right-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+.vp-corner-frame__bracket--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: var(--vp-candidate-brief-tick-stroke);
+  border-left-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+.vp-corner-frame__bracket--br {
+  right: 0;
+  bottom: 0;
+  border-right-width: var(--vp-candidate-brief-tick-stroke);
+  border-bottom-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+.vp-corner-frame__crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--vp-corner-crosshair-size);
+  height: var(--vp-corner-crosshair-size);
+  transform: translate(-50%, -50%);
+}
+
+.vp-corner-frame__crosshair::before,
+.vp-corner-frame__crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--vp-corner-crosshair-color);
+}
+
+.vp-corner-frame__crosshair::before {
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.vp-corner-frame__crosshair::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.vp-corner-frame__ruler {
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vp-corner-frame__ruler--top {
+  top: 4px;
+  align-items: flex-start;
+}
+
+.vp-corner-frame__ruler--bottom {
+  bottom: 4px;
+}
+
+.vp-corner-frame__ruler-group {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.vp-corner-frame__ruler--top .vp-corner-frame__ruler-group {
+  flex-direction: column-reverse;
+}
+
+.vp-corner-frame__ruler-label {
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-step-size, 14px);
+  font-weight: var(--font-vp-heading-weight);
+  line-height: var(--vp-candidate-about-step-lh, 20px);
+  letter-spacing: 0;
+  color: var(--vp-corner-label);
+  white-space: nowrap;
+}
+
+.vp-corner-frame__ticks {
+  display: flex;
+  flex: none;
+  gap: 15px;
+  align-items: flex-end;
+  width: 513px;
+  height: 16px;
+}
+
+.vp-corner-frame__ruler--top .vp-corner-frame__ticks {
+  align-items: flex-start;
+}
+
+.vp-corner-frame__tick {
+  flex: none;
+  width: 1px;
+  height: 8px;
+  background: var(--vp-corner-ruler);
+}
+
+.vp-corner-frame__tick--major {
+  height: 16px;
+}
+
+.vp-corner-frame__separator {
+  flex: none;
+  align-self: flex-end;
+  width: 1px;
+  height: 8px;
+  background: var(--vp-corner-ruler);
+}
+
+.vp-corner-frame__ruler--top .vp-corner-frame__separator {
+  align-self: flex-start;
+}
