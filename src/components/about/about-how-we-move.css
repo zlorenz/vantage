@@ -211,6 +211,12 @@
     border-top: 0;
   }
 
+  .vp-how-we-move__list::after {
+    content: '';
+    height: 1px;
+    background: var(--vp-candidate-about-black-15);
+  }
+
   .vp-how-we-move__item {
     display: flex;
     flex-direction: column;
