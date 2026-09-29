@@ -52,6 +52,11 @@
   color: var(--vp-about-ink-accent);
 }
 
+.vp-about-statement__gap--marker {
+  /* The inline photo occupies this gap below lg. */
+  display: none;
+}
+
 .vp-about-statement__marker {
   display: inline-block;
   position: relative;
@@ -181,6 +186,10 @@
 
   .vp-about-statement__marker {
     display: none;
+  }
+
+  .vp-about-statement__gap--marker {
+    display: inline;
   }
 
   .vp-about-statement__inner {

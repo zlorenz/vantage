@@ -185,9 +185,13 @@ function StatementLine({
     );
 
     const hasMarkerAfter = markerAfterWord === wordIndex && markerSlot !== undefined;
-    if (wordIndex < words.length - 1 && !hasMarkerAfter) {
+    if (wordIndex < words.length - 1) {
       nodes.push(
-        <span key={`sp-${wordIndex}`} aria-hidden>
+        <span
+          key={`sp-${wordIndex}`}
+          className={hasMarkerAfter ? 'vp-about-statement__gap vp-about-statement__gap--marker' : 'vp-about-statement__gap'}
+          aria-hidden
+        >
           {'\u00a0'}
         </span>,
       );
