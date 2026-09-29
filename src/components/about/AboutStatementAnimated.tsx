@@ -397,7 +397,7 @@ export function AboutStatementAnimated({
         <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" />
         <span className="vp-about-statement__hairline vp-about-statement__hairline--outer-right" />
         <div className="vp-about-statement__rulers">
-          <CornerFrame variant="dark" rulers={{ top: true, bottom: true, labels: true }} />
+          <CornerFrame variant="dark" rulers={{ top: true, bottom: true }} />
         </div>
       </div>
       <div className="vp-content-rail vp-about-statement__inner text-center">

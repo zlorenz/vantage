@@ -160,7 +160,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 1129px;
+    min-height: min(1129px, 100svh);
     padding: 0;
     overflow: hidden;
   }
@@ -190,8 +190,8 @@
   .vp-about-statement__inner {
     position: relative;
     z-index: 2;
-    /* Space between the inner hairlines (328px left, 327px right), capped at the Figma measure. */
-    width: min(1152px, calc(100% - 328px - 327px));
+    /* Space between the film rails, capped at the Figma measure. */
+    width: min(1152px, calc(100% - (2 * var(--vp-candidate-about-film-rail))));
     padding-inline: 0;
   }
 
@@ -204,28 +204,29 @@
     top: 0;
     bottom: 0;
     z-index: 1;
-    width: var(--vp-candidate-about-film-frame);
+    width: var(--vp-candidate-about-film-rail);
     overflow: hidden;
   }
 
   .vp-about-statement__rail--left {
-    left: 33px;
+    left: 0;
   }
 
   .vp-about-statement__rail--right {
-    right: 30px;
+    right: 0;
   }
 
   .vp-about-statement__track {
     position: absolute;
-    top: -387px;
+    /* Center of the third frame (2.5 frame-heights down the track) sits on the section midline. */
+    top: calc(50% - var(--vp-candidate-about-film-rail) * 950 / 297);
     left: 0;
     width: 100%;
   }
 
   .vp-about-statement__frame {
     box-sizing: border-box;
-    padding: var(--vp-candidate-about-cell-pad);
+    padding: 10.1%;
     opacity: var(--vp-candidate-about-film-dim);
   }
 
@@ -237,13 +238,14 @@
   }
 
   .vp-about-statement__frame--center .vp-corner-frame {
-    inset: 15px;
+    inset: 5.05%;
   }
 
   .vp-about-statement__frame-media {
     position: relative;
     width: 100%;
-    height: var(--vp-candidate-about-film-image-height);
+    height: auto;
+    aspect-ratio: 237 / 320;
     overflow: hidden;
   }
 
@@ -257,19 +259,19 @@
   }
 
   .vp-about-statement__hairline--outer-left {
-    left: 30px;
+    left: 0;
   }
 
   .vp-about-statement__hairline--inner-left {
-    left: 328px;
+    left: var(--vp-candidate-about-film-rail);
   }
 
   .vp-about-statement__hairline--inner-right {
-    right: 327px;
+    right: var(--vp-candidate-about-film-rail);
   }
 
   .vp-about-statement__hairline--outer-right {
-    right: 30px;
+    right: 0;
   }
 
   .vp-about-statement__rulers {
@@ -281,7 +283,15 @@
   }
 
   .vp-about-statement__rulers .vp-corner-frame__ruler {
-    right: 327px;
-    left: 328px;
+    right: var(--vp-candidate-about-film-rail);
+    left: var(--vp-candidate-about-film-rail);
+  }
+
+  .vp-about-statement__rulers .vp-corner-frame__ruler--top {
+    top: 0;
+  }
+
+  .vp-about-statement__rulers .vp-corner-frame__ruler--bottom {
+    bottom: 0;
   }
 }

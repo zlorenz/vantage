@@ -355,7 +355,8 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-cta-height` | `80px` | Production-row buttons | `2466:28978` | pending | Same height as `--vp-candidate-brief-btn-height`; kept separate so About does not depend on the form. |
 | `--vp-candidate-about-crosshair` | `40px` | Crosshair on images and film-strip center frame | `2466:28831` | pending | 1px stroke, white on photos. |
 | `--vp-candidate-about-crosshair-mark` | `60px` | More About crosshair | `2466:29078` | pending | 1px stroke, `--vp-link`. |
-| `--vp-candidate-about-film-frame` | `297px` | Film-strip column width | `2466:28696` | pending | |
+| `--vp-candidate-about-film-frame` | `297px` | Film-strip column width at 1920 | `2466:28696` | pending | Cap for the fluid rail. |
+| `--vp-candidate-about-film-rail` | `clamp(10rem, 15.47vw, 297px)` | Film-strip column width, desktop | 297/1920 | pending | Same share of the window as the Figma frame. Frame padding and image ratio scale with it. |
 | `--vp-candidate-about-film-image-width` | `237px` | Poster inside a film frame | `2466:28704` | pending | 30px pad on the 297px frame. |
 | `--vp-candidate-about-film-image-height` | `320px` | same | same | pending | |
 | `--vp-candidate-about-film-dim` | `0.4` | Non-center film frames | `opacity-40` on `2466:28697` | pending | |

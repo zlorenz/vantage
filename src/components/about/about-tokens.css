@@ -44,6 +44,8 @@
   --vp-candidate-about-crosshair: 40px;
   --vp-candidate-about-crosshair-mark: 60px;
   --vp-candidate-about-film-frame: 297px;
+  /* 297 / 1920. Below that frame the rails stay the same share of the window. */
+  --vp-candidate-about-film-rail: clamp(10rem, 15.47vw, var(--vp-candidate-about-film-frame));
   --vp-candidate-about-film-image-width: 237px;
   --vp-candidate-about-film-image-height: 320px;
   --vp-candidate-about-film-dim: 0.4;
