@@ -1,0 +1,52 @@
+/*
+ * About desktop candidates — Figma frame 2466:28598.
+ * Pending reuse outside About. Do not promote to --vp-* yet.
+ * Loaded from the About page only. Section padding is defined at lg
+ * (1200px) so it cannot change the current mobile rhythm.
+ *
+ * Reused elsewhere, not redefined here:
+ *   dark 12px brackets — --vp-candidate-brief-tick-size / -stroke / -color
+ *   white 0.15 rules and ruler ticks — --vp-candidate-brief-line
+ *   yellow — --vp-link
+ *   orange eyebrow — --vp-orange
+ */
+
+:root {
+  --vp-candidate-about-header-gap: 100px;
+  --vp-candidate-about-display-size: 64px;
+  --vp-candidate-about-display-lh: 1.1;
+  --vp-candidate-about-feature-title-size: 40px;
+  --vp-candidate-about-feature-title-lh: 1.2;
+  --vp-candidate-about-tab-size: 32px;
+  --vp-candidate-about-tab-lh: 1.3;
+  --vp-candidate-about-body-size: 18px;
+  --vp-candidate-about-body-lh: 1.5;
+  --vp-candidate-about-eyebrow-size: 16px;
+  --vp-candidate-about-eyebrow-lh: 1.6;
+  --vp-candidate-about-step-size: 14px;
+  --vp-candidate-about-step-lh: 20px;
+  --vp-candidate-about-dek-size: 22px;
+  --vp-candidate-about-dek-lh: 1.6;
+  --vp-candidate-about-black-20: rgba(0, 0, 0, 0.2);
+  --vp-candidate-about-black-15: rgba(0, 0, 0, 0.15);
+  --vp-candidate-about-black-30: rgba(0, 0, 0, 0.3);
+  --vp-candidate-about-black-50: rgba(0, 0, 0, 0.5);
+  --vp-candidate-about-black-70: rgba(0, 0, 0, 0.7);
+  --vp-candidate-about-white-20: rgba(255, 255, 255, 0.2);
+  --vp-candidate-about-white-50: rgba(255, 255, 255, 0.5);
+  --vp-candidate-about-white-60: rgba(255, 255, 255, 0.6);
+  --vp-candidate-about-cell-pad: 30px;
+  --vp-candidate-about-cta-height: 80px;
+  --vp-candidate-about-crosshair: 40px;
+  --vp-candidate-about-crosshair-mark: 60px;
+  --vp-candidate-about-film-frame: 297px;
+  --vp-candidate-about-film-image-width: 237px;
+  --vp-candidate-about-film-image-height: 320px;
+  --vp-candidate-about-film-dim: 0.4;
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --vp-candidate-about-section-pad-block: 200px;
+  }
+}

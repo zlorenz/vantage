@@ -23,6 +23,7 @@ import { AboutStatementSection } from '@/components/about/AboutStatementSection'
 import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
 import { AboutProductionHouseSection } from '@/components/about/AboutProductionHouseSection';
 import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
+import '@/components/about/about-tokens.css';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';

@@ -313,3 +313,45 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-primary-hover` | `#ffcb55` | Next / Submit hover | **derived — no Figma frame** | pending | No `--vp-yellow-80` token exists. |
 | `--vp-candidate-brief-dropzone-active-fill` | `rgba(255,255,255,0.03)` | Dropzone drag-over | **derived — no Figma frame** | pending | Border becomes `--vp-link`. |
 | `--vp-candidate-brief-transition` | `0.3s ease-out` | Form interaction | **derived — no Figma frame** | pending | Distinct from `--vp-transition` (`0.3s ease`). Honors `prefers-reduced-motion`. |
+
+## About page — desktop restyle (pending)
+
+Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2466-28598  
+Defined in `src/components/about/about-tokens.css` (imported by the About page). Not in `globals.css`. Pending reuse outside About. Special Gothic tracking stays **0**. Section padding is declared only at `min-width: 1200px` so it does not change the mobile rhythm or `--vp-section-y`.
+
+**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-candidate-brief-tick-size` (12px), `--vp-candidate-brief-tick-stroke` (1px), and `--vp-candidate-brief-tick-color` (`rgba(255,255,255,0.3)`) for dark corner brackets; `--vp-candidate-brief-line` (`rgba(255,255,255,0.15)`) for dark hairlines and tick-ruler marks. Light brackets use `--vp-candidate-about-black-50`.
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-about-section-pad-block` | `200px` | About section padding, desktop only | `2466:28808` `py-200` | pending | Declared inside `@media (min-width: 1200px)` only. |
+| `--vp-candidate-about-header-gap` | `100px` | Eyebrow row → panel | `2466:28808` `gap-100` | pending | |
+| `--vp-candidate-about-display-size` | `64px` | Section headings | h1 on `2466:28641` | pending | |
+| `--vp-candidate-about-display-lh` | `1.1` | same | same | pending | |
+| `--vp-candidate-about-feature-title-size` | `40px` | Workflow titles, production-row titles | h3 on `2466:28887` / `2466:28975` | pending | |
+| `--vp-candidate-about-feature-title-lh` | `1.2` | same | same | pending | |
+| `--vp-candidate-about-tab-size` | `32px` | Specialties / Advantages menu rows | h4 on `2466:28817` | pending | |
+| `--vp-candidate-about-tab-lh` | `1.3` | same | same | pending | |
+| `--vp-candidate-about-body-size` | `18px` | Tab descriptions, accordion copy, feature bodies | body_medium | pending | |
+| `--vp-candidate-about-body-lh` | `1.5` | same | same | pending | |
+| `--vp-candidate-about-eyebrow-size` | `16px` | Orange eyebrows | caption_1 on `2466:28812` | pending | |
+| `--vp-candidate-about-eyebrow-lh` | `1.6` | same | same | pending | |
+| `--vp-candidate-about-step-size` | `14px` | Workflow numbers, More About link cells | caption_2 | pending | |
+| `--vp-candidate-about-step-lh` | `20px` | same | same | pending | |
+| `--vp-candidate-about-dek-size` | `22px` | More About dek | body_large on `2466:29066` | pending | |
+| `--vp-candidate-about-dek-lh` | `1.6` | same | same | pending | |
+| `--vp-candidate-about-black-20` | `rgba(0,0,0,0.2)` | Inactive menu rows, light section | `2466:28819` | pending | |
+| `--vp-candidate-about-black-15` | `rgba(0,0,0,0.15)` | Light-section rules and rulers | `2466:28818` | pending | |
+| `--vp-candidate-about-black-30` | `rgba(0,0,0,0.3)` | Workflow numbers, light ruler labels | `2466:28885` | pending | |
+| `--vp-candidate-about-black-50` | `rgba(0,0,0,0.5)` | Light corner brackets | specialties bracket SVG | pending | Dark brackets reuse the brief tick color. |
+| `--vp-candidate-about-black-70` | `rgba(0,0,0,0.7)` | Body on white | `2466:28825` | pending | |
+| `--vp-candidate-about-white-20` | `rgba(255,255,255,0.2)` | Inactive menu rows, dark section | `2466:28864` | pending | |
+| `--vp-candidate-about-white-50` | `rgba(255,255,255,0.5)` | More About dek | `2466:29066` | pending | |
+| `--vp-candidate-about-white-60` | `rgba(255,255,255,0.6)` | Body on black | `2466:28870` | pending | |
+| `--vp-candidate-about-cell-pad` | `30px` | Menu rows, image frames, More About frame | `p-30` | pending | |
+| `--vp-candidate-about-cta-height` | `80px` | Production-row buttons | `2466:28978` | pending | Same height as `--vp-candidate-brief-btn-height`; kept separate so About does not depend on the form. |
+| `--vp-candidate-about-crosshair` | `40px` | Crosshair on images and film-strip center frame | `2466:28831` | pending | 1px stroke, white on photos. |
+| `--vp-candidate-about-crosshair-mark` | `60px` | More About crosshair | `2466:29078` | pending | 1px stroke, `--vp-link`. |
+| `--vp-candidate-about-film-frame` | `297px` | Film-strip column width | `2466:28696` | pending | |
+| `--vp-candidate-about-film-image-width` | `237px` | Poster inside a film frame | `2466:28704` | pending | 30px pad on the 297px frame. |
+| `--vp-candidate-about-film-image-height` | `320px` | same | same | pending | |
+| `--vp-candidate-about-film-dim` | `0.4` | Non-center film frames | `opacity-40` on `2466:28697` | pending | |
