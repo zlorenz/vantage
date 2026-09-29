@@ -57,7 +57,6 @@ export async function AboutStatementSection() {
         line3={t('statementLine3')}
         line4={t('statementLine4')}
         line5={t('statementLine5')}
-        line6={t('statementLine6')}
         markers={markers}
         filmStrips={filmStrips}
       />

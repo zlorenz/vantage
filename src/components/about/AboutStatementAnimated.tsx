@@ -30,7 +30,6 @@ export type AboutStatementLines = {
   line3: string;
   line4: string;
   line5: string;
-  line6: string;
   markers: ReadonlyArray<AboutStatementMarkerImage>;
   filmStrips: AboutStatementFilmStrips;
 };
