@@ -183,6 +183,11 @@
     letter-spacing: 0;
     text-box-trim: trim-both;
     text-box-edge: cap alphabetic;
+    /* Cap-trimmed type is shorter than the 20px format bar on work cards.
+     * Hold that height so brand→title matches cards that still show the bar. */
+    display: flex;
+    align-items: center;
+    min-height: 20px;
   }
 
   .vp-case-header .vp-case-header__brand {

@@ -118,6 +118,9 @@
 }
 
 .vp-blog-hero__brand {
+  display: flex;
+  align-items: center;
+  min-height: 20px;
   margin: 0;
   font-family: var(--font-vp-heading);
   font-size: 1rem; /* caption_1 16px */

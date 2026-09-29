@@ -369,6 +369,8 @@ a.vp-project-nav__explore:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 1.5rem; /* 24 */
+  /* The format hairline is 20px. Keep that height when the bar is hidden. */
+  min-height: 1.25rem;
 }
 
 .vp-project-nav__brand {
