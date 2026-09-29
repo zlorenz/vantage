@@ -326,6 +326,7 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-section-pad-block` | `200px` | About section padding, desktop only | `2466:28808` `py-200` | pending | Declared inside `@media (min-width: 1200px)` only. |
 | `--vp-candidate-about-header-gap` | `100px` | Eyebrow row → panel | `2466:28808` `gap-100` | pending | |
 | `--vp-candidate-about-display-size` | `64px` | Section headings | h1 on `2466:28641` | pending | |
+| `--vp-candidate-about-statement-size` | `clamp(1.75rem, 5.55cqi, 4rem)` | Statement heading only | About `2466:28641`, scaled to the rail gap | pending | 5.55cqi of the 1152px measure is 64px. Lines stay `nowrap` so a phrase does not break. Other headings keep the fixed 64px token. |
 | `--vp-candidate-about-display-lh` | `1.1` | same | same | pending | |
 | `--vp-candidate-about-feature-title-size` | `40px` | Workflow titles, production-row titles | h3 on `2466:28887` / `2466:28975` | pending | |
 | `--vp-candidate-about-feature-title-lh` | `1.2` | same | same | pending | |

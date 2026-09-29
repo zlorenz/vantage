@@ -15,6 +15,8 @@
   --vp-candidate-about-header-gap: 100px;
   --vp-candidate-about-display-size: 64px;
   --vp-candidate-about-display-lh: 1.1;
+  /* Fluid between the film rails. 5.55cqi of the 1152px measure is 64px. */
+  --vp-candidate-about-statement-size: clamp(1.75rem, 5.55cqi, 4rem);
   --vp-candidate-about-feature-title-size: 40px;
   --vp-candidate-about-feature-title-lh: 1.2;
   --vp-candidate-about-tab-size: 32px;
