@@ -310,7 +310,7 @@ export function NavBar({
         </button>
       </div>
 
-      {/* Desktop page scrim — z-45 under header (z-50); click closes. */}
+      {/* Unpainted click target. Outside clicks also close via pointerdown. */}
       {panelMounted && !isMobileViewport ? (
         <button
           type="button"

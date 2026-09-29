@@ -1082,6 +1082,15 @@
   }
 }
 
+/* Desktop full cards — drop format (and the hairline). Several formats wrap
+ * under the brand and stack. Brand + campaign title stay. */
+@media (min-width: 992px) {
+  .vp-portfolio-index__brand-rule,
+  .vp-portfolio-index__format {
+    display: none;
+  }
+}
+
 /* Bottom chrome: filter (left) · scrubber · search (right).
  * Symmetrical bookends; tools are nudged inward for corner breathing room. */
 .vp-portfolio-index__bottom-bar {

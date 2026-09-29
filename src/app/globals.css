@@ -1098,32 +1098,10 @@
   }
 }
 
-/* Desktop page scrim behind the right-rail menu (under header z-50). */
+/* Click-catcher for the desktop menu. Not painted: #header's translate
+ * containing block trapped a full-bleed dim into an 80px navbar overlay. */
 .vp-desktop-nav-scrim {
   display: none;
-}
-
-@media (min-width: 992px) {
-  .vp-desktop-nav-scrim {
-    position: fixed;
-    inset: 0;
-    z-index: 45;
-    display: block;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: rgba(0, 0, 0, 0.7);
-    opacity: 0;
-    pointer-events: none;
-    cursor: default;
-    transition: opacity 0.18s ease-in;
-  }
-
-  .vp-desktop-nav-scrim.is-open {
-    opacity: 1;
-    pointer-events: auto;
-    transition: opacity 0.28s ease-out;
-  }
 }
 
 /* Desktop right-rail panel — Figma 90:39846 (541px wide under header).
@@ -1151,8 +1129,9 @@
     padding: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    /* Outer frame lives on the dark blocks (list + socials). A panel-level
+     * border would continue around the yellow brief. */
+    border: 0;
     background-color: #0f0f0f;
     color: #fff;
     opacity: 0;
@@ -1191,6 +1170,7 @@
     margin: 0;
     padding: 2.5rem 1.875rem; /* 40px equal top/bottom / 30px sides */
     list-style: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   #header .vp-desktop-nav-item {
@@ -1259,6 +1239,7 @@
     padding: 0;
     list-style: none;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   #header .vp-desktop-nav-social {
@@ -1310,7 +1291,7 @@
     width: 100%;
     height: 6.25rem; /* 100px */
     padding: 1rem 1.875rem; /* 16px / 30px */
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    border: 0;
     background: #fdb913;
     color: #000;
     text-decoration: none;

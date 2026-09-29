@@ -1209,7 +1209,7 @@ export function PortfolioIndexCarousel({
                                       {slide.brandLine}
                                     </p>
                                   ) : null}
-                                  {/* Format + hairline: desktop only (CSS ≤575 hides). */}
+                                  {/* Format + hairline: hidden on phone (≤575) and desktop (≥992). */}
                                   {slide.brandLine && slide.formatLine ? (
                                     <span
                                       className="vp-portfolio-index__brand-rule"
