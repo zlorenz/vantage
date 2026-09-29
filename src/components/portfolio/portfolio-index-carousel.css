@@ -999,6 +999,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem; /* 12px — homepage mobile brand | category */
+  /* Hold the 20px hairline's height when format + rule are hidden, so the
+   * brand→title gap matches cards that still show the bar. */
+  min-height: 20px;
 }
 
 .vp-portfolio-index__brand,
