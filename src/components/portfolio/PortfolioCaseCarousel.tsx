@@ -196,10 +196,11 @@ function ActiveSlidePlayer({
       <LazyYouTubePlayer
         videoId={slide.videoId}
         portfolioEntryRef={slide.portfolioEntryRef}
-        onPlay={onPlay}
-        onStop={onStop}
+        onPlay={prefetch ? undefined : onPlay}
+        onStop={prefetch ? undefined : onStop}
         hidePlayButton={hidePlayButton}
         fullscreenOnPlay
+        prefetch={prefetch}
       />
     );
   }
@@ -502,10 +503,15 @@ export function PortfolioCaseCarousel({
                       posterUrl={slide.posterUrl}
                       onActivate={(event) => onPeekActivate(index, event)}
                     />
-                    {(active || slide.kind === 'vimeo') ? (
+                    {(active ||
+                    slide.kind === 'vimeo' ||
+                    slide.kind === 'youtube') ? (
                       <ActiveSlidePlayer
                         slide={slide}
-                        prefetch={!active && slide.kind === 'vimeo'}
+                        prefetch={
+                          !active &&
+                          (slide.kind === 'vimeo' || slide.kind === 'youtube')
+                        }
                         onPlay={active ? onSlidePlay : undefined}
                         onStop={active ? onSlideStop : undefined}
                         hidePlayButton={

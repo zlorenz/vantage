@@ -134,8 +134,8 @@ export function vimeoPlayerEmbedSrc(
     /** Vimeo preload: metadata | auto | none (default metadata_on_hover). */
     preload?: 'metadata' | 'auto' | 'none';
     /**
-     * Hide title, byline, portrait, badge, and Vimeo logo — keeps progress bar
-     * and play controls. For custom-poster embeds (LazyVimeoPlayer).
+     * Hide provider chrome (title, byline, portrait, badge, logo, control
+     * bar). Playback uses our own pause + progress overlay.
      */
     minimalUi?: boolean;
   } = {},
@@ -167,6 +167,8 @@ export function vimeoPlayerEmbedSrc(
     params.set('portrait', '0');
     params.set('badge', '0');
     params.set('vimeo_logo', '0');
+    params.set('pip', '0');
+    params.set('controls', '0');
   }
 
   if (!/^\d+$/.test(urlOrId)) {

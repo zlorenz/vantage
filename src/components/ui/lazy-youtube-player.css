@@ -1,0 +1,12 @@
+/*
+ * Fullscreen session fills the viewport. aspect-video on the inline
+ * poster box would otherwise letterbox the :fullscreen element.
+ */
+.vp-lazy-youtube:fullscreen,
+.vp-lazy-youtube:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  background: #000;
+}

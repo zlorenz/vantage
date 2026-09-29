@@ -14,6 +14,8 @@ test('vimeoPlayerEmbedSrc minimalUi hides metadata chrome', () => {
   assert.match(src!, /portrait=0/);
   assert.match(src!, /badge=0/);
   assert.match(src!, /vimeo_logo=0/);
+  assert.match(src!, /pip=0/);
+  assert.match(src!, /controls=0/);
 });
 
 test('vimeoPlayerEmbedSrc minimalUi on unlisted URL includes privacy hash', () => {

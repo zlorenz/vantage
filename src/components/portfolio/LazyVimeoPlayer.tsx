@@ -22,6 +22,7 @@ import type Player from '@vimeo/player';
 import { extractVimeoId, vimeoPlayerEmbedSrc } from '@/lib/vimeo';
 import { normalizeStoredVideoUrl } from '@/lib/video-url';
 import { trackVideoEvent } from '@/lib/video-events';
+import { MinimalVideoChrome } from '@/components/ui/MinimalVideoChrome';
 
 /** Poster `sizes` for case-study carousel cards (~85vw mobile / ~70vw desktop). */
 export const CASE_CAROUSEL_POSTER_SIZES =
@@ -166,6 +167,11 @@ export function LazyVimeoPlayer({
   const playerReadyAtTapRef = useRef(false);
   const playbackWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onStopRef = useRef(onStop);
+  const [clock, setClock] = useState({
+    current: 0,
+    duration: 0,
+    running: false,
+  });
   onStopRef.current = onStop;
 
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
@@ -212,6 +218,7 @@ export function LazyVimeoPlayer({
     awaitingTapToPlayRef.current = false;
     setAwaitingTapToPlay(false);
     setPlaying(false);
+    setClock({current: 0, duration: 0, running: false});
     const player = playerRef.current;
     if (player) {
       void exitVimeoFullscreen(player).finally(() => {
@@ -265,7 +272,16 @@ export function LazyVimeoPlayer({
       });
     };
 
-    const onTimeUpdate = (data: { percent: number }) => {
+    const onTimeUpdate = (data: {
+      percent: number;
+      seconds: number;
+      duration: number;
+    }) => {
+      setClock({
+        current: data.seconds,
+        duration: data.duration,
+        running: true,
+      });
       const progressPercent = Math.round(data.percent * 100);
       for (const milestone of PROGRESS_MILESTONES) {
         if (
@@ -283,6 +299,10 @@ export function LazyVimeoPlayer({
           });
         }
       }
+    };
+
+    const onPause = () => {
+      setClock((clock) => ({...clock, running: false}));
     };
 
     const onEnded = () => {
@@ -308,6 +328,7 @@ export function LazyVimeoPlayer({
 
       playerRef.current = player;
       player.on('play', onPlayEvent);
+      player.on('pause', onPause);
       player.on('timeupdate', onTimeUpdate);
       player.on('ended', onEnded);
 
@@ -326,6 +347,7 @@ export function LazyVimeoPlayer({
       playerRef.current = null;
       if (player) {
         player.off('play', onPlayEvent);
+        player.off('pause', onPause);
         player.off('timeupdate', onTimeUpdate);
         player.off('ended', onEnded);
         void player.destroy();
@@ -394,7 +416,9 @@ export function LazyVimeoPlayer({
         // play() drops iOS user activation and leaves Vimeo paused in FS.
         void player.setMuted(false);
         void player.setVolume(1);
-        if (wantsFullscreen) {
+        // Phone fullscreen is the system player. Desktop fullscreen is our
+        // wrapper, so skip Vimeo's own fullscreen (it brings the full toolbar).
+        if (wantsFullscreen && prefersMobileFullscreen()) {
           void player.requestFullscreen().catch(() => {});
         }
         await player.play();
@@ -583,6 +607,26 @@ export function LazyVimeoPlayer({
             </span>
           </span>
         </button>
+      ) : null}
+
+      {playing && !showTapToPlay ? (
+        <MinimalVideoChrome
+          running={clock.running}
+          currentTime={clock.current}
+          duration={clock.duration}
+          onToggle={() => {
+            const player = playerRef.current;
+            if (!player) return;
+            if (clock.running) void player.pause();
+            else void player.play();
+          }}
+          onSeek={(seconds) => {
+            const player = playerRef.current;
+            if (!player) return;
+            void player.setCurrentTime(seconds);
+            setClock((clock) => ({...clock, current: seconds}));
+          }}
+        />
       ) : null}
 
       {!playing ? (
