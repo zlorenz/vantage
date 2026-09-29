@@ -6,11 +6,21 @@
  */
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import Image from 'next/image';
+import { CornerFrame } from '@/components/ui/CornerFrame';
 import './about-statement.css';
+
+/** Third frame in each Figma strip (0-based) is the sharp, bracketed one. */
+const FILM_CENTER_INDEX = 2;
 
 export type AboutStatementMarkerImage = {
   src: string;
   alt: string;
+};
+
+export type AboutStatementFilmStrips = {
+  left: ReadonlyArray<AboutStatementMarkerImage>;
+  right: ReadonlyArray<AboutStatementMarkerImage>;
 };
 
 export type AboutStatementLines = {
@@ -21,6 +31,7 @@ export type AboutStatementLines = {
   line5: string;
   line6: string;
   markers: ReadonlyArray<AboutStatementMarkerImage>;
+  filmStrips: AboutStatementFilmStrips;
 };
 
 type AboutStatementAnimatedProps = AboutStatementLines;
@@ -129,6 +140,8 @@ function StatementLine({
   const lineRef = useRef<HTMLDivElement>(null);
   const markerAfterWord = MARKER_AFTER_WORD_INDEX[lineIndex];
   const markerSlot = LINE_TO_MARKER_SLOT[lineIndex];
+  const accentBreakAfter =
+    accent && words[0] === "THAT'S" && words[1] === 'NOT' ? 1 : null;
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -182,6 +195,10 @@ function StatementLine({
 
     staggerIndex++;
 
+    if (accentBreakAfter === wordIndex) {
+      nodes.push(<span key="accent-break" className="vp-about-statement__accent-break" />);
+    }
+
     if (hasMarkerAfter) {
       nodes.push(
         <StatementMarker
@@ -202,6 +219,50 @@ function StatementLine({
   );
 }
 
+function FilmStrip({
+  side,
+  frames,
+}: {
+  side: 'left' | 'right';
+  frames: ReadonlyArray<AboutStatementMarkerImage>;
+}) {
+  return (
+    <div className={`vp-about-statement__rail vp-about-statement__rail--${side}`}>
+      <div className="vp-about-statement__track" data-film-strip-track={side}>
+        {frames.map((frame, index) => {
+          const center = index === FILM_CENTER_INDEX;
+          return (
+            <div
+              key={`${side}-${frame.src}`}
+              className={
+                center
+                  ? 'vp-about-statement__frame vp-about-statement__frame--center'
+                  : 'vp-about-statement__frame'
+              }
+            >
+              <div className="vp-about-statement__frame-media">
+                <Image
+                  src={frame.src}
+                  alt=""
+                  fill
+                  sizes="297px"
+                  className="object-cover"
+                />
+              </div>
+              {center ? (
+                <CornerFrame
+                  variant="dark"
+                  crosshair={{ size: 40, color: 'var(--vp-text)' }}
+                />
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function AboutStatementAnimated({
   line1,
   line2,
@@ -210,6 +271,7 @@ export function AboutStatementAnimated({
   line5,
   line6,
   markers,
+  filmStrips,
 }: AboutStatementAnimatedProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -244,6 +306,17 @@ export function AboutStatementAnimated({
 
   return (
     <section className={sectionClass}>
+      <div className="vp-about-statement__stage" aria-hidden="true">
+        <FilmStrip side="left" frames={filmStrips.left} />
+        <FilmStrip side="right" frames={filmStrips.right} />
+        <span className="vp-about-statement__hairline vp-about-statement__hairline--outer-left" />
+        <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-left" />
+        <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" />
+        <span className="vp-about-statement__hairline vp-about-statement__hairline--outer-right" />
+        <div className="vp-about-statement__rulers">
+          <CornerFrame variant="dark" rulers={{ top: true, bottom: true, labels: true }} />
+        </div>
+      </div>
       <div className="vp-content-rail vp-about-statement__inner text-center">
         <h1 className="vp-about-statement__heading">
           {lines.map((line, lineIndex) => (

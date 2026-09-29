@@ -128,6 +128,18 @@ export const ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY = defineQuery(`
   }
 `)
 
+/**
+ * About statement film strips — ten portfolio posters after the tab slices.
+ * Inclusive [8..17] is ten items. Same projection as the marker query.
+ */
+export const ABOUT_STATEMENT_FILM_STRIP_QUERY = defineQuery(`
+  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
+  | order(publishedAt desc) [8..17] {
+    title,
+    featuredImage
+  }
+`)
+
 /** Contact — meta + optional hero/body; real contact fields come from siteSettings. */
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{
