@@ -182,7 +182,8 @@
   .vp-how-we-move__subtitle {
     display: flex;
     flex: none;
-    align-items: center;
+    align-items: baseline;
+    gap: var(--vp-candidate-about-eyebrow-gap);
     width: 454px;
     font-family: var(--font-vp-heading);
     font-size: var(--vp-candidate-about-eyebrow-size);

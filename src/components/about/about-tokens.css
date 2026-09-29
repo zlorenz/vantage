@@ -25,6 +25,8 @@
   --vp-candidate-about-body-lh: 1.5;
   --vp-candidate-about-eyebrow-size: 16px;
   --vp-candidate-about-eyebrow-lh: 1.6;
+  /* Figma 2466:28812 is whitespace-pre "●  LABEL": two spaces between the dot and the label. */
+  --vp-candidate-about-eyebrow-gap: 0.5em;
   --vp-candidate-about-step-size: 14px;
   --vp-candidate-about-step-lh: 20px;
   --vp-candidate-about-dek-size: 22px;

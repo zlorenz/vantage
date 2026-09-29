@@ -64,8 +64,8 @@ export function AboutHowWeMoveAccordion({
     <div className="vp-how-we-move">
       <div className="vp-how-we-move__intro">
         <p className="vp-how-we-move__subtitle">
-          <span className="vp-how-we-move__subtitle-mark" aria-hidden="true">
-            ●{' '}
+          <span className="vp-about-eyebrow__mark vp-how-we-move__subtitle-mark" aria-hidden="true">
+            ●
           </span>
           {subtitle}
         </p>

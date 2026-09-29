@@ -335,6 +335,7 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-body-size` | `18px` | Tab descriptions, accordion copy, feature bodies | body_medium | pending | |
 | `--vp-candidate-about-body-lh` | `1.5` | same | same | pending | |
 | `--vp-candidate-about-eyebrow-size` | `16px` | Orange eyebrows | caption_1 on `2466:28812` | pending | |
+| `--vp-candidate-about-eyebrow-gap` | `0.5em` | Dot → label on About eyebrows | `2466:28812` whitespace-pre `●  LABEL` | pending | Two spaces in the 16px heading face. Specialties, Advantages, and How We Move. |
 | `--vp-candidate-about-eyebrow-lh` | `1.6` | same | same | pending | |
 | `--vp-candidate-about-step-size` | `14px` | Workflow numbers, More About link cells | caption_2 | pending | |
 | `--vp-candidate-about-step-lh` | `20px` | same | same | pending | |

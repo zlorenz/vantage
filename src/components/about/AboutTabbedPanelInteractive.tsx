@@ -120,7 +120,9 @@ export function AboutTabbedPanelInteractive({
       <div className="vp-about-tabs__header">
         {eyebrow ? (
           <p className="vp-about-tabs__eyebrow">
-            <span aria-hidden="true">● </span>
+            <span className="vp-about-eyebrow__mark" aria-hidden="true">
+              ●
+            </span>
             {eyebrow}
           </p>
         ) : null}
