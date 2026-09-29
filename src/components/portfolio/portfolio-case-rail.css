@@ -181,6 +181,21 @@
       --vp-candidate-portfolio-case-mobile-inline-pad,
       var(--vp-overlay-mobile-pad-inline, 16px)
     );
+    /* ~35% tighter than the 32px mid-width gap (32+48 title pad → 20+32). */
+    padding-bottom: var(
+      --vp-candidate-portfolio-case-mobile-back-title-gap,
+      20px
+    );
+  }
+
+  .vp-case-mobile-back__btn {
+    width: var(--vp-candidate-portfolio-case-mobile-back-btn-size, 42px);
+    height: var(--vp-candidate-portfolio-case-mobile-back-btn-size, 42px);
+  }
+
+  .vp-case-mobile-back__btn .vp-case-rail__back-icon {
+    width: 0.65rem;
+    height: 0.65rem;
   }
 }
 

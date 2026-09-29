@@ -170,7 +170,7 @@
     /* Pad-top only — former pad-bottom stacked with meta pad-top (≈88px). */
     padding-top: var(
       --vp-candidate-portfolio-case-mobile-title-block-pad-block,
-      48px
+      32px
     );
     padding-bottom: 0;
     padding-inline: 0;

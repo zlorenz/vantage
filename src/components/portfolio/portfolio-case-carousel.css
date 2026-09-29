@@ -482,9 +482,10 @@
 }
 
 /*
- * Case-page multi carousel ≤575 — restyle chrome from 2283:29693 while
- * keeping 16:9 (decision 2/3). Scoped under `.vp-case-shell` so blog
+ * Case-page multi carousel ≤575. Scoped under `.vp-case-shell` so blog
  * relatedCase multi heroes (same carousel CSS) do not shift.
+ * 4:5 matches Studio “Full Portfolio Cards (Desktop)” (512/640). Card is
+ * narrower than the row so the next poster peeks; single embeds stay 16:9.
  */
 @media (max-width: 575.98px) {
   .vp-case-shell .vp-case-carousel {
@@ -496,19 +497,23 @@
       --vp-candidate-portfolio-case-mobile-overlay-pad,
       16px
     );
-    --vp-case-card-width: 100cqw;
+    --vp-case-card-width: var(
+      --vp-candidate-portfolio-case-mobile-card-width,
+      84cqw
+    );
+    /* Opaque peek — a 0.4 sliver reads as a shadow, not a next film. */
+    --vp-case-inactive-opacity: 1;
     --vp-case-slide-gap: 0.5rem;
     /* QC: no wireframe borders on mobile media (desktop keeps them). */
     border-top: 0;
     border-bottom: 0;
   }
 
-  .vp-case-shell .vp-case-carousel__viewport {
-    padding-right: 12%;
-  }
-
   .vp-case-shell .vp-case-carousel__card {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: var(
+      --vp-candidate-portfolio-case-mobile-card-aspect,
+      512 / 640
+    );
   }
 
   .vp-case-shell .vp-case-carousel__play-circle {

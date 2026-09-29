@@ -203,15 +203,15 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
 | `--vp-candidate-portfolio-case-mobile-inline-pad` | `16px` | `.vp-case-shell` pad / back / header / credits / KV ≤575 | `2283:29693` gutters | pending | Prefer alias of `--vp-overlay-mobile-pad-inline` when equal. |
-| `--vp-candidate-portfolio-case-mobile-back-btn-size` | `56px` | `.vp-case-mobile-back__btn` | `2283:29746` | pending | |
+| `--vp-candidate-portfolio-case-mobile-back-btn-size` | ~~`56px`~~ → `42px` | `.vp-case-mobile-back__btn` ≤575 | `2283:29746` + QC | pending | Same ratio as pills 48→36. Mid-width ≤991 stays 56px. |
 | `--vp-candidate-portfolio-case-mobile-title-size` | `30px` | `.vp-case-header__campaign` ≤575 | h1 fallback on frame | pending | `--font-vp-heading`; tracking floor 0. |
 | `--vp-candidate-portfolio-case-mobile-title-lh` | `1.1` | campaign | same | pending | |
 | `--vp-candidate-portfolio-case-mobile-brand-size` | `12px` | brand / credit names / explore | caption_1 | pending | |
 | `--vp-candidate-portfolio-case-mobile-label-size` | `12px` | credit roles / pills | caption_3/4 | pending | |
-| `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | `48px` | title block **pad-top** only ≤575 | `py-48` | pending | Pad-bottom dropped — was stacking with meta pad. |
+| `--vp-candidate-portfolio-case-mobile-title-block-pad-block` | ~~`48px`~~ → `32px` | title block **pad-top** only ≤575 | QC: ~35% less air under All Work | pending | Combined with back pad-bottom 20px (was 32+48). |
 | `--vp-candidate-portfolio-case-mobile-title-pills-gap` | `16px` | `.vp-case-header__meta` pad-top ≤575 | QC: tighten campaign→pills | pending | Was effectively ~88px (48+40). |
 | `--vp-candidate-portfolio-case-mobile-brand-campaign-gap` | ~~`32px`~~ → ~~`0.35rem`~~ → `--vp-overlay-mobile-title-tag-gap` (`12px`) | `.vp-case-header__title-block` gap ≤575 | QC / carousel parity | pending | Case header mobile only — other carousels + desktop title-block unchanged. |
-| `--vp-candidate-portfolio-case-mobile-back-title-gap` | `32px` | `.vp-case-mobile-back` pad-bottom ≤991 | QC: larger back→title gap after hugging nav | pending | Title-block pad-top stays 48px (do not pull campaign up). |
+| `--vp-candidate-portfolio-case-mobile-back-title-gap` | ~~`32px`~~ → `20px` on ≤575 | `.vp-case-mobile-back` pad-bottom | QC: tighter All Work→title | pending | Mid-width ≤991 stays 32px. |
 | `--vp-candidate-portfolio-case-mobile-back-pad-top` | `12px` | `.vp-case-mobile-back` pad-top ≤575 | QC: small air under 64px nav (not flush) | pending | Mid-width ≤991 uses `1rem` pad-top; desktop rail unchanged. |
 | `--vp-candidate-portfolio-case-mobile-meta-pad-block` | `40px` | `.vp-case-header__meta` **pad-bottom** ≤575 | `py-40` | pending | Pad-top superseded by title-pills-gap. |
 | `--vp-candidate-portfolio-case-mobile-credit-role-width` | `8.75rem` | `.vp-credit-pair` grid col 1 ≤991 | QC: table-like role\|names | pending | Desktop stays `17.625rem`. |
@@ -240,6 +240,8 @@ Decisions: keep **16:9** hero; no Agency on mobile key credits; no left hairline
 | `--vp-candidate-portfolio-case-mobile-explore-height` | `60px` | explore row | h-60 | pending | Approximate. |
 | `--vp-candidate-portfolio-case-mobile-nav-bracket-outset` | `8px` | `.vp-project-nav__ticks` inset ≤575 | QC: brackets outside full widget (poster→explore); heading hidden on phone | pending | Negative inset = outside; poster must not be a positioning context on phone. |
 | `--vp-candidate-portfolio-case-mobile-overlay-pad` | `16px` | multi carousel overlay ≤575 | frame inline | pending | Scoped `.vp-case-shell`. |
+| `--vp-candidate-portfolio-case-mobile-card-aspect` | `512 / 640` | `.vp-case-carousel__card` ≤575 | Studio “Full Portfolio Cards (Desktop)” | pending | Same ratio as `CAROUSEL_RATIOS.workDesktop`. Single-video `.vp-case-video` stays 16:9. Desktop carousel stays 960/600. |
+| `--vp-candidate-portfolio-case-mobile-card-width` | `84cqw` | active slide width ≤575 | QC: next poster peeks | pending | Replaces full-bleed `100cqw`. Peek lane is the existing `100cqw − card width` pad. |
 
 ## Campaign brief form — desktop restyle (pending)
 
