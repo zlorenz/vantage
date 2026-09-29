@@ -4,11 +4,12 @@
  * About tabbed panel — click-driven menu with image + description swap.
  * Shared by Who We Are (menu left) and Production House (menu right) sections.
  *
- * Selection changes on click only. Hover restyles inactive rows so they
- * still read as clickable; it does not change the active item.
+ * Selection changes on click only (WAI-ARIA manual activation). Arrow keys
+ * move focus inside the tablist; Enter or Space activates the focused tab.
+ * Hover restyles inactive rows so they still read as clickable.
  */
 
-import { useState } from 'react';
+import { useRef, useState, type FocusEvent, type KeyboardEvent } from 'react';
 import Image from 'next/image';
 
 export type AboutTabbedPanelItem = {
@@ -58,7 +59,53 @@ export function AboutTabbedPanelInteractive({
   theme = 'light',
 }: AboutTabbedPanelInteractiveProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [rovingIndex, setRovingIndex] = useState(0);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const activeItem = items[activeIndex] ?? items[0];
+
+  function focusTab(index: number) {
+    setRovingIndex(index);
+    tabRefs.current[index]?.focus();
+  }
+
+  function activateTab(index: number) {
+    setActiveIndex(index);
+    setRovingIndex(index);
+  }
+
+  function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const last = items.length - 1;
+    let next: number | null = null;
+
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowRight':
+        next = index >= last ? 0 : index + 1;
+        break;
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        next = index <= 0 ? last : index - 1;
+        break;
+      case 'Home':
+        next = 0;
+        break;
+      case 'End':
+        next = last;
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    focusTab(next);
+  }
+
+  function onTabBlur(event: FocusEvent<HTMLButtonElement>) {
+    const nextTarget = event.relatedTarget;
+    const list = event.currentTarget.closest('[role="tablist"]');
+    if (nextTarget instanceof Node && list?.contains(nextTarget)) return;
+    setRovingIndex(activeIndex);
+  }
 
   if (!activeItem) return null;
 
@@ -83,23 +130,30 @@ export function AboutTabbedPanelInteractive({
         <ul
           className={`m-0 flex list-none flex-col gap-0.5 p-0 lg:col-span-5 lg:row-start-1 lg:self-start ${menuColumnClasses}`}
           role="tablist"
+          aria-orientation="vertical"
         >
           {items.map((item, index) => {
             const selected = activeIndex === index;
             return (
               <li key={item.label} role="presentation">
                 <button
+                  ref={(node) => {
+                    tabRefs.current[index] = node;
+                  }}
                   type="button"
                   role="tab"
                   id={`about-${sectionId}-tab-${index}`}
                   aria-controls={panelId}
                   aria-selected={selected}
+                  tabIndex={rovingIndex === index ? 0 : -1}
                   className={`w-full cursor-pointer px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading [transition:color_var(--vp-transition)]${
                     selected
                       ? themeClasses.tabSelected
                       : `${themeClasses.tabDefault}${themeClasses.tabInactiveHover}`
                   }`}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => activateTab(index)}
+                  onKeyDown={(event) => onTabKeyDown(event, index)}
+                  onBlur={onTabBlur}
                 >
                   {item.label}
                 </button>
