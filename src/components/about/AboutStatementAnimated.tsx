@@ -5,8 +5,9 @@
  * Receives pre-resolved line strings from AboutStatementSection (server).
  */
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { isValidElement, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { CornerFrame } from '@/components/ui/CornerFrame';
 import './about-statement.css';
 
@@ -125,7 +126,6 @@ function StatementMarker({ slot, staggerIndex, markers }: StatementMarkerProps) 
 type StatementLineProps = {
   lineIndex: number;
   words: string[];
-  accent?: boolean;
   reducedMotion: boolean;
   markers: ReadonlyArray<AboutStatementMarkerImage>;
 };
@@ -133,15 +133,12 @@ type StatementLineProps = {
 function StatementLine({
   lineIndex,
   words,
-  accent = false,
   reducedMotion,
   markers,
 }: StatementLineProps) {
   const lineRef = useRef<HTMLDivElement>(null);
   const markerAfterWord = MARKER_AFTER_WORD_INDEX[lineIndex];
   const markerSlot = LINE_TO_MARKER_SLOT[lineIndex];
-  const accentBreakAfter =
-    accent && words[0] === "THAT'S" && words[1] === 'NOT' ? 1 : null;
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -163,7 +160,6 @@ function StatementLine({
 
   const lineClass = [
     'vp-about-statement__line',
-    accent ? 'vp-about-statement__line--accent' : '',
     reducedMotion ? 'in-view' : '',
   ]
     .filter(Boolean)
@@ -199,10 +195,6 @@ function StatementLine({
 
     staggerIndex++;
 
-    if (accentBreakAfter === wordIndex) {
-      nodes.push(<span key="accent-break" className="vp-about-statement__accent-break" />);
-    }
-
     if (hasMarkerAfter) {
       nodes.push(
         <StatementMarker
@@ -221,6 +213,96 @@ function StatementLine({
       {nodes}
     </div>
   );
+}
+
+/**
+ * Line 6. The EN catalog holds a <br> between the two yellow lines.
+ * t.rich renders that tag as the desktop-only break. ZH has no tag, so it
+ * stays one run.
+ */
+function AccentLine({ reducedMotion }: { reducedMotion: boolean }) {
+  const t = useTranslations('About');
+  const lineRef = useRef<HTMLDivElement>(null);
+  const rich = t.rich('statementLine6', {
+    br: () => <span className="vp-about-statement__accent-break" />,
+  });
+  const nodes = nodesFromRich(rich, { index: 0, pendingSpace: false });
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const el = lineRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
+        });
+      },
+      { root: null, rootMargin: IO_ROOT_MARGIN, threshold: IO_THRESHOLD },
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [reducedMotion]);
+
+  const lineClass = [
+    'vp-about-statement__line',
+    'vp-about-statement__line--accent',
+    reducedMotion ? 'in-view' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <div ref={lineRef} className={lineClass}>
+      {nodes}
+    </div>
+  );
+}
+
+function nodesFromRich(
+  node: ReactNode,
+  state: { index: number; pendingSpace: boolean },
+): ReactNode[] {
+  if (node == null || typeof node === 'boolean') return [];
+
+  if (typeof node === 'string' || typeof node === 'number') {
+    const words = String(node).trim().split(/\s+/).filter(Boolean);
+    const out: ReactNode[] = [];
+    words.forEach((word) => {
+      if (state.pendingSpace) {
+        out.push(
+          <span key={`sp-${state.index}`} className="vp-about-statement__gap" aria-hidden>
+            {'\u00a0'}
+          </span>,
+        );
+      }
+      out.push(
+        <span
+          key={`w-${state.index}`}
+          className="vp-about-statement__word"
+          style={{ '--i': state.index } as CSSProperties}
+        >
+          {word}
+        </span>,
+      );
+      state.index += 1;
+      state.pendingSpace = true;
+    });
+    return out;
+  }
+
+  if (Array.isArray(node)) {
+    return node.flatMap((child) => nodesFromRich(child, state));
+  }
+
+  if (isValidElement(node)) {
+    state.pendingSpace = false;
+    return [node];
+  }
+
+  return [];
 }
 
 function FilmStrip({
@@ -273,7 +355,6 @@ export function AboutStatementAnimated({
   line3,
   line4,
   line5,
-  line6,
   markers,
   filmStrips,
 }: AboutStatementAnimatedProps) {
@@ -294,8 +375,7 @@ export function AboutStatementAnimated({
     { words: splitLine(line2), accent: false },
     { words: splitLine(line3), accent: false },
     { words: splitLine(line4), accent: false },
-    { words: splitLine(line5), accent: false },
-    { words: splitLine(line6), accent: true },
+    { words: splitLine(line5) },
   ];
 
   const sectionClass = [
@@ -328,11 +408,11 @@ export function AboutStatementAnimated({
               key={lineIndex}
               lineIndex={lineIndex}
               words={line.words}
-              accent={line.accent}
               reducedMotion={reducedMotion}
               markers={markers}
             />
           ))}
+          <AccentLine reducedMotion={reducedMotion} />
         </h1>
       </div>
     </section>
