@@ -24,6 +24,7 @@ import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
 import { AboutProductionHouseSection } from '@/components/about/AboutProductionHouseSection';
 import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
 import { AboutFeatureRow } from '@/components/about/AboutFeatureRow';
+import { AboutMoreSection } from '@/components/about/AboutMoreSection';
 import '@/components/about/about-tokens.css';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { Link } from '@/i18n/navigation';
@@ -220,48 +221,28 @@ export default async function AboutPage({ params }: Props) {
         />
       </SectionWrapper>
 
-      <SectionWrapper borderTop>
-        <div className="text-center">
-          <h2 className="mb-3 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading text-white">
-            {t('moreAboutVantage')}
-          </h2>
-          <p className="m-0 font-light leading-relaxed text-vp-text-muted">
-            {t('moreAboutVantageBody')}
-          </p>
-          <p className="m-0 mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-normal">
-            <Link
-              href="/our-company"
-              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
-            >
-              {t('moreAboutOurCompany')}
-            </Link>
-            {/* Temporary — these point to the first existing category page per taxonomy as a placeholder. Will be replaced with links to consolidated taxonomy hub pages (see project notes) once those are built. */}
-            <Link
-              href={{ pathname: '/video-format/[slug]', params: { slug: 'brand-film' } }}
-              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
-            >
-              {t('moreAboutFormats')}
-            </Link>
-            <Link
-              href={{ pathname: '/industry/[slug]', params: { slug: 'ai-robotics' } }}
-              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
-            >
-              {t('moreAboutIndustries')}
-            </Link>
-            <Link
-              href={{ pathname: '/market/[slug]', params: { slug: 'china' } }}
-              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
-            >
-              {t('moreAboutMarkets')}
-            </Link>
-            <Link
-              href="/awards"
-              className="text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover"
-            >
-              {t('moreAboutAwards')}
-            </Link>
-          </p>
-        </div>
+      <SectionWrapper borderTop className="vp-about-more-section">
+        {/* Temporary — Formats, Industries, and Markets point at the first existing category page per taxonomy. Replace with taxonomy hub pages once those exist. */}
+        <AboutMoreSection
+          title={t('moreAboutVantage')}
+          body={t('moreAboutVantageBody')}
+          links={[
+            { label: t('moreAboutOurCompany'), href: '/our-company' },
+            {
+              label: t('moreAboutFormats'),
+              href: { pathname: '/video-format/[slug]', params: { slug: 'brand-film' } },
+            },
+            {
+              label: t('moreAboutIndustries'),
+              href: { pathname: '/industry/[slug]', params: { slug: 'ai-robotics' } },
+            },
+            {
+              label: t('moreAboutMarkets'),
+              href: { pathname: '/market/[slug]', params: { slug: 'china' } },
+            },
+            { label: t('moreAboutAwards'), href: '/awards' },
+          ]}
+        />
       </SectionWrapper>
     </>
   );

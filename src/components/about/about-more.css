@@ -1,0 +1,89 @@
+@media (min-width: 1200px) {
+  section.vp-about-more-section {
+    padding: 0;
+    border-top-color: transparent;
+  }
+
+  .vp-about-more__desktop {
+    justify-content: center;
+    padding-block: var(--vp-candidate-about-section-pad-block);
+  }
+
+  .vp-about-more__frame {
+    position: relative;
+    width: min(1236px, calc(100% - 48px));
+    padding: var(--vp-candidate-about-cell-pad);
+    border: 1px dashed var(--vp-candidate-brief-line);
+  }
+
+  .vp-about-more__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 248px;
+    align-items: center;
+    padding: 80px 40px;
+  }
+
+  .vp-about-more__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    max-width: 632px;
+    text-align: center;
+  }
+
+  .vp-about-more__title {
+    margin: 0;
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-about-display-size);
+    font-weight: var(--font-vp-heading-weight);
+    line-height: var(--vp-candidate-about-display-lh);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--vp-link);
+  }
+
+  .vp-about-more__dek {
+    margin: 0;
+    font-family: var(--font-vp-sans);
+    font-size: var(--vp-candidate-about-dek-size);
+    font-weight: 400;
+    line-height: var(--vp-candidate-about-dek-lh);
+    color: var(--vp-candidate-about-white-50);
+  }
+
+  .vp-about-more__links {
+    display: flex;
+    width: 100%;
+    border-top: 1px solid var(--vp-candidate-brief-line);
+    border-bottom: 1px solid var(--vp-candidate-brief-line);
+  }
+
+  .vp-about-more__links a {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 32px var(--vp-candidate-about-cell-pad);
+    border-right: 1px solid var(--vp-candidate-brief-line);
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-about-step-size);
+    font-weight: var(--font-vp-heading-weight);
+    line-height: var(--vp-candidate-about-step-lh);
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--vp-text);
+    transition: color var(--vp-transition);
+  }
+
+  .vp-about-more__links a:last-child {
+    border-right: 0;
+  }
+
+  .vp-about-more__links a:hover {
+    color: var(--vp-link);
+  }
+}
