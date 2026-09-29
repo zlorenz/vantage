@@ -1,0 +1,138 @@
+/*
+ * Desktop layout for the About tab panels. Below 1200px the markup keeps
+ * the stacked menu → description → image flow from the utility classes.
+ */
+
+.vp-about-tabs__eyebrow {
+  display: none;
+}
+
+.vp-about-tabs__photo .vp-corner-frame {
+  display: none;
+}
+
+.vp-about-tabs[data-theme='light'] {
+  --vp-about-tab-line: var(--vp-candidate-about-black-15);
+  --vp-about-tab-body: var(--vp-candidate-about-black-70);
+}
+
+.vp-about-tabs[data-theme='dark'] {
+  --vp-about-tab-line: var(--vp-candidate-brief-line);
+  --vp-about-tab-body: var(--vp-candidate-about-white-60);
+}
+
+@media (min-width: 1200px) {
+  section.vp-about-tabs-section {
+    padding-block: var(--vp-candidate-about-section-pad-block);
+  }
+
+  .vp-about-tabs-section .vp-content-rail {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .vp-about-tabs__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: var(--vp-candidate-about-header-gap);
+    padding-inline: var(--vp-candidate-about-cell-pad);
+  }
+
+  .vp-about-tabs__eyebrow {
+    display: flex;
+    flex: none;
+    align-items: center;
+    width: 454px;
+    margin: 0;
+    font-family: var(--font-vp-heading);
+    font-size: var(--vp-candidate-about-eyebrow-size);
+    font-weight: var(--font-vp-heading-weight);
+    line-height: var(--vp-candidate-about-eyebrow-lh);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--vp-orange);
+  }
+
+  .vp-about-tabs__heading {
+    margin: 0;
+    font-size: var(--vp-candidate-about-display-size);
+    line-height: var(--vp-candidate-about-display-lh);
+  }
+
+  .vp-about-tabs__layout {
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .vp-about-tabs__layout[data-image='right'] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1108px);
+  }
+
+  .vp-about-tabs__layout[data-image='left'] {
+    grid-template-columns: minmax(0, 1108px) minmax(0, 1fr);
+  }
+
+  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__copy {
+    order: 2;
+  }
+
+  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__media {
+    order: 1;
+  }
+
+  .vp-about-tabs__copy {
+    gap: 0;
+    min-height: 675px;
+    padding-bottom: var(--vp-candidate-about-cell-pad);
+    border-bottom: 1px solid var(--vp-about-tab-line);
+  }
+
+  .vp-about-tabs__layout[data-image='right'] .vp-about-tabs__copy,
+  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__media {
+    border-inline-end: 1px solid var(--vp-about-tab-line);
+  }
+
+  .vp-about-tabs__menu {
+    gap: 0;
+  }
+
+  .vp-about-tabs__tab {
+    padding: var(--vp-candidate-about-cell-pad);
+    font-size: var(--vp-candidate-about-tab-size);
+    line-height: var(--vp-candidate-about-tab-lh);
+  }
+
+  .vp-about-tabs__tab:not(.is-selected) {
+    border-bottom: 1px solid var(--vp-about-tab-line);
+  }
+
+  .vp-about-tabs__description {
+    margin-top: auto;
+    padding: var(--vp-candidate-about-cell-pad);
+    font-family: var(--font-vp-sans);
+    font-size: var(--vp-candidate-about-body-size);
+    font-weight: 400;
+    line-height: var(--vp-candidate-about-body-lh);
+    color: var(--vp-about-tab-body);
+  }
+
+  .vp-about-tabs__media {
+    position: relative;
+    min-height: 675px;
+    padding: var(--vp-candidate-about-cell-pad);
+    border-top: 1px solid var(--vp-about-tab-line);
+    border-bottom: 1px solid var(--vp-about-tab-line);
+  }
+
+  .vp-about-tabs__photo {
+    height: 100%;
+    min-height: calc(675px - (2 * var(--vp-candidate-about-cell-pad)));
+    aspect-ratio: auto;
+  }
+
+  .vp-about-tabs__photo .vp-corner-frame {
+    display: block;
+    inset: 15px;
+  }
+}

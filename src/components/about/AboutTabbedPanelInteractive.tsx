@@ -11,6 +11,8 @@
 
 import { useRef, useState, type FocusEvent, type KeyboardEvent } from 'react';
 import Image from 'next/image';
+import { CornerFrame } from '@/components/ui/CornerFrame';
+import './about-tabbed-panel.css';
 
 export type AboutTabbedPanelItem = {
   label: string;
@@ -24,6 +26,7 @@ type AboutTabbedPanelTheme = 'light' | 'dark';
 type AboutTabbedPanelInteractiveProps = {
   sectionId: string;
   heading: string;
+  eyebrow?: string;
   items: readonly AboutTabbedPanelItem[];
   /** Menu column side on large screens. Mobile always stacks menu then image. */
   imagePosition?: 'left' | 'right';
@@ -35,17 +38,14 @@ const THEME_CLASSES: Record<
   { tabDefault: string; tabInactiveHover: string; tabSelected: string; description: string }
 > = {
   light: {
-    // Resting alpha stays at the pre-Figma 0.4. Commit 6 moves the rest
-    // state to 0.2; hover then lands on 0.4. Until then the same +0.2 step
-    // lifts 0.4 to 0.6 so the row still responds to the pointer.
-    tabDefault: ' text-black/40',
-    tabInactiveHover: ' hover:text-black/60',
+    tabDefault: ' text-black/20',
+    tabInactiveHover: ' hover:text-black/40',
     tabSelected: ' is-selected bg-black text-white',
     description: ' text-black/75',
   },
   dark: {
-    tabDefault: ' text-white/40',
-    tabInactiveHover: ' hover:text-white/60',
+    tabDefault: ' text-white/20',
+    tabInactiveHover: ' hover:text-white/40',
     tabSelected: ' is-selected bg-white text-black',
     description: ' text-vp-text-muted',
   },
@@ -54,6 +54,7 @@ const THEME_CLASSES: Record<
 export function AboutTabbedPanelInteractive({
   sectionId,
   heading,
+  eyebrow,
   items,
   imagePosition = 'right',
   theme = 'light',
@@ -112,23 +113,29 @@ export function AboutTabbedPanelInteractive({
   const headingId = `about-${sectionId}-heading`;
   const panelId = `about-${sectionId}-panel`;
   const descriptionId = `about-${sectionId}-description`;
-  const menuOnRight = imagePosition === 'left';
   const themeClasses = THEME_CLASSES[theme];
-  const menuColumnClasses = menuOnRight ? 'lg:col-start-8' : 'lg:col-start-1';
-  const imageColumnClasses = menuOnRight ? 'lg:col-start-1' : 'lg:col-start-6';
 
   return (
-    <div aria-labelledby={headingId}>
-      <h2
-        id={headingId}
-        className="m-0 mb-8 font-vp-heading text-[clamp(2.325rem,4.07vw,3.49rem)] font-bold uppercase leading-[1.15] tracking-normal lg:mb-10"
-      >
-        {heading}
-      </h2>
+    <div className="vp-about-tabs" data-theme={theme} aria-labelledby={headingId}>
+      <div className="vp-about-tabs__header">
+        {eyebrow ? (
+          <p className="vp-about-tabs__eyebrow">
+            <span aria-hidden="true">● </span>
+            {eyebrow}
+          </p>
+        ) : null}
+        <h2
+          id={headingId}
+          className="vp-about-tabs__heading m-0 mb-8 font-vp-heading text-[clamp(2.325rem,4.07vw,3.49rem)] font-bold uppercase leading-[1.15] tracking-normal"
+        >
+          {heading}
+        </h2>
+      </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-x-12 lg:gap-y-10">
+      <div className="vp-about-tabs__layout grid grid-cols-1 gap-8" data-image={imagePosition}>
+        <div className="vp-about-tabs__copy flex flex-col gap-8">
         <ul
-          className={`m-0 flex list-none flex-col gap-0.5 p-0 lg:col-span-5 lg:row-start-1 lg:self-start ${menuColumnClasses}`}
+          className="vp-about-tabs__menu m-0 flex list-none flex-col gap-0.5 p-0"
           role="tablist"
           aria-orientation="vertical"
         >
@@ -146,7 +153,7 @@ export function AboutTabbedPanelInteractive({
                   aria-controls={panelId}
                   aria-selected={selected}
                   tabIndex={rovingIndex === index ? 0 : -1}
-                  className={`w-full cursor-pointer px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading [transition:color_var(--vp-transition)]${
+                  className={`vp-about-tabs__tab w-full cursor-pointer px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading [transition:color_var(--vp-transition)]${
                     selected
                       ? themeClasses.tabSelected
                       : `${themeClasses.tabDefault}${themeClasses.tabInactiveHover}`
@@ -165,26 +172,31 @@ export function AboutTabbedPanelInteractive({
         <p
           id={descriptionId}
           aria-live="polite"
-          className={`m-0 font-light leading-relaxed lg:col-span-5 lg:row-start-1 lg:self-end ${menuColumnClasses}${themeClasses.description}`}
+          className={`vp-about-tabs__description m-0 font-light leading-relaxed${themeClasses.description}`}
         >
           {activeItem.description}
         </p>
+        </div>
 
         <div
           id={panelId}
           role="tabpanel"
           aria-labelledby={`about-${sectionId}-tab-${activeIndex}`}
-          className={`min-w-0 w-full lg:col-span-7 lg:row-start-1 ${imageColumnClasses}`}
+          className="vp-about-tabs__media min-w-0 w-full"
         >
           {activeItem.imageSrc ? (
-            <div className="relative aspect-video w-full overflow-hidden rounded-[1.75rem]">
+            <div className="vp-about-tabs__photo relative aspect-video w-full overflow-hidden">
               <Image
                 src={activeItem.imageSrc}
                 alt={activeItem.imageAlt}
                 fill
-                sizes="(max-width: 992px) 100vw, 58vw"
+                sizes="(max-width: 1199px) 100vw, 1108px"
                 className="object-cover"
                 priority={activeIndex === 0}
+              />
+              <CornerFrame
+                variant={theme === 'dark' ? 'dark' : 'light'}
+                crosshair={{ size: 40, color: 'var(--vp-text)' }}
               />
             </div>
           ) : null}

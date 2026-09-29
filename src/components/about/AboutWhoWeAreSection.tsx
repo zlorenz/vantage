@@ -50,11 +50,12 @@ export async function AboutWhoWeAreSection() {
   );
 
   return (
-    <SectionWrapper fullBleed className="bg-white text-black">
+    <SectionWrapper fullBleed className="vp-about-tabs-section bg-white text-black">
       <div className="vp-content-rail">
         <AboutTabbedPanelInteractive
           sectionId="who-we-are"
           heading={t('whoWeAreHeading')}
+          eyebrow={t('whoWeAreEyebrow')}
           items={items}
           imagePosition="right"
         />

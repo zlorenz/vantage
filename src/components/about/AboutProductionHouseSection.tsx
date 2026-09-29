@@ -47,11 +47,12 @@ export async function AboutProductionHouseSection() {
   );
 
   return (
-    <SectionWrapper fullBleed className="bg-vp-bg text-vp-text">
+    <SectionWrapper fullBleed className="vp-about-tabs-section bg-vp-bg text-vp-text">
       <div className="vp-content-rail">
         <AboutTabbedPanelInteractive
           sectionId="production-house"
           heading={t('productionHouseHeading')}
+          eyebrow={t('productionHouseEyebrow')}
           items={items}
           imagePosition="left"
           theme="dark"
