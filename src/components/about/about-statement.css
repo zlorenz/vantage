@@ -192,6 +192,7 @@
     z-index: 2;
     /* Space between the inner hairlines (328px left, 327px right), capped at the Figma measure. */
     width: min(1152px, calc(100% - 328px - 327px));
+    padding-inline: 0;
   }
 
   .vp-about-statement__stage {
