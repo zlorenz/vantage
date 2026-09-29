@@ -8,8 +8,6 @@
   --vp-about-marker-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --vp-about-ink-dim: rgba(255, 255, 255, 0.16);
   --vp-about-ink-lit: #ffffff;
-  /* Redesign orange #F37021 (design/.pen) — not --vp-orange (#f04e23). */
-  --vp-about-ink-accent: #f37021;
   padding-top: calc(var(--vp-section-y-header-condensed) * 1.5);
   padding-bottom: calc(var(--vp-section-y) * 1.5);
 }
@@ -49,7 +47,7 @@
 }
 
 .vp-about-statement__line--accent.in-view .vp-about-statement__word {
-  color: var(--vp-about-ink-accent);
+  color: var(--vp-link);
 }
 
 .vp-about-statement__gap--marker {
@@ -104,7 +102,7 @@
 
 /* Reduced motion — final state immediately (JS adds .in-view + this class). */
 .vp-about-statement--reduced-motion .vp-about-statement__line--accent .vp-about-statement__word {
-  color: var(--vp-about-ink-accent);
+  color: var(--vp-link);
 }
 
 .vp-about-statement--reduced-motion .vp-about-statement__line:not(.vp-about-statement__line--accent) .vp-about-statement__word {
@@ -130,7 +128,7 @@
   }
 
   .vp-about-statement__line--accent .vp-about-statement__word {
-    color: var(--vp-about-ink-accent);
+    color: var(--vp-link);
   }
 
   .vp-about-statement__marker {
@@ -158,9 +156,6 @@
 
 @media (min-width: 1200px) {
   section.vp-about-statement {
-    /* Yellow emphasis is the link token on desktop. Mobile keeps #f37021. */
-    --vp-about-ink-accent: var(--vp-link);
-
     position: relative;
     display: flex;
     align-items: center;
