@@ -108,4 +108,5 @@ tmp/
 .env*
 !.env.example
 !.env.*.example
-design/assets/
+# Local files dropped in for agents (formerly design/assets)
+-temp-dropbox/
