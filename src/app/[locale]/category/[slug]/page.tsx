@@ -1,16 +1,13 @@
 /**
- * Blog category archive — filtered post grid with sidebar.
- * Mobile ≤575: chrome-chip filter (nested sheet) + full-bleed cards;
- * sidebar hidden. Desktop keeps PageHero + sidebar.
+ * Blog category archive — Production Log chrome, filtered grid.
+ * Same header/filter/full-bleed grid as /news; H1 is the category title.
  */
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BlogCategoryFilter } from '@/components/blog/BlogCategoryFilter';
 import { BlogPostGrid } from '@/components/blog/BlogPostGrid';
-import { BlogSidebar } from '@/components/blog/BlogSidebar';
-import { PageHero } from '@/components/ui/PageHero';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { permanentRedirect } from '@/i18n/navigation';
@@ -34,11 +31,10 @@ import {
   ALL_CATEGORIES_QUERY,
   ALL_POSTS_QUERY,
   CATEGORY_BY_SLUG_QUERY,
-  CATEGORY_HERO_IMAGE_QUERY,
   CATEGORY_SLUGS_QUERY,
   POSTS_BY_CATEGORY_QUERY,
 } from '@/sanity/queries/blog';
-import type { BlogPostCard as BlogPostCardData, CategoryTerm, SanityImage } from '@/types/sanity';
+import type { BlogPostCard as BlogPostCardData, CategoryTerm } from '@/types/sanity';
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -108,13 +104,13 @@ export default async function CategoryArchivePage({ params }: Props) {
     });
   }
 
-  const [posts, allPosts, categories, heroImage, phrases, organization] = await Promise.all([
+  const [posts, allPosts, categories, phrases, organization, t] = await Promise.all([
     sanityClient.fetch<BlogPostCardData[]>(POSTS_BY_CATEGORY_QUERY, { slug }),
     sanityClient.fetch<BlogPostCardData[]>(ALL_POSTS_QUERY),
     sanityClient.fetch<CategoryTerm[]>(ALL_CATEGORIES_QUERY),
-    sanityClient.fetch<SanityImage | null>(CATEGORY_HERO_IMAGE_QUERY, { slug }),
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
+    getTranslations('Blog'),
   ]);
 
   const heroTitle = decodeHtmlEntities(
@@ -138,7 +134,6 @@ export default async function CategoryArchivePage({ params }: Props) {
         data={buildCollectionPage({
           name: heroTitle,
           description: blogCategoryDescription(heroTitle, typedLocale),
-          image: heroImage ?? undefined,
           url: pageUrl,
           locale: typedLocale,
         })}
@@ -153,12 +148,25 @@ export default async function CategoryArchivePage({ params }: Props) {
           },
         ])}
       />
-      <div className="vp-category-archive">
-        <PageHero title={heroTitle} backgroundImage={heroImage ?? undefined} />
-
-        <SectionWrapper className="vp-news-page vp-category-archive__body" fullBleed={true}>
-          {/* Mobile-only filter chip — desktop keeps BlogSidebar. */}
-          <div className="vp-category-archive__toolbar">
+      <SectionWrapper
+        className="vp-news-page vp-category-page !pt-[var(--vp-section-y-header-condensed)]"
+        fullBleed={true}
+      >
+        <div className="vp-news-page__chrome">
+          <header className="vp-news-page__header">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="vp-news-page__motif"
+              src="/brand/vap-pattern.svg"
+              alt=""
+              aria-hidden="true"
+            />
+            <div className="vp-news-page__heading">
+              <p className="vp-news-page__eyebrow">{`●  ${t('eyebrow')}`}</p>
+              <div className="vp-news-page__title-block">
+                <h1 className="vp-news-page__title">{heroTitle}</h1>
+              </div>
+            </div>
             <BlogCategoryFilter
               categories={categories}
               posts={allPosts}
@@ -166,28 +174,17 @@ export default async function CategoryArchivePage({ params }: Props) {
               phrases={phrases}
               activeSlug={activeSlug}
             />
-          </div>
+          </header>
 
-          <div className="vp-category-archive__layout">
-            <div className="vp-category-archive__main">
-              <BlogPostGrid
-                posts={posts}
-                locale={typedLocale}
-                phrases={phrases}
-              />
-            </div>
+          <div className="vp-news-page__rule" aria-hidden="true" />
 
-            <div className="vp-category-archive__aside">
-              <BlogSidebar
-                categories={categories}
-                locale={typedLocale}
-                activeSlug={activeSlug}
-                phrases={phrases}
-              />
-            </div>
-          </div>
-        </SectionWrapper>
-      </div>
+          <BlogPostGrid
+            posts={posts}
+            locale={typedLocale}
+            phrases={phrases}
+          />
+        </div>
+      </SectionWrapper>
     </>
   );
 }

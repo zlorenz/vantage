@@ -21,6 +21,8 @@ interface BlogDesktopCategoryFilterProps {
   posts: BlogPostCardData[];
   locale: Locale;
   phrases?: Record<string, string>;
+  /** Active category slug on archive pages — marks that term selected. */
+  activeSlug?: string;
 }
 
 function ChevronGlyph() {
@@ -61,6 +63,7 @@ export function BlogDesktopCategoryFilter({
   posts,
   locale,
   phrases,
+  activeSlug,
 }: BlogDesktopCategoryFilterProps) {
   const t = useTranslations('Filters');
   const tBlog = useTranslations('Blog');
@@ -86,6 +89,16 @@ export function BlogDesktopCategoryFilter({
   );
 
   const allCount = posts.length;
+  const allSelected = !activeSlug;
+
+  const isTermSelected = (slug: string, category: CategoryTerm) => {
+    if (!activeSlug) return false;
+    return (
+      activeSlug === slug ||
+      activeSlug === category.slug ||
+      activeSlug === category.slugZh
+    );
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -139,9 +152,11 @@ export function BlogDesktopCategoryFilter({
             <div className="vp-blog-desktop-filter__panel-body">
               <Link
                 href="/news"
-                className="vp-blog-desktop-filter__all is-selected"
+                className={`vp-blog-desktop-filter__all${
+                  allSelected ? ' is-selected' : ''
+                }`}
                 role="option"
-                aria-selected
+                aria-selected={allSelected}
                 onClick={() => setOpen(false)}
               >
                 <span className="vp-blog-desktop-filter__all-label">
@@ -153,16 +168,20 @@ export function BlogDesktopCategoryFilter({
               </Link>
 
               <ul className="vp-blog-desktop-filter__terms">
-                {options.map((opt) => (
+                {options.map((opt) => {
+                  const selected = isTermSelected(opt.slug, opt.category);
+                  return (
                   <li key={opt.category._id}>
                     <Link
                       href={{
                         pathname: '/category/[slug]',
                         params: {slug: opt.slug},
                       }}
-                      className="vp-blog-desktop-filter__term"
+                      className={`vp-blog-desktop-filter__term${
+                        selected ? ' is-selected' : ''
+                      }`}
                       role="option"
-                      aria-selected={false}
+                      aria-selected={selected}
                       onClick={() => setOpen(false)}
                     >
                       <span className="vp-blog-desktop-filter__term-label">
@@ -173,7 +192,8 @@ export function BlogDesktopCategoryFilter({
                       </span>
                     </Link>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -148,6 +148,7 @@ export function BlogCategoryFilter({
         posts={posts}
         locale={locale}
         phrases={phrases}
+        activeSlug={activeSlug}
       />
     );
   }
