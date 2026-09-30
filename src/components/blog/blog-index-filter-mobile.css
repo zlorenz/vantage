@@ -1,5 +1,5 @@
 /*
- * Blog-index mobile filter — nested drill visual skin.
+ * Blog-index mobile filter — flat category list skin.
  * Mirrors work filter colors/type under .vp-blog-index-filter* so
  * .vp-work-index-filter* stays untouched.
  */
@@ -40,7 +40,8 @@
   flex-direction: column;
   gap: 0;
   margin: 0;
-  padding: 0;
+  /* Replaces former drill-pane inset (was on .vp-index-filter-sheet__pane). */
+  padding: 0 1rem 1.5rem;
   list-style: none;
 }
 
