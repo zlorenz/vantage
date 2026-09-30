@@ -121,12 +121,7 @@
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0;
-  text-transform: uppercase;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.vp-portfolio-index__active-filters-pill-prefix {
+  text-transform: none;
   color: rgba(255, 255, 255, 0.55);
 }
 
