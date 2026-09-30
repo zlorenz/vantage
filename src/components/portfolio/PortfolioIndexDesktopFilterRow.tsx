@@ -10,7 +10,7 @@
  * beside the top-chrome SEARCH chip (no fullscreen overlay).
  */
 
-import {useEffect, useMemo, useRef, useState, type FormEvent} from 'react';
+import {useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode} from 'react';
 import {useTranslations} from 'next-intl';
 import type {Locale} from '@/i18n/routing';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
@@ -44,6 +44,8 @@ interface PortfolioIndexDesktopFilterRowProps {
   markets: TaxonomyTerm[];
   browseMode: PortfolioIndexBrowseMode;
   onBrowseModeChange: (mode: PortfolioIndexBrowseMode) => void;
+  /** Clear-all + active pills — slots between search and taxonomy triggers. */
+  activeFilters?: ReactNode;
 }
 
 const TAXONOMY_ORDER: TaxonomyKey[] = ['format', 'industry', 'market'];
@@ -215,6 +217,7 @@ export function PortfolioIndexDesktopFilterRow({
   markets,
   browseMode,
   onBrowseModeChange,
+  activeFilters,
 }: PortfolioIndexDesktopFilterRowProps) {
   const t = useTranslations('Filters');
   const tSearch = useTranslations('Search');
@@ -346,6 +349,8 @@ export function PortfolioIndexDesktopFilterRow({
         ) : null}
       </form>
       </div>
+
+      {activeFilters}
 
       <div className="vp-portfolio-index-desktop-filters__triggers">
         {TAXONOMY_ORDER.map((key) => {

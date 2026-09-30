@@ -970,8 +970,8 @@ export function PortfolioIndexCarousel({
             markets={markets}
             browseMode={browseMode}
             onBrowseModeChange={setBrowseModeState}
+            activeFilters={activeFiltersBar}
           />
-          {activeFiltersBar}
           <p className="py-12 text-center text-vp-text-soft">{t('empty')}</p>
           {filterTrigger}
         </div>
@@ -998,8 +998,8 @@ export function PortfolioIndexCarousel({
           markets={markets}
           browseMode={browseMode}
           onBrowseModeChange={setBrowseModeState}
+          activeFilters={activeFiltersBar}
         />
-        {activeFiltersBar}
         {gridActive ? (
           <ul className="vp-portfolio-index__grid">
             {gridSlides.map((slide) => {

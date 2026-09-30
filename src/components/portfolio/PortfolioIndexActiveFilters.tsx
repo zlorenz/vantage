@@ -77,9 +77,10 @@ function PillRemoveIcon() {
       aria-hidden="true"
       focusable="false"
     >
+      {/* Extra-heavy filled X for legibility at ~14px. */}
       <path
         fill="currentColor"
-        d="M6.22 6.22a.75.75 0 0 1 1.06 0L12 10.94l4.72-4.72a.75.75 0 1 1 1.06 1.06L13.06 12l4.72 4.72a.75.75 0 1 1-1.06 1.06L12 13.06l-4.72 4.72a.75.75 0 0 1-1.06-1.06L10.94 12 6.22 7.28a.75.75 0 0 1 0-1.06Z"
+        d="M3 5.2 5.2 3 12 9.8 18.8 3 21 5.2 14.2 12 21 18.8 18.8 21 12 14.2 5.2 21 3 18.8 9.8 12z"
       />
     </svg>
   );

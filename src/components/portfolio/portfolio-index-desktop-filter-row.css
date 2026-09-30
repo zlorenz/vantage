@@ -30,12 +30,14 @@
   .vp-portfolio-index-desktop-filters__trigger,
   .vp-portfolio-index-desktop-filters__panel,
   .vp-portfolio-index-desktop-filters__all,
-  .vp-portfolio-index-desktop-filters__term {
+  .vp-portfolio-index-desktop-filters__term,
+  .vp-portfolio-index-desktop-filters .vp-portfolio-index__active-filters {
     pointer-events: auto;
   }
 
   .vp-portfolio-index-desktop-filters__leading {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: 1.25rem;
     min-width: 0;
@@ -125,8 +127,10 @@
 
   .vp-portfolio-index-desktop-filters__triggers {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: 1.875rem; /* 30px */
+    margin-left: auto;
   }
 
   .vp-portfolio-index-desktop-filters__trigger-wrap {
