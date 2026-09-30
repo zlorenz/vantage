@@ -169,13 +169,6 @@ export function PortfolioIndexActiveFilters({
       className="vp-portfolio-index__active-filters"
       aria-label={t('activeFiltersAria')}
     >
-      <button
-        type="button"
-        className="vp-portfolio-index__active-filters-clear"
-        onClick={onClearAll}
-      >
-        {t('clearAll')}
-      </button>
       <ul className="vp-portfolio-index__active-filters-pills">
         {pills.map((pill) => (
           <li key={pill.key} className="vp-portfolio-index__active-filters-pill">
@@ -198,6 +191,13 @@ export function PortfolioIndexActiveFilters({
           </li>
         ))}
       </ul>
+      <button
+        type="button"
+        className="vp-portfolio-index__active-filters-clear"
+        onClick={onClearAll}
+      >
+        {t('clearAll')}
+      </button>
     </div>
   );
 }

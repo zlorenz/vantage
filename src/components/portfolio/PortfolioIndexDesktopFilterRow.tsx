@@ -351,7 +351,6 @@ export function PortfolioIndexDesktopFilterRow({
       </div>
 
       <div className="vp-portfolio-index-desktop-filters__triggers">
-        {activeFilters}
         {TAXONOMY_ORDER.map((key) => {
           const open = openPanel === key;
           const label = t(TAXONOMY_LABEL_KEY[key]);
@@ -456,6 +455,8 @@ export function PortfolioIndexDesktopFilterRow({
           );
         })}
       </div>
+
+      {activeFilters}
     </div>
   );
 }

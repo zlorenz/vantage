@@ -1,13 +1,15 @@
 /* Active filter/search pills + Clear all — main /work stage chrome.
- * Desktop: absolute above the FORMATS / INDUSTRY / MARKET triggers,
- * right-aligned to that cluster (out of flow — no carousel jump).
+ * Desktop: absolute above the filter row, right-aligned to the gutter
+ * (Clear all at the screen edge; pills to its left). Out of flow — no jump.
  * Mobile: hidden (Decision 6) — Clear all lives in PortfolioIndexFilterSheet.
  */
 
 .vp-portfolio-index__active-filters {
   position: absolute;
+  /* Inside the padded filter row — right:0 = gutter edge ≈ screen edge. */
   right: 0;
-  bottom: calc(100% + 0.5rem);
+  /* Lift into the letterbox; margin-bottom equalizes air above/below. */
+  bottom: 100%;
   left: auto;
   z-index: 4;
   display: flex;
@@ -18,7 +20,7 @@
   box-sizing: border-box;
   width: max-content;
   max-width: min(36rem, 55vw);
-  margin: 0;
+  margin: 0 0 0.75rem; /* ~12px — centers ~24px chrome in ~48px letterbox */
   padding: 0;
   pointer-events: none;
 }
@@ -123,7 +125,7 @@
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0;
-  text-transform: none;
+  text-transform: uppercase;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
