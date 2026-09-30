@@ -31,7 +31,8 @@
   --vp-index-bottom-bar-height: 5rem;
   /* Desktop filter row above the carousel; 0 on mobile (row is display:none). */
   --vp-index-top-row-height: 0px;
-  /* Active filter/search pills row; 0 until .has-active-filters. */
+  /* Active filter pills overlay the filter→card gap (out of flow) — never
+   * reserve stage height, so the carousel does not jump when they appear. */
   --vp-index-active-filters-height: 0px;
   /* Desktop default; mobile override below. Tuned to Figma 640/1080 (~0.59). */
   --vp-index-height-scale: 0.73;
@@ -81,14 +82,9 @@
     --vp-index-top-row-height: 5.75rem;
     --vp-index-view-toggle-size: var(--vp-candidate-chrome-chip-size, 2.75rem);
     /* Decision 6: omit active-filter pills on mobile for now. */
-    --vp-index-active-filters-height: 0px;
     justify-content: flex-end;
     /* Prior padding + ~half leftover from centering — keeps bottom edge put. */
     padding-bottom: calc(max(1.25rem, 5vh) + 0.55rem);
-  }
-
-  .vp-portfolio-index.has-active-filters {
-    --vp-index-active-filters-height: 0px;
   }
 }
 
@@ -98,21 +94,12 @@
   --vp-index-slide-width-scale: 1.16;
 }
 
-.vp-portfolio-index.has-active-filters {
-  /* Single-line Clear all + pills; matches PortfolioIndexActiveFilters chrome. */
-  --vp-index-active-filters-height: 2.25rem;
-}
-
 @media (min-width: 576px) {
   .vp-portfolio-index {
     --vp-index-slide-gap: 0.75rem;
     --vp-index-card-aspect: 512 / 640;
     /* Matches PortfolioIndexDesktopFilterRow rendered height (Figma 40px). */
     --vp-index-top-row-height: 2.5rem;
-  }
-
-  .vp-portfolio-index.has-active-filters {
-    --vp-index-active-filters-height: 2.5rem;
   }
 }
 
@@ -1388,7 +1375,7 @@
    * at the top, so the toolbar jumped up under the nav. This padding is
    * the same free space the carousel leaves above the toolbar.
    * Two stage gaps (filter→cards, cards→bottom bar) plus the band's extra
-   * top margin. A third gap appears when the active-filter row is in the stage.
+   * top margin. Active-filter pills overlay (no third gap).
    */
   .vp-portfolio-index.is-grid {
     --vp-index-carousel-stage-gaps: 3rem;
@@ -1413,10 +1400,6 @@
           ) / 2
       )
     );
-  }
-
-  .vp-portfolio-index.is-grid.has-active-filters {
-    --vp-index-carousel-stage-gaps: 4rem;
   }
 }
 
