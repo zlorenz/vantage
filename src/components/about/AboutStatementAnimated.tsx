@@ -11,8 +11,12 @@ import { useTranslations } from 'next-intl';
 import { CornerFrame } from '@/components/ui/CornerFrame';
 import './about-statement.css';
 
-/** Third frame in each Figma strip (0-based) is the sharp, bracketed one. */
+/** Third frame in each set (0-based) is centered when the page is at the top. */
 const FILM_CENTER_INDEX = 2;
+/** Identical copies. Scroll loops by one copy so the rails keep moving for the whole page. */
+const FILM_COPIES = 4;
+/** Share of page scroll applied to the rails. */
+const FILM_SCROLL_SPEED = 0.5;
 
 export type AboutStatementMarkerImage = {
   src: string;
@@ -310,38 +314,29 @@ function FilmStrip({
   side: 'left' | 'right';
   frames: ReadonlyArray<AboutStatementMarkerImage>;
 }) {
+  const centerIndex = frames.length + FILM_CENTER_INDEX;
+  const sequence = Array.from({ length: FILM_COPIES }, () => frames).flat();
+
   return (
     <div className={`vp-about-statement__rail vp-about-statement__rail--${side}`}>
-      <div className="vp-about-statement__track" data-film-strip-track={side}>
-        {frames.map((frame, index) => {
-          const center = index === FILM_CENTER_INDEX;
-          return (
-            <div
-              key={`${side}-${frame.src}`}
-              className={
-                center
-                  ? 'vp-about-statement__frame vp-about-statement__frame--center'
-                  : 'vp-about-statement__frame'
-              }
-            >
-              <div className="vp-about-statement__frame-media">
-                <Image
-                  src={frame.src}
-                  alt=""
-                  fill
-                  sizes="297px"
-                  className="object-cover"
-                />
-              </div>
-              {center ? (
-                <CornerFrame
-                  variant="dark"
-                  crosshair={{ size: 40, color: 'var(--vp-text)' }}
-                />
-              ) : null}
+      <div
+        className="vp-about-statement__track"
+        data-film-strip-track={side}
+        style={{ '--film-center-index': centerIndex } as CSSProperties}
+      >
+        {sequence.map((frame, index) => (
+          <div key={`${side}-${index}`} className="vp-about-statement__frame">
+            <div className="vp-about-statement__frame-media">
+              <Image
+                src={frame.src}
+                alt=""
+                fill
+                sizes="297px"
+                className="object-cover"
+              />
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -357,6 +352,57 @@ export function AboutStatementAnimated({
   filmStrips,
 }: AboutStatementAnimatedProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const tracks = () => section.querySelectorAll<HTMLElement>('[data-film-strip-track]');
+    if (reducedMotion) {
+      tracks().forEach((el) => {
+        el.style.transform = '';
+      });
+      return;
+    }
+
+    const desktop = window.matchMedia('(min-width: 1200px)');
+    let raf = 0;
+
+    function update() {
+      raf = 0;
+      if (!desktop.matches) {
+        tracks().forEach((el) => {
+          el.style.transform = '';
+        });
+        return;
+      }
+
+      const distance = window.scrollY * FILM_SCROLL_SPEED;
+
+      tracks().forEach((el) => {
+        const copyHeight = el.offsetHeight / FILM_COPIES;
+        if (!copyHeight) return;
+        const y = distance % copyHeight;
+        el.style.transform = y > 0 ? `translate3d(0, ${-y}px, 0)` : '';
+      });
+    }
+
+    function onScroll() {
+      if (!raf) raf = requestAnimationFrame(update);
+    }
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    desktop.addEventListener('change', onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      desktop.removeEventListener('change', onScroll);
+    };
+  }, [reducedMotion]);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -387,7 +433,7 @@ export function AboutStatementAnimated({
     .join(' ');
 
   return (
-    <section className={sectionClass}>
+    <section ref={sectionRef} className={sectionClass}>
       <div className="vp-about-statement__stage" aria-hidden="true">
         <FilmStrip side="left" frames={filmStrips.left} />
         <FilmStrip side="right" frames={filmStrips.right} />

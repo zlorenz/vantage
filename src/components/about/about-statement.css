@@ -204,12 +204,32 @@
   }
 
   .vp-about-statement__rail {
+    --vp-about-film-frame-h: calc(var(--vp-candidate-about-film-rail) * 380 / 297);
     position: absolute;
     top: 0;
     bottom: 0;
     z-index: 1;
     width: var(--vp-candidate-about-film-rail);
     overflow: hidden;
+    /* The frame crossing the middle stays sharp. The rest of the strip stays dim. */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 0,
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
+      #000 calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
+      #000 calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 0,
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
+      #000 calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
+      #000 calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
+      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 100%
+    );
   }
 
   .vp-about-statement__rail--left {
@@ -221,9 +241,10 @@
   }
 
   .vp-about-statement__track {
+    --film-center-index: 2;
     position: absolute;
-    /* Center of the third frame (2.5 frame-heights down the track) sits on the section midline. */
-    top: calc(50% - var(--vp-candidate-about-film-rail) * 950 / 297);
+    /* Center of the rest frame sits on the section midline. Frame height is 380/297 of the rail. */
+    top: calc(50% - var(--vp-candidate-about-film-rail) * (var(--film-center-index) + 0.5) * 380 / 297);
     left: 0;
     width: 100%;
   }
@@ -231,18 +252,6 @@
   .vp-about-statement__frame {
     box-sizing: border-box;
     padding: 10.1%;
-    opacity: var(--vp-candidate-about-film-dim);
-  }
-
-  .vp-about-statement__frame--center {
-    position: relative;
-    opacity: 1;
-    border-top: 1px solid var(--vp-candidate-brief-line);
-    border-bottom: 1px solid var(--vp-candidate-brief-line);
-  }
-
-  .vp-about-statement__frame--center .vp-corner-frame {
-    inset: 5.05%;
   }
 
   .vp-about-statement__frame-media {
