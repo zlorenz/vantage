@@ -16,9 +16,10 @@
   margin: 0;
   padding: 0.4rem 0.8rem;
   border: 0;
-  border-radius: 9999px;
-  background: var(--vp-orange, #f04e23);
-  color: #fff;
+  border-radius: 0;
+  background: var(--vp-home-carousel-brand-accent, #fdb913);
+  color: #000;
+  font-family: var(--font-vp-heading);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
