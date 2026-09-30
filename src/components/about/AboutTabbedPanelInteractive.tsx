@@ -9,8 +9,10 @@
  * Hover restyles inactive rows so they still read as clickable.
  */
 
-import { useRef, useState, type FocusEvent, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FocusEvent, type KeyboardEvent } from 'react';
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
+import { CarouselVimeo } from '@/components/prototype/carousel/CarouselVimeo';
 import { CornerFrame } from '@/components/ui/CornerFrame';
 import './about-tabbed-panel.css';
 
@@ -19,6 +21,10 @@ export type AboutTabbedPanelItem = {
   description: string;
   imageSrc: string;
   imageAlt: string;
+  /** Homepage-style preview URL. Null keeps the still. */
+  previewVimeoUrl?: string | null;
+  previewStartSeconds?: number | null;
+  previewEndSeconds?: number | null;
 };
 
 type AboutTabbedPanelTheme = 'light' | 'dark';
@@ -32,6 +38,102 @@ type AboutTabbedPanelInteractiveProps = {
   imagePosition?: 'left' | 'right';
   theme?: AboutTabbedPanelTheme;
 };
+
+function clipKey(item: AboutTabbedPanelItem) {
+  return [
+    item.previewVimeoUrl ?? '',
+    item.previewStartSeconds ?? '',
+    item.previewEndSeconds ?? '',
+  ].join(':');
+}
+
+/**
+ * Poster for the selected tab, plus every preview in this section once the
+ * section has been near the viewport. Inactive clips stay muted and paused
+ * so a later click can skip the still when they have already buffered.
+ */
+function AboutTabMedia({
+  items,
+  activeIndex,
+  warmed,
+}: {
+  items: readonly AboutTabbedPanelItem[];
+  activeIndex: number;
+  warmed: boolean;
+}) {
+  const locale = useLocale();
+  const allowVideoPreview = locale !== 'zh';
+  const activeItem = items[activeIndex] ?? items[0];
+  const [readyClips, setReadyClips] = useState<ReadonlySet<string>>(() => new Set());
+  const handlers = useRef(new Map<string, (ready: boolean) => void>());
+
+  const onReady = useCallback((key: string, ready: boolean) => {
+    setReadyClips((current) => {
+      const has = current.has(key);
+      if (ready === has) return current;
+      const next = new Set(current);
+      if (ready) next.add(key);
+      else next.delete(key);
+      return next;
+    });
+  }, []);
+
+  function handlerFor(key: string) {
+    let handler = handlers.current.get(key);
+    if (!handler) {
+      handler = (ready: boolean) => onReady(key, ready);
+      handlers.current.set(key, handler);
+    }
+    return handler;
+  }
+
+  if (!activeItem) return null;
+
+  const activeKey = clipKey(activeItem);
+  const activeHasPreview = allowVideoPreview && Boolean(activeItem.previewVimeoUrl);
+  const posterVisible =
+    Boolean(activeItem.imageSrc) && !(activeHasPreview && readyClips.has(activeKey));
+
+  return (
+    <div className="vp-about-tabs__photo-clip">
+      {warmed && allowVideoPreview
+        ? items.map((item, index) => {
+            if (!item.previewVimeoUrl) return null;
+            const key = clipKey(item);
+            const selected = index === activeIndex;
+            return (
+              <div
+                key={`${index}:${key}`}
+                className={
+                  selected ? 'vp-about-tabs__preview is-active' : 'vp-about-tabs__preview'
+                }
+              >
+                <CarouselVimeo
+                  vimeoUrl={item.previewVimeoUrl}
+                  active={selected}
+                  previewStartSeconds={item.previewStartSeconds}
+                  previewEndSeconds={item.previewEndSeconds}
+                  onReadyChange={handlerFor(key)}
+                />
+              </div>
+            );
+          })
+        : null}
+      {posterVisible ? (
+        <div className="vp-about-tabs__poster">
+          <Image
+            src={activeItem.imageSrc}
+            alt={activeItem.imageAlt}
+            fill
+            sizes="(max-width: 1199px) 100vw, 994px"
+            className="object-cover"
+            priority={activeIndex === 0}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 const THEME_CLASSES: Record<
   AboutTabbedPanelTheme,
@@ -61,8 +163,24 @@ export function AboutTabbedPanelInteractive({
 }: AboutTabbedPanelInteractiveProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [rovingIndex, setRovingIndex] = useState(0);
+  const [warmed, setWarmed] = useState(false);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const activeItem = items[activeIndex] ?? items[0];
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || warmed) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) setWarmed(true);
+      },
+      { rootMargin: '0px 0px 240px 0px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [warmed]);
 
   function focusTab(index: number) {
     setRovingIndex(index);
@@ -116,7 +234,12 @@ export function AboutTabbedPanelInteractive({
   const themeClasses = THEME_CLASSES[theme];
 
   return (
-    <div className="vp-about-tabs" data-theme={theme} aria-labelledby={headingId}>
+    <div
+      ref={sectionRef}
+      className="vp-about-tabs"
+      data-theme={theme}
+      aria-labelledby={headingId}
+    >
       <div className="vp-about-tabs__header">
         {eyebrow ? (
           <p className="vp-about-tabs__eyebrow">
@@ -186,18 +309,9 @@ export function AboutTabbedPanelInteractive({
           aria-labelledby={`about-${sectionId}-tab-${activeIndex}`}
           className="vp-about-tabs__media min-w-0 w-full"
         >
-          {activeItem.imageSrc ? (
+          {activeItem.imageSrc || activeItem.previewVimeoUrl ? (
             <div className="vp-about-tabs__photo relative aspect-video w-full">
-              <div className="vp-about-tabs__photo-clip">
-                <Image
-                  src={activeItem.imageSrc}
-                  alt={activeItem.imageAlt}
-                  fill
-                  sizes="(max-width: 1199px) 100vw, 994px"
-                  className="object-cover"
-                  priority={activeIndex === 0}
-                />
-              </div>
+              <AboutTabMedia items={items} activeIndex={activeIndex} warmed={warmed} />
               <CornerFrame
                 variant={theme === 'dark' ? 'dark' : 'light'}
                 crosshair={{ size: 40, color: 'var(--vp-text)' }}

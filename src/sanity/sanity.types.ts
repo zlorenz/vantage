@@ -1939,6 +1939,16 @@ export type ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT = Array<{
     crop?: SanityImageCrop;
     _type: "image";
   } | null;
+  videos: Array<{
+    vimeoUrl: string | null;
+    previewStartSeconds: number | null;
+    previewEndSeconds: number | null;
+    previewCleanVimeoUrl: string | null;
+  } | null> | null;
+  vimeoUrl: string | null;
+  previewStartSeconds: number | null;
+  previewEndSeconds: number | null;
+  previewCleanVimeoUrl: string | null;
 }>;
 
 // Source: ../src/sanity/queries/pages.ts
@@ -1953,6 +1963,16 @@ export type ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT = Array<{
     crop?: SanityImageCrop;
     _type: "image";
   } | null;
+  videos: Array<{
+    vimeoUrl: string | null;
+    previewStartSeconds: number | null;
+    previewEndSeconds: number | null;
+    previewCleanVimeoUrl: string | null;
+  } | null> | null;
+  vimeoUrl: string | null;
+  previewStartSeconds: number | null;
+  previewEndSeconds: number | null;
+  previewCleanVimeoUrl: string | null;
 }>;
 
 // Source: ../src/sanity/queries/pages.ts

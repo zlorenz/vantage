@@ -182,9 +182,9 @@
   .vp-how-we-move__subtitle {
     display: flex;
     flex: none;
-    align-items: baseline;
+    align-items: center;
     gap: var(--vp-candidate-about-eyebrow-gap);
-    width: 454px;
+    width: 300px;
     font-family: var(--font-vp-heading);
     font-size: var(--vp-candidate-about-eyebrow-size);
     font-weight: var(--font-vp-heading-weight);
@@ -192,6 +192,8 @@
     letter-spacing: 0;
     text-transform: uppercase;
     color: var(--vp-orange);
+    /* Match the tab eyebrows: drop the label so its caps share the title top. */
+    padding-top: 4px;
   }
 
   .vp-how-we-move__subtitle-mark {

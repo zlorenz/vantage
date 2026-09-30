@@ -110,21 +110,39 @@ export const ABOUT_STATEMENT_MARKERS_QUERY = defineQuery(`
   }
 `)
 
-/** About Who We Are panel — four recent portfolio featured images (placeholder). */
+/**
+ * Placeholder portfolio rows for the About tab panels.
+ * Preview fields match the homepage carousel so the same clean-clip
+ * resolution can run until an About document picks videos itself.
+ */
+const ABOUT_TAB_PLACEHOLDER_PROJECTION = `
+  title,
+  featuredImage,
+  "videos": videos[0...1]{
+    vimeoUrl,
+    previewStartSeconds,
+    previewEndSeconds,
+    previewCleanVimeoUrl
+  },
+  vimeoUrl,
+  previewStartSeconds,
+  previewEndSeconds,
+  previewCleanVimeoUrl
+`
+
+/** About Who We Are panel — four recent portfolio films (placeholder). */
 export const ABOUT_WHO_WE_ARE_IMAGES_QUERY = defineQuery(`
   *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
   | order(publishedAt desc) [0..3] {
-    title,
-    featuredImage
+    ${ABOUT_TAB_PLACEHOLDER_PROJECTION}
   }
 `)
 
-/** About Production House panel — next four portfolio featured images (placeholder). */
+/** About Production House panel — next four portfolio films (placeholder). */
 export const ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY = defineQuery(`
   *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]
   | order(publishedAt desc) [4..7] {
-    title,
-    featuredImage
+    ${ABOUT_TAB_PLACEHOLDER_PROJECTION}
   }
 `)
 
