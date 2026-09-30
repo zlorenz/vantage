@@ -167,11 +167,15 @@
 
   .vp-about-statement__heading {
     font-size: var(--vp-candidate-about-statement-size);
-    line-height: var(--vp-candidate-about-display-lh);
+    line-height: var(--vp-candidate-about-statement-lh);
   }
 
   .vp-about-statement__line {
     white-space: nowrap;
+  }
+
+  .vp-about-statement__line--accent {
+    margin-top: var(--vp-candidate-about-statement-accent-gap);
   }
 
   .vp-about-statement__accent-break {
@@ -191,7 +195,7 @@
     position: relative;
     z-index: 2;
     /* Space between the film rails, capped at the Figma measure. */
-    width: min(1152px, calc(100% - (2 * var(--vp-candidate-about-film-rail))));
+    width: min(1320px, calc(100% - (2 * var(--vp-candidate-about-film-rail))));
     padding-inline: 0;
   }
 

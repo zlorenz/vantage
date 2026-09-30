@@ -215,9 +215,8 @@ function StatementLine({
 }
 
 /**
- * Line 6. The EN catalog holds a <br> between the two yellow lines.
- * t.rich renders that tag as the desktop-only break. ZH has no tag, so it
- * stays one run.
+ * Line 6, the yellow close. One run in both locales. t.rich still renders it
+ * so a future <br> in the English catalog can split it without a code change.
  */
 function AccentLine({ reducedMotion }: { reducedMotion: boolean }) {
   const t = useTranslations('About');

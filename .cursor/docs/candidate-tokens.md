@@ -328,7 +328,9 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-section-pad-block` | `200px` | About section padding, desktop only | `2466:28808` `py-200` | pending | Declared inside `@media (min-width: 1200px)` only. |
 | `--vp-candidate-about-header-gap` | `100px` | Eyebrow row → panel | `2466:28808` `gap-100` | pending | |
 | `--vp-candidate-about-display-size` | `64px` | Section headings | h1 on `2466:28641` | pending | |
-| `--vp-candidate-about-statement-size` | `clamp(1.75rem, 5.55cqi, 4rem)` | Statement heading only | About `2466:28641`, scaled to the rail gap | pending | 5.55cqi of the 1152px measure is 64px. Lines stay `nowrap` so a phrase does not break. Other headings keep the fixed 64px token. |
+| `--vp-candidate-about-statement-size` | `clamp(1.75rem, 5.55cqi, 4rem)` | Statement heading only | About `2466:28641`, scaled to the rail gap | pending | 5.55cqi of a 1152px measure is 64px. Longest line fits because the rail is narrower and the measure cap is 1320px. Lines stay `nowrap`. |
+| `--vp-candidate-about-statement-lh` | `1.25` | Statement heading only, desktop | nudge | pending | Looser than `--vp-candidate-about-display-lh` so the other display headings stay at 1.1. |
+| `--vp-candidate-about-statement-accent-gap` | `0.5lh` | Space above the yellow statement close, desktop | nudge | pending | Half a line box of extra space above “THAT'S NOT WHAT WE MAKE.” Declared at `lg` only. |
 | `--vp-candidate-about-display-lh` | `1.1` | same | same | pending | |
 | `--vp-candidate-about-feature-title-size` | `40px` | Workflow titles, production-row titles | h3 on `2466:28887` / `2466:28975` | pending | |
 | `--vp-candidate-about-feature-title-lh` | `1.2` | same | same | pending | |
@@ -356,7 +358,7 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-crosshair` | `40px` | Crosshair on images and film-strip center frame | `2466:28831` | pending | 1px stroke, white on photos. |
 | `--vp-candidate-about-crosshair-mark` | `60px` | More About crosshair | `2466:29078` | pending | 1px stroke, `--vp-link`. |
 | `--vp-candidate-about-film-frame` | `297px` | Film-strip column width at 1920 | `2466:28696` | pending | Cap for the fluid rail. |
-| `--vp-candidate-about-film-rail` | `clamp(10rem, 15.47vw, 297px)` | Film-strip column width, desktop | 297/1920 | pending | Same share of the window as the Figma frame. Frame padding and image ratio scale with it. |
+| `--vp-candidate-about-film-rail` | `clamp(0px, calc((100vw - 1320px) / 2), 240px)` | Film-strip column width, desktop | nudged under 297px | pending | Leaves a 1320px measure so “RAPID VAPID PREFAB CONTENT,” (1201px at 64px) keeps about 60px clear of each rail. Caps at 240px. |
 | `--vp-candidate-about-film-image-width` | `237px` | Poster inside a film frame | `2466:28704` | pending | 30px pad on the 297px frame. |
 | `--vp-candidate-about-film-image-height` | `320px` | same | same | pending | |
 | `--vp-candidate-about-film-dim` | `0.4` | Non-center film frames | `opacity-40` on `2466:28697` | pending | |

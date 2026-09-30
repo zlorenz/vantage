@@ -15,8 +15,11 @@
   --vp-candidate-about-header-gap: 100px;
   --vp-candidate-about-display-size: 64px;
   --vp-candidate-about-display-lh: 1.1;
-  /* Fluid between the film rails. 5.55cqi of the 1152px measure is 64px. */
+  /* Fluid between the film rails. 5.55cqi of a 1152px measure is 64px. */
   --vp-candidate-about-statement-size: clamp(1.75rem, 5.55cqi, 4rem);
+  --vp-candidate-about-statement-lh: 1.25;
+  /* Extra space above the yellow close. Half a line box, on top of the normal leading. */
+  --vp-candidate-about-statement-accent-gap: 0.5lh;
   --vp-candidate-about-feature-title-size: 40px;
   --vp-candidate-about-feature-title-lh: 1.2;
   --vp-candidate-about-tab-size: 32px;
@@ -44,8 +47,8 @@
   --vp-candidate-about-crosshair: 40px;
   --vp-candidate-about-crosshair-mark: 60px;
   --vp-candidate-about-film-frame: 297px;
-  /* 297 / 1920. Below that frame the rails stay the same share of the window. */
-  --vp-candidate-about-film-rail: clamp(10rem, 15.47vw, var(--vp-candidate-about-film-frame));
+  /* Leaves a 1320px type measure so the 1201px line keeps ~60px clear of each rail. Caps at 240px. */
+  --vp-candidate-about-film-rail: clamp(0px, calc((100vw - 1320px) / 2), 240px);
   --vp-candidate-about-film-image-width: 237px;
   --vp-candidate-about-film-image-height: 320px;
   --vp-candidate-about-film-dim: 0.4;
