@@ -199,9 +199,10 @@
   }
 
   .vp-how-we-move__heading {
+    flex: 1;
     font-size: var(--vp-candidate-about-display-size);
     line-height: var(--vp-candidate-about-display-lh);
-    text-align: left;
+    text-align: right;
   }
 
   .vp-how-we-move__list {

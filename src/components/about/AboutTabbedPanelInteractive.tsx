@@ -187,15 +187,17 @@ export function AboutTabbedPanelInteractive({
           className="vp-about-tabs__media min-w-0 w-full"
         >
           {activeItem.imageSrc ? (
-            <div className="vp-about-tabs__photo relative aspect-video w-full overflow-hidden">
-              <Image
-                src={activeItem.imageSrc}
-                alt={activeItem.imageAlt}
-                fill
-                sizes="(max-width: 1199px) 100vw, 1108px"
-                className="object-cover"
-                priority={activeIndex === 0}
-              />
+            <div className="vp-about-tabs__photo relative aspect-video w-full">
+              <div className="vp-about-tabs__photo-clip">
+                <Image
+                  src={activeItem.imageSrc}
+                  alt={activeItem.imageAlt}
+                  fill
+                  sizes="(max-width: 1199px) 100vw, 994px"
+                  className="object-cover"
+                  priority={activeIndex === 0}
+                />
+              </div>
               <CornerFrame
                 variant={theme === 'dark' ? 'dark' : 'light'}
                 crosshair={{ size: 40, color: 'var(--vp-text)' }}
