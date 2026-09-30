@@ -6,8 +6,8 @@
 
 .vp-portfolio-index__active-filters {
   position: absolute;
-  /* Inside the padded filter row — right:0 = gutter edge ≈ screen edge. */
-  right: 0;
+  /* Mirror the filter row gutter — absolute ignores parent padding. */
+  right: var(--spacing-vp-gutter, 1.875rem);
   /* Lift into the letterbox; margin-bottom equalizes air above/below. */
   bottom: 100%;
   left: auto;
