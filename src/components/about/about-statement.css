@@ -1,12 +1,12 @@
 /* About statement — scroll-triggered word reveal (see AboutStatementAnimated.tsx). */
 
 .vp-about-statement {
-  --vp-about-reveal-duration: 1.1s;
+  --vp-about-reveal-duration: 2s;
   --vp-about-reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --vp-about-stagger-step: 58ms;
-  --vp-about-marker-duration: 0.7s;
+  --vp-about-stagger-step: 130ms;
+  --vp-about-marker-duration: 1.25s;
   --vp-about-marker-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --vp-about-ink-dim: rgba(255, 255, 255, 0.16);
+  --vp-about-ink-dim: rgba(255, 255, 255, 0.11);
   --vp-about-ink-lit: #ffffff;
   padding-top: calc(var(--vp-section-y-header-condensed) * 1.5);
   padding-bottom: calc(var(--vp-section-y) * 1.5);
