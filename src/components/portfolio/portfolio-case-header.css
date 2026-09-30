@@ -132,27 +132,6 @@
   max-width: 100%;
 }
 
-.vp-case-header__pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0;
-  /* Figma h 64 / pad 24 — square chips, radius 0 (sitewide radius sweep instance). */
-  height: 4rem;
-  padding: 1.5rem;
-  border: 0;
-  border-radius: 0;
-  background: rgba(255, 255, 255, 0.1);
-  font-family: var(--font-vp-sans);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: normal;
-  line-height: 1.25rem;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
 
 /*
  * Phone ≤575 — Figma 2283:29693. No left hairline (decision 5).
@@ -235,18 +214,6 @@
     width: 100%;
     justify-content: flex-start;
     margin: 0;
-    gap: var(--vp-candidate-portfolio-case-mobile-pill-gap, 2px);
-  }
-
-  .vp-case-header__pill {
-    height: var(--vp-candidate-portfolio-case-mobile-pill-height, 36px);
-    padding-inline: var(
-      --vp-candidate-portfolio-case-mobile-pill-pad-inline,
-      12px
-    );
-    padding-block: 0;
-    font-size: var(--vp-candidate-portfolio-case-mobile-label-size, 12px);
-    line-height: 1.25rem;
   }
 }
 

@@ -13,6 +13,7 @@ import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import type {CrewCredit, DisplayTitlePartsValue, TaxonomyTerm} from '@/types/sanity';
 import type {PhraseLookup} from '@display-titles';
+import '@/components/blog/blog-post-page.css';
 import './portfolio-case-header.css';
 
 type TaxonomyRef = Pick<TaxonomyTerm, 'title' | 'titleZh' | 'slug' | 'slugZh'>;
@@ -165,7 +166,7 @@ export function PortfolioCaseHeader({
     pills.length > 0 ? (
       <ul className="vp-case-header__pills">
         {pills.map((label, index) => (
-          <li key={`${index}-${label}`} className="vp-case-header__pill">
+          <li key={`${index}-${label}`} className="vp-blog-hero__pill">
             {label}
           </li>
         ))}
