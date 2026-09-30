@@ -15,8 +15,8 @@ import './about-statement.css';
 const FILM_CENTER_INDEX = 2;
 /** Identical copies. Scroll loops by one copy so the rails keep moving for the whole page. */
 const FILM_COPIES = 4;
-/** Share of page scroll applied to the rails. */
-const FILM_SCROLL_SPEED = 0.5;
+/** Share of page scroll applied to the rails. 200px of scroll shifts the strip ~80px. */
+const FILM_SCROLL_SPEED = 0.4;
 
 export type AboutStatementMarkerImage = {
   src: string;
@@ -437,10 +437,8 @@ export function AboutStatementAnimated({
       <div className="vp-about-statement__stage" aria-hidden="true">
         <FilmStrip side="left" frames={filmStrips.left} />
         <FilmStrip side="right" frames={filmStrips.right} />
-        <span className="vp-about-statement__hairline vp-about-statement__hairline--outer-left" />
         <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-left" />
         <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" />
-        <span className="vp-about-statement__hairline vp-about-statement__hairline--outer-right" />
         <div className="vp-about-statement__rulers">
           <CornerFrame variant="dark" rulers={{ top: true, bottom: true }} />
         </div>

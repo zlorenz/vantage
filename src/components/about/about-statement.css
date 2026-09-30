@@ -205,30 +205,27 @@
 
   .vp-about-statement__rail {
     --vp-about-film-frame-h: calc(var(--vp-candidate-about-film-rail) * 380 / 297);
+    --vp-about-film-window-h: calc(var(--vp-about-film-frame-h) * 1.125);
     position: absolute;
     top: 0;
     bottom: 0;
     z-index: 1;
     width: var(--vp-candidate-about-film-rail);
     overflow: hidden;
-    /* The frame crossing the middle stays sharp. The rest of the strip stays dim. */
+    /* Full through the center window. Fades to nothing at the top and bottom of the section. */
     -webkit-mask-image: linear-gradient(
       to bottom,
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 0,
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
-      #000 calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
-      #000 calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 100%
+      rgb(0 0 0 / 0) 0,
+      #000 calc(50% - var(--vp-about-film-window-h) / 2),
+      #000 calc(50% + var(--vp-about-film-window-h) / 2),
+      rgb(0 0 0 / 0) 100%
     );
     mask-image: linear-gradient(
       to bottom,
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 0,
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
-      #000 calc(50% - var(--vp-about-film-frame-h) / 2 - 1px),
-      #000 calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) calc(50% + var(--vp-about-film-frame-h) / 2 + 1px),
-      rgb(0 0 0 / var(--vp-candidate-about-film-dim)) 100%
+      rgb(0 0 0 / 0) 0,
+      #000 calc(50% - var(--vp-about-film-window-h) / 2),
+      #000 calc(50% + var(--vp-about-film-window-h) / 2),
+      rgb(0 0 0 / 0) 100%
     );
   }
 
@@ -250,8 +247,20 @@
   }
 
   .vp-about-statement__frame {
+    position: relative;
     box-sizing: border-box;
     padding: 10.1%;
+  }
+
+  .vp-about-statement__frame:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    height: 1px;
+    background: var(--vp-candidate-brief-line);
   }
 
   .vp-about-statement__frame-media {
@@ -271,20 +280,12 @@
     background: var(--vp-candidate-brief-line);
   }
 
-  .vp-about-statement__hairline--outer-left {
-    left: 0;
-  }
-
   .vp-about-statement__hairline--inner-left {
     left: var(--vp-candidate-about-film-rail);
   }
 
   .vp-about-statement__hairline--inner-right {
     right: var(--vp-candidate-about-film-rail);
-  }
-
-  .vp-about-statement__hairline--outer-right {
-    right: 0;
   }
 
   .vp-about-statement__rulers {
