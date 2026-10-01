@@ -439,6 +439,7 @@ export function AboutStatementAnimated({
         <FilmStrip side="right" frames={filmStrips.right} />
         <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-left" />
         <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" />
+        <span className="vp-about-statement__baseline" />
         <div className="vp-about-statement__rulers">
           <CornerFrame variant="dark" rulers={{ top: true, bottom: true }} />
         </div>

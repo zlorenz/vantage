@@ -288,6 +288,16 @@
     right: var(--vp-candidate-about-film-rail);
   }
 
+  .vp-about-statement__baseline {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    height: 1px;
+    background: var(--vp-candidate-brief-line);
+  }
+
   .vp-about-statement__rulers {
     display: block;
   }
