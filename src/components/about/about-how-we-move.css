@@ -191,7 +191,7 @@
     line-height: var(--vp-candidate-about-eyebrow-lh);
     letter-spacing: 0;
     text-transform: uppercase;
-    color: var(--vp-orange);
+    color: var(--vp-link);
     /* Match the tab eyebrows: drop the label so its caps share the title top. */
     padding-top: 4px;
   }

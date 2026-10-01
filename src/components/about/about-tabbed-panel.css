@@ -105,7 +105,7 @@
     line-height: var(--vp-candidate-about-eyebrow-lh);
     letter-spacing: 0;
     text-transform: uppercase;
-    color: var(--vp-orange);
+    color: var(--vp-link);
     /* 16px caps sit about 4px above the 64px title caps when the row is flex-start. */
     padding-top: 4px;
   }
