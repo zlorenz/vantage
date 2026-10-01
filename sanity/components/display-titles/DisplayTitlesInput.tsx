@@ -1,22 +1,13 @@
 /**
- * DisplayTitlesInput — Brand / Product / Campaign editor with live previews.
+ * DisplayTitlesInput — Brand / Product / Campaign editor.
  * Syncs document title (en-dash) via document operations (root-level patches).
  *
  * Nested FormCallbacks prefix all paths with `displayTitleParts`, so sibling
- * fields like `title` / overrides must be written with useDocumentOperation.
+ * fields like `title` must be written with useDocumentOperation.
  */
 
-import {EditIcon} from '@sanity/icons'
-import {Box, Button, Card, Flex, Grid, Popover, Stack, Text, TextArea} from '@sanity/ui'
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-  type CSSProperties,
-  type MouseEvent,
-} from 'react'
+import {Stack, Text} from '@sanity/ui'
+import {useCallback, useEffect, useState} from 'react'
 import {
   getPublishedId,
   set,
@@ -36,7 +27,6 @@ import {
 } from '@display-titles'
 
 import {getStudioRole} from '../../lib/studio-roles'
-import {FlagDecoratedControl} from '../locale-pair/FlagDecoratedControl'
 import {LocalePairStack} from '../locale-pair/LocalePairStack'
 
 type PartsValue = {
@@ -46,179 +36,6 @@ type PartsValue = {
   brandNameZh?: string
   productNameZh?: string
   campaignTitleZh?: string
-}
-
-type OverrideField =
-  | 'thumbTitleOverride'
-  | 'thumbTitleOverrideZh'
-  | 'headerTitleOverride'
-  | 'headerTitleOverrideZh'
-  | 'longTitleOverride'
-  | 'longTitleOverrideZh'
-
-const PREVIEW_TEXT: CSSProperties = {
-  textTransform: 'uppercase',
-  letterSpacing: '0.04em',
-  lineHeight: 1.35,
-  paddingRight: 52,
-}
-
-function PreviewPane(props: {
-  locale: 'en' | 'zh'
-  html: string
-  overrideValue: string
-  overrideField: OverrideField
-  readOnly?: boolean
-  onSaveOverride: (field: OverrideField, value: string) => void
-}) {
-  const [open, setOpen] = useState(false)
-  const [draft, setDraft] = useState(props.overrideValue)
-  const buttonId = useId()
-  const hasOverride = Boolean(trimPart(props.overrideValue))
-
-  useEffect(() => {
-    if (open) {
-      setDraft(props.overrideValue)
-    }
-  }, [open, props.overrideValue])
-
-  const close = useCallback(() => setOpen(false), [])
-
-  const save = useCallback(() => {
-    props.onSaveOverride(props.overrideField, draft)
-    setOpen(false)
-  }, [draft, props])
-
-  const clear = useCallback(() => {
-    setDraft('')
-    props.onSaveOverride(props.overrideField, '')
-    setOpen(false)
-  }, [props])
-
-  const onButtonClick = useCallback(
-    (event: MouseEvent) => {
-      event.preventDefault()
-      event.stopPropagation()
-      if (props.readOnly) return
-      setOpen((prev) => !prev)
-    },
-    [props.readOnly],
-  )
-
-  return (
-    <FlagDecoratedControl locale={props.locale} align="start" readOnly={props.readOnly}>
-      <div style={{position: 'relative'}}>
-        <Card padding={3} radius={2} tone="transparent" border>
-          <Text size={1} weight="bold" style={PREVIEW_TEXT}>
-            <span
-              dangerouslySetInnerHTML={{__html: props.html || '—'}}
-              className="vp-display-title-preview"
-            />
-          </Text>
-        </Card>
-
-        <div
-          style={{
-            position: 'absolute',
-            top: 6,
-            right: 34,
-            zIndex: 2,
-          }}
-        >
-          <Popover
-            open={open}
-            portal
-            placement="bottom-end"
-            constrainSize
-            content={
-              <Box padding={3} style={{width: 320, maxWidth: '90vw'}}>
-                <Stack space={3}>
-                  <Text size={1} weight="semibold">
-                    Override {props.locale === 'zh' ? '(Chinese)' : '(English)'}
-                  </Text>
-                  <Text size={0} muted>
-                    Optional HTML when Brand / Product / Campaign cannot express the layout. Supports
-                    {' '}
-                    <code>&lt;span class=&quot;vp-outline&quot;&gt;</code>.
-                  </Text>
-                  <TextArea
-                    rows={4}
-                    value={draft}
-                    readOnly={props.readOnly}
-                    placeholder={props.html || 'Custom title HTML…'}
-                    onChange={(event) => setDraft(event.currentTarget.value)}
-                  />
-                  <Flex gap={2} justify="flex-end">
-                    {hasOverride || draft.trim() ? (
-                      <Button text="Clear" mode="ghost" tone="critical" onClick={clear} />
-                    ) : null}
-                    <Button text="Cancel" mode="ghost" onClick={close} />
-                    <Button text="Save" tone="primary" onClick={save} disabled={props.readOnly} />
-                  </Flex>
-                </Stack>
-              </Box>
-            }
-          >
-            <Button
-              id={buttonId}
-              icon={EditIcon}
-              mode={hasOverride ? 'default' : 'bleed'}
-              tone={hasOverride ? 'primary' : 'default'}
-              padding={2}
-              fontSize={1}
-              aria-label={hasOverride ? 'Edit title override' : 'Add title override'}
-              title={hasOverride ? 'Edit override' : 'Override title'}
-              disabled={props.readOnly}
-              selected={open}
-              onClick={onButtonClick}
-            />
-          </Popover>
-        </div>
-      </div>
-    </FlagDecoratedControl>
-  )
-}
-
-function PreviewPair(props: {
-  label: string
-  enHtml: string
-  zhHtml: string
-  showZh: boolean
-  enOverride: string
-  zhOverride: string
-  enField: OverrideField
-  zhField: OverrideField
-  enReadOnly?: boolean
-  zhReadOnly?: boolean
-  onSaveOverride: (field: OverrideField, value: string) => void
-}) {
-  return (
-    <Stack space={2}>
-      <Text size={0} muted weight="semibold">
-        {props.label}
-      </Text>
-      <Stack space={2}>
-        <PreviewPane
-          locale="en"
-          html={props.enHtml}
-          overrideValue={props.enOverride}
-          overrideField={props.enField}
-          readOnly={props.enReadOnly}
-          onSaveOverride={props.onSaveOverride}
-        />
-        {props.showZh ? (
-          <PreviewPane
-            locale="zh"
-            html={props.zhHtml}
-            overrideValue={props.zhOverride}
-            overrideField={props.zhField}
-            readOnly={props.zhReadOnly}
-            onSaveOverride={props.onSaveOverride}
-          />
-        ) : null}
-      </Stack>
-    </Stack>
-  )
 }
 
 function partsEqual(a: PartsValue, b: PartsValue): boolean {
@@ -248,13 +65,6 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
   const publishedId = documentId ? getPublishedId(documentId) : ''
   const {patch} = useDocumentOperation(publishedId, documentType || 'portfolioEntry')
 
-  const thumbTitleOverride = (useFormValue(['thumbTitleOverride']) as string | undefined) ?? ''
-  const thumbTitleOverrideZh = (useFormValue(['thumbTitleOverrideZh']) as string | undefined) ?? ''
-  const headerTitleOverride = (useFormValue(['headerTitleOverride']) as string | undefined) ?? ''
-  const headerTitleOverrideZh =
-    (useFormValue(['headerTitleOverrideZh']) as string | undefined) ?? ''
-  const longTitleOverride = (useFormValue(['longTitleOverride']) as string | undefined) ?? ''
-  const longTitleOverrideZh = (useFormValue(['longTitleOverrideZh']) as string | undefined) ?? ''
   // Prefer videos[0] episode title; fall back to legacy heroFilmTitle*.
   const heroFilmTitleLegacy =
     (useFormValue(['heroFilmTitle']) as string | undefined) ?? ''
@@ -284,50 +94,6 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
     stored.productNameZh,
     stored.campaignTitleZh,
   ])
-
-  const resolveInput = useMemo(
-    () => ({
-      ...draft,
-      heroFilmTitle,
-      heroFilmTitleZh,
-      thumbTitleOverride,
-      thumbTitleOverrideZh,
-      headerTitleOverride,
-      headerTitleOverrideZh,
-      longTitleOverride,
-      longTitleOverrideZh,
-    }),
-    [
-      draft,
-      headerTitleOverride,
-      headerTitleOverrideZh,
-      heroFilmTitle,
-      heroFilmTitleZh,
-      longTitleOverride,
-      longTitleOverrideZh,
-      thumbTitleOverride,
-      thumbTitleOverrideZh,
-    ],
-  )
-
-  const enResolved = useMemo(
-    () => resolveDisplayTitles(resolveInput, 'en'),
-    [resolveInput],
-  )
-  const zhResolved = useMemo(
-    () => resolveDisplayTitles(resolveInput, 'zh'),
-    [resolveInput],
-  )
-
-  const showZhPreview = Boolean(
-    trimPart(draft.brandNameZh) ||
-      trimPart(draft.productNameZh) ||
-      trimPart(draft.campaignTitleZh) ||
-      trimPart(heroFilmTitleZh) ||
-      trimPart(thumbTitleOverrideZh) ||
-      trimPart(headerTitleOverrideZh) ||
-      trimPart(longTitleOverrideZh),
-  )
 
   const commit = useCallback(
     (next: PartsValue) => {
@@ -405,28 +171,9 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
     [commit, draft],
   )
 
-  const saveOverride = useCallback(
-    (field: OverrideField, raw: string) => {
-      if (!publishedId || !documentType) return
-      const trimmed = raw.trim()
-      if (trimmed) {
-        patch.execute([{set: {[field]: raw}}])
-      } else {
-        patch.execute([{unset: [field]}])
-      }
-    },
-    [documentType, patch, publishedId],
-  )
-
   return (
     <Stack space={4}>
       <style>{`
-        .vp-display-title-preview .vp-outline {
-          /* Studio preview is small — outline stroke looks muddy; use thin weight instead. */
-          color: inherit;
-          -webkit-text-stroke: 0;
-          font-weight: 300;
-        }
         /* Stack on narrow form columns / mobile; side-by-side when the field area is wide. */
         .vp-brand-product-row {
           container-type: inline-size;
@@ -484,58 +231,6 @@ export function DisplayTitlesInput(props: ObjectInputProps) {
           onZhChange={(v) => setPart('campaignTitleZh', v)}
         />
       </Stack>
-
-      <Text size={1} muted>
-        Use the pencil on a preview to override that title with custom HTML.
-      </Text>
-      <Card padding={4} radius={2} shadow={1} tone="transparent" border>
-        <Stack space={4}>
-          <Text size={1} weight="bold">
-            Live preview
-          </Text>
-          <Grid columns={[1, 1, 3]} gap={3}>
-            <PreviewPair
-              label="Thumbnail"
-              enHtml={enResolved.thumbTitle}
-              zhHtml={zhResolved.thumbTitle}
-              showZh={showZhPreview}
-              enOverride={thumbTitleOverride}
-              zhOverride={thumbTitleOverrideZh}
-              enField="thumbTitleOverride"
-              zhField="thumbTitleOverrideZh"
-              enReadOnly={enReadOnly}
-              zhReadOnly={zhReadOnly}
-              onSaveOverride={saveOverride}
-            />
-            <PreviewPair
-              label="Header"
-              enHtml={enResolved.headerTitle}
-              zhHtml={zhResolved.headerTitle}
-              showZh={showZhPreview}
-              enOverride={headerTitleOverride}
-              zhOverride={headerTitleOverrideZh}
-              enField="headerTitleOverride"
-              zhField="headerTitleOverrideZh"
-              enReadOnly={enReadOnly}
-              zhReadOnly={zhReadOnly}
-              onSaveOverride={saveOverride}
-            />
-            <PreviewPair
-              label="Full"
-              enHtml={enResolved.longTitle}
-              zhHtml={zhResolved.longTitle}
-              showZh={showZhPreview}
-              enOverride={longTitleOverride}
-              zhOverride={longTitleOverrideZh}
-              enField="longTitleOverride"
-              zhField="longTitleOverrideZh"
-              enReadOnly={enReadOnly}
-              zhReadOnly={zhReadOnly}
-              onSaveOverride={saveOverride}
-            />
-          </Grid>
-        </Stack>
-      </Card>
     </Stack>
   )
 }

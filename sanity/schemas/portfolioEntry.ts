@@ -178,7 +178,8 @@ export const portfolioEntry = defineType({
       hidden: hiddenForTranslator,
     }),
 
-    // Display title HTML overrides — edited via Live preview pencil popovers (DisplayTitlesInput).
+    // Hidden HTML title overrides. Existing values still compile on the site;
+    // Studio no longer edits them from DisplayTitlesInput.
     defineField({
       name: 'thumbTitleOverride',
       title: 'Thumbnail Override',
