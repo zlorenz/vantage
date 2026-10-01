@@ -167,9 +167,9 @@ type Cache = {
   /** Cap used when building edgeDist (reveal-texel units). */
   warpEdgeDist: number;
   /**
-   * Additive-only hole bleed: collage RGBA masked to allowanceMask (inner
-   * cavity minus cusp-seal footprint). Null alpha outside. Path2D / geomMask
-   * / destination-in reveal stay unchanged — this is a separate source.
+   * Additive-only hole bleed from buildCounterBleed: collage RGBA on real
+   * counter overlaps (cusp seal + thin edge fringes excluded). Null alpha
+   * outside. Path2D / geomMask stay unchanged — this is a separate source.
    */
   holeAllowanceData: ImageData;
 };
@@ -735,101 +735,361 @@ function dilateOpaqueIntoMask(
   }
 }
 
+type HoleClassification = {
+  exterior: Uint8Array;
+  sealFootprint: Uint8Array;
+  holeMask: Uint8Array;
+};
+
 /**
- * Build-time additive holeAllowance buffer.
- *
- * holeMask: geomMask==0 cells not reached by a border flood when the cusp
- * segment is sealed as a temporary barrier (cavity that only opens via the
- * 0.70-unit gap).
- * allowanceMask: holeMask minus the seal footprint — never paints the gap
- * channel. Outer exterior and mark interior are excluded by construction.
- *
- * After hard masking, dilates allow content SEAM_SHELF_TEXELS into adjacent
- * mark cells so hole-edge bilinear does not mix with hard-zero mark neighbors;
- * then re-zeros sealFootprint and exterior (seal is never a dilate source or
- * target — forbidMask during dilate + explicit wipe after).
- *
- * Does not modify geomMask, SYMBOL_PATH_D, or the Path2D reveal clip.
+ * Mark texels within this many texels of the counter get opaque collage
+ * colour. Path AA at ~50% coverage leaves some geom-inside texels at alpha 0
+ * after morph-close; sampled through the geom gate they read as a dotted
+ * line of missing / darkened pixels along every counter edge.
  */
-function buildHoleAllowanceData(
-  geomMask: Uint8Array,
+const COUNTER_EDGE_ZONE_TEXELS = 2;
+/**
+ * Counter-edge repair skips texels this close to the border-reachable
+ * exterior, so outer silhouette edges and the cusp gap corners keep the
+ * original reveal pipeline exactly.
+ */
+const COUNTER_EXTERIOR_GUARD_TEXELS = 3;
+/**
+ * Hole bleed must reach deeper than this (texels from the mark) to count as
+ * a real overlap. Shallower collage content is the collage's own AA fringe
+ * hugging the path edge and is dropped unless it touches a deeper overlap.
+ */
+const HOLE_BLEED_MIN_DEPTH_TEXELS = 3;
+const HOLE_BLEED_CORE_ALPHA = 64;
+/**
+ * The collage was authored on the pinched apex (both counter slants meeting
+ * at the gap midpoint), so it overhangs the opened path by a thin wedge on
+ * each slant. Wedge texels only bleed where they attach to a real overlap.
+ */
+const CUSP_STRIP_MARGIN_TEXELS = 2;
+/** Counter base vertices from SYMBOL_PATH_D (left slant foot, right slant foot). */
+const COUNTER_FOOT_LEFT_VB = { x: 28.48, y: 76.73 } as const;
+const COUNTER_FOOT_RIGHT_VB = { x: 56.5, y: 66.53 } as const;
+
+const DIST_UNREACHED = 255;
+
+/**
+ * Capped 8-connected BFS distance (Chebyshev steps) from seed cells, limited
+ * to a bbox. passable (optional) restricts which non-seed cells can be
+ * entered. Unreached / out-of-bbox cells stay DIST_UNREACHED.
+ */
+function bfsDistanceCapped(
+  dw: number,
+  bbox: { x0: number; y0: number; x1: number; y1: number },
+  isSeed: Uint8Array,
+  cap: number,
+  passable?: Uint8Array,
+): Uint8Array {
+  const dist = new Uint8Array(isSeed.length);
+  dist.fill(DIST_UNREACHED);
+  const q = new Int32Array((bbox.x1 - bbox.x0 + 1) * (bbox.y1 - bbox.y0 + 1));
+  let qh = 0;
+  let qt = 0;
+  for (let y = bbox.y0; y <= bbox.y1; y++) {
+    for (let x = bbox.x0; x <= bbox.x1; x++) {
+      const i = y * dw + x;
+      if (!isSeed[i]) continue;
+      dist[i] = 0;
+      q[qt++] = i;
+    }
+  }
+  while (qh < qt) {
+    const i = q[qh++]!;
+    const d = dist[i]!;
+    if (d >= cap) continue;
+    const x = i % dw;
+    const y = (i / dw) | 0;
+    for (let oy = -1; oy <= 1; oy++) {
+      const ny = y + oy;
+      if (ny < bbox.y0 || ny > bbox.y1) continue;
+      for (let ox = -1; ox <= 1; ox++) {
+        const nx = x + ox;
+        if (nx < bbox.x0 || nx > bbox.x1) continue;
+        const ni = ny * dw + nx;
+        if (dist[ni]! <= d + 1) continue;
+        if (passable && !passable[ni]) continue;
+        dist[ni] = d + 1;
+        q[qt++] = ni;
+      }
+    }
+  }
+  return dist;
+}
+
+function distToSegment(
+  px: number,
+  py: number,
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+): number {
+  const vx = bx - ax;
+  const vy = by - ay;
+  const len2 = vx * vx + vy * vy;
+  const t = len2 > 0 ? Math.min(1, Math.max(0, ((px - ax) * vx + (py - ay) * vy) / len2)) : 0;
+  return Math.hypot(px - (ax + vx * t), py - (ay + vy * t));
+}
+
+/** Point in (or within margin of) a triangle, all in the same units. */
+function nearTriangle(
+  px: number,
+  py: number,
+  t: ReadonlyArray<readonly [number, number]>,
+  margin: number,
+): boolean {
+  const [a, b, c] = t as [readonly [number, number], readonly [number, number], readonly [number, number]];
+  const s1 = (b[0] - a[0]) * (py - a[1]) - (b[1] - a[1]) * (px - a[0]);
+  const s2 = (c[0] - b[0]) * (py - b[1]) - (c[1] - b[1]) * (px - b[0]);
+  const s3 = (a[0] - c[0]) * (py - c[1]) - (a[1] - c[1]) * (px - c[0]);
+  if ((s1 >= 0 && s2 >= 0 && s3 >= 0) || (s1 <= 0 && s2 <= 0 && s3 <= 0)) return true;
+  return (
+    distToSegment(px, py, a[0], a[1], b[0], b[1]) <= margin ||
+    distToSegment(px, py, b[0], b[1], c[0], c[1]) <= margin ||
+    distToSegment(px, py, c[0], c[1], a[0], a[1]) <= margin
+  );
+}
+
+/** Collage at reveal resolution, same draw as buildRevealBuffer (pre-clip). */
+function drawCollagePixels(
+  collage: CanvasImageSource,
   dw: number,
   dh: number,
-  collage: CanvasImageSource,
-  classified?: {
-    exterior: Uint8Array;
-    sealFootprint: Uint8Array;
-    holeMask: Uint8Array;
-  },
 ): ImageData {
-  const { exterior, sealFootprint, holeMask } =
-    classified ?? classifyHoleCavity(geomMask, dw, dh);
-
   const c = document.createElement("canvas");
   c.width = dw;
   c.height = dh;
   const ctx = c.getContext("2d")!;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(collage, 0, 0, dw, dh);
-  const data = ctx.getImageData(0, 0, dw, dh);
-  const rgba = data.data;
-  const markTarget = new Uint8Array(dw * dh);
-  const forbid = new Uint8Array(dw * dh);
-  for (let i = 0, p = 0; i < dw * dh; i++, p += 4) {
-    // allowanceMask = holeMask ∧ ¬sealFootprint
-    const allow =
-      holeMask[i]! !== 0 && sealFootprint[i]! === 0;
-    if (geomMask[i]! >= 128) markTarget[i] = 1;
-    if (sealFootprint[i]! || exterior[i]!) forbid[i] = 1;
-    if (allow) continue;
-    rgba[p] = 0;
-    rgba[p + 1] = 0;
-    rgba[p + 2] = 0;
-    rgba[p + 3] = 0;
-  }
-  // Shelf into mark only; seal + exterior never source or target.
-  dilateOpaqueIntoMask(
-    rgba,
-    dw,
-    dh,
-    markTarget,
-    SEAM_SHELF_TEXELS,
-    forbid,
-  );
-  // Solidify soft allow texels that touch mark so hole-edge bilinear stays opaque.
+  return ctx.getImageData(0, 0, dw, dh);
+}
+
+/**
+ * Counter (A hole) edge repair + additive hole-bleed buffer, both confined to
+ * the counter bbox and kept COUNTER_EXTERIOR_GUARD_TEXELS away from the
+ * exterior.
+ *
+ * Reveal (mutated in place):
+ * - Mark texels within COUNTER_EDGE_ZONE_TEXELS of the hole → opaque collage.
+ * - Hole texels within SEAM_SHELF_TEXELS of the mark → opaque shelf (collage
+ *   continuation, else nearest mark colour). Never sampled directly — the
+ *   geom gate nulls hole texels — only feeds mark-edge bilinear.
+ *
+ * Allowance (returned): collage RGBA on hole texels that belong to a real
+ * overlap (deeper than HOLE_BLEED_MIN_DEPTH_TEXELS, plus anything attached to
+ * it), with the cusp wedge only where it touches such an overlap. Its shelf
+ * into the mark copies the repaired reveal, so overlaps cross the path edge
+ * with one continuous colour field. Seal + exterior stay empty.
+ *
+ * Does not modify geomMask, SYMBOL_PATH_D, or the Path2D reveal clip.
+ */
+function buildCounterBleed(
+  geomMask: Uint8Array,
+  dw: number,
+  dh: number,
+  collagePx: ImageData,
+  classified: HoleClassification,
+  reveal: Uint8ClampedArray,
+): ImageData {
+  const { exterior, sealFootprint, holeMask } = classified;
+  const col = collagePx.data;
+  const allowance = new ImageData(dw, dh);
+  const out = allowance.data;
+  const n = dw * dh;
+
+  let minX = dw;
+  let minY = dh;
+  let maxX = -1;
+  let maxY = -1;
   for (let y = 0; y < dh; y++) {
+    const row = y * dw;
     for (let x = 0; x < dw; x++) {
+      if (!holeMask[row + x]) continue;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+  }
+  if (maxX < 0) return allowance;
+  const margin = COUNTER_EXTERIOR_GUARD_TEXELS + COUNTER_EDGE_ZONE_TEXELS + 4;
+  const bbox = {
+    x0: Math.max(0, minX - margin),
+    y0: Math.max(0, minY - margin),
+    x1: Math.min(dw - 1, maxX + margin),
+    y1: Math.min(dh - 1, maxY + margin),
+  };
+
+  const mark = new Uint8Array(n);
+  for (let i = 0; i < n; i++) if (geomMask[i]! >= 128) mark[i] = 1;
+
+  const distHole = bfsDistanceCapped(dw, bbox, holeMask, COUNTER_EDGE_ZONE_TEXELS);
+  const distExt = bfsDistanceCapped(dw, bbox, exterior, COUNTER_EXTERIOR_GUARD_TEXELS);
+  const distMark = bfsDistanceCapped(
+    dw,
+    bbox,
+    mark,
+    Math.max(HOLE_BLEED_MIN_DEPTH_TEXELS + 1, SEAM_SHELF_TEXELS),
+  );
+
+  // --- Reveal: opaque mark edge + opaque hole-side shelf -------------------
+  const resolved = new Uint8Array(n);
+  const pending: number[] = [];
+  for (let y = bbox.y0; y <= bbox.y1; y++) {
+    for (let x = bbox.x0; x <= bbox.x1; x++) {
       const i = y * dw + x;
-      if (forbid[i]!) continue;
-      if (markTarget[i]!) continue;
-      if (holeMask[i]! === 0 || sealFootprint[i]!) continue;
+      if (sealFootprint[i]) continue;
+      if (distExt[i]! <= COUNTER_EXTERIOR_GUARD_TEXELS) continue;
+      const markZone = mark[i] && distHole[i]! <= COUNTER_EDGE_ZONE_TEXELS;
+      const holeShelf = holeMask[i] && distMark[i]! <= SEAM_SHELF_TEXELS;
       const p = i * 4;
-      const a = rgba[p + 3]!;
-      if (a < 1 || a >= 255) continue;
-      let touchesMark = false;
-      for (let oy = -1; oy <= 1 && !touchesMark; oy++) {
+      if (!markZone && !holeShelf) {
+        if (reveal[p + 3] === 255) resolved[i] = 1;
+        continue;
+      }
+      if (col[p + 3]! >= ALPHA_SOLID) {
+        reveal[p] = col[p]!;
+        reveal[p + 1] = col[p + 1]!;
+        reveal[p + 2] = col[p + 2]!;
+        reveal[p + 3] = 255;
+        resolved[i] = 1;
+      } else {
+        pending.push(i);
+      }
+    }
+  }
+  for (let pass = 0; pass < COUNTER_EDGE_ZONE_TEXELS + SEAM_SHELF_TEXELS + 2 && pending.length; pass++) {
+    const filled: Array<[number, number, number, number]> = [];
+    for (let k = pending.length - 1; k >= 0; k--) {
+      const i = pending[k]!;
+      const x = i % dw;
+      const y = (i / dw) | 0;
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let c = 0;
+      for (let oy = -1; oy <= 1; oy++) {
         for (let ox = -1; ox <= 1; ox++) {
           if (ox === 0 && oy === 0) continue;
           const nx = x + ox;
           const ny = y + oy;
           if (nx < 0 || ny < 0 || nx >= dw || ny >= dh) continue;
-          if (markTarget[ny * dw + nx]!) {
-            touchesMark = true;
-            break;
-          }
+          const ni = ny * dw + nx;
+          if (!resolved[ni]) continue;
+          const np = ni * 4;
+          r += reveal[np]!;
+          g += reveal[np + 1]!;
+          b += reveal[np + 2]!;
+          c++;
         }
       }
-      if (touchesMark) rgba[p + 3] = 255;
+      if (c === 0) continue;
+      filled.push([i, r / c, g / c, b / c]);
+      pending[k] = pending[pending.length - 1]!;
+      pending.pop();
+    }
+    for (const [i, r, g, b] of filled) {
+      const p = i * 4;
+      reveal[p] = Math.round(r);
+      reveal[p + 1] = Math.round(g);
+      reveal[p + 2] = Math.round(b);
+      reveal[p + 3] = 255;
+      resolved[i] = 1;
     }
   }
-  // Explicit post-dilate wipe — seal remains sole cusp authority.
-  for (let i = 0, p = 0; i < dw * dh; i++, p += 4) {
-    if (sealFootprint[i]! === 0 && exterior[i]! === 0) continue;
-    rgba[p] = 0;
-    rgba[p + 1] = 0;
-    rgba[p + 2] = 0;
-    rgba[p + 3] = 0;
+  // Mark texels must be opaque even if no colour source was found nearby.
+  for (const i of pending) {
+    if (mark[i]) reveal[i * 4 + 3] = 255;
   }
-  return data;
+
+  // --- Allowance: real overlaps only ---------------------------------------
+  const sx = dw / SYMBOL_VIEWBOX_W;
+  const sy = dh / SYMBOL_VIEWBOX_H;
+  const pinchX = (CUSP_GAP_VB.x0 + CUSP_GAP_VB.x1) / 2;
+  const tri = (pts: ReadonlyArray<readonly [number, number]>) =>
+    pts.map(([vx, vy]) => [vx * sx, vy * sy] as const);
+  const wedgeLeft = tri([
+    [CUSP_GAP_VB.x0, CUSP_GAP_VB.y],
+    [pinchX, CUSP_GAP_VB.y],
+    [COUNTER_FOOT_LEFT_VB.x, COUNTER_FOOT_LEFT_VB.y],
+  ]);
+  const wedgeRight = tri([
+    [pinchX, CUSP_GAP_VB.y],
+    [CUSP_GAP_VB.x1, CUSP_GAP_VB.y],
+    [COUNTER_FOOT_RIGHT_VB.x, COUNTER_FOOT_RIGHT_VB.y],
+  ]);
+
+  const base = new Uint8Array(n);
+  const wedge = new Uint8Array(n);
+  const open = new Uint8Array(n);
+  const core = new Uint8Array(n);
+  for (let y = bbox.y0; y <= bbox.y1; y++) {
+    for (let x = bbox.x0; x <= bbox.x1; x++) {
+      const i = y * dw + x;
+      if (!holeMask[i] || sealFootprint[i] || exterior[i]) continue;
+      const a = col[i * 4 + 3]!;
+      if (a < 1) continue;
+      base[i] = 1;
+      const cx = x + 0.5;
+      const cy = y + 0.5;
+      if (
+        nearTriangle(cx, cy, wedgeLeft, CUSP_STRIP_MARGIN_TEXELS) ||
+        nearTriangle(cx, cy, wedgeRight, CUSP_STRIP_MARGIN_TEXELS)
+      ) {
+        wedge[i] = 1;
+        continue;
+      }
+      open[i] = 1;
+      if (a >= HOLE_BLEED_CORE_ALPHA && distMark[i]! > HOLE_BLEED_MIN_DEPTH_TEXELS) {
+        core[i] = 1;
+      }
+    }
+  }
+  const openDist = bfsDistanceCapped(dw, bbox, core, HOLE_BLEED_MIN_DEPTH_TEXELS + 2, open);
+  const openAllow = new Uint8Array(n);
+  for (let i = 0; i < n; i++) if (openDist[i] !== DIST_UNREACHED) openAllow[i] = 1;
+  const wedgeReach =
+    Math.ceil(((CUSP_GAP_VB.x1 - CUSP_GAP_VB.x0) / 2) * sx) + CUSP_STRIP_MARGIN_TEXELS + 2;
+  const wedgeDist = bfsDistanceCapped(dw, bbox, openAllow, wedgeReach, wedge);
+
+  const allow = new Uint8Array(n);
+  for (let y = bbox.y0; y <= bbox.y1; y++) {
+    for (let x = bbox.x0; x <= bbox.x1; x++) {
+      const i = y * dw + x;
+      if (!base[i]) continue;
+      if (!openAllow[i] && wedgeDist[i] === DIST_UNREACHED) continue;
+      allow[i] = 1;
+      const p = i * 4;
+      out[p] = col[p]!;
+      out[p + 1] = col[p + 1]!;
+      out[p + 2] = col[p + 2]!;
+      out[p + 3] = col[p + 3]!;
+    }
+  }
+
+  // Shelf into the mark: same pixels as the repaired reveal.
+  const shelfDist = bfsDistanceCapped(dw, bbox, allow, SEAM_SHELF_TEXELS, mark);
+  for (let y = bbox.y0; y <= bbox.y1; y++) {
+    for (let x = bbox.x0; x <= bbox.x1; x++) {
+      const i = y * dw + x;
+      if (!mark[i] || shelfDist[i] === DIST_UNREACHED) continue;
+      if (sealFootprint[i] || exterior[i]) continue;
+      const p = i * 4;
+      if (reveal[p + 3]! < 1) continue;
+      out[p] = reveal[p]!;
+      out[p + 1] = reveal[p + 1]!;
+      out[p + 2] = reveal[p + 2]!;
+      out[p + 3] = 255;
+    }
+  }
+  return allowance;
 }
 
 /** O(1) nearest sample of the edge-proximity band. */
@@ -1251,7 +1511,7 @@ function sampleWarpedMark(
 
 /**
  * Additive hole-bleed sample — NO geomMask gate. Source is already masked to
- * allowanceMask (cavity minus cusp-seal footprint). Only used when
+ * real counter overlaps by buildCounterBleed. Only used when
  * sampleWarpedMark already returned null.
  */
 function sampleHoleAllowance(
@@ -1549,31 +1809,35 @@ function buildLensDisc(
       const logoCssY = originY + sampleYCss;
       const sx0 = (logoCssX - logoX) * scaleX;
       const sy0 = (logoCssY - logoY) * scaleY;
+      const markSample = sampleWarpedMark(
+        src,
+        geomMask,
+        revealDw,
+        revealDh,
+        sx0,
+        sy0,
+      );
       const sampled =
-        sampleWarpedMark(
-          src,
-          geomMask,
-          revealDw,
-          revealDh,
-          sx0,
-          sy0,
-        ) ??
+        markSample ??
         (HOLE_ALLOWANCE_ENABLED
           ? sampleHoleAllowance(holeSrc, revealDw, revealDh, sx0, sy0)
           : null);
       if (!sampled) continue;
       let { r, g, b, a: sampleA } = sampled;
+      // Hole-bleed samples must tap the hole buffer: the reveal is black past
+      // its counter shelf, which tinted overlap faces green along the seam.
+      const caSrc = markSample ? src : holeSrc;
       const caOff = lensR * CA_FRAC * rw;
       // CA only on fully opaque real samples — soft fringe stays single-channel.
       if (caOff > 1e-6 && sampleA >= 250) {
         const sxR = (logoCssX + ux * caOff - logoX) * scaleX;
         const syR = (logoCssY + uy * caOff - logoY) * scaleY;
         if (
-          sampleChannelBilinear(src, revealDw, revealDh, sxR, syR, 3) >=
+          sampleChannelBilinear(caSrc, revealDw, revealDh, sxR, syR, 3) >=
           ALPHA_SOLID
         ) {
           const rTap = sampleChannelBilinear(
-            src,
+            caSrc,
             revealDw,
             revealDh,
             sxR,
@@ -1585,11 +1849,11 @@ function buildLensDisc(
         const sxB = (logoCssX - ux * caOff - logoX) * scaleX;
         const syB = (logoCssY - uy * caOff - logoY) * scaleY;
         if (
-          sampleChannelBilinear(src, revealDw, revealDh, sxB, syB, 3) >=
+          sampleChannelBilinear(caSrc, revealDw, revealDh, sxB, syB, 3) >=
           ALPHA_SOLID
         ) {
           const bTap = sampleChannelBilinear(
-            src,
+            caSrc,
             revealDw,
             revealDh,
             sxB,
@@ -2159,13 +2423,15 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       collage,
       holeClassified.holeMask,
     );
-    const holeAllowanceData = buildHoleAllowanceData(
+    const holeAllowanceData = buildCounterBleed(
       geomMask,
       revealW,
       revealH,
-      collage,
+      drawCollagePixels(collage, revealW, revealH),
       holeClassified,
+      revealData.data,
     );
+    reveal.getContext("2d")!.putImageData(revealData, 0, 0);
 
     cache = {
       logoX,
