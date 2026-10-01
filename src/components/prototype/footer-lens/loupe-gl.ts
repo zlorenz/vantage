@@ -26,9 +26,6 @@ export type LoupeGlDraw = {
   zoomCenter: number;
   zoomEdge: number;
   falloffExp: number;
-  warpInner: number;
-  warpKnee: number;
-  warpKneeAmount: number;
   displaceFrac: number;
   caFrac: number;
 };
@@ -64,9 +61,6 @@ uniform vec2 uScale;
 uniform float uZoomCenter;
 uniform float uZoomEdge;
 uniform float uFalloffExp;
-uniform float uWarpInner;
-uniform float uWarpKnee;
-uniform float uWarpKneeAmount;
 uniform float uDisplaceFrac;
 uniform float uCaFrac;
 
@@ -250,9 +244,6 @@ export function createLoupeGl(): LoupeGl {
     zoomCenter: gl.getUniformLocation(program, 'uZoomCenter')!,
     zoomEdge: gl.getUniformLocation(program, 'uZoomEdge')!,
     falloffExp: gl.getUniformLocation(program, 'uFalloffExp')!,
-    warpInner: gl.getUniformLocation(program, 'uWarpInner')!,
-    warpKnee: gl.getUniformLocation(program, 'uWarpKnee')!,
-    warpKneeAmount: gl.getUniformLocation(program, 'uWarpKneeAmount')!,
     displaceFrac: gl.getUniformLocation(program, 'uDisplaceFrac')!,
     caFrac: gl.getUniformLocation(program, 'uCaFrac')!,
   };
@@ -318,9 +309,6 @@ export function createLoupeGl(): LoupeGl {
       gl.uniform1f(u.zoomCenter, args.zoomCenter);
       gl.uniform1f(u.zoomEdge, args.zoomEdge);
       gl.uniform1f(u.falloffExp, args.falloffExp);
-      gl.uniform1f(u.warpInner, args.warpInner);
-      gl.uniform1f(u.warpKnee, args.warpKnee);
-      gl.uniform1f(u.warpKneeAmount, args.warpKneeAmount);
       gl.uniform1f(u.displaceFrac, args.displaceFrac);
       gl.uniform1f(u.caFrac, args.caFrac);
       gl.drawArrays(gl.TRIANGLES, 0, 6);

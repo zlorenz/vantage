@@ -44,12 +44,8 @@ import {
   SYMBOL_VIEWBOX_W,
 } from "./symbol-path";
 
-export type FooterLensPointer = { x: number; y: number } | null;
-
 export type FooterLensEngine = {
   setSize: (cssWidth: number, cssHeight: number) => void;
-  /** Immediate target (used by rAF lerp in the component). */
-  setPointer: (pointer: FooterLensPointer) => void;
   /** Inline SVG host for the glass mark. The loupe canvas stays above it. */
   setGlassHost: (host: HTMLElement | null) => void;
   /** Draw at a smoothed lens center (component owns lerp). */
@@ -115,29 +111,6 @@ const REVEAL_SUPER = 1 / ZOOM_CENTER;
  * dark shards (e.g. the "A" negative-space triangle).
  */
 const ALPHA_SOLID = 128;
-/**
- * Reveal-texel radius of the precomputed "near mask boundary" band.
- * Used when building edgeProx (optional diagnostics / future adaptive paths).
- * Per-frame coverage now uses the full geomMask directly (O(1)), so this
- * no longer gates live isPointInPath.
- */
-const EDGE_PROX_RADIUS = 8;
-/**
- * Fallback warp-edge distance in reveal texels when dynamic sizing isn't
- * available. Prefer `warpEdgeDistForReveal(dw)` so falloff scales with the
- * buffer (~8 viewBox units — same reach as the old cusp damp, but everywhere).
- */
-const WARP_EDGE_DIST_MIN = 64;
-
-function warpEdgeDistForReveal(revealDw: number): number {
-  // Preserve prior CSS damp reach: old path used ~8 units in a 36-unit
-  // viewBox; re-export is 88.7 units (~2.46×), so scale the VB constant.
-  const warpEdgeVb = (8 * SYMBOL_VIEWBOX_W) / 36;
-  return Math.max(
-    WARP_EDGE_DIST_MIN,
-    Math.ceil((revealDw * warpEdgeVb) / SYMBOL_VIEWBOX_W),
-  );
-}
 
 type Cache = {
   logoX: number;
@@ -145,7 +118,6 @@ type Cache = {
   logoW: number;
   logoH: number;
   path2d: Path2D;
-  whiteWordmark: HTMLCanvasElement;
   reveal: HTMLCanvasElement;
   revealData: ImageData;
   revealDw: number;
@@ -155,18 +127,6 @@ type Cache = {
    * Used for O(1) warp pre-coverage and as a fast interior reference.
    */
   geomMask: Uint8Array;
-  /**
-   * 1 = within EDGE_PROX_RADIUS of any geom boundary; 0 = deep interior/exterior.
-   * O(1) lookup decides live hit-test vs fast bilinear — no hardcoded cusps.
-   */
-  edgeProx: Uint8Array;
-  /**
-   * Distance (texels, capped per reveal) to nearest geom boundary.
-   * Drives general warp dampening on both sides of every edge/gap.
-   */
-  edgeDist: Uint16Array;
-  /** Cap used when building edgeDist (reveal-texel units). */
-  warpEdgeDist: number;
   /**
    * Additive-only hole bleed from buildCounterBleed: collage RGBA on real
    * counter overlaps (cusp seal + thin edge fringes excluded). Null alpha
@@ -340,26 +300,6 @@ void buildProceduralMosaicReveal;
 
 /* -------------------------------------------------------------------------- */
 
-function buildWhiteWordmark(
-  path2d: Path2D,
-  logoX: number,
-  logoY: number,
-  logoW: number,
-  logoH: number,
-  dw: number,
-  dh: number,
-): HTMLCanvasElement {
-  const c = document.createElement("canvas");
-  c.width = dw;
-  c.height = dh;
-  const ctx = c.getContext("2d")!;
-  ctx.setTransform(dw / logoW, 0, 0, dh / logoH, 0, 0);
-  ctx.translate(-logoX, -logoY);
-  ctx.fillStyle = "#ffffff";
-  ctx.fill(path2d);
-  return c;
-}
-
 /**
  * Reveal buffer from the photo collage, then destination-in against Path2D.
  * Collage is already alpha-masked to the "A"; Path2D intersect is intentional
@@ -452,8 +392,8 @@ function scrubTransparentRgb(rgba: Uint8ClampedArray): void {
 }
 
 /**
- * Build-time geometric occupancy, edge-proximity band, and edge-distance
- * field for the WHOLE mark. isPointInPath runs once per reveal rebuild.
+ * Build-time geometric occupancy for the whole mark.
+ * isPointInPath runs once per reveal rebuild.
  */
 function buildGeomEdgeMaps(
   path2d: Path2D,
@@ -463,12 +403,7 @@ function buildGeomEdgeMaps(
   logoH: number,
   dw: number,
   dh: number,
-): {
-  geomMask: Uint8Array;
-  edgeProx: Uint8Array;
-  edgeDist: Uint16Array;
-  warpEdgeDist: number;
-} {
+): Uint8Array {
   const hitCtx = ensurePathHitCtx();
   const geomMask = new Uint8Array(dw * dh);
   const scaleX = dw / logoW;
@@ -483,58 +418,7 @@ function buildGeomEdgeMaps(
       }
     }
   }
-
-  const warpEdgeDist = warpEdgeDistForReveal(dw);
-  // Chamfer distance-to-boundary (0 on boundary, increases away).
-  const INF = 0xffff;
-  const edgeDist = new Uint16Array(dw * dh);
-  edgeDist.fill(INF);
-  for (let y = 0; y < dh; y++) {
-    const row = y * dw;
-    for (let x = 0; x < dw; x++) {
-      const g = geomMask[row + x]!;
-      if (
-        (x > 0 && geomMask[row + x - 1]! !== g) ||
-        (x + 1 < dw && geomMask[row + x + 1]! !== g) ||
-        (y > 0 && geomMask[row - dw + x]! !== g) ||
-        (y + 1 < dh && geomMask[row + dw + x]! !== g)
-      ) {
-        edgeDist[row + x] = 0;
-      }
-    }
-  }
-  // Forward chamfer
-  for (let y = 0; y < dh; y++) {
-    const row = y * dw;
-    for (let x = 0; x < dw; x++) {
-      const i = row + x;
-      let d = edgeDist[i]!;
-      if (x > 0) d = Math.min(d, edgeDist[i - 1]! + 1);
-      if (y > 0) d = Math.min(d, edgeDist[i - dw]! + 1);
-      if (x > 0 && y > 0) d = Math.min(d, edgeDist[i - dw - 1]! + 1);
-      if (x + 1 < dw && y > 0) d = Math.min(d, edgeDist[i - dw + 1]! + 1);
-      edgeDist[i] = Math.min(INF, d);
-    }
-  }
-  // Backward chamfer
-  for (let y = dh - 1; y >= 0; y--) {
-    const row = y * dw;
-    for (let x = dw - 1; x >= 0; x--) {
-      const i = row + x;
-      let d = edgeDist[i]!;
-      if (x + 1 < dw) d = Math.min(d, edgeDist[i + 1]! + 1);
-      if (y + 1 < dh) d = Math.min(d, edgeDist[i + dw]! + 1);
-      if (x + 1 < dw && y + 1 < dh) d = Math.min(d, edgeDist[i + dw + 1]! + 1);
-      if (x > 0 && y + 1 < dh) d = Math.min(d, edgeDist[i + dw - 1]! + 1);
-      edgeDist[i] = Math.min(d, warpEdgeDist);
-    }
-  }
-
-  const edgeProx = new Uint8Array(dw * dh);
-  for (let i = 0; i < edgeProx.length; i++) {
-    if (edgeDist[i]! <= EDGE_PROX_RADIUS) edgeProx[i] = 1;
-  }
-  return { geomMask, edgeProx, edgeDist, warpEdgeDist };
+  return geomMask;
 }
 
 /**
@@ -1092,81 +976,6 @@ function buildCounterBleed(
   }
   return allowance;
 }
-
-/** O(1) nearest sample of the edge-proximity band. */
-function sampleEdgeProxNearest(
-  edgeProx: Uint8Array,
-  dw: number,
-  dh: number,
-  sx: number,
-  sy: number,
-): boolean {
-  // Just outside the reveal buffer is still "near a boundary" for the mark
-  // silhouette — treat a thin OOB ring as proximity so coverage stays precise.
-  if (sx < -EDGE_PROX_RADIUS || sy < -EDGE_PROX_RADIUS) return false;
-  if (sx >= dw + EDGE_PROX_RADIUS || sy >= dh + EDGE_PROX_RADIUS) return false;
-  const ix = Math.min(dw - 1, Math.max(0, Math.floor(sx)));
-  const iy = Math.min(dh - 1, Math.max(0, Math.floor(sy)));
-  if (sx < 0 || sy < 0 || sx >= dw || sy >= dh) return true;
-  return edgeProx[iy * dw + ix]! !== 0;
-}
-
-/**
- * O(1) nearest sample of edge distance (0 = boundary).
- * Out-of-buffer samples add Euclidean distance past the clamp edge so points
- * just outside the logo (pad / viewBox overflow) still damp like near-edge
- * exterior — previously OOB returned the max distance and got full warp,
- * which jumped exterior rays into the letterform at sharp outer vertices.
- */
-function sampleEdgeDistNearest(
-  edgeDist: Uint16Array,
-  dw: number,
-  dh: number,
-  sx: number,
-  sy: number,
-  warpEdgeDist: number,
-): number {
-  const ix = Math.min(dw - 1, Math.max(0, Math.floor(sx)));
-  const iy = Math.min(dh - 1, Math.max(0, Math.floor(sy)));
-  const base = edgeDist[iy * dw + ix]!;
-  if (sx >= 0 && sy >= 0 && sx < dw && sy < dh) return base;
-  const ox = sx < 0 ? -sx : sx >= dw ? sx - (dw - 1) : 0;
-  const oy = sy < 0 ? -sy : sy >= dh ? sy - (dh - 1) : 0;
-  return Math.min(warpEdgeDist, base + Math.hypot(ox, oy));
-}
-
-/** Smoothstep 0..1. */
-function smoothstep01(t: number): number {
-  const x = Math.min(1, Math.max(0, t));
-  return x * x * (3 - 2 * x);
-}
-
-/**
- * General warp amount from edge distance + occupancy.
- * Outside the mark → identity. Near any boundary → damp. Deep interior → full.
- */
-/**
- * Warp amount from edge distance + occupancy.
- * Outside near any boundary → strong damp (large reach) so empty samples
- * cannot jump into letterform. Inside near a boundary → lighter damp so
- * thin tips stay continuous without killing loupe zoom in thicker strokes.
- * Coverage is decided at the unwarped (pre) position separately — warp only
- * affects which color is sampled (with identity fallback if the warped
- * sample leaves the mark).
- */
-function edgeWarpAmount(
-  edgeDist: number,
-  insideMark: boolean,
-  warpEdgeDist: number,
-): number {
-  // Inside reach ≈ 1.5 viewBox units; outside keeps the full ~8-unit map.
-  const reach = insideMark
-    ? Math.max(16, Math.ceil(warpEdgeDist * (1.5 / 8)))
-    : warpEdgeDist;
-  if (edgeDist >= reach) return 1;
-  return smoothstep01(edgeDist / reach);
-}
-
 
 /** Nearest-texel geometric occupancy (O(1)). */
 function sampleGeomMaskNearest(
@@ -1729,7 +1538,6 @@ function buildLensDisc(
   size: number,
   scratchIn: LoupeScratch | null,
 ): { disc: HTMLCanvasElement; scratch: LoupeScratch } {
-  const t0 = performance.now();
   const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
   // Pad past the blur kernel so rim samples never see empty transparent black.
   const pad = Math.ceil(blurPx * 2) + 2;
@@ -1771,7 +1579,6 @@ function buildLensDisc(
   let solidMaxX = -1;
   let solidMaxY = -1;
 
-  const tMain0 = performance.now();
   const sampleR = radiusPx + pad;
   const sampleR2 = sampleR * sampleR;
   const centerPx = pad + cx;
@@ -1896,7 +1703,6 @@ function buildLensDisc(
       sharpData[si + 3] = outA;
     }
   }
-  const mainLoopMs = performance.now() - tMain0;
 
   // Snapshot solid coverage before morph so scrub only re-tests texels that
   // morph-close newly filled (the counter-leak risk). Pre-validated main-loop
@@ -1926,7 +1732,6 @@ function buildLensDisc(
   // Seal hairline gaps in loupe coverage (A stroke junctions). Do NOT inpaint
   // the enclosed A counter — that hole should stay transparent so the page
   // gradient shows through.
-  const tMorph0 = performance.now();
   // Radius 1 seals 1px hairlines at junctions without bridging the opened
   // counter cusp (0.70 viewBox units in SYMBOL_PATH_D).
   if (solidMaxX >= 0) {
@@ -2066,12 +1871,10 @@ function buildLensDisc(
     EDGE_ALPHA_FEATHER_PX,
   );
   featherExteriorAlphaOnly(sharpData, size, size, EDGE_ALPHA_FEATHER_PX);
-  const morphMs = performance.now() - tMorph0;
 
   // Do NOT dilate with forced opaque alpha before blur — that expands a hard
   // silhouette which, after blur, reads as a second ghost edge. Blur color+alpha
   // together so content edges soften as one continuous falloff.
-  const tBlit0 = performance.now();
   sharpCtx.putImageData(scratch.sharpImg, 0, 0);
   opaqueCtx.putImageData(scratch.opaqueImg, 0, 0);
 
@@ -2093,55 +1896,6 @@ function buildLensDisc(
     octx.clearRect(0, 0, size, size);
     octx.drawImage(scratch.sharpRaster, 0, 0);
   }
-  const blitMs = performance.now() - tBlit0;
-  const buildMs = performance.now() - t0;
-  const g = globalThis as unknown as {
-    __VP_LENS_PROFILE?: {
-      buildMs: number;
-      workPx: number;
-      mainLoopMs: number;
-      morphMs: number;
-      blitMs: number;
-      paddedSize: number;
-    };
-    __VP_LENS_DEBUG_SHARP?: HTMLCanvasElement;
-    __VP_LENS_DEBUG_OPAQUE?: HTMLCanvasElement;
-    __VP_LENS_DEBUG_BLURRED?: HTMLCanvasElement;
-    __VP_LENS_DEBUG_DISC?: HTMLCanvasElement;
-    __VP_LENS_DEBUG_REVEAL?: HTMLCanvasElement;
-    __VP_LENS_DEBUG_META?: Record<string, unknown>;
-    __VP_LENS_DEBUG_PAD?: number;
-  };
-  g.__VP_LENS_PROFILE = {
-    buildMs,
-    workPx: size,
-    mainLoopMs,
-    morphMs,
-    blitMs,
-    paddedSize,
-  };
-  g.__VP_LENS_DEBUG_SHARP = scratch.sharp;
-  g.__VP_LENS_DEBUG_OPAQUE = scratch.opaque;
-  g.__VP_LENS_DEBUG_BLURRED = scratch.revealBlurred;
-  g.__VP_LENS_DEBUG_DISC = scratch.out;
-  g.__VP_LENS_DEBUG_REVEAL = cache.reveal;
-  g.__VP_LENS_DEBUG_PAD = pad;
-  g.__VP_LENS_DEBUG_META = {
-    buildMs,
-    lx,
-    ly,
-    workDpr: dpr,
-    workPx: size,
-    lensR,
-    logoX,
-    logoY,
-    logoW,
-    logoH,
-    revealDw,
-    revealDh,
-    pad,
-    paddedSize,
-  };
   return { disc: scratch.out, scratch };
 }
 
@@ -2336,7 +2090,6 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   let cssW = 0;
   let cssH = 0;
   let cache: Cache | null = null;
-  let pointer: FooterLensPointer = null;
   let path2d: Path2D | null = null;
   let collage: HTMLImageElement | null = null;
   let destroyed = false;
@@ -2396,20 +2149,9 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     const m = new DOMMatrix().translate(logoX, logoY).scale(scale);
     scaled.addPath(path, m);
 
-    const whiteW = Math.max(1, Math.round(logoW * dpr));
-    const whiteH = Math.max(1, Math.round(logoH * dpr));
     const revealW = Math.max(1, Math.round(logoW * dpr * REVEAL_SUPER));
     const revealH = Math.max(1, Math.round(logoH * dpr * REVEAL_SUPER));
-    const whiteWordmark = buildWhiteWordmark(
-      scaled,
-      logoX,
-      logoY,
-      logoW,
-      logoH,
-      whiteW,
-      whiteH,
-    );
-    const { geomMask, edgeProx, edgeDist, warpEdgeDist } = buildGeomEdgeMaps(
+    const geomMask = buildGeomEdgeMaps(
       scaled,
       logoX,
       logoY,
@@ -2446,15 +2188,11 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       logoW,
       logoH,
       path2d: scaled,
-      whiteWordmark,
       reveal,
       revealData,
       revealDw: revealW,
       revealDh: revealH,
       geomMask,
-      edgeProx,
-      edgeDist,
-      warpEdgeDist,
       holeAllowanceData,
     };
     cacheStamp += 1;
@@ -2533,7 +2271,6 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    const tGpu = performance.now();
     let usedGpu = false;
     if (!loupeGlFailed) {
       try {
@@ -2560,15 +2297,10 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
           zoomCenter: ZOOM_CENTER,
           zoomEdge: ZOOM_EDGE,
           falloffExp: ZOOM_FALLOFF_EXP,
-          warpInner: 0,
-          warpKnee: 1,
-          warpKneeAmount: 0,
           displaceFrac: DISPLACE_FRAC,
           caFrac: CA_FRAC,
         });
         usedGpu = true;
-        const g = globalThis as unknown as {__VP_LENS_PROFILE?: {buildMs: number; gpu: boolean}};
-        g.__VP_LENS_PROFILE = {buildMs: performance.now() - tGpu, gpu: true};
       } catch (err) {
         console.warn('[footer-lens] GPU loupe unavailable', err);
         loupeGlFailed = true;
@@ -2645,9 +2377,6 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       rebuildCache();
       redraw();
     },
-    setPointer(next) {
-      pointer = next;
-    },
     setGlassHost(host) {
       glassHost = host;
       glassKey = "";
@@ -2681,7 +2410,6 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       destroyed = true;
       cache = null;
       path2d = null;
-      pointer = null;
       collage = null;
       loupeScratch = null;
       if (glassHost) glassHost.replaceChildren();

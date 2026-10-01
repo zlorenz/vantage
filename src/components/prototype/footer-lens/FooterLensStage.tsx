@@ -122,7 +122,6 @@ export function FooterLensStage({
 
         gradient?.setPointer({x: smoothX, y: smoothY}, cssW, cssH);
         gradient?.frame();
-        lens.setPointer({x: targetX, y: targetY});
         lens.drawAt(smoothX, smoothY, true);
 
         raf = requestAnimationFrame(tick);
