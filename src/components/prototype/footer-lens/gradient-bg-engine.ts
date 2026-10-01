@@ -1,7 +1,7 @@
 /**
- * Cursor-warped painted gradient — WebGL2 port of monopo.london's
- * <monopo-gradient> fragment shader (IQ gradient-noise displacement +
- * four-stop color bands + film grain), driven by Vantage brand tokens.
+ * Cursor-warped painted gradient. The band field is the existing four-stop
+ * paint; pointer motion is independent of the source site's X→warp / Y→seed
+ * sliders. The field moves only while the cursor moves.
  */
 
 /** Brand palette: vp-black, warm deep (from orange), vp-link, vp-orange. */
@@ -21,7 +21,6 @@ const DEFAULTS = {
   /** Negative Y lifts the painted bands toward the nav (clip +Y is up). */
   transformYBias: -0.32,
   displacementBase: 0.04,
-  displacementMax: 4.0,
   seedBase: -0.6,
   zoom: 0.68,
   spacing: 4.27,
@@ -50,6 +49,7 @@ uniform float colorSize;
 uniform float colorSpacing;
 uniform float colorRotation;
 uniform float colorSpread;
+uniform float bandTight;
 uniform float displacement;
 uniform float zoom;
 uniform float spacing;
@@ -136,6 +136,8 @@ vec2 rotate(vec2 v, float a) {
 
 void main() {
   vec2 position = vPosition;
+  // Horizontal mirror: rest band runs top-left toward bottom-right.
+  position.x = -position.x;
   position.x *= min(1.0, viewportSize.x / viewportSize.y);
   position.y *= min(1.0, viewportSize.y / viewportSize.x);
   position /= zoom;
@@ -156,10 +158,10 @@ void main() {
   offsetedPosition *= vec2(1.0 / colorSpread, 1.0);
 
   vec3 color = vec3(0.0);
-  color = mix(color1, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, colorSpacing * 1.5))));
-  color = mix(color2, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, colorSpacing * 0.5))));
-  color = mix(color3, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, -colorSpacing * 0.5))));
-  color = mix(color4, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, -colorSpacing * 1.5))));
+  color = mix(color1, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, colorSpacing * 1.5)) * bandTight));
+  color = mix(color2, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, colorSpacing * 0.5)) * bandTight));
+  color = mix(color3, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, -colorSpacing * 0.5)) * bandTight));
+  color = mix(color4, color, smoothstep(0.0, 1.0, distance(offsetedPosition, vec2(0.0, -colorSpacing * 1.5)) * bandTight));
 
   color += grain * noiseIntensity;
   color = clamp(color, 0.0, 1.0);
@@ -238,6 +240,7 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
     colorSpacing: gl.getUniformLocation(program, 'colorSpacing')!,
     colorRotation: gl.getUniformLocation(program, 'colorRotation')!,
     colorSpread: gl.getUniformLocation(program, 'colorSpread')!,
+    bandTight: gl.getUniformLocation(program, 'bandTight')!,
     displacement: gl.getUniformLocation(program, 'displacement')!,
     zoom: gl.getUniformLocation(program, 'zoom')!,
     spacing: gl.getUniformLocation(program, 'spacing')!,
@@ -267,16 +270,24 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
   let smoothTY: number = DEFAULTS.transformYBias;
   let smoothOX: number = targetOX;
   let smoothOY: number = targetOY;
+  let targetSpread: number = DEFAULTS.colorSpread;
+  let smoothSpread: number = DEFAULTS.colorSpread;
+  let targetTight = 1;
+  let smoothTight = 1;
 
-  const SMOOTH = 0.08;
+  /** Per-load tilt so the cursor axis is not the same line every visit. */
+  const driftPhase = Math.random() * Math.PI * 2;
 
   const draw = () => {
-    smoothForce = lerp(smoothForce, targetForce, SMOOTH);
-    smoothSeed = lerp(smoothSeed, targetSeed, SMOOTH);
-    smoothTX = lerp(smoothTX, targetTX, SMOOTH);
-    smoothTY = lerp(smoothTY, targetTY, SMOOTH);
-    smoothOX = lerp(smoothOX, targetOX, SMOOTH);
-    smoothOY = lerp(smoothOY, targetOY, SMOOTH);
+    // Channels ease at different rates so the field doesn't slide as one rigid slider.
+    smoothForce = lerp(smoothForce, targetForce, 0.055);
+    smoothSeed = lerp(smoothSeed, targetSeed, 0.04);
+    smoothTX = lerp(smoothTX, targetTX, 0.09);
+    smoothTY = lerp(smoothTY, targetTY, 0.07);
+    smoothOX = lerp(smoothOX, targetOX, 0.08);
+    smoothOY = lerp(smoothOY, targetOY, 0.06);
+    smoothSpread = lerp(smoothSpread, targetSpread, 0.07);
+    smoothTight = lerp(smoothTight, targetTight, 0.07);
 
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.useProgram(program);
@@ -291,7 +302,8 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
     gl.uniform1f(u.colorSize, DEFAULTS.colorSize);
     gl.uniform1f(u.colorSpacing, DEFAULTS.colorSpacing);
     gl.uniform1f(u.colorRotation, DEFAULTS.colorRotation);
-    gl.uniform1f(u.colorSpread, DEFAULTS.colorSpread);
+    gl.uniform1f(u.colorSpread, smoothSpread);
+    gl.uniform1f(u.bandTight, smoothTight);
     gl.uniform1f(u.displacement, smoothForce);
     gl.uniform1f(u.zoom, DEFAULTS.zoom);
     gl.uniform1f(u.spacing, DEFAULTS.spacing);
@@ -324,17 +336,31 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
         targetTY = DEFAULTS.transformYBias;
         targetOX = DEFAULTS.colorOffsetX;
         targetOY = DEFAULTS.colorOffsetY;
+        targetSpread = DEFAULTS.colorSpread;
+        targetTight = 1;
         return;
       }
       const nx = Math.min(1, Math.max(0, p.x / Math.max(w, 1)));
       const ny = Math.min(1, Math.max(0, p.y / Math.max(h, 1)));
-      // Monopo maps clientX → force 0..5, clientY → seed -1..1
-      targetForce = lerp(DEFAULTS.displacementBase, DEFAULTS.displacementMax, nx);
-      targetSeed = lerp(-1, 1, ny);
-      targetTX = (nx - 0.5) * -0.35;
-      targetTY = DEFAULTS.transformYBias + (ny - 0.5) * -0.35;
-      targetOX = DEFAULTS.colorOffsetX + (nx - 0.5) * 0.45;
-      targetOY = DEFAULTS.colorOffsetY + (ny - 0.5) * 0.35;
+      const cx = nx * 2 - 1;
+      const cy = ny * 2 - 1;
+      // Rotate the pointer so the strong axis is diagonal, not screen-X.
+      const rot = 0.7 + driftPhase * 0.04;
+      const rx = cx * Math.cos(rot) - cy * Math.sin(rot);
+      const ry = cx * Math.sin(rot) + cy * Math.cos(rot);
+      const dist = Math.min(1, Math.hypot(rx, ry));
+      const bend = Math.min(1, Math.max(0, 0.42 + rx * 0.2 - ry * 0.16));
+      const mild = Math.min(1, bend * 0.55 + dist * 0.45);
+      const strong = Math.min(1, dist * 1.05 + Math.max(0, bend - 0.2) * 0.45);
+      const warp = (mild + strong) * 0.5;
+      targetForce = lerp(DEFAULTS.displacementBase, 2.15, warp);
+      targetSeed = DEFAULTS.seedBase + rx * 0.5 - ry * 0.38;
+      targetTX = rx * -0.13 + ry * 0.08;
+      targetTY = DEFAULTS.transformYBias + ry * -0.12 + rx * 0.07;
+      targetOX = DEFAULTS.colorOffsetX + rx * 0.18 + ry * 0.1;
+      targetOY = DEFAULTS.colorOffsetY + ry * 0.15 - rx * 0.08;
+      targetSpread = lerp(DEFAULTS.colorSpread, 2.15, warp);
+      targetTight = lerp(1, 1.32, warp);
     },
     frame() {
       draw();

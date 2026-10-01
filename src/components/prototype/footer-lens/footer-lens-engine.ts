@@ -37,6 +37,7 @@
  */
 
 import {buildGlassMarkSvg, GLASS_PAD_VB} from "./glass-mark-svg";
+import {createLoupeGl, type LoupeGl} from "./loupe-gl";
 import {
   SYMBOL_PATH_D,
   SYMBOL_VIEWBOX_H,
@@ -71,15 +72,15 @@ const COLLAGE_SRC = "/prototype/footer-lens/vantage-logo-photo-collage-01.png";
  */
 /** Center zoom (~2.2×). Confirmed; do not raise without re-checking collage. */
 const ZOOM_CENTER = 0.45;
-/** Rim zoom — closer to center so the dome is a soft falloff, not a second zone. */
-const ZOOM_EDGE = 0.55;
+/** Rim zoom — 20% less dome than the 0.55 baseline. */
+const ZOOM_EDGE = 0.53;
 /**
- * Exponent for the continuous zoom / rim falloff (u^N).
- * Higher = flatter longer, thinner transition at the edge. Tuned ~6–10.
+ * Exponent for the zoom / rim falloff (u^N) across the whole radius.
+ * Higher = flatter longer, then a quicker rise near the edge.
  */
 const ZOOM_FALLOFF_EXP = 9;
-/** Subtle rim displacement only (fraction of lensR). */
-const DISPLACE_FRAC = 0.035;
+/** Rim displacement as a fraction of the lens radius. 20% under the 0.02 baseline. */
+const DISPLACE_FRAC = 0.016;
 /** Soft chromatic split at the outer rim (fraction of lensR). */
 const CA_FRAC = 0.01;
 /**
@@ -1620,15 +1621,15 @@ function featherExteriorAlphaOnly(
 }
 
 /**
- * One continuous zoom curve over the full 0..1 radius — no INNER_FLAT split.
- * Slope stays C∞; u^N keeps the middle nearly flat and pushes warp to a thin rim.
+ * One continuous zoom curve over the full radius.
+ * u^N keeps the middle nearly flat and pushes the bend toward the rim.
  */
 function zoomAt(u: number): number {
   const t = Math.min(1, Math.max(0, u));
   return ZOOM_CENTER + (ZOOM_EDGE - ZOOM_CENTER) * Math.pow(t, ZOOM_FALLOFF_EXP);
 }
 
-/** Displace / CA weight — same continuous family as zoom (no rim-start kink). */
+/** Displace / CA weight — same continuous family as zoom. */
 function rimWeight(u: number): number {
   const t = Math.min(1, Math.max(0, u));
   return Math.pow(t, ZOOM_FALLOFF_EXP);
@@ -1650,8 +1651,8 @@ function lensDiscDiameterPx(lensR: number, dpr: number): number {
  */
 const MAX_LOUPE_WORK_PX = 480;
 
-/** Skip rebuild when the lens center moves less than this (CSS px). */
-const LOUPE_MOVE_EPS = 0.4;
+/** Sub-pixel holds skip the blit. Kept well under the follow step so the ease can finish. */
+const HOLD_PX = 0.02;
 
 type LoupeScratch = {
   size: number;
@@ -2345,6 +2346,12 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   let loupeScratch: LoupeScratch | null = null;
   let lastBuiltLx = Number.NaN;
   let lastBuiltLy = Number.NaN;
+  /** Last circle composited onto the hero canvas. NaN after a full clear. */
+  let paintedLx = Number.NaN;
+  let paintedLy = Number.NaN;
+  let cacheStamp = 0;
+  let loupeGl: LoupeGl | null = null;
+  let loupeGlFailed = false;
   let glassHost: HTMLElement | null = null;
   let glassKey = "";
 
@@ -2450,12 +2457,22 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       warpEdgeDist,
       holeAllowanceData,
     };
+    cacheStamp += 1;
   };
 
   const clear = () => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    paintedLx = Number.NaN;
+    paintedLy = Number.NaN;
+  };
+
+  /** Device-pixel box covering the disc plus the rim stroke. */
+  const clearDisc = (lx: number, ly: number, lensR: number) => {
+    const pad = Math.max(4, lensR * 0.03);
+    const r = lensR + pad;
+    ctx.clearRect((lx - r) * dpr, (ly - r) * dpr, r * 2 * dpr, r * 2 * dpr);
   };
 
   const glassPadCss = (logoW: number) => (logoW * GLASS_PAD_VB) / SYMBOL_VIEWBOX_W;
@@ -2507,13 +2524,61 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     if (workPx % 2 !== 0) workPx -= 1;
     workPx = Math.max(2, workPx);
 
-    clear();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (Number.isFinite(paintedLx)) clearDisc(paintedLx, paintedLy, lensR);
+    clearDisc(lx, ly, lensR);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
     syncGlass({x: lx, y: ly, r: lensR});
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    if (rebuildDisc || !loupeScratch) {
-      const workDpr = (workPx / blitPx) * dpr;
+    const tGpu = performance.now();
+    let usedGpu = false;
+    if (!loupeGlFailed) {
+      try {
+        if (!loupeGl) loupeGl = createLoupeGl();
+        loupeGl.sync({
+          reveal: cache.reveal,
+          hole: cache.holeAllowanceData.data,
+          geom: cache.geomMask,
+          dw: cache.revealDw,
+          dh: cache.revealDh,
+          stamp: cacheStamp,
+        });
+        const discCss = workPx / ((workPx / blitPx) * dpr);
+        loupeGl.draw({
+          size: workPx,
+          dpr: (workPx / blitPx) * dpr,
+          lensR,
+          originX: lx - discCss / 2,
+          originY: ly - discCss / 2,
+          logoX: cache.logoX,
+          logoY: cache.logoY,
+          scaleX: cache.revealDw / cache.logoW,
+          scaleY: cache.revealDh / cache.logoH,
+          zoomCenter: ZOOM_CENTER,
+          zoomEdge: ZOOM_EDGE,
+          falloffExp: ZOOM_FALLOFF_EXP,
+          warpInner: 0,
+          warpKnee: 1,
+          warpKneeAmount: 0,
+          displaceFrac: DISPLACE_FRAC,
+          caFrac: CA_FRAC,
+        });
+        usedGpu = true;
+        const g = globalThis as unknown as {__VP_LENS_PROFILE?: {buildMs: number; gpu: boolean}};
+        g.__VP_LENS_PROFILE = {buildMs: performance.now() - tGpu, gpu: true};
+      } catch (err) {
+        console.warn('[footer-lens] GPU loupe unavailable', err);
+        loupeGlFailed = true;
+        loupeGl?.destroy();
+        loupeGl = null;
+      }
+    }
+
+    const workDpr = (workPx / blitPx) * dpr;
+    if (!usedGpu && (rebuildDisc || !loupeScratch)) {
       const built = buildLensDisc(
         cache,
         lensR,
@@ -2524,10 +2589,10 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
         loupeScratch,
       );
       loupeScratch = built.scratch;
-      lastBuiltLx = lx;
-      lastBuiltLy = ly;
     }
-    const disc = loupeScratch.out;
+    lastBuiltLx = lx;
+    lastBuiltLy = ly;
+    const disc: CanvasImageSource = usedGpu ? loupeGl!.canvas : loupeScratch!.out;
 
     const cxDev = lx * dpr;
     const cyDev = ly * dpr;
@@ -2545,6 +2610,8 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     ctx.restore();
 
     paintGlassOverlay(ctx, lx, ly, lensR);
+    paintedLx = lx;
+    paintedLy = ly;
   };
 
   const redraw = () => {
@@ -2588,25 +2655,24 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       else syncGlass(null);
     },
     drawAt(lx, ly, active) {
-      if (
-        active &&
-        lastActive &&
-        cache != null &&
-        loupeScratch != null &&
-        Math.abs(lx - lastBuiltLx) < LOUPE_MOVE_EPS &&
-        Math.abs(ly - lastBuiltLy) < LOUPE_MOVE_EPS
-      ) {
+      if (!active || !cache) {
         lastLx = lx;
         lastLy = ly;
-        return;
-      }
-      lastLx = lx;
-      lastLy = ly;
-      lastActive = active;
-      if (!active || !cache) {
+        lastActive = active;
         lastBuiltLx = Number.NaN;
         lastBuiltLy = Number.NaN;
         drawIdle();
+        return;
+      }
+      const step = Math.hypot(lx - lastLx, ly - lastLy);
+      lastLx = lx;
+      lastLy = ly;
+      lastActive = true;
+      if (
+        step < HOLD_PX &&
+        Number.isFinite(paintedLx) &&
+        Math.hypot(lx - paintedLx, ly - paintedLy) < HOLD_PX
+      ) {
         return;
       }
       drawActive(lx, ly, true);
@@ -2621,6 +2687,8 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       if (glassHost) glassHost.replaceChildren();
       glassHost = null;
       glassKey = "";
+      loupeGl?.destroy();
+      loupeGl = null;
     },
     getDpr() {
       return dpr;

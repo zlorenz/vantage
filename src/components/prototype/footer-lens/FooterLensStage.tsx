@@ -10,9 +10,9 @@ import {createFooterLensEngine} from './footer-lens-engine';
 import {createGradientBgEngine} from './gradient-bg-engine';
 import './footer-lens.css';
 
-/** Between the floaty 0.1 follow and the near 1:1 0.4 follow. */
-const LERP = 0.25;
-const SETTLE_PX = 0.12;
+/** Fraction of the remaining gap closed per 60fps frame. Matches Monopo's 0.1 follow. */
+const FOLLOW = 0.1;
+const FRAME_MS = 1000 / 60;
 
 type FooterLensStageProps = {
   className?: string;
@@ -47,13 +47,29 @@ export function FooterLensStage({
     let targetY = 0;
     let smoothX = 0;
     let smoothY = 0;
-    let pointerActive = false;
+    /** Pointer is inside the hero, including the nav that covers its top edge. */
+    let tracking = false;
+    /** True after the first hover, so leaving the hero holds the last frame. */
+    let tracked = false;
     let running = false;
     let seeded = false;
     let raf = 0;
     let cssW = 1;
     let cssH = 1;
     let idleSettleFrames = 0;
+    let lastTick = 0;
+
+    const heroRect = () => wrap.getBoundingClientRect();
+
+    const pointInHero = (clientX: number, clientY: number) => {
+      const rect = heroRect();
+      return (
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
+      );
+    };
 
     const syncSize = () => {
       const rect = wrap.getBoundingClientRect();
@@ -73,13 +89,13 @@ export function FooterLensStage({
       }
       try {
         lens.setSize(cssW, cssH);
-        lens.drawAt(smoothX, smoothY, pointerActive);
+        lens.drawAt(smoothX, smoothY, tracked);
       } catch (err) {
         console.error('[footer-lens] lens resize failed', err);
       }
       // A single synchronous draw can be dropped before the canvas is
       // composited. Keep painting a few frames so the hero cannot stick blank.
-      if (!pointerActive) {
+      if (!tracked) {
         idleSettleFrames = Math.max(idleSettleFrames, 3);
         startLoop();
       }
@@ -95,77 +111,84 @@ export function FooterLensStage({
 
     const tick = () => {
       raf = 0;
+      const now = performance.now();
+      const dt = lastTick ? Math.min(48, now - lastTick) : FRAME_MS;
+      lastTick = now;
+      const follow = 1 - Math.pow(1 - FOLLOW, dt / FRAME_MS);
 
-      if (pointerActive) {
-        smoothX += (targetX - smoothX) * LERP;
-        smoothY += (targetY - smoothY) * LERP;
+      if (tracking) {
+        smoothX += (targetX - smoothX) * follow;
+        smoothY += (targetY - smoothY) * follow;
 
-        const dx = targetX - smoothX;
-        const dy = targetY - smoothY;
-        if (dx * dx + dy * dy < SETTLE_PX * SETTLE_PX) {
-          smoothX = targetX;
-          smoothY = targetY;
-        }
-
-        lens.setPointer({x: targetX, y: targetY});
         gradient?.setPointer({x: smoothX, y: smoothY}, cssW, cssH);
         gradient?.frame();
+        lens.setPointer({x: targetX, y: targetY});
         lens.drawAt(smoothX, smoothY, true);
 
         raf = requestAnimationFrame(tick);
         return;
       }
 
-      lens.setPointer(null);
+      // Before the first hover, paint the resting gradient a few frames so
+      // the hero cannot stick blank. After that, leaving the hero freezes.
+      if (tracked || idleSettleFrames <= 0) {
+        running = false;
+        return;
+      }
       gradient?.setPointer(null, cssW, cssH);
       gradient?.frame();
       lens.drawAt(smoothX, smoothY, false);
       idleSettleFrames -= 1;
-      if (idleSettleFrames > 0) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        running = false;
-      }
+      raf = requestAnimationFrame(tick);
     };
 
     const startLoop = () => {
       if (running) return;
+      lastTick = 0;
       running = true;
       raf = requestAnimationFrame(tick);
     };
 
-    const setTarget = (e: PointerEvent) => {
-      const rect = lensCanvas.getBoundingClientRect();
+    const freeze = () => {
+      if (!tracking) return;
+      tracking = false;
+      stopLoop();
+    };
+
+    const onWindowPointer = (e: PointerEvent) => {
+      if (!pointInHero(e.clientX, e.clientY)) {
+        freeze();
+        return;
+      }
+      const rect = heroRect();
       targetX = e.clientX - rect.left;
       targetY = e.clientY - rect.top;
-      if (!pointerActive) {
+      if (!tracked) {
         smoothX = targetX;
         smoothY = targetY;
       }
-      pointerActive = true;
+      tracked = true;
+      tracking = true;
       idleSettleFrames = 0;
       startLoop();
     };
 
-    const onPointerLeave = () => {
-      pointerActive = false;
-      idleSettleFrames = 24;
-      startLoop();
+    const onLeaveDocument = (e: PointerEvent) => {
+      if (e.relatedTarget) return;
+      freeze();
     };
 
     syncSize();
     const ro = new ResizeObserver(syncSize);
     ro.observe(wrap);
 
-    lensCanvas.addEventListener('pointermove', setTarget);
-    lensCanvas.addEventListener('pointerenter', setTarget);
-    lensCanvas.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('pointermove', onWindowPointer, true);
+    document.addEventListener('pointerleave', onLeaveDocument);
 
     return () => {
       ro.disconnect();
-      lensCanvas.removeEventListener('pointermove', setTarget);
-      lensCanvas.removeEventListener('pointerenter', setTarget);
-      lensCanvas.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('pointermove', onWindowPointer, true);
+      document.removeEventListener('pointerleave', onLeaveDocument);
       stopLoop();
       lens.destroy();
       gradient?.destroy();
