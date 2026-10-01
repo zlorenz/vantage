@@ -50,7 +50,7 @@ export async function AboutWhoWeAreSection() {
   );
 
   return (
-    <SectionWrapper fullBleed className="vp-about-tabs-section bg-white text-black">
+    <SectionWrapper fullBleed className="vp-about-tabs-section bg-vp-bg text-vp-text">
       <div className="vp-content-rail">
         <AboutTabbedPanelInteractive
           sectionId="who-we-are"
@@ -58,6 +58,7 @@ export async function AboutWhoWeAreSection() {
           eyebrow={t('whoWeAreEyebrow')}
           items={items}
           imagePosition="right"
+          theme="dark"
         />
       </div>
     </SectionWrapper>

@@ -1,4 +1,4 @@
-/* About How We Move — light-mode workflow accordion (see AboutHowWeMoveAccordion.tsx). */
+/* About How We Move — workflow accordion (see AboutHowWeMoveAccordion.tsx). */
 
 .vp-how-we-move__intro {
   display: grid;
@@ -24,7 +24,7 @@
   letter-spacing: var(--tracking-vp-uppercase);
   line-height: 1.4;
   text-transform: uppercase;
-  color: rgba(var(--vp-black-rgb), 0.55);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .vp-how-we-move__heading {
@@ -37,7 +37,7 @@
   letter-spacing: 0;
   text-transform: uppercase;
   text-align: left;
-  color: var(--vp-black);
+  color: var(--vp-text);
 }
 
 @media (min-width: 992px) {
@@ -48,11 +48,11 @@
 }
 
 .vp-how-we-move__list {
-  border-top: 1px solid rgba(var(--vp-black-rgb), 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .vp-how-we-move__item {
-  border-bottom: 1px solid rgba(var(--vp-black-rgb), 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .vp-how-we-move__item-heading {
@@ -89,14 +89,14 @@
 .vp-how-we-move__trigger-number {
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
-  color: rgba(var(--vp-black-rgb), 0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .vp-how-we-move__toggle {
   flex-shrink: 0;
   width: 2.25rem;
   height: 2.25rem;
-  color: rgba(var(--vp-black-rgb), 0.75);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .vp-how-we-move__toggle svg {
@@ -126,7 +126,7 @@
   font-size: clamp(1.125rem, 1.35vw, 1.375rem);
   font-weight: 400;
   line-height: 1.45;
-  color: var(--vp-black);
+  color: var(--vp-text);
 }
 
 .vp-how-we-move__bullets {
@@ -137,7 +137,7 @@
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.55;
-  color: rgba(var(--vp-black-rgb), 0.78);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .vp-how-we-move__bullets li {
@@ -154,7 +154,7 @@
   content: '–';
   position: absolute;
   left: 0;
-  color: rgba(var(--vp-black-rgb), 0.55);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .vp-how-we-move__subtitle-mark,
@@ -217,7 +217,7 @@
   .vp-how-we-move__list::after {
     content: '';
     height: 1px;
-    background: var(--vp-candidate-about-black-15);
+    background: var(--vp-candidate-brief-line);
   }
 
   .vp-how-we-move__item {
@@ -230,7 +230,7 @@
   .vp-how-we-move__item::before {
     content: '';
     height: 1px;
-    background: var(--vp-candidate-about-black-15);
+    background: var(--vp-candidate-brief-line);
   }
 
   .vp-how-we-move__trigger {
@@ -259,7 +259,7 @@
     padding-top: 2px;
     font-size: var(--vp-candidate-about-step-size);
     line-height: var(--vp-candidate-about-step-lh);
-    color: var(--vp-candidate-about-black-30);
+    color: rgba(255, 255, 255, 0.3);
   }
 
   .vp-how-we-move__trigger-number::after {
@@ -277,7 +277,7 @@
     display: block;
     width: 48px;
     height: 48px;
-    color: var(--vp-black);
+    color: var(--vp-text);
     background:
       linear-gradient(currentColor, currentColor) left top / 8px 1.5px no-repeat,
       linear-gradient(currentColor, currentColor) left top / 1.5px 8px no-repeat,
@@ -328,7 +328,7 @@
     font-size: var(--vp-candidate-about-body-size);
     font-weight: 700;
     line-height: var(--vp-candidate-about-body-lh);
-    color: var(--vp-candidate-about-black-70);
+    color: var(--vp-candidate-about-white-60);
   }
 
   .vp-how-we-move__bullets {
@@ -338,7 +338,7 @@
     font-size: var(--vp-candidate-about-body-size);
     font-weight: 400;
     line-height: var(--vp-candidate-about-body-lh);
-    color: var(--vp-candidate-about-black-70);
+    color: var(--vp-candidate-about-white-60);
   }
 
   .vp-how-we-move__bullets li {
