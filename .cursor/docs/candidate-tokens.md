@@ -386,3 +386,14 @@ Defined in `src/app/[locale]/contact/contact-page.css` inside `@media (min-width
 | `--vp-candidate-contact-icon-phone` | `28px` | Phone icon | `2371:24241` | pending | |
 | `--vp-candidate-contact-mark-width` | `327px` | Bottom corner marks | `2382:27070` | pending | Height 171. Opacity 0.15, luminosity. `#F37021` stays inside the SVG. |
 | `--vp-candidate-contact-bracket-inset` | `15px` | Hero bracket inset | `2371:23786` | pending | Top edge is header height + 13.5px, not scaled. |
+| `--vp-candidate-contact-section-pad` | `160px` | CTA block padding | `2439:5046` | pending | Contact-scoped. Does not change `--vp-section-y`. |
+| `--vp-candidate-contact-frame-width` | `1236px` | Dashed CTA frame | `2439:5047` | pending | Centered. Side margin 342px at 1920. |
+| `--vp-candidate-contact-frame-pad` | `30px` | same | same | pending | |
+| `--vp-candidate-contact-dash` | `5px` | Dashed stroke dash | `2439:5047` dash `[5, 2]` | pending | Gap is `--vp-candidate-contact-dash-gap` `2px`. Drawn as an SVG rect, stroke White/15 (`--vp-candidate-brief-line`). |
+| `--vp-candidate-contact-dash-gap` | `2px` | Dashed stroke gap | same | pending | |
+| `--vp-candidate-contact-inner-pad-block` | `60px` | Type column | `2439:5053` | pending | Inline pad 40px. |
+| `--vp-candidate-contact-inner-pad-inline` | `40px` | same | same | pending | |
+| `--vp-candidate-contact-copy-gap` | `24px` | Heading to body | `2439:5054` | pending | |
+| `--vp-candidate-contact-action-gap` | `60px` | Body to button | `2439:5053` | pending | |
+| `--vp-candidate-contact-body-width` | `632px` | CTA body measure | `2439:5056` | pending | Color reuses `--vp-candidate-about-white-50`, not `--vp-text-muted`. |
+| `--vp-candidate-contact-ruler-width` | `1074px` | Tick ruler clip | `2439:5071` | pending | Rulers reuse `CornerFrame` at its 4px inset. |

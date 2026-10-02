@@ -15,6 +15,7 @@ import { FooterSocials } from '@/components/layout/SiteFooter';
 import { CornerFrame } from '@/components/ui/CornerFrame';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
+import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import {
   aboutContactPageTitle,
@@ -34,6 +35,7 @@ import { CONTACT_PAGE_QUERY } from '@/sanity/queries/pages';
 import { SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import type { CONTACT_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { SiteSettings } from '@/types/sanity';
+import '@/components/about/about-tokens.css';
 import './contact-page.css';
 
 type Props = {
@@ -229,17 +231,47 @@ export default async function ContactPage({ params }: Props) {
         </div>
       </section>
 
-      <SectionWrapper borderTop fullBleed={true}>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h2 className="mb-4 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-            {t('campaignBriefHeading')}
-          </h2>
-          <p className="mb-6 max-w-[700px] font-light leading-relaxed text-vp-text-muted">
-            {t('campaignBriefBody')}
-          </p>
-          <VpButton href="/video-campaign-brief">{t('campaignBriefCta')}</VpButton>
+      <div className="vp-contact-cta-legacy">
+        <SectionWrapper borderTop fullBleed={true}>
+          <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
+            <h2 className="mb-4 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
+              {t('campaignBriefHeading')}
+            </h2>
+            <p className="mb-6 max-w-[700px] font-light leading-relaxed text-vp-text-muted">
+              {t('campaignBriefBody')}
+            </p>
+            <VpButton href="/video-campaign-brief">{t('campaignBriefCta')}</VpButton>
+          </div>
+        </SectionWrapper>
+      </div>
+
+      <section className="vp-contact-cta">
+        <div className="vp-contact-cta__frame">
+          <svg className="vp-contact-cta__dash" aria-hidden="true">
+            <rect />
+          </svg>
+          <span className="vp-contact-cta__corner vp-contact-cta__corner--tl" />
+          <span className="vp-contact-cta__corner vp-contact-cta__corner--tr" />
+          <span className="vp-contact-cta__corner vp-contact-cta__corner--bl" />
+          <span className="vp-contact-cta__corner vp-contact-cta__corner--br" />
+          <div className="vp-contact-cta__rulers">
+            <CornerFrame
+              variant="dark"
+              showBrackets={false}
+              rulers={{ top: true, bottom: true, labels: true }}
+            />
+          </div>
+          <div className="vp-contact-cta__inner">
+            <div className="vp-contact-cta__copy">
+              <h2 className="vp-contact-cta__heading">{t('campaignBriefHeading')}</h2>
+              <p className="vp-contact-cta__body">{t('campaignBriefBody')}</p>
+            </div>
+            <Link href="/video-campaign-brief" className="vp-contact-cta__button">
+              {t('campaignBriefCta')}
+            </Link>
+          </div>
         </div>
-      </SectionWrapper>
+      </section>
     </>
   );
 }

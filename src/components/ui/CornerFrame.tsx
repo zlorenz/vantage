@@ -35,6 +35,8 @@ type CornerFrameProps = {
   variant?: CornerFrameVariant;
   crosshair?: CornerFrameCrosshair;
   rulers?: CornerFrameRulers;
+  /** Set false to keep rulers or a crosshair without the corner brackets. */
+  showBrackets?: boolean;
   className?: string;
 };
 
@@ -87,6 +89,7 @@ export function CornerFrame({
   variant = 'dark',
   crosshair,
   rulers,
+  showBrackets = true,
   className = '',
 }: CornerFrameProps) {
   const showLabels = rulers?.labels ?? false;
@@ -102,10 +105,14 @@ export function CornerFrame({
       className={`vp-corner-frame vp-corner-frame--${variant}${className ? ` ${className}` : ''}`}
       aria-hidden="true"
     >
-      <span className="vp-corner-frame__bracket vp-corner-frame__bracket--tl" />
-      <span className="vp-corner-frame__bracket vp-corner-frame__bracket--tr" />
-      <span className="vp-corner-frame__bracket vp-corner-frame__bracket--bl" />
-      <span className="vp-corner-frame__bracket vp-corner-frame__bracket--br" />
+      {showBrackets ? (
+        <>
+          <span className="vp-corner-frame__bracket vp-corner-frame__bracket--tl" />
+          <span className="vp-corner-frame__bracket vp-corner-frame__bracket--tr" />
+          <span className="vp-corner-frame__bracket vp-corner-frame__bracket--bl" />
+          <span className="vp-corner-frame__bracket vp-corner-frame__bracket--br" />
+        </>
+      ) : null}
       {crosshair ? <span className="vp-corner-frame__crosshair" style={crosshairStyle} /> : null}
       {rulers?.top ? <Ruler edge="top" labels={showLabels} /> : null}
       {rulers?.bottom ? <Ruler edge="bottom" labels={showLabels} /> : null}
