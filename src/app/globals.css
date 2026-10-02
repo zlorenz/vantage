@@ -746,6 +746,11 @@
   cursor: pointer;
 }
 
+/* Black wordmark is desktop Contact only. Hidden everywhere else. */
+#header .vp-wordmark--on-light {
+  display: none;
+}
+
 .navbar .nav-link,
 .navbar a.nav-link {
   color: #fff;
@@ -1698,6 +1703,31 @@
   #header .navbar-toggler .navbar-toggler-icon {
     width: 1.75rem;
     height: 1.25rem;
+  }
+
+  /*
+   * Contact desktop only. Orange hero: black hamburger box, black wordmark,
+   * black 15% logo hairline. Open menu returns the shared orange box.
+   * Mobile rules above this media query are untouched.
+   */
+  #header.vp-header--contact .navbar-brand {
+    border-right-color: rgba(0, 0, 0, 0.15);
+  }
+
+  #header.vp-header--contact .vp-wordmark--on-dark {
+    display: none;
+  }
+
+  #header.vp-header--contact .vp-wordmark--on-light {
+    display: block;
+  }
+
+  #header.vp-header--contact .navbar-toggler {
+    background-color: var(--vp-black);
+  }
+
+  #header.vp-header--contact .navbar-toggler[aria-expanded='true'] {
+    background-color: var(--vp-orange);
   }
 }
 
