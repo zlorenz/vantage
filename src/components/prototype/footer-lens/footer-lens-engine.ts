@@ -99,6 +99,14 @@ const RIM_SOFT_FOCUS = true;
  */
 const LENS_R_FRAC = 0.213;
 /**
+ * Inner height of a Retina MacBook hero. The loupe is capped at the size it
+ * has there. Beyond that the mark keeps growing with the viewport, which made
+ * the disc much larger on a lower-res external display.
+ */
+const LENS_REF_VIEWPORT_CSS = 1000;
+/** Inset used when fitting the mark to the hero. */
+const LOGO_PAD_FRAC = 0.18;
+/**
  * Reveal-buffer supersample vs logo CSS size (× devicePixelRatio).
  * Sized so ~ZOOM_CENTER magnification still has spare source pixels on Retina.
  */
@@ -111,6 +119,33 @@ const REVEAL_SUPER = 1 / ZOOM_CENTER;
  * dark shards (e.g. the "A" negative-space triangle).
  */
 const ALPHA_SOLID = 128;
+
+function logoFit(cssW: number, cssH: number): {
+  scale: number;
+  logoW: number;
+  logoH: number;
+  logoX: number;
+  logoY: number;
+} {
+  const fitW = cssW * (1 - LOGO_PAD_FRAC * 2);
+  const fitH = cssH * (1 - LOGO_PAD_FRAC * 2);
+  const scale = Math.min(fitW / SYMBOL_VIEWBOX_W, fitH / SYMBOL_VIEWBOX_H);
+  const logoW = SYMBOL_VIEWBOX_W * scale;
+  const logoH = SYMBOL_VIEWBOX_H * scale;
+  return {
+    scale,
+    logoW,
+    logoH,
+    logoX: (cssW - logoW) / 2,
+    logoY: (cssH - logoH) / 2,
+  };
+}
+
+/** CSS radius. Never larger than the Retina MacBook hero; smaller viewports still shrink. */
+function lensRadiusCss(logoW: number): number {
+  const refLogoW = logoFit(LENS_REF_VIEWPORT_CSS, LENS_REF_VIEWPORT_CSS).logoW;
+  return Math.min(logoW, refLogoW) * LENS_R_FRAC;
+}
 
 type Cache = {
   logoX: number;
@@ -2131,19 +2166,9 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     if (!collage) return;
 
     const path = ensurePath();
-    const vbW = SYMBOL_VIEWBOX_W;
-    const vbH = SYMBOL_VIEWBOX_H;
     // Large symbol (still above About hero's 48vmin/28rem), dialed back 30%
     // from the near-fullscreen fit so the loupe has breathing room.
-    const padX = cssW * 0.18;
-    const padY = cssH * 0.18;
-    const fitW = cssW - padX * 2;
-    const fitH = cssH - padY * 2;
-    const scale = Math.min(fitW / vbW, fitH / vbH);
-    const logoW = vbW * scale;
-    const logoH = vbH * scale;
-    const logoX = (cssW - logoW) / 2;
-    const logoY = (cssH - logoH) / 2;
+    const {scale, logoW, logoH, logoX, logoY} = logoFit(cssW, cssH);
 
     const scaled = new Path2D();
     const m = new DOMMatrix().translate(logoX, logoY).scale(scale);
@@ -2255,7 +2280,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   const drawActive = (lx: number, ly: number, rebuildDisc: boolean) => {
     if (!cache) return;
     const { logoW } = cache;
-    const lensR = logoW * LENS_R_FRAC;
+    const lensR = lensRadiusCss(logoW);
     const blitPx = lensDiscDiameterPx(lensR, dpr);
     // Cap warp raster; blit still fills the full device-pixel disc.
     let workPx = Math.min(blitPx, MAX_LOUPE_WORK_PX);
@@ -2380,7 +2405,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     setGlassHost(host) {
       glassHost = host;
       glassKey = "";
-      if (lastActive && cache) syncGlass({x: lastLx, y: lastLy, r: cache.logoW * LENS_R_FRAC});
+      if (lastActive && cache) syncGlass({x: lastLx, y: lastLy, r: lensRadiusCss(cache.logoW)});
       else syncGlass(null);
     },
     drawAt(lx, ly, active) {
