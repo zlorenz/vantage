@@ -5,7 +5,7 @@
  * bar after ~150ms so slow RSC navigations feel responsive on first click.
  */
 
-import {usePathname} from '@/i18n/navigation';
+import {usePathname} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
 import {useTranslations} from 'next-intl';
 import './route-transition.css';
@@ -41,6 +41,9 @@ function isInternalNavigationAnchor(anchor: HTMLAnchorElement): boolean {
 }
 
 export function RouteTransitionOverlay() {
+  // next-intl's usePathname returns the route template (/portfolio/[slug]),
+  // which does not change between cases, so the bar would stay up until the
+  // failure timer. The App Router pathname includes the slug.
   const pathname = usePathname();
   const t = useTranslations('Navigation');
   const [pending, setPending] = useState(false);
