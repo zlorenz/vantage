@@ -32,12 +32,15 @@ import { CONTACT_PAGE_QUERY } from '@/sanity/queries/pages';
 import { SITE_SETTINGS_QUERY } from '@/sanity/queries/global';
 import type { CONTACT_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { SiteSettings } from '@/types/sanity';
+import './contact-page.css';
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const STATEMENT_EN = "Let's Craft Your Next Campaign";
+/** Explicit desktop line breaks. Spaces between the spans keep mobile wrap as one sentence. */
+const STATEMENT_EN = "Let's Craft\nYour Next\nCampaign";
+const STATEMENT_EN_LINES = STATEMENT_EN.split('\n');
 const STATEMENT_ZH = '一起打造你的下一个广告战役';
 
 /** text-xl (1.25rem) + 25% → 1.5625rem */
@@ -100,9 +103,6 @@ export default async function ContactPage({ params }: Props) {
 
   const t = await getTranslations('Contact');
 
-  const statement =
-    typedLocale === 'zh' ? STATEMENT_ZH : STATEMENT_EN;
-
   const email = siteSettings?.contactEmail?.trim();
   const whatsapp = siteSettings?.contactWhatsapp?.trim();
   const waLink = whatsapp ? whatsappHref(whatsapp) : '';
@@ -118,13 +118,20 @@ export default async function ContactPage({ params }: Props) {
 
       <section className="vp-contact-hero relative flex min-h-svh flex-col bg-vp-orange text-black">
         {/*
-          Title is absolutely centered on the full viewport so navbar clearance /
-          bottom-bar height don't shift it downward. Size targets the mockup
-          (120px / 89px / 0 tracking at large desktop): 7.5rem max, ~0.74 lh.
+          Mobile: absolutely centered, max-w 16ch, natural wrap.
+          Desktop (contact-page.css, min-width 768px): normal flow, three
+          explicit EN lines, 120px / 0.9 at 1920. ZH stays one string and wraps.
         */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-4">
-          <h1 className="pointer-events-auto m-0 max-w-[16ch] text-center font-vp-heading text-[clamp(2.75rem,8vw,7.5rem)] font-bold uppercase leading-[0.74] tracking-normal text-black">
-            {statement}
+        <div className="vp-contact-hero__title-slot pointer-events-none absolute inset-0 flex items-center justify-center px-4">
+          <h1 className="vp-contact-hero__title pointer-events-auto m-0 max-w-[16ch] text-center font-vp-heading text-[clamp(2.75rem,8vw,7.5rem)] font-bold uppercase leading-[0.74] tracking-normal text-black">
+            {typedLocale === 'zh'
+              ? STATEMENT_ZH
+              : STATEMENT_EN_LINES.map((line, index) => (
+                  <span key={line} className="vp-contact-hero__line">
+                    {line}
+                    {index < STATEMENT_EN_LINES.length - 1 ? ' ' : null}
+                  </span>
+                ))}
           </h1>
         </div>
 

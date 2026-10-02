@@ -362,3 +362,18 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-film-image-width` | `237px` | Poster inside a film frame | `2466:28704` | pending | 30px pad on the 297px frame. |
 | `--vp-candidate-about-film-image-height` | `320px` | same | same | pending | |
 | `--vp-candidate-about-film-dim` | `0.4` | Non-center film frames | `opacity-40` on `2466:28697` | pending | |
+
+## Contact page — desktop (pending)
+
+Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2371-23781  
+Defined in `src/app/[locale]/contact/contact-page.css` inside `@media (min-width: 768px)` only. Mobile Contact is unchanged. Special Gothic tracking stays **0**. Values below are the 1920 artboard numbers; layout multiplies them by `min(100vw, 1920px) / 1920`.
+
+**Reuse (no new name):** `--vp-orange` hero fill; `--font-vp-heading` + `--font-vp-heading-weight` + `font-synthesis: none`.
+
+| Candidate name | Value | Used in | Source | Status | Notes |
+|---|---|---|---|---|---|
+| `--vp-candidate-contact-hero-title-size` | `120px` | Contact H1, desktop | `2371:23837` | pending | Cap at 1920. Line breaks are explicit for EN only. |
+| `--vp-candidate-contact-hero-title-lh` | `0.9` | same | same, line-height 90% | pending | Paired with `text-box-trim: trim-both` / `text-box-edge: cap alphabetic` so the box is ~302px at 1920. |
+| `--vp-candidate-contact-hero-title-top` | `160px` | H1 offset from hero top | `2371:23837` y | pending | |
+| `--vp-candidate-contact-hero-title-width` | `1860px` | H1 measure | `2371:23837` width | pending | 30px side inset at 1920. |
+| `--vp-candidate-contact-hero-pad-inline` | `30px` | Hero side inset | same | pending | |

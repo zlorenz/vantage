@@ -1,0 +1,63 @@
+/*
+ * Contact page, desktop Figma frame 2371:23781.
+ * Every rule is gated to min-width 768px. Mobile Contact is the pre-existing
+ * Tailwind layout and must not change.
+ *
+ * Scale: pixel-exact when the viewport is 1920 wide. Between 768 and 1920
+ * the 1920 measurements scale by min(100vw, 1920px) / 1920px. Above 1920
+ * the measured values cap and the content centers. 1px strokes stay 1px.
+ */
+
+@media (min-width: 768px) {
+  section.vp-contact-hero {
+    --vp-contact-scale: calc(min(100vw, 1920px) / 1920px);
+    --vp-candidate-contact-hero-title-size: 120px;
+    --vp-candidate-contact-hero-title-lh: 0.9;
+    --vp-candidate-contact-hero-title-top: 160px;
+    --vp-candidate-contact-hero-title-width: 1860px;
+    --vp-candidate-contact-hero-pad-inline: 30px;
+    min-height: max(100svh, 56.25vw);
+  }
+
+  /*
+   * Drop the viewport-centered absolute title. The box sits in normal flow,
+   * 160px from the hero top at 1920, 1860 wide, centered.
+   */
+  section.vp-contact-hero .vp-contact-hero__title-slot {
+    position: static;
+    inset: auto;
+    display: block;
+    height: auto;
+    padding: calc(var(--vp-candidate-contact-hero-title-top) * var(--vp-contact-scale))
+      calc(var(--vp-candidate-contact-hero-pad-inline) * var(--vp-contact-scale))
+      0;
+    pointer-events: none;
+  }
+
+  section.vp-contact-hero .vp-contact-hero__title {
+    width: 100%;
+    max-width: calc(var(--vp-candidate-contact-hero-title-width) * var(--vp-contact-scale));
+    margin-inline: auto;
+    font-size: calc(var(--vp-candidate-contact-hero-title-size) * var(--vp-contact-scale));
+    font-weight: var(--font-vp-heading-weight);
+    font-synthesis: none;
+    line-height: var(--vp-candidate-contact-hero-title-lh);
+    letter-spacing: 0;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+
+  section.vp-contact-hero .vp-contact-hero__line {
+    display: block;
+  }
+
+  /*
+   * Cap-height trim is 22px shorter than 3 * 120 * 0.9 (324 to 302) at 1920.
+   * Split that difference across the block edges when the browser lacks trim.
+   */
+  @supports not (text-box-trim: trim-both) {
+    section.vp-contact-hero .vp-contact-hero__title {
+      margin-block: calc(-11px * var(--vp-contact-scale));
+    }
+  }
+}
