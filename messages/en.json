@@ -198,5 +198,11 @@
   },
   "Portfolio": {
     "noVideo": "No video embed found for this portfolio item."
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "body": "This page doesn't exist, or the link no longer works.",
+    "home": "Back home",
+    "work": "View our work"
   }
 }

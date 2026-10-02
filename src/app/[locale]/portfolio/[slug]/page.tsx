@@ -19,6 +19,7 @@ import { resolveEntryDocumentTitle } from '@/lib/display-titles';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { getPhraseMap, getPhraseRecord } from '@/lib/phrase-book';
 import { portfolioEntryMetadata } from '@/lib/metadata';
+import { loadPortfolioEntry } from '@/lib/portfolio-entry';
 import { decodePathSlug, expandSlugParam, canonicalSlugForLocale } from '@/lib/path-slug';
 import { sanityClient } from '@/lib/sanity';
 import {
@@ -88,7 +89,7 @@ export default async function PortfolioEntryPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
   const [entryResult, phrases, phraseRecord, organization] = await Promise.all([
-    sanityFetch({query: PORTFOLIO_ENTRY_QUERY, params: {slug}}),
+    loadPortfolioEntry(rawSlug),
     getPhraseMap(),
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
