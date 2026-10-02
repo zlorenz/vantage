@@ -125,3 +125,19 @@
   height: var(--vp-btn-arrow-size);
   color: #000;
 }
+
+/* Phone: match the mobile Send a Brief bar (80px, down from the 100px
+ * desktop bar) and keep each button from spanning the viewport. */
+@media (max-width: 575.98px) {
+  .vp-not-found__actions {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .vp-not-found__action {
+    flex: 0 0 auto;
+    width: min(100%, 20rem);
+    height: 5rem;
+  }
+}
