@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * About hero — full-viewport symbol loupe (same stage as /prototype/footer-lens).
+ * About hero — full-viewport symbol loupe.
  * Keeps the statement block below the fold on initial page load.
  */
 

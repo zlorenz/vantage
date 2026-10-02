@@ -45,10 +45,6 @@ export const routing = defineRouting({
       en: '/prototype/carousel',
       zh: '/prototype/carousel',
     },
-    '/prototype/footer-lens': {
-      en: '/prototype/footer-lens',
-      zh: '/prototype/footer-lens',
-    },
     '/portfolio/[slug]': {
       en: '/portfolio/[slug]',
       zh: '/案例/[slug]',

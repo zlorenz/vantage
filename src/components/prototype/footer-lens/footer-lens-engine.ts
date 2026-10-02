@@ -1,6 +1,5 @@
 /**
- * Symbol loupe — Canvas 2D approximation of monopo.london's Pixi stack.
- * Prototype for the About hero: large Vantage mark as a collage canvas.
+ * About hero symbol loupe. The disc is a WebGL warp of the photo collage.
  * 1. Inline glass symbol (crisp edge + inner rim) — the loupe canvas only draws the disc
  * 2. Photo-collage disc (inside lens) with displacement warp + rim RGB split
  * 3. Glass rim overlay
@@ -79,20 +78,6 @@ const ZOOM_FALLOFF_EXP = 9;
 const DISPLACE_FRAC = 0.016;
 /** Soft chromatic split at the outer rim (fraction of lensR). */
 const CA_FRAC = 0.01;
-/**
- * Soft-focus onset as fraction of lensR — blur only in this outer band,
- * aligned with the alpha feather at the disc boundary.
- */
-const EDGE_BLUR_START = 0.82;
-/** Base blur radius in CSS px; multiplied by dpr for the device-pixel disc. */
-const EDGE_BLUR_CSS_PX = 5;
-/**
- * 1 = the previous full rim treatment (blur replaces the sharp photo at the
- * edge). 0.5 is half that blend, with the sharp collage still showing through.
- */
-const RIM_SOFT_FOCUS_STRENGTH = 0.5;
-/** Set false to draw the sharp collage only, with no rim blur. */
-const RIM_SOFT_FOCUS = true;
 /**
  * Lens radius as fraction of symbol width.
  * Slightly larger than the wordmark loupe so the collage reads on a square mark.
@@ -467,12 +452,6 @@ const CUSP_GAP_VB = { x0: 44.0, x1: 44.7, y: 33.16 } as const;
  * stays out of allowanceMask.
  */
 const CUSP_SEAL_HALF_VB = 0.35;
-/**
- * Master switch for the additive hole-allowance layer. Set false to no-op the
- * fallback (Path2D hard-hole clip only) without deleting code — used to verify
- * that disabling restores pre-allowance behavior.
- */
-const HOLE_ALLOWANCE_ENABLED = true;
 /**
  * Build-time mark|hole seam shelf width in reveal texels. Feeds bilinear
  * neighborhoods across the Path2D cut without reading as a second ring.
@@ -1012,26 +991,6 @@ function buildCounterBleed(
   return allowance;
 }
 
-/** Nearest-texel geometric occupancy (O(1)). */
-function sampleGeomMaskNearest(
-  geomMask: Uint8Array,
-  dw: number,
-  dh: number,
-  sx: number,
-  sy: number,
-): boolean {
-  if (sx < 0 || sy < 0 || sx >= dw || sy >= dh) return false;
-  const ix = Math.min(dw - 1, Math.max(0, Math.floor(sx)));
-  const iy = Math.min(dh - 1, Math.max(0, Math.floor(sy)));
-  return geomMask[iy * dw + ix]! >= 128;
-}
-
-/**
- * Morphological close on binary alpha (dilate then erode) to seal hairline gaps.
- * The "A" counter cusp is 1–2px at source; without this, exterior flood can leak
- * through the pinch and leave a magnified dark triangle shard in the loupe.
- * Spreads neighbor RGB when dilating so sealed texels aren't black.
- */
 function morphCloseAlpha(
   data: Uint8ClampedArray,
   w: number,
@@ -1111,373 +1070,6 @@ function morphCloseAlpha(
   }
 }
 
-/**
- * Morph-close only inside the solid bbox (+ radius margin). Full-frame
- * dilate/erode was ~13ms/frame on the 416² pad; letterform usually occupies
- * a fraction of that.
- */
-function morphCloseAlphaBounded(
-  data: Uint8ClampedArray,
-  w: number,
-  h: number,
-  radius: number,
-  tmp: Uint8ClampedArray,
-  knownBBox?: { minX: number; minY: number; maxX: number; maxY: number } | null,
-): void {
-  if (radius < 1) return;
-  let minX = w;
-  let minY = h;
-  let maxX = -1;
-  let maxY = -1;
-  if (
-    knownBBox &&
-    knownBBox.maxX >= knownBBox.minX &&
-    knownBBox.maxY >= knownBBox.minY
-  ) {
-    minX = knownBBox.minX;
-    minY = knownBBox.minY;
-    maxX = knownBBox.maxX;
-    maxY = knownBBox.maxY;
-  } else {
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        if (data[(y * w + x) * 4 + 3]! < ALPHA_SOLID) continue;
-        if (x < minX) minX = x;
-        if (y < minY) minY = y;
-        if (x > maxX) maxX = x;
-        if (y > maxY) maxY = y;
-      }
-    }
-  }
-  if (maxX < 0) return;
-  let x0 = Math.max(1, minX - radius);
-  let y0 = Math.max(1, minY - radius);
-  let x1 = Math.min(w - 2, maxX + radius);
-  let y1 = Math.min(h - 2, maxY + radius);
-
-  const neigh: ReadonlyArray<readonly [number, number]> = [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-    [0, 1],
-    [-1, -1],
-    [1, -1],
-    [-1, 1],
-    [1, 1],
-  ];
-
-  const copyBBox = (src: Uint8ClampedArray, dst: Uint8ClampedArray) => {
-    for (let y = y0; y <= y1; y++) {
-      const row = y * w;
-      for (let x = x0; x <= x1; x++) {
-        const i = (row + x) * 4;
-        dst[i] = src[i]!;
-        dst[i + 1] = src[i + 1]!;
-        dst[i + 2] = src[i + 2]!;
-        dst[i + 3] = src[i + 3]!;
-      }
-    }
-  };
-
-  const dilate = (src: Uint8ClampedArray, dst: Uint8ClampedArray) => {
-    copyBBox(src, dst);
-    for (let y = y0; y <= y1; y++) {
-      for (let x = x0; x <= x1; x++) {
-        const i = (y * w + x) * 4;
-        if (src[i + 3]! >= ALPHA_SOLID) continue;
-        let r = 0;
-        let g = 0;
-        let b = 0;
-        let n = 0;
-        for (const [dx, dy] of neigh) {
-          const j = ((y + dy) * w + (x + dx)) * 4;
-          if (src[j + 3]! < ALPHA_SOLID) continue;
-          r += src[j]!;
-          g += src[j + 1]!;
-          b += src[j + 2]!;
-          n++;
-        }
-        if (n === 0) continue;
-        dst[i] = Math.round(r / n);
-        dst[i + 1] = Math.round(g / n);
-        dst[i + 2] = Math.round(b / n);
-        dst[i + 3] = 255;
-      }
-    }
-  };
-
-  const erode = (src: Uint8ClampedArray, dst: Uint8ClampedArray) => {
-    copyBBox(src, dst);
-    for (let y = y0; y <= y1; y++) {
-      for (let x = x0; x <= x1; x++) {
-        const i = (y * w + x) * 4;
-        if (src[i + 3]! < ALPHA_SOLID) continue;
-        let solid = true;
-        for (const [dx, dy] of neigh) {
-          const j = ((y + dy) * w + (x + dx)) * 4;
-          if (src[j + 3]! < ALPHA_SOLID) {
-            solid = false;
-            break;
-          }
-        }
-        if (solid) continue;
-        dst[i] = 0;
-        dst[i + 1] = 0;
-        dst[i + 2] = 0;
-        dst[i + 3] = 0;
-      }
-    }
-  };
-
-  for (let k = 0; k < radius; k++) {
-    dilate(data, tmp);
-    x0 = Math.max(1, x0 - 1);
-    y0 = Math.max(1, y0 - 1);
-    x1 = Math.min(w - 2, x1 + 1);
-    y1 = Math.min(h - 2, y1 + 1);
-    copyBBox(tmp, data);
-  }
-  for (let k = 0; k < radius; k++) {
-    erode(data, tmp);
-    copyBBox(tmp, data);
-  }
-}
-
-/**
- * Bilinear sample. Out-of-bounds → 0 (no clamp-to-edge).
- * Clamp would repeat the logo's top/bottom rows into infinite vertical streaks
- * when the lens / warp samples past the wordmark buffer.
- */
-function sampleChannelBilinear(
-  data: Uint8ClampedArray,
-  dw: number,
-  dh: number,
-  sx: number,
-  sy: number,
-  channel: 0 | 1 | 2 | 3,
-): number {
-  if (sx < 0 || sy < 0 || sx >= dw - 1e-6 || sy >= dh - 1e-6) return 0;
-
-  const x0 = Math.floor(sx);
-  const y0 = Math.floor(sy);
-  const x1 = Math.min(dw - 1, x0 + 1);
-  const y1 = Math.min(dh - 1, y0 + 1);
-  const fx = sx - x0;
-  const fy = sy - y0;
-  const i00 = (y0 * dw + x0) * 4 + channel;
-  const i10 = (y0 * dw + x1) * 4 + channel;
-  const i01 = (y1 * dw + x0) * 4 + channel;
-  const i11 = (y1 * dw + x1) * 4 + channel;
-  const v0 = data[i00]! * (1 - fx) + data[i10]! * fx;
-  const v1 = data[i01]! * (1 - fx) + data[i11]! * fx;
-  return v0 * (1 - fy) + v1 * fy;
-}
-
-/** One bilinear tap for R,G,B (avoids three separate channel walks). */
-function sampleRgbBilinear(
-  data: Uint8ClampedArray,
-  dw: number,
-  dh: number,
-  sx: number,
-  sy: number,
-): [number, number, number] {
-  if (sx < 0 || sy < 0 || sx >= dw - 1e-6 || sy >= dh - 1e-6) {
-    return [0, 0, 0];
-  }
-  const x0 = Math.floor(sx);
-  const y0 = Math.floor(sy);
-  const x1 = Math.min(dw - 1, x0 + 1);
-  const y1 = Math.min(dh - 1, y0 + 1);
-  const fx = sx - x0;
-  const fy = sy - y0;
-  const w00 = (1 - fx) * (1 - fy);
-  const w10 = fx * (1 - fy);
-  const w01 = (1 - fx) * fy;
-  const w11 = fx * fy;
-  const i00 = (y0 * dw + x0) * 4;
-  const i10 = (y0 * dw + x1) * 4;
-  const i01 = (y1 * dw + x0) * 4;
-  const i11 = (y1 * dw + x1) * 4;
-  return [
-    data[i00]! * w00 + data[i10]! * w10 + data[i01]! * w01 + data[i11]! * w11,
-    data[i00 + 1]! * w00 +
-      data[i10 + 1]! * w10 +
-      data[i01 + 1]! * w01 +
-      data[i11 + 1]! * w11,
-    data[i00 + 2]! * w00 +
-      data[i10 + 2]! * w10 +
-      data[i01 + 2]! * w01 +
-      data[i11 + 2]! * w11,
-  ];
-}
-
-/**
- * Real-photo sampling (warped coverage stays).
- *
- * No-data ground truth = reveal SOURCE ALPHA (or sample OOB → a=0), NOT
- * luminance. Dark hair / frames / fabric / shadow are real photo and must
- * stay opaque. Transparent only when the reveal has no alpha there, or the
- * warped sample falls outside the buffer.
- */
-/** CA: ignore near-black channel taps (quality only — not a coverage gate). */
-const PHOTO_EDGE_MIN_LUMA = 40;
-/**
- * Thin loupe-space alpha soften at the exterior silhouette (own RGB kept).
- * Short on purpose — just AA softness, not a visible colored ring.
- */
-const EDGE_ALPHA_FEATHER_PX = 2;
-
-type WarpedSample = { r: number; g: number; b: number; a: number };
-
-/**
- * Warped-sample coverage + color + alpha.
- *
- * Coverage position: WARPED (geom at warped sample — silhouette bulges).
- * Presence: reveal alpha at the sample (bilinear). OOB bilinear → 0 → null.
- * Never reject in-bounds texels for being dark.
- */
-function sampleWarpedMark(
-  src: Uint8ClampedArray,
-  geomMask: Uint8Array,
-  revealDw: number,
-  revealDh: number,
-  sx: number,
-  sy: number,
-): WarpedSample | null {
-  if (!sampleGeomMaskNearest(geomMask, revealDw, revealDh, sx, sy)) {
-    return null;
-  }
-  // OOB returns 0 from sampleChannelBilinear — true out-of-bounds / no data.
-  const aTap = sampleChannelBilinear(src, revealDw, revealDh, sx, sy, 3);
-  if (aTap < 1) return null;
-  const [r, g, b] = sampleRgbBilinear(src, revealDw, revealDh, sx, sy);
-  return { r, g, b, a: Math.min(255, Math.round(aTap)) };
-}
-
-/**
- * Additive hole-bleed sample — NO geomMask gate. Source is already masked to
- * real counter overlaps by buildCounterBleed. Only used when
- * sampleWarpedMark already returned null.
- */
-function sampleHoleAllowance(
-  src: Uint8ClampedArray,
-  revealDw: number,
-  revealDh: number,
-  sx: number,
-  sy: number,
-): WarpedSample | null {
-  const aTap = sampleChannelBilinear(src, revealDw, revealDh, sx, sy, 3);
-  if (aTap < 1) return null;
-  const [r, g, b] = sampleRgbBilinear(src, revealDw, revealDh, sx, sy);
-  return { r, g, b, a: Math.min(255, Math.round(aTap)) };
-}
-
-/**
- * Thin exterior alpha soften: fade alpha only, keep each texel’s own RGB.
- * Seeds from border-connected transparent (not enclosed counters).
- */
-function featherExteriorAlphaOnly(
-  rgba: Uint8ClampedArray,
-  w: number,
-  h: number,
-  featherPx: number,
-): void {
-  if (featherPx < 1) return;
-  const n = w * h;
-  const exteriorEmpty = new Uint8Array(n);
-  const q = new Int32Array(n);
-  let qh = 0;
-  let qt = 0;
-  const trySeed = (x: number, y: number) => {
-    const i = y * w + x;
-    if (rgba[i * 4 + 3]! >= 128) return;
-    if (exteriorEmpty[i]!) return;
-    exteriorEmpty[i] = 1;
-    q[qt++] = i;
-  };
-  for (let x = 0; x < w; x++) {
-    trySeed(x, 0);
-    trySeed(x, h - 1);
-  }
-  for (let y = 0; y < h; y++) {
-    trySeed(0, y);
-    trySeed(w - 1, y);
-  }
-  while (qh < qt) {
-    const i = q[qh++]!;
-    const x = i % w;
-    const y = (i / w) | 0;
-    for (let oy = -1; oy <= 1; oy++) {
-      for (let ox = -1; ox <= 1; ox++) {
-        if (ox === 0 && oy === 0) continue;
-        const nx = x + ox;
-        const ny = y + oy;
-        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-        const ni = ny * w + nx;
-        if (exteriorEmpty[ni]!) continue;
-        if (rgba[ni * 4 + 3]! >= 128) continue;
-        exteriorEmpty[ni] = 1;
-        q[qt++] = ni;
-      }
-    }
-  }
-
-  const dist = new Uint8Array(n);
-  dist.fill(255);
-  qh = 0;
-  qt = 0;
-  for (let i = 0; i < n; i++) {
-    if (!exteriorEmpty[i]!) continue;
-    dist[i] = 0;
-    q[qt++] = i;
-  }
-  const cap = featherPx + 1;
-  while (qh < qt) {
-    const i = q[qh++]!;
-    const d = dist[i]!;
-    if (d >= cap) continue;
-    const x = i % w;
-    const y = (i / w) | 0;
-    const nd = d + 1;
-    for (let oy = -1; oy <= 1; oy++) {
-      for (let ox = -1; ox <= 1; ox++) {
-        if (ox === 0 && oy === 0) continue;
-        const nx = x + ox;
-        const ny = y + oy;
-        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-        const ni = ny * w + nx;
-        if (nd >= dist[ni]!) continue;
-        dist[ni] = nd;
-        q[qt++] = ni;
-      }
-    }
-  }
-  for (let i = 0; i < n; i++) {
-    const d = dist[i]!;
-    if (d === 0 || d > featherPx) continue;
-    const p = i * 4;
-    const a = rgba[p + 3]!;
-    if (a < 1) continue;
-    const t = d / featherPx;
-    const cover = t * t * (3 - 2 * t);
-    rgba[p + 3] = Math.round(a * cover);
-  }
-}
-
-/**
- * One continuous zoom curve over the full radius.
- * u^N keeps the middle nearly flat and pushes the bend toward the rim.
- */
-function zoomAt(u: number): number {
-  const t = Math.min(1, Math.max(0, u));
-  return ZOOM_CENTER + (ZOOM_EDGE - ZOOM_CENTER) * Math.pow(t, ZOOM_FALLOFF_EXP);
-}
-
-/** Displace / CA weight — same continuous family as zoom. */
-function rimWeight(u: number): number {
-  const t = Math.min(1, Math.max(0, u));
-  return Math.pow(t, ZOOM_FALLOFF_EXP);
-}
 
 /**
  * Device-pixel diameter for the loupe disc. Always even so the circle center
@@ -1498,442 +1090,6 @@ const MAX_LOUPE_WORK_PX = 480;
 /** Sub-pixel holds skip the blit. Kept well under the follow step so the ease can finish. */
 const HOLD_PX = 0.02;
 
-type LoupeScratch = {
-  size: number;
-  pad: number;
-  sharp: HTMLCanvasElement;
-  opaque: HTMLCanvasElement;
-  opaqueRaster: HTMLCanvasElement;
-  sharpRaster: HTMLCanvasElement;
-  blurredPadded: HTMLCanvasElement;
-  revealBlurred: HTMLCanvasElement;
-  out: HTMLCanvasElement;
-  sharpImg: ImageData;
-  opaqueImg: ImageData;
-  dilatePrev: Uint8ClampedArray;
-};
-
-function makeCanvas(w: number, h: number): HTMLCanvasElement {
-  const c = document.createElement("canvas");
-  c.width = w;
-  c.height = h;
-  return c;
-}
-
-function ensureLoupeScratch(
-  scratch: LoupeScratch | null,
-  size: number,
-  pad: number,
-): LoupeScratch {
-  const paddedSize = size + pad * 2;
-  if (
-    scratch &&
-    scratch.size === size &&
-    scratch.pad === pad &&
-    scratch.sharp.width === size &&
-    scratch.opaque.width === paddedSize
-  ) {
-    return scratch;
-  }
-
-  const sharp = makeCanvas(size, size);
-  const opaque = makeCanvas(paddedSize, paddedSize);
-  const sharpCtx = sharp.getContext("2d")!;
-  const opaqueCtx = opaque.getContext("2d")!;
-  return {
-    size,
-    pad,
-    sharp,
-    opaque,
-    opaqueRaster: makeCanvas(paddedSize, paddedSize),
-    sharpRaster: makeCanvas(size, size),
-    blurredPadded: makeCanvas(paddedSize, paddedSize),
-    revealBlurred: makeCanvas(size, size),
-    out: makeCanvas(size, size),
-    sharpImg: sharpCtx.createImageData(size, size),
-    opaqueImg: opaqueCtx.createImageData(paddedSize, paddedSize),
-    dilatePrev: new Uint8ClampedArray(paddedSize * paddedSize * 4),
-  };
-}
-
-/**
- * Build the inside-lens disc at (optionally capped) device-pixel resolution.
- * Soft-focus is applied after blur so alpha never pollutes the filter.
- *
- * Coverage position: WARPED. Geom occupancy and color are both taken at the
- * fully warped sample. No-data fringe feathers alpha toward transparent —
- * never a forced-opaque synthetic fill. No identity fallback.
- */
-function buildLensDisc(
-  cache: Cache,
-  lensR: number,
-  lx: number,
-  ly: number,
-  dpr: number,
-  size: number,
-  scratchIn: LoupeScratch | null,
-): { disc: HTMLCanvasElement; scratch: LoupeScratch } {
-  const blurPx = Math.max(1, EDGE_BLUR_CSS_PX * dpr);
-  // Pad past the blur kernel so rim samples never see empty transparent black.
-  const pad = Math.ceil(blurPx * 2) + 2;
-  const paddedSize = size + pad * 2;
-  const scratch = ensureLoupeScratch(scratchIn, size, pad);
-
-  const {
-    revealData,
-    revealDw,
-    revealDh,
-    logoX,
-    logoY,
-    logoW,
-    logoH,
-    geomMask,
-    holeAllowanceData,
-  } = cache;
-  const src = revealData.data;
-  const holeSrc = holeAllowanceData.data;
-  const scaleX = revealDw / logoW;
-  const scaleY = revealDh / logoH;
-  const cx = size / 2;
-  const cy = size / 2;
-  const radiusPx = size / 2;
-  const discCss = size / dpr;
-  const originX = lx - discCss / 2;
-  const originY = ly - discCss / 2;
-
-  const sharpCtx = scratch.sharp.getContext("2d")!;
-  const opaqueCtx = scratch.opaque.getContext("2d")!;
-  const sharpData = scratch.sharpImg.data;
-  const opaqueData = scratch.opaqueImg.data;
-  sharpData.fill(0);
-  opaqueData.fill(0);
-
-  const halfCss = discCss / 2;
-  let solidMinX = paddedSize;
-  let solidMinY = paddedSize;
-  let solidMaxX = -1;
-  let solidMaxY = -1;
-
-  const sampleR = radiusPx + pad;
-  const sampleR2 = sampleR * sampleR;
-  const centerPx = pad + cx;
-  const centerPy = pad + cy;
-  for (let py = 0; py < paddedSize; py++) {
-    const dyPx = py + 0.5 - centerPy;
-    const dy2 = dyPx * dyPx;
-    if (dy2 > sampleR2) continue;
-    const xSpan = Math.sqrt(sampleR2 - dy2);
-    const px0 = Math.max(0, Math.floor(centerPx - xSpan));
-    const px1 = Math.min(paddedSize - 1, Math.ceil(centerPx + xSpan));
-    for (let px = px0; px <= px1; px++) {
-      const dxPx = px + 0.5 - centerPx;
-      const distPxRaw = Math.hypot(dxPx, dyPx);
-      if (distPxRaw > sampleR) continue;
-
-      // Clamp sampling radius for the pad ring — extend real edge color outward.
-      const distPx = Math.min(distPxRaw, radiusPx);
-      const dxCss = dxPx / dpr;
-      const dyCss = dyPx / dpr;
-      const distRawCss = distPxRaw / dpr;
-      const dist = distPx / dpr;
-      const t = Math.min(1, dist / lensR);
-      const inv = distRawCss > 1e-6 ? 1 / distRawCss : 0;
-      const ux = dxCss * inv;
-      const uy = dyCss * inv;
-
-      const zoom = zoomAt(t);
-      const rw = rimWeight(t);
-      // Coverage position: WARPED. Real photo at source alpha; no-data →
-      // transparent (page shows through — no colored feather halo).
-      const sampleDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
-      const sampleXCss = halfCss + ux * sampleDist;
-      const sampleYCss = halfCss + uy * sampleDist;
-      const logoCssX = originX + sampleXCss;
-      const logoCssY = originY + sampleYCss;
-      const sx0 = (logoCssX - logoX) * scaleX;
-      const sy0 = (logoCssY - logoY) * scaleY;
-      const markSample = sampleWarpedMark(
-        src,
-        geomMask,
-        revealDw,
-        revealDh,
-        sx0,
-        sy0,
-      );
-      const sampled =
-        markSample ??
-        (HOLE_ALLOWANCE_ENABLED
-          ? sampleHoleAllowance(holeSrc, revealDw, revealDh, sx0, sy0)
-          : null);
-      if (!sampled) continue;
-      let { r, g, b, a: sampleA } = sampled;
-      // Hole-bleed samples must tap the hole buffer: the reveal is black past
-      // its counter shelf, which tinted overlap faces green along the seam.
-      const caSrc = markSample ? src : holeSrc;
-      const caOff = lensR * CA_FRAC * rw;
-      // CA only on fully opaque real samples — soft fringe stays single-channel.
-      if (caOff > 1e-6 && sampleA >= 250) {
-        const sxR = (logoCssX + ux * caOff - logoX) * scaleX;
-        const syR = (logoCssY + uy * caOff - logoY) * scaleY;
-        if (
-          sampleChannelBilinear(caSrc, revealDw, revealDh, sxR, syR, 3) >=
-          ALPHA_SOLID
-        ) {
-          const rTap = sampleChannelBilinear(
-            caSrc,
-            revealDw,
-            revealDh,
-            sxR,
-            syR,
-            0,
-          );
-          if (rTap >= PHOTO_EDGE_MIN_LUMA) r = rTap;
-        }
-        const sxB = (logoCssX - ux * caOff - logoX) * scaleX;
-        const syB = (logoCssY - uy * caOff - logoY) * scaleY;
-        if (
-          sampleChannelBilinear(caSrc, revealDw, revealDh, sxB, syB, 3) >=
-          ALPHA_SOLID
-        ) {
-          const bTap = sampleChannelBilinear(
-            caSrc,
-            revealDw,
-            revealDh,
-            sxB,
-            syB,
-            2,
-          );
-          if (bTap >= PHOTO_EDGE_MIN_LUMA) b = bTap;
-        }
-      }
-
-      // Blur source keeps sample alpha so soft photo edges blur as one falloff.
-      const oi = (py * paddedSize + px) * 4;
-      opaqueData[oi] = r;
-      opaqueData[oi + 1] = g;
-      opaqueData[oi + 2] = b;
-      opaqueData[oi + 3] = sampleA;
-      if (sampleA >= 128) {
-        if (px < solidMinX) solidMinX = px;
-        if (py < solidMinY) solidMinY = py;
-        if (px > solidMaxX) solidMaxX = px;
-        if (py > solidMaxY) solidMaxY = py;
-      }
-
-      // Sharp layer: sample alpha × soft circle coverage.
-      if (distPxRaw > radiusPx + 0.5) continue;
-      const sx = px - pad;
-      const sy = py - pad;
-      if (sx < 0 || sy < 0 || sx >= size || sy >= size) continue;
-      const edge = radiusPx - distPxRaw;
-      // ~1px of antialiasing inside the circle. Coverage stays 0 outside the radius.
-      const feather = 0.75;
-      const circleCover = edge <= 0 ? 0 : edge >= feather ? 1 : edge / feather;
-      const outA = sampleA * circleCover;
-      if (outA < 1) continue;
-      const si = (sy * size + sx) * 4;
-      sharpData[si] = r;
-      sharpData[si + 1] = g;
-      sharpData[si + 2] = b;
-      sharpData[si + 3] = outA;
-    }
-  }
-
-  // Snapshot solid coverage before morph so scrub only re-tests texels that
-  // morph-close newly filled (the counter-leak risk). Pre-validated main-loop
-  // solids do not need a second geometric pass.
-  const preMorphSolid = new Uint8Array(paddedSize * paddedSize);
-  for (let i = 0, p = 3; i < preMorphSolid.length; i++, p += 4) {
-    preMorphSolid[i] = opaqueData[p]! >= 200 ? 1 : 0;
-  }
-
-  // Soft photo-edge falloff must not participate in morph close — dilate/erode
-  // would snap partial alphas to 0/255 and reintroduce a hard/smeared band.
-  // Park soft texels, morph only hard solids, then restore.
-  const softPark = new Uint8ClampedArray(opaqueData.length);
-  for (let p = 3; p < opaqueData.length; p += 4) {
-    const a = opaqueData[p]!;
-    if (a === 0 || a >= 200) continue;
-    softPark[p - 3] = opaqueData[p - 3]!;
-    softPark[p - 2] = opaqueData[p - 2]!;
-    softPark[p - 1] = opaqueData[p - 1]!;
-    softPark[p] = a;
-    opaqueData[p - 3] = 0;
-    opaqueData[p - 2] = 0;
-    opaqueData[p - 1] = 0;
-    opaqueData[p] = 0;
-  }
-
-  // Seal hairline gaps in loupe coverage (A stroke junctions). Do NOT inpaint
-  // the enclosed A counter — that hole should stay transparent so the page
-  // gradient shows through.
-  // Radius 1 seals 1px hairlines at junctions without bridging the opened
-  // counter cusp (0.70 viewBox units in SYMBOL_PATH_D).
-  if (solidMaxX >= 0) {
-    morphCloseAlphaBounded(
-      opaqueData,
-      paddedSize,
-      paddedSize,
-      1,
-      scratch.dilatePrev,
-      { minX: solidMinX, minY: solidMinY, maxX: solidMaxX, maxY: solidMaxY },
-    );
-  }
-  for (let p = 3; p < softPark.length; p += 4) {
-    if (softPark[p]! < 1) continue;
-    if (opaqueData[p]! >= 1) continue; // morph sealed over this cell
-    opaqueData[p - 3] = softPark[p - 3]!;
-    opaqueData[p - 2] = softPark[p - 2]!;
-    opaqueData[p - 1] = softPark[p - 1]!;
-    opaqueData[p] = softPark[p]!;
-  }
-  // Mirror any coverage morph-close added into the sharp disc.
-  // Live: morph dilates opaqueData into hairline gaps; sharp was only written
-  // by the warp loop, so without this copy those sealed texels stay empty
-  // in the sharp layer and the seal is invisible in the final disc.
-  for (let sy = 0; sy < size; sy++) {
-    for (let sx = 0; sx < size; sx++) {
-      const si = (sy * size + sx) * 4;
-      if (sharpData[si + 3]! >= 1) continue;
-      const oi = ((sy + pad) * paddedSize + (sx + pad)) * 4;
-      // Only mirror near-solid morph seals — leave soft photo falloff alone.
-      if (opaqueData[oi + 3]! < 200) continue;
-      sharpData[si] = opaqueData[oi]!;
-      sharpData[si + 1] = opaqueData[oi + 1]!;
-      sharpData[si + 2] = opaqueData[oi + 2]!;
-      sharpData[si + 3] = opaqueData[oi + 3]!;
-    }
-  }
-
-  // Morph dilate can re-fill the geometrically-open counter from letterform
-  // neighbors. Scrub only those newly filled solid texels (bbox-limited).
-  const scrubPad = 2;
-  const scrubMinX =
-    solidMaxX >= 0 ? Math.max(0, solidMinX - scrubPad) : 0;
-  const scrubMinY =
-    solidMaxY >= 0 ? Math.max(0, solidMinY - scrubPad) : 0;
-  const scrubMaxX =
-    solidMaxX >= 0 ? Math.min(paddedSize - 1, solidMaxX + scrubPad) : -1;
-  const scrubMaxY =
-    solidMaxY >= 0 ? Math.min(paddedSize - 1, solidMaxY + scrubPad) : -1;
-  for (let py = scrubMinY; py <= scrubMaxY; py++) {
-    for (let px = scrubMinX; px <= scrubMaxX; px++) {
-      const cell = py * paddedSize + px;
-      const oi = cell * 4;
-      if (opaqueData[oi + 3]! < 1) continue;
-      if (preMorphSolid[cell]!) continue; // already validated in main loop
-      const dxPx = px + 0.5 - (pad + cx);
-      const dyPx = py + 0.5 - (pad + cy);
-      const distPxRaw = Math.hypot(dxPx, dyPx);
-      if (distPxRaw > radiusPx + pad) {
-        opaqueData[oi] = 0;
-        opaqueData[oi + 1] = 0;
-        opaqueData[oi + 2] = 0;
-        opaqueData[oi + 3] = 0;
-        continue;
-      }
-      const dxCss = dxPx / dpr;
-      const dyCss = dyPx / dpr;
-      const distRawCss = distPxRaw / dpr;
-      const distPx = Math.min(distPxRaw, radiusPx);
-      const dist = distPx / dpr;
-      const t = Math.min(1, dist / lensR);
-      const inv = distRawCss > 1e-6 ? 1 / distRawCss : 0;
-      const ux = dxCss * inv;
-      const uy = dyCss * inv;
-      const zoom = zoomAt(t);
-      const rw = rimWeight(t);
-      const sampleDist = dist * zoom + lensR * DISPLACE_FRAC * rw;
-      const sampleLogoX = originX + discCss / 2 + ux * sampleDist;
-      const sampleLogoY = originY + discCss / 2 + uy * sampleDist;
-      // Morph may only seal texels whose WARPED sample stays in the mark.
-      // Re-sample with feathered alpha — never force opaque synthetic fill.
-      const sxM = (sampleLogoX - logoX) * scaleX;
-      const syM = (sampleLogoY - logoY) * scaleY;
-      const morphColor = sampleWarpedMark(
-        src,
-        geomMask,
-        revealDw,
-        revealDh,
-        sxM,
-        syM,
-      );
-      if (morphColor && morphColor.a >= 200) {
-        opaqueData[oi] = morphColor.r;
-        opaqueData[oi + 1] = morphColor.g;
-        opaqueData[oi + 2] = morphColor.b;
-        opaqueData[oi + 3] = morphColor.a;
-        const sxKeep = px - pad;
-        const syKeep = py - pad;
-        if (
-          sxKeep >= 0 &&
-          syKeep >= 0 &&
-          sxKeep < size &&
-          syKeep < size
-        ) {
-          const siKeep = (syKeep * size + sxKeep) * 4;
-          if (sharpData[siKeep + 3]! >= 1) {
-            sharpData[siKeep] = morphColor.r;
-            sharpData[siKeep + 1] = morphColor.g;
-            sharpData[siKeep + 2] = morphColor.b;
-            sharpData[siKeep + 3] = Math.min(
-              sharpData[siKeep + 3]!,
-              morphColor.a,
-            );
-          }
-        }
-        continue;
-      }
-      opaqueData[oi] = 0;
-      opaqueData[oi + 1] = 0;
-      opaqueData[oi + 2] = 0;
-      opaqueData[oi + 3] = 0;
-      const sx = px - pad;
-      const sy = py - pad;
-      if (sx < 0 || sy < 0 || sx >= size || sy >= size) continue;
-      const si = (sy * size + sx) * 4;
-      sharpData[si] = 0;
-      sharpData[si + 1] = 0;
-      sharpData[si + 2] = 0;
-      sharpData[si + 3] = 0;
-    }
-  }
-  // Thin alpha-only exterior AA (own RGB kept — no nearest-color halo).
-  featherExteriorAlphaOnly(
-    opaqueData,
-    paddedSize,
-    paddedSize,
-    EDGE_ALPHA_FEATHER_PX,
-  );
-  featherExteriorAlphaOnly(sharpData, size, size, EDGE_ALPHA_FEATHER_PX);
-
-  // Do NOT dilate with forced opaque alpha before blur — that expands a hard
-  // silhouette which, after blur, reads as a second ghost edge. Blur color+alpha
-  // together so content edges soften as one continuous falloff.
-  sharpCtx.putImageData(scratch.sharpImg, 0, 0);
-  opaqueCtx.putImageData(scratch.opaqueImg, 0, 0);
-
-  // Rasterize before filter (putImageData-only canvases can skip blur in Chromium).
-  const opaqueRasterCtx = scratch.opaqueRaster.getContext("2d")!;
-  opaqueRasterCtx.clearRect(0, 0, paddedSize, paddedSize);
-  opaqueRasterCtx.drawImage(scratch.opaque, 0, 0);
-
-  const sharpRasterCtx = scratch.sharpRaster.getContext("2d")!;
-  sharpRasterCtx.clearRect(0, 0, size, size);
-  sharpRasterCtx.drawImage(scratch.sharp, 0, 0);
-
-  if (RIM_SOFT_FOCUS) {
-    applyRimSoftFocus(scratch, blurPx);
-  } else {
-    // applyRimSoftFocus is also what copies the sharp disc onto scratch.out.
-    // Skipping the call without this blit leaves the loupe blank.
-    const octx = scratch.out.getContext("2d")!;
-    octx.clearRect(0, 0, size, size);
-    octx.drawImage(scratch.sharpRaster, 0, 0);
-  }
-  return { disc: scratch.out, scratch };
-}
-
 /** Reused 2d context for Path2D.isPointInPath (identity transform). */
 let pathHitCanvas: HTMLCanvasElement | null = null;
 function ensurePathHitCtx(): CanvasRenderingContext2D {
@@ -1945,86 +1101,6 @@ function ensurePathHitCtx(): CanvasRenderingContext2D {
   const ctx = pathHitCanvas.getContext("2d")!;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   return ctx;
-}
-
-/**
- * Soft-focus rim via true sharp↔blur crossfade.
- * Drawing full sharp under a rim-only blur left the sharp letterform edge
- * visible through the soft halo — two boundaries (ghost edge). Instead:
- * attenuate sharp toward the rim and show blur only there, so edges soften
- * as one continuous transition.
- */
-function applyRimSoftFocus(scratch: LoupeScratch, blurPx: number): void {
-  const size = scratch.size;
-  const pad = scratch.pad;
-  const cx = size / 2;
-  const cy = size / 2;
-  const radiusPx = size / 2;
-
-  const bctx = scratch.blurredPadded.getContext("2d")!;
-  bctx.clearRect(0, 0, scratch.blurredPadded.width, scratch.blurredPadded.height);
-  // Blur color+alpha together — pre-blur alpha already matches photo coverage
-  // (no forced-opaque dilate, no hard coverage clip afterward).
-  bctx.filter = `blur(${blurPx}px)`;
-  bctx.drawImage(scratch.opaqueRaster, 0, 0);
-  bctx.filter = "none";
-
-  const cctx = scratch.revealBlurred.getContext("2d")!;
-  cctx.clearRect(0, 0, size, size);
-  cctx.globalCompositeOperation = "source-over";
-  cctx.drawImage(scratch.blurredPadded, -pad, -pad);
-
-  // Rim visibility for the soft layer (0 at center → full at the circle).
-  // It must stay on through the radius. Cutting it off early leaves a clear
-  // photo ring between the effect and the hard edge.
-  cctx.globalCompositeOperation = "destination-in";
-  const blurMask = cctx.createRadialGradient(
-    cx,
-    cy,
-    radiusPx * EDGE_BLUR_START,
-    cx,
-    cy,
-    radiusPx,
-  );
-  const blurAt = (amount: number) => `rgba(0,0,0,${amount * RIM_SOFT_FOCUS_STRENGTH})`;
-  blurMask.addColorStop(0, blurAt(0));
-  blurMask.addColorStop(0.4, blurAt(0.35));
-  blurMask.addColorStop(0.75, blurAt(0.85));
-  blurMask.addColorStop(1, blurAt(1));
-  cctx.fillStyle = blurMask;
-  cctx.beginPath();
-  cctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
-  cctx.fill();
-  cctx.globalCompositeOperation = "source-over";
-
-  // Attenuate sharp toward the rim (inverse of blur visibility) so its hard
-  // content edge doesn't sit under the soft halo.
-  const sctx = scratch.sharpRaster.getContext("2d")!;
-  sctx.globalCompositeOperation = "destination-in";
-  const sharpMask = sctx.createRadialGradient(
-    cx,
-    cy,
-    radiusPx * EDGE_BLUR_START,
-    cx,
-    cy,
-    radiusPx,
-  );
-  const sharpAt = (amount: number) =>
-    `rgba(0,0,0,${1 - RIM_SOFT_FOCUS_STRENGTH * (1 - amount)})`;
-  sharpMask.addColorStop(0, sharpAt(1));
-  sharpMask.addColorStop(0.4, sharpAt(0.85));
-  sharpMask.addColorStop(0.75, sharpAt(0.25));
-  sharpMask.addColorStop(1, sharpAt(0));
-  sctx.fillStyle = sharpMask;
-  sctx.beginPath();
-  sctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
-  sctx.fill();
-  sctx.globalCompositeOperation = "source-over";
-
-  const octx = scratch.out.getContext("2d")!;
-  octx.clearRect(0, 0, size, size);
-  octx.drawImage(scratch.sharpRaster, 0, 0);
-  octx.drawImage(scratch.revealBlurred, 0, 0);
 }
 
 /**
@@ -2131,9 +1207,6 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
   let lastActive = false;
   let lastLx = 0;
   let lastLy = 0;
-  let loupeScratch: LoupeScratch | null = null;
-  let lastBuiltLx = Number.NaN;
-  let lastBuiltLy = Number.NaN;
   /** Last circle composited onto the hero canvas. NaN after a full clear. */
   let paintedLx = Number.NaN;
   let paintedLy = Number.NaN;
@@ -2277,7 +1350,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     syncGlass(null);
   };
 
-  const drawActive = (lx: number, ly: number, rebuildDisc: boolean) => {
+  const drawActive = (lx: number, ly: number) => {
     if (!cache) return;
     const { logoW } = cache;
     const lensR = lensRadiusCss(logoW);
@@ -2334,37 +1407,22 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       }
     }
 
-    const workDpr = (workPx / blitPx) * dpr;
-    if (!usedGpu && (rebuildDisc || !loupeScratch)) {
-      const built = buildLensDisc(
-        cache,
-        lensR,
-        lx,
-        ly,
-        workDpr,
-        workPx,
-        loupeScratch,
-      );
-      loupeScratch = built.scratch;
+    if (usedGpu && loupeGl) {
+      const cxDev = lx * dpr;
+      const cyDev = ly * dpr;
+      const rDev = blitPx / 2;
+      // Hard clip at the circle. The rim blur reaches this boundary on purpose;
+      // without the clip its smear would read as an outer halo.
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.beginPath();
+      ctx.arc(cxDev, cyDev, rDev, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.imageSmoothingEnabled = workPx < blitPx;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(loupeGl.canvas, cxDev - rDev, cyDev - rDev, blitPx, blitPx);
+      ctx.restore();
     }
-    lastBuiltLx = lx;
-    lastBuiltLy = ly;
-    const disc: CanvasImageSource = usedGpu ? loupeGl!.canvas : loupeScratch!.out;
-
-    const cxDev = lx * dpr;
-    const cyDev = ly * dpr;
-    const rDev = blitPx / 2;
-    // Hard clip at the circle. The rim blur reaches this boundary on purpose;
-    // without the clip its smear would read as an outer halo.
-    ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.beginPath();
-    ctx.arc(cxDev, cyDev, rDev, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.imageSmoothingEnabled = workPx < blitPx;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(disc, cxDev - rDev, cyDev - rDev, blitPx, blitPx);
-    ctx.restore();
 
     paintGlassOverlay(ctx, lx, ly, lensR);
     paintedLx = lx;
@@ -2373,7 +1431,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
 
   const redraw = () => {
     if (lastActive && cache) {
-      drawActive(lastLx, lastLy, true);
+      drawActive(lastLx, lastLy);
     } else {
       drawIdle();
     }
@@ -2413,8 +1471,6 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
         lastLx = lx;
         lastLy = ly;
         lastActive = active;
-        lastBuiltLx = Number.NaN;
-        lastBuiltLy = Number.NaN;
         drawIdle();
         return;
       }
@@ -2429,14 +1485,13 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       ) {
         return;
       }
-      drawActive(lx, ly, true);
+      drawActive(lx, ly);
     },
     destroy() {
       destroyed = true;
       cache = null;
       path2d = null;
       collage = null;
-      loupeScratch = null;
       if (glassHost) glassHost.replaceChildren();
       glassHost = null;
       glassKey = "";

@@ -2,7 +2,7 @@
 
 /**
  * Shared loupe stage — WebGL gradient + Canvas 2D symbol lens.
- * Used by the /prototype/footer-lens playground and the About page hero.
+ * About hero loupe: gradient, glass mark, and cursor-tracked collage disc.
  */
 
 import {useEffect, useRef} from 'react';

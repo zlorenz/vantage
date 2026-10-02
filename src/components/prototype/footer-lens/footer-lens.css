@@ -1,36 +1,5 @@
-/* Shared by the About hero loupe and the /prototype/footer-lens staging page. */
+/* About hero loupe stage. */
 
-.vp-footer-lens-proto {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background: var(--vp-black, #000000);
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.vp-footer-lens-proto__hint {
-  position: relative;
-  z-index: 2;
-  margin: 0;
-  padding: 1rem 1.25rem 0;
-  font-size: 0.8125rem;
-  letter-spacing: 0.02em;
-  text-align: center;
-}
-
-.vp-footer-lens-proto__stage {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  box-sizing: border-box;
-  overflow: visible;
-}
-
-/* Full-viewport stack: gradient under transparent lens canvas */
 .vp-footer-lens-proto__lens-wrap {
   width: 100%;
   height: 100%;
