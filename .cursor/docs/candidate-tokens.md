@@ -377,3 +377,12 @@ Defined in `src/app/[locale]/contact/contact-page.css` inside `@media (min-width
 | `--vp-candidate-contact-hero-title-top` | `160px` | H1 offset from hero top | `2371:23837` y | pending | |
 | `--vp-candidate-contact-hero-title-width` | `1860px` | H1 measure | `2371:23837` width | pending | 30px side inset at 1920. |
 | `--vp-candidate-contact-hero-pad-inline` | `30px` | Hero side inset | same | pending | |
+| `--vp-candidate-contact-media-top` | `589px` | Hero still, top | `2371:24205` | pending | 127px below the trimmed H1 box. |
+| `--vp-candidate-contact-media-width` | `298px` | Hero still | same | pending | 2x file is 596px. |
+| `--vp-candidate-contact-media-height` | `360px` | Hero still | same | pending | |
+| `--vp-candidate-contact-crosshair` | `100px` | Crosshair on the still's top edge | `2371:24202` | pending | 1px, white 50%. |
+| `--vp-candidate-contact-contact-size` | `20px` | Email and phone | h6 `2371:24227` | pending | Line-height 1.5. Tracking stays 0. |
+| `--vp-candidate-contact-icon-mail` | `32px` | Email icon | `2371:24224` | pending | |
+| `--vp-candidate-contact-icon-phone` | `28px` | Phone icon | `2371:24241` | pending | |
+| `--vp-candidate-contact-mark-width` | `327px` | Bottom corner marks | `2382:27070` | pending | Height 171. Opacity 0.15, luminosity. `#F37021` stays inside the SVG. |
+| `--vp-candidate-contact-bracket-inset` | `15px` | Hero bracket inset | `2371:23786` | pending | Top edge is header height + 13.5px, not scaled. |

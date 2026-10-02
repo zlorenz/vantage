@@ -8,9 +8,11 @@
  */
 
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { FooterSocials } from '@/components/layout/SiteFooter';
+import { CornerFrame } from '@/components/ui/CornerFrame';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
@@ -53,6 +55,10 @@ const SOCIAL_LINK_CLASS =
 function whatsappHref(value: string): string {
   const digits = value.replace(/[^\d]/g, '');
   return digits ? `https://wa.me/${digits}` : '';
+}
+
+function telHref(value: string): string {
+  return `tel:${value.replace(/\s+/g, '')}`;
 }
 
 export function generateStaticParams() {
@@ -104,6 +110,8 @@ export default async function ContactPage({ params }: Props) {
   const t = await getTranslations('Contact');
 
   const email = siteSettings?.contactEmail?.trim();
+  const phone = siteSettings?.contactPhone?.trim();
+  const phoneLink = phone ? telHref(phone) : '';
   const whatsapp = siteSettings?.contactWhatsapp?.trim();
   const waLink = whatsapp ? whatsappHref(whatsapp) : '';
 
@@ -135,7 +143,56 @@ export default async function ContactPage({ params }: Props) {
           </h1>
         </div>
 
-        <div className="relative z-[1] mt-auto shrink-0 px-4 pb-[clamp(2rem,4vw,3.5rem)] pt-4">
+        <div className="vp-contact-hero__stage">
+          <div className="vp-contact-hero__brackets">
+            <CornerFrame variant="light" />
+          </div>
+          <div className="vp-contact-hero__media">
+            <Image
+              src="/brand/contact/vantage-contact-hero.png"
+              alt=""
+              width={596}
+              height={720}
+              className="vp-contact-hero__photo"
+              priority
+            />
+            <span className="vp-contact-hero__crosshair" aria-hidden="true" />
+          </div>
+          <div className="vp-contact-hero__details">
+            {email ? (
+              <a href={`mailto:${email}`} className="vp-contact-hero__contact">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/brand/contact/icon-mail.svg" alt="" width={32} height={32} />
+                <span>{email}</span>
+              </a>
+            ) : null}
+            {phone && phoneLink ? (
+              <a href={phoneLink} className="vp-contact-hero__contact vp-contact-hero__contact--phone">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/brand/contact/icon-phone.svg" alt="" width={28} height={28} />
+                <span>{phone}</span>
+              </a>
+            ) : null}
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="vp-contact-hero__mark vp-contact-hero__mark--left"
+            src="/brand/contact/corner-mark-left.svg"
+            alt=""
+            width={327}
+            height={171}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="vp-contact-hero__mark vp-contact-hero__mark--right"
+            src="/brand/contact/corner-mark-right.svg"
+            alt=""
+            width={327}
+            height={171}
+          />
+        </div>
+
+        <div className="vp-contact-hero__bar relative z-[1] mt-auto shrink-0 px-4 pb-[clamp(2rem,4vw,3.5rem)] pt-4">
           <div className="container-fluid mx-auto max-w-[1400px]">
             <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:gap-8 md:text-left">
               <div className="md:min-w-0 md:flex-1">
