@@ -163,16 +163,12 @@ export default async function ContactPage({ params }: Props) {
           <div className="vp-contact-hero__details">
             {email ? (
               <a href={`mailto:${email}`} className="vp-contact-hero__contact">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand/contact/icon-mail.svg" alt="" width={32} height={32} />
-                <span>{email}</span>
+                {email}
               </a>
             ) : null}
             {phone && phoneLink ? (
-              <a href={phoneLink} className="vp-contact-hero__contact vp-contact-hero__contact--phone">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand/contact/icon-phone.svg" alt="" width={28} height={28} />
-                <span>{phone}</span>
+              <a href={phoneLink} className="vp-contact-hero__contact">
+                {phone}
               </a>
             ) : null}
           </div>
