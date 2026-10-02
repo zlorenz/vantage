@@ -65,8 +65,8 @@
 }
 
 /* Matched to the nav Send a Brief bar: Special Gothic, square corners,
- * 100px height. Work keeps the label at the start and the arrow at the end.
- * Home is the same bar in white, with the label centered. */
+ * 100px height. Both labels sit in the middle of the bar. On work, the
+ * arrow stays beside the label as one centered group. */
 .vp-not-found__action {
   display: flex;
   flex: 1 1 18rem;
@@ -98,7 +98,8 @@
 }
 
 .vp-not-found__action--work {
-  justify-content: space-between;
+  justify-content: center;
+  gap: 1rem;
   background: #fdb913;
 }
 
@@ -122,6 +123,5 @@
   flex-shrink: 0;
   width: var(--vp-btn-arrow-size);
   height: var(--vp-btn-arrow-size);
-  margin-left: 1rem;
   color: #000;
 }
