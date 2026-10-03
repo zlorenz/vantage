@@ -153,9 +153,6 @@ export default async function ContactPage({ params }: Props) {
         </div>
 
         <div className="vp-contact-hero__stage">
-          <div className="vp-contact-hero__brackets">
-            <CornerFrame variant="dark" />
-          </div>
           <div className="vp-contact-hero__card">
             {email ? (
               <a href={`mailto:${email}`} className="vp-contact-hero__cell">

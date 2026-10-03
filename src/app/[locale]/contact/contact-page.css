@@ -88,7 +88,6 @@
     --vp-candidate-contact-mark-height: 171px;
     --vp-candidate-contact-mark-opacity: 0.08;
     --vp-candidate-contact-bracket-inset: 15px;
-    --vp-candidate-contact-bracket-below-header: 13.5px;
     overflow: hidden;
   }
 
@@ -101,14 +100,6 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__brackets {
-    position: absolute;
-    top: calc(var(--vp-nav-bar-height, 80px) + var(--vp-candidate-contact-bracket-below-header));
-    right: calc(var(--vp-candidate-contact-bracket-inset) * var(--vp-contact-scale));
-    bottom: calc(var(--vp-candidate-contact-bracket-inset) * var(--vp-contact-scale));
-    left: calc(var(--vp-candidate-contact-bracket-inset) * var(--vp-contact-scale));
   }
 
   section.vp-contact-hero .vp-contact-hero__card {
@@ -156,7 +147,8 @@
 
   section.vp-contact-hero .vp-contact-hero__mark {
     position: absolute;
-    bottom: 0;
+    /* 1px clear of the bottom hairline so the mark pixels do not lighten the rule. */
+    bottom: 1px;
     width: calc(var(--vp-candidate-contact-mark-width) * var(--vp-contact-scale));
     height: calc(var(--vp-candidate-contact-mark-height) * var(--vp-contact-scale));
     opacity: var(--vp-candidate-contact-mark-opacity);
@@ -170,6 +162,19 @@
 
   section.vp-contact-hero .vp-contact-hero__mark--right {
     right: 0;
+  }
+
+  /* Full-bleed White/15 rule, 1px below the VAP mark bottoms. */
+  section.vp-contact-hero::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    height: 1px;
+    background: var(--vp-candidate-brief-line);
+    pointer-events: none;
   }
 }
 
