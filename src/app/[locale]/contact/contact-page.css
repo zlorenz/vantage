@@ -1,357 +1,424 @@
 /*
- * Contact page, desktop Figma frame 2602:33639.
- * Every rule is gated to min-width 768px. Mobile Contact is the pre-existing
- * Tailwind layout and must not change.
- *
- * Scale: pixel-exact when the viewport is 1920 wide. Between 768 and 1920
- * the 1920 measurements scale by min(100vw, 1920px) / 1920px. Above 1920
- * the measured values cap and the content centers. 1px strokes stay 1px.
+ * Contact page.
+ * Mobile: Figma 2602:29604 (402 artboard), plus desktop product tweaks that
+ * still make sense — no icons, no crosshair, no outer hero brackets, centered
+ * title+contact cluster, wider title–contact gap, bottom hairline.
+ * Desktop ≥768: Figma 2602:33639 with the same tweaks; 1920 measurements
+ * scale by min(100vw, 1920px) / 1920px. 1px strokes stay 1px.
  */
 
-/* Contact card is desktop-only; mobile uses the bottom bar. */
-.vp-contact-hero__card {
-  display: none;
+section.vp-contact-hero {
+  --vp-candidate-contact-hero-title-size: 48px;
+  --vp-candidate-contact-hero-title-lh: 0.9;
+  --vp-candidate-contact-hero-pad-inline: 16px;
+  /* Figma title→crosshair gap was 100; doubled after dropping the crosshair. */
+  --vp-candidate-contact-cluster-gap: 200px;
+  --vp-candidate-contact-card-gap: 24px;
+  --vp-candidate-contact-cell-pad: 24px;
+  --vp-candidate-contact-contact-size: 16px;
+  --vp-candidate-contact-contact-lh: 1.5;
+  --vp-candidate-contact-mark-width: 153px;
+  --vp-candidate-contact-mark-height: 80px;
+  --vp-candidate-contact-mark-opacity: 0.08;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--vp-black);
+  color: var(--vp-text);
+  min-height: 100svh;
 }
 
-.vp-contact-hero__stage {
-  display: none;
+/*
+ * Title + contact as one block, vertically centered under the nav.
+ */
+section.vp-contact-hero .vp-contact-hero__cluster {
+  position: absolute;
+  top: var(--vp-header-height, 64px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vp-candidate-contact-cluster-gap);
+  padding-inline: var(--vp-candidate-contact-hero-pad-inline);
+  pointer-events: none;
 }
+
+section.vp-contact-hero .vp-contact-hero__title-slot {
+  width: 100%;
+  pointer-events: none;
+}
+
+section.vp-contact-hero .vp-contact-hero__title {
+  width: 100%;
+  margin: 0;
+  color: var(--vp-text);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-contact-hero-title-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  line-height: var(--vp-candidate-contact-hero-title-lh);
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+section.vp-contact-hero .vp-contact-hero__line {
+  display: block;
+}
+
+section.vp-contact-hero .vp-contact-hero__line--accent {
+  color: var(--vp-orange);
+}
+
+@supports not (text-box-trim: trim-both) {
+  section.vp-contact-hero .vp-contact-hero__title {
+    margin-block: calc(
+      (var(--vp-candidate-contact-hero-title-size) * (1 - 0.7)) / -2
+    );
+  }
+}
+
+section.vp-contact-hero .vp-contact-hero__card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--vp-candidate-contact-card-gap);
+  width: 100%;
+  max-width: 370px;
+  pointer-events: none;
+}
+
+section.vp-contact-hero .vp-contact-hero__cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--vp-candidate-contact-cell-pad);
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+section.vp-contact-hero .vp-contact-hero__contact {
+  display: block;
+  color: var(--vp-text);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-contact-contact-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  line-height: var(--vp-candidate-contact-contact-lh);
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+  word-break: break-word;
+}
+
+section.vp-contact-hero .vp-contact-hero__cell:hover .vp-contact-hero__contact {
+  opacity: 0.7;
+}
+
+section.vp-contact-hero .vp-contact-hero__stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+section.vp-contact-hero .vp-contact-hero__mark {
+  position: absolute;
+  /* 1px clear of the bottom hairline so mark pixels do not lighten the rule. */
+  bottom: 1px;
+  width: var(--vp-candidate-contact-mark-width);
+  height: var(--vp-candidate-contact-mark-height);
+  opacity: var(--vp-candidate-contact-mark-opacity);
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+}
+
+section.vp-contact-hero .vp-contact-hero__mark--left {
+  left: 0;
+}
+
+section.vp-contact-hero .vp-contact-hero__mark--right {
+  right: 0;
+}
+
+/* Full-bleed White/15 rule, 1px below the VAP mark bottoms. */
+section.vp-contact-hero::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 1px;
+  background: var(--vp-candidate-brief-line);
+  pointer-events: none;
+}
+
+/* ——— CTA (mobile base) ——— */
+
+section.vp-contact-cta {
+  --vp-candidate-contact-section-pad: 100px;
+  --vp-candidate-contact-frame-pad-block: 30px;
+  --vp-candidate-contact-frame-pad-inline: 16px;
+  --vp-candidate-contact-dash: 5px;
+  --vp-candidate-contact-dash-gap: 2px;
+  --vp-candidate-contact-inner-pad-block: 24px;
+  --vp-candidate-contact-inner-pad-inline: 0;
+  --vp-candidate-contact-copy-gap: 24px;
+  --vp-candidate-contact-action-gap: 40px;
+  --vp-candidate-contact-heading-size: 30px;
+  --vp-candidate-contact-heading-lh: 1.1;
+  --vp-candidate-contact-body-size: 16px;
+  --vp-candidate-contact-body-lh: 1.6;
+  --vp-candidate-contact-btn-height: 60px;
+  --vp-candidate-contact-btn-pad-inline: 16px;
+  --vp-candidate-contact-btn-size: 12px;
+  --vp-candidate-contact-btn-lh: 1.6;
+  --vp-candidate-contact-bracket-inset: 16px;
+  --vp-candidate-contact-ruler-width: 1074px;
+  display: block;
+  background: var(--vp-black);
+  padding: var(--vp-candidate-contact-section-pad)
+    var(--vp-candidate-contact-bracket-inset);
+}
+
+section.vp-contact-cta .vp-contact-cta__frame {
+  position: relative;
+  width: 100%;
+  max-width: 370px;
+  margin-inline: auto;
+  padding: var(--vp-candidate-contact-frame-pad-block)
+    var(--vp-candidate-contact-frame-pad-inline);
+}
+
+section.vp-contact-cta .vp-contact-cta__dash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+section.vp-contact-cta .vp-contact-cta__dash rect {
+  x: 0.5px;
+  y: 0.5px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  fill: none;
+  stroke: var(--vp-candidate-brief-line);
+  stroke-width: 1px;
+  stroke-dasharray: var(--vp-candidate-contact-dash) var(--vp-candidate-contact-dash-gap);
+}
+
+section.vp-contact-cta .vp-contact-cta__corner {
+  position: absolute;
+  width: var(--vp-candidate-brief-tick-size);
+  height: var(--vp-candidate-brief-tick-size);
+  border: 0 solid var(--vp-link);
+  pointer-events: none;
+}
+
+section.vp-contact-cta .vp-contact-cta__corner--tl {
+  top: 0;
+  left: 0;
+  border-top-width: var(--vp-candidate-brief-tick-stroke);
+  border-left-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+section.vp-contact-cta .vp-contact-cta__corner--tr {
+  top: 0;
+  right: 0;
+  border-top-width: var(--vp-candidate-brief-tick-stroke);
+  border-right-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+section.vp-contact-cta .vp-contact-cta__corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: var(--vp-candidate-brief-tick-stroke);
+  border-left-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+section.vp-contact-cta .vp-contact-cta__corner--br {
+  right: 0;
+  bottom: 0;
+  border-right-width: var(--vp-candidate-brief-tick-stroke);
+  border-bottom-width: var(--vp-candidate-brief-tick-stroke);
+}
+
+section.vp-contact-cta .vp-contact-cta__rulers {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--vp-candidate-contact-ruler-width);
+  overflow: hidden;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+section.vp-contact-cta .vp-contact-cta__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--vp-candidate-contact-action-gap);
+  padding: var(--vp-candidate-contact-inner-pad-block)
+    var(--vp-candidate-contact-inner-pad-inline);
+  text-align: center;
+}
+
+section.vp-contact-cta .vp-contact-cta__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--vp-candidate-contact-copy-gap);
+  width: 100%;
+}
+
+section.vp-contact-cta .vp-contact-cta__heading {
+  margin: 0;
+  width: 100%;
+  color: var(--vp-text);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-contact-heading-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  line-height: var(--vp-candidate-contact-heading-lh);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+section.vp-contact-cta .vp-contact-cta__body {
+  width: 100%;
+  margin: 0;
+  color: var(--vp-candidate-about-white-50);
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-contact-body-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-contact-body-lh);
+}
+
+section.vp-contact-cta .vp-contact-cta__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--vp-candidate-contact-btn-height);
+  padding: 0 var(--vp-candidate-contact-btn-pad-inline);
+  border: 0;
+  border-radius: 0;
+  background: var(--vp-link);
+  color: var(--vp-black);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-contact-btn-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  line-height: var(--vp-candidate-contact-btn-lh);
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+section.vp-contact-cta .vp-contact-cta__button:hover {
+  background: var(--vp-candidate-brief-primary-hover);
+  color: var(--vp-black);
+}
+
+/* ——— Desktop ≥768 ——— */
 
 @media (min-width: 768px) {
   section.vp-contact-hero {
     --vp-contact-scale: calc(min(100vw, 1920px) / 1920px);
-    --vp-candidate-contact-hero-title-size: 120px;
+    --vp-candidate-contact-hero-title-size: calc(120px * var(--vp-contact-scale));
     --vp-candidate-contact-hero-title-lh: 0.9;
-    --vp-candidate-contact-hero-title-width: 1860px;
-    --vp-candidate-contact-hero-pad-inline: 30px;
-    --vp-candidate-contact-cluster-gap: 160px;
-    --vp-candidate-contact-card-gap: 48px;
-    --vp-candidate-contact-cell-pad: 24px;
-    --vp-candidate-contact-contact-size: 20px;
-    --vp-candidate-contact-contact-lh: 1.5;
-    --vp-candidate-contact-mark-width: 327px;
-    --vp-candidate-contact-mark-height: 171px;
-    --vp-candidate-contact-mark-opacity: 0.08;
-    --vp-candidate-contact-bracket-inset: 15px;
-    background: var(--vp-black);
-    color: var(--vp-text);
-    overflow: hidden;
+    --vp-candidate-contact-hero-title-width: calc(1860px * var(--vp-contact-scale));
+    --vp-candidate-contact-hero-pad-inline: calc(30px * var(--vp-contact-scale));
+    --vp-candidate-contact-cluster-gap: calc(160px * var(--vp-contact-scale));
+    --vp-candidate-contact-card-gap: calc(48px * var(--vp-contact-scale));
+    --vp-candidate-contact-cell-pad: calc(24px * var(--vp-contact-scale));
+    --vp-candidate-contact-contact-size: calc(20px * var(--vp-contact-scale));
+    --vp-candidate-contact-mark-width: calc(327px * var(--vp-contact-scale));
+    --vp-candidate-contact-mark-height: calc(171px * var(--vp-contact-scale));
     min-height: max(100svh, 56.25vw);
   }
 
-  section.vp-contact-hero .vp-contact-hero__bar {
-    display: none;
-  }
-
-  /*
-   * Title + contact row as one block, vertically centered in the band
-   * between the nav bottom and the hero bottom.
-   */
   section.vp-contact-hero .vp-contact-hero__cluster {
-    position: absolute;
     top: var(--vp-nav-bar-height, 80px);
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: calc(var(--vp-candidate-contact-cluster-gap) * var(--vp-contact-scale));
-    padding-inline: calc(var(--vp-candidate-contact-hero-pad-inline) * var(--vp-contact-scale));
-    pointer-events: none;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__title-slot {
-    position: static;
-    inset: auto;
-    display: block;
-    height: auto;
-    padding: 0;
-    pointer-events: none;
   }
 
   section.vp-contact-hero .vp-contact-hero__title {
-    width: 100%;
-    max-width: calc(var(--vp-candidate-contact-hero-title-width) * var(--vp-contact-scale));
+    max-width: var(--vp-candidate-contact-hero-title-width);
     margin-inline: auto;
-    color: var(--vp-text);
-    font-size: calc(var(--vp-candidate-contact-hero-title-size) * var(--vp-contact-scale));
-    font-weight: var(--font-vp-heading-weight);
-    font-synthesis: none;
-    line-height: var(--vp-candidate-contact-hero-title-lh);
-    letter-spacing: 0;
-    text-box-trim: trim-both;
-    text-box-edge: cap alphabetic;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__line {
-    display: block;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__line--accent {
-    color: var(--vp-orange);
-  }
-
-  /*
-   * Cap-height trim is 22px shorter than 3 * 120 * 0.9 (324 to 302) at 1920.
-   * Split that difference across the block edges when the browser lacks trim.
-   */
-  @supports not (text-box-trim: trim-both) {
-    section.vp-contact-hero .vp-contact-hero__title {
-      margin-block: calc(-11px * var(--vp-contact-scale));
-    }
   }
 
   section.vp-contact-hero .vp-contact-hero__card {
-    position: static;
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: calc(var(--vp-candidate-contact-card-gap) * var(--vp-contact-scale));
     width: max-content;
     max-width: 100%;
-    transform: none;
-    pointer-events: none;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__stage {
-    display: block;
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
   }
 
   section.vp-contact-hero .vp-contact-hero__cell {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex: 0 0 auto;
-    padding: calc(var(--vp-candidate-contact-cell-pad) * var(--vp-contact-scale));
-    text-decoration: none;
-    pointer-events: auto;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__contact {
-    display: block;
-    color: var(--vp-text);
-    font-family: var(--font-vp-heading);
-    font-size: calc(var(--vp-candidate-contact-contact-size) * var(--vp-contact-scale));
-    font-weight: var(--font-vp-heading-weight);
-    font-synthesis: none;
-    line-height: var(--vp-candidate-contact-contact-lh);
-    letter-spacing: 0;
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__cell:hover .vp-contact-hero__contact {
-    opacity: 0.7;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__mark {
-    position: absolute;
-    /* 1px clear of the bottom hairline so the mark pixels do not lighten the rule. */
-    bottom: 1px;
-    width: calc(var(--vp-candidate-contact-mark-width) * var(--vp-contact-scale));
-    height: calc(var(--vp-candidate-contact-mark-height) * var(--vp-contact-scale));
-    opacity: var(--vp-candidate-contact-mark-opacity);
-    mix-blend-mode: luminosity;
-    pointer-events: none;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__mark--left {
-    left: 0;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__mark--right {
-    right: 0;
-  }
-
-  /* Full-bleed White/15 rule, 1px below the VAP mark bottoms. */
-  section.vp-contact-hero::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    height: 1px;
-    background: var(--vp-candidate-brief-line);
-    pointer-events: none;
-  }
-}
-
-.vp-contact-cta {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .vp-contact-cta-legacy {
-    display: none;
   }
 
   section.vp-contact-cta {
     --vp-contact-scale: calc(min(100vw, 1920px) / 1920px);
-    --vp-candidate-contact-section-pad: 160px;
-    --vp-candidate-contact-frame-width: 1236px;
-    --vp-candidate-contact-frame-pad: 30px;
-    --vp-candidate-contact-dash: 5px;
-    --vp-candidate-contact-dash-gap: 2px;
-    --vp-candidate-contact-inner-pad-block: 60px;
-    --vp-candidate-contact-inner-pad-inline: 40px;
-    --vp-candidate-contact-copy-gap: 24px;
-    --vp-candidate-contact-action-gap: 60px;
-    --vp-candidate-contact-body-width: 632px;
-    --vp-candidate-contact-ruler-width: 1074px;
-    display: block;
-    background: var(--vp-black);
-    padding: calc(var(--vp-candidate-contact-section-pad) * var(--vp-contact-scale)) 0;
+    --vp-candidate-contact-section-pad: calc(160px * var(--vp-contact-scale));
+    --vp-candidate-contact-frame-width: calc(1236px * var(--vp-contact-scale));
+    --vp-candidate-contact-frame-pad-block: calc(30px * var(--vp-contact-scale));
+    --vp-candidate-contact-frame-pad-inline: calc(30px * var(--vp-contact-scale));
+    --vp-candidate-contact-inner-pad-block: calc(60px * var(--vp-contact-scale));
+    --vp-candidate-contact-inner-pad-inline: calc(40px * var(--vp-contact-scale));
+    --vp-candidate-contact-copy-gap: calc(24px * var(--vp-contact-scale));
+    --vp-candidate-contact-action-gap: calc(60px * var(--vp-contact-scale));
+    --vp-candidate-contact-heading-size: calc(
+      var(--vp-candidate-about-display-size) * var(--vp-contact-scale)
+    );
+    --vp-candidate-contact-heading-lh: var(--vp-candidate-about-display-lh);
+    --vp-candidate-contact-body-size: calc(
+      var(--vp-candidate-about-dek-size) * var(--vp-contact-scale)
+    );
+    --vp-candidate-contact-body-lh: var(--vp-candidate-about-dek-lh);
+    --vp-candidate-contact-body-width: calc(632px * var(--vp-contact-scale));
+    --vp-candidate-contact-btn-height: calc(
+      var(--vp-candidate-brief-btn-height) * var(--vp-contact-scale)
+    );
+    --vp-candidate-contact-btn-pad-inline: calc(
+      var(--vp-candidate-brief-btn-pad-inline) * var(--vp-contact-scale)
+    );
+    --vp-candidate-contact-btn-size: calc(
+      var(--vp-candidate-brief-btn-size) * var(--vp-contact-scale)
+    );
+    --vp-candidate-contact-btn-lh: var(--vp-candidate-brief-btn-lh);
+    --vp-candidate-contact-bracket-inset: 15px;
+    --vp-candidate-contact-ruler-width: calc(1074px * var(--vp-contact-scale));
+    padding: var(--vp-candidate-contact-section-pad) 0;
   }
 
   section.vp-contact-cta .vp-contact-cta__frame {
-    position: relative;
-    width: calc(var(--vp-candidate-contact-frame-width) * var(--vp-contact-scale));
-    max-width: calc(100% - 2 * var(--vp-candidate-contact-bracket-inset, 15px));
-    margin-inline: auto;
-    padding: calc(var(--vp-candidate-contact-frame-pad) * var(--vp-contact-scale));
-  }
-
-  section.vp-contact-cta .vp-contact-cta__dash {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  section.vp-contact-cta .vp-contact-cta__dash rect {
-    x: 0.5px;
-    y: 0.5px;
-    width: calc(100% - 1px);
-    height: calc(100% - 1px);
-    fill: none;
-    stroke: var(--vp-candidate-brief-line);
-    stroke-width: 1px;
-    stroke-dasharray: var(--vp-candidate-contact-dash) var(--vp-candidate-contact-dash-gap);
-  }
-
-  section.vp-contact-cta .vp-contact-cta__corner {
-    position: absolute;
-    width: var(--vp-candidate-brief-tick-size);
-    height: var(--vp-candidate-brief-tick-size);
-    border: 0 solid var(--vp-link);
-    pointer-events: none;
-  }
-
-  section.vp-contact-cta .vp-contact-cta__corner--tl {
-    top: 0;
-    left: 0;
-    border-top-width: var(--vp-candidate-brief-tick-stroke);
-    border-left-width: var(--vp-candidate-brief-tick-stroke);
-  }
-
-  section.vp-contact-cta .vp-contact-cta__corner--tr {
-    top: 0;
-    right: 0;
-    border-top-width: var(--vp-candidate-brief-tick-stroke);
-    border-right-width: var(--vp-candidate-brief-tick-stroke);
-  }
-
-  section.vp-contact-cta .vp-contact-cta__corner--bl {
-    bottom: 0;
-    left: 0;
-    border-bottom-width: var(--vp-candidate-brief-tick-stroke);
-    border-left-width: var(--vp-candidate-brief-tick-stroke);
-  }
-
-  section.vp-contact-cta .vp-contact-cta__corner--br {
-    right: 0;
-    bottom: 0;
-    border-right-width: var(--vp-candidate-brief-tick-stroke);
-    border-bottom-width: var(--vp-candidate-brief-tick-stroke);
-  }
-
-  section.vp-contact-cta .vp-contact-cta__rulers {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: calc(var(--vp-candidate-contact-ruler-width) * var(--vp-contact-scale));
-    overflow: hidden;
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  section.vp-contact-cta .vp-contact-cta__inner {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(var(--vp-candidate-contact-action-gap) * var(--vp-contact-scale));
-    padding: calc(var(--vp-candidate-contact-inner-pad-block) * var(--vp-contact-scale))
-      calc(var(--vp-candidate-contact-inner-pad-inline) * var(--vp-contact-scale));
-    text-align: center;
-  }
-
-  section.vp-contact-cta .vp-contact-cta__copy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(var(--vp-candidate-contact-copy-gap) * var(--vp-contact-scale));
-  }
-
-  section.vp-contact-cta .vp-contact-cta__heading {
-    margin: 0;
-    color: var(--vp-text);
-    font-family: var(--font-vp-heading);
-    font-size: calc(var(--vp-candidate-about-display-size) * var(--vp-contact-scale));
-    font-weight: var(--font-vp-heading-weight);
-    font-synthesis: none;
-    line-height: var(--vp-candidate-about-display-lh);
-    letter-spacing: 0;
-    text-transform: uppercase;
-    text-box-trim: trim-both;
-    text-box-edge: cap alphabetic;
+    width: var(--vp-candidate-contact-frame-width);
+    max-width: calc(100% - 2 * var(--vp-candidate-contact-bracket-inset));
   }
 
   section.vp-contact-cta .vp-contact-cta__body {
-    width: calc(var(--vp-candidate-contact-body-width) * var(--vp-contact-scale));
+    width: var(--vp-candidate-contact-body-width);
     max-width: 100%;
-    margin: 0;
-    color: var(--vp-candidate-about-white-50);
-    font-family: var(--font-vp-sans);
-    font-size: calc(var(--vp-candidate-about-dek-size) * var(--vp-contact-scale));
-    font-weight: 400;
-    line-height: var(--vp-candidate-about-dek-lh);
   }
 
-  section.vp-contact-cta .vp-contact-cta__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: calc(var(--vp-candidate-brief-btn-height) * var(--vp-contact-scale));
-    padding: 0 calc(var(--vp-candidate-brief-btn-pad-inline) * var(--vp-contact-scale));
-    border: 0;
-    border-radius: 0;
-    background: var(--vp-link);
-    color: var(--vp-black);
-    font-family: var(--font-vp-heading);
-    font-size: calc(var(--vp-candidate-brief-btn-size) * var(--vp-contact-scale));
-    font-weight: var(--font-vp-heading-weight);
-    font-synthesis: none;
-    line-height: var(--vp-candidate-brief-btn-lh);
-    letter-spacing: 0;
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-
-  section.vp-contact-cta .vp-contact-cta__button:hover {
-    background: var(--vp-candidate-brief-primary-hover);
-    color: var(--vp-black);
+  section.vp-contact-cta .vp-contact-cta__rulers {
+    width: var(--vp-candidate-contact-ruler-width);
   }
 }
