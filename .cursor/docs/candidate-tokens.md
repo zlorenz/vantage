@@ -369,6 +369,7 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-hero-quote-pad` | `16px` | same | same | pending | |
 | `--vp-candidate-about-hero-quote-bg` | `rgba(255,255,255,0.1)` | same | same | pending | |
 | `--vp-candidate-about-hero-quote-blur` | `25px` | same | `backdrop-blur` 25 | pending | |
+| `--vp-candidate-about-hero-scroll-size` | `24px` | Hero bottom scroll cue | helper | pending | Thin down-arrow with stem; decorative only. |
 
 ## Contact page — desktop (pending)
 

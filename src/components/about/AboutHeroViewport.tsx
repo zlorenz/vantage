@@ -54,6 +54,24 @@ export function AboutHeroViewport() {
         <p className="vp-about-hero__caption">{t('heroCaption')}</p>
       </div>
 
+      {/* Decorative scroll cue — not interactive (for now). */}
+      <div className="vp-about-hero__scroll" aria-hidden="true">
+        <svg
+          className="vp-about-hero__scroll-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 4.5V17.5M12 17.5L6.5 12M12 17.5L17.5 12"
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
       <div className="vp-about-hero__frame" aria-hidden="true">
         <CornerFrame variant="dark" />
       </div>

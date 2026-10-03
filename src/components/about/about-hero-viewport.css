@@ -101,6 +101,50 @@
   white-space: nowrap;
 }
 
+/* Centered scroll cue — decorative only. */
+.vp-about-hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--vp-candidate-about-hero-title-bottom) / 2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--vp-candidate-about-hero-scroll-size);
+  height: var(--vp-candidate-about-hero-scroll-size);
+  margin: 0;
+  padding: 0;
+  color: var(--vp-text);
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: vp-about-hero-scroll-nudge 2.4s ease-in-out infinite;
+}
+
+.vp-about-hero__scroll-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes vp-about-hero-scroll-nudge {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(-50%) translateY(4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-about-hero__scroll {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
 .vp-about-hero__frame {
   position: absolute;
   inset: var(--vp-candidate-about-hero-frame-inset);
