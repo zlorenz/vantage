@@ -71,14 +71,7 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
               alt="Vantage Pictures"
               width={220}
               height={36}
-              className="vp-wordmark vp-wordmark--on-dark block h-[18px] w-auto sm:h-7"
-            />
-            <img
-              src="/brand/vantage-wordmark-black.svg"
-              alt=""
-              width={220}
-              height={36}
-              className="vp-wordmark vp-wordmark--on-light block h-[18px] w-auto sm:h-7"
+              className="vp-wordmark block h-[18px] w-auto sm:h-7"
             />
           </Link>
 

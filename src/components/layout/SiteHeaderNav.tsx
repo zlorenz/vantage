@@ -13,7 +13,6 @@
  */
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { usePathname } from '@/i18n/navigation';
 
 const SCROLL_DELTA_PX = 10;
 
@@ -28,8 +27,6 @@ export function SiteHeaderNav({
   className,
   'aria-label': ariaLabel,
 }: SiteHeaderNavProps) {
-  const pathname = usePathname();
-  const onContact = pathname === '/contact';
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
   const ticking = useRef(false);
@@ -102,7 +99,7 @@ export function SiteHeaderNav({
     <nav
       ref={headerRef}
       id="header"
-      className={`${className}${hidden ? ' vp-header--hidden' : ''}${onContact ? ' vp-header--contact' : ''}`}
+      className={`${className}${hidden ? ' vp-header--hidden' : ''}`}
       aria-label={ariaLabel}
       data-header-hidden={hidden ? 'true' : undefined}
     >

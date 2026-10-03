@@ -1,14 +1,12 @@
 /**
- * Contact page — full-viewport brand-orange statement + bottom contact bar
- * (email / WhatsApp / socials from siteSettings) + Campaign Brief CTA.
+ * Contact page — desktop Figma 2602:33639 (black hero + dashed CTA) and the
+ * pre-existing mobile orange statement + bottom bar.
  *
- * Statement copy is page-local for the redesign (outline treatment retired).
- * Contact details come from the `siteSettings` singleton via SITE_SETTINGS_QUERY.
+ * Statement copy is page-local. Contact details come from siteSettings.
  * Page doc still supplies SEO / notFound via CONTACT_PAGE_QUERY.
  */
 
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { FooterSocials } from '@/components/layout/SiteFooter';
@@ -45,6 +43,8 @@ type Props = {
 /** Explicit desktop line breaks. Spaces between the spans keep mobile wrap as one sentence. */
 const STATEMENT_EN = "Let's Craft\nYour Next\nCampaign";
 const STATEMENT_EN_LINES = STATEMENT_EN.split('\n');
+/** First line stays white; the rest use brand orange (Figma 2602:33677). */
+const STATEMENT_EN_ACCENT_FROM = 1;
 const STATEMENT_ZH = '一起打造你的下一个广告战役';
 
 /** text-xl (1.25rem) + 25% → 1.5625rem */
@@ -128,16 +128,23 @@ export default async function ContactPage({ params }: Props) {
 
       <section className="vp-contact-hero relative flex min-h-svh flex-col bg-vp-orange text-black">
         {/*
-          Mobile: absolutely centered, max-w 16ch, natural wrap.
-          Desktop (contact-page.css, min-width 768px): normal flow, three
-          explicit EN lines, 120px / 0.9 at 1920. ZH stays one string and wraps.
+          Mobile: orange hero, centered title, bottom contact bar.
+          Desktop (contact-page.css ≥768): black hero, two-tone EN title,
+          bracketed email + phone in a row, no contact icons.
         */}
         <div className="vp-contact-hero__title-slot pointer-events-none absolute inset-0 flex items-center justify-center px-4">
           <h1 className="vp-contact-hero__title pointer-events-auto m-0 max-w-[16ch] text-center font-vp-heading text-[clamp(2.75rem,8vw,7.5rem)] font-bold uppercase leading-[0.74] tracking-normal text-black">
             {typedLocale === 'zh'
               ? STATEMENT_ZH
               : STATEMENT_EN_LINES.map((line, index) => (
-                  <span key={line} className="vp-contact-hero__line">
+                  <span
+                    key={line}
+                    className={
+                      index >= STATEMENT_EN_ACCENT_FROM
+                        ? 'vp-contact-hero__line vp-contact-hero__line--accent'
+                        : 'vp-contact-hero__line'
+                    }
+                  >
                     {line}
                     {index < STATEMENT_EN_LINES.length - 1 ? ' ' : null}
                   </span>
@@ -147,28 +154,19 @@ export default async function ContactPage({ params }: Props) {
 
         <div className="vp-contact-hero__stage">
           <div className="vp-contact-hero__brackets">
-            <CornerFrame variant="light" />
+            <CornerFrame variant="dark" />
           </div>
-          <div className="vp-contact-hero__media">
-            <Image
-              src="/brand/contact/vantage-contact-hero.png"
-              alt=""
-              width={596}
-              height={720}
-              className="vp-contact-hero__photo"
-              priority
-            />
-            <span className="vp-contact-hero__crosshair" aria-hidden="true" />
-          </div>
-          <div className="vp-contact-hero__details">
+          <div className="vp-contact-hero__card">
             {email ? (
-              <a href={`mailto:${email}`} className="vp-contact-hero__contact">
-                {email}
+              <a href={`mailto:${email}`} className="vp-contact-hero__cell">
+                <CornerFrame variant="dark" />
+                <span className="vp-contact-hero__contact">{email}</span>
               </a>
             ) : null}
             {phone && phoneLink ? (
-              <a href={phoneLink} className="vp-contact-hero__contact">
-                {phone}
+              <a href={phoneLink} className="vp-contact-hero__cell">
+                <CornerFrame variant="dark" />
+                <span className="vp-contact-hero__contact">{phone}</span>
               </a>
             ) : null}
           </div>
