@@ -1,18 +1,120 @@
 /* About hero — full-viewport symbol loupe (see AboutHeroViewport.tsx). */
 
 .vp-about-hero {
+  --vp-loupe-x: 50%;
+  --vp-loupe-y: 50%;
+  --vp-loupe-r: 0px;
   position: relative;
   width: 100%;
   height: 100svh;
   min-height: 100svh;
   overflow: hidden;
   background-color: var(--color-vp-bg, #000000);
+  color: var(--vp-text);
 }
 
 .vp-about-hero__lens {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   min-height: 0;
+}
+
+/* Quote cards — clipped to the loupe disc so they only read under the lens. */
+.vp-about-hero__quotes {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  clip-path: circle(var(--vp-loupe-r) at var(--vp-loupe-x) var(--vp-loupe-y));
+}
+
+.vp-about-hero__quote {
+  position: absolute;
+  top: var(--vp-about-hero-quote-top);
+  box-sizing: border-box;
+  width: min(
+    var(--vp-candidate-about-hero-quote-width),
+    calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
+  );
+  padding: var(--vp-candidate-about-hero-quote-pad);
+  background: var(--vp-candidate-about-hero-quote-bg);
+  backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
+  -webkit-backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
+}
+
+.vp-about-hero__quote--left {
+  left: var(--vp-about-hero-quote-inset);
+}
+
+.vp-about-hero__quote--right {
+  right: var(--vp-about-hero-quote-inset);
+}
+
+.vp-about-hero__quote-text {
+  margin: 0;
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-about-body-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-about-body-lh);
+  letter-spacing: 0;
+  color: var(--vp-text);
+}
+
+.vp-about-hero__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Bottom-left title + bottom-right caption — shared type. */
+.vp-about-hero__title,
+.vp-about-hero__caption {
+  position: absolute;
+  bottom: var(--vp-candidate-about-hero-title-bottom);
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-step-size);
+  font-weight: var(--font-vp-heading-weight);
+  line-height: var(--vp-candidate-about-step-lh);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  color: var(--vp-text);
+}
+
+.vp-about-hero__title {
+  left: var(--vp-candidate-about-hero-inset);
+  width: min(
+    var(--vp-candidate-about-hero-title-width),
+    calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
+  );
+}
+
+.vp-about-hero__caption {
+  right: var(--vp-candidate-about-hero-inset);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vp-about-hero__frame {
+  position: absolute;
+  inset: var(--vp-candidate-about-hero-frame-inset);
+  z-index: 3;
+  pointer-events: none;
+}
+
+@media (max-width: 719px) {
+  .vp-about-hero__caption {
+    right: auto;
+    left: var(--vp-candidate-about-hero-inset);
+    bottom: calc(var(--vp-candidate-about-hero-title-bottom) + 4.5rem);
+    text-align: left;
+    white-space: normal;
+    max-width: calc(100% - (2 * var(--vp-candidate-about-hero-inset)));
+  }
 }

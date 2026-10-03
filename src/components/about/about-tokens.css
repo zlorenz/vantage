@@ -52,6 +52,17 @@
   --vp-candidate-about-film-image-width: 237px;
   --vp-candidate-about-film-image-height: 320px;
   --vp-candidate-about-film-dim: 0.4;
+  /* About hero logo stage — Figma 2466:28600 (1920×1080). */
+  --vp-candidate-about-hero-inset: 30px;
+  --vp-candidate-about-hero-frame-inset: 15px;
+  --vp-candidate-about-hero-title-width: 594px;
+  /* Shared bottom for title + caption chrome. */
+  --vp-candidate-about-hero-title-bottom: clamp(1.5rem, 3.7vw, 2.5rem);
+  /* Midway between Figma 356 and the 300 outer-edge pass. */
+  --vp-candidate-about-hero-quote-width: 328px;
+  --vp-candidate-about-hero-quote-pad: 16px;
+  --vp-candidate-about-hero-quote-bg: rgba(255, 255, 255, 0.1);
+  --vp-candidate-about-hero-quote-blur: 25px;
 }
 
 @media (min-width: 1200px) {

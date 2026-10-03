@@ -1,17 +1,62 @@
 'use client';
 
 /**
- * About hero — full-viewport symbol loupe.
- * Keeps the statement block below the fold on initial page load.
+ * About hero — full-viewport symbol loupe with Figma copy overlays.
+ * Bottom title/caption stay visible. Quote cards only show through the loupe.
  */
 
+import {useTranslations} from 'next-intl';
+import type {CSSProperties} from 'react';
+import {CornerFrame} from '@/components/ui/CornerFrame';
 import {FooterLensStage} from '@/components/prototype/footer-lens/FooterLensStage';
 import './about-hero-viewport.css';
 
+/**
+ * Midway between the Figma-near spots and the outer-edge park, then nudged
+ * 15% toward the viewport midpoint — clear of the mark under loupe mag,
+ * without colliding with the nav.
+ */
+const QUOTE_SLOTS = [
+  {side: 'left', inset: 9.4, top: 17.7},
+  {side: 'left', inset: 8.7, top: 56},
+  {side: 'right', inset: 9.4, top: 15.2},
+  {side: 'right', inset: 8.9, top: 61.9},
+] as const;
+
 export function AboutHeroViewport() {
+  const t = useTranslations('About');
+  const quote = t('heroQuote');
+
   return (
     <section className="vp-about-hero" aria-label="Vantage symbol">
       <FooterLensStage className="vp-about-hero__lens" />
+
+      <div className="vp-about-hero__quotes" aria-hidden="true">
+        {QUOTE_SLOTS.map((slot, index) => (
+          <div
+            key={index}
+            className={`vp-about-hero__quote vp-about-hero__quote--${slot.side}`}
+            style={
+              {
+                '--vp-about-hero-quote-inset': `${slot.inset}%`,
+                '--vp-about-hero-quote-top': `${slot.top}%`,
+              } as CSSProperties
+            }
+          >
+            <CornerFrame variant="dark" />
+            <p className="vp-about-hero__quote-text">{quote}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="vp-about-hero__copy">
+        <p className="vp-about-hero__title">{t('heroTitle')}</p>
+        <p className="vp-about-hero__caption">{t('heroCaption')}</p>
+      </div>
+
+      <div className="vp-about-hero__frame" aria-hidden="true">
+        <CornerFrame variant="dark" />
+      </div>
     </section>
   );
 }

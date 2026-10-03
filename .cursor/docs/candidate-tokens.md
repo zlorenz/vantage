@@ -362,6 +362,13 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-film-image-width` | `237px` | Poster inside a film frame | `2466:28704` | pending | 30px pad on the 297px frame. |
 | `--vp-candidate-about-film-image-height` | `320px` | same | same | pending | |
 | `--vp-candidate-about-film-dim` | `0.4` | Non-center film frames | `opacity-40` on `2466:28697` | pending | |
+| `--vp-candidate-about-hero-inset` | `30px` | Hero title/caption side inset | `2466:28637` x=30 | pending | |
+| `--vp-candidate-about-hero-frame-inset` | `15px` | Hero corner ticks | `2466:28604` pad 15 | pending | |
+| `--vp-candidate-about-hero-title-width` | `594px` | Hero bottom title measure | `2466:28637` | pending | Title + caption type share `--vp-candidate-about-step-size` / `--vp-candidate-about-step-lh` + `--vp-text`. |
+| `--vp-candidate-about-hero-quote-width` | `328px` | Loupe-only quote cards | `2466:28609` (was 356) | pending | Midway between Figma 356 and the 300 outer-edge pass. |
+| `--vp-candidate-about-hero-quote-pad` | `16px` | same | same | pending | |
+| `--vp-candidate-about-hero-quote-bg` | `rgba(255,255,255,0.1)` | same | same | pending | |
+| `--vp-candidate-about-hero-quote-blur` | `25px` | same | `backdrop-blur` 25 | pending | |
 
 ## Contact page — desktop (pending)
 
