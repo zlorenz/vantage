@@ -129,30 +129,29 @@ export default async function ContactPage({ params }: Props) {
       <section className="vp-contact-hero relative flex min-h-svh flex-col bg-vp-orange text-black">
         {/*
           Mobile: orange hero, centered title, bottom contact bar.
-          Desktop (contact-page.css ≥768): black hero, two-tone EN title,
-          bracketed email + phone in a row, no contact icons.
+          Desktop (contact-page.css ≥768): black hero; title + contact row
+          form one cluster centered under the nav.
         */}
-        <div className="vp-contact-hero__title-slot pointer-events-none absolute inset-0 flex items-center justify-center px-4">
-          <h1 className="vp-contact-hero__title pointer-events-auto m-0 max-w-[16ch] text-center font-vp-heading text-[clamp(2.75rem,8vw,7.5rem)] font-bold uppercase leading-[0.74] tracking-normal text-black">
-            {typedLocale === 'zh'
-              ? STATEMENT_ZH
-              : STATEMENT_EN_LINES.map((line, index) => (
-                  <span
-                    key={line}
-                    className={
-                      index >= STATEMENT_EN_ACCENT_FROM
-                        ? 'vp-contact-hero__line vp-contact-hero__line--accent'
-                        : 'vp-contact-hero__line'
-                    }
-                  >
-                    {line}
-                    {index < STATEMENT_EN_LINES.length - 1 ? ' ' : null}
-                  </span>
-                ))}
-          </h1>
-        </div>
-
-        <div className="vp-contact-hero__stage">
+        <div className="vp-contact-hero__cluster">
+          <div className="vp-contact-hero__title-slot pointer-events-none absolute inset-0 flex items-center justify-center px-4">
+            <h1 className="vp-contact-hero__title pointer-events-auto m-0 max-w-[16ch] text-center font-vp-heading text-[clamp(2.75rem,8vw,7.5rem)] font-bold uppercase leading-[0.74] tracking-normal text-black">
+              {typedLocale === 'zh'
+                ? STATEMENT_ZH
+                : STATEMENT_EN_LINES.map((line, index) => (
+                    <span
+                      key={line}
+                      className={
+                        index >= STATEMENT_EN_ACCENT_FROM
+                          ? 'vp-contact-hero__line vp-contact-hero__line--accent'
+                          : 'vp-contact-hero__line'
+                      }
+                    >
+                      {line}
+                      {index < STATEMENT_EN_LINES.length - 1 ? ' ' : null}
+                    </span>
+                  ))}
+            </h1>
+          </div>
           <div className="vp-contact-hero__card">
             {email ? (
               <a href={`mailto:${email}`} className="vp-contact-hero__cell">
@@ -167,6 +166,9 @@ export default async function ContactPage({ params }: Props) {
               </a>
             ) : null}
           </div>
+        </div>
+
+        <div className="vp-contact-hero__stage">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className="vp-contact-hero__mark vp-contact-hero__mark--left"

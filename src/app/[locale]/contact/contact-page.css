@@ -8,31 +8,67 @@
  * the measured values cap and the content centers. 1px strokes stay 1px.
  */
 
+/* Contact card is desktop-only; mobile uses the bottom bar. */
+.vp-contact-hero__card {
+  display: none;
+}
+
+.vp-contact-hero__stage {
+  display: none;
+}
+
 @media (min-width: 768px) {
   section.vp-contact-hero {
     --vp-contact-scale: calc(min(100vw, 1920px) / 1920px);
     --vp-candidate-contact-hero-title-size: 120px;
     --vp-candidate-contact-hero-title-lh: 0.9;
-    --vp-candidate-contact-hero-title-top: 180px;
     --vp-candidate-contact-hero-title-width: 1860px;
     --vp-candidate-contact-hero-pad-inline: 30px;
+    --vp-candidate-contact-cluster-gap: 160px;
+    --vp-candidate-contact-card-gap: 48px;
+    --vp-candidate-contact-cell-pad: 24px;
+    --vp-candidate-contact-contact-size: 20px;
+    --vp-candidate-contact-contact-lh: 1.5;
+    --vp-candidate-contact-mark-width: 327px;
+    --vp-candidate-contact-mark-height: 171px;
+    --vp-candidate-contact-mark-opacity: 0.08;
+    --vp-candidate-contact-bracket-inset: 15px;
     background: var(--vp-black);
     color: var(--vp-text);
+    overflow: hidden;
     min-height: max(100svh, 56.25vw);
   }
 
+  section.vp-contact-hero .vp-contact-hero__bar {
+    display: none;
+  }
+
   /*
-   * Drop the viewport-centered absolute title. The box sits in normal flow,
-   * 180px from the hero top at 1920, 1860 wide, centered.
+   * Title + contact row as one block, vertically centered in the band
+   * between the nav bottom and the hero bottom.
    */
+  section.vp-contact-hero .vp-contact-hero__cluster {
+    position: absolute;
+    top: var(--vp-nav-bar-height, 80px);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--vp-candidate-contact-cluster-gap) * var(--vp-contact-scale));
+    padding-inline: calc(var(--vp-candidate-contact-hero-pad-inline) * var(--vp-contact-scale));
+    pointer-events: none;
+  }
+
   section.vp-contact-hero .vp-contact-hero__title-slot {
     position: static;
     inset: auto;
     display: block;
     height: auto;
-    padding: calc(var(--vp-candidate-contact-hero-title-top) * var(--vp-contact-scale))
-      calc(var(--vp-candidate-contact-hero-pad-inline) * var(--vp-contact-scale))
-      0;
+    padding: 0;
     pointer-events: none;
   }
 
@@ -67,53 +103,24 @@
       margin-block: calc(-11px * var(--vp-contact-scale));
     }
   }
-}
-
-.vp-contact-hero__stage {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  section.vp-contact-hero {
-    /*
-     * Contact row sits where the old crosshair center was (418 from hero
-     * bottom). Side-by-side cells hug content; gap and pad stay at 1920 px.
-     */
-    --vp-candidate-contact-card-bottom: 379px;
-    --vp-candidate-contact-card-gap: 48px;
-    --vp-candidate-contact-cell-pad: 24px;
-    --vp-candidate-contact-contact-size: 20px;
-    --vp-candidate-contact-contact-lh: 1.5;
-    --vp-candidate-contact-mark-width: 327px;
-    --vp-candidate-contact-mark-height: 171px;
-    --vp-candidate-contact-mark-opacity: 0.08;
-    --vp-candidate-contact-bracket-inset: 15px;
-    overflow: hidden;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__bar {
-    display: none;
-  }
-
-  section.vp-contact-hero .vp-contact-hero__stage {
-    display: block;
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
 
   section.vp-contact-hero .vp-contact-hero__card {
-    position: absolute;
-    bottom: calc(var(--vp-candidate-contact-card-bottom) * var(--vp-contact-scale));
-    left: 50%;
+    position: static;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: calc(var(--vp-candidate-contact-card-gap) * var(--vp-contact-scale));
     width: max-content;
-    max-width: calc(100% - 2 * var(--vp-candidate-contact-hero-pad-inline) * var(--vp-contact-scale));
-    transform: translateX(-50%);
+    max-width: 100%;
+    transform: none;
+    pointer-events: none;
+  }
+
+  section.vp-contact-hero .vp-contact-hero__stage {
+    display: block;
+    position: absolute;
+    inset: 0;
     pointer-events: none;
   }
 
