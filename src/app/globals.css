@@ -436,8 +436,12 @@
   --vp-candidate-brief-muted-30: rgba(255, 255, 255, 0.3);
   --vp-candidate-brief-line: rgba(255, 255, 255, 0.15);
   --vp-candidate-brief-rule: 0.6px solid var(--vp-candidate-brief-line);
-  --vp-candidate-brief-control-pad-top: 20px;
-  --vp-candidate-brief-control-pad-bottom: 12px;
+  --vp-candidate-brief-control-bg: rgba(255, 255, 255, 0.1);
+  --vp-candidate-brief-control-bg-hover: rgba(255, 255, 255, 0.14);
+  --vp-candidate-brief-control-bg-focus: rgba(255, 255, 255, 0.16);
+  --vp-candidate-brief-control-height: 48px;
+  --vp-candidate-brief-control-pad-block: 12px;
+  --vp-candidate-brief-control-pad-inline: 12px;
   --vp-candidate-brief-control-size: 18px;
   --vp-candidate-brief-control-lh: 1.5;
   --vp-candidate-brief-textarea-pad-bottom: 60px;
@@ -479,6 +483,32 @@
   --vp-candidate-brief-primary-hover: #ffcb55;
   --vp-candidate-brief-dropzone-active-fill: rgba(255, 255, 255, 0.03);
   --vp-candidate-brief-transition: 0.3s ease-out;
+}
+
+/*
+ * Campaign brief — mobile restyle (≤767px).
+ * Frames: S1 2602:31406, S2.1 2602:32040, S2.2 2602:32453,
+ * S3 2602:32841, Confirm 2602:33323. Tracking stays 0.
+ */
+@media (max-width: 767px) {
+  :root {
+    --vp-candidate-brief-title-size: 28px;
+    --vp-candidate-brief-intro-size: 16px;
+    --vp-candidate-brief-step-card-gap: 40px;
+    --vp-candidate-brief-section-title-size: 22px;
+    --vp-candidate-brief-card-pad: 40px 16px;
+    --vp-candidate-brief-tick-size: 8px;
+    --vp-candidate-brief-step-size: 48px;
+    --vp-candidate-brief-step-label-gap: 16px;
+    --vp-candidate-brief-caption-size: 12px;
+    --vp-candidate-brief-control-size: 16px;
+    --vp-candidate-brief-field-gap: 40px;
+    --vp-candidate-brief-field-gap-tight: 48px;
+    --vp-candidate-brief-btn-height: 60px;
+    --vp-candidate-brief-btn-pad-inline: 16px;
+    --vp-candidate-brief-btn-size: 12px;
+    --vp-candidate-brief-btn-lh: 1.6;
+  }
 }
 
 /*

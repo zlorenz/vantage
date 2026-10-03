@@ -265,16 +265,20 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-tick-size` | `12px` | Corner ticks | SVG `Rectangle 65` viewBox 12.5 | pending | |
 | `--vp-candidate-brief-tick-stroke` | `1px` | same | SVG default stroke (no `stroke-width`) | pending | |
 | `--vp-candidate-brief-tick-color` | `rgba(255,255,255,0.3)` | same | `stroke="white" stroke-opacity="0.3"` | pending | |
-| `--vp-candidate-brief-step-size` | `60px` | Step squares | S1 `2426:4353` | pending | ≤767 may still shrink; radius stays 0. |
+| `--vp-candidate-brief-step-size` | `60px` | Step squares | S1 `2426:4353` | pending | Mobile override `48px` ≤767. Radius stays 0. |
 | `--vp-candidate-brief-step-label-gap` | `20px` | Square → label | S1 step column gap | pending | |
 | `--vp-candidate-brief-caption-size` | `14px` | Step numbers, step labels, field labels, Browse | caption_2 | pending | |
 | `--vp-candidate-brief-caption-lh` | `20px` | same | same | pending | |
 | `--vp-candidate-brief-label-color` | `rgba(255,255,255,0.8)` | Field labels | white/80 | pending | |
 | `--vp-candidate-brief-muted-30` | `rgba(255,255,255,0.3)` | Placeholders, pending step numbers | white/30 | pending | Not `--vp-form-placeholder` (0.5). |
 | `--vp-candidate-brief-line` | `rgba(255,255,255,0.15)` | Underlines, pending borders, connectors | white/15 | pending | Alpha matches `--vp-struct-line`; width differs. |
-| `--vp-candidate-brief-rule` | `0.6px solid` that line | Field underlines | input border-b 0.6px | pending | |
-| `--vp-candidate-brief-control-pad-top` | `20px` | Controls | input pt | pending | |
-| `--vp-candidate-brief-control-pad-bottom` | `12px` | Controls | input pb | pending | |
+| `--vp-candidate-brief-rule` | `0.6px solid` that line | Unused for fields (kept for docs) | former input border-b | pending | Fields are fill-only now. |
+| `--vp-candidate-brief-control-bg` | `rgba(255,255,255,0.1)` | Text / select / date / textarea fill | **derived — matches blog pills** | pending | Same alpha as `--vp-candidate-blog-pill-bg`. No underline, no blur. |
+| `--vp-candidate-brief-control-bg-hover` | `rgba(255,255,255,0.14)` | Control hover fill | **derived — no Figma frame** | pending | |
+| `--vp-candidate-brief-control-bg-focus` | `rgba(255,255,255,0.16)` | Control focus fill | **derived — no Figma frame** | pending | Keyboard focus also uses the yellow focus-visible ring. |
+| `--vp-candidate-brief-control-height` | `48px` | Single-line text / select / date | **derived — filled fields** | pending | Shorter than the old 64px underline slot so fields don’t read as textareas. |
+| `--vp-candidate-brief-control-pad-block` | `12px` | Textarea top pad | **derived — filled fields** | pending | Single-line fields use equal `calc((height - 1.5em) / 2)` instead. |
+| `--vp-candidate-brief-control-pad-inline` | `12px` | Controls + chip inset | **derived — filled fields** | pending | |
 | `--vp-candidate-brief-control-size` | `18px` | Values, placeholders, dropzone prompt | body_medium | pending | Mobile floor `16px` in `globals.css` still wins ≤767.98px. |
 | `--vp-candidate-brief-control-lh` | `1.5` | same | same | pending | |
 | `--vp-candidate-brief-textarea-pad-bottom` | `60px` | Textareas | S2.2 / S3 pb-60 | pending | |
@@ -307,14 +311,37 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-dropzone-pad-inline` | `24px` | Dropzone | S3 | pending | |
 | `--vp-candidate-brief-dropzone-gap` | `16px` | Icon / prompt / Browse | S3 | pending | |
 | `--vp-candidate-brief-browse-pad` | `16px` | Browse files | S3 | pending | Border `--vp-orange`, radius 0. |
-| `--vp-candidate-brief-control-hover` | `rgba(255,255,255,0.4)` | Control + ghost hover | **derived — no Figma frame** | pending | |
-| `--vp-candidate-brief-control-focus` | `#ffffff` | Focused underline | **derived — no Figma frame** | pending | Solid white. |
+| `--vp-candidate-brief-control-hover` | `rgba(255,255,255,0.4)` | Ghost button / completed-step hover | **derived — no Figma frame** | pending | No longer used on field underlines. |
+| `--vp-candidate-brief-control-focus` | `#ffffff` | Unused (kept) | **derived — no Figma frame** | pending | Fields use fill + focus-visible ring. |
 | `--vp-candidate-brief-focus-ring` | `1px solid var(--vp-link)` | Keyboard focus-visible | **derived — no Figma frame** | pending | Buttons, checks, radios, step squares. |
 | `--vp-candidate-brief-focus-offset` | `3px` | same | **derived — no Figma frame** | pending | |
 | `--vp-candidate-brief-disabled-opacity` | `0.4` | Disabled controls and buttons | **derived — no Figma frame** | pending | No hover shift while disabled. |
 | `--vp-candidate-brief-primary-hover` | `#ffcb55` | Next / Submit hover | **derived — no Figma frame** | pending | No `--vp-yellow-80` token exists. |
 | `--vp-candidate-brief-dropzone-active-fill` | `rgba(255,255,255,0.03)` | Dropzone drag-over | **derived — no Figma frame** | pending | Border becomes `--vp-link`. |
 | `--vp-candidate-brief-transition` | `0.3s ease-out` | Form interaction | **derived — no Figma frame** | pending | Distinct from `--vp-transition` (`0.3s ease`). Honors `prefers-reduced-motion`. |
+
+### Campaign brief form — mobile overrides (≤767px)
+
+Frames: S1 `2602:31406`, S2.1 `2602:32040`, S2.2 `2602:32453`, S3 `2602:32841`, Confirm `2602:33323` (402px). Declared in `globals.css` `@media (max-width: 767px)`. Tracking stays **0**. Desktop tweaks kept: filled form icons, no below-control helpers, discovery optional, empty/`Select…` placeholders, active step `border: none`, connector colors, textarea `field-sizing`, disabled 0.4, confirm max-width 36rem, white 0.3 ticks (not Figma confirm yellow).
+
+| Candidate name | Mobile value | Source | Notes |
+|---|---|---|---|
+| `--vp-candidate-brief-title-size` | `28px` | S1 h2 | |
+| `--vp-candidate-brief-intro-size` | `16px` | S1 body_medium | Matches the sitewide 16px input floor. |
+| `--vp-candidate-brief-step-card-gap` | `40px` | S1 column gap | |
+| `--vp-candidate-brief-section-title-size` | `22px` | S1 h5 | |
+| `--vp-candidate-brief-card-pad` | `40px 16px` | S1 card | |
+| `--vp-candidate-brief-tick-size` | `8px` | S1 tick SVGs | |
+| `--vp-candidate-brief-step-size` | `48px` | S1 squares | |
+| `--vp-candidate-brief-step-label-gap` | `16px` | S1 step column | |
+| `--vp-candidate-brief-caption-size` | `12px` | caption_2 | Labels, step captions, Browse. |
+| `--vp-candidate-brief-control-size` | `16px` | body_medium | |
+| `--vp-candidate-brief-field-gap` | `40px` | S1 field stack | Nav margin forced to `60px` in form CSS. |
+| `--vp-candidate-brief-field-gap-tight` | `48px` | S1 title → fields | Used for every step title on mobile. |
+| `--vp-candidate-brief-btn-height` | `60px` | S1 Next | |
+| `--vp-candidate-brief-btn-pad-inline` | `16px` | S1 Next | |
+| `--vp-candidate-brief-btn-size` | `12px` | caption_1 | |
+| `--vp-candidate-brief-btn-lh` | `1.6` | caption_1 | |
 
 ## About page — desktop restyle (pending)
 
