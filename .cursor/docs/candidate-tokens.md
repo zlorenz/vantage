@@ -373,33 +373,35 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 
 ## Contact page — desktop (pending)
 
-Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2371-23781  
+Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2602-33639  
 Defined in `src/app/[locale]/contact/contact-page.css` inside `@media (min-width: 768px)` only. Mobile Contact is unchanged. Special Gothic tracking stays **0**. Values below are the 1920 artboard numbers; layout multiplies them by `min(100vw, 1920px) / 1920`.
 
-**Reuse (no new name):** `--vp-orange` hero fill; `--font-vp-heading` + `--font-vp-heading-weight` + `font-synthesis: none`.
+**Reuse (no new name):** `--vp-black` hero fill; `--vp-orange` for H1 accent lines; `--font-vp-heading` + `--font-vp-heading-weight` + `font-synthesis: none`. Shared header (white wordmark) — no contact-only tint. Contact icons omitted by product choice.
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-contact-hero-title-size` | `120px` | Contact H1, desktop | `2371:23837` | pending | Cap at 1920. Line breaks are explicit for EN only. |
+| `--vp-candidate-contact-hero-title-size` | `120px` | Contact H1, desktop | `2602:33677` | pending | Cap at 1920. Line breaks are explicit for EN only. Line 1 white; lines 2–3 `--vp-orange`. |
 | `--vp-candidate-contact-hero-title-lh` | `0.9` | same | same, line-height 90% | pending | Paired with `text-box-trim: trim-both` / `text-box-edge: cap alphabetic` so the box is ~302px at 1920. |
-| `--vp-candidate-contact-hero-title-top` | `160px` | H1 offset from hero top | `2371:23837` y | pending | |
-| `--vp-candidate-contact-hero-title-width` | `1860px` | H1 measure | `2371:23837` width | pending | 30px side inset at 1920. |
+| `--vp-candidate-contact-hero-title-top` | `180px` | H1 offset from hero top | `2602:33677` y | pending | |
+| `--vp-candidate-contact-hero-title-width` | `1860px` | H1 measure | `2602:33677` width | pending | 30px side inset at 1920. |
 | `--vp-candidate-contact-hero-pad-inline` | `30px` | Hero side inset | same | pending | |
-| `--vp-candidate-contact-media-bottom` | `131px` | Hero still, offset from the hero bottom | `2371:24205` | pending | 1080 − 589 − 360. Does not grow with viewport height. The crosshair rides the still. Contact lines share the still's vertical center. |
-| `--vp-candidate-contact-media-width` | `298px` | Hero still | same | pending | 2x file is 596px. |
-| `--vp-candidate-contact-media-height` | `360px` | Hero still | same | pending | |
-| `--vp-candidate-contact-crosshair` | `100px` | Crosshair on the still's top edge | `2371:24202` | pending | 1px, white 50%. |
-| `--vp-candidate-contact-contact-size` | `20px` | Email and phone | h6 `2371:24227` | pending | Line-height 1.5. Tracking stays 0. Icons removed. |
-| `--vp-candidate-contact-mark-width` | `327px` | Bottom corner marks | `2382:27070` | pending | Height 171. Opacity 0.15, luminosity. `#F37021` stays inside the SVG. |
-| `--vp-candidate-contact-bracket-inset` | `15px` | Hero bracket inset | `2371:23786` | pending | Top edge is header height + 13.5px, not scaled. |
-| `--vp-candidate-contact-section-pad` | `160px` | CTA block padding | `2439:5046` | pending | Contact-scoped. Does not change `--vp-section-y`. |
-| `--vp-candidate-contact-frame-width` | `1236px` | Dashed CTA frame | `2439:5047` | pending | Centered. Side margin 342px at 1920. |
+| `--vp-candidate-contact-card-bottom` | `47px` | Bracketed contact card | `2602:33649` | pending | 1080 − 843 − 190. Centered, width 422, gap 32, cell pad 24. No icons. |
+| `--vp-candidate-contact-card-width` | `422px` | same | same | pending | |
+| `--vp-candidate-contact-card-gap` | `32px` | Email / phone cells | same | pending | |
+| `--vp-candidate-contact-cell-pad` | `24px` | same | same | pending | White/30 brackets via `CornerFrame` dark. |
+| `--vp-candidate-contact-crosshair` | `80px` | Hero crosshair | `2602:33674` | pending | 1px, white 50%. Center 418px from hero bottom. |
+| `--vp-candidate-contact-crosshair-bottom` | `418px` | Crosshair center from hero bottom | derived | pending | Card bottom + card height + 181. |
+| `--vp-candidate-contact-contact-size` | `20px` | Email and phone | h6 `2602:33655` | pending | Line-height 1.5. Tracking stays 0. Icons omitted. |
+| `--vp-candidate-contact-mark-width` | `327px` | Bottom corner marks | `2602:33679` | pending | Height 171. Opacity 0.08, luminosity. |
+| `--vp-candidate-contact-bracket-inset` | `15px` | Hero bracket inset | `2602:33644` | pending | Top edge is header height + 13.5px, not scaled. |
+| `--vp-candidate-contact-section-pad` | `160px` | CTA block padding | `2602:33735` | pending | Contact-scoped. Does not change `--vp-section-y`. |
+| `--vp-candidate-contact-frame-width` | `1236px` | Dashed CTA frame | `2602:33736` | pending | Centered. Side margin 342px at 1920. |
 | `--vp-candidate-contact-frame-pad` | `30px` | same | same | pending | |
-| `--vp-candidate-contact-dash` | `5px` | Dashed stroke dash | `2439:5047` dash `[5, 2]` | pending | Gap is `--vp-candidate-contact-dash-gap` `2px`. Drawn as an SVG rect, stroke White/15 (`--vp-candidate-brief-line`). |
+| `--vp-candidate-contact-dash` | `5px` | Dashed stroke dash | same dash `[5, 2]` | pending | Gap is `--vp-candidate-contact-dash-gap` `2px`. Drawn as an SVG rect, stroke White/15 (`--vp-candidate-brief-line`). |
 | `--vp-candidate-contact-dash-gap` | `2px` | Dashed stroke gap | same | pending | |
-| `--vp-candidate-contact-inner-pad-block` | `60px` | Type column | `2439:5053` | pending | Inline pad 40px. |
+| `--vp-candidate-contact-inner-pad-block` | `60px` | Type column | CTA inner | pending | Inline pad 40px. |
 | `--vp-candidate-contact-inner-pad-inline` | `40px` | same | same | pending | |
-| `--vp-candidate-contact-copy-gap` | `24px` | Heading to body | `2439:5054` | pending | |
-| `--vp-candidate-contact-action-gap` | `60px` | Body to button | `2439:5053` | pending | |
-| `--vp-candidate-contact-body-width` | `632px` | CTA body measure | `2439:5056` | pending | Color reuses `--vp-candidate-about-white-50`, not `--vp-text-muted`. |
-| `--vp-candidate-contact-ruler-width` | `1074px` | Tick ruler clip | `2439:5071` | pending | Rulers reuse `CornerFrame` at its 4px inset. |
+| `--vp-candidate-contact-copy-gap` | `24px` | Heading to body | same | pending | |
+| `--vp-candidate-contact-action-gap` | `60px` | Body to button | same | pending | |
+| `--vp-candidate-contact-body-width` | `632px` | CTA body measure | same | pending | Color reuses `--vp-candidate-about-white-50`, not `--vp-text-muted`. |
+| `--vp-candidate-contact-ruler-width` | `1074px` | Tick ruler clip | same | pending | Rulers reuse `CornerFrame` at its 4px inset. |
