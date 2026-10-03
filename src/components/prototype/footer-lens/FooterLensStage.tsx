@@ -6,7 +6,7 @@
  */
 
 import {useEffect, useRef} from 'react';
-import {createFooterLensEngine} from './footer-lens-engine';
+import {createFooterLensEngine, footerLensRadiusCss} from './footer-lens-engine';
 import {createGradientBgEngine} from './gradient-bg-engine';
 import './footer-lens.css';
 
@@ -60,6 +60,8 @@ export function FooterLensStage({
     let lastTick = 0;
 
     const heroRect = () => wrap.getBoundingClientRect();
+    const loupeHost = () =>
+      (wrap.closest('.vp-about-hero') as HTMLElement | null) ?? wrap;
 
     const pointInHero = (clientX: number, clientY: number) => {
       const rect = heroRect();
@@ -69,6 +71,14 @@ export function FooterLensStage({
         clientY >= rect.top &&
         clientY <= rect.bottom
       );
+    };
+
+    const syncLoupeVars = (active: boolean) => {
+      const host = loupeHost();
+      const r = active ? footerLensRadiusCss(cssW, cssH) : 0;
+      host.style.setProperty('--vp-loupe-x', `${smoothX}px`);
+      host.style.setProperty('--vp-loupe-y', `${smoothY}px`);
+      host.style.setProperty('--vp-loupe-r', `${r}px`);
     };
 
     const syncSize = () => {
@@ -93,6 +103,7 @@ export function FooterLensStage({
       } catch (err) {
         console.error('[footer-lens] lens resize failed', err);
       }
+      syncLoupeVars(tracked);
       // A single synchronous draw can be dropped before the canvas is
       // composited. Keep painting a few frames so the hero cannot stick blank.
       if (!tracked) {
@@ -123,6 +134,7 @@ export function FooterLensStage({
         gradient?.setPointer({x: smoothX, y: smoothY}, cssW, cssH);
         gradient?.frame();
         lens.drawAt(smoothX, smoothY, true);
+        syncLoupeVars(true);
 
         raf = requestAnimationFrame(tick);
         return;
@@ -137,6 +149,7 @@ export function FooterLensStage({
       gradient?.setPointer(null, cssW, cssH);
       gradient?.frame();
       lens.drawAt(smoothX, smoothY, false);
+      syncLoupeVars(false);
       idleSettleFrames -= 1;
       raf = requestAnimationFrame(tick);
     };
@@ -189,6 +202,10 @@ export function FooterLensStage({
       window.removeEventListener('pointermove', onWindowPointer, true);
       document.removeEventListener('pointerleave', onLeaveDocument);
       stopLoop();
+      const host = loupeHost();
+      host.style.removeProperty('--vp-loupe-x');
+      host.style.removeProperty('--vp-loupe-y');
+      host.style.removeProperty('--vp-loupe-r');
       lens.destroy();
       gradient?.destroy();
     };

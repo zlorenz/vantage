@@ -132,6 +132,11 @@ function lensRadiusCss(logoW: number): number {
   return Math.min(logoW, refLogoW) * LENS_R_FRAC;
 }
 
+/** Public loupe radius for layers that clip to the same disc (e.g. hero quote cards). */
+export function footerLensRadiusCss(cssW: number, cssH: number): number {
+  return lensRadiusCss(logoFit(cssW, cssH).logoW);
+}
+
 type Cache = {
   logoX: number;
   logoY: number;
