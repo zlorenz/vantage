@@ -54,7 +54,8 @@ export function AboutHowWeMoveAccordion({
   items,
 }: AboutHowWeMoveAccordionProps) {
   const baseId = useId();
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  /* Figma mobile opens Discover; desktop keeps the same default. */
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   function toggleItem(index: number) {
     setOpenIndex((current) => (current === index ? null : index));

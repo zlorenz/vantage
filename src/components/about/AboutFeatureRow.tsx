@@ -1,12 +1,10 @@
 /**
  * Production Services / Production Log feature row.
- *
- * Below 1200px the original stacked markup is rendered as-is.
- * At lg a second tree shows the Figma row (image, copy, edge mosaic).
- * `hidden` / `lg:hidden` keep only one tree visible and exposed.
+ * Mobile: Figma 2602:27835 stacked image → copy → CTA.
+ * Desktop: image, copy, edge mosaic at lg.
  */
 
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps } from 'react';
 import Image from 'next/image';
 import { CornerFrame } from '@/components/ui/CornerFrame';
 import { Link } from '@/i18n/navigation';
@@ -26,7 +24,6 @@ type AboutFeatureRowProps = {
   mirrored?: boolean;
   tone: 'yellow' | 'white';
   wash?: boolean;
-  mobile: ReactNode;
 };
 
 export function AboutFeatureRow({
@@ -39,15 +36,13 @@ export function AboutFeatureRow({
   mirrored = false,
   tone,
   wash = false,
-  mobile,
 }: AboutFeatureRowProps) {
   return (
     <div className={mirrored ? 'vp-about-feature vp-about-feature--mirrored' : 'vp-about-feature'}>
-      <div className="lg:hidden">{mobile}</div>
-      <div className="vp-about-feature__desktop hidden lg:flex">
+      <div className="vp-about-feature__row">
         <div className="vp-about-feature__media">
           <div className="vp-about-feature__photo">
-            <Image src={imageSrc} alt={imageAlt} fill sizes="640px" className="object-cover" />
+            <Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 1199px) 100vw, 640px" className="object-cover" />
             {wash ? <span className="vp-about-feature__wash" /> : null}
             <CornerFrame variant="dark" crosshair={{ size: 40, color: 'var(--vp-text)' }} />
           </div>
@@ -70,6 +65,7 @@ export function AboutFeatureRow({
               ? 'vp-about-feature__pattern vp-about-feature__pattern--start'
               : 'vp-about-feature__pattern vp-about-feature__pattern--end'
           }
+          aria-hidden="true"
         >
           <AboutFeatureMark mirrored={mirrored} />
         </div>

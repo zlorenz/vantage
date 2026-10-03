@@ -324,19 +324,31 @@ function FilmStrip({
         data-film-strip-track={side}
         style={{ '--film-center-index': centerIndex } as CSSProperties}
       >
-        {sequence.map((frame, index) => (
-          <div key={`${side}-${index}`} className="vp-about-statement__frame">
-            <div className="vp-about-statement__frame-media">
-              <Image
-                src={frame.src}
-                alt=""
-                fill
-                sizes="297px"
-                className="object-cover"
-              />
+        {sequence.map((frame, index) => {
+          const isCenter = index % frames.length === FILM_CENTER_INDEX;
+          return (
+            <div
+              key={`${side}-${index}`}
+              className={`vp-about-statement__frame${isCenter ? ' is-center' : ''}`}
+            >
+              <div className="vp-about-statement__frame-media">
+                <Image
+                  src={frame.src}
+                  alt=""
+                  fill
+                  sizes="(max-width: 1199px) 200px, 297px"
+                  className="object-cover"
+                />
+              </div>
+              {isCenter ? (
+                <CornerFrame
+                  variant="dark"
+                  crosshair={{size: 40, color: 'var(--vp-text)'}}
+                />
+              ) : null}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -425,7 +437,6 @@ export function AboutStatementAnimated({
   const sectionClass = [
     'vp-about-statement',
     'bg-vp-bg',
-    'px-[var(--spacing-vp-gutter)]',
     'text-vp-text',
     reducedMotion ? 'vp-about-statement--reduced-motion' : '',
   ]
@@ -434,29 +445,29 @@ export function AboutStatementAnimated({
 
   return (
     <section ref={sectionRef} className={sectionClass}>
-      <div className="vp-about-statement__stage" aria-hidden="true">
+      <div className="vp-about-statement__stage">
         <FilmStrip side="left" frames={filmStrips.left} />
+        <div className="vp-content-rail vp-about-statement__inner text-center">
+          <h1 className="vp-about-statement__heading">
+            {lines.map((line, lineIndex) => (
+              <StatementLine
+                key={lineIndex}
+                lineIndex={lineIndex}
+                words={line.words}
+                reducedMotion={reducedMotion}
+                markers={markers}
+              />
+            ))}
+            <AccentLine reducedMotion={reducedMotion} />
+          </h1>
+        </div>
         <FilmStrip side="right" frames={filmStrips.right} />
-        <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-left" />
-        <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" />
-        <span className="vp-about-statement__baseline" />
-        <div className="vp-about-statement__rulers">
+        <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-left" aria-hidden="true" />
+        <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" aria-hidden="true" />
+        <span className="vp-about-statement__baseline" aria-hidden="true" />
+        <div className="vp-about-statement__rulers" aria-hidden="true">
           <CornerFrame variant="dark" rulers={{ top: true, bottom: true }} />
         </div>
-      </div>
-      <div className="vp-content-rail vp-about-statement__inner text-center">
-        <h1 className="vp-about-statement__heading">
-          {lines.map((line, lineIndex) => (
-            <StatementLine
-              key={lineIndex}
-              lineIndex={lineIndex}
-              words={line.words}
-              reducedMotion={reducedMotion}
-              markers={markers}
-            />
-          ))}
-          <AccentLine reducedMotion={reducedMotion} />
-        </h1>
       </div>
     </section>
   );

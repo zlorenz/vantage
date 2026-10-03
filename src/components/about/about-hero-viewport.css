@@ -1,4 +1,5 @@
-/* About hero — full-viewport symbol loupe (see AboutHeroViewport.tsx). */
+/* About hero — full-viewport symbol loupe (see AboutHeroViewport.tsx).
+ * Mobile: Figma 2602:26414. Desktop: Figma 2466:28600 + product tweaks. */
 
 .vp-about-hero {
   --vp-loupe-x: 50%;
@@ -22,41 +23,57 @@
   min-height: 0;
 }
 
-/* Quote cards — clipped to the loupe disc so they only read under the lens. */
+/* Desktop loupe quote cards — hidden on mobile (hotspots take over). */
 .vp-about-hero__quotes {
+  display: none;
+}
+
+/* Mobile hotspot dots + tooltip (Figma 2602:29252). */
+.vp-about-hero__hotspots {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  clip-path: circle(var(--vp-loupe-r) at var(--vp-loupe-x) var(--vp-loupe-y));
 }
 
-.vp-about-hero__quote {
+.vp-about-hero__hotspot {
   position: absolute;
-  top: var(--vp-about-hero-quote-top);
+  z-index: 2;
+  width: var(--vp-candidate-about-hero-hotspot-size);
+  height: var(--vp-candidate-about-hero-hotspot-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--vp-text);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.vp-about-hero__hotspot.is-open {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25);
+}
+
+.vp-about-hero__tooltip {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  z-index: 3;
   box-sizing: border-box;
-  width: min(
-    var(--vp-candidate-about-hero-quote-width),
-    calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
-  );
+  width: min(var(--vp-candidate-about-hero-tooltip-width), calc(100% - 2rem));
   padding: var(--vp-candidate-about-hero-quote-pad);
   background: var(--vp-candidate-about-hero-quote-bg);
   backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
   -webkit-backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
+  transform: translateX(-50%);
+  pointer-events: auto;
 }
 
-.vp-about-hero__quote--left {
-  left: var(--vp-about-hero-quote-inset);
-}
-
-.vp-about-hero__quote--right {
-  right: var(--vp-about-hero-quote-inset);
-}
-
-.vp-about-hero__quote-text {
+.vp-about-hero__tooltip-text {
   margin: 0;
   font-family: var(--font-vp-sans);
-  font-size: var(--vp-candidate-about-body-size);
+  font-size: var(--vp-candidate-about-hero-mobile-body-size);
   font-weight: 400;
   line-height: var(--vp-candidate-about-body-lh);
   letter-spacing: 0;
@@ -65,21 +82,25 @@
 
 .vp-about-hero__copy {
   position: absolute;
-  inset: 0;
+  left: var(--vp-candidate-about-hero-mobile-inset);
+  right: var(--vp-candidate-about-hero-mobile-inset);
+  bottom: calc(
+    var(--vp-candidate-about-hero-mobile-copy-bottom) +
+      var(--vp-candidate-about-hero-scroll-size)
+  );
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vp-candidate-about-hero-mobile-copy-gap);
   pointer-events: none;
 }
 
-/* Bottom-left title + bottom-right caption — shared type. */
 .vp-about-hero__title,
 .vp-about-hero__caption {
-  position: absolute;
-  bottom: var(--vp-candidate-about-hero-title-bottom);
+  position: static;
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-step-size);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-step-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-box-trim: trim-both;
@@ -88,24 +109,24 @@
 }
 
 .vp-about-hero__title {
-  left: var(--vp-candidate-about-hero-inset);
-  width: min(
-    var(--vp-candidate-about-hero-title-width),
-    calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
-  );
+  width: 100%;
+  font-size: var(--vp-candidate-about-hero-mobile-title-size);
+  line-height: var(--vp-candidate-about-hero-mobile-title-lh);
 }
 
 .vp-about-hero__caption {
-  right: var(--vp-candidate-about-hero-inset);
-  text-align: right;
-  white-space: nowrap;
+  width: 100%;
+  font-size: var(--vp-candidate-about-hero-mobile-caption-size);
+  line-height: var(--vp-candidate-about-hero-mobile-caption-lh);
+  text-align: left;
+  white-space: normal;
 }
 
-/* Centered scroll cue — decorative only. */
+/* Centered scroll cue — decorative only. Kept from desktop product tweak. */
 .vp-about-hero__scroll {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--vp-candidate-about-hero-title-bottom) / 2);
+  bottom: calc(var(--vp-candidate-about-hero-mobile-copy-bottom) / 2);
   z-index: 2;
   display: flex;
   align-items: center;
@@ -147,18 +168,93 @@
 
 .vp-about-hero__frame {
   position: absolute;
-  inset: var(--vp-candidate-about-hero-frame-inset);
+  inset: var(--vp-candidate-about-hero-mobile-frame-inset);
   z-index: 3;
   pointer-events: none;
 }
 
-@media (max-width: 719px) {
+@media (min-width: 1200px) {
+  .vp-about-hero__hotspots {
+    display: none;
+  }
+
+  .vp-about-hero__quotes {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    clip-path: circle(var(--vp-loupe-r) at var(--vp-loupe-x) var(--vp-loupe-y));
+  }
+
+  .vp-about-hero__quote {
+    position: absolute;
+    top: var(--vp-about-hero-quote-top);
+    box-sizing: border-box;
+    width: min(
+      var(--vp-candidate-about-hero-quote-width),
+      calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
+    );
+    padding: var(--vp-candidate-about-hero-quote-pad);
+    background: var(--vp-candidate-about-hero-quote-bg);
+    backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
+    -webkit-backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
+  }
+
+  .vp-about-hero__quote--left {
+    left: var(--vp-about-hero-quote-inset);
+  }
+
+  .vp-about-hero__quote--right {
+    right: var(--vp-about-hero-quote-inset);
+  }
+
+  .vp-about-hero__quote-text {
+    margin: 0;
+    font-family: var(--font-vp-sans);
+    font-size: var(--vp-candidate-about-body-size);
+    font-weight: 400;
+    line-height: var(--vp-candidate-about-body-lh);
+    letter-spacing: 0;
+    color: var(--vp-text);
+  }
+
+  .vp-about-hero__copy {
+    /* Fill the hero so absolutely placed title/caption resolve against it. */
+    inset: 0;
+    display: block;
+    gap: 0;
+  }
+
+  /* Bottom-left title + bottom-right caption — shared small white type. */
+  .vp-about-hero__title,
   .vp-about-hero__caption {
-    right: auto;
+    position: absolute;
+    bottom: var(--vp-candidate-about-hero-title-bottom);
+    font-size: var(--vp-candidate-about-step-size);
+    line-height: var(--vp-candidate-about-step-lh);
+  }
+
+  .vp-about-hero__title {
     left: var(--vp-candidate-about-hero-inset);
-    bottom: calc(var(--vp-candidate-about-hero-title-bottom) + 4.5rem);
-    text-align: left;
-    white-space: normal;
-    max-width: calc(100% - (2 * var(--vp-candidate-about-hero-inset)));
+    width: min(
+      var(--vp-candidate-about-hero-title-width),
+      calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
+    );
+  }
+
+  .vp-about-hero__caption {
+    right: var(--vp-candidate-about-hero-inset);
+    width: auto;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .vp-about-hero__scroll {
+    bottom: calc(var(--vp-candidate-about-hero-title-bottom) / 2);
+  }
+
+  .vp-about-hero__frame {
+    inset: var(--vp-candidate-about-hero-frame-inset);
   }
 }

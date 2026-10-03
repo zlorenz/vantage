@@ -1,89 +1,201 @@
+/* More About — mobile frame + desktop five-cell row. */
+
+section.vp-about-more-section {
+  padding-block: var(--vp-candidate-about-mobile-pad-block);
+}
+
+.vp-about-more {
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--vp-candidate-about-hero-mobile-inset);
+}
+
+.vp-about-more__frame {
+  position: relative;
+  width: 100%;
+  padding: var(--vp-candidate-about-hero-mobile-inset);
+  border: 1px dashed var(--vp-candidate-brief-line);
+}
+
+.vp-about-more__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: center;
+  padding: 40px 16px;
+}
+
+.vp-about-more__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  max-width: 632px;
+  text-align: center;
+}
+
+.vp-about-more__title {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-mobile-display-size);
+  font-weight: var(--font-vp-heading-weight);
+  line-height: var(--vp-candidate-about-display-lh);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--vp-link);
+}
+
+.vp-about-more__dek {
+  margin: 0;
+  font-family: var(--font-vp-sans);
+  font-size: var(--vp-candidate-about-mobile-body-size);
+  font-weight: 400;
+  line-height: var(--vp-candidate-about-body-lh);
+  color: var(--vp-candidate-about-white-50);
+}
+
+.vp-about-more__plus {
+  position: relative;
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  color: var(--vp-link);
+}
+
+.vp-about-more__plus::before,
+.vp-about-more__plus::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.vp-about-more__plus::before {
+  width: 40px;
+  height: 1.5px;
+}
+
+.vp-about-more__plus::after {
+  width: 1.5px;
+  height: 40px;
+}
+
+/* Absolute frame crosshair fights the tight mobile stack — use the in-flow plus. */
+.vp-about-more__frame > .vp-corner-frame .vp-corner-frame__crosshair {
+  display: none;
+}
+
+.vp-about-more__links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  border-top: 1px solid var(--vp-candidate-brief-line);
+  border-bottom: 1px solid var(--vp-candidate-brief-line);
+}
+
+.vp-about-more__links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: 20px 12px;
+  border-right: 1px solid var(--vp-candidate-brief-line);
+  border-bottom: 1px solid var(--vp-candidate-brief-line);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-step-size);
+  font-weight: var(--font-vp-heading-weight);
+  line-height: var(--vp-candidate-about-step-lh);
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--vp-text);
+  transition: color var(--vp-transition);
+}
+
+.vp-about-more__links a:nth-child(2n) {
+  border-right: 0;
+}
+
+.vp-about-more__links a:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.vp-about-more__links a:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  border-right: 0;
+}
+
+.vp-about-more__links a:hover {
+  color: var(--vp-link);
+}
+
 @media (min-width: 1200px) {
   section.vp-about-more-section {
     padding: 0;
     border-top-color: transparent;
   }
 
-  .vp-about-more__desktop {
-    justify-content: center;
+  .vp-about-more {
     padding-block: var(--vp-candidate-about-section-pad-block);
+    padding-inline: 0;
   }
 
   .vp-about-more__frame {
-    position: relative;
     width: min(1236px, calc(100% - 48px));
     padding: var(--vp-candidate-about-cell-pad);
-    border: 1px dashed var(--vp-candidate-brief-line);
   }
 
   .vp-about-more__inner {
-    display: flex;
-    flex-direction: column;
     gap: 248px;
-    align-items: center;
     padding: 80px 40px;
   }
 
+  .vp-about-more__plus {
+    display: none;
+  }
+
+  .vp-about-more__frame > .vp-corner-frame .vp-corner-frame__crosshair {
+    display: block;
+  }
+
   .vp-about-more__intro {
-    display: flex;
-    flex-direction: column;
     gap: 24px;
-    align-items: center;
-    max-width: 632px;
-    text-align: center;
   }
 
   .vp-about-more__title {
-    margin: 0;
-    font-family: var(--font-vp-heading);
     font-size: var(--vp-candidate-about-display-size);
-    font-weight: var(--font-vp-heading-weight);
-    line-height: var(--vp-candidate-about-display-lh);
-    letter-spacing: 0;
-    text-transform: uppercase;
-    color: var(--vp-link);
   }
 
   .vp-about-more__dek {
-    margin: 0;
-    font-family: var(--font-vp-sans);
     font-size: var(--vp-candidate-about-dek-size);
-    font-weight: 400;
     line-height: var(--vp-candidate-about-dek-lh);
-    color: var(--vp-candidate-about-white-50);
   }
 
   .vp-about-more__links {
     display: flex;
-    width: 100%;
-    border-top: 1px solid var(--vp-candidate-brief-line);
-    border-bottom: 1px solid var(--vp-candidate-brief-line);
+    grid-template-columns: none;
   }
 
   .vp-about-more__links a {
-    display: flex;
     flex: 1;
-    align-items: center;
-    justify-content: center;
+    min-height: 0;
     padding: 32px var(--vp-candidate-about-cell-pad);
+    border-bottom: 0;
+  }
+
+  .vp-about-more__links a:nth-child(2n),
+  .vp-about-more__links a:nth-last-child(-n + 2),
+  .vp-about-more__links a:last-child:nth-child(odd) {
+    grid-column: auto;
     border-right: 1px solid var(--vp-candidate-brief-line);
-    font-family: var(--font-vp-heading);
-    font-size: var(--vp-candidate-about-step-size);
-    font-weight: var(--font-vp-heading-weight);
-    line-height: var(--vp-candidate-about-step-lh);
-    letter-spacing: 0;
-    text-align: center;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--vp-text);
-    transition: color var(--vp-transition);
+    border-bottom: 0;
   }
 
   .vp-about-more__links a:last-child {
     border-right: 0;
-  }
-
-  .vp-about-more__links a:hover {
-    color: var(--vp-link);
   }
 }

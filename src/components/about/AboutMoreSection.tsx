@@ -1,7 +1,7 @@
 /**
  * More About Vantage.
- * Below 1200px: centered heading and wrapping text links.
- * At lg: dashed frame, rulers, yellow crosshair, and a five-cell row.
+ * Mobile + desktop share the dashed frame; desktop adds the five-cell row.
+ * Figma mobile 2602:27387 (keep black — product tweak).
  */
 
 import type { ComponentProps } from 'react';
@@ -16,9 +16,6 @@ export type AboutMoreLink = {
   href: LinkHref;
 };
 
-const linkClassName =
-  'text-vp-link no-underline transition-colors duration-vp-default hover:text-vp-link-hover';
-
 type AboutMoreSectionProps = {
   title: string;
   body: string;
@@ -27,43 +24,29 @@ type AboutMoreSectionProps = {
 
 export function AboutMoreSection({ title, body, links }: AboutMoreSectionProps) {
   return (
-    <>
-      <div className="text-center lg:hidden">
-        <h2 className="mb-3 font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading text-white">
-          {title}
-        </h2>
-        <p className="m-0 font-light leading-relaxed text-vp-text-muted">{body}</p>
-        <p className="m-0 mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-normal">
-          {links.map((link) => (
-            <Link key={link.label} href={link.href} className={linkClassName}>
-              {link.label}
-            </Link>
-          ))}
-        </p>
-      </div>
-
-      <div className="vp-about-more__desktop hidden lg:flex">
-        <div className="vp-about-more__frame">
-          <CornerFrame
-            variant="dark"
-            rulers={{ top: true, bottom: true }}
-            crosshair={{ size: 60, color: 'var(--vp-link)' }}
-          />
-          <div className="vp-about-more__inner">
-            <div className="vp-about-more__intro">
-              <h2 className="vp-about-more__title">{title}</h2>
-              <p className="vp-about-more__dek">{body}</p>
-            </div>
-            <nav className="vp-about-more__links" aria-label={title}>
-              {links.map((link) => (
-                <Link key={link.label} href={link.href}>
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+    <div className="vp-about-more">
+      <div className="vp-about-more__frame">
+        <CornerFrame
+          variant="dark"
+          rulers={{ top: true, bottom: true }}
+          crosshair={{ size: 60, color: 'var(--vp-link)' }}
+        />
+        <div className="vp-about-more__inner">
+          <div className="vp-about-more__intro">
+            <h2 className="vp-about-more__title">{title}</h2>
+            <p className="vp-about-more__dek">{body}</p>
           </div>
+          {/* Mobile: in-flow plus. Desktop uses the CornerFrame crosshair in the tall gap. */}
+          <span className="vp-about-more__plus" aria-hidden="true" />
+          <nav className="vp-about-more__links" aria-label={title}>
+            {links.map((link) => (
+              <Link key={link.label} href={link.href}>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
-    </>
+    </div>
   );
 }

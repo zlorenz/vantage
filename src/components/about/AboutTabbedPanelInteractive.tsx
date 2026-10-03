@@ -4,6 +4,9 @@
  * About tabbed panel — click-driven menu with image + description swap.
  * Shared by Who We Are (menu left) and Production House (menu right) sections.
  *
+ * Mobile (Figma 2602:27420): accordion — panel sits under the selected tab.
+ * Desktop: side-by-side menu + description/media via display:contents grid.
+ *
  * Selection changes on click only (WAI-ARIA manual activation). Arrow keys
  * move focus inside the tablist; Enter or Space activates the focused tab.
  * Hover restyles inactive rows so they still read as clickable.
@@ -148,6 +151,7 @@ const THEME_CLASSES: Record<
   dark: {
     tabDefault: ' text-white/20',
     tabInactiveHover: ' hover:text-white/40',
+    /* Inverted active row on black (mobile accordion + desktop menu). */
     tabSelected: ' is-selected bg-white text-black',
     description: ' text-vp-text-muted',
   },
@@ -249,25 +253,25 @@ export function AboutTabbedPanelInteractive({
             {eyebrow}
           </p>
         ) : null}
-        <h2
-          id={headingId}
-          className="vp-about-tabs__heading m-0 mb-8 font-vp-heading text-[clamp(2.325rem,4.07vw,3.49rem)] font-bold uppercase leading-[1.15] tracking-normal"
-        >
+        <h2 id={headingId} className="vp-about-tabs__heading">
           {heading}
         </h2>
       </div>
 
-      <div className="vp-about-tabs__layout grid grid-cols-1 gap-8" data-image={imagePosition}>
-        <div className="vp-about-tabs__copy flex flex-col gap-8">
+      <div className="vp-about-tabs__layout" data-image={imagePosition}>
         <ul
-          className="vp-about-tabs__menu m-0 flex list-none flex-col gap-0.5 p-0"
+          className="vp-about-tabs__menu"
           role="tablist"
           aria-orientation="vertical"
         >
           {items.map((item, index) => {
             const selected = activeIndex === index;
             return (
-              <li key={item.label} role="presentation">
+              <li
+                key={item.label}
+                role="presentation"
+                className={selected ? 'is-selected' : undefined}
+              >
                 <button
                   ref={(node) => {
                     tabRefs.current[index] = node;
@@ -278,7 +282,7 @@ export function AboutTabbedPanelInteractive({
                   aria-controls={panelId}
                   aria-selected={selected}
                   tabIndex={rovingIndex === index ? 0 : -1}
-                  className={`vp-about-tabs__tab w-full cursor-pointer px-3 py-1.5 text-left font-vp-heading text-[clamp(1.125rem,1.8vw,1.625rem)] font-bold uppercase leading-none tracking-vp-heading [transition:color_var(--vp-transition)]${
+                  className={`vp-about-tabs__tab${
                     selected
                       ? themeClasses.tabSelected
                       : `${themeClasses.tabDefault}${themeClasses.tabInactiveHover}`
@@ -289,36 +293,41 @@ export function AboutTabbedPanelInteractive({
                 >
                   {item.label}
                 </button>
+                {selected ? (
+                  <div
+                    id={panelId}
+                    role="tabpanel"
+                    aria-labelledby={`about-${sectionId}-tab-${index}`}
+                    className="vp-about-tabs__panel"
+                  >
+                    <p
+                      id={descriptionId}
+                      aria-live="polite"
+                      className={`vp-about-tabs__description${themeClasses.description}`}
+                    >
+                      {item.description}
+                    </p>
+                    {item.imageSrc || item.previewVimeoUrl ? (
+                      <div className="vp-about-tabs__media">
+                        <div className="vp-about-tabs__photo">
+                          <AboutTabMedia
+                            items={items}
+                            activeIndex={activeIndex}
+                            warmed={warmed}
+                          />
+                          <CornerFrame
+                            variant={theme === 'dark' ? 'dark' : 'light'}
+                            crosshair={{ size: 40, color: 'var(--vp-text)' }}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
               </li>
             );
           })}
         </ul>
-
-        <p
-          id={descriptionId}
-          aria-live="polite"
-          className={`vp-about-tabs__description m-0 font-light leading-relaxed${themeClasses.description}`}
-        >
-          {activeItem.description}
-        </p>
-        </div>
-
-        <div
-          id={panelId}
-          role="tabpanel"
-          aria-labelledby={`about-${sectionId}-tab-${activeIndex}`}
-          className="vp-about-tabs__media min-w-0 w-full"
-        >
-          {activeItem.imageSrc || activeItem.previewVimeoUrl ? (
-            <div className="vp-about-tabs__photo relative aspect-video w-full">
-              <AboutTabMedia items={items} activeIndex={activeIndex} warmed={warmed} />
-              <CornerFrame
-                variant={theme === 'dark' ? 'dark' : 'light'}
-                crosshair={{ size: 40, color: 'var(--vp-text)' }}
-              />
-            </div>
-          ) : null}
-        </div>
       </div>
     </div>
   );

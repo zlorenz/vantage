@@ -370,6 +370,28 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-hero-quote-bg` | `rgba(255,255,255,0.1)` | same | same | pending | |
 | `--vp-candidate-about-hero-quote-blur` | `25px` | same | `backdrop-blur` 25 | pending | |
 | `--vp-candidate-about-hero-scroll-size` | `24px` | Hero bottom scroll cue | helper | pending | Thin down-arrow with stem; decorative only. |
+| `--vp-candidate-about-hero-mobile-inset` | `16px` | Hero / section side inset, mobile | `2602:26878` | pending | |
+| `--vp-candidate-about-hero-mobile-frame-inset` | `8px` | Hero corner ticks, mobile | `2602:26920` | pending | |
+| `--vp-candidate-about-hero-mobile-title-size` | `26px` | Hero title, mobile | `2602:26871` h3 | pending | Desktop keeps 14px shared chrome. |
+| `--vp-candidate-about-hero-mobile-title-lh` | `1.2` | same | same | pending | |
+| `--vp-candidate-about-hero-mobile-caption-size` | `12px` | Hero caption, mobile | `2602:26876` | pending | Pure white (desktop tweak). |
+| `--vp-candidate-about-hero-mobile-caption-lh` | `20px` | same | same | pending | |
+| `--vp-candidate-about-hero-mobile-copy-gap` | `32px` | Title ↔ caption gap, mobile | `2602:26871` | pending | |
+| `--vp-candidate-about-hero-mobile-copy-bottom` | `24px` | Copy bottom inset, mobile | `2602:26878` | pending | Scroll cue uses half of this. |
+| `--vp-candidate-about-hero-mobile-body-size` | `16px` | Hotspot tooltip body | `2602:29252` | pending | |
+| `--vp-candidate-about-hero-hotspot-size` | `12px` | Mobile quote dots | `2602:26991` | pending | Tooltip pattern on mobile; loupe cards stay desktop. |
+| `--vp-candidate-about-hero-tooltip-width` | `300px` | Hotspot tooltip max width | `2602:29252` | pending | |
+| `--vp-candidate-about-mobile-pad-block` | `100px` | Section padding, mobile | `2602:27420` | pending | |
+| `--vp-candidate-about-mobile-header-gap` | `60px` | Header → accordion gap | `2602:27420` | pending | |
+| `--vp-candidate-about-mobile-display-size` | `30px` | Section / workflow titles, mobile | `2602:27539` | pending | |
+| `--vp-candidate-about-mobile-tab-size` | `24px` | Accordion tab labels | `2602:27545` | pending | |
+| `--vp-candidate-about-mobile-body-size` | `16px` | Body copy, mobile | body_medium | pending | |
+| `--vp-candidate-about-mobile-eyebrow-size` | `12px` | Yellow eyebrows, mobile | `2602:27538` | pending | |
+| `--vp-candidate-about-mobile-statement-size` | `30px` | Statement body, mobile | `2602:27028` | pending | |
+| `--vp-candidate-about-mobile-statement-accent-size` | `40px` | Yellow close line, mobile | `2602:27028` | pending | |
+| `--vp-candidate-about-mobile-film-frame` | `200px` | Horizontal film cell | `2602:27281` | pending | |
+| `--vp-candidate-about-mobile-film-height` | `248px` | same | same | pending | |
+| `--vp-candidate-about-mobile-cta-height` | `64px` | Feature CTA bars, mobile | feature rows | pending | |
 
 ## Contact page — desktop (pending)
 

@@ -31,7 +31,8 @@
   display: block;
   width: 100%;
   text-align: center;
-  white-space: nowrap;
+  /* Mobile wraps; desktop restores nowrap at lg. */
+  white-space: normal;
 }
 
 .vp-about-statement__word {
@@ -149,7 +150,92 @@
   display: none;
 }
 
-.vp-about-statement__stage,
+/* Mobile: horizontal film strips above/below copy (Figma 2602:26997). */
+.vp-about-statement__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 100px;
+  width: 100%;
+  padding-block: 32px;
+}
+
+.vp-about-statement__rail {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: var(--vp-candidate-about-mobile-film-height);
+  overflow: hidden;
+}
+
+.vp-about-statement__track {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: max-content;
+  height: 100%;
+  /* Nudge so the center frame reads in the viewport. */
+  transform: translateX(calc(50vw - (var(--vp-candidate-about-mobile-film-frame) * 2.5)));
+}
+
+.vp-about-statement__frame {
+  position: relative;
+  box-sizing: border-box;
+  flex: none;
+  width: var(--vp-candidate-about-mobile-film-frame);
+  height: 100%;
+  padding: 16px;
+  border-block: 1px solid var(--vp-candidate-brief-line);
+  border-inline-start: 1px solid var(--vp-candidate-brief-line);
+}
+
+.vp-about-statement__rail--right .vp-about-statement__frame:last-child,
+.vp-about-statement__rail--left .vp-about-statement__frame:last-child {
+  border-inline-end: 1px solid var(--vp-candidate-brief-line);
+}
+
+.vp-about-statement__frame-media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.vp-about-statement__frame.is-center .vp-about-statement__frame-media {
+  opacity: 1;
+}
+
+.vp-about-statement__frame:not(.is-center) .vp-about-statement__frame-media {
+  opacity: var(--vp-candidate-about-film-dim);
+}
+
+.vp-about-statement__frame .vp-corner-frame {
+  inset: 8px;
+}
+
+.vp-about-statement__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-inline: var(--vp-candidate-about-hero-mobile-inset);
+}
+
+.vp-about-statement__heading {
+  font-size: var(--vp-candidate-about-mobile-statement-size);
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.vp-about-statement__line--accent .vp-about-statement__word {
+  font-size: var(--vp-candidate-about-mobile-statement-accent-size);
+}
+
+.vp-about-statement__marker {
+  display: none;
+}
+
+.vp-about-statement__hairline,
+.vp-about-statement__baseline,
 .vp-about-statement__rulers {
   display: none;
 }
@@ -165,9 +251,21 @@
     overflow: hidden;
   }
 
+  .vp-about-statement__stage {
+    display: block;
+    position: absolute;
+    inset: 0;
+    gap: 0;
+    padding: 0;
+  }
+
   .vp-about-statement__heading {
     font-size: var(--vp-candidate-about-statement-size);
     line-height: var(--vp-candidate-about-statement-lh);
+  }
+
+  .vp-about-statement__line--accent .vp-about-statement__word {
+    font-size: inherit;
   }
 
   .vp-about-statement__line {
@@ -192,15 +290,14 @@
   }
 
   .vp-about-statement__inner {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     z-index: 2;
     /* Space between the film rails, capped at the Figma measure. */
     width: min(1320px, calc(100% - (2 * var(--vp-candidate-about-film-rail))));
     padding-inline: 0;
-  }
-
-  .vp-about-statement__stage {
-    display: block;
+    transform: translate(-50%, -50%);
   }
 
   .vp-about-statement__rail {
@@ -211,6 +308,7 @@
     bottom: 0;
     z-index: 1;
     width: var(--vp-candidate-about-film-rail);
+    height: auto;
     overflow: hidden;
     /* Full through the center window. Fades to nothing at the top and bottom of the section. */
     -webkit-mask-image: linear-gradient(
@@ -239,17 +337,23 @@
 
   .vp-about-statement__track {
     --film-center-index: 2;
+    display: block;
     position: absolute;
     /* Center of the rest frame sits on the section midline. Frame height is 380/297 of the rail. */
     top: calc(50% - var(--vp-candidate-about-film-rail) * (var(--film-center-index) + 0.5) * 380 / 297);
     left: 0;
     width: 100%;
+    height: auto;
+    transform: none;
   }
 
   .vp-about-statement__frame {
     position: relative;
     box-sizing: border-box;
+    width: 100%;
+    height: auto;
     padding: 10.1%;
+    border: 0;
   }
 
   .vp-about-statement__frame:not(:last-child)::after {
@@ -269,9 +373,20 @@
     height: auto;
     aspect-ratio: 237 / 320;
     overflow: hidden;
+    opacity: 1;
+  }
+
+  .vp-about-statement__frame.is-center .vp-about-statement__frame-media,
+  .vp-about-statement__frame:not(.is-center) .vp-about-statement__frame-media {
+    opacity: 1;
+  }
+
+  .vp-about-statement__frame .vp-corner-frame {
+    display: none;
   }
 
   .vp-about-statement__hairline {
+    display: block;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -289,6 +404,7 @@
   }
 
   .vp-about-statement__baseline {
+    display: block;
     position: absolute;
     right: 0;
     bottom: 0;
