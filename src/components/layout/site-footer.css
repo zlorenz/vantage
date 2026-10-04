@@ -1,6 +1,7 @@
 /**
- * Site footer chrome — Figma 149:21611
- * 100px structural bar: email | orange mark | social cells.
+ * Site footer chrome — Figma 149:21611, shortened on desktop so the
+ * social cells are squares (same 80px as --vp-nav-bar-height).
+ * Email | orange mark | social cells.
  * Page black via --vp-bg. Hairlines via --vp-struct-line.
  * Mobile ≤575 stacks to Figma 2283:31053 (email / mark / socials).
  *
@@ -22,7 +23,7 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
 }
 
 .vp-site-footer {
-  --vp-footer-height: 6.25rem; /* 100px */
+  --vp-footer-height: var(--vp-nav-bar-height, 80px);
 
   display: flex;
   align-items: stretch;
@@ -46,7 +47,7 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
   width: 31.25rem; /* 500px */
   max-width: 100%;
   height: 100%;
-  padding: 1.625rem 1.875rem; /* 26px 30px */
+  padding: 1.25rem 1.875rem; /* 20px 30px — fits the 80px bar */
   border-right: var(--vp-struct-line);
 }
 
@@ -107,9 +108,11 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
 }
 
 .vp-site-footer__social {
-  flex: 0 0 6.25rem; /* 100px */
-  width: 6.25rem;
+  box-sizing: border-box;
+  flex: 0 0 var(--vp-footer-height);
+  width: var(--vp-footer-height);
   height: 100%;
+  aspect-ratio: 1 / 1;
   border-left: var(--vp-struct-line);
 }
 
@@ -142,8 +145,8 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
 
 /*
  * Mobile page footer ≤575 — Figma 2283:31053 (portfolio case frame).
- * Stack email → orange mark → equal social cells so the desktop 100px
- * bar (500px email + 160px mark + N×100px socials) does not overflow.
+ * Stack email → orange mark → equal social cells so the desktop bar
+ * (500px email + 160px mark + N square socials) does not overflow.
  * Same .vp-site-footer markup; homepage/work still hide via rules above.
  */
 @media (max-width: 575.98px) {
@@ -200,5 +203,6 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
     width: auto;
     min-width: 0;
     height: 100%;
+    aspect-ratio: auto;
   }
 }

@@ -1,6 +1,6 @@
 /**
  * 404 stage. Fills the viewport under the fixed header and above the
- * 100px site footer so nav, message, and footer share one screen on desktop.
+ * site footer so nav, message, and footer share one screen on desktop.
  *
  * The header overlays the top of main, so padding-top reserves that chrome
  * and flex centering happens in the band between the bar and the footer.
@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-height: calc(100svh - 6.25rem);
+  min-height: calc(100svh - var(--vp-nav-bar-height, 80px));
   padding: var(--vp-header-height, 4.5rem) var(--spacing-vp-gutter, 1.25rem)
     var(--spacing-vp-section-y-tight, 3.5rem);
   text-align: center;
