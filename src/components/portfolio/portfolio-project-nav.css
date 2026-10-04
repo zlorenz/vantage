@@ -169,7 +169,7 @@ a.vp-project-nav__card:focus-visible {
 .vp-project-nav__mark {
   position: absolute;
   right: 0;
-  bottom: 6.25rem; /* clear 100px bottom chrome */
+  bottom: 6.25rem; /* clear 100px project-nav chrome */
   width: 20.5rem; /* ~328 — matches Figma mark cluster width */
   max-width: 54%;
   height: auto;
