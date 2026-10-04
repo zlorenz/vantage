@@ -1,0 +1,162 @@
+/*
+ * Site-wide .vp-btn -- yellow / white / outline.
+ * Default is label-only. Arrows are optional children (exception, not the type).
+ *
+ * Size: 80px below 768px. From 768px, scale from a 100px / 1920 artboard via
+ * --vp-btn-scale (same min(100vw, 1920px) / 1920px used on Contact). Chrome
+ * (nav/footer) does not use this class and stays unscaled. A section may
+ * override --vp-btn-scale.
+ */
+
+:root {
+  --vp-btn-scale: 1;
+  --vp-btn-yellow-bg: var(--vp-link);
+  --vp-btn-yellow-text: var(--vp-black);
+  --vp-btn-yellow-hover: var(--vp-candidate-brief-primary-hover, #ffcb55);
+  --vp-btn-white-bg: #ffffff;
+  --vp-btn-white-text: var(--vp-black);
+  --vp-btn-white-hover: #e6e6e6;
+  --vp-btn-outline-bg: transparent;
+  --vp-btn-outline-text: #ffffff;
+  --vp-btn-outline-border: #ffffff;
+  --vp-btn-outline-hover-bg: #ffffff;
+  --vp-btn-outline-hover-text: var(--vp-black);
+  --vp-btn-disabled-opacity: 0.4;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --vp-btn-scale: calc(min(100vw, 1920px) / 1920px);
+  }
+}
+
+.vp-btn {
+  --vp-btn-height: 80px;
+  --vp-btn-pad-block: 16px;
+  --vp-btn-pad-inline: 30px;
+  --vp-btn-gap: 12px;
+  --vp-btn-label-size: var(--vp-btn-font-size);
+  --vp-btn-label-lh: var(--vp-btn-line-height);
+  --vp-btn-icon-size: var(--vp-btn-arrow-size);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vp-btn-gap);
+  height: var(--vp-btn-height);
+  padding: var(--vp-btn-pad-block) var(--vp-btn-pad-inline);
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: var(--vp-btn-yellow-bg);
+  color: var(--vp-btn-yellow-text);
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-btn-label-size);
+  font-weight: var(--font-vp-heading-weight);
+  font-synthesis: none;
+  line-height: var(--vp-btn-label-lh);
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    background-color var(--vp-transition),
+    border-color var(--vp-transition),
+    color var(--vp-transition);
+}
+
+@media (min-width: 768px) {
+  .vp-btn {
+    --vp-btn-height: calc(100px * var(--vp-btn-scale));
+    --vp-btn-pad-block: calc(16px * var(--vp-btn-scale));
+    --vp-btn-pad-inline: calc(30px * var(--vp-btn-scale));
+    --vp-btn-gap: calc(12px * var(--vp-btn-scale));
+    --vp-btn-label-size: calc(var(--vp-btn-font-size) * var(--vp-btn-scale));
+    --vp-btn-label-lh: calc(var(--vp-btn-line-height) * var(--vp-btn-scale));
+    --vp-btn-icon-size: calc(var(--vp-btn-arrow-size) * var(--vp-btn-scale));
+  }
+}
+
+.vp-btn > svg,
+.vp-btn__icon {
+  display: block;
+  flex-shrink: 0;
+  width: var(--vp-btn-icon-size);
+  height: var(--vp-btn-icon-size);
+  color: inherit;
+}
+
+.vp-btn__icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vp-btn--yellow {
+  border-color: var(--vp-btn-yellow-bg);
+  background: var(--vp-btn-yellow-bg);
+  color: var(--vp-btn-yellow-text);
+}
+
+.vp-btn--yellow:hover,
+.vp-btn--yellow:active {
+  border-color: var(--vp-btn-yellow-hover);
+  background: var(--vp-btn-yellow-hover);
+  color: var(--vp-btn-yellow-text);
+}
+
+.vp-btn--white {
+  border-color: var(--vp-btn-white-bg);
+  background: var(--vp-btn-white-bg);
+  color: var(--vp-btn-white-text);
+}
+
+.vp-btn--white:hover,
+.vp-btn--white:active {
+  border-color: var(--vp-btn-white-hover);
+  background: var(--vp-btn-white-hover);
+  color: var(--vp-btn-white-text);
+}
+
+.vp-btn--outline {
+  border-color: var(--vp-btn-outline-border);
+  background: var(--vp-btn-outline-bg);
+  color: var(--vp-btn-outline-text);
+}
+
+.vp-btn--outline:hover,
+.vp-btn--outline:active {
+  border-color: var(--vp-btn-outline-hover-bg);
+  background: var(--vp-btn-outline-hover-bg);
+  color: var(--vp-btn-outline-hover-text);
+}
+
+.vp-btn:focus {
+  outline: none;
+}
+
+.vp-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.vp-btn--white:focus-visible,
+.vp-btn--outline:focus-visible {
+  outline-color: var(--vp-link);
+}
+
+.vp-btn:disabled,
+.vp-btn[aria-disabled='true'] {
+  opacity: var(--vp-btn-disabled-opacity);
+  pointer-events: none;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-btn {
+    transition: none;
+  }
+}

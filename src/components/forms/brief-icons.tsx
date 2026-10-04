@@ -42,23 +42,27 @@ export function BriefCalendarIcon() {
   );
 }
 
-/**
- * Figma check.1 path. Translated so the painted ink center sits on the
- * viewBox center, then scaled via width/height (20 in boxes, 24 on steps).
- */
+const BRIEF_ARROW_PATH =
+  'M4.2 12.9 11.4 5.7H6.75V4.2H14.1v7.35h-1.5V6.9L5.4 14.1z';
+
+/** Same 18px Send a Brief glyph, rotated to point east. */
+export function BriefForwardArrow() {
+  return (
+    <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      <g transform="rotate(45 9 9)">
+        <path fill="currentColor" d={BRIEF_ARROW_PATH} />
+      </g>
+    </svg>
+  );
+}
+
+/** Same glyph, rotated to point west. */
 export function BriefPreviousArrow() {
   return (
-    <svg
-      className="vp-brief-btn__arrow"
-      width="16.971"
-      height="16.971"
-      viewBox="0 0 16.9706 16.9706"
-      aria-hidden="true"
-    >
-      <path
-        fill="currentColor"
-        d="M3.76056 15.64L1.33069 13.2101L10.5102 3.76061H1.0607L4.03055 1.0607H13.75L15.9099 3.22063V12.9401L13.21 15.9099V6.19048L3.76056 15.64Z"
-      />
+    <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      <g transform="rotate(-135 9 9)">
+        <path fill="currentColor" d={BRIEF_ARROW_PATH} />
+      </g>
     </svg>
   );
 }

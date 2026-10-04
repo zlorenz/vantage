@@ -9,7 +9,7 @@ import { useLocale } from 'next-intl';
 import type { Locale } from '@/i18n/routing';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { VpButton } from '@/components/ui/VpButton';
-import { BriefPreviousArrow } from '@/components/forms/brief-icons';
+import { BriefForwardArrow, BriefPreviousArrow } from '@/components/forms/brief-icons';
 import { FormStepIndicator } from '@/components/forms/FormStepIndicator';
 import { useCampaignBriefForm } from '@/components/forms/useCampaignBriefForm';
 import {
@@ -168,12 +168,11 @@ export function CampaignBriefForm() {
           {currentStep > 1 && (
             <VpButton
               type="button"
-              variant="ghost"
-              className="vp-form-nav-btn vp-brief-btn vp-brief-btn--previous"
+              variant="white"
               disabled={isDisabled}
               onClick={prevStep}
             >
-              <span className="vp-brief-btn__icon" aria-hidden="true">
+              <span className="vp-btn__icon" aria-hidden="true">
                 <BriefPreviousArrow />
               </span>
               {ui.previous}
@@ -183,20 +182,21 @@ export function CampaignBriefForm() {
           {currentStep < TOTAL_STEPS && (
             <VpButton
               type="button"
-              variant="primary"
-              className="vp-form-nav-btn vp-brief-btn vp-brief-btn--primary"
+              variant="yellow"
               disabled={isDisabled}
               onClick={nextStep}
             >
               {ui.next}
+              <span className="vp-btn__icon" aria-hidden="true">
+                <BriefForwardArrow />
+              </span>
             </VpButton>
           )}
 
           {currentStep === TOTAL_STEPS && (
             <VpButton
               type="submit"
-              variant="primary"
-              className="vp-form-nav-btn vp-brief-btn vp-brief-btn--primary"
+              variant="yellow"
               disabled={isDisabled}
             >
               <span className="vp-form-nav-btn-inner">

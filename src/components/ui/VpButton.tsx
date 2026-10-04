@@ -1,19 +1,19 @@
 'use client';
 
 /**
- * VpButton — primary and ghost button variants.
- *
- * Client component for onClick handlers. Renders as Link when href is provided.
+ * VpButton — site-wide yellow / white / outline control.
+ * Label-only by default. Pass an icon as children when a page needs one.
  */
 
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { Link } from '@/i18n/navigation';
 
 type LinkHref = ComponentProps<typeof Link>['href'];
+type Variant = 'yellow' | 'white' | 'outline';
 
 interface VpButtonBaseProps {
-  children: React.ReactNode;
-  variant?: 'primary' | 'ghost';
+  children: ReactNode;
+  variant?: Variant;
   className?: string;
   disabled?: boolean;
 }
@@ -21,34 +21,45 @@ interface VpButtonBaseProps {
 interface VpButtonLinkProps extends VpButtonBaseProps {
   href: LinkHref;
   onClick?: never;
+  type?: never;
 }
 
 interface VpButtonActionProps extends VpButtonBaseProps {
   href?: never;
   onClick?: () => void;
   type?: 'button' | 'submit';
-  disabled?: boolean;
 }
 
 type VpButtonProps = VpButtonLinkProps | VpButtonActionProps;
 
-const VARIANT_CLASSES = {
-  primary:
-    'bg-vp-btn-primary-bg text-vp-btn-primary-text hover:bg-vp-btn-primary-hover-bg border-0',
-  ghost:
-    'bg-vp-btn-ghost-bg text-vp-btn-ghost-text border border-vp-btn-ghost-border hover:bg-vp-btn-ghost-hover-bg hover:border-vp-btn-ghost-hover-border',
-} as const;
+const VARIANT_CLASS: Record<Variant, string> = {
+  yellow: 'vp-btn--yellow',
+  white: 'vp-btn--white',
+  outline: 'vp-btn--outline',
+};
+
+function buttonClassName(variant: Variant, className: string): string {
+  return ['vp-btn', VARIANT_CLASS[variant], className].filter(Boolean).join(' ');
+}
 
 export function VpButton({
   children,
-  variant = 'primary',
+  variant = 'yellow',
   className = '',
   disabled = false,
   ...props
 }: VpButtonProps) {
-  const classes = `inline-block rounded-full px-8 py-3 font-vp-heading text-vp-btn font-semibold leading-vp-btn uppercase tracking-vp-btn transition-colors duration-vp-default ${VARIANT_CLASSES[variant]} ${className} ${disabled ? 'pointer-events-none opacity-55' : ''}`;
+  const classes = buttonClassName(variant, className);
 
   if ('href' in props && props.href) {
+    if (disabled) {
+      return (
+        <span className={classes} aria-disabled="true" role="link">
+          {children}
+        </span>
+      );
+    }
+
     return (
       <Link href={props.href} className={classes}>
         {children}
@@ -58,7 +69,12 @@ export function VpButton({
 
   const { onClick, type = 'button' } = props as VpButtonActionProps;
   return (
-    <button type={type} className={classes} onClick={onClick} disabled={disabled}>
+    <button
+      type={type}
+      className={classes}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {children}
     </button>
   );

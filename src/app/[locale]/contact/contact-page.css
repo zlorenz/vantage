@@ -178,12 +178,7 @@ section.vp-contact-cta {
   --vp-candidate-contact-heading-lh: 1.1;
   --vp-candidate-contact-body-size: 16px;
   --vp-candidate-contact-body-lh: 1.6;
-  --vp-candidate-contact-btn-height: 60px;
-  --vp-candidate-contact-btn-pad-inline: 16px;
-  --vp-candidate-contact-btn-size: 12px;
-  --vp-candidate-contact-btn-lh: 1.6;
   --vp-candidate-contact-bracket-inset: 16px;
-  --vp-candidate-contact-ruler-width: 1074px;
   display: block;
   background: var(--vp-black);
   padding: var(--vp-candidate-contact-section-pad)
@@ -195,6 +190,7 @@ section.vp-contact-cta .vp-contact-cta__frame {
   width: 100%;
   max-width: 370px;
   margin-inline: auto;
+  overflow: hidden;
   padding: var(--vp-candidate-contact-frame-pad-block)
     var(--vp-candidate-contact-frame-pad-inline);
 }
@@ -257,12 +253,8 @@ section.vp-contact-cta .vp-contact-cta__corner--br {
 
 section.vp-contact-cta .vp-contact-cta__rulers {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: var(--vp-candidate-contact-ruler-width);
+  inset: 0;
   overflow: hidden;
-  transform: translateX(-50%);
   pointer-events: none;
 }
 
@@ -308,31 +300,6 @@ section.vp-contact-cta .vp-contact-cta__body {
   font-size: var(--vp-candidate-contact-body-size);
   font-weight: 400;
   line-height: var(--vp-candidate-contact-body-lh);
-}
-
-section.vp-contact-cta .vp-contact-cta__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--vp-candidate-contact-btn-height);
-  padding: 0 var(--vp-candidate-contact-btn-pad-inline);
-  border: 0;
-  border-radius: 0;
-  background: var(--vp-link);
-  color: var(--vp-black);
-  font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-contact-btn-size);
-  font-weight: var(--font-vp-heading-weight);
-  font-synthesis: none;
-  line-height: var(--vp-candidate-contact-btn-lh);
-  letter-spacing: 0;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-section.vp-contact-cta .vp-contact-cta__button:hover {
-  background: var(--vp-candidate-brief-primary-hover);
-  color: var(--vp-black);
 }
 
 /* ——— Desktop ≥768 ——— */
@@ -393,18 +360,7 @@ section.vp-contact-cta .vp-contact-cta__button:hover {
     );
     --vp-candidate-contact-body-lh: var(--vp-candidate-about-dek-lh);
     --vp-candidate-contact-body-width: calc(632px * var(--vp-contact-scale));
-    --vp-candidate-contact-btn-height: calc(
-      var(--vp-candidate-brief-btn-height) * var(--vp-contact-scale)
-    );
-    --vp-candidate-contact-btn-pad-inline: calc(
-      var(--vp-candidate-brief-btn-pad-inline) * var(--vp-contact-scale)
-    );
-    --vp-candidate-contact-btn-size: calc(
-      var(--vp-candidate-brief-btn-size) * var(--vp-contact-scale)
-    );
-    --vp-candidate-contact-btn-lh: var(--vp-candidate-brief-btn-lh);
     --vp-candidate-contact-bracket-inset: 15px;
-    --vp-candidate-contact-ruler-width: calc(1074px * var(--vp-contact-scale));
     padding: var(--vp-candidate-contact-section-pad) 0;
   }
 
@@ -416,9 +372,5 @@ section.vp-contact-cta .vp-contact-cta__button:hover {
   section.vp-contact-cta .vp-contact-cta__body {
     width: var(--vp-candidate-contact-body-width);
     max-width: 100%;
-  }
-
-  section.vp-contact-cta .vp-contact-cta__rulers {
-    width: var(--vp-candidate-contact-ruler-width);
   }
 }

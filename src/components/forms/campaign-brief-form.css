@@ -771,53 +771,17 @@
   margin-top: var(--vp-candidate-brief-field-gap-tight);
 }
 
-.vp-form-nav .vp-brief-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--vp-candidate-brief-btn-arrow-gap);
-  height: var(--vp-candidate-brief-btn-height);
-  padding: 0 var(--vp-candidate-brief-btn-pad-inline);
-  border-radius: var(--vp-radius) !important;
-  font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-brief-btn-size);
-  font-weight: var(--font-vp-heading-weight);
-  font-synthesis: none;
-  letter-spacing: 0;
-  line-height: var(--vp-candidate-brief-btn-lh);
-  text-transform: uppercase;
-}
-
-.vp-form-nav--solo .vp-brief-btn--primary,
-.vp-form-nav .vp-brief-btn--primary {
+.vp-form-nav--solo .vp-btn--yellow,
+.vp-form-nav .vp-btn--yellow {
   flex: 1 1 auto;
-  background: var(--vp-link);
-  color: var(--vp-black);
 }
 
-.vp-form-nav--solo .vp-brief-btn--primary {
+.vp-form-nav--solo .vp-btn--yellow {
   width: 100%;
 }
 
-.vp-form-nav .vp-brief-btn--previous {
+.vp-form-nav .vp-btn--white {
   flex: 0 0 auto;
-  border: 1px solid var(--vp-candidate-brief-btn-ghost-border);
-  background: transparent;
-  color: var(--vp-link);
-}
-
-.vp-brief-btn__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--vp-candidate-brief-btn-arrow-size);
-  height: var(--vp-candidate-brief-btn-arrow-size);
-}
-
-.vp-brief-btn__arrow {
-  width: 16.971px;
-  height: 16.971px;
-  transform: rotate(-135deg);
 }
 
 @media (max-width: 767px) {
@@ -834,8 +798,8 @@
   }
 
   /* Side-by-side Previous | Next at phone width (not stacked). */
-  .vp-form-nav .vp-brief-btn--previous,
-  .vp-form-nav .vp-brief-btn--primary {
+  .vp-form-nav .vp-btn--white,
+  .vp-form-nav .vp-btn--yellow {
     flex: 1 1 0;
     min-width: 0;
   }
@@ -966,7 +930,7 @@
 .vp-form-control,
 .vp-form-radio-box,
 .vp-form-checkbox-box,
-.vp-brief-btn,
+.vp-brief-btn--confirm,
 .vp-form-step-progress-label,
 .vp-form-file-remove,
 .vp-form-dropzone,
@@ -994,7 +958,6 @@
 }
 
 .vp-form-control:disabled,
-.vp-brief-btn:disabled,
 .vp-brief-btn--confirm:disabled,
 .vp-form-attach-btn:disabled,
 .vp-form-radio input:disabled ~ .vp-form-radio-label,
@@ -1007,19 +970,6 @@
   background: var(--vp-candidate-brief-control-bg);
 }
 
-.vp-form-nav .vp-brief-btn--primary:disabled,
-.vp-form-nav .vp-brief-btn--primary:disabled:hover {
-  background: var(--vp-link);
-  color: var(--vp-black);
-}
-
-.vp-form-nav .vp-brief-btn--previous:disabled,
-.vp-form-nav .vp-brief-btn--previous:disabled:hover {
-  border-color: var(--vp-candidate-brief-btn-ghost-border);
-  background: transparent;
-  color: var(--vp-link);
-}
-
 .vp-brief-btn--confirm:disabled,
 .vp-brief-btn--confirm:disabled:hover {
   border-color: var(--vp-candidate-brief-btn-ghost-border);
@@ -1027,19 +977,7 @@
   color: var(--vp-text);
 }
 
-.vp-form-nav .vp-brief-btn--primary:hover:not(:disabled) {
-  background: var(--vp-candidate-brief-primary-hover);
-  color: var(--vp-black);
-}
-
-.vp-form-nav .vp-brief-btn--previous:hover:not(:disabled) {
-  border-color: var(--vp-candidate-brief-control-hover);
-  background: transparent;
-  color: var(--vp-link);
-}
-
 .vp-form-control:focus-visible,
-.vp-brief-btn:focus-visible,
 .vp-form-file-remove:focus-visible,
 .vp-form-attach-btn:focus-visible,
 .vp-form-step-progress-circle:focus-visible,
@@ -1057,7 +995,7 @@
   .vp-form-control,
   .vp-form-radio-box,
   .vp-form-checkbox-box,
-  .vp-brief-btn,
+  .vp-brief-btn--confirm,
   .vp-form-step-progress-label,
   .vp-form-file-remove,
   .vp-form-dropzone,

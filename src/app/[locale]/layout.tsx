@@ -12,6 +12,7 @@
  */
 
 import '../globals.css';
+import '@/components/ui/vp-button.css';
 import type { Metadata, Viewport } from 'next';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { draftMode, headers } from 'next/headers';

@@ -12,7 +12,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CornerFrame } from '@/components/ui/CornerFrame';
-import { Link } from '@/i18n/navigation';
+import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import {
   aboutContactPageTitle,
@@ -185,7 +185,7 @@ export default async function ContactPage({ params }: Props) {
             <CornerFrame
               variant="dark"
               showBrackets={false}
-              rulers={{ top: true, bottom: true, labels: true }}
+              rulers={{ top: true, bottom: true }}
             />
           </div>
           <div className="vp-contact-cta__inner">
@@ -193,9 +193,19 @@ export default async function ContactPage({ params }: Props) {
               <h2 className="vp-contact-cta__heading">{t('campaignBriefHeading')}</h2>
               <p className="vp-contact-cta__body">{t('campaignBriefBody')}</p>
             </div>
-            <Link href="/video-campaign-brief" className="vp-contact-cta__button">
+            <VpButton href="/video-campaign-brief">
               {t('campaignBriefCta')}
-            </Link>
+              <svg
+                viewBox="0 0 18 18"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  fill="currentColor"
+                  d="M4.2 12.9 11.4 5.7H6.75V4.2H14.1v7.35h-1.5V6.9L5.4 14.1z"
+                />
+              </svg>
+            </VpButton>
           </div>
         </div>
       </section>
