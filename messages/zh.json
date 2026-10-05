@@ -45,7 +45,11 @@
     "brandsOutline": "合作",
     "brands": "品牌",
     "exploreButton": "探索",
-    "contactHeading": "联系 Vantage Pictures"
+    "contactHeading": "联系 Vantage Pictures",
+    "pageHeading": "Vantage Pictures | 商业影像制作公司"
+  },
+  "Work": {
+    "pageHeading": "Vantage Pictures | 商业影片作品集"
   },
   "About": {
     "heroTitle": "【待译】An international video production company",

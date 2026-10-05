@@ -45,7 +45,11 @@
     "brandsOutline": "BRANDS",
     "brands": "WE WORK WITH",
     "exploreButton": "Explore",
-    "contactHeading": "Contact Vantage Pictures"
+    "contactHeading": "Contact Vantage Pictures",
+    "pageHeading": "Vantage Pictures | Commercial Film Production Company"
+  },
+  "Work": {
+    "pageHeading": "Vantage Pictures | Commercial Film Portfolio"
   },
   "About": {
     "heroTitle": "An international video production company",

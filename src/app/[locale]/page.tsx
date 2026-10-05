@@ -7,7 +7,7 @@
  */
 
 import type {Metadata} from 'next';
-import {setRequestLocale} from 'next-intl/server';
+import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {FeaturedWorkCarouselShell} from '@/components/prototype/carousel/FeaturedWorkCarouselShell';
 import {loadFeaturedWorkSlides} from '@/components/prototype/carousel/load-slides';
 import {JsonLd} from '@/components/seo/JsonLd';
@@ -70,6 +70,7 @@ export default async function HomePage({params}: Props) {
   setRequestLocale(locale);
 
   const typedLocale = locale as Locale;
+  const t = await getTranslations('Home');
 
   const [slides, organization] = await Promise.all([
     loadFeaturedWorkSlides(typedLocale),
@@ -81,6 +82,8 @@ export default async function HomePage({params}: Props) {
       <JsonLd data={buildOrganization(organization)} />
       <JsonLd data={buildBreadcrumbs([homeBreadcrumb(typedLocale)])} />
       <div className="vp-home-hero">
+        {/* One document heading. Slide titles stay h2; sr-only keeps the carousel layout unchanged. */}
+        <h1 className="sr-only">{t('pageHeading')}</h1>
         <FeaturedWorkCarouselShell slides={slides} />
       </div>
     </>

@@ -4,7 +4,7 @@
 
 import {Suspense} from 'react';
 import type {Metadata} from 'next';
-import {setRequestLocale} from 'next-intl/server';
+import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {PortfolioIndexCarousel} from '@/components/portfolio/PortfolioIndexCarousel';
 import {
   appendFeaturedPortfolioIndexSlides,
@@ -104,6 +104,7 @@ export default async function WorkPage({params}: Props) {
   setRequestLocale(locale);
 
   const typedLocale = locale as Locale;
+  const t = await getTranslations('Work');
 
   const [
     workPageResult,
@@ -180,6 +181,8 @@ export default async function WorkPage({params}: Props) {
         ])}
       />
       <div className="vp-work-index">
+        {/* One document heading. Card titles stay h2; sr-only keeps the carousel layout unchanged. */}
+        <h1 className="sr-only">{t('pageHeading')}</h1>
         <Suspense
           fallback={<div className="vp-portfolio-index" aria-busy="true" />}
         >

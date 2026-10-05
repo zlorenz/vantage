@@ -132,6 +132,20 @@ function testInterfaceVsPagesNewsCodeRows() {
     byPath.get('messages/*.json → Home.workSection')?.category,
     'pages-news',
   )
+  const homePageHeading = byPath.get('messages/*.json → Home.pageHeading')
+  assert.equal(homePageHeading?.category, 'pages-news')
+  assert.equal(
+    homePageHeading?.en,
+    'Vantage Pictures | Commercial Film Production Company',
+  )
+  assert.equal(homePageHeading?.zh, 'Vantage Pictures | 商业影像制作公司')
+  const workPageHeading = byPath.get('messages/*.json → Work.pageHeading')
+  assert.equal(workPageHeading?.category, 'pages-news')
+  assert.equal(
+    workPageHeading?.en,
+    'Vantage Pictures | Commercial Film Portfolio',
+  )
+  assert.equal(workPageHeading?.zh, 'Vantage Pictures | 商业影片作品集')
   assert.equal(
     byPath.get('messages/*.json → About.team')?.category,
     'pages-news',

@@ -20,6 +20,8 @@ export type InterfaceCodeRow = {
  * Everything else in messages/*.json stays Interface.
  */
 const PAGES_NEWS_MESSAGE_PATHS = new Set([
+  'Home.pageHeading',
+  'Work.pageHeading',
   'Home.workSection',
   'Home.workSectionOutline',
   'Home.aboutHeading',
