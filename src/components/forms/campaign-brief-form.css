@@ -8,7 +8,8 @@
 .vp-form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--vp-candidate-brief-field-gap) var(--vp-form-gap);
+  row-gap: var(--vp-candidate-brief-field-row-gap);
+  column-gap: var(--vp-form-gap);
 }
 
 /* Budget radios stay two-up on mobile (Figma S2.2) and desktop. */
@@ -22,7 +23,8 @@
 @media (min-width: 768px) {
   .vp-form-grid {
     grid-template-columns: 1fr 1fr;
-    gap: var(--vp-candidate-brief-field-gap) var(--vp-form-gap);
+    row-gap: var(--vp-candidate-brief-field-row-gap);
+    column-gap: var(--vp-form-gap);
   }
 
   .vp-form-grid--3col {

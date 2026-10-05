@@ -447,6 +447,8 @@
   --vp-candidate-brief-textarea-pad-bottom: 60px;
   --vp-candidate-brief-field-gap: 60px;
   --vp-candidate-brief-field-gap-tight: 48px;
+  /* Row gap between field stacks only — column gutter stays `--vp-form-gap`. */
+  --vp-candidate-brief-field-row-gap: 24px;
   --vp-candidate-brief-check-size: 24px;
   --vp-candidate-brief-check-icon-size: 20px;
   --vp-candidate-brief-check-bg: rgba(255, 255, 255, 0.05);
@@ -504,6 +506,7 @@
     --vp-candidate-brief-control-size: 16px;
     --vp-candidate-brief-field-gap: 40px;
     --vp-candidate-brief-field-gap-tight: 48px;
+    --vp-candidate-brief-field-row-gap: 24px;
     --vp-candidate-brief-btn-height: 60px;
     --vp-candidate-brief-btn-pad-inline: 16px;
     --vp-candidate-brief-btn-size: 12px;

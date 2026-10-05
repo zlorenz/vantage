@@ -282,8 +282,9 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-control-size` | `18px` | Values, placeholders, dropzone prompt | body_medium | pending | Mobile floor `16px` in `globals.css` still wins ≤767.98px. |
 | `--vp-candidate-brief-control-lh` | `1.5` | same | same | pending | |
 | `--vp-candidate-brief-textarea-pad-bottom` | `60px` | Textareas | S2.2 / S3 pb-60 | pending | |
-| `--vp-candidate-brief-field-gap` | `60px` | Field rows; S1 title → fields | S1 / S2.2 | pending | |
+| `--vp-candidate-brief-field-gap` | `60px` | S1 title → fields; nav margins | S1 / S2.2 | pending | Not the between-field row gap anymore. |
 | `--vp-candidate-brief-field-gap-tight` | `48px` | Step 2 title → fields, fields → buttons | S2.1 | pending | |
+| `--vp-candidate-brief-field-row-gap` | `24px` | `.vp-form-grid` row-gap | **derived — tighter stacks** | pending | Column gutter stays `--vp-form-gap` (16px). |
 | `--vp-candidate-brief-check-size` | `24px` | Checkbox / budget square | S2.2 | pending | |
 | `--vp-candidate-brief-check-icon-size` | `20px` | Checked glyph | S2.2 check.1 | pending | Step-complete check is 24px (separate). |
 | `--vp-candidate-brief-check-bg` | `rgba(255,255,255,0.05)` | Unchecked fill | white/5 | pending | |
@@ -336,7 +337,8 @@ Frames: S1 `2602:31406`, S2.1 `2602:32040`, S2.2 `2602:32453`, S3 `2602:32841`, 
 | `--vp-candidate-brief-step-label-gap` | `16px` | S1 step column | |
 | `--vp-candidate-brief-caption-size` | `12px` | caption_2 | Labels, step captions, Browse. |
 | `--vp-candidate-brief-control-size` | `16px` | body_medium | |
-| `--vp-candidate-brief-field-gap` | `40px` | S1 field stack | Nav margin forced to `60px` in form CSS. |
+| `--vp-candidate-brief-field-gap` | `40px` | Title / nav spacing | Nav margin forced to `60px` in form CSS. |
+| `--vp-candidate-brief-field-row-gap` | `24px` | Field row stack | Same as desktop; column gutter stays `--vp-form-gap`. |
 | `--vp-candidate-brief-field-gap-tight` | `48px` | S1 title → fields | Used for every step title on mobile. |
 | `--vp-candidate-brief-btn-height` | `60px` | S1 Next | |
 | `--vp-candidate-brief-btn-pad-inline` | `16px` | S1 Next | |
