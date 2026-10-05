@@ -33,6 +33,7 @@ import {
 import {PortfolioIndexFilterSheet} from './PortfolioIndexFilterSheet';
 import {PortfolioIndexScrubber} from './PortfolioIndexScrubber';
 import {PortfolioIndexTickCounter} from './PortfolioIndexTickCounter';
+import {PortfolioIndexGridHover} from './PortfolioIndexGridHover';
 import type {PortfolioIndexSlide} from './prepare-portfolio-index-slides';
 import {nearestSnapIndexFromProgress} from './nearest-snap-from-progress';
 import {
@@ -46,6 +47,7 @@ import {
   workIndexViewQuery,
 } from './work-index-url';
 import './portfolio-index-carousel.css';
+import './portfolio-index-grid.css';
 
 interface PortfolioIndexCarouselProps {
   slides: PortfolioIndexSlide[];
@@ -286,26 +288,6 @@ function PortfolioIndexActiveFrame() {
         vectorEffect="non-scaling-stroke"
       />
     </svg>
-  );
-}
-
-/** Hover chrome for a grid card: corner brackets + the 40px center plus (Figma 78:30490). */
-function PortfolioIndexGridHover() {
-  return (
-    <div className="vp-portfolio-index__grid-hover" aria-hidden="true">
-      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--tl" />
-      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--tr" />
-      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--bl" />
-      <span className="vp-portfolio-index__grid-corner vp-portfolio-index__grid-corner--br" />
-      <svg
-        className="vp-portfolio-index__grid-plus"
-        viewBox="0 0 40 40"
-        focusable="false"
-      >
-        <line x1="0" y1="20" x2="40" y2="20" />
-        <line x1="20" y1="0" x2="20" y2="40" />
-      </svg>
-    </div>
   );
 }
 

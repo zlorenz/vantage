@@ -16,6 +16,7 @@ export const SEARCH_QUERY = `
       _type asc,
       select(_type == "portfolioEntry" || _type == "blogPost" => publishedAt, _createdAt) desc
     ) {
+    _id,
     _type,
     title,
     titleZh,
@@ -42,6 +43,16 @@ export const SEARCH_QUERY = `
       coalesce(descriptionZh, description)
     ),
     "bodyText": select(_type == "blogPost" => pt::text(body), null),
-    "bodyTextZh": select(_type == "blogPost" => pt::text(bodyZh), null)
+    "bodyTextZh": select(_type == "blogPost" => pt::text(bodyZh), null),
+    "categories": select(
+      _type == "blogPost" => categories[]->{
+        _id,
+        title,
+        titleZh,
+        "slug": slug.current,
+        "slugZh": slugZh.current
+      },
+      null
+    )
   }
 `;

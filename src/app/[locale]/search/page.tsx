@@ -54,15 +54,15 @@ export default async function SearchPage({ params }: Props) {
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), searchBreadcrumb(typedLocale)])}
       />
       <SectionWrapper className="vp-search-page" fullBleed={true}>
-      <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-        <h1 className="mb-8 font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading">
-          {t('title')}
-        </h1>
-        <Suspense fallback={<div className="vp-load-spinner" />}>
+        <div className="px-[var(--spacing-vp-gutter,1.875rem)]">
+          <h1 className="mb-8 font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading">
+            {t('title')}
+          </h1>
+        </div>
+        <Suspense fallback={<div className="vp-load-spinner mx-auto" />}>
           <SearchPageClient locale={typedLocale} phrases={phrases} />
         </Suspense>
-      </div>
-    </SectionWrapper>
+      </SectionWrapper>
     </>
   );
 }

@@ -2,24 +2,36 @@
 
 /**
  * SearchPageClient — debounced search UI reading ?q= from URL.
+ *
+ * Portfolio hits reuse the /work?view=grid card chrome. Production Log hits
+ * reuse BlogPostGrid / BlogPostCard from /news.
  */
 
-import { useDeferredValue, useEffect, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { BlogPostedOn } from '@/components/blog/BlogPostedOn';
+import { BlogPostGrid } from '@/components/blog/BlogPostGrid';
 import { PortfolioEntryLink } from '@/components/navigation/PortfolioEntryLink';
-import { Link } from '@/i18n/navigation';
+import { composeOverlayCopy } from '@/components/prototype/carousel/overlay';
+import { PortfolioIndexGridHover } from '@/components/portfolio/PortfolioIndexGridHover';
 import { phraseRecordToMap } from '@phrase-book';
-import { resolveBlogCardExcerpt } from '@/lib/blog-excerpt';
-import { resolveEntryDocumentTitle } from '@/lib/display-titles';
+import {
+  resolveEntryDisplayTitleParts,
+  resolveEntryDocumentTitle,
+} from '@/lib/display-titles';
 import { trackInteractionEvent } from '@/lib/interaction-events';
-import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import type { Locale } from '@/i18n/routing';
-import type { DisplayTitlePartsValue } from '@/types/sanity';
+import type {
+  BlogPostCard as BlogPostCardData,
+  CategoryTerm,
+  DisplayTitlePartsValue,
+  SanityImage,
+} from '@/types/sanity';
+import '@/components/portfolio/portfolio-index-grid.css';
 
 interface SearchResultWithImage {
+  _id?: string;
   _type: 'portfolioEntry' | 'blogPost';
   title: string;
   titleZh?: string;
@@ -27,16 +39,38 @@ interface SearchResultWithImage {
   slug: string;
   slugZh?: string;
   publishedAt?: string;
+  featuredImage?: SanityImage;
   excerpt?: string;
   excerptZh?: string;
   bodyText?: string;
   bodyTextZh?: string;
+  categories?: CategoryTerm[] | null;
   imageUrl?: string | null;
 }
 
 interface SearchPageClientProps {
   locale: Locale;
   phrases?: Record<string, string>;
+}
+
+const SEARCH_PAD = 'px-[var(--spacing-vp-gutter,1.875rem)]';
+const SEARCH_INSET = `${SEARCH_PAD} mx-auto max-w-[1400px]`;
+
+function toBlogPostCard(item: SearchResultWithImage): BlogPostCardData {
+  return {
+    _id: item._id || item.slug,
+    title: item.title,
+    titleZh: item.titleZh,
+    slug: item.slug,
+    slugZh: item.slugZh,
+    publishedAt: item.publishedAt,
+    featuredImage: item.featuredImage,
+    excerpt: item.excerpt,
+    excerptZh: item.excerptZh,
+    bodyText: item.bodyText,
+    bodyTextZh: item.bodyTextZh,
+    categories: item.categories ?? undefined,
+  };
 }
 
 export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
@@ -75,21 +109,36 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
   }, [deferredQuery]);
 
   const portfolioResults = results.filter((r) => r._type === 'portfolioEntry');
-  const newsResults = results.filter((r) => r._type === 'blogPost');
+  const newsPosts = useMemo(
+    () =>
+      results
+        .filter((r) => r._type === 'blogPost')
+        .map(toBlogPostCard),
+    [results],
+  );
 
   const isPending = loading || query !== deferredQuery;
 
   if (!query) {
-    return <p className="font-light text-vp-text-muted">{t('hint')}</p>;
+    return (
+      <p className={`font-light text-vp-text-muted ${SEARCH_INSET}`}>{t('hint')}</p>
+    );
   }
 
   if (isPending) {
-    return <div className="vp-load-spinner mx-auto" aria-label={t('loadingAria')} />;
+    return (
+      <div
+        className={`vp-load-spinner mx-auto ${SEARCH_INSET}`}
+        aria-label={t('loadingAria')}
+      />
+    );
   }
 
   if (!results.length) {
     return (
-      <h2 className="vp-search-empty__title font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading">
+      <h2
+        className={`vp-search-empty__title font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading ${SEARCH_INSET}`}
+      >
         {t('noResults', { query })}
       </h2>
     );
@@ -99,46 +148,59 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
     <div className="space-y-12">
       {portfolioResults.length > 0 ? (
         <section>
-          <h2 className="mb-6 font-vp-heading text-xl font-bold uppercase tracking-vp-heading">
+          <h2
+            className={`mb-2 font-vp-heading text-xl font-bold uppercase tracking-vp-heading ${SEARCH_PAD}`}
+          >
             {t('portfolio')}
           </h2>
-          <div className="vp-curated-gallery grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="vp-portfolio-index__grid">
             {portfolioResults.map((item) => (
-              <SearchCard
+              <li
                 key={`${item._type}-${item.slug}`}
-                item={item}
-                locale={locale}
-                phrases={phrases}
-                query={query}
-              />
+                className="vp-portfolio-index__grid-item"
+              >
+                <SearchPortfolioCard
+                  item={item}
+                  locale={locale}
+                  phrases={phrases}
+                  query={query}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       ) : null}
 
-      {newsResults.length > 0 ? (
+      {newsPosts.length > 0 ? (
         <section>
-          <h2 className="mb-6 font-vp-heading text-xl font-bold uppercase tracking-vp-heading">
+          <h2
+            className={`mb-2 font-vp-heading text-xl font-bold uppercase tracking-vp-heading ${SEARCH_PAD}`}
+          >
             {t('news')}
           </h2>
-          <div className="flex flex-col gap-12">
-            {newsResults.map((item) => (
-              <SearchNewsCard
-                key={`${item._type}-${item.slug}`}
-                item={item}
-                locale={locale}
-                phrases={phrases}
-                query={query}
-              />
-            ))}
-          </div>
+          <BlogPostGrid
+            posts={newsPosts}
+            locale={locale}
+            phrases={phrases}
+            onPostNavigate={(post) => {
+              const slugParam =
+                locale === 'zh' ? post.slugZh || post.slug : post.slug;
+              trackInteractionEvent({
+                eventType: 'result_click',
+                sourceSurface: 'search_page',
+                query,
+                resultSlug: slugParam,
+                resultType: 'news',
+              });
+            }}
+          />
         </section>
       ) : null}
     </div>
   );
 }
 
-function SearchCard({
+function SearchPortfolioCard({
   item,
   locale,
   phrases,
@@ -150,97 +212,53 @@ function SearchCard({
   query: string;
 }) {
   const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
-  const title = resolveEntryDocumentTitle(
-    item,
-    locale,
-    phrases ? phraseRecordToMap(phrases) : null,
-  );
+  const phraseMap = phrases ? phraseRecordToMap(phrases) : null;
+  const parts = resolveEntryDisplayTitleParts(item, locale, phraseMap);
+  const { brandLine, campaignLine } = composeOverlayCopy(parts);
+  const campaign =
+    campaignLine && campaignLine !== brandLine ? campaignLine : '';
+  const fallbackTitle =
+    !brandLine && !campaign
+      ? resolveEntryDocumentTitle(item, locale, phraseMap)
+      : '';
+  const campaignText = campaign || fallbackTitle;
 
   return (
-    <article className="vp-card vp-card-reveal">
-      <PortfolioEntryLink
-        slug={slugParam}
-        className="vp-card__link block text-white no-underline"
-        onClick={() => {
-          trackInteractionEvent({
-            eventType: 'result_click',
-            sourceSurface: 'search_page',
-            query,
-            resultSlug: slugParam,
-            resultType: 'portfolio',
-          });
-        }}
-      >
-        <div className="vp-card__media relative aspect-video w-full overflow-hidden">
-          {item.imageUrl ? (
-            <Image src={item.imageUrl} alt="" fill className="object-cover" sizes="33vw" />
-          ) : null}
-          <div className="vp-card__overlay" aria-hidden />
-          <h3 className="vp-card__title">{title}</h3>
-        </div>
-      </PortfolioEntryLink>
-    </article>
-  );
-}
-
-function SearchNewsCard({
-  item,
-  locale,
-  phrases,
-  query,
-}: {
-  item: SearchResultWithImage;
-  locale: Locale;
-  phrases?: Record<string, string>;
-  query: string;
-}) {
-  const slugParam = locale === 'zh' ? item.slugZh || item.slug : item.slug;
-  const title = pickLocaleFieldWithPhrases(locale, item.title, item.titleZh, phrases);
-  const excerpt = resolveBlogCardExcerpt(
-    pickLocaleFieldWithPhrases(locale, item.excerpt, item.excerptZh, phrases),
-    pickLocaleFieldWithPhrases(locale, item.bodyText, item.bodyTextZh, phrases),
-  );
-
-  const trackClick = () => {
-    trackInteractionEvent({
-      eventType: 'result_click',
-      sourceSurface: 'search_page',
-      query,
-      resultSlug: slugParam,
-      resultType: 'news',
-    });
-  };
-
-  return (
-    <article className="vp-post-card">
-      {item.imageUrl ? (
-        <Link
-          href={{ pathname: '/[slug]', params: { slug: slugParam } }}
-          className="vp-post-card__thumb block aspect-video overflow-hidden bg-vp-search-thumb-bg"
-          onClick={trackClick}
-        >
-          <Image src={item.imageUrl} alt="" width={960} height={540} className="h-full w-full object-cover" />
-        </Link>
-      ) : null}
-      <div className="vp-post-card__body pt-4 md:pt-5">
-        <h2 className="vp-post-card__title m-0 mb-1 font-vp-heading text-[clamp(1.4rem,2vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-          <Link
-            href={{ pathname: '/[slug]', params: { slug: slugParam } }}
-            className="text-inherit no-underline"
-            onClick={trackClick}
-          >
-            {title}
-          </Link>
-        </h2>
-        {item.publishedAt ? (
-          <div className="vp-post-card__meta mb-2 text-sm text-vp-text-soft">
-            <BlogPostedOn publishedAt={item.publishedAt} locale={locale} />
+    <PortfolioEntryLink
+      slug={slugParam}
+      className="vp-portfolio-index__grid-link"
+      onClick={() => {
+        trackInteractionEvent({
+          eventType: 'result_click',
+          sourceSurface: 'search_page',
+          query,
+          resultSlug: slugParam,
+          resultType: 'portfolio',
+        });
+      }}
+    >
+      <div className="vp-portfolio-index__grid-media">
+        {item.imageUrl ? (
+          <Image
+            src={item.imageUrl}
+            alt=""
+            fill
+            sizes="(min-width: 2800px) 25vw, (min-width: 1200px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="vp-portfolio-index__grid-poster"
+          />
+        ) : null}
+        {brandLine || campaignText ? (
+          <div className="vp-portfolio-index__grid-copy">
+            {brandLine ? (
+              <p className="vp-portfolio-index__grid-brand">{brandLine}</p>
+            ) : null}
+            {campaignText ? (
+              <p className="vp-portfolio-index__grid-campaign">{campaignText}</p>
+            ) : null}
           </div>
         ) : null}
-        {excerpt ? (
-          <p className="m-0 font-light text-vp-text-muted">{excerpt}</p>
-        ) : null}
       </div>
-    </article>
+      <PortfolioIndexGridHover />
+    </PortfolioEntryLink>
   );
 }

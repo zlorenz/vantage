@@ -18,6 +18,8 @@ interface BlogPostCardProps {
   post: BlogPostCardData;
   locale: Locale;
   phrases?: Record<string, string>;
+  /** Optional click hook (e.g. search result analytics). */
+  onNavigate?: () => void;
 }
 
 /** Card-local short month (e.g. "Mar 30, 2026") — do not change shared BlogPostedOn. */
@@ -29,7 +31,7 @@ function formatCardPillDate(dateString: string, locale: Locale): string {
   });
 }
 
-export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
+export function BlogPostCard({ post, locale, phrases, onNavigate }: BlogPostCardProps) {
   const slugParam = locale === 'zh' ? post.slugZh || post.slug : post.slug;
   const title = pickLocaleFieldWithPhrases(locale, post.title, post.titleZh, phrases);
   const excerpt = resolveBlogCardExcerpt(
@@ -51,6 +53,7 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
             href={{ pathname: '/[slug]', params: { slug: slugParam } }}
             className="vp-blog-card__thumb"
             aria-label={title}
+            onClick={onNavigate}
           >
             <Image
               src={imageUrl}
@@ -111,7 +114,10 @@ export function BlogPostCard({ post, locale, phrases }: BlogPostCardProps) {
 
         <div className="vp-blog-card__copy">
           <h2 className="vp-blog-card__title">
-            <Link href={{ pathname: '/[slug]', params: { slug: slugParam } }}>
+            <Link
+              href={{ pathname: '/[slug]', params: { slug: slugParam } }}
+              onClick={onNavigate}
+            >
               {title}
             </Link>
           </h2>

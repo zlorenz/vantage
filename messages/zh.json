@@ -21,7 +21,7 @@
     "hint": "请输入搜索词。",
     "noResults": "未找到「{query}」的相关结果",
     "portfolio": "作品集",
-    "news": "新闻",
+    "news": "PRODUCTION LOG",
     "loadingAria": "正在加载搜索结果",
     "closeAria": "关闭搜索"
   },

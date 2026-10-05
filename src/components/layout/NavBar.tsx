@@ -389,7 +389,7 @@ export function NavBar({
           aria-hidden={!panelVisible}
         >
           <div className="vp-mobile-nav-panel__inner">
-            <NavSearch alwaysExpanded />
+            <NavSearch alwaysExpanded onSubmitSuccess={closeMenu} />
             <ul className="vp-mobile-nav-list navbar-nav m-0 w-full list-none p-0">
               {mobileItems}
             </ul>

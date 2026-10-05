@@ -21,7 +21,7 @@
     "hint": "Enter a search term above.",
     "noResults": "No results for “{query}”",
     "portfolio": "PORTFOLIO",
-    "news": "NEWS",
+    "news": "PRODUCTION LOG",
     "loadingAria": "Loading search results",
     "closeAria": "Close search"
   },

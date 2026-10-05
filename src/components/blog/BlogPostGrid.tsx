@@ -17,6 +17,8 @@ interface BlogPostGridProps {
   phrases?: Record<string, string>;
   /** Optional post to omit (featured block wiring in Phase 4). */
   excludePostId?: string | null;
+  /** Optional per-post navigate hook (e.g. search analytics). */
+  onPostNavigate?: (post: BlogPostCardData) => void;
 }
 
 export function BlogPostGrid({
@@ -24,6 +26,7 @@ export function BlogPostGrid({
   locale,
   phrases,
   excludePostId,
+  onPostNavigate,
 }: BlogPostGridProps) {
   const visiblePosts = excludePostId
     ? posts.filter((post) => post._id !== excludePostId)
@@ -39,6 +42,9 @@ export function BlogPostGrid({
           post={post}
           locale={locale}
           phrases={phrases}
+          onNavigate={
+            onPostNavigate ? () => onPostNavigate(post) : undefined
+          }
         />
       ))}
     </div>

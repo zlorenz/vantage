@@ -7,14 +7,22 @@
  * input immediately (used inside the hamburger nav panels).
  */
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { trackInteractionEvent } from '@/lib/interaction-events';
 
-export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean }) {
+export function NavSearch({
+  alwaysExpanded = false,
+  onSubmitSuccess,
+}: {
+  alwaysExpanded?: boolean;
+  /** Called after a successful submit (e.g. close the mobile nav panel). */
+  onSubmitSuccess?: () => void;
+}) {
   const t = useTranslations('Search');
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [expanded, setExpanded] = useState(alwaysExpanded);
   const [query, setQuery] = useState('');
 
@@ -29,6 +37,9 @@ export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean
       sourceSurface: 'nav_search',
       query: q,
     });
+    // Blur first so iOS dismisses the keyboard before the panel closes.
+    inputRef.current?.blur();
+    onSubmitSuccess?.();
     router.push(
       {
         pathname: '/search',
@@ -52,6 +63,7 @@ export function NavSearch({ alwaysExpanded = false }: { alwaysExpanded?: boolean
       <div className="vp-search-wrapper relative flex items-center">
         {showInput ? (
           <input
+            ref={inputRef}
             type="search"
             name="q"
             className={

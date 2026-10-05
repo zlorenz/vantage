@@ -469,6 +469,7 @@ export interface CategoryTerm {
 
 /** Search result item from SEARCH_QUERY. */
 export interface SearchResultItem {
+  _id: string;
   _type: 'portfolioEntry' | 'blogPost';
   title: string;
   titleZh?: string;
@@ -485,6 +486,8 @@ export interface SearchResultItem {
   /** Plain-text body projection for blog excerpt fallback. */
   bodyText?: string;
   bodyTextZh?: string;
+  /** Blog posts only — category pills for Production Log cards. */
+  categories?: CategoryTerm[] | null;
 }
 
 /** Blog post slug pair for generateStaticParams. */
