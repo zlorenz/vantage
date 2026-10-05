@@ -4,19 +4,30 @@
  * About tabbed panel — click-driven menu with image + description swap.
  * Shared by Who We Are (menu left) and Production House (menu right) sections.
  *
- * Mobile (Figma 2602:27420): accordion — panel sits under the selected tab.
- * Desktop: side-by-side menu + description/media via display:contents grid.
+ * Mobile: accordion — description + media under the selected tab.
+ * Desktop: description accordion under the selected tab; media in the side column.
+ * Desktop opens the first item on load; mobile starts fully collapsed (media lives
+ * inside the accordion, so an idle stage would feel wrong). Clicking the active
+ * tab collapses it; on desktop, media then falls back to the first item.
  *
  * Selection changes on click only (WAI-ARIA manual activation). Arrow keys
  * move focus inside the tablist; Enter or Space activates the focused tab.
  * Hover restyles inactive rows so they still read as clickable.
  */
 
-import { useCallback, useEffect, useRef, useState, type FocusEvent, type KeyboardEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type FocusEvent,
+  type KeyboardEvent,
+} from 'react';
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
-import { CarouselVimeo } from '@/components/prototype/carousel/CarouselVimeo';
-import { CornerFrame } from '@/components/ui/CornerFrame';
+import {useLocale} from 'next-intl';
+import {CarouselVimeo} from '@/components/prototype/carousel/CarouselVimeo';
+import {CornerFrame} from '@/components/ui/CornerFrame';
 import './about-tabbed-panel.css';
 
 export type AboutTabbedPanelItem = {
@@ -66,7 +77,7 @@ function AboutTabMedia({
 }) {
   const locale = useLocale();
   const allowVideoPreview = locale !== 'zh';
-  const activeItem = items[activeIndex] ?? items[0];
+  const activeItem = items[activeIndex];
   const [readyClips, setReadyClips] = useState<ReadonlySet<string>>(() => new Set());
   const handlers = useRef(new Map<string, (ready: boolean) => void>());
 
@@ -130,7 +141,6 @@ function AboutTabMedia({
             fill
             sizes="(max-width: 1199px) 100vw, 994px"
             className="object-cover"
-            priority={activeIndex === 0}
           />
         </div>
       ) : null}
@@ -138,21 +148,43 @@ function AboutTabMedia({
   );
 }
 
+function AboutTabMediaFrame({
+  items,
+  activeIndex,
+  warmed,
+  theme,
+}: {
+  items: readonly AboutTabbedPanelItem[];
+  activeIndex: number;
+  warmed: boolean;
+  theme: AboutTabbedPanelTheme;
+}) {
+  const item = items[activeIndex];
+  if (!item || !(item.imageSrc || item.previewVimeoUrl)) return null;
+
+  return (
+    <div className="vp-about-tabs__media">
+      <div className="vp-about-tabs__photo">
+        <AboutTabMedia items={items} activeIndex={activeIndex} warmed={warmed} />
+        <CornerFrame
+          variant={theme === 'dark' ? 'dark' : 'light'}
+          crosshair={{size: 40, color: 'var(--vp-text)'}}
+        />
+      </div>
+    </div>
+  );
+}
+
 const THEME_CLASSES: Record<
   AboutTabbedPanelTheme,
-  { tabDefault: string; tabInactiveHover: string; tabSelected: string; description: string }
+  {tabSelected: string; description: string}
 > = {
   light: {
-    tabDefault: ' text-black/20',
-    tabInactiveHover: ' hover:text-black/40',
-    tabSelected: ' is-selected bg-black text-white',
+    tabSelected: ' is-selected',
     description: ' text-black/75',
   },
   dark: {
-    tabDefault: ' text-white/20',
-    tabInactiveHover: ' hover:text-white/40',
-    /* Inverted active row on black (mobile accordion + desktop menu). */
-    tabSelected: ' is-selected bg-white text-black',
+    tabSelected: ' is-selected',
     description: ' text-vp-text-muted',
   },
 };
@@ -165,12 +197,18 @@ export function AboutTabbedPanelInteractive({
   imagePosition = 'right',
   theme = 'light',
 }: AboutTabbedPanelInteractiveProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [rovingIndex, setRovingIndex] = useState(0);
   const [warmed, setWarmed] = useState(false);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const activeItem = items[activeIndex] ?? items[0];
+
+  /* Desktop (≥1200px): open first item before paint. Mobile stays collapsed. */
+  useLayoutEffect(() => {
+    if (window.matchMedia('(min-width: 1200px)').matches) {
+      setActiveIndex(0);
+    }
+  }, []);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -180,7 +218,7 @@ export function AboutTabbedPanelInteractive({
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) setWarmed(true);
       },
-      { rootMargin: '0px 0px 240px 0px' },
+      {rootMargin: '0px 0px 240px 0px'},
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -192,7 +230,7 @@ export function AboutTabbedPanelInteractive({
   }
 
   function activateTab(index: number) {
-    setActiveIndex(index);
+    setActiveIndex((current) => (current === index ? null : index));
     setRovingIndex(index);
   }
 
@@ -227,15 +265,17 @@ export function AboutTabbedPanelInteractive({
     const nextTarget = event.relatedTarget;
     const list = event.currentTarget.closest('[role="tablist"]');
     if (nextTarget instanceof Node && list?.contains(nextTarget)) return;
-    setRovingIndex(activeIndex);
+    setRovingIndex(activeIndex ?? 0);
   }
 
-  if (!activeItem) return null;
+  if (items.length === 0) return null;
 
   const headingId = `about-${sectionId}-heading`;
   const panelId = `about-${sectionId}-panel`;
   const descriptionId = `about-${sectionId}-description`;
   const themeClasses = THEME_CLASSES[theme];
+  /* Desktop side stage: keep first-item media when every tab is collapsed. */
+  const mediaIndex = activeIndex ?? 0;
 
   return (
     <div
@@ -279,13 +319,12 @@ export function AboutTabbedPanelInteractive({
                   type="button"
                   role="tab"
                   id={`about-${sectionId}-tab-${index}`}
-                  aria-controls={panelId}
+                  aria-controls={selected ? panelId : undefined}
                   aria-selected={selected}
+                  aria-expanded={selected}
                   tabIndex={rovingIndex === index ? 0 : -1}
                   className={`vp-about-tabs__tab${
-                    selected
-                      ? themeClasses.tabSelected
-                      : `${themeClasses.tabDefault}${themeClasses.tabInactiveHover}`
+                    selected ? themeClasses.tabSelected : ''
                   }`}
                   onClick={() => activateTab(index)}
                   onKeyDown={(event) => onTabKeyDown(event, index)}
@@ -307,27 +346,30 @@ export function AboutTabbedPanelInteractive({
                     >
                       {item.description}
                     </p>
-                    {item.imageSrc || item.previewVimeoUrl ? (
-                      <div className="vp-about-tabs__media">
-                        <div className="vp-about-tabs__photo">
-                          <AboutTabMedia
-                            items={items}
-                            activeIndex={activeIndex}
-                            warmed={warmed}
-                          />
-                          <CornerFrame
-                            variant={theme === 'dark' ? 'dark' : 'light'}
-                            crosshair={{ size: 40, color: 'var(--vp-text)' }}
-                          />
-                        </div>
-                      </div>
-                    ) : null}
+                    <div className="vp-about-tabs__media-inline">
+                      <AboutTabMediaFrame
+                        items={items}
+                        activeIndex={index}
+                        warmed={warmed}
+                        theme={theme}
+                      />
+                    </div>
                   </div>
                 ) : null}
               </li>
             );
           })}
         </ul>
+
+        {/* Desktop side stage. Mobile uses the inline accordion media instead. */}
+        <div className="vp-about-tabs__media-stage is-active">
+          <AboutTabMediaFrame
+            items={items}
+            activeIndex={mediaIndex}
+            warmed={warmed}
+            theme={theme}
+          />
+        </div>
       </div>
     </div>
   );

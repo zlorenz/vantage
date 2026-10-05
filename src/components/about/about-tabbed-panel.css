@@ -1,5 +1,7 @@
 /*
- * About tab panels — mobile accordion (Figma 2602:27420) + desktop side-by-side.
+ * About tab panels — accordion copy under the active tab.
+ * Mobile: description + media under the tab.
+ * Desktop: description under the tab; media in the side column.
  * Sections stay black (product tweak); eyebrows use --vp-link yellow.
  */
 
@@ -59,12 +61,14 @@
   --vp-about-tab-line: var(--vp-candidate-about-black-15);
   --vp-about-tab-body: var(--vp-candidate-about-black-70);
   --vp-about-tab-inactive: var(--vp-candidate-about-black-20);
+  --vp-about-tab-inactive-hover: rgba(0, 0, 0, 0.4);
 }
 
 .vp-about-tabs[data-theme='dark'] {
   --vp-about-tab-line: var(--vp-candidate-brief-line);
   --vp-about-tab-body: var(--vp-candidate-about-white-60);
   --vp-about-tab-inactive: var(--vp-candidate-about-white-20);
+  --vp-about-tab-inactive-hover: rgba(255, 255, 255, 0.4);
 }
 
 /* —— Mobile accordion (default) —— */
@@ -149,6 +153,12 @@ section.vp-about-tabs-section {
   transition: color var(--vp-transition);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .vp-about-tabs__tab:hover:not(.is-selected) {
+    color: var(--vp-about-tab-inactive-hover);
+  }
+}
+
 .vp-about-tabs__menu > li:first-child > .vp-about-tabs__tab {
   border-top: 1px solid var(--vp-about-tab-line);
 }
@@ -176,6 +186,15 @@ section.vp-about-tabs-section {
   color: var(--vp-about-tab-body);
 }
 
+.vp-about-tabs__media-inline {
+  display: block;
+}
+
+/* Desktop side-stage is unused on mobile. */
+.vp-about-tabs__media-stage {
+  display: none;
+}
+
 .vp-about-tabs__media {
   position: relative;
   width: 100%;
@@ -194,7 +213,7 @@ section.vp-about-tabs-section {
   inset: calc(-1 * var(--vp-candidate-about-hero-mobile-frame-inset));
 }
 
-/* —— Desktop side-by-side —— */
+/* —— Desktop: accordion copy in the menu column, media in the side column —— */
 @media (min-width: 1200px) {
   section.vp-about-tabs-section {
     padding-block: var(--vp-candidate-about-section-pad-block);
@@ -229,7 +248,7 @@ section.vp-about-tabs-section {
   .vp-about-tabs__layout {
     display: grid;
     gap: 0;
-    align-items: stretch;
+    align-items: start;
   }
 
   .vp-about-tabs__layout[data-image='right'] {
@@ -241,30 +260,31 @@ section.vp-about-tabs-section {
   }
 
   .vp-about-tabs__menu {
-    display: contents;
+    grid-column: 1;
+    border-block: 1px solid var(--vp-about-tab-line);
   }
 
-  .vp-about-tabs__menu > li {
-    display: contents;
+  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__menu {
+    grid-column: 2;
   }
 
   .vp-about-tabs__tab {
-    grid-column: 1;
     padding: 20px var(--vp-candidate-about-cell-pad);
     border-bottom: 0;
     font-size: var(--vp-candidate-about-tab-size);
   }
 
-  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__tab {
-    grid-column: 2;
-  }
-
   .vp-about-tabs__menu > li:first-child > .vp-about-tabs__tab {
-    border-top: 1px solid var(--vp-about-tab-line);
+    border-top: 0;
   }
 
-  .vp-about-tabs__tab:not(.is-selected) {
+  .vp-about-tabs__menu > li:not(:last-child) > .vp-about-tabs__tab,
+  .vp-about-tabs__menu > li:not(:last-child) > .vp-about-tabs__panel {
     border-bottom: 1px solid var(--vp-about-tab-line);
+  }
+
+  .vp-about-tabs__menu > li.is-selected > .vp-about-tabs__tab {
+    border-bottom: 0;
   }
 
   .vp-about-tabs__tab.is-selected {
@@ -278,43 +298,56 @@ section.vp-about-tabs-section {
   }
 
   .vp-about-tabs__panel {
-    grid-column: 2;
-    grid-row: 1 / -1;
-    display: flex;
-    flex-direction: column;
     gap: 0;
+  }
+
+  .vp-about-tabs__description {
+    padding: 16px var(--vp-candidate-about-cell-pad) 24px;
+    font-size: var(--vp-candidate-about-body-size);
+  }
+
+  /* Description stays under the tab; media moves to the side stage. */
+  .vp-about-tabs__media-inline {
+    display: none;
+  }
+
+  .vp-about-tabs__media-stage {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
     min-height: 675px;
     border-inline-start: 1px solid var(--vp-about-tab-line);
     border-block: 1px solid var(--vp-about-tab-line);
   }
 
-  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__panel {
+  .vp-about-tabs__layout[data-image='left'] .vp-about-tabs__media-stage {
     grid-column: 1;
     border-inline-start: 0;
     border-inline-end: 1px solid var(--vp-about-tab-line);
   }
 
-  .vp-about-tabs__description {
-    margin-top: auto;
-    padding: var(--vp-candidate-about-cell-pad);
-    font-size: var(--vp-candidate-about-body-size);
+  .vp-about-tabs__media-stage:not(.is-active) {
+    background: transparent;
   }
 
-  .vp-about-tabs__media {
-    flex: 1;
-    min-height: 0;
+  .vp-about-tabs__media-stage .vp-about-tabs__media {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 675px;
     padding: var(--vp-candidate-about-cell-pad);
     border-block: 0;
-    border-top: 1px solid var(--vp-about-tab-line);
   }
 
-  .vp-about-tabs__photo {
-    height: 100%;
+  .vp-about-tabs__media-stage .vp-about-tabs__photo {
+    flex: 1;
+    height: auto;
     min-height: calc(400px);
     aspect-ratio: auto;
   }
 
-  .vp-about-tabs__photo .vp-corner-frame {
+  .vp-about-tabs__media-stage .vp-about-tabs__photo .vp-corner-frame {
     inset: -10px;
   }
 }
