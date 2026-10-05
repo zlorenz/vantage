@@ -119,37 +119,57 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
 
   const isPending = loading || query !== deferredQuery;
 
+  const resultsHeading =
+    query ? (
+      <h1
+        className={`mb-8 font-vp-heading text-xl font-bold uppercase leading-tight tracking-vp-heading ${SEARCH_PAD}`}
+      >
+        <span className="text-white/45">{t('resultsForLabel')}</span>{' '}
+        <span className="text-white">{query}</span>
+      </h1>
+    ) : null;
+
   if (!query) {
     return (
-      <p className={`font-light text-vp-text-muted ${SEARCH_INSET}`}>{t('hint')}</p>
+      <div className={SEARCH_INSET}>
+        <h1 className="sr-only">{t('title')}</h1>
+        <p className="font-light text-vp-text-muted">{t('hint')}</p>
+      </div>
     );
   }
 
   if (isPending) {
     return (
-      <div
-        className={`vp-load-spinner mx-auto ${SEARCH_INSET}`}
-        aria-label={t('loadingAria')}
-      />
+      <div>
+        {resultsHeading}
+        <div
+          className={`vp-load-spinner mx-auto ${SEARCH_INSET}`}
+          aria-label={t('loadingAria')}
+        />
+      </div>
     );
   }
 
   if (!results.length) {
     return (
-      <h2
-        className={`vp-search-empty__title font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading ${SEARCH_INSET}`}
-      >
-        {t('noResults', { query })}
-      </h2>
+      <div>
+        {resultsHeading}
+        <p
+          className={`font-light text-vp-text-muted ${SEARCH_PAD}`}
+        >
+          {t('noResults', { query })}
+        </p>
+      </div>
     );
   }
 
   return (
     <div className="space-y-12">
+      {resultsHeading}
       {portfolioResults.length > 0 ? (
         <section>
           <h2
-            className={`mb-2 font-vp-heading text-xl font-bold uppercase tracking-vp-heading ${SEARCH_PAD}`}
+            className={`mb-2 font-vp-heading text-[length:var(--vp-display-title-size)] font-bold uppercase leading-[1.15] tracking-[var(--vp-display-title-tracking)] ${SEARCH_PAD}`}
           >
             {t('portfolio')}
           </h2>
@@ -174,7 +194,7 @@ export function SearchPageClient({ locale, phrases }: SearchPageClientProps) {
       {newsPosts.length > 0 ? (
         <section>
           <h2
-            className={`mb-2 font-vp-heading text-xl font-bold uppercase tracking-vp-heading ${SEARCH_PAD}`}
+            className={`mb-2 font-vp-heading text-[length:var(--vp-display-title-size)] font-bold uppercase leading-[1.15] tracking-[var(--vp-display-title-tracking)] ${SEARCH_PAD}`}
           >
             {t('news')}
           </h2>

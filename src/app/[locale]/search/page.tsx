@@ -4,7 +4,7 @@
 
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { SearchPageClient } from '@/components/search/SearchPageClient';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
@@ -45,7 +45,6 @@ export default async function SearchPage({ params }: Props) {
   setRequestLocale(locale);
 
   const typedLocale = locale as Locale;
-  const t = await getTranslations('Search');
   const phrases = await getPhraseRecord();
 
   return (
@@ -54,11 +53,6 @@ export default async function SearchPage({ params }: Props) {
         data={buildBreadcrumbs([homeBreadcrumb(typedLocale), searchBreadcrumb(typedLocale)])}
       />
       <SectionWrapper className="vp-search-page" fullBleed={true}>
-        <div className="px-[var(--spacing-vp-gutter,1.875rem)]">
-          <h1 className="mb-8 font-vp-heading text-[clamp(2rem,4vw,3.5rem)] font-bold uppercase leading-tight tracking-vp-heading">
-            {t('title')}
-          </h1>
-        </div>
         <Suspense fallback={<div className="vp-load-spinner mx-auto" />}>
           <SearchPageClient locale={typedLocale} phrases={phrases} />
         </Suspense>

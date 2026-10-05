@@ -20,6 +20,7 @@
     "openAria": "打开搜索",
     "hint": "请输入搜索词。",
     "noResults": "未找到「{query}」的相关结果",
+    "resultsForLabel": "搜索结果：",
     "portfolio": "作品集",
     "news": "PRODUCTION LOG",
     "loadingAria": "正在加载搜索结果",

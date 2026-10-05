@@ -20,7 +20,8 @@
     "openAria": "Open search",
     "hint": "Enter a search term above.",
     "noResults": "No results for “{query}”",
-    "portfolio": "PORTFOLIO",
+    "resultsForLabel": "Results for:",
+    "portfolio": "OUR WORK",
     "news": "PRODUCTION LOG",
     "loadingAria": "Loading search results",
     "closeAria": "Close search"
