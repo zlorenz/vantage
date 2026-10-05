@@ -739,15 +739,18 @@
  * ================================================================ */
 
 #header.navbar {
-  background: transparent;
+  background-color: transparent;
   transform: translateY(0);
-  transition: transform 0.28s ease;
+  /* Transform = hide/show; background = about hero solid↔clear fade. */
+  transition:
+    transform 0.28s ease,
+    background-color 0.28s ease;
   will-change: transform;
 }
 
-/* Solid black bar on every page except home + /work (full-bleed imagery). */
+/* Solid black bar — off on home + /work; on /about after the hero (JS). */
 #header.navbar.vp-header--solid {
-  background: var(--vp-bg);
+  background-color: var(--vp-bg);
 }
 
 #header.navbar.vp-header--hidden {
