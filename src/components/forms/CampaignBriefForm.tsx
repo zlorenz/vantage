@@ -5,6 +5,7 @@
  * honeypot, submission states, and GTM event on success.
  */
 
+import { useLayoutEffect, useRef } from 'react';
 import { useLocale } from 'next-intl';
 import type { Locale } from '@/i18n/routing';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
@@ -20,6 +21,13 @@ import {
 import '@/components/forms/campaign-brief-form.css';
 
 const TOTAL_STEPS = 3;
+
+/** Next / Previous / step dots leave the window where the previous step was. */
+function scrollBriefToTop(): void {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
 
 export function CampaignBriefForm() {
   const locale = useLocale() as Locale;
@@ -49,6 +57,24 @@ export function CampaignBriefForm() {
     honeypot,
     setHoneypot,
   } = form;
+
+  const previousStepRef = useRef(currentStep);
+  const previousSubmissionRef = useRef(submissionState);
+
+  useLayoutEffect(() => {
+    const stepChanged = previousStepRef.current !== currentStep;
+    const becameSuccess =
+      previousSubmissionRef.current !== 'success' &&
+      submissionState === 'success';
+
+    previousStepRef.current = currentStep;
+    previousSubmissionRef.current = submissionState;
+
+    // First paint stays put; only move after the user changes step or submits.
+    if (stepChanged || becameSuccess) {
+      scrollBriefToTop();
+    }
+  }, [currentStep, submissionState]);
 
   if (submissionState === 'success') {
     return (
