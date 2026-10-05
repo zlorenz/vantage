@@ -1,24 +1,34 @@
 /**
  * AboutStatementSection — server wrapper for the /about display statement.
  *
- * Resolves copy via next-intl and passes plain strings to the client child
- * that owns layout animation (AboutStatementAnimated).
+ * Prefers curated About Media markers / film strip; falls back to portfolio.
  */
 
-import { getTranslations } from 'next-intl/server';
-import { AboutHeroViewport } from '@/components/about/AboutHeroViewport';
-import { AboutStatementAnimated } from '@/components/about/AboutStatementAnimated';
-import { urlForImage } from '@/lib/sanity';
-import { sanityFetch } from '@/sanity/lib/live';
+import {getLocale, getTranslations} from 'next-intl/server';
+import {AboutHeroViewport} from '@/components/about/AboutHeroViewport';
+import {AboutStatementAnimated} from '@/components/about/AboutStatementAnimated';
+import {
+  loadAboutMedia,
+  resolveAboutImageList,
+  type AboutStillMedia,
+} from '@/lib/about-media';
+import {urlForImage} from '@/lib/sanity';
+import {sanityFetch} from '@/sanity/lib/live';
 import {
   ABOUT_STATEMENT_FILM_STRIP_QUERY,
   ABOUT_STATEMENT_MARKERS_QUERY,
 } from '@/sanity/queries/pages';
-import type { ABOUT_STATEMENT_MARKERS_QUERY_RESULT } from '@/sanity/sanity.types';
+import type {ABOUT_STATEMENT_MARKERS_QUERY_RESULT} from '@/sanity/sanity.types';
 
 const FILM_STRIP_COUNT = 5;
+const MARKER_COUNT = 2;
+const FILM_STRIP_TOTAL = FILM_STRIP_COUNT * 2;
 
-function toPoster(entry: ABOUT_STATEMENT_MARKERS_QUERY_RESULT[number], width: number, height: number) {
+function toPoster(
+  entry: ABOUT_STATEMENT_MARKERS_QUERY_RESULT[number],
+  width: number,
+  height: number,
+): AboutStillMedia {
   return {
     src: urlForImage(entry.featuredImage!).width(width).height(height).fit('crop').url(),
     alt: entry.title?.trim() || 'Portfolio still',
@@ -26,26 +36,58 @@ function toPoster(entry: ABOUT_STATEMENT_MARKERS_QUERY_RESULT[number], width: nu
 }
 
 export async function AboutStatementSection() {
-  const [t, markerResult, filmResult] = await Promise.all([
+  const [t, locale, aboutMedia] = await Promise.all([
     getTranslations('About'),
-    sanityFetch({ query: ABOUT_STATEMENT_MARKERS_QUERY, stega: false }),
-    sanityFetch({ query: ABOUT_STATEMENT_FILM_STRIP_QUERY, stega: false }),
+    getLocale(),
+    loadAboutMedia(),
   ]);
 
-  const markerEntries = (markerResult.data ?? []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT;
-  const filmEntries = ((filmResult.data ?? []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT).filter(
-    (entry) => entry.featuredImage,
+  const curatedMarkers = resolveAboutImageList(
+    aboutMedia?.statementMarkers,
+    locale,
+    MARKER_COUNT,
+    {width: 585, height: 328},
+  );
+  const curatedFilm = resolveAboutImageList(
+    aboutMedia?.statementFilmStrip,
+    locale,
+    FILM_STRIP_TOTAL,
+    {width: 474, height: 640},
   );
 
-  const markers = markerEntries
-    .filter((entry) => entry.featuredImage)
-    .slice(0, 2)
-    .map((entry) => toPoster(entry, 585, 328));
+  let markers: AboutStillMedia[];
+  if (curatedMarkers) {
+    markers = curatedMarkers;
+  } else {
+    const markerResult = await sanityFetch({
+      query: ABOUT_STATEMENT_MARKERS_QUERY,
+      stega: false,
+    });
+    const markerEntries = (markerResult.data ??
+      []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT;
+    markers = markerEntries
+      .filter((entry) => entry.featuredImage)
+      .slice(0, MARKER_COUNT)
+      .map((entry) => toPoster(entry, 585, 328));
+  }
 
-  const filmPosters = filmEntries.map((entry) => toPoster(entry, 474, 640));
+  let filmPosters: AboutStillMedia[];
+  if (curatedFilm) {
+    filmPosters = curatedFilm;
+  } else {
+    const filmResult = await sanityFetch({
+      query: ABOUT_STATEMENT_FILM_STRIP_QUERY,
+      stega: false,
+    });
+    const filmEntries = (
+      (filmResult.data ?? []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT
+    ).filter((entry) => entry.featuredImage);
+    filmPosters = filmEntries.map((entry) => toPoster(entry, 474, 640));
+  }
+
   const filmStrips = {
     left: filmPosters.slice(0, FILM_STRIP_COUNT),
-    right: filmPosters.slice(FILM_STRIP_COUNT, FILM_STRIP_COUNT * 2),
+    right: filmPosters.slice(FILM_STRIP_COUNT, FILM_STRIP_TOTAL),
   };
 
   return (

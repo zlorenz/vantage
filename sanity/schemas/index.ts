@@ -24,7 +24,6 @@ import { campaignBriefAttachment } from './campaignBriefAttachment';
 import { videoEvent } from './videoEvent';
 import { interactionEvent } from './interactionEvent';
 import { showreel } from './showreel';
-
 import { seoFields } from './objects/seoFields';
 import { trashMetadata } from './objects/trashMetadata';
 import { crewPerson } from './objects/crewPerson';
@@ -41,6 +40,8 @@ import { ctaButton } from './objects/ctaButton'
 import { videoEmbed } from './objects/videoEmbed'
 import { pullQuote } from './objects/pullQuote'
 import { imagePair } from './objects/imagePair'
+import { aboutMediaSlot } from './objects/aboutMediaSlot'
+import { aboutMediaImageSlot } from './objects/aboutMediaImageSlot'
 import { portableTextBody, pagePortableText, plainPortableText } from './objects/portableTextBody'
 
 export const schemaTypes = [
@@ -61,6 +62,8 @@ export const schemaTypes = [
   videoEmbed,
   pullQuote,
   imagePair,
+  aboutMediaSlot,
+  aboutMediaImageSlot,
   portableTextBody,
   pagePortableText,
   plainPortableText,

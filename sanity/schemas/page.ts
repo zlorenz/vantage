@@ -188,16 +188,120 @@ export const page = defineType({
         hideUnlessPageSlug('home-redesign')(ctx) || hiddenForTranslator(ctx),
     }),
 
+    // —— About Redesign media (slug `about-redesign`) ——
+    defineField({
+      name: 'specialties',
+      title: 'Our Specialties',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'aboutMediaSlot'}],
+      description:
+        '(1) Product launch films, (2) Story-driven spots, (3) Branded documentaries, (4) High-volume social campaigns',
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (value == null || (Array.isArray(value) && value.length === 0)) return true
+          if (!Array.isArray(value) || value.length !== 4) {
+            return 'Use exactly 4 specialty slots, or leave empty for automatic portfolio placeholders'
+          }
+          return true
+        }),
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
+    defineField({
+      name: 'advantages',
+      title: 'Our Advantages',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'aboutMediaSlot'}],
+      description:
+        '(1) Creative + execution as one, (2) Set for the global stage, (3) Built for speed and scale, (4) Complex tech, simplified',
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (value == null || (Array.isArray(value) && value.length === 0)) return true
+          if (!Array.isArray(value) || value.length !== 4) {
+            return 'Use exactly 4 advantage slots, or leave empty for automatic portfolio placeholders'
+          }
+          return true
+        }),
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
+    defineField({
+      name: 'productionServicesCta',
+      title: 'Production Services CTA',
+      type: 'aboutMediaSlot',
+      group: 'content',
+      description:
+        'Media for the yellow “Get the full rundown” row. Portfolio preview or static image. Leave empty for the automatic placeholder.',
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
+    defineField({
+      name: 'productionLogCta',
+      title: 'Production Log CTA',
+      type: 'aboutMediaSlot',
+      group: 'content',
+      description:
+        'Media for the white “Explore the production log” row. Portfolio preview or static image. Leave empty for the automatic placeholder.',
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
+    defineField({
+      name: 'statementMarkers',
+      title: 'Statement Inline Markers',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'aboutMediaImageSlot'}],
+      description:
+        'Two stills that expand inline in the statement copy. Images only (no video). Leave empty for automatic placeholders.',
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (value == null || (Array.isArray(value) && value.length === 0)) return true
+          if (!Array.isArray(value) || value.length !== 2) {
+            return 'Use exactly 2 marker images, or leave empty for automatic portfolio placeholders'
+          }
+          return true
+        }),
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
+    defineField({
+      name: 'statementFilmStrip',
+      title: 'Statement Film Strip',
+      type: 'array',
+      group: 'content',
+      of: [{type: 'aboutMediaImageSlot'}],
+      description:
+        'Ten stills: first five → left/top strip, next five → right/bottom strip. Images only (no video). Leave empty for automatic placeholders.',
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (value == null || (Array.isArray(value) && value.length === 0)) return true
+          if (!Array.isArray(value) || value.length !== 10) {
+            return 'Use exactly 10 film-strip images, or leave empty for automatic portfolio placeholders'
+          }
+          return true
+        }),
+      hidden: (ctx) =>
+        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+    }),
+
     defineField({
       name: 'body',
       title: 'Body (English)',
       type: 'pagePortableText',
       group: 'content',
       description: 'Main page copy. On Home: company description under Featured Work.',
-      // News uses Excerpt for the intro — body is unused and not required there.
+      // News uses Excerpt; redesign stubs (home/about) are media-first for now.
       validation: (rule) =>
         rule.custom((value, context) => {
-          if (isPageSlug(context.document as Record<string, unknown>, 'news')) {
+          const doc = context.document as Record<string, unknown>
+          if (isPageSlug(doc, ['news', 'about-redesign', 'home-redesign'])) {
             return true
           }
           if (!value || (Array.isArray(value) && value.length === 0)) {
@@ -206,7 +310,9 @@ export const page = defineType({
           return true
         }),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
-      hidden: hiddenForTranslatorWhenEmpty,
+      hidden: (ctx) =>
+        isPageSlug(ctx.document as Record<string, unknown>, 'about-redesign') ||
+        Boolean(hiddenForTranslatorWhenEmpty(ctx)),
       components: {input: BilingualPortableTextInput},
     }),
 
@@ -215,7 +321,9 @@ export const page = defineType({
       title: 'Body (Chinese)',
       type: 'pagePortableText',
       group: 'content',
-      hidden: hideZhPortableText('body'),
+      hidden: (ctx) =>
+        isPageSlug(ctx.document as Record<string, unknown>, 'about-redesign') ||
+        Boolean(hideZhPortableText('body')(ctx)),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
       components: {input: BilingualPortableTextInput},
     }),

@@ -214,6 +214,28 @@ export type Page = {
       _key: string;
     } & PortfolioEntryReference
   >;
+  specialties?: Array<
+    {
+      _key: string;
+    } & AboutMediaSlot
+  >;
+  advantages?: Array<
+    {
+      _key: string;
+    } & AboutMediaSlot
+  >;
+  productionServicesCta?: AboutMediaSlot;
+  productionLogCta?: AboutMediaSlot;
+  statementMarkers?: Array<
+    {
+      _key: string;
+    } & AboutMediaImageSlot
+  >;
+  statementFilmStrip?: Array<
+    {
+      _key: string;
+    } & AboutMediaImageSlot
+  >;
   body?: PagePortableText;
   bodyZh?: PagePortableText;
   brandLogos?: Array<
@@ -287,6 +309,21 @@ export type PagePortableText = Array<
       _key: string;
     } & CtaButton)
 >;
+
+export type AboutMediaSlot = {
+  _type: "aboutMediaSlot";
+  mediaMode?: "portfolioPreview" | "staticImage";
+  portfolioEntry?: PortfolioEntryReference;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  alt?: string;
+  altZh?: string;
+};
 
 export type SeoFields = {
   _type: "seoFields";
@@ -606,6 +643,21 @@ export type PlainPortableText = Array<{
   _type: "block";
   _key: string;
 }>;
+
+export type AboutMediaImageSlot = {
+  _type: "aboutMediaImageSlot";
+  mediaMode?: "portfolio" | "staticImage";
+  portfolioEntry?: PortfolioEntryReference;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  alt?: string;
+  altZh?: string;
+};
 
 export type ImagePair = {
   _type: "imagePair";
@@ -1112,6 +1164,7 @@ export type AllSanitySchemaTypes =
   | TrashMetadata
   | PdfDownload
   | PagePortableText
+  | AboutMediaSlot
   | SeoFields
   | Slug
   | SanityImageCrop
@@ -1134,6 +1187,7 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | CampaignCta
   | PlainPortableText
+  | AboutMediaImageSlot
   | ImagePair
   | PullQuote
   | CtaButton
@@ -1928,8 +1982,186 @@ export type ABOUT_STATEMENT_MARKERS_QUERY_RESULT = Array<{
 }>;
 
 // Source: ../src/sanity/queries/pages.ts
+// Variable: ABOUT_MEDIA_QUERY
+// Query: *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{    specialties[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    advantages[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    productionServicesCta{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    productionLogCta{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    statementMarkers[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{    title,    featuredImage  }},    statementFilmStrip[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{    title,    featuredImage  }}  }
+export type ABOUT_MEDIA_QUERY_RESULT = {
+  specialties: Array<{
+    mediaMode: "portfolioPreview" | "staticImage" | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    alt: string | null;
+    altZh: string | null;
+    portfolioEntry: {
+      title: string | null;
+      featuredImage: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+      videos: Array<{
+        vimeoUrl: string | null;
+        previewStartSeconds: number | null;
+        previewEndSeconds: number | null;
+        previewCleanVimeoUrl: string | null;
+      }> | null;
+      vimeoUrl: string | null;
+      previewStartSeconds: number | null;
+      previewEndSeconds: number | null;
+      previewCleanVimeoUrl: string | null;
+    } | null;
+  }> | null;
+  advantages: Array<{
+    mediaMode: "portfolioPreview" | "staticImage" | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    alt: string | null;
+    altZh: string | null;
+    portfolioEntry: {
+      title: string | null;
+      featuredImage: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+      videos: Array<{
+        vimeoUrl: string | null;
+        previewStartSeconds: number | null;
+        previewEndSeconds: number | null;
+        previewCleanVimeoUrl: string | null;
+      }> | null;
+      vimeoUrl: string | null;
+      previewStartSeconds: number | null;
+      previewEndSeconds: number | null;
+      previewCleanVimeoUrl: string | null;
+    } | null;
+  }> | null;
+  productionServicesCta: {
+    mediaMode: "portfolioPreview" | "staticImage" | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    alt: string | null;
+    altZh: string | null;
+    portfolioEntry: {
+      title: string | null;
+      featuredImage: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+      videos: Array<{
+        vimeoUrl: string | null;
+        previewStartSeconds: number | null;
+        previewEndSeconds: number | null;
+        previewCleanVimeoUrl: string | null;
+      }> | null;
+      vimeoUrl: string | null;
+      previewStartSeconds: number | null;
+      previewEndSeconds: number | null;
+      previewCleanVimeoUrl: string | null;
+    } | null;
+  } | null;
+  productionLogCta: {
+    mediaMode: "portfolioPreview" | "staticImage" | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    alt: string | null;
+    altZh: string | null;
+    portfolioEntry: {
+      title: string | null;
+      featuredImage: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+      videos: Array<{
+        vimeoUrl: string | null;
+        previewStartSeconds: number | null;
+        previewEndSeconds: number | null;
+        previewCleanVimeoUrl: string | null;
+      }> | null;
+      vimeoUrl: string | null;
+      previewStartSeconds: number | null;
+      previewEndSeconds: number | null;
+      previewCleanVimeoUrl: string | null;
+    } | null;
+  } | null;
+  statementMarkers: Array<{
+    mediaMode: "portfolio" | "staticImage" | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    alt: string | null;
+    altZh: string | null;
+    portfolioEntry: {
+      title: string | null;
+      featuredImage: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+    } | null;
+  }> | null;
+  statementFilmStrip: Array<{
+    mediaMode: "portfolio" | "staticImage" | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    alt: string | null;
+    altZh: string | null;
+    portfolioEntry: {
+      title: string | null;
+      featuredImage: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+    } | null;
+  }> | null;
+} | null;
+
+// Source: ../src/sanity/queries/pages.ts
 // Variable: ABOUT_WHO_WE_ARE_IMAGES_QUERY
-// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [0..3] {    title,    featuredImage  }
+// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [0..3] {      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }
 export type ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT = Array<{
   title: string | null;
   featuredImage: {
@@ -1944,7 +2176,7 @@ export type ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT = Array<{
     previewStartSeconds: number | null;
     previewEndSeconds: number | null;
     previewCleanVimeoUrl: string | null;
-  } | null> | null;
+  }> | null;
   vimeoUrl: string | null;
   previewStartSeconds: number | null;
   previewEndSeconds: number | null;
@@ -1953,7 +2185,7 @@ export type ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT = Array<{
 
 // Source: ../src/sanity/queries/pages.ts
 // Variable: ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY
-// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [4..7] {    title,    featuredImage  }
+// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [4..7] {      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }
 export type ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT = Array<{
   title: string | null;
   featuredImage: {
@@ -1968,11 +2200,39 @@ export type ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT = Array<{
     previewStartSeconds: number | null;
     previewEndSeconds: number | null;
     previewCleanVimeoUrl: string | null;
-  } | null> | null;
+  }> | null;
   vimeoUrl: string | null;
   previewStartSeconds: number | null;
   previewEndSeconds: number | null;
   previewCleanVimeoUrl: string | null;
+}>;
+
+// Source: ../src/sanity/queries/pages.ts
+// Variable: ABOUT_FEATURE_POSTER_QUERY
+// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [18..18] {    title,    featuredImage  }
+export type ABOUT_FEATURE_POSTER_QUERY_RESULT = Array<{
+  title: string | null;
+  featuredImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+}>;
+
+// Source: ../src/sanity/queries/pages.ts
+// Variable: ABOUT_STATEMENT_FILM_STRIP_QUERY
+// Query: *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]  | order(publishedAt desc) [8..17] {    title,    featuredImage  }
+export type ABOUT_STATEMENT_FILM_STRIP_QUERY_RESULT = Array<{
+  title: string | null;
+  featuredImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
 }>;
 
 // Source: ../src/sanity/queries/pages.ts
@@ -3686,8 +3946,11 @@ declare global {
     '\n  *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{\n    \n  _id,\n  title,\n  titleZh,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  showHeroHeader,\n  heroTitle,\n  heroTitleZh,\n  featuredImage,\n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    brandLogos[]{\n      logoId\n    }\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      professionalTitle,\n      professionalTitleZh,\n      image,\n      bio,\n      bioZh,\n      sameAs\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..1] {\n    title,\n    featuredImage\n  }\n': ABOUT_STATEMENT_MARKERS_QUERY_RESULT;
-    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..3] {\n    title,\n    featuredImage\n  }\n': ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT;
-    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [4..7] {\n    title,\n    featuredImage\n  }\n': ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT;
+    '\n  *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{\n    specialties[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    advantages[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    productionServicesCta{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    productionLogCta{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    statementMarkers[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    title,\n    featuredImage\n  }\n},\n    statementFilmStrip[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    title,\n    featuredImage\n  }\n}\n  }\n': ABOUT_MEDIA_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..3] {\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n': ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [4..7] {\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n': ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [18..18] {\n    title,\n    featuredImage\n  }\n': ABOUT_FEATURE_POSTER_QUERY_RESULT;
+    '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [8..17] {\n    title,\n    featuredImage\n  }\n': ABOUT_STATEMENT_FILM_STRIP_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "news" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    excerpt,\n    excerptZh\n  }\n': NEWS_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n,\n    pdfDownload{\n      label,\n      file{\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT;

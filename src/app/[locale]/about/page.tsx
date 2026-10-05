@@ -46,10 +46,29 @@ import {
   loadOrganizationSchemaInput,
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import {
+  loadAboutMedia,
+  resolveAboutPreviewSlot,
+  type AboutPreviewMedia,
+} from '@/lib/about-media';
 import { sanityFetch } from '@/sanity/lib/live';
 import { ABOUT_FEATURE_POSTER_QUERY, ABOUT_PAGE_QUERY } from '@/sanity/queries/pages';
 import type { ABOUT_STATEMENT_MARKERS_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { ABOUT_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
+
+const CTA_MEDIA_SIZE = {width: 1280, height: 1140};
+const CTA_FALLBACK_IMAGE =
+  'https://cdn.sanity.io/images/7oesp86l/production/b2887f5288c958358c17df2f070e8ef3ece16d49-1132x756.jpg';
+
+function ctaFallback(src: string): AboutPreviewMedia {
+  return {
+    src,
+    alt: '',
+    previewVimeoUrl: null,
+    previewStartSeconds: null,
+    previewEndSeconds: null,
+  };
+}
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -89,12 +108,14 @@ export default async function AboutPage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [pageResult, phrases, organization, featurePosterResult] = await Promise.all([
-    sanityFetch({query: ABOUT_PAGE_QUERY}),
-    getPhraseRecord(),
-    loadOrganizationSchemaInput(typedLocale),
-    sanityFetch({ query: ABOUT_FEATURE_POSTER_QUERY, stega: false }),
-  ]);
+  const [pageResult, phrases, organization, aboutMedia, featurePosterResult] =
+    await Promise.all([
+      sanityFetch({query: ABOUT_PAGE_QUERY}),
+      getPhraseRecord(),
+      loadOrganizationSchemaInput(typedLocale),
+      loadAboutMedia(),
+      sanityFetch({query: ABOUT_FEATURE_POSTER_QUERY, stega: false}),
+    ]);
   const page = pageResult.data as ABOUT_PAGE_QUERY_RESULT;
 
   if (!page) notFound();
@@ -106,14 +127,34 @@ export default async function AboutPage({ params }: Props) {
     phrases,
   );
   const t = await getTranslations('About');
-  const featurePoster = (
-    (featurePosterResult.data ?? []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT
-  ).find((entry) => entry.featuredImage);
-  const servicesImageSrc = featurePoster?.featuredImage
-    ? urlForImage(featurePoster.featuredImage).width(1280).height(1140).fit('crop').url()
-    : 'https://cdn.sanity.io/images/7oesp86l/production/b2887f5288c958358c17df2f070e8ef3ece16d49-1132x756.jpg';
-  const productionLogImageSrc =
-    'https://cdn.sanity.io/images/7oesp86l/production/b2887f5288c958358c17df2f070e8ef3ece16d49-1132x756.jpg';
+
+  const servicesMedia =
+    resolveAboutPreviewSlot(
+      aboutMedia?.productionServicesCta,
+      typedLocale,
+      CTA_MEDIA_SIZE,
+    ) ??
+    (() => {
+      const featurePoster = (
+        (featurePosterResult.data ?? []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT
+      ).find((entry) => entry.featuredImage);
+      return featurePoster?.featuredImage
+        ? ctaFallback(
+            urlForImage(featurePoster.featuredImage)
+              .width(CTA_MEDIA_SIZE.width)
+              .height(CTA_MEDIA_SIZE.height)
+              .fit('crop')
+              .url(),
+          )
+        : ctaFallback(CTA_FALLBACK_IMAGE);
+    })();
+
+  const productionLogMedia =
+    resolveAboutPreviewSlot(
+      aboutMedia?.productionLogCta,
+      typedLocale,
+      CTA_MEDIA_SIZE,
+    ) ?? ctaFallback(CTA_FALLBACK_IMAGE);
 
   return (
     <>
@@ -147,7 +188,11 @@ export default async function AboutPage({ params }: Props) {
           paragraphs={[t('productionServicesBody'), t('productionServicesBody2')]}
           ctaLabel={t('productionServicesCta')}
           ctaHref="/vietnam-production-service"
-          imageSrc={servicesImageSrc}
+          imageSrc={servicesMedia.src}
+          imageAlt={servicesMedia.alt}
+          previewVimeoUrl={servicesMedia.previewVimeoUrl}
+          previewStartSeconds={servicesMedia.previewStartSeconds}
+          previewEndSeconds={servicesMedia.previewEndSeconds}
           tone="yellow"
           wash
         />
@@ -159,7 +204,11 @@ export default async function AboutPage({ params }: Props) {
           paragraphs={[t('productionLogCtaBody')]}
           ctaLabel={t('productionLogCtaLink')}
           ctaHref="/news"
-          imageSrc={productionLogImageSrc}
+          imageSrc={productionLogMedia.src}
+          imageAlt={productionLogMedia.alt}
+          previewVimeoUrl={productionLogMedia.previewVimeoUrl}
+          previewStartSeconds={productionLogMedia.previewStartSeconds}
+          previewEndSeconds={productionLogMedia.previewEndSeconds}
           mirrored
           tone="white"
         />

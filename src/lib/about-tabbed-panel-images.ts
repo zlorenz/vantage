@@ -1,4 +1,5 @@
 import { resolveCarouselPreviewPlayback } from '@portfolio-videos';
+import type { AboutPreviewMedia } from '@/lib/about-media';
 import { urlForImage } from '@/lib/sanity';
 
 type PortfolioPreviewRow = {
@@ -21,7 +22,7 @@ type PortfolioImageEntry = {
 export function mapPortfolioFeaturedImages(
   entries: readonly PortfolioImageEntry[],
   count: number,
-) {
+): AboutPreviewMedia[] {
   const images = entries
     .filter((entry) => entry.featuredImage)
     .slice(0, count)
@@ -52,7 +53,7 @@ export function attachImagesToTabbedPanelItems<
   T extends { label: string; description: string },
 >(
   items: readonly T[],
-  images: ReturnType<typeof mapPortfolioFeaturedImages>,
+  images: readonly AboutPreviewMedia[],
 ) {
   const fallback = images[0];
 

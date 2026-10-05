@@ -5,10 +5,10 @@
  */
 
 import type { ComponentProps } from 'react';
-import Image from 'next/image';
 import { CornerFrame } from '@/components/ui/CornerFrame';
 import { Link } from '@/i18n/navigation';
 import { AboutFeatureMark } from '@/components/about/AboutFeatureMark';
+import { AboutPreviewMedia } from '@/components/about/AboutPreviewMedia';
 import './about-feature-row.css';
 
 type LinkHref = ComponentProps<typeof Link>['href'];
@@ -20,6 +20,9 @@ type AboutFeatureRowProps = {
   ctaHref: LinkHref;
   imageSrc: string;
   imageAlt?: string;
+  previewVimeoUrl?: string | null;
+  previewStartSeconds?: number | null;
+  previewEndSeconds?: number | null;
   /** Services: image left, yellow bar, 0.2 wash. Log: image right, white bar, no wash. */
   mirrored?: boolean;
   tone: 'yellow' | 'white';
@@ -33,6 +36,9 @@ export function AboutFeatureRow({
   ctaHref,
   imageSrc,
   imageAlt = '',
+  previewVimeoUrl = null,
+  previewStartSeconds = null,
+  previewEndSeconds = null,
   mirrored = false,
   tone,
   wash = false,
@@ -42,8 +48,17 @@ export function AboutFeatureRow({
       <div className="vp-about-feature__row">
         <div className="vp-about-feature__media">
           <div className="vp-about-feature__photo">
-            <Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 1199px) 100vw, 640px" className="object-cover" />
-            {wash ? <span className="vp-about-feature__wash" /> : null}
+            <div className="vp-about-feature__photo-clip">
+              <AboutPreviewMedia
+                imageSrc={imageSrc}
+                imageAlt={imageAlt}
+                previewVimeoUrl={previewVimeoUrl}
+                previewStartSeconds={previewStartSeconds}
+                previewEndSeconds={previewEndSeconds}
+                sizes="(max-width: 1199px) 100vw, 640px"
+                wash={wash}
+              />
+            </div>
             <CornerFrame variant="dark" crosshair={{ size: 40, color: 'var(--vp-text)' }} />
           </div>
         </div>

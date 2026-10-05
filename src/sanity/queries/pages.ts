@@ -113,7 +113,7 @@ export const ABOUT_STATEMENT_MARKERS_QUERY = defineQuery(`
 /**
  * Placeholder portfolio rows for the About tab panels.
  * Preview fields match the homepage carousel so the same clean-clip
- * resolution can run until an About document picks videos itself.
+ * resolution can run until About Media is curated.
  */
 const ABOUT_TAB_PLACEHOLDER_PROJECTION = `
   title,
@@ -129,6 +129,54 @@ const ABOUT_TAB_PLACEHOLDER_PROJECTION = `
   previewEndSeconds,
   previewCleanVimeoUrl
 `
+
+const ABOUT_MEDIA_PORTFOLIO_PROJECTION = `
+  title,
+  featuredImage,
+  "videos": videos[0...1]{
+    vimeoUrl,
+    previewStartSeconds,
+    previewEndSeconds,
+    previewCleanVimeoUrl
+  },
+  vimeoUrl,
+  previewStartSeconds,
+  previewEndSeconds,
+  previewCleanVimeoUrl
+`
+
+const ABOUT_MEDIA_PREVIEW_SLOT = `
+  mediaMode,
+  image,
+  alt,
+  altZh,
+  portfolioEntry->{
+    ${ABOUT_MEDIA_PORTFOLIO_PROJECTION}
+  }
+`
+
+const ABOUT_MEDIA_IMAGE_SLOT = `
+  mediaMode,
+  image,
+  alt,
+  altZh,
+  portfolioEntry->{
+    title,
+    featuredImage
+  }
+`
+
+/** Curated About redesign media — page slug `about-redesign`. */
+export const ABOUT_MEDIA_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{
+    specialties[]{${ABOUT_MEDIA_PREVIEW_SLOT}},
+    advantages[]{${ABOUT_MEDIA_PREVIEW_SLOT}},
+    productionServicesCta{${ABOUT_MEDIA_PREVIEW_SLOT}},
+    productionLogCta{${ABOUT_MEDIA_PREVIEW_SLOT}},
+    statementMarkers[]{${ABOUT_MEDIA_IMAGE_SLOT}},
+    statementFilmStrip[]{${ABOUT_MEDIA_IMAGE_SLOT}}
+  }
+`)
 
 /** About Who We Are panel — four recent portfolio films (placeholder). */
 export const ABOUT_WHO_WE_ARE_IMAGES_QUERY = defineQuery(`

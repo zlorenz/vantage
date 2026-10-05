@@ -1,31 +1,53 @@
 /**
  * AboutWhoWeAreSection — server wrapper for the /about Who We Are panel.
  *
- * Resolves copy via next-intl and fetches portfolio placeholder images,
- * then passes plain props to AboutTabbedPanelInteractive (client).
+ * Prefers curated About Media specialties; falls back to recent portfolio.
  */
 
-import { getTranslations } from 'next-intl/server';
-import { AboutTabbedPanelInteractive } from '@/components/about/AboutTabbedPanelInteractive';
-import { SectionWrapper } from '@/components/ui/SectionWrapper';
+import {getLocale, getTranslations} from 'next-intl/server';
+import {AboutTabbedPanelInteractive} from '@/components/about/AboutTabbedPanelInteractive';
+import {SectionWrapper} from '@/components/ui/SectionWrapper';
+import {
+  loadAboutMedia,
+  resolveAboutPreviewList,
+  type AboutPreviewMedia,
+} from '@/lib/about-media';
 import {
   attachImagesToTabbedPanelItems,
   mapPortfolioFeaturedImages,
 } from '@/lib/about-tabbed-panel-images';
-import { sanityFetch } from '@/sanity/lib/live';
-import { ABOUT_WHO_WE_ARE_IMAGES_QUERY } from '@/sanity/queries/pages';
-import type { ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT } from '@/sanity/sanity.types';
+import {sanityFetch} from '@/sanity/lib/live';
+import {ABOUT_WHO_WE_ARE_IMAGES_QUERY} from '@/sanity/queries/pages';
+import type {ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT} from '@/sanity/sanity.types';
 
 const ITEM_COUNT = 4;
+const MEDIA_SIZE = {width: 960, height: 540};
 
 export async function AboutWhoWeAreSection() {
-  const [t, imageResult] = await Promise.all([
+  const [t, locale, aboutMedia] = await Promise.all([
     getTranslations('About'),
-    sanityFetch({ query: ABOUT_WHO_WE_ARE_IMAGES_QUERY, stega: false }),
+    getLocale(),
+    loadAboutMedia(),
   ]);
 
-  const imageEntries = (imageResult.data ?? []) as ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT;
-  const images = mapPortfolioFeaturedImages(imageEntries, ITEM_COUNT);
+  const curated = resolveAboutPreviewList(
+    aboutMedia?.specialties,
+    locale,
+    ITEM_COUNT,
+    MEDIA_SIZE,
+  );
+
+  let images: AboutPreviewMedia[];
+  if (curated) {
+    images = curated;
+  } else {
+    const imageResult = await sanityFetch({
+      query: ABOUT_WHO_WE_ARE_IMAGES_QUERY,
+      stega: false,
+    });
+    const imageEntries = (imageResult.data ?? []) as ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT;
+    images = mapPortfolioFeaturedImages(imageEntries, ITEM_COUNT);
+  }
 
   const items = attachImagesToTabbedPanelItems(
     [
