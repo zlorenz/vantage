@@ -2,7 +2,7 @@
 
 /**
  * Poster + optional Vimeo clean-clip preview for About CTA rows.
- * ZH never loads Vimeo (poster only) — same rule as the tab panels.
+ * ZH never loads Vimeo (poster only) - same rule as the tab panels.
  */
 
 import {useLocale} from 'next-intl';
