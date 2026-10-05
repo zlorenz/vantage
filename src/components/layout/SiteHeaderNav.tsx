@@ -3,8 +3,9 @@
 /**
  * SiteHeaderNav — client wrapper for the fixed #header nav.
  *
- * Owns hide/show-on-scroll (translateY). Navbar chrome is fully transparent
- * (no ::before scrim) — this only toggles visibility.
+ * Owns hide/show-on-scroll (translateY). Navbar is transparent on home and
+ * /work (full-bleed imagery); solid black everywhere else so chrome does not
+ * collide with page text under the fixed bar.
  *
  * Also publishes --vp-header-height from the real rendered header size so
  * the mobile full-screen nav can pad its content below the chrome, and so
@@ -13,8 +14,12 @@
  */
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { usePathname } from '@/i18n/navigation';
 
 const SCROLL_DELTA_PX = 10;
+
+/** Full-bleed image pages — keep the bar transparent over the hero. */
+const TRANSPARENT_HEADER_PATHS = new Set(['/', '/work']);
 
 interface SiteHeaderNavProps {
   children: ReactNode;
@@ -27,6 +32,8 @@ export function SiteHeaderNav({
   className,
   'aria-label': ariaLabel,
 }: SiteHeaderNavProps) {
+  const pathname = usePathname();
+  const solidHeader = !TRANSPARENT_HEADER_PATHS.has(pathname);
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
   const ticking = useRef(false);
@@ -99,9 +106,12 @@ export function SiteHeaderNav({
     <nav
       ref={headerRef}
       id="header"
-      className={`${className}${hidden ? ' vp-header--hidden' : ''}`}
+      className={`${className}${solidHeader ? ' vp-header--solid' : ''}${
+        hidden ? ' vp-header--hidden' : ''
+      }`}
       aria-label={ariaLabel}
       data-header-hidden={hidden ? 'true' : undefined}
+      data-header-solid={solidHeader ? 'true' : undefined}
     >
       {children}
     </nav>

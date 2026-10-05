@@ -745,6 +745,11 @@
   will-change: transform;
 }
 
+/* Solid black bar on every page except home + /work (full-bleed imagery). */
+#header.navbar.vp-header--solid {
+  background: var(--vp-bg);
+}
+
 #header.navbar.vp-header--hidden {
   transform: translateY(-100%);
 }
