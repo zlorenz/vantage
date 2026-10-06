@@ -368,12 +368,12 @@ export function AboutStatementAnimated({
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
-    const heading = headingRef.current;
-    if (!heading) return;
-
     const desktop = window.matchMedia('(min-width: 1200px)');
 
     function fit() {
+      const heading = headingRef.current;
+      if (!heading) return;
+
       heading.style.fontSize = '';
       if (desktop.matches) return;
 
@@ -395,7 +395,8 @@ export function AboutStatementAnimated({
     return () => {
       window.removeEventListener('resize', fit);
       desktop.removeEventListener('change', fit);
-      heading.style.fontSize = '';
+      const heading = headingRef.current;
+      if (heading) heading.style.fontSize = '';
     };
   }, [line1, line2, line3, line4, line5]);
 
