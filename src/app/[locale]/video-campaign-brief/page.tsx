@@ -6,7 +6,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { CampaignBriefForm } from '@/components/forms/CampaignBriefForm';
-import { CondensedPageHeader } from '@/components/ui/CondensedPageHeader';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
@@ -82,17 +81,10 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
           },
         ])}
       />
-      <CondensedPageHeader>
-        <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <h1 className="vp-brief-title font-vp-heading font-bold uppercase tracking-vp-page-hero">
-            {title}
-          </h1>
-        </div>
-      </CondensedPageHeader>
-
       <SectionWrapper fullBleed={true} className="vp-brief-section">
+        <h1 className="sr-only">{title}</h1>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <p className="vp-brief-intro">{ui.formDescription}</p>
+          <p className="vp-brief-intro text-sm">{ui.formDescription}</p>
           <CampaignBriefForm />
         </div>
       </SectionWrapper>

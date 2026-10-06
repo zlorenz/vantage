@@ -510,23 +510,15 @@
 }
 
 .vp-brief-section {
-  padding-top: var(--vp-candidate-brief-title-intro-gap) !important;
-}
-
-.vp-brief-title {
-  margin: 0;
-  font-size: var(--vp-candidate-brief-title-size);
-  line-height: var(--vp-candidate-brief-title-lh);
-  letter-spacing: 0;
+  /* H1 is sr-only; condensed-header clearance still needed under the nav. */
+  padding-top: var(--vp-section-y-header-condensed) !important;
 }
 
 .vp-brief-intro {
   margin: 0 0 var(--vp-candidate-brief-intro-step-gap);
   color: var(--vp-candidate-brief-intro-color);
   font-family: var(--font-vp-sans);
-  font-size: var(--vp-candidate-brief-intro-size);
   font-weight: 400;
-  line-height: var(--vp-candidate-brief-intro-lh);
 }
 
 .vp-brief-card {
@@ -572,6 +564,21 @@
   letter-spacing: 0;
   line-height: var(--vp-candidate-brief-section-title-lh);
   text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  /* Stepper already names the step. Keep the h2 for document outline. */
+  .vp-form-step-heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 }
 
 /* Full-width timeline step progress — first/last align to container edges */
