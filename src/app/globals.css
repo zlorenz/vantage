@@ -1367,7 +1367,83 @@
   }
 }
 
-/* Mobile overlay search — above the numbered list; muted caption language. */
+/*
+ * Header search — shared muted chrome (desktop expand + mobile panel).
+ * Heading type, no field box; placeholder/icon at 40% white.
+ */
+#header .vp-search-form .vp-search-input {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-vp-heading);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+#header .vp-search-form .vp-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+#header .vp-search-form .vp-search-input:focus {
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+#header .vp-search-form .vp-search-button {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+#header .vp-search-form .vp-search-button:hover,
+#header .vp-search-form .vp-search-button:focus-visible {
+  color: rgba(255, 255, 255, 0.8);
+  outline: none;
+}
+
+/*
+ * Desktop search — icon stays in a 2rem slot. Opening the field grows
+ * the wrapper left; the lens does not move.
+ */
+#header .vp-lang-slot .vp-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+}
+
+#header .vp-lang-slot .vp-search-wrapper:has(.vp-search-input) {
+  width: 12rem;
+}
+
+#header .vp-lang-slot .vp-search-input {
+  width: 100%;
+  min-height: 2rem;
+  padding: 0 2rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+#header .vp-lang-slot .vp-search-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+  transform: translateY(-50%);
+}
+
+/* Mobile overlay search — above the numbered list; layout only. */
 #header .vp-mobile-nav-panel .vp-nav-panel-search {
   flex-shrink: 0;
   box-sizing: border-box;
@@ -1389,29 +1465,9 @@
 #header .vp-mobile-nav-panel .vp-nav-panel-search .vp-search-input {
   width: 100%;
   min-height: 2rem;
-  margin: 0;
   padding: 0 2rem 0 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #fff;
-  font-family: var(--font-vp-heading);
   font-size: 1rem; /* ≥16px — avoids iOS focus zoom (see globals mobile floor) */
-  font-weight: 700;
-  letter-spacing: 0;
   line-height: 1.25rem;
-  text-transform: uppercase;
-}
-
-#header .vp-mobile-nav-panel .vp-nav-panel-search .vp-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
-}
-
-#header .vp-mobile-nav-panel .vp-nav-panel-search .vp-search-input:focus {
-  background: transparent;
-  border: 0;
-  outline: none;
 }
 
 #header .vp-mobile-nav-panel .vp-nav-panel-search .vp-search-button {
@@ -1419,8 +1475,12 @@
   top: 50%;
   right: 0;
   left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.4);
 }
 
 .navbar .dropdown .dropdown-menu {

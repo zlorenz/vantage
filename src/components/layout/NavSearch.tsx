@@ -66,11 +66,8 @@ export function NavSearch({
             ref={inputRef}
             type="search"
             name="q"
-            className={
-              alwaysExpanded
-                ? 'vp-search-input w-full min-h-[2.625rem] border border-vp-input-border bg-vp-input-bg px-[0.9rem] py-2 pr-10 text-sm text-white transition-[background,border-color] duration-vp-default focus:border-vp-input-border-focus focus:bg-vp-input-bg-focus focus:outline-none'
-                : 'vp-search-input w-48 min-h-[2.625rem] border border-vp-input-border bg-vp-input-bg px-[0.9rem] py-2 pr-10 text-sm text-white transition-[background,border-color] duration-vp-default focus:border-vp-input-border-focus focus:bg-vp-input-bg-focus focus:outline-none'
-            }
+            /* Look owned by #header .vp-search-form rules in globals.css. */
+            className="vp-search-input"
             placeholder={t('placeholder')}
             aria-label={t('placeholder')}
             value={query}
@@ -84,11 +81,7 @@ export function NavSearch({
         ) : null}
         <button
           type={showInput ? 'submit' : 'button'}
-          className={
-            showInput
-              ? 'vp-search-button absolute right-[0.7rem] top-1/2 -translate-y-1/2 cursor-pointer border-0 bg-transparent p-0 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white'
-              : 'vp-search-button inline-flex cursor-pointer items-center border-0 bg-transparent p-2 text-white/80 transition-colors duration-vp-default hover:text-white focus:text-white'
-          }
+          className="vp-search-button cursor-pointer border-0 bg-transparent p-0"
           aria-label={showInput ? t('submitAria') : t('openAria')}
           onClick={() => {
             if (!showInput) setExpanded(true);
