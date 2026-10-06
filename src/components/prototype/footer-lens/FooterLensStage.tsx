@@ -2,7 +2,9 @@
 
 /**
  * Shared loupe stage — WebGL gradient + Canvas 2D symbol lens.
- * About hero loupe: gradient, glass mark, and cursor-tracked collage disc.
+ * Desktop (fine pointer): cursor-tracked collage disc + gradient warp.
+ * Coarse pointer: no loupe; idle glass mark + scroll-driven gradient.
+ * Reduced motion parks the field at rest.
  */
 
 import {useEffect, useRef} from 'react';
@@ -18,6 +20,10 @@ type FooterLensStageProps = {
   className?: string;
   canvasLabel?: string;
 };
+
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
 
 export function FooterLensStage({
   className,
@@ -43,6 +49,9 @@ export function FooterLensStage({
       console.warn('[footer-lens] gradient WebGL unavailable', err);
     }
 
+    const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
     let targetX = 0;
     let targetY = 0;
     let smoothX = 0;
@@ -58,6 +67,8 @@ export function FooterLensStage({
     let cssH = 1;
     let idleSettleFrames = 0;
     let lastTick = 0;
+    let pointerDriven = false;
+    let scrollDriven = false;
 
     const heroRect = () => wrap.getBoundingClientRect();
     const loupeHost = () =>
@@ -81,35 +92,37 @@ export function FooterLensStage({
       host.style.setProperty('--vp-loupe-r', `${r}px`);
     };
 
-    const syncSize = () => {
-      const rect = wrap.getBoundingClientRect();
-      cssW = Math.max(1, Math.floor(rect.width));
-      cssH = Math.max(1, Math.floor(rect.height));
-      if (!seeded) {
-        targetX = smoothX = cssW / 2;
-        targetY = smoothY = cssH / 2;
-        seeded = true;
+    const heroProgress = () => {
+      const rect = heroRect();
+      const travel = Math.max(Math.min(rect.height, window.innerHeight) * 0.55, 1);
+      return clamp01(-rect.top / travel);
+    };
+
+    const paintScrollFrame = () => {
+      gradient?.setScrollProgress(heroProgress());
+      gradient?.frame();
+      lens.drawAt(cssW / 2, cssH / 2, false);
+      syncLoupeVars(false);
+    };
+
+    const paintPointerFrame = (active: boolean) => {
+      if (active) {
+        gradient?.setPointer({x: smoothX, y: smoothY}, cssW, cssH);
+      } else {
+        gradient?.setPointer(null, cssW, cssH);
       }
-      // Gradient first so a lens rebuild throw cannot skip the background paint.
-      try {
-        gradient?.setSize(cssW, cssH);
-        gradient?.frame();
-      } catch (err) {
-        console.warn('[footer-lens] gradient resize failed', err);
-      }
-      try {
-        lens.setSize(cssW, cssH);
-        lens.drawAt(smoothX, smoothY, tracked);
-      } catch (err) {
-        console.error('[footer-lens] lens resize failed', err);
-      }
-      syncLoupeVars(tracked);
-      // A single synchronous draw can be dropped before the canvas is
-      // composited. Keep painting a few frames so the hero cannot stick blank.
-      if (!tracked) {
-        idleSettleFrames = Math.max(idleSettleFrames, 3);
-        startLoop();
-      }
+      gradient?.frame();
+      lens.drawAt(smoothX, smoothY, active);
+      syncLoupeVars(active);
+    };
+
+    const restPoint = () => ({x: cssW * 0.5, y: cssH * 0.5});
+
+    const syncDriveMode = () => {
+      const reduce = motionQuery.matches;
+      pointerDriven = pointerQuery.matches && !reduce;
+      scrollDriven = !pointerQuery.matches && !reduce;
+      wrap.classList.toggle('is-scroll-driven', scrollDriven || reduce);
     };
 
     const stopLoop = () => {
@@ -127,15 +140,20 @@ export function FooterLensStage({
       lastTick = now;
       const follow = 1 - Math.pow(1 - FOLLOW, dt / FRAME_MS);
 
+      if (scrollDriven) {
+        paintScrollFrame();
+        if (gradient?.settled()) {
+          running = false;
+          return;
+        }
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
       if (tracking) {
         smoothX += (targetX - smoothX) * follow;
         smoothY += (targetY - smoothY) * follow;
-
-        gradient?.setPointer({x: smoothX, y: smoothY}, cssW, cssH);
-        gradient?.frame();
-        lens.drawAt(smoothX, smoothY, true);
-        syncLoupeVars(true);
-
+        paintPointerFrame(true);
         raf = requestAnimationFrame(tick);
         return;
       }
@@ -146,10 +164,7 @@ export function FooterLensStage({
         running = false;
         return;
       }
-      gradient?.setPointer(null, cssW, cssH);
-      gradient?.frame();
-      lens.drawAt(smoothX, smoothY, false);
-      syncLoupeVars(false);
+      paintPointerFrame(false);
       idleSettleFrames -= 1;
       raf = requestAnimationFrame(tick);
     };
@@ -167,17 +182,12 @@ export function FooterLensStage({
       stopLoop();
     };
 
-    const onWindowPointer = (e: PointerEvent) => {
-      if (!pointInHero(e.clientX, e.clientY)) {
-        freeze();
-        return;
-      }
-      const rect = heroRect();
-      targetX = e.clientX - rect.left;
-      targetY = e.clientY - rect.top;
-      if (!tracked) {
-        smoothX = targetX;
-        smoothY = targetY;
+    const aimAt = (x: number, y: number, snap: boolean) => {
+      targetX = x;
+      targetY = y;
+      if (snap || !tracked) {
+        smoothX = x;
+        smoothY = y;
       }
       tracked = true;
       tracking = true;
@@ -185,23 +195,112 @@ export function FooterLensStage({
       startLoop();
     };
 
+    const onWindowPointer = (e: PointerEvent) => {
+      if (!pointerDriven) return;
+      if (!pointInHero(e.clientX, e.clientY)) {
+        freeze();
+        return;
+      }
+      const rect = heroRect();
+      aimAt(e.clientX - rect.left, e.clientY - rect.top, false);
+    };
+
     const onLeaveDocument = (e: PointerEvent) => {
+      if (!pointerDriven) return;
       if (e.relatedTarget) return;
       freeze();
     };
 
+    const onScroll = () => {
+      if (!scrollDriven) return;
+      startLoop();
+    };
+
+    const seedPosition = () => {
+      const rest = restPoint();
+      targetX = smoothX = rest.x;
+      targetY = smoothY = rest.y;
+    };
+
+    const syncSize = () => {
+      const rect = wrap.getBoundingClientRect();
+      cssW = Math.max(1, Math.floor(rect.width));
+      cssH = Math.max(1, Math.floor(rect.height));
+      if (!seeded) {
+        seedPosition();
+        seeded = true;
+      }
+      try {
+        gradient?.setSize(cssW, cssH);
+      } catch (err) {
+        console.warn('[footer-lens] gradient resize failed', err);
+      }
+      try {
+        lens.setSize(cssW, cssH);
+      } catch (err) {
+        console.error('[footer-lens] lens resize failed', err);
+      }
+      if (scrollDriven) {
+        paintScrollFrame();
+        startLoop();
+        return;
+      }
+      if (tracked) {
+        paintPointerFrame(true);
+        return;
+      }
+      paintPointerFrame(false);
+      idleSettleFrames = Math.max(idleSettleFrames, 3);
+      startLoop();
+    };
+
+    const bindDrive = () => {
+      window.removeEventListener('pointermove', onWindowPointer, true);
+      document.removeEventListener('pointerleave', onLeaveDocument);
+      window.removeEventListener('scroll', onScroll);
+      window.visualViewport?.removeEventListener('scroll', onScroll);
+      window.visualViewport?.removeEventListener('resize', onScroll);
+      if (pointerDriven) {
+        window.addEventListener('pointermove', onWindowPointer, true);
+        document.addEventListener('pointerleave', onLeaveDocument);
+      } else if (scrollDriven) {
+        window.addEventListener('scroll', onScroll, {passive: true});
+        window.visualViewport?.addEventListener('scroll', onScroll, {passive: true});
+        window.visualViewport?.addEventListener('resize', onScroll, {passive: true});
+        paintScrollFrame();
+        startLoop();
+      } else {
+        tracking = false;
+        stopLoop();
+        paintPointerFrame(false);
+      }
+    };
+
+    const onDriveChange = () => {
+      syncDriveMode();
+      bindDrive();
+    };
+
+    syncDriveMode();
     syncSize();
+    bindDrive();
+
     const ro = new ResizeObserver(syncSize);
     ro.observe(wrap);
-
-    window.addEventListener('pointermove', onWindowPointer, true);
-    document.addEventListener('pointerleave', onLeaveDocument);
+    pointerQuery.addEventListener('change', onDriveChange);
+    motionQuery.addEventListener('change', onDriveChange);
 
     return () => {
       ro.disconnect();
+      pointerQuery.removeEventListener('change', onDriveChange);
+      motionQuery.removeEventListener('change', onDriveChange);
       window.removeEventListener('pointermove', onWindowPointer, true);
       document.removeEventListener('pointerleave', onLeaveDocument);
+      window.removeEventListener('scroll', onScroll);
+      window.visualViewport?.removeEventListener('scroll', onScroll);
+      window.visualViewport?.removeEventListener('resize', onScroll);
       stopLoop();
+      wrap.classList.remove('is-scroll-driven');
       const host = loupeHost();
       host.style.removeProperty('--vp-loupe-x');
       host.style.removeProperty('--vp-loupe-y');

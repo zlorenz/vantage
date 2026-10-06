@@ -8,7 +8,7 @@
   --vp-about-marker-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --vp-about-ink-dim: rgba(255, 255, 255, 0.11);
   --vp-about-ink-lit: #ffffff;
-  padding-top: calc(var(--vp-section-y-header-condensed) * 1.5);
+  padding-top: 0;
   padding-bottom: calc(var(--vp-section-y) * 1.5);
 }
 
@@ -31,8 +31,7 @@
   display: block;
   width: 100%;
   text-align: center;
-  /* Mobile wraps; desktop restores nowrap at lg. */
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .vp-about-statement__word {
@@ -49,11 +48,6 @@
 
 .vp-about-statement__line--accent.in-view .vp-about-statement__word {
   color: var(--vp-link);
-}
-
-.vp-about-statement__gap--marker {
-  /* The inline photo occupies this gap below lg. */
-  display: none;
 }
 
 .vp-about-statement__marker {
@@ -157,7 +151,7 @@
   align-items: stretch;
   gap: 100px;
   width: 100%;
-  padding-block: 32px;
+  padding-block: 0 32px;
 }
 
 .vp-about-statement__rail {
@@ -213,21 +207,19 @@
   inset: 8px;
 }
 
-.vp-about-statement__inner {
+.vp-content-rail.vp-about-statement__inner {
   position: relative;
   z-index: 2;
   width: 100%;
+  max-width: none;
   padding-inline: var(--vp-candidate-about-hero-mobile-inset);
 }
 
 .vp-about-statement__heading {
-  font-size: var(--vp-candidate-about-mobile-statement-size);
-  line-height: 1.1;
+  /* Same 4.85cqi ratio as desktop 64px / 1320px measure, so authored lines stay one line. */
+  font-size: clamp(0.75rem, 4.85cqi, 4rem);
+  line-height: var(--vp-candidate-about-statement-lh);
   letter-spacing: 0;
-}
-
-.vp-about-statement__line--accent .vp-about-statement__word {
-  font-size: var(--vp-candidate-about-mobile-statement-accent-size);
 }
 
 .vp-about-statement__marker {
@@ -264,14 +256,6 @@
     line-height: var(--vp-candidate-about-statement-lh);
   }
 
-  .vp-about-statement__line--accent .vp-about-statement__word {
-    font-size: inherit;
-  }
-
-  .vp-about-statement__line {
-    white-space: nowrap;
-  }
-
   .vp-about-statement__line--accent {
     margin-top: var(--vp-candidate-about-statement-accent-gap);
   }
@@ -285,11 +269,7 @@
     display: none;
   }
 
-  .vp-about-statement__gap--marker {
-    display: inline;
-  }
-
-  .vp-about-statement__inner {
+  .vp-content-rail.vp-about-statement__inner {
     position: absolute;
     top: 50%;
     left: 50%;

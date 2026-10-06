@@ -35,3 +35,14 @@
   cursor: default;
   touch-action: none;
 }
+
+/* Mobile: page scroll owns the gesture; loupe canvas stays idle (no disc). */
+.vp-footer-lens-proto__lens-wrap.is-scroll-driven {
+  pointer-events: none;
+}
+
+.vp-footer-lens-proto__lens-wrap.is-scroll-driven .vp-footer-lens-proto__canvas {
+  visibility: hidden;
+  pointer-events: none;
+  touch-action: pan-y;
+}

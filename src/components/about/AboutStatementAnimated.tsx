@@ -5,7 +5,7 @@
  * Receives pre-resolved line strings from AboutStatementSection (server).
  */
 
-import { isValidElement, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { isValidElement, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { CornerFrame } from '@/components/ui/CornerFrame';
@@ -365,6 +365,39 @@ export function AboutStatementAnimated({
 }: AboutStatementAnimatedProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useLayoutEffect(() => {
+    const heading = headingRef.current;
+    if (!heading) return;
+
+    const desktop = window.matchMedia('(min-width: 1200px)');
+
+    function fit() {
+      heading.style.fontSize = '';
+      if (desktop.matches) return;
+
+      const available = heading.clientWidth;
+      let longest = 0;
+      heading.querySelectorAll('.vp-about-statement__line').forEach((line) => {
+        longest = Math.max(longest, line.scrollWidth);
+      });
+      if (!available || !longest) return;
+
+      const current = Number.parseFloat(getComputedStyle(heading).fontSize);
+      heading.style.fontSize = `${(current * available) / longest}px`;
+    }
+
+    fit();
+    void document.fonts.ready.then(fit);
+    window.addEventListener('resize', fit);
+    desktop.addEventListener('change', fit);
+    return () => {
+      window.removeEventListener('resize', fit);
+      desktop.removeEventListener('change', fit);
+      heading.style.fontSize = '';
+    };
+  }, [line1, line2, line3, line4, line5]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -448,7 +481,7 @@ export function AboutStatementAnimated({
       <div className="vp-about-statement__stage">
         <FilmStrip side="left" frames={filmStrips.left} />
         <div className="vp-content-rail vp-about-statement__inner text-center">
-          <h1 className="vp-about-statement__heading">
+          <h1 ref={headingRef} className="vp-about-statement__heading">
             {lines.map((line, lineIndex) => (
               <StatementLine
                 key={lineIndex}

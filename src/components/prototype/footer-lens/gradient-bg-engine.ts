@@ -174,7 +174,10 @@ export type GradientPointer = {x: number; y: number} | null;
 export type GradientBgEngine = {
   setSize: (cssW: number, cssH: number) => void;
   setPointer: (p: GradientPointer, cssW: number, cssH: number) => void;
+  /** 0–1 hero scroll. Stronger, snappier warp than cursor follow. */
+  setScrollProgress: (t: number) => void;
   frame: () => void;
+  settled: () => boolean;
   destroy: () => void;
 };
 
@@ -274,20 +277,24 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
   let smoothSpread: number = DEFAULTS.colorSpread;
   let targetTight = 1;
   let smoothTight = 1;
+  /** Pointer eases slowly; scroll needs to read in the same swipe. */
+  let followBoost = 1;
 
   /** Per-load tilt so the cursor axis is not the same line every visit. */
   const driftPhase = Math.random() * Math.PI * 2;
 
+  const rate = (base: number) => Math.min(1, base * followBoost);
+
   const draw = () => {
     // Channels ease at different rates so the field doesn't slide as one rigid slider.
-    smoothForce = lerp(smoothForce, targetForce, 0.055);
-    smoothSeed = lerp(smoothSeed, targetSeed, 0.04);
-    smoothTX = lerp(smoothTX, targetTX, 0.09);
-    smoothTY = lerp(smoothTY, targetTY, 0.07);
-    smoothOX = lerp(smoothOX, targetOX, 0.08);
-    smoothOY = lerp(smoothOY, targetOY, 0.06);
-    smoothSpread = lerp(smoothSpread, targetSpread, 0.07);
-    smoothTight = lerp(smoothTight, targetTight, 0.07);
+    smoothForce = lerp(smoothForce, targetForce, rate(0.055));
+    smoothSeed = lerp(smoothSeed, targetSeed, rate(0.04));
+    smoothTX = lerp(smoothTX, targetTX, rate(0.09));
+    smoothTY = lerp(smoothTY, targetTY, rate(0.07));
+    smoothOX = lerp(smoothOX, targetOX, rate(0.08));
+    smoothOY = lerp(smoothOY, targetOY, rate(0.06));
+    smoothSpread = lerp(smoothSpread, targetSpread, rate(0.07));
+    smoothTight = lerp(smoothTight, targetTight, rate(0.07));
 
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.useProgram(program);
@@ -329,6 +336,7 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
       draw();
     },
     setPointer(p, w, h) {
+      followBoost = 1;
       if (!p) {
         targetForce = DEFAULTS.displacementBase;
         targetSeed = DEFAULTS.seedBase;
@@ -361,6 +369,29 @@ export function createGradientBgEngine(canvas: HTMLCanvasElement): GradientBgEng
       targetOY = DEFAULTS.colorOffsetY + ry * 0.15 - rx * 0.08;
       targetSpread = lerp(DEFAULTS.colorSpread, 2.15, warp);
       targetTight = lerp(1, 1.32, warp);
+    },
+    setScrollProgress(t) {
+      followBoost = 12;
+      const e = Math.min(1, Math.max(0, t));
+      /* e=0 is the same rest field as desktop page load (setPointer(null)). */
+      targetForce = lerp(DEFAULTS.displacementBase, 3.2, e);
+      targetSeed = DEFAULTS.seedBase + e * 1.6;
+      targetTX = e * -0.42;
+      targetTY = DEFAULTS.transformYBias + e * -0.38;
+      targetOX = DEFAULTS.colorOffsetX + e * 0.55;
+      targetOY = DEFAULTS.colorOffsetY + e * 0.48;
+      targetSpread = lerp(DEFAULTS.colorSpread, 1.7, e);
+      targetTight = lerp(1, 1.45, e);
+    },
+    settled() {
+      return (
+        Math.abs(smoothForce - targetForce) < 0.02 &&
+        Math.abs(smoothSeed - targetSeed) < 0.02 &&
+        Math.abs(smoothTX - targetTX) < 0.004 &&
+        Math.abs(smoothTY - targetTY) < 0.004 &&
+        Math.abs(smoothOX - targetOX) < 0.004 &&
+        Math.abs(smoothOY - targetOY) < 0.004
+      );
     },
     frame() {
       draw();

@@ -23,84 +23,28 @@
   min-height: 0;
 }
 
-/* Desktop loupe quote cards — hidden on mobile (hotspots take over). */
+/* Desktop loupe quote cards — hidden on mobile. */
 .vp-about-hero__quotes {
   display: none;
 }
 
-/* Mobile hotspot dots + tooltip (Figma 2602:29252). */
-.vp-about-hero__hotspots {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.vp-about-hero__hotspot {
-  position: absolute;
-  z-index: 2;
-  width: var(--vp-candidate-about-hero-hotspot-size);
-  height: var(--vp-candidate-about-hero-hotspot-size);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--vp-text);
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.vp-about-hero__hotspot.is-open {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25);
-}
-
-.vp-about-hero__tooltip {
-  position: absolute;
-  left: 50%;
-  top: 34%;
-  z-index: 3;
-  box-sizing: border-box;
-  width: min(var(--vp-candidate-about-hero-tooltip-width), calc(100% - 2rem));
-  padding: var(--vp-candidate-about-hero-quote-pad);
-  background: var(--vp-candidate-about-hero-quote-bg);
-  backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
-  -webkit-backdrop-filter: blur(var(--vp-candidate-about-hero-quote-blur));
-  transform: translateX(-50%);
-  pointer-events: auto;
-}
-
-.vp-about-hero__tooltip-text {
-  margin: 0;
-  font-family: var(--font-vp-sans);
-  font-size: var(--vp-candidate-about-hero-mobile-body-size);
-  font-weight: 400;
-  line-height: var(--vp-candidate-about-body-lh);
-  letter-spacing: 0;
-  color: var(--vp-text);
-}
-
 .vp-about-hero__copy {
   position: absolute;
-  left: var(--vp-candidate-about-hero-mobile-inset);
-  right: var(--vp-candidate-about-hero-mobile-inset);
-  bottom: calc(
-    var(--vp-candidate-about-hero-mobile-copy-bottom) +
-      var(--vp-candidate-about-hero-scroll-size)
-  );
+  inset: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: var(--vp-candidate-about-hero-mobile-copy-gap);
   pointer-events: none;
 }
 
 .vp-about-hero__title,
 .vp-about-hero__caption {
-  position: static;
+  position: absolute;
+  top: calc(var(--vp-header-height, 4.5rem) + 12px);
   margin: 0;
+  width: calc(50% - 24px);
   font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-step-size);
   font-weight: var(--font-vp-heading-weight);
+  line-height: var(--vp-candidate-about-step-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-box-trim: trim-both;
@@ -109,16 +53,12 @@
 }
 
 .vp-about-hero__title {
-  width: 100%;
-  font-size: var(--vp-candidate-about-hero-mobile-title-size);
-  line-height: var(--vp-candidate-about-hero-mobile-title-lh);
+  left: var(--vp-candidate-about-hero-mobile-inset);
 }
 
 .vp-about-hero__caption {
-  width: 100%;
-  font-size: var(--vp-candidate-about-hero-mobile-caption-size);
-  line-height: var(--vp-candidate-about-hero-mobile-caption-lh);
-  text-align: left;
+  right: var(--vp-candidate-about-hero-mobile-inset);
+  text-align: right;
   white-space: normal;
 }
 
@@ -166,18 +106,7 @@
   }
 }
 
-.vp-about-hero__frame {
-  position: absolute;
-  inset: var(--vp-candidate-about-hero-mobile-frame-inset);
-  z-index: 3;
-  pointer-events: none;
-}
-
 @media (min-width: 1200px) {
-  .vp-about-hero__hotspots {
-    display: none;
-  }
-
   .vp-about-hero__quotes {
     display: block;
     position: absolute;
@@ -222,17 +151,13 @@
   .vp-about-hero__copy {
     /* Fill the hero so absolutely placed title/caption resolve against it. */
     inset: 0;
-    display: block;
-    gap: 0;
   }
 
   /* Bottom-left title + bottom-right caption — shared small white type. */
   .vp-about-hero__title,
   .vp-about-hero__caption {
-    position: absolute;
+    top: auto;
     bottom: var(--vp-candidate-about-hero-title-bottom);
-    font-size: var(--vp-candidate-about-step-size);
-    line-height: var(--vp-candidate-about-step-lh);
   }
 
   .vp-about-hero__title {
@@ -252,9 +177,5 @@
 
   .vp-about-hero__scroll {
     bottom: calc(var(--vp-candidate-about-hero-title-bottom) / 2);
-  }
-
-  .vp-about-hero__frame {
-    inset: var(--vp-candidate-about-hero-frame-inset);
   }
 }
