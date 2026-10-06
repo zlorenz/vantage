@@ -312,8 +312,9 @@ export type PagePortableText = Array<
 
 export type AboutMediaSlot = {
   _type: "aboutMediaSlot";
-  mediaMode?: "portfolioPreview" | "staticImage";
+  mediaMode?: "portfolioPreview" | "customVideo" | "staticImage";
   portfolioEntry?: PortfolioEntryReference;
+  videoUrl?: string;
   image?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -1983,10 +1984,11 @@ export type ABOUT_STATEMENT_MARKERS_QUERY_RESULT = Array<{
 
 // Source: ../src/sanity/queries/pages.ts
 // Variable: ABOUT_MEDIA_QUERY
-// Query: *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{    specialties[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    advantages[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    productionServicesCta{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    productionLogCta{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    statementMarkers[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{    title,    featuredImage  }},    statementFilmStrip[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{    title,    featuredImage  }}  }
+// Query: *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{    specialties[]{  mediaMode,  videoUrl,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    advantages[]{  mediaMode,  videoUrl,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    productionServicesCta{  mediaMode,  videoUrl,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    productionLogCta{  mediaMode,  videoUrl,  image,  alt,  altZh,  portfolioEntry->{      title,  featuredImage,  "videos": videos[0...1]{    vimeoUrl,    previewStartSeconds,    previewEndSeconds,    previewCleanVimeoUrl  },  vimeoUrl,  previewStartSeconds,  previewEndSeconds,  previewCleanVimeoUrl  }},    statementMarkers[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{    title,    featuredImage  }},    statementFilmStrip[]{  mediaMode,  image,  alt,  altZh,  portfolioEntry->{    title,    featuredImage  }}  }
 export type ABOUT_MEDIA_QUERY_RESULT = {
   specialties: Array<{
-    mediaMode: "portfolioPreview" | "staticImage" | null;
+    mediaMode: "customVideo" | "portfolioPreview" | "staticImage" | null;
+    videoUrl: string | null;
     image: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -2018,7 +2020,8 @@ export type ABOUT_MEDIA_QUERY_RESULT = {
     } | null;
   }> | null;
   advantages: Array<{
-    mediaMode: "portfolioPreview" | "staticImage" | null;
+    mediaMode: "customVideo" | "portfolioPreview" | "staticImage" | null;
+    videoUrl: string | null;
     image: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -2050,7 +2053,8 @@ export type ABOUT_MEDIA_QUERY_RESULT = {
     } | null;
   }> | null;
   productionServicesCta: {
-    mediaMode: "portfolioPreview" | "staticImage" | null;
+    mediaMode: "customVideo" | "portfolioPreview" | "staticImage" | null;
+    videoUrl: string | null;
     image: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -2082,7 +2086,8 @@ export type ABOUT_MEDIA_QUERY_RESULT = {
     } | null;
   } | null;
   productionLogCta: {
-    mediaMode: "portfolioPreview" | "staticImage" | null;
+    mediaMode: "customVideo" | "portfolioPreview" | "staticImage" | null;
+    videoUrl: string | null;
     image: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -3946,7 +3951,7 @@ declare global {
     '\n  *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{\n    \n  _id,\n  title,\n  titleZh,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  showHeroHeader,\n  heroTitle,\n  heroTitleZh,\n  featuredImage,\n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    brandLogos[]{\n      logoId\n    }\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  heroTitle,\n  heroTitleZh,\n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n,\n    founders[]{\n      name,\n      jobTitle,\n      jobTitleZh,\n      professionalTitle,\n      professionalTitleZh,\n      image,\n      bio,\n      bioZh,\n      sameAs\n    }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..1] {\n    title,\n    featuredImage\n  }\n': ABOUT_STATEMENT_MARKERS_QUERY_RESULT;
-    '\n  *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{\n    specialties[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    advantages[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    productionServicesCta{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    productionLogCta{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    statementMarkers[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    title,\n    featuredImage\n  }\n},\n    statementFilmStrip[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    title,\n    featuredImage\n  }\n}\n  }\n': ABOUT_MEDIA_QUERY_RESULT;
+    '\n  *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{\n    specialties[]{\n  mediaMode,\n  videoUrl,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    advantages[]{\n  mediaMode,\n  videoUrl,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    productionServicesCta{\n  mediaMode,\n  videoUrl,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    productionLogCta{\n  mediaMode,\n  videoUrl,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n},\n    statementMarkers[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    title,\n    featuredImage\n  }\n},\n    statementFilmStrip[]{\n  mediaMode,\n  image,\n  alt,\n  altZh,\n  portfolioEntry->{\n    title,\n    featuredImage\n  }\n}\n  }\n': ABOUT_MEDIA_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [0..3] {\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n': ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [4..7] {\n    \n  title,\n  featuredImage,\n  "videos": videos[0...1]{\n    vimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    previewCleanVimeoUrl\n  },\n  vimeoUrl,\n  previewStartSeconds,\n  previewEndSeconds,\n  previewCleanVimeoUrl\n\n  }\n': ABOUT_PRODUCTION_HOUSE_IMAGES_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [18..18] {\n    title,\n    featuredImage\n  }\n': ABOUT_FEATURE_POSTER_QUERY_RESULT;

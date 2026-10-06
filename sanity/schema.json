@@ -1792,6 +1792,10 @@
               },
               {
                 "type": "string",
+                "value": "customVideo"
+              },
+              {
+                "type": "string",
                 "value": "staticImage"
               }
             ]
@@ -1803,6 +1807,13 @@
           "value": {
             "type": "inline",
             "name": "portfolioEntry.reference"
+          },
+          "optional": true
+        },
+        "videoUrl": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
           },
           "optional": true
         },

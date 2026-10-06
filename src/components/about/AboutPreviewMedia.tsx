@@ -1,14 +1,14 @@
 'use client';
 
 /**
- * Poster + optional Vimeo clean-clip preview for About CTA rows.
- * ZH never loads Vimeo (poster only) - same rule as the tab panels.
+ * Poster + optional Vimeo/YouTube looping preview for About CTA rows.
+ * ZH never loads video (poster only) — same rule as the tab panels.
  */
 
 import {useLocale} from 'next-intl';
 import Image from 'next/image';
 import {useCallback, useRef, useState} from 'react';
-import {CarouselVimeo} from '@/components/prototype/carousel/CarouselVimeo';
+import {AboutLoopingPreview} from '@/components/about/AboutLoopingPreview';
 
 type AboutPreviewMediaProps = {
   imageSrc: string;
@@ -45,8 +45,8 @@ export function AboutPreviewMedia({
     <>
       {allowVideoPreview && previewVimeoUrl ? (
         <div className="vp-about-feature__preview">
-          <CarouselVimeo
-            vimeoUrl={previewVimeoUrl}
+          <AboutLoopingPreview
+            url={previewVimeoUrl}
             active
             previewStartSeconds={previewStartSeconds}
             previewEndSeconds={previewEndSeconds}

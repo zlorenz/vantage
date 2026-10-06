@@ -1,6 +1,8 @@
 import { resolveCarouselPreviewPlayback } from '@portfolio-videos';
-import type { AboutPreviewMedia } from '@/lib/about-media';
-import { urlForImage } from '@/lib/sanity';
+import {
+  aboutPreviewPosterUrl,
+  type AboutPreviewMedia,
+} from '@/lib/about-media';
 
 type PortfolioPreviewRow = {
   vimeoUrl?: string | null;
@@ -11,7 +13,7 @@ type PortfolioPreviewRow = {
 
 type PortfolioImageEntry = {
   title?: string | null;
-  featuredImage?: Parameters<typeof urlForImage>[0] | null;
+  featuredImage?: Parameters<typeof aboutPreviewPosterUrl>[0] | null;
   videos?: Array<PortfolioPreviewRow | null> | null;
   vimeoUrl?: string | null;
   previewCleanVimeoUrl?: string | null;
@@ -38,7 +40,7 @@ export function mapPortfolioFeaturedImages(
       });
 
       return {
-        src: urlForImage(entry.featuredImage!).width(960).height(540).fit('crop').url(),
+        src: aboutPreviewPosterUrl(entry.featuredImage!),
         alt: entry.title?.trim() || 'Portfolio still',
         previewVimeoUrl: preview.vimeoUrl,
         previewStartSeconds: preview.previewStartSeconds,

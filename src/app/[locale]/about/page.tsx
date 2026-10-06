@@ -27,7 +27,6 @@ import { AboutMoreSection } from '@/components/about/AboutMoreSection';
 import '@/components/about/about-tokens.css';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { urlForImage } from '@/lib/sanity';
 import {
   aboutContactPageTitle,
   seoDescription,
@@ -47,6 +46,7 @@ import {
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import {
+  aboutPreviewPosterUrl,
   loadAboutMedia,
   resolveAboutPreviewSlot,
   type AboutPreviewMedia,
@@ -56,7 +56,6 @@ import { ABOUT_FEATURE_POSTER_QUERY, ABOUT_PAGE_QUERY } from '@/sanity/queries/p
 import type { ABOUT_STATEMENT_MARKERS_QUERY_RESULT } from '@/sanity/sanity.types';
 import type { ABOUT_PAGE_QUERY_RESULT } from '@/sanity/sanity.types';
 
-const CTA_MEDIA_SIZE = {width: 1280, height: 1140};
 const CTA_FALLBACK_IMAGE =
   'https://cdn.sanity.io/images/7oesp86l/production/b2887f5288c958358c17df2f070e8ef3ece16d49-1132x756.jpg';
 
@@ -132,20 +131,13 @@ export default async function AboutPage({ params }: Props) {
     resolveAboutPreviewSlot(
       aboutMedia?.productionServicesCta,
       typedLocale,
-      CTA_MEDIA_SIZE,
     ) ??
     (() => {
       const featurePoster = (
         (featurePosterResult.data ?? []) as ABOUT_STATEMENT_MARKERS_QUERY_RESULT
       ).find((entry) => entry.featuredImage);
       return featurePoster?.featuredImage
-        ? ctaFallback(
-            urlForImage(featurePoster.featuredImage)
-              .width(CTA_MEDIA_SIZE.width)
-              .height(CTA_MEDIA_SIZE.height)
-              .fit('crop')
-              .url(),
-          )
+        ? ctaFallback(aboutPreviewPosterUrl(featurePoster.featuredImage))
         : ctaFallback(CTA_FALLBACK_IMAGE);
     })();
 
@@ -153,7 +145,6 @@ export default async function AboutPage({ params }: Props) {
     resolveAboutPreviewSlot(
       aboutMedia?.productionLogCta,
       typedLocale,
-      CTA_MEDIA_SIZE,
     ) ?? ctaFallback(CTA_FALLBACK_IMAGE);
 
   return (

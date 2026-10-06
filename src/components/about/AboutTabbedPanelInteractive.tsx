@@ -26,7 +26,7 @@ import {
 } from 'react';
 import Image from 'next/image';
 import {useLocale} from 'next-intl';
-import {CarouselVimeo} from '@/components/prototype/carousel/CarouselVimeo';
+import {AboutLoopingPreview} from '@/components/about/AboutLoopingPreview';
 import {CornerFrame} from '@/components/ui/CornerFrame';
 import './about-tabbed-panel.css';
 
@@ -122,8 +122,8 @@ function AboutTabMedia({
                   selected ? 'vp-about-tabs__preview is-active' : 'vp-about-tabs__preview'
                 }
               >
-                <CarouselVimeo
-                  vimeoUrl={item.previewVimeoUrl}
+                <AboutLoopingPreview
+                  url={item.previewVimeoUrl}
                   active={selected}
                   previewStartSeconds={item.previewStartSeconds}
                   previewEndSeconds={item.previewEndSeconds}

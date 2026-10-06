@@ -147,6 +147,7 @@ const ABOUT_MEDIA_PORTFOLIO_PROJECTION = `
 
 const ABOUT_MEDIA_PREVIEW_SLOT = `
   mediaMode,
+  videoUrl,
   image,
   alt,
   altZh,

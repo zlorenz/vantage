@@ -196,7 +196,7 @@ export const page = defineType({
       group: 'content',
       of: [{type: 'aboutMediaSlot'}],
       description:
-        '(1) Product launch films, (2) Story-driven spots, (3) Branded documentaries, (4) High-volume social campaigns',
+        '(1) Product launch films, (2) Story-driven spots, (3) Branded documentaries, (4) High-volume social campaigns. Each slot: portfolio preview, custom Vimeo/YouTube, or a still.',
       validation: (rule) =>
         rule.custom((value) => {
           if (value == null || (Array.isArray(value) && value.length === 0)) return true
@@ -216,7 +216,7 @@ export const page = defineType({
       group: 'content',
       of: [{type: 'aboutMediaSlot'}],
       description:
-        '(1) Creative + execution as one, (2) Set for the global stage, (3) Built for speed and scale, (4) Complex tech, simplified',
+        '(1) Creative + execution as one, (2) Set for the global stage, (3) Built for speed and scale, (4) Complex tech, simplified. Each slot: portfolio preview, custom Vimeo/YouTube, or a still.',
       validation: (rule) =>
         rule.custom((value) => {
           if (value == null || (Array.isArray(value) && value.length === 0)) return true
@@ -235,7 +235,7 @@ export const page = defineType({
       type: 'aboutMediaSlot',
       group: 'content',
       description:
-        'Media for the yellow “Get the full rundown” row. Portfolio preview or static image. Leave empty for the automatic placeholder.',
+        'Media for the yellow “Get the full rundown” row. Portfolio preview, custom Vimeo/YouTube, or static image. Leave empty for the automatic placeholder.',
       hidden: (ctx) =>
         hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
     }),
@@ -246,7 +246,7 @@ export const page = defineType({
       type: 'aboutMediaSlot',
       group: 'content',
       description:
-        'Media for the white “Explore the production log” row. Portfolio preview or static image. Leave empty for the automatic placeholder.',
+        'Media for the white “Explore the production log” row. Portfolio preview, custom Vimeo/YouTube, or static image. Leave empty for the automatic placeholder.',
       hidden: (ctx) =>
         hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
     }),

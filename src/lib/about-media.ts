@@ -4,11 +4,14 @@
  */
 
 import {cache} from 'react'
-import {resolveCarouselPreviewPlayback} from '@portfolio-videos'
 import {urlForImage} from '@/lib/sanity'
 import {sanityFetch} from '@/sanity/lib/live'
 import {ABOUT_MEDIA_QUERY} from '@/sanity/queries/pages'
 import type {ABOUT_MEDIA_QUERY_RESULT} from '@/sanity/sanity.types'
+import {
+  EMPTY_ABOUT_PREVIEW_PLAYBACK,
+  resolveAboutPreviewPlayback,
+} from '@/lib/about-preview-playback'
 
 export type AboutPreviewMedia = {
   src: string
@@ -33,8 +36,26 @@ type ImageSlot = NonNullable<
 
 type ImageSource = Parameters<typeof urlForImage>[0]
 
+/**
+ * 2x the largest CSS poster frame (tab column 994px; below 1200px the
+ * photo is full viewport width). fit max + ignoreImageParams keeps the
+ * original aspect (no hotspot square crop). object-fit cover then fills
+ * the frame and crops only the overflow on one axis. Video previews stay cover.
+ */
+export const ABOUT_PREVIEW_POSTER_SIZE = {width: 2400, height: 2400} as const
+
 function posterUrl(image: ImageSource, width: number, height: number) {
   return urlForImage(image).width(width).height(height).fit('crop').url()
+}
+
+export function aboutPreviewPosterUrl(image: ImageSource) {
+  return urlForImage(image)
+    .ignoreImageParams()
+    .width(ABOUT_PREVIEW_POSTER_SIZE.width)
+    .height(ABOUT_PREVIEW_POSTER_SIZE.height)
+    .fit('max')
+    .quality(90)
+    .url()
 }
 
 function pickAlt(
@@ -48,21 +69,31 @@ function pickAlt(
   return slot.alt?.trim() || fallback
 }
 
+export {resolveAboutPreviewPlayback}
+
 export function resolveAboutPreviewSlot(
   slot: PreviewSlot | null | undefined,
   locale: string,
-  size: {width: number; height: number},
 ): AboutPreviewMedia | null {
   if (!slot) return null
 
   if (slot.mediaMode === 'staticImage') {
     if (!slot.image) return null
     return {
-      src: posterUrl(slot.image, size.width, size.height),
+      src: aboutPreviewPosterUrl(slot.image),
       alt: pickAlt(locale, slot, 'About still'),
-      previewVimeoUrl: null,
-      previewStartSeconds: null,
-      previewEndSeconds: null,
+      ...EMPTY_ABOUT_PREVIEW_PLAYBACK,
+    }
+  }
+
+  if (slot.mediaMode === 'customVideo') {
+    if (!slot.image) return null
+    const playback = resolveAboutPreviewPlayback(slot)
+    if (!playback.previewVimeoUrl) return null
+    return {
+      src: aboutPreviewPosterUrl(slot.image),
+      alt: pickAlt(locale, slot, 'Showreel still'),
+      ...playback,
     }
   }
 
@@ -72,22 +103,10 @@ export function resolveAboutPreviewSlot(
   const image = slot.image ?? entry.featuredImage
   if (!image) return null
 
-  const preview = resolveCarouselPreviewPlayback({
-    videos: (entry.videos ?? []).filter(
-      (row): row is NonNullable<typeof row> => row != null,
-    ),
-    vimeoUrl: entry.vimeoUrl,
-    previewCleanVimeoUrl: entry.previewCleanVimeoUrl,
-    previewStartSeconds: entry.previewStartSeconds,
-    previewEndSeconds: entry.previewEndSeconds,
-  })
-
   return {
-    src: posterUrl(image, size.width, size.height),
+    src: aboutPreviewPosterUrl(image),
     alt: pickAlt(locale, slot, entry.title?.trim() || 'Portfolio still'),
-    previewVimeoUrl: preview.vimeoUrl,
-    previewStartSeconds: preview.previewStartSeconds,
-    previewEndSeconds: preview.previewEndSeconds,
+    ...resolveAboutPreviewPlayback(slot),
   }
 }
 
@@ -120,10 +139,9 @@ export function resolveAboutPreviewList(
   slots: readonly (PreviewSlot | null)[] | null | undefined,
   locale: string,
   count: number,
-  size: {width: number; height: number},
 ): AboutPreviewMedia[] | null {
   if (!slots || slots.length !== count) return null
-  const resolved = slots.map((slot) => resolveAboutPreviewSlot(slot, locale, size))
+  const resolved = slots.map((slot) => resolveAboutPreviewSlot(slot, locale))
   if (resolved.some((item) => item == null)) return null
   return resolved as AboutPreviewMedia[]
 }

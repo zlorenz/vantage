@@ -21,7 +21,6 @@ import {ABOUT_WHO_WE_ARE_IMAGES_QUERY} from '@/sanity/queries/pages';
 import type {ABOUT_WHO_WE_ARE_IMAGES_QUERY_RESULT} from '@/sanity/sanity.types';
 
 const ITEM_COUNT = 4;
-const MEDIA_SIZE = {width: 960, height: 540};
 
 export async function AboutWhoWeAreSection() {
   const [t, locale, aboutMedia] = await Promise.all([
@@ -34,7 +33,6 @@ export async function AboutWhoWeAreSection() {
     aboutMedia?.specialties,
     locale,
     ITEM_COUNT,
-    MEDIA_SIZE,
   );
 
   let images: AboutPreviewMedia[];
