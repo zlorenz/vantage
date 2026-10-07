@@ -139,7 +139,7 @@ function AboutTabMedia({
             src={activeItem.imageSrc}
             alt={activeItem.imageAlt}
             fill
-            sizes="(max-width: 1199px) 100vw, 994px"
+            sizes="(max-width: 991px) 100vw, 50vw"
             className="object-cover"
           />
         </div>
@@ -203,9 +203,9 @@ export function AboutTabbedPanelInteractive({
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  /* Desktop (≥1200px): open first item before paint. Mobile stays collapsed. */
+  /* Desktop (≥992px): open first item before paint. Mobile stays collapsed. */
   useLayoutEffect(() => {
-    if (window.matchMedia('(min-width: 1200px)').matches) {
+    if (window.matchMedia('(min-width: 992px)').matches) {
       setActiveIndex(0);
     }
   }, []);

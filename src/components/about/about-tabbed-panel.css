@@ -38,12 +38,20 @@
 
 .vp-about-tabs__photo-clip .vp-proto-carousel__iframe,
 .vp-about-tabs__photo-clip .vp-proto-carousel__video {
+  /* Beat carousel desktop cover-math (viewport-based) so 4:3 sources fill the clip. */
   position: absolute;
   inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
   max-width: none;
   max-height: none;
+  transform: none;
   object-fit: cover;
   pointer-events: none;
   border: 0;
@@ -100,6 +108,8 @@ section.vp-about-tabs-section {
   line-height: var(--vp-candidate-about-eyebrow-lh);
   letter-spacing: 0;
   text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
   color: var(--vp-link);
 }
 
@@ -125,6 +135,8 @@ section.vp-about-tabs-section {
   margin: 0;
   padding: 0;
   list-style: none;
+  /* Tab type scales against this column once desktop layout kicks in. */
+  container-type: inline-size;
 }
 
 .vp-about-tabs__menu > li {
@@ -181,7 +193,7 @@ section.vp-about-tabs-section {
   padding: 40px var(--vp-candidate-about-hero-mobile-inset) 0;
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-about-mobile-body-size);
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-about-body-lh);
   color: var(--vp-about-tab-body);
 }
@@ -211,10 +223,12 @@ section.vp-about-tabs-section {
 .vp-about-tabs__photo .vp-corner-frame {
   display: block;
   inset: calc(-1 * var(--vp-candidate-about-hero-mobile-frame-inset));
+  /* Above preview iframe/video so the center cross stays visible. */
+  z-index: 3;
 }
 
 /* —— Desktop: accordion copy in the menu column, media in the side column —— */
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   section.vp-about-tabs-section {
     padding-block: var(--vp-candidate-about-section-pad-block);
   }
@@ -236,7 +250,6 @@ section.vp-about-tabs-section {
     flex: none;
     width: 300px;
     font-size: var(--vp-candidate-about-eyebrow-size);
-    padding-top: 4px;
   }
 
   .vp-about-tabs__heading {
@@ -248,15 +261,13 @@ section.vp-about-tabs-section {
   .vp-about-tabs__layout {
     display: grid;
     gap: 0;
-    align-items: start;
+    /* Stretch menu to the media column so the base hairline runs full width. */
+    align-items: stretch;
   }
 
-  .vp-about-tabs__layout[data-image='right'] {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 994px);
-  }
-
+  .vp-about-tabs__layout[data-image='right'],
   .vp-about-tabs__layout[data-image='left'] {
-    grid-template-columns: minmax(0, 994px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .vp-about-tabs__menu {
@@ -271,15 +282,22 @@ section.vp-about-tabs-section {
   .vp-about-tabs__tab {
     padding: 20px var(--vp-candidate-about-cell-pad);
     border-bottom: 0;
-    font-size: var(--vp-candidate-about-tab-size);
+    /* 24→32px with the 50/50 menu column — avoids oversized labels at md–lg. */
+    font-size: clamp(
+      var(--vp-candidate-about-mobile-tab-size),
+      4.5cqi,
+      var(--vp-candidate-about-tab-size)
+    );
   }
 
   .vp-about-tabs__menu > li:first-child > .vp-about-tabs__tab {
     border-top: 0;
   }
 
-  .vp-about-tabs__menu > li:not(:last-child) > .vp-about-tabs__tab,
-  .vp-about-tabs__menu > li:not(:last-child) > .vp-about-tabs__panel {
+  /* Include the last item — menu border-block sits at the stretched media
+   * height, so it cannot stand in for the hairline under the final tab. */
+  .vp-about-tabs__menu > li > .vp-about-tabs__tab,
+  .vp-about-tabs__menu > li > .vp-about-tabs__panel {
     border-bottom: 1px solid var(--vp-about-tab-line);
   }
 
