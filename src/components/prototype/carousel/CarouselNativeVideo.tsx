@@ -31,9 +31,11 @@
 import {useEffect, useRef, useState} from 'react';
 import {carouselVideoPreload, shouldKickInactiveHlsBuffer} from './carousel-preload';
 import {
+  ABOUT_PREVIEW_CLIP_SELECTOR,
   detectPillarboxContentAspect,
   isCarouselCoverMathEnabled,
   scheduleIdleWork,
+  shouldWritePreviewCoverAspect,
 } from './detect-pillarbox-aspect';
 import {useCarouselDesktopViewport} from './use-carousel-desktop-viewport';
 
@@ -212,16 +214,42 @@ export function CarouselNativeVideo({
   }, [playbackFormat]);
 
   const writeCoverAspect = (value: number | null) => {
-    if (!isCarouselCoverMathEnabled()) return;
     const player = playerRef.current;
+    if (!shouldWritePreviewCoverAspect(player)) return;
     const stack = player?.closest(
       '.vp-proto-carousel__media-stack',
     ) as HTMLElement | null;
-    const target = stack ?? player;
-    if (!target) return;
-    if (value == null || value === appliedAspectRef.current) return;
-    appliedAspectRef.current = value;
-    target.style.setProperty('--vp-preview-aspect', String(value));
+    const aboutClip = player?.closest(
+      ABOUT_PREVIEW_CLIP_SELECTOR,
+    ) as HTMLElement | null;
+    const targets = [aboutClip, stack, player].filter(
+      (node): node is HTMLElement => Boolean(node),
+    );
+    if (targets.length === 0) return;
+
+    let next = value;
+    // About clips: soft pillarbox edges leave residual bars if we size exactly
+    // to the scan. Bleed past the detected content band (home carousel keeps
+    // the conservative scan value — see MIN_CONTENT_VS_FRAME).
+    if (aboutClip && next != null && next < 16 / 9 - 0.01) {
+      next = Math.max(next * 0.88, (16 / 9) * 0.75);
+    }
+
+    // Never widen after a pillarbox tighten (coded 16:9 ready events can race).
+    if (
+      next != null &&
+      appliedAspectRef.current != null &&
+      next > appliedAspectRef.current + 0.001
+    ) {
+      next = appliedAspectRef.current;
+    }
+
+    if (next == null) return;
+    appliedAspectRef.current = next;
+    const serialized = String(next);
+    for (const target of targets) {
+      target.style.setProperty('--vp-preview-aspect', serialized);
+    }
   };
 
   const applyCodedAspect = (video: HTMLVideoElement) => {
@@ -234,7 +262,12 @@ export function CarouselNativeVideo({
   };
 
   const scanFrameOnce = (video: HTMLVideoElement) => {
-    if (scannedFrameRef.current || !isCarouselCoverMathEnabled()) return;
+    if (
+      scannedFrameRef.current ||
+      !shouldWritePreviewCoverAspect(playerRef.current)
+    ) {
+      return;
+    }
     const coded = previewAspectValue(video);
     // Wait for coded size — do not lock the one-shot flag on an empty frame.
     if (coded == null) return;
@@ -254,7 +287,7 @@ export function CarouselNativeVideo({
     if (
       scanScheduledRef.current ||
       scannedFrameRef.current ||
-      !isCarouselCoverMathEnabled()
+      !shouldWritePreviewCoverAspect(playerRef.current)
     ) {
       return;
     }
@@ -324,7 +357,12 @@ export function CarouselNativeVideo({
       const stack = player?.closest(
         '.vp-proto-carousel__media-stack',
       ) as HTMLElement | null;
-      (stack ?? player)?.style.removeProperty('--vp-preview-aspect');
+      const aboutClip = player?.closest(
+        ABOUT_PREVIEW_CLIP_SELECTOR,
+      ) as HTMLElement | null;
+      for (const target of [aboutClip, stack, player]) {
+        target?.style.removeProperty('--vp-preview-aspect');
+      }
       if (lastReadyRef.current) {
         lastReadyRef.current = false;
         setReady(false);
@@ -335,7 +373,7 @@ export function CarouselNativeVideo({
 
   // Poster pillarbox scan can finish after metadata — re-resolve cover aspect.
   useEffect(() => {
-    if (!isCarouselCoverMathEnabled()) return;
+    if (!shouldWritePreviewCoverAspect(playerRef.current)) return;
     const video = videoRef.current;
     const coded = video ? previewAspectValue(video) : null;
     writeCoverAspect(resolveCoverAspect(coded, effectiveContentAspectHint()));

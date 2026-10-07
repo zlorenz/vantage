@@ -18,11 +18,28 @@
 /** Matches `.vp-proto-carousel` desktop overlay / cover-math breakpoint. */
 export const CAROUSEL_COVER_MATH_MQ = '(min-width: 768px)';
 
+/** About preview clips use container-relative cover CSS (see about-*-panel.css). */
+export const ABOUT_PREVIEW_CLIP_SELECTOR =
+  '.vp-about-tabs__photo-clip, .vp-about-feature__photo-clip';
+
 export function isCarouselCoverMathEnabled(): boolean {
   return (
     typeof window !== 'undefined' &&
     window.matchMedia(CAROUSEL_COVER_MATH_MQ).matches
   );
+}
+
+/**
+ * Write --vp-preview-aspect + run pillarbox frame scans for:
+ * - home carousel desktop cover-math, or
+ * - About tab/feature preview clips (mobile included — baked side bars
+ *   need the zoom; object-fit alone cannot crop them).
+ */
+export function shouldWritePreviewCoverAspect(
+  player: HTMLElement | null | undefined,
+): boolean {
+  if (isCarouselCoverMathEnabled()) return true;
+  return Boolean(player?.closest(ABOUT_PREVIEW_CLIP_SELECTOR));
 }
 
 /** Defer canvas work off the gesture/animation frame. Returns a cancel fn. */
