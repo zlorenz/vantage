@@ -76,8 +76,9 @@
   --vp-candidate-about-hero-mobile-body-size: 16px;
   --vp-candidate-about-hero-hotspot-size: 12px;
   --vp-candidate-about-hero-tooltip-width: 300px;
-  --vp-candidate-about-mobile-pad-block: 100px;
-  --vp-candidate-about-mobile-header-gap: 60px;
+  /* ~50% of the prior 100 / 60 — mobile section rhythm was too airy. */
+  --vp-candidate-about-mobile-pad-block: 50px;
+  --vp-candidate-about-mobile-header-gap: 30px;
   --vp-candidate-about-mobile-display-size: 30px;
   --vp-candidate-about-mobile-tab-size: 24px;
   --vp-candidate-about-mobile-body-size: 16px;

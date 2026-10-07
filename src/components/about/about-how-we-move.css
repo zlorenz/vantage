@@ -14,7 +14,7 @@ section.vp-about-workflow-section {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin-bottom: 48px;
+  margin-bottom: var(--vp-candidate-about-mobile-header-gap);
 }
 
 .vp-how-we-move__subtitle {
