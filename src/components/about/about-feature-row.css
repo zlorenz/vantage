@@ -207,6 +207,11 @@ section.vp-about-feature-section {
     border-top-color: transparent;
   }
 
+  /* Temporary — matches CTA-to-CTA spacing while More About is hidden. */
+  section.vp-about-feature-section:last-of-type {
+    padding-bottom: var(--vp-candidate-about-section-pad-block);
+  }
+
   section.vp-about-feature-section .vp-container {
     width: 100%;
     max-width: none;
@@ -225,7 +230,8 @@ section.vp-about-feature-section {
     align-items: stretch;
     gap: 0;
     min-height: 570px;
-    padding-right: 328px;
+    /* Mid: no VAP strip — media + copy share the row 50/50. */
+    padding-right: 0;
     border-top: 1px solid var(--vp-candidate-brief-line);
     border-bottom: 1px solid var(--vp-candidate-brief-line);
   }
@@ -233,25 +239,21 @@ section.vp-about-feature-section {
   .vp-about-feature--mirrored .vp-about-feature__row {
     flex-direction: row-reverse;
     padding-right: 0;
-    padding-left: 328px;
+    padding-left: 0;
   }
 
-  .vp-about-feature__media {
-    flex: 0 1 640px;
+  .vp-about-feature__media,
+  .vp-about-feature__copy {
+    flex: 1 1 0;
     width: auto;
-    max-width: 640px;
+    max-width: none;
     min-width: 0;
   }
 
   .vp-about-feature__copy {
-    flex: 1 1 0;
-    width: 100%;
-    max-width: 640px;
-    min-width: 0;
     gap: 160px;
     justify-content: center;
-    /* Same column width as before; equal side space instead of the 171px offset. */
-    margin-inline: auto;
+    margin-inline: 0;
     padding: var(--vp-candidate-about-cell-pad);
   }
 
@@ -294,6 +296,33 @@ section.vp-about-feature-section {
     width: auto;
     height: var(--vp-candidate-about-cta-height);
     font-size: 16px;
+  }
+
+  .vp-about-feature__pattern {
+    display: none;
+  }
+}
+
+/* Wide desktop: restore the edge VAP strip and the capped copy measure. */
+@media (min-width: 1200px) {
+  .vp-about-feature__row {
+    padding-right: 328px;
+  }
+
+  .vp-about-feature--mirrored .vp-about-feature__row {
+    padding-right: 0;
+    padding-left: 328px;
+  }
+
+  .vp-about-feature__media {
+    flex: 0 1 640px;
+    max-width: 640px;
+  }
+
+  .vp-about-feature__copy {
+    flex: 1 1 0;
+    max-width: 640px;
+    margin-inline: auto;
   }
 
   .vp-about-feature__pattern {
