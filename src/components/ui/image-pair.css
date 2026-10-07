@@ -113,7 +113,7 @@
   border-radius: 0;
   font-family: var(--font-vp-sans);
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: 1.6;
   color: var(--vp-candidate-image-pair-caption-color);
 }

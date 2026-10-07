@@ -1,7 +1,8 @@
 /**
  * Site typefaces via next/font (self-hosted at build time).
  *
- * Mona Sans is the body/UI face (Light 300 / Regular 400 / Medium 500 / Bold 700).
+ * Mona Sans is the body/UI face (Light 300 / Regular 400 / Medium 500 /
+ * Bold 700). Default document weight is 300.
  * It includes a `vietnamese` subset, so no separate Vietnamese fallback
  * face is required. next/font exposes it as `--font-vp-body-raw`; the
  * @theme stack token is `--font-vp-sans` (face name, not the raw var).

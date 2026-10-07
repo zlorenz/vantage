@@ -108,6 +108,9 @@
    * but reads heavy; Zalando Sans Expanded (variable fallback) needs ~900 to
    * match. Latin glyphs still resolve to Special Gothic 400. */
   --font-vp-heading-weight: 900;
+  /* Mona Sans body default — Light. Remap Tailwind font-normal to match. */
+  --font-vp-body-weight: 300;
+  --font-weight-normal: 300;
   --leading-tight: 1.1;
 
   /*
@@ -322,6 +325,7 @@
   /* Alias of @theme --font-vp-heading — single source of truth for the stack. */
   --vp-font-heading: var(--font-vp-heading);
   --vp-font-heading-weight: var(--font-vp-heading-weight);
+  --vp-font-body-weight: var(--font-vp-body-weight);
 
   /* Typography — Letter Spacing */
 
@@ -555,7 +559,7 @@
 
 /* ================================================================
  * Base document styles
- * Black background, Mona Sans at weight 400, white text.
+ * Black background, Mona Sans at --font-vp-body-weight, white text.
  * ================================================================ */
 
 @layer base {
@@ -569,7 +573,7 @@
   body {
     background: var(--vp-bg);
     font-family: var(--vp-font-sans);
-    font-weight: 400;
+    font-weight: var(--font-vp-body-weight);
     color: var(--vp-text);
     /* No forced font-smoothing — leave the browser default. */
   }
@@ -2796,7 +2800,7 @@
   padding-bottom: 5.5rem; /* 88px */
   font-family: var(--font-vp-sans);
   font-size: 1.125rem;
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.6);
 }

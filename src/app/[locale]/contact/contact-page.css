@@ -298,7 +298,7 @@ section.vp-contact-cta .vp-contact-cta__body {
   color: var(--vp-candidate-about-white-50);
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-contact-body-size);
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-contact-body-lh);
 }
 

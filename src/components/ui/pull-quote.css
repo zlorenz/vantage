@@ -116,7 +116,7 @@
   padding: 0;
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-pull-quote-size);
-  font-weight: 400; /* match body prose */
+  font-weight: var(--font-vp-body-weight);
   line-height: 1.6;
   letter-spacing: var(--vp-candidate-pull-quote-tracking);
   color: var(--vp-candidate-pull-quote-muted);

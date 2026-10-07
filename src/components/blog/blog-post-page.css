@@ -215,7 +215,7 @@ a.vp-blog-hero__pill:focus-visible {
 /* Overrides PortableTextContent utilities — blog body only. */
 .vp-blog-post__prose :is(p, ul, ol) {
   font-size: var(--vp-candidate-blog-body-size);
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-blog-body-lh);
   letter-spacing: 0;
   color: var(--vp-candidate-blog-body-color);
