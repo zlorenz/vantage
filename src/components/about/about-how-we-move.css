@@ -59,6 +59,10 @@ section.vp-about-workflow-section {
   border-bottom: 0;
 }
 
+.vp-how-we-move__item:last-child {
+  border-bottom: 1px solid var(--vp-candidate-brief-line);
+}
+
 .vp-how-we-move__item-heading {
   margin: 0;
 }
@@ -170,10 +174,11 @@ section.vp-about-workflow-section {
 
 .vp-how-we-move__headline {
   margin: 0;
+  padding-top: 12px;
   font-family: var(--font-vp-sans);
-  font-size: var(--vp-candidate-about-mobile-body-size);
+  font-size: var(--vp-candidate-about-mobile-dek-size);
   font-weight: var(--font-vp-body-weight);
-  line-height: var(--vp-candidate-about-body-lh);
+  line-height: var(--vp-candidate-about-dek-lh);
   color: var(--vp-link);
 }
 
@@ -246,10 +251,12 @@ section.vp-about-workflow-section {
     background: var(--vp-candidate-brief-line);
   }
 
-  .vp-how-we-move__item {
+  .vp-how-we-move__item,
+  .vp-how-we-move__item:last-child {
     display: flex;
     flex-direction: column;
     gap: 40px;
+    border-bottom: 0;
   }
 
   .vp-how-we-move__item::before {
@@ -306,6 +313,7 @@ section.vp-about-workflow-section {
 
   .vp-how-we-move__headline {
     margin-top: 72px;
+    padding-top: 0;
     font-size: var(--vp-candidate-about-dek-size);
     font-weight: var(--font-vp-body-weight);
     line-height: var(--vp-candidate-about-dek-lh);

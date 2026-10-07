@@ -67,8 +67,9 @@
   /* About hero / page — mobile Figma 2602:27387 (402 artboard). */
   --vp-candidate-about-hero-mobile-inset: 16px;
   --vp-candidate-about-hero-mobile-frame-inset: 8px;
-  --vp-candidate-about-hero-mobile-title-size: 26px;
-  --vp-candidate-about-hero-mobile-title-lh: 1.2;
+  /* ~20% above the shared 14px step size used on desktop. */
+  --vp-candidate-about-hero-mobile-title-size: 17px;
+  --vp-candidate-about-hero-mobile-title-lh: 24px;
   --vp-candidate-about-hero-mobile-caption-size: 12px;
   --vp-candidate-about-hero-mobile-caption-lh: 20px;
   --vp-candidate-about-hero-mobile-copy-gap: 32px;
@@ -82,6 +83,8 @@
   --vp-candidate-about-mobile-display-size: 30px;
   --vp-candidate-about-mobile-tab-size: 24px;
   --vp-candidate-about-mobile-body-size: 16px;
+  /* Same 22/18 dek-to-body ratio as desktop, on the 16px mobile body. */
+  --vp-candidate-about-mobile-dek-size: 20px;
   --vp-candidate-about-mobile-eyebrow-size: 12px;
   --vp-candidate-about-mobile-film-frame: 200px;
   --vp-candidate-about-mobile-film-height: 248px;

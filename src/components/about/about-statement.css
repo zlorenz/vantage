@@ -9,7 +9,9 @@
   --vp-about-ink-dim: rgba(255, 255, 255, 0.11);
   --vp-about-ink-lit: #ffffff;
   padding-top: 0;
-  padding-bottom: calc(var(--vp-section-y) * 1.5);
+  /* Mobile gap under the film rail is the stage pad plus the next
+     section's pad, matching the 50+50 rhythm between tab sections. */
+  padding-bottom: 0;
 }
 
 .vp-about-statement__inner {
@@ -151,7 +153,7 @@
   align-items: stretch;
   gap: 100px;
   width: 100%;
-  padding-block: 0 32px;
+  padding-block: 0 var(--vp-candidate-about-mobile-pad-block);
 }
 
 .vp-about-statement__rail {

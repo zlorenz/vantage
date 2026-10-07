@@ -33,6 +33,9 @@ export type AboutStatementLines = {
   line2: string;
   line3: string;
   line4: string;
+  /** Shorter mid lines so mobile fit can scale type up. Desktop keeps line3/4. */
+  line3Mobile: string;
+  line4Mobile: string;
   line5: string;
   markers: ReadonlyArray<AboutStatementMarkerImage>;
   filmStrips: AboutStatementFilmStrips;
@@ -359,16 +362,46 @@ export function AboutStatementAnimated({
   line2,
   line3,
   line4,
+  line3Mobile,
+  line4Mobile,
   line5,
   markers,
   filmStrips,
 }: AboutStatementAnimatedProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [useMobileCopy, setUseMobileCopy] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
+  const activeLine3 = useMobileCopy ? line3Mobile : line3;
+  const activeLine4 = useMobileCopy ? line4Mobile : line4;
+
   useLayoutEffect(() => {
     const desktop = window.matchMedia('(min-width: 992px)');
+    function syncCopy() {
+      setUseMobileCopy(!desktop.matches);
+    }
+    syncCopy();
+    desktop.addEventListener('change', syncCopy);
+    return () => desktop.removeEventListener('change', syncCopy);
+  }, []);
+
+  useLayoutEffect(() => {
+    const desktop = window.matchMedia('(min-width: 992px)');
+
+    function lineContentWidth(line: Element) {
+      // Block lines report scrollWidth === clientWidth when text is shorter
+      // than the measure, so sum the inline children for intrinsic width.
+      let width = 0;
+      line
+        .querySelectorAll(
+          '.vp-about-statement__word, .vp-about-statement__gap, .vp-about-statement__marker',
+        )
+        .forEach((node) => {
+          width += node.getBoundingClientRect().width;
+        });
+      return width;
+    }
 
     function fit() {
       const heading = headingRef.current;
@@ -380,7 +413,7 @@ export function AboutStatementAnimated({
       const available = heading.clientWidth;
       let longest = 0;
       heading.querySelectorAll('.vp-about-statement__line').forEach((line) => {
-        longest = Math.max(longest, line.scrollWidth);
+        longest = Math.max(longest, lineContentWidth(line));
       });
       if (!available || !longest) return;
 
@@ -398,7 +431,7 @@ export function AboutStatementAnimated({
       const heading = headingRef.current;
       if (heading) heading.style.fontSize = '';
     };
-  }, [line1, line2, line3, line4, line5]);
+  }, [line1, line2, activeLine3, activeLine4, line5]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -463,8 +496,8 @@ export function AboutStatementAnimated({
   const lines = [
     { words: splitLine(line1), accent: false },
     { words: splitLine(line2), accent: false },
-    { words: splitLine(line3), accent: false },
-    { words: splitLine(line4), accent: false },
+    { words: splitLine(activeLine3), accent: false },
+    { words: splitLine(activeLine4), accent: false },
     { words: splitLine(line5) },
   ];
 

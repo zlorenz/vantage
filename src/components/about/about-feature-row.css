@@ -49,6 +49,12 @@ section.vp-about-feature-section {
   padding-block: var(--vp-candidate-about-mobile-pad-block);
 }
 
+/* The workflow block closes on its last row. This section edge would
+   read as a second line under that row. */
+section.vp-about-workflow-section + section.vp-about-feature-section {
+  border-top-color: transparent;
+}
+
 .vp-about-feature__row {
   display: flex;
   flex-direction: column;
@@ -63,13 +69,12 @@ section.vp-about-feature-section {
   position: relative;
   width: 100%;
   padding: var(--vp-candidate-about-hero-mobile-inset);
-  border-block: 1px solid var(--vp-candidate-brief-line);
 }
 
 .vp-about-feature__photo {
   position: relative;
   width: 100%;
-  aspect-ratio: 370 / 366;
+  aspect-ratio: 16 / 9;
   /* Keep visible so CornerFrame ticks can sit just outside the media. */
   overflow: visible;
   container-type: size;

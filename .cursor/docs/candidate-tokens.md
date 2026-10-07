@@ -401,8 +401,8 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-hero-scroll-size` | `24px` | Hero bottom scroll cue | helper | pending | Thin down-arrow with stem; decorative only. |
 | `--vp-candidate-about-hero-mobile-inset` | `16px` | Hero / section side inset, mobile | `2602:26878` | pending | |
 | `--vp-candidate-about-hero-mobile-frame-inset` | `8px` | Hero corner ticks, mobile | `2602:26920` | pending | |
-| `--vp-candidate-about-hero-mobile-title-size` | `26px` | Hero title, mobile | `2602:26871` h3 | pending | Desktop keeps 14px shared chrome. |
-| `--vp-candidate-about-hero-mobile-title-lh` | `1.2` | same | same | pending | |
+| `--vp-candidate-about-hero-mobile-title-size` | `17px` | Hero company line under mark, mobile | product | pending | ~20% above desktop 14px step size. |
+| `--vp-candidate-about-hero-mobile-title-lh` | `24px` | same | product | pending | |
 | `--vp-candidate-about-hero-mobile-caption-size` | `12px` | Hero caption, mobile | `2602:26876` | pending | Pure white (desktop tweak). |
 | `--vp-candidate-about-hero-mobile-caption-lh` | `20px` | same | same | pending | |
 | `--vp-candidate-about-hero-mobile-copy-gap` | `32px` | Title ↔ caption gap, mobile | `2602:26871` | pending | |
@@ -415,6 +415,7 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-mobile-display-size` | `30px` | Section / workflow titles, mobile | `2602:27539` | pending | |
 | `--vp-candidate-about-mobile-tab-size` | `24px` | Accordion tab labels | `2602:27545` | pending | |
 | `--vp-candidate-about-mobile-body-size` | `16px` | Body copy, mobile | body_medium | pending | |
+| `--vp-candidate-about-mobile-dek-size` | `20px` | Workflow accordion headlines, mobile | dek/body ratio | pending | Desktop 22/18 scaled to mobile 16px body. |
 | `--vp-candidate-about-mobile-eyebrow-size` | `12px` | Yellow eyebrows, mobile | `2602:27538` | pending | |
 | `--vp-candidate-about-mobile-statement-size` | `30px` | Statement body, mobile | `2602:27028` | pending | |
 | `--vp-candidate-about-mobile-statement-accent-size` | `40px` | Yellow close line, mobile | `2602:27028` | pending | |

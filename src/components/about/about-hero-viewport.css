@@ -53,13 +53,24 @@
 }
 
 .vp-about-hero__title {
-  left: var(--vp-candidate-about-hero-mobile-inset);
+  /* Mark is centered and fitted to 64% of the hero's shorter side
+     (footer-lens LOGO_PAD_FRAC 0.18). Sit this line just under that box,
+     no wider than the mark itself. */
+  top: calc(
+    50% + min(32vw, 32svh) + var(--vp-candidate-about-hero-mobile-copy-gap)
+  );
+  left: 50%;
+  right: auto;
+  width: min(64vw, 64svh);
+  max-width: min(64vw, 64svh);
+  font-size: var(--vp-candidate-about-hero-mobile-title-size);
+  line-height: var(--vp-candidate-about-hero-mobile-title-lh);
+  text-align: center;
+  transform: translateX(-50%);
 }
 
 .vp-about-hero__caption {
-  right: var(--vp-candidate-about-hero-mobile-inset);
-  text-align: right;
-  white-space: normal;
+  display: none;
 }
 
 /* Centered scroll cue — decorative only. Kept from desktop product tweak. */
@@ -162,13 +173,20 @@
 
   .vp-about-hero__title {
     left: var(--vp-candidate-about-hero-inset);
+    right: auto;
     width: min(
       var(--vp-candidate-about-hero-title-width),
       calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
     );
+    max-width: none;
+    font-size: var(--vp-candidate-about-step-size);
+    line-height: var(--vp-candidate-about-step-lh);
+    text-align: start;
+    transform: none;
   }
 
   .vp-about-hero__caption {
+    display: block;
     right: var(--vp-candidate-about-hero-inset);
     width: auto;
     text-align: right;
