@@ -147,7 +147,7 @@ section.vp-about-tabs-section {
   display: block;
   width: 100%;
   margin: 0;
-  padding: 24px var(--vp-candidate-about-hero-mobile-inset);
+  padding: 28px var(--vp-candidate-about-hero-mobile-inset);
   border: 0;
   border-bottom: 1px solid var(--vp-about-tab-line);
   background: transparent;
@@ -280,7 +280,7 @@ section.vp-about-tabs-section {
   }
 
   .vp-about-tabs__tab {
-    padding: 20px var(--vp-candidate-about-cell-pad);
+    padding: 24px var(--vp-candidate-about-cell-pad);
     border-bottom: 0;
     /* 24→32px with the 50/50 menu column — avoids oversized labels at md–lg. */
     font-size: clamp(
@@ -320,7 +320,7 @@ section.vp-about-tabs-section {
   }
 
   .vp-about-tabs__description {
-    padding: 16px var(--vp-candidate-about-cell-pad) 24px;
+    padding: 32px var(--vp-candidate-about-cell-pad);
     font-size: var(--vp-candidate-about-body-size);
   }
 
