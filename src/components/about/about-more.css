@@ -49,7 +49,7 @@ section.vp-about-more-section {
   margin: 0;
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-about-mobile-body-size);
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-about-body-lh);
   color: var(--vp-candidate-about-white-50);
 }
@@ -133,7 +133,7 @@ section.vp-about-more-section {
   color: var(--vp-link);
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   section.vp-about-more-section {
     padding: 0;
     border-top-color: transparent;

@@ -106,7 +106,7 @@
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   .vp-about-hero__quotes {
     display: block;
     position: absolute;
@@ -142,7 +142,7 @@
     margin: 0;
     font-family: var(--font-vp-sans);
     font-size: var(--vp-candidate-about-body-size);
-    font-weight: 400;
+    font-weight: var(--font-vp-body-weight);
     line-height: var(--vp-candidate-about-body-lh);
     letter-spacing: 0;
     color: var(--vp-text);

@@ -1,8 +1,8 @@
 /*
  * About desktop candidates — Figma frame 2466:28598.
  * Pending reuse outside About. Do not promote to --vp-* yet.
- * Loaded from the About page only. Section padding is defined at lg
- * (1200px) so it cannot change the current mobile rhythm.
+ * Loaded from the About page only. Section padding is defined at md
+ * (992px) so it cannot change the current mobile rhythm.
  *
  * Reused elsewhere, not redefined here:
  *   dark 12px brackets — --vp-candidate-brief-tick-size / -stroke / -color
@@ -89,8 +89,8 @@
   --vp-candidate-about-mobile-cta-height: 64px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   :root {
-    --vp-candidate-about-section-pad-block: 200px;
+    --vp-candidate-about-section-pad-block: 150px;
   }
 }

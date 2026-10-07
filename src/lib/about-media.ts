@@ -37,7 +37,7 @@ type ImageSlot = NonNullable<
 type ImageSource = Parameters<typeof urlForImage>[0]
 
 /**
- * 2x the largest CSS poster frame (tab column 994px; below 1200px the
+ * 2x the largest CSS poster frame (tab column ~50vw; below 992px the
  * photo is full viewport width). fit max + ignoreImageParams keeps the
  * original aspect (no hotspot square crop). object-fit cover then fills
  * the frame and crops only the overflow on one axis. Video previews stay cover.

@@ -55,7 +55,7 @@ export function AboutFeatureRow({
                 previewVimeoUrl={previewVimeoUrl}
                 previewStartSeconds={previewStartSeconds}
                 previewEndSeconds={previewEndSeconds}
-                sizes="(max-width: 1199px) 100vw, 640px"
+                sizes="(max-width: 991px) 100vw, 640px"
                 wash={wash}
               />
             </div>

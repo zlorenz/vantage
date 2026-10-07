@@ -336,7 +336,7 @@ function FilmStrip({
                   src={frame.src}
                   alt=""
                   fill
-                  sizes="(max-width: 1199px) 200px, 297px"
+                  sizes="(max-width: 991px) 200px, 297px"
                   className="object-cover"
                 />
               </div>
@@ -368,7 +368,7 @@ export function AboutStatementAnimated({
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
-    const desktop = window.matchMedia('(min-width: 1200px)');
+    const desktop = window.matchMedia('(min-width: 992px)');
 
     function fit() {
       const heading = headingRef.current;
@@ -412,7 +412,7 @@ export function AboutStatementAnimated({
       return;
     }
 
-    const desktop = window.matchMedia('(min-width: 1200px)');
+    const desktop = window.matchMedia('(min-width: 992px)');
     let raf = 0;
 
     function update() {

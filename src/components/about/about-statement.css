@@ -232,7 +232,7 @@
   display: none;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   section.vp-about-statement {
     position: relative;
     display: flex;
