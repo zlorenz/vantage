@@ -150,16 +150,28 @@ section.vp-about-more-section {
   }
 
   .vp-about-more__inner {
-    gap: 248px;
+    /* 45 + 60 + 45 ≈ 150px intro→links; in-flow plus sits in the gap. */
+    gap: 45px;
     padding: 80px 40px;
   }
 
   .vp-about-more__plus {
-    display: none;
+    display: block;
+    width: var(--vp-candidate-about-crosshair-mark);
+    height: var(--vp-candidate-about-crosshair-mark);
   }
 
+  .vp-about-more__plus::before {
+    width: var(--vp-candidate-about-crosshair-mark);
+  }
+
+  .vp-about-more__plus::after {
+    height: var(--vp-candidate-about-crosshair-mark);
+  }
+
+  /* Frame-centered crosshair overlaps the dek once the gap tightens. */
   .vp-about-more__frame > .vp-corner-frame .vp-corner-frame__crosshair {
-    display: block;
+    display: none;
   }
 
   .vp-about-more__intro {

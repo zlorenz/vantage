@@ -36,7 +36,7 @@ export function AboutMoreSection({ title, body, links }: AboutMoreSectionProps) 
             <h2 className="vp-about-more__title">{title}</h2>
             <p className="vp-about-more__dek">{body}</p>
           </div>
-          {/* Mobile: in-flow plus. Desktop uses the CornerFrame crosshair in the tall gap. */}
+          {/* In-flow plus — stays below the dek on mobile and desktop. */}
           <span className="vp-about-more__plus" aria-hidden="true" />
           <nav className="vp-about-more__links" aria-label={title}>
             {links.map((link) => (
