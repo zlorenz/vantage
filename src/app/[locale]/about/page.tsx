@@ -3,8 +3,9 @@
  * more-about links.
  *
  * Section order: Statement -> Who We Are -> Production House ->
- * How We Move -> Production Services -> Production Log CTA ->
- * More About Vantage.
+ * How We Move -> Production Services -> Production Log CTA.
+ * More About Vantage is temporarily hidden until the SEO hub pages
+ * it links to are ready (component + copy kept).
  *
  * Note: the founders/team grid no longer renders here — it lives on
  * /our-company. FounderCard and the `founders` GROQ field/query are
@@ -23,7 +24,7 @@ import { AboutWhoWeAreSection } from '@/components/about/AboutWhoWeAreSection';
 import { AboutProductionHouseSection } from '@/components/about/AboutProductionHouseSection';
 import { AboutHowWeMoveSection } from '@/components/about/AboutHowWeMoveSection';
 import { AboutFeatureRow } from '@/components/about/AboutFeatureRow';
-import { AboutMoreSection } from '@/components/about/AboutMoreSection';
+// import { AboutMoreSection } from '@/components/about/AboutMoreSection';
 import '@/components/about/about-tokens.css';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
@@ -205,8 +206,8 @@ export default async function AboutPage({ params }: Props) {
         />
       </SectionWrapper>
 
+      {/* Temporary hide — restore once Formats / Industries / Markets hubs ship.
       <SectionWrapper borderTop className="vp-about-more-section">
-        {/* Temporary — Formats, Industries, and Markets point at the first existing category page per taxonomy. Replace with taxonomy hub pages once those exist. */}
         <AboutMoreSection
           title={t('moreAboutVantage')}
           body={t('moreAboutVantageBody')}
@@ -228,6 +229,7 @@ export default async function AboutPage({ params }: Props) {
           ]}
         />
       </SectionWrapper>
+      */}
     </>
   );
 }
