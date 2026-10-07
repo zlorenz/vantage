@@ -1,5 +1,5 @@
 /* About How We Move — workflow accordion (see AboutHowWeMoveAccordion.tsx).
- * Mobile: Figma 2602:27629. Desktop: Figma desktop restyle at 1200. */
+ * Mobile: Figma 2602:27629. Desktop: Figma desktop restyle at 992. */
 
 section.vp-about-workflow-section {
   padding-block: var(--vp-candidate-about-mobile-pad-block);
@@ -28,6 +28,8 @@ section.vp-about-workflow-section {
   letter-spacing: 0;
   line-height: var(--vp-candidate-about-eyebrow-lh);
   text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
   color: var(--vp-link);
 }
 
@@ -169,32 +171,40 @@ section.vp-about-workflow-section {
   margin: 0;
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-about-mobile-body-size);
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-about-body-lh);
-  color: var(--vp-candidate-about-white-60);
+  color: var(--vp-link);
 }
 
 .vp-how-we-move__bullets {
   margin: 0;
-  padding: 0 0 0 1.1rem;
-  list-style: disc;
+  padding: 0;
+  list-style: none;
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-about-mobile-body-size);
-  font-weight: 400;
+  font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-about-body-lh);
   color: var(--vp-candidate-about-white-60);
 }
 
 .vp-how-we-move__bullets li {
+  position: relative;
   margin: 0 0 16px;
-  padding-left: 0;
+  padding-left: 1.1rem;
+}
+
+.vp-how-we-move__bullets li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .vp-how-we-move__bullets li:last-child {
   margin-bottom: 0;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   section.vp-about-workflow-section {
     padding-block: var(--vp-candidate-about-section-pad-block);
   }
@@ -215,7 +225,6 @@ section.vp-about-workflow-section {
     flex: none;
     width: 300px;
     font-size: var(--vp-candidate-about-eyebrow-size);
-    padding-top: 4px;
   }
 
   .vp-how-we-move__heading {
@@ -289,7 +298,7 @@ section.vp-about-workflow-section {
 
   .vp-how-we-move__item:has(.vp-how-we-move__panel) .vp-how-we-move__panel {
     display: grid;
-    grid-template-columns: minmax(0, 923px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 24px 15px;
     margin-top: -48px;
     padding: 0 64px 0 52px;
@@ -297,17 +306,18 @@ section.vp-about-workflow-section {
 
   .vp-how-we-move__headline {
     margin-top: 72px;
-    font-size: var(--vp-candidate-about-body-size);
-    font-weight: 700;
+    font-size: var(--vp-candidate-about-dek-size);
+    font-weight: var(--font-vp-body-weight);
+    line-height: var(--vp-candidate-about-dek-lh);
   }
 
   .vp-how-we-move__bullets {
-    margin-top: 0;
-    padding-left: 27px;
+    margin-top: 72px;
     font-size: var(--vp-candidate-about-body-size);
   }
 
   .vp-how-we-move__bullets li {
     margin: 0 0 24px;
+    padding-left: 1.25rem;
   }
 }
