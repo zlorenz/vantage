@@ -174,10 +174,7 @@
   .vp-about-hero__title {
     left: var(--vp-candidate-about-hero-inset);
     right: auto;
-    width: min(
-      var(--vp-candidate-about-hero-title-width),
-      calc(100% - (2 * var(--vp-candidate-about-hero-inset)))
-    );
+    width: min(340px, calc(100% - (2 * var(--vp-candidate-about-hero-inset))));
     max-width: none;
     font-size: var(--vp-candidate-about-step-size);
     line-height: var(--vp-candidate-about-step-lh);
@@ -188,9 +185,9 @@
   .vp-about-hero__caption {
     display: block;
     right: var(--vp-candidate-about-hero-inset);
-    width: auto;
+    width: min(340px, calc(100% - (2 * var(--vp-candidate-about-hero-inset))));
     text-align: right;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .vp-about-hero__scroll {
