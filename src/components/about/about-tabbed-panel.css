@@ -77,6 +77,7 @@
   --vp-about-tab-body: var(--vp-candidate-about-black-70);
   --vp-about-tab-inactive: var(--vp-candidate-about-black-20);
   --vp-about-tab-inactive-hover: rgba(0, 0, 0, 0.4);
+  --vp-about-tab-inactive-bright: rgba(0, 0, 0, 0.65);
 }
 
 .vp-about-tabs[data-theme='dark'] {
@@ -84,6 +85,7 @@
   --vp-about-tab-body: var(--vp-candidate-about-white-60);
   --vp-about-tab-inactive: var(--vp-candidate-about-white-20);
   --vp-about-tab-inactive-hover: rgba(255, 255, 255, 0.4);
+  --vp-about-tab-inactive-bright: rgba(255, 255, 255, 0.65);
 }
 
 /* —— Mobile accordion (default) —— */
@@ -218,10 +220,11 @@ section.vp-about-tabs-section {
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .vp-about-tabs__tab:hover:not(.is-selected) {
-    color: var(--vp-about-tab-inactive-hover);
-  }
+/* Slightly brighter title on hover / press. Mobile rest already uses
+ * inactive-hover; desktop rest uses inactive — both step up to bright. */
+.vp-about-tabs__tab:hover:not(.is-selected),
+.vp-about-tabs__tab:active:not(.is-selected) {
+  color: var(--vp-about-tab-inactive-bright);
 }
 
 .vp-about-tabs__menu > li:first-child > .vp-about-tabs__tab {
@@ -238,7 +241,8 @@ section.vp-about-tabs-section {
 .vp-about-tabs__panel {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  /* Tighter copy→embed; desktop resets gap to 0. */
+  gap: 16px;
 }
 
 .vp-about-tabs__description {
@@ -263,7 +267,8 @@ section.vp-about-tabs-section {
 .vp-about-tabs__media {
   position: relative;
   width: 100%;
-  padding: var(--vp-candidate-about-hero-mobile-inset);
+  /* Asymmetric: less air above the embed, more before the next tab. */
+  padding: 8px var(--vp-candidate-about-hero-mobile-inset) 36px;
   /* Bottom only — the top edge read as a double line under the copy.
      The next tab's top border still closes the row. */
   border-bottom: 1px solid var(--vp-about-tab-line);
