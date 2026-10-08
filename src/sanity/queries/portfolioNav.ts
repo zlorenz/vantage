@@ -39,7 +39,7 @@ export const PORTFOLIO_NAV_CARDS_BY_IDS_QUERY = defineQuery(`
       campaignTitleZh
     },
     featuredImage,
-    /* Skip system Key Visual — public titles show film formats only. */
+    // Skip system Key Visual — public titles show film formats only.
     "primaryFormat": (
       videoFormats[]->{
         _id,
