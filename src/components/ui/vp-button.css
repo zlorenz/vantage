@@ -2,14 +2,14 @@
  * Site-wide .vp-btn -- yellow / white / outline.
  * Default is label-only. Arrows are optional children (exception, not the type).
  *
- * Size: 80px below 768px. From 768px, scale from a 100px / 1920 artboard via
- * --vp-btn-scale (same min(100vw, 1920px) / 1920px used on Contact). Chrome
- * (nav/footer) does not use this class and stays unscaled. A section may
+ * Mobile ≤767: 60px tall (0.75 of the 80px chrome size) — same height band as
+ * the brief-form mobile buttons. ≥768: scale from a 100px / 1920 artboard via
+ * --vp-btn-scale. Chrome (nav/footer) does not use this class. A section may
  * override --vp-btn-scale.
  */
 
 :root {
-  --vp-btn-scale: 1;
+  --vp-btn-scale: 0.75;
   --vp-btn-yellow-bg: var(--vp-link);
   --vp-btn-yellow-text: var(--vp-black);
   --vp-btn-yellow-hover: var(--vp-candidate-brief-primary-hover, #ffcb55);
@@ -31,13 +31,14 @@
 }
 
 .vp-btn {
-  --vp-btn-height: 80px;
-  --vp-btn-pad-block: 16px;
-  --vp-btn-pad-inline: 30px;
-  --vp-btn-gap: 12px;
-  --vp-btn-label-size: var(--vp-btn-font-size);
-  --vp-btn-label-lh: var(--vp-btn-line-height);
-  --vp-btn-icon-size: var(--vp-btn-arrow-size);
+  /* Mobile: 80px design × 0.75 → 60px. Desktop overrides height to 100px × scale. */
+  --vp-btn-height: calc(80px * var(--vp-btn-scale));
+  --vp-btn-pad-block: calc(16px * var(--vp-btn-scale));
+  --vp-btn-pad-inline: calc(30px * var(--vp-btn-scale));
+  --vp-btn-gap: calc(12px * var(--vp-btn-scale));
+  --vp-btn-label-size: calc(var(--vp-btn-font-size) * var(--vp-btn-scale));
+  --vp-btn-label-lh: calc(var(--vp-btn-line-height) * var(--vp-btn-scale));
+  --vp-btn-icon-size: calc(var(--vp-btn-arrow-size) * var(--vp-btn-scale));
 
   box-sizing: border-box;
   display: inline-flex;
@@ -71,12 +72,6 @@
 @media (min-width: 768px) {
   .vp-btn {
     --vp-btn-height: calc(100px * var(--vp-btn-scale));
-    --vp-btn-pad-block: calc(16px * var(--vp-btn-scale));
-    --vp-btn-pad-inline: calc(30px * var(--vp-btn-scale));
-    --vp-btn-gap: calc(12px * var(--vp-btn-scale));
-    --vp-btn-label-size: calc(var(--vp-btn-font-size) * var(--vp-btn-scale));
-    --vp-btn-label-lh: calc(var(--vp-btn-line-height) * var(--vp-btn-scale));
-    --vp-btn-icon-size: calc(var(--vp-btn-arrow-size) * var(--vp-btn-scale));
   }
 }
 
