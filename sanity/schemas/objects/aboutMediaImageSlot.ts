@@ -1,5 +1,5 @@
 /**
- * aboutMediaImageSlot — Still-only media cell for About statement chrome
+ * aboutMediaImageSlot â€” Still-only media cell for About statement chrome
  * (inline markers + film strips). No video playback.
  */
 
