@@ -4,8 +4,7 @@
 
 import type {Metadata} from 'next'
 import {setRequestLocale} from 'next-intl/server'
-import {Link} from '@/i18n/navigation'
-import {workInternalLibraryHref} from '@/lib/internal-app-paths'
+import Link from 'next/link'
 import type {Locale} from '@/i18n/routing'
 import {ShowreelEditor} from '@/components/showreel/ShowreelEditor'
 import {WorkInternalUtilityChrome} from '@/components/work-internal/WorkInternalUtilityChrome'
@@ -69,10 +68,7 @@ export default async function ShowreelEditPage({params}: Props) {
               <code>{id}</code>
             </p>
             <p>
-              <Link
-                href={workInternalLibraryHref()}
-                className="vp-internal-clear"
-              >
+              <Link href="/" className="vp-internal-clear">
                 Back to Work Library
               </Link>
             </p>

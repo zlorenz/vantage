@@ -5,7 +5,7 @@
 'use client';
 
 import Image from 'next/image';
-import {Link} from '@/i18n/navigation';
+import Link from 'next/link';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
@@ -27,6 +27,7 @@ import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
 type SortColumn = 'title' | 'date' | 'client';
 
 interface WorkInternalListViewProps {
+  onAppHost?: boolean;
   entries: InternalLibraryEntry[];
   locale: Locale;
   sort: LibrarySort;
@@ -134,6 +135,7 @@ export function WorkInternalListView({
   onSortChange,
   selectedIds,
   onToggleSelect,
+  onAppHost = false,
 }: WorkInternalListViewProps) {
   return (
     <div className="vp-internal-list" role="table" aria-label="Portfolio library">
@@ -213,10 +215,10 @@ export function WorkInternalListView({
                 />
               </span>
               <Link
-                href={getWorkInternalDetailHref(entry)}
+                href={getWorkInternalDetailHref(entry, onAppHost)}
                 className="vp-internal-list__hit"
                 onClick={() => {
-                  prepareWorkInternalDetailNavigation(entry);
+                  prepareWorkInternalDetailNavigation(entry, onAppHost);
                 }}
               >
                 <span className="vp-internal-list__thumb-col" role="cell">
@@ -287,7 +289,11 @@ export function WorkInternalListView({
                 </span>
               </Link>
               <span className="vp-internal-list__menu-col" role="cell">
-                <WorkInternalItemMenu entry={entry} locale={locale} />
+                <WorkInternalItemMenu
+                  entry={entry}
+                  locale={locale}
+                  onAppHost={onAppHost}
+                />
               </span>
             </div>
           );

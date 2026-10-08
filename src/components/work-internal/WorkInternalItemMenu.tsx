@@ -9,7 +9,7 @@
 'use client';
 
 import {useEffect, useId, useRef, useState} from 'react';
-import {useRouter} from '@/i18n/navigation';
+import {useRouter} from 'next/navigation';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
 import {
@@ -20,11 +20,13 @@ import {
 interface WorkInternalItemMenuProps {
   entry: InternalLibraryEntry;
   locale: Locale;
+  onAppHost?: boolean;
 }
 
 export function WorkInternalItemMenu({
   entry,
   locale,
+  onAppHost = false,
 }: WorkInternalItemMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -87,7 +89,10 @@ export function WorkInternalItemMenu({
               event.preventDefault();
               event.stopPropagation();
               setOpen(false);
-              const href = prepareWorkInternalDetailNavigation(entry);
+              const href = prepareWorkInternalDetailNavigation(
+                entry,
+                onAppHost,
+              );
               router.push(href);
             }}
           >

@@ -1,20 +1,23 @@
 /**
- * WorkInternalDetail — full-viewport utilitarian project page for
- * `/work-internal/[slug]` (temporary prefix until app.vantage.pictures).
+ * WorkInternalDetail — full-viewport utilitarian project page for the
+ * internal library (app.vantage.pictures/[slug] via rewrite).
  */
 
 'use client';
 
 import {useEffect, useId, useMemo, useRef, useState} from 'react';
 import Image from 'next/image';
-import {Link, useRouter} from '@/i18n/navigation';
+import {useRouter} from 'next/navigation';
 import {
   resolvePortfolioVideos,
   type PortfolioVideoFields,
 } from '@portfolio-videos';
 import {decodeHtmlEntities} from '@/lib/decode-html-entities';
 import {resolveCreditsForDisplay} from '@/lib/credits-config';
-import {libraryReturnBrowserPath} from '@/lib/internal-app-paths';
+import {
+  libraryReturnBrowserPath,
+  marketingHomeUrl,
+} from '@/lib/internal-app-paths';
 import {urlForImage} from '@/lib/sanity';
 import {parseVideoUrl} from '@/lib/video-url';
 import {vimeoThumbnailUrl} from '@/lib/vimeo';
@@ -312,7 +315,7 @@ function BackToLibraryButton() {
       className="vp-internal-detail__back"
       onClick={() => {
         // String href keeps filter query from sessionStorage (typed path alone cannot).
-        router.push(libraryReturnBrowserPath() as '/work-internal');
+        router.push(libraryReturnBrowserPath());
       }}
     >
       ← Back to Full Work
@@ -352,9 +355,9 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
     <div className="vp-internal-detail">
       <header className="vp-internal-nav" aria-label="Project details">
         <div className="vp-internal-nav__inner">
-          <Link
+          <a
             className="vp-internal-nav__brand"
-            href="/"
+            href={marketingHomeUrl()}
             rel="home noopener noreferrer"
             target="_blank"
           >
@@ -367,7 +370,7 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
               height={36}
               className="vp-internal-nav__mark"
             />
-          </Link>
+          </a>
           <p className="vp-internal-detail__nav-title">{title}</p>
           <span className="vp-internal-nav__title">Project</span>
         </div>

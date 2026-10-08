@@ -15,15 +15,19 @@ const portfolio = pathsForWebhookBody({
 assert.deepEqual(
   portfolio.sort(),
   [
+    '/',
     '/en',
     '/en/portfolio/macbook-neo',
     '/en/work',
     '/en/work-internal',
+    '/en/work-internal/macbook-neo',
+    '/macbook-neo',
     '/sitemap.xml',
     '/zh',
     '/zh/portfolio/macbook-neo-zh',
     '/zh/work',
     '/zh/work-internal',
+    '/zh/work-internal/macbook-neo',
   ].sort(),
 )
 

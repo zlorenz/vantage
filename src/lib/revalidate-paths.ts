@@ -50,6 +50,8 @@ export function pathsForWebhookBody(body: RevalidateWebhookBody): string[] {
   const workInternal = [
     localePath('en', '/work-internal'),
     localePath('zh', '/work-internal'),
+    // App-host browser paths (middleware rewrites these to /work-internal).
+    '/',
   ]
   const news = [localePath('en', '/news'), localePath('zh', '/news')]
 
@@ -62,6 +64,7 @@ export function pathsForWebhookBody(body: RevalidateWebhookBody): string[] {
       localePath('zh', `/portfolio/${zhSlug}`),
       localePath('en', `/work-internal/${slug}`),
       localePath('zh', `/work-internal/${slug}`),
+      `/${slug}`,
       ...work,
       ...workInternal,
       ...home,

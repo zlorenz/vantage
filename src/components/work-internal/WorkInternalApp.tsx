@@ -64,6 +64,8 @@ export interface WorkInternalAppProps {
   videoFormats: TaxonomyTerm[];
   industries: TaxonomyTerm[];
   markets: TaxonomyTerm[];
+  /** When true, detail links use app-host paths (`/{slug}`). */
+  onAppHost?: boolean;
 }
 
 function replaceLibraryUrl(state: {
@@ -88,6 +90,7 @@ export function WorkInternalApp({
   videoFormats,
   industries,
   markets,
+  onAppHost = false,
 }: WorkInternalAppProps) {
   const searchParams = useSearchParams();
 
@@ -263,6 +266,7 @@ export function WorkInternalApp({
               onSortChange={setSort}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
+              onAppHost={onAppHost}
             />
           ) : (
             <WorkInternalCardView
@@ -270,6 +274,7 @@ export function WorkInternalApp({
               locale={locale}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
+              onAppHost={onAppHost}
             />
           )}
         </div>

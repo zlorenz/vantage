@@ -9,6 +9,8 @@ const INTERNAL_HOSTS = new Set([
   '127.0.0.1',
   'vantage.pictures',
   'www.vantage.pictures',
+  'app.vantage.pictures',
+  'app.localhost',
 ]);
 
 /**

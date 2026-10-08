@@ -7,6 +7,7 @@
  */
 
 import type {Locale} from '@/i18n/routing'
+import {isAppHostname} from '@/lib/site-hosts'
 import {getOrCreateSessionId} from '@/lib/video-events'
 
 const INTERACTION_EVENTS_ENDPOINT = '/api/interaction-events'
@@ -54,6 +55,10 @@ function pathnameWithoutLocale(pathname: string): string {
  * Public marketing analytics only — skip internal library and showreel surfaces.
  */
 export function shouldSkipInteractionAnalytics(pathname: string): boolean {
+  // Entire app subdomain is internal tooling — no marketing analytics.
+  if (typeof window !== 'undefined' && isAppHostname(window.location.hostname)) {
+    return true
+  }
   const path = pathnameWithoutLocale(pathname)
   if (path === '/work-internal' || path.startsWith('/work-internal/')) return true
   if (path === '/showreel' || path.startsWith('/showreel/')) return true

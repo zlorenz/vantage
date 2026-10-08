@@ -8,8 +8,11 @@
 'use client'
 
 import type {ReactNode} from 'react'
-import {Link, useRouter} from '@/i18n/navigation'
-import {libraryReturnBrowserPath} from '@/lib/internal-app-paths'
+import {useRouter} from 'next/navigation'
+import {
+  libraryReturnBrowserPath,
+  marketingHomeUrl,
+} from '@/lib/internal-app-paths'
 
 interface WorkInternalUtilityChromeProps {
   /** Right-side label in the fixed nav (e.g. "Showreel editor"). */
@@ -34,9 +37,9 @@ export function WorkInternalUtilityChrome({
     <>
       <header className="vp-internal-nav" aria-label={ariaLabel ?? navTitle}>
         <div className="vp-internal-nav__inner">
-          <Link
+          <a
             className="vp-internal-nav__brand"
-            href="/"
+            href={marketingHomeUrl()}
             rel="home noopener noreferrer"
             target="_blank"
           >
@@ -49,7 +52,7 @@ export function WorkInternalUtilityChrome({
               height={36}
               className="vp-internal-nav__mark"
             />
-          </Link>
+          </a>
           <span aria-hidden="true" />
           <span className="vp-internal-nav__title">{navTitle}</span>
         </div>
@@ -61,7 +64,7 @@ export function WorkInternalUtilityChrome({
             type="button"
             className="vp-internal-detail__back"
             onClick={() => {
-              router.push(libraryReturnBrowserPath() as '/work-internal')
+              router.push(libraryReturnBrowserPath())
             }}
           >
             {backLabel}

@@ -20,9 +20,10 @@ import {
   type CSSProperties,
   type FormEvent,
 } from 'react'
-import {useRouter} from '@/i18n/navigation'
-import {workInternalLibraryHref} from '@/lib/internal-app-paths'
+import {useRouter} from 'next/navigation'
+import {workInternalLibraryBrowserPath} from '@/lib/internal-app-paths'
 import {urlForImage} from '@/lib/sanity'
+import {getSiteOrigin} from '@/lib/site-hosts'
 import type {Locale} from '@/i18n/routing'
 import {showreelLoginPathFor} from '@/lib/showreel-auth-paths'
 import {showreelPublicPath} from '@/lib/showreel-urls'
@@ -197,7 +198,8 @@ export function ShowreelEditor({
   }, [items])
 
   useEffect(() => {
-    setPublicUrl(`${window.location.origin}${publicPath}`)
+    // Public share page lives on the marketing host, not the app subdomain.
+    setPublicUrl(`${getSiteOrigin()}${publicPath}`)
   }, [publicPath])
 
   useEffect(() => {
@@ -427,7 +429,7 @@ export function ShowreelEditor({
         setDeleteError(result.error)
         return
       }
-      router.replace(workInternalLibraryHref())
+      router.replace(workInternalLibraryBrowserPath())
     })
   }
 

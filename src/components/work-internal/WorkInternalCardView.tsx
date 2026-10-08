@@ -6,7 +6,7 @@
 'use client';
 
 import Image from 'next/image';
-import {Link} from '@/i18n/navigation';
+import Link from 'next/link';
 import {urlForImage} from '@/lib/sanity';
 import type {Locale} from '@/i18n/routing';
 import type {InternalLibraryEntry} from '@/types/sanity';
@@ -27,6 +27,7 @@ interface WorkInternalCardViewProps {
   locale: Locale;
   selectedIds: Set<string>;
   onToggleSelect: (id: string, selected: boolean) => void;
+  onAppHost?: boolean;
 }
 
 export function WorkInternalCardView({
@@ -34,6 +35,7 @@ export function WorkInternalCardView({
   locale,
   selectedIds,
   onToggleSelect,
+  onAppHost = false,
 }: WorkInternalCardViewProps) {
   return (
     <div className="vp-internal-cards" role="list">
@@ -50,7 +52,7 @@ export function WorkInternalCardView({
         // fall back to the single-line combined `title`.
         const campaignText = campaignLine || title;
         const selected = selectedIds.has(entry._id);
-        const detailHref = getWorkInternalDetailHref(entry);
+        const detailHref = getWorkInternalDetailHref(entry, onAppHost);
 
         return (
           <div
@@ -67,12 +69,16 @@ export function WorkInternalCardView({
               label={`Select ${title}`}
               onChange={(checked) => onToggleSelect(entry._id, checked)}
             />
-            <WorkInternalItemMenu entry={entry} locale={locale} />
+            <WorkInternalItemMenu
+              entry={entry}
+              locale={locale}
+              onAppHost={onAppHost}
+            />
             <Link
               href={detailHref}
               className="vp-internal-card__hit"
               onClick={() => {
-                prepareWorkInternalDetailNavigation(entry);
+                prepareWorkInternalDetailNavigation(entry, onAppHost);
               }}
             >
               <div className="vp-internal-card__media">

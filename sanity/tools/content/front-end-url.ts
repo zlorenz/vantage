@@ -30,7 +30,9 @@ export const FRONT_END_DOCUMENT_TYPES = new Set([
 export const PAGE_ROUTES: Record<string, {en: string; zh: string}> = {
   home: {en: '/', zh: '/zh/'},
   work: {en: '/work/', zh: '/zh/工作/'},
-  'work-internal': {en: '/work-internal/', zh: '/zh/work-internal/'},
+  // Canonical URL is the app subdomain (prefix stripped). Kept as a path
+  // fragment here; getFrontEndUrl() rewrites the origin for this slug.
+  'work-internal': {en: '/', zh: '/'},
   search: {en: '/search/', zh: '/zh/search/'},
   about: {en: '/about/', zh: '/zh/关于/'},
   news: {en: '/news/', zh: '/zh/新闻/'},
@@ -129,6 +131,18 @@ function pathForDocument(
   }
 }
 
+function getAppBaseUrl(): string {
+  const env = (import.meta as ImportMeta & {env?: Record<string, string | boolean>}).env
+  const fromEnv = env?.SANITY_STUDIO_APP_URL
+  if (typeof fromEnv === 'string' && fromEnv.trim()) {
+    return fromEnv.trim().replace(/\/$/, '')
+  }
+  if (env?.DEV) {
+    return 'http://app.localhost:3000'
+  }
+  return 'https://app.vantage.pictures'
+}
+
 export function getFrontEndUrl(
   documentType: string,
   document: FrontEndDocument | null | undefined,
@@ -142,7 +156,14 @@ export function getFrontEndUrl(
   const path = pathForDocument(documentType, document, locale)
   if (!path) return undefined
 
-  return joinSiteUrl(options?.baseUrl ?? getSiteBaseUrl(), path)
+  const slug = readSlug(document.slug)
+  const base =
+    options?.baseUrl ??
+    (documentType === 'page' && slug === 'work-internal'
+      ? getAppBaseUrl()
+      : getSiteBaseUrl())
+
+  return joinSiteUrl(base, path)
 }
 
 export function mergeDocumentSnapshot(

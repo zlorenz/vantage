@@ -1,27 +1,31 @@
 /**
  * Path helpers for the internal work library (and sibling utility routes).
  *
- * `/work-internal` is a temporary path prefix on the marketing host until
- * launch, when these routes move to app.vantage.pictures with the prefix
- * stripped:
+ * Canonical host: app.vantage.pictures (NEXT_PUBLIC_APP_HOST)
  *
- *   /work-internal              → app.vantage.pictures/
- *   /work-internal/[slug]       → app.vantage.pictures/[slug]
- *   /showreel/[id]/edit         → app.vantage.pictures/showreel/[id]/edit
+ *   app.vantage.pictures/                 → library index
+ *   app.vantage.pictures/[slug]           → library detail
+ *   app.vantage.pictures/showreel/.../edit
  *
- * Prefer these helpers over hardcoding `/work-internal` so the cutover is
- * a single-module change (plus host-based rewrites).
+ * Marketing host keeps `/work-internal` only as a redirect target into the
+ * app host. Filesystem routes remain under `/work-internal` and are reached
+ * via middleware rewrites on the app host.
  */
 
 import type {Locale} from '@/i18n/routing'
 import type {InternalLibraryEntry} from '@/types/sanity'
+import {
+  getSiteOrigin,
+  isAppHostname,
+  isAppHostReservedSegment,
+} from '@/lib/site-hosts'
 
-/** Temporary marketing-host prefix — strip on app subdomain launch. */
+/** Filesystem / next-intl pathname prefix (rewritten away on the app host). */
 export const WORK_INTERNAL_PATH_PREFIX = '/work-internal' as const
 
 /**
- * Reserved first path segments on the future app subdomain (must not collide
- * with portfolio entry slugs at the root).
+ * @deprecated Prefer APP_HOST_RESERVED_SEGMENTS from site-hosts — kept for
+ * callers that imported the old name.
  */
 export const APP_SUBDOMAIN_RESERVED_SEGMENTS = [
   'showreel',
@@ -39,12 +43,44 @@ export type WorkInternalEntryHref = {
 
 const RETURN_SEARCH_KEY = 'vp-work-internal-return'
 
-/** next-intl href for the library index. */
+/** True when the browser (or SSR host) is the app subdomain. */
+export function isAppHostClient(hostname?: string): boolean {
+  if (hostname) return isAppHostname(hostname)
+  if (typeof window === 'undefined') return false
+  return isAppHostname(window.location.hostname)
+}
+
+/**
+ * Browser-visible library index path on the current host.
+ * App host: `/` — marketing (legacy): `/work-internal`.
+ */
+export function workInternalLibraryBrowserPath(
+  hostname?: string,
+  search = '',
+): string {
+  const qs = search && !search.startsWith('?') ? `?${search}` : search
+  if (isAppHostClient(hostname)) return `/${qs}`
+  return `${WORK_INTERNAL_PATH_PREFIX}${qs}`
+}
+
+/**
+ * Browser-visible detail path for a library entry.
+ * App host: `/{slug}` — marketing (legacy): `/work-internal/{slug}`.
+ */
+export function workInternalEntryBrowserPath(
+  slug: string,
+  hostname?: string,
+): string {
+  if (isAppHostClient(hostname)) return `/${slug}`
+  return `${WORK_INTERNAL_PATH_PREFIX}/${slug}`
+}
+
+/** next-intl href for the library index (filesystem path). */
 export function workInternalLibraryHref(): WorkInternalLibraryHref {
   return WORK_INTERNAL_PATH_PREFIX
 }
 
-/** next-intl href for an internal project detail page. */
+/** next-intl href for an internal project detail page (filesystem path). */
 export function workInternalEntryHref(slug: string): WorkInternalEntryHref {
   return {
     pathname: '/work-internal/[slug]',
@@ -119,13 +155,15 @@ export function takeLibraryReturnSearch(): string {
  * Used with router.push string form after reading sessionStorage.
  */
 export function libraryReturnBrowserPath(): string {
-  const search = takeLibraryReturnSearch()
-  return `${WORK_INTERNAL_PATH_PREFIX}${search}`
+  return workInternalLibraryBrowserPath(undefined, takeLibraryReturnSearch())
 }
 
 /** True when a portfolio slug would collide with a reserved app segment. */
 export function isReservedAppSegment(slug: string): boolean {
-  return (APP_SUBDOMAIN_RESERVED_SEGMENTS as readonly string[]).includes(slug)
+  return (
+    isAppHostReservedSegment(slug) ||
+    (APP_SUBDOMAIN_RESERVED_SEGMENTS as readonly string[]).includes(slug)
+  )
 }
 
 /** Locale-aware public portfolio slug (marketing page). */
@@ -134,4 +172,12 @@ export function getPublicPortfolioSlug(
   locale: Locale,
 ): string {
   return locale === 'zh' ? entry.slugZh || entry.slug : entry.slug
+}
+
+/** Marketing homepage URL for the brand mark (opens in a new tab). */
+export function marketingHomeUrl(): string {
+  if (typeof window !== 'undefined' && isAppHostname(window.location.hostname)) {
+    return `${getSiteOrigin()}/`
+  }
+  return '/'
 }

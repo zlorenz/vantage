@@ -4,9 +4,14 @@
 
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { setRequestLocale } from 'next-intl/server';
 import { WorkInternalApp } from '@/components/work-internal/WorkInternalApp';
 import { routing, type Locale } from '@/i18n/routing';
+import {
+  hostnameFromHostHeader,
+  isAppHostname,
+} from '@/lib/site-hosts';
 import { sanityFetch } from '@/sanity/lib/live';
 import {
   INDUSTRIES_QUERY,
@@ -37,6 +42,8 @@ export default async function WorkInternalPage({ params }: Props) {
   setRequestLocale(locale);
 
   const typedLocale = locale as Locale;
+  const host = hostnameFromHostHeader((await headers()).get('host'));
+  const onAppHost = isAppHostname(host);
 
   const [entriesResult, videoFormatsResult, industriesResult, marketsResult] =
     await Promise.all([
@@ -59,6 +66,7 @@ export default async function WorkInternalPage({ params }: Props) {
           videoFormats={videoFormats}
           industries={industries}
           markets={markets}
+          onAppHost={onAppHost}
         />
       </Suspense>
     </div>

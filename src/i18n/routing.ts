@@ -20,11 +20,11 @@ export const routing = defineRouting({
       en: '/work',
       zh: '/工作',
     },
+    // Filesystem paths — app.vantage.pictures rewrites / and /:slug here.
     '/work-internal': {
       en: '/work-internal',
       zh: '/work-internal',
     },
-    // Temporary prefix — at launch, app.vantage.pictures/[slug] (prefix stripped).
     '/work-internal/[slug]': {
       en: '/work-internal/[slug]',
       zh: '/work-internal/[slug]',

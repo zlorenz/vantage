@@ -15,7 +15,7 @@ import {
   type KeyboardEvent,
   type TouchEvent,
 } from 'react';
-import {Link} from '@/i18n/navigation';
+import {marketingHomeUrl} from '@/lib/internal-app-paths';
 
 interface WorkInternalNavProps {
   searchQuery: string;
@@ -154,9 +154,9 @@ export function WorkInternalNav({
   return (
     <header className="vp-internal-nav" aria-label="Work library">
       <div className="vp-internal-nav__inner">
-        <Link
+        <a
           className="vp-internal-nav__brand"
-          href="/"
+          href={marketingHomeUrl()}
           rel="home noopener noreferrer"
           target="_blank"
         >
@@ -169,7 +169,7 @@ export function WorkInternalNav({
             height={36}
             className="vp-internal-nav__mark"
           />
-        </Link>
+        </a>
 
         <div className="vp-internal-nav__search" ref={rootRef}>
           <label className="vp-internal-nav__search-label">

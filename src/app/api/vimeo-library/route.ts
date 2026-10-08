@@ -7,28 +7,13 @@
 
 import {NextResponse} from 'next/server';
 
+import {isAllowedVantageBrowserOrigin} from '@/lib/site-hosts';
 import {loadVimeoLibrary, VIMEO_LIBRARY_REVALIDATE_SECONDS} from '@/lib/vimeo-library';
 
 export const runtime = 'nodejs';
 
 function isAllowedStudioOrigin(origin: string): boolean {
-  try {
-    const url = new URL(origin);
-    if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
-      return ['3333', '3000', '3001', ''].includes(url.port);
-    }
-    if (url.hostname === 'vantage-pictures.sanity.studio') return true;
-    if (url.hostname.endsWith('.sanity.studio')) return true;
-    if (url.hostname === 'vantage.pictures' || url.hostname === 'www.vantage.pictures') {
-      return true;
-    }
-    if (url.hostname.endsWith('.vercel.app') && url.hostname.includes('vantage')) {
-      return true;
-    }
-  } catch {
-    return false;
-  }
-  return false;
+  return isAllowedVantageBrowserOrigin(origin);
 }
 
 function corsHeaders(request: Request): HeadersInit {
