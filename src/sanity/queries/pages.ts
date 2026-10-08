@@ -250,10 +250,20 @@ export const VIETNAM_LOCATION_GUIDE_PAGE_QUERY = defineQuery(`
   }
 `)
 
-/** Vietnam Production Service — meta, body, curated featured work. */
+/** Lean PDF asset for CTAs that download without loading the guide page. */
+export const VIETNAM_LOCATION_GUIDE_PDF_QUERY = defineQuery(`
+  *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{
+    "pdfUrl": pdfDownload.file.asset->url,
+    "pdfLabel": pdfDownload.label
+  }
+`)
+
+/** Vietnam Production Service — meta, excerpt intro, body, curated featured work. */
 export const VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{
     ${PAGE_META_FIELDS},
+    excerpt,
+    excerptZh,
     ${PAGE_CONTENT_FIELDS},
     "featuredWork": featuredWork[
       !defined(@->trash.trashedAt) && @->isHidden != true

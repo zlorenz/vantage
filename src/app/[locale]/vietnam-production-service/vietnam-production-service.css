@@ -1,0 +1,21 @@
+/*
+ * Body images - CornerFrame sits just outside the media (same inset as About).
+ */
+
+.vp-service-body-image {
+  position: relative;
+  width: 100%;
+  margin-block: 2.5rem;
+  overflow: visible;
+}
+
+.vp-service-body-image .vp-corner-frame {
+  inset: calc(-1 * var(--vp-candidate-about-hero-mobile-frame-inset, 8px));
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .vp-service-body-image .vp-corner-frame {
+    inset: calc(-1 * var(--vp-candidate-about-hero-frame-inset, 15px));
+  }
+}
