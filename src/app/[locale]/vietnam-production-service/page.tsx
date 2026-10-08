@@ -6,9 +6,9 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { PortfolioCard } from '@/components/portfolio/PortfolioCard';
+import { PortfolioIndexGridCard } from '@/components/portfolio/PortfolioIndexGridCard';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
-import { Link } from '@/i18n/navigation';
+import { VpButton } from '@/components/ui/VpButton';
 import { routing, type Locale } from '@/i18n/routing';
 import { pageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
 import { getPhraseRecord } from '@/lib/phrase-book';
@@ -113,9 +113,6 @@ export default async function VietnamProductionServicePage({ params }: Props) {
   const h2Class =
     'mb-6 mt-10 font-vp-heading text-[clamp(1.5rem,2vw,1.75rem)] font-bold uppercase leading-tight tracking-vp-heading';
   const pClass = 'mb-6 font-normal leading-relaxed text-vp-text-muted last:mb-0';
-  const guidePClass = 'mb-6 font-normal leading-relaxed text-black/75 last:mb-0';
-  const guideCtaClassName =
-    'inline-block rounded-full bg-black px-8 py-3 font-vp-heading text-vp-btn font-semibold leading-vp-btn uppercase tracking-vp-btn text-white no-underline transition-colors duration-vp-default hover:bg-black/80';
 
   return (
     <>
@@ -186,37 +183,37 @@ export default async function VietnamProductionServicePage({ params }: Props) {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper fullBleed={true} className="bg-white text-black">
+      <SectionWrapper fullBleed={true} borderTop>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
           <h2 className={`${h2Class} first:mt-0`}>{copy('guideHeading')}</h2>
-          <p className={guidePClass}>{copy('guideP1')}</p>
-          <p className={guidePClass}>{copy('guideP2')}</p>
-          <p className="vp-pt-cta-button">
-            <Link href="/vietnam-location-guide" className={guideCtaClassName}>
+          <p className={pClass}>{copy('guideP1')}</p>
+          <p className={pClass}>{copy('guideP2')}</p>
+          <div className="vp-pt-cta-button">
+            <VpButton
+              href="/vietnam-location-guide"
+              className="h-auto! min-h-[var(--vp-btn-height)] whitespace-normal!"
+            >
               {copy('guideCta')}
-            </Link>
-          </p>
+            </VpButton>
+          </div>
         </div>
       </SectionWrapper>
 
       {vietnamPortfolio.length > 0 ? (
-        <SectionWrapper borderTop fullBleed={true}>
-          <div className="container-fluid mx-auto max-w-[1400px] px-3 md:px-4">
-            <h2 className="mb-10 text-center font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading">
-              <span className="vp-outline">{t('shotInOutline')}</span> {t('shotIn')}
-            </h2>
-            <div className="vp-curated-gallery grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {vietnamPortfolio.map((entry, index) => (
-                <PortfolioCard
-                  key={entry._id}
-                  entry={entry}
-                  locale={typedLocale}
-                  revealIndex={index}
-                  phrases={phrases}
-                />
-              ))}
-            </div>
-          </div>
+        <SectionWrapper borderTop fullBleed={true} variant="tight">
+          <h2 className="mb-8 px-[var(--vp-overlay-mobile-pad-inline,16px)] font-vp-heading text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold uppercase leading-tight tracking-vp-heading md:mb-10 md:px-[var(--spacing-vp-gutter,1.875rem)]">
+            {t('shotInOutline')} {t('shotIn')}
+          </h2>
+          <ul className="vp-portfolio-index__grid">
+            {vietnamPortfolio.map((entry) => (
+              <PortfolioIndexGridCard
+                key={entry._id}
+                entry={entry}
+                locale={typedLocale}
+                phrases={phrases}
+              />
+            ))}
+          </ul>
         </SectionWrapper>
       ) : null}
     </>
