@@ -1,5 +1,6 @@
 /*
  * Body images - CornerFrame sits just outside the media (same inset as About).
+ * Featured-work header mirrors About How We Move intro (eyebrow L / title R).
  */
 
 .vp-service-body-image {
@@ -17,5 +18,87 @@
 @media (min-width: 768px) {
   .vp-service-body-image .vp-corner-frame {
     inset: calc(-1 * var(--vp-candidate-about-hero-frame-inset, 15px));
+  }
+}
+
+.vp-service-featured__header {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 2rem;
+  padding-inline: var(--vp-overlay-mobile-pad-inline, 16px);
+}
+
+.vp-service-featured__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--vp-candidate-about-eyebrow-gap, 0.5em);
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-mobile-eyebrow-size, 12px);
+  font-weight: var(--font-vp-heading-weight);
+  letter-spacing: 0;
+  line-height: var(--vp-candidate-about-eyebrow-lh, 1.6);
+  text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  color: var(--vp-link);
+}
+
+.vp-service-featured__eyebrow-mark {
+  display: inline;
+}
+
+.vp-service-featured__heading {
+  margin: 0;
+  font-family: var(--font-vp-heading);
+  font-size: var(--vp-candidate-about-mobile-display-size, clamp(2.325rem, 4.07vw, 3.49rem));
+  font-weight: var(--font-vp-heading-weight);
+  line-height: var(--vp-candidate-about-display-lh, 1.15);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-align: left;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  color: var(--vp-text);
+}
+
+@media (min-width: 768px) {
+  .vp-service-featured__header {
+    margin-bottom: 2.5rem;
+    padding-inline: var(--spacing-vp-gutter, 1.875rem);
+  }
+}
+
+@media (min-width: 992px) {
+  .vp-service-featured__header {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .vp-service-featured__eyebrow {
+    flex: none;
+    width: 300px;
+    font-size: var(--vp-candidate-about-eyebrow-size, 16px);
+  }
+
+  .vp-service-featured__heading {
+    flex: 1;
+    font-size: var(--vp-candidate-about-display-size, clamp(2.325rem, 4.07vw, 3.49rem));
+    text-align: right;
+  }
+}
+
+/* Guide CTA: one step under Contact brief display heading (64px -> 40px feature). */
+@media (min-width: 768px) {
+  section.vp-contact-cta.vp-contact-cta--guide {
+    --vp-candidate-contact-heading-size: calc(
+      var(--vp-candidate-about-feature-title-size, 40px) * var(--vp-contact-scale, 1)
+    );
+    --vp-candidate-contact-heading-lh: var(
+      --vp-candidate-about-feature-title-lh,
+      1.2
+    );
   }
 }

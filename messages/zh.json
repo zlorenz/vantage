@@ -150,9 +150,10 @@
     "supportP2": "",
     "supportP3": "",
     "guideHeading": "",
-    "guideP1": "",
-    "guideP2": "",
-    "guideCta": ""
+    "guideBody": "",
+    "guideCta": "",
+    "featuredWorkEyebrow": "在越南拍摄",
+    "featuredWorkHeading": "精选作品"
   },
   "Filters": {
     "videoFormat": "格式",
