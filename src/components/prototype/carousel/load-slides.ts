@@ -1,5 +1,6 @@
 import {resolveCarouselPreviewPlayback} from '@portfolio-videos';
 import {phraseRecordToMap} from '@phrase-book';
+import {withoutKeyVisualVideoFormats} from '@video-formats';
 import type {Locale} from '@/i18n/routing';
 import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
@@ -93,7 +94,7 @@ export async function loadFeaturedWorkSlides(
     );
     const {brandLine, campaignLine} = composeOverlayCopy(parts);
     const formatLine = joinOverlayList(
-      (entry.videoFormats ?? []).map((format) =>
+      withoutKeyVisualVideoFormats(entry.videoFormats).map((format) =>
         pickLocaleFieldWithPhrases(locale, format.title, format.titleZh, phraseMap),
       ),
     );

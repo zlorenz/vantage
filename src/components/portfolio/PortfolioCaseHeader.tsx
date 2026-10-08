@@ -13,6 +13,7 @@ import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
 import type {CrewCredit, DisplayTitlePartsValue, TaxonomyTerm} from '@/types/sanity';
 import type {PhraseLookup} from '@display-titles';
+import {withoutKeyVisualVideoFormats} from '@video-formats';
 import '@/components/blog/blog-post-page.css';
 import './portfolio-case-header.css';
 
@@ -146,7 +147,11 @@ export function PortfolioCaseHeader({
   const {brandLine, campaignLine} = composeOverlayCopy(parts);
 
   const pills = [
-    ...taxonomyPillLabels(videoFormats, locale, phrases),
+    ...taxonomyPillLabels(
+      withoutKeyVisualVideoFormats(videoFormats),
+      locale,
+      phrases,
+    ),
     ...industryPillLabels(industries, locale, phrases),
     ...taxonomyPillLabels(markets, locale, phrases),
   ];

@@ -44,6 +44,54 @@ export function isKeyVisualVideoFormatId(id: string | null | undefined): boolean
   return bare === KEY_VISUAL_VIDEO_FORMAT_ID
 }
 
+/** Loose term shape from GROQ projections used on public overlays. */
+export type KeyVisualFormatTerm = {
+  _id?: string | null
+  slug?: string | null
+  slugZh?: string | null
+  title?: string | null
+  titleZh?: string | null
+}
+
+/**
+ * True for the system-managed Key Visual format (any common CMS spelling).
+ * Used to keep it off public brand|format title lines and case pills.
+ */
+export function isKeyVisualVideoFormatTerm(
+  term: KeyVisualFormatTerm | null | undefined,
+): boolean {
+  if (!term) return false
+  if (isKeyVisualVideoFormatId(term._id)) return true
+
+  const slugs = [term.slug, term.slugZh]
+    .map((value) => value?.trim().toLowerCase())
+    .filter((value): value is string => Boolean(value))
+  if (
+    slugs.some(
+      (slug) =>
+        slug === KEY_VISUAL_VIDEO_FORMAT_SLUG ||
+        slug === KEY_VISUAL_VIDEO_FORMAT_SLUG_ZH_PLACEHOLDER,
+    )
+  ) {
+    return true
+  }
+
+  const titles = [term.title, term.titleZh]
+    .map((value) => value?.trim().toLowerCase())
+    .filter((value): value is string => Boolean(value))
+  const zhPlaceholder = KEY_VISUAL_VIDEO_FORMAT_TITLE_ZH_PLACEHOLDER.toLowerCase()
+  return titles.some(
+    (title) => /^key\s*visuals?$/.test(title) || title === zhPlaceholder,
+  )
+}
+
+/** Drop Key Visual from a formats list before building overlay / pill labels. */
+export function withoutKeyVisualVideoFormats<T extends KeyVisualFormatTerm>(
+  terms: T[] | null | undefined,
+): T[] {
+  return (terms ?? []).filter((term) => !isKeyVisualVideoFormatTerm(term))
+}
+
 /**
  * Idempotent create of the Key Visual videoFormat document.
  * Does not overwrite Studio edits after first create (unlike media-tag name sync).

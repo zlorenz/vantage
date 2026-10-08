@@ -4,6 +4,7 @@
  */
 
 import {phraseRecordToMap} from '@phrase-book';
+import {withoutKeyVisualVideoFormats} from '@video-formats';
 import {
   composeOverlayCopy,
   joinOverlayList,
@@ -142,7 +143,7 @@ export function preparePortfolioIndexSlideFromEntry(
   const parts = resolveEntryDisplayTitleParts(entry, locale, phraseMap);
   const {brandLine, campaignLine} = composeOverlayCopy(parts);
   const formatLine = joinOverlayList(
-    (entry.videoFormats ?? []).map((format) =>
+    withoutKeyVisualVideoFormats(entry.videoFormats).map((format) =>
       pickLocaleFieldWithPhrases(locale, format.title, format.titleZh, phraseMap),
     ),
   );

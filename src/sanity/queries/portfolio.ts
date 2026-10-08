@@ -59,7 +59,9 @@ const PORTFOLIO_FILTER_FIELDS = `
   "marketSlugs": array::compact((markets[]->slug.current) + (markets[]->slugZh.current)),
   videoFormats[]->{
     title,
-    titleZh
+    titleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current
   }
 `;
 

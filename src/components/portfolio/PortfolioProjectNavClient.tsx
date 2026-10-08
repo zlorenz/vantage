@@ -12,6 +12,7 @@ import Image from 'next/image'
 import useEmblaCarousel from 'embla-carousel-react'
 import {WheelGestures} from 'wheel-gestures'
 import {phraseRecordToMap} from '@phrase-book'
+import {isKeyVisualVideoFormatTerm} from '@video-formats'
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink'
 import {composeOverlayCopy} from '@/components/prototype/carousel/overlay'
 import type {Locale} from '@/i18n/routing'
@@ -125,12 +126,15 @@ function slideCopy(
   const parts = resolveEntryDisplayTitleParts(card, locale, phraseMap)
   // Same Brand/Product/Campaign split (+ brand/product dedup) as home + /work.
   const {brandLine, campaignLine: titleLine} = composeOverlayCopy(parts)
-  const formatLine = pickLocaleFieldWithPhrases(
-    locale,
-    card.primaryFormat?.title,
-    card.primaryFormat?.titleZh,
-    phraseMap,
-  ).trim()
+  // Defense if an older card payload still returns Key Visual as primary.
+  const formatLine = isKeyVisualVideoFormatTerm(card.primaryFormat)
+    ? ''
+    : pickLocaleFieldWithPhrases(
+        locale,
+        card.primaryFormat?.title,
+        card.primaryFormat?.titleZh,
+        phraseMap,
+      ).trim()
   const featured = card.featuredImage
   const imageUrlPhone = featured
     ? urlForImage(featured)

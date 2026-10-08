@@ -21,7 +21,9 @@ const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
   },
   videoFormats[]->{
     title,
-    titleZh
+    titleZh,
+    "slug": slug.current,
+    "slugZh": slugZh.current
   },
   featuredImage,
   "videos": videos[0...1]{
