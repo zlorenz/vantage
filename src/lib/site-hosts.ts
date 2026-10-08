@@ -2,7 +2,7 @@
  * Marketing vs internal-app host helpers.
  *
  * Marketing: vantage.pictures (and www, preview aliases)
- * App:      app.vantage.pictures — work library + showreel editor tools
+ * App:      app.vantage.pictures â€” work library + showreel editor tools
  *
  * Hostnames come from NEXT_PUBLIC_SITE_URL / NEXT_PUBLIC_APP_HOST so
  * hardcoding production domains is avoided in call sites.
