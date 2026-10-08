@@ -36,6 +36,8 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
   const home = pageBySlug(navPages, 'home');
   const about = pageBySlug(navPages, 'about');
   const work = pageBySlug(navPages, 'work');
+  /* TEMP (~1 month): Berlin ad festival — surface Service under About as #04. */
+  const vietnam = pageBySlug(navPages, 'vietnam-production-service');
 
   const navItems: NavItem[] = [
     {
@@ -49,6 +51,16 @@ export async function SiteHeader({ locale, navPages, siteSettings }: SiteHeaderP
     {
       label: about ? getNavLabel(about, locale) : t('about'),
       href: pagePath(locale, 'about', navPages) as LinkHref,
+    },
+    {
+      label: vietnam
+        ? getNavLabel(vietnam, locale)
+        : t('vietnamProductionService'),
+      href: pagePath(
+        locale,
+        'vietnam-production-service',
+        navPages,
+      ) as LinkHref,
     },
     {
       label: t('contact'),

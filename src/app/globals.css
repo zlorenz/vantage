@@ -1453,8 +1453,10 @@
   box-sizing: border-box;
   width: 100%;
   margin: 0;
+  /* Bottom pad on the form (not the wrapper) so absolute icon centering
+   * matches the SEARCH text row between the hairlines. */
   padding: 1.25rem var(--vp-candidate-mobile-nav-list-pad-inline, 30px)
-    0;
+    1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -1463,7 +1465,6 @@
   display: flex;
   align-items: center;
   min-height: 2.75rem;
-  padding-bottom: 1rem;
 }
 
 #header .vp-mobile-nav-panel .vp-nav-panel-search .vp-search-input {
