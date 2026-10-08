@@ -1,0 +1,36 @@
+/* Shared About accordion height reveal.
+ * Timing inspired by Brandin/Nectar minimal toggles:
+ * panel ~0.5s, icon ~0.45s, ease cubic-bezier(0.3, 0.4, 0.2, 1). */
+
+.vp-about-acc {
+  --vp-about-acc-duration: 0.5s;
+  --vp-about-acc-ease: cubic-bezier(0.3, 0.4, 0.2, 1);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--vp-about-acc-duration) var(--vp-about-acc-ease);
+}
+
+.vp-about-acc.is-open {
+  grid-template-rows: 1fr;
+}
+
+.vp-about-acc__clip {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.vp-about-acc__body {
+  opacity: 0;
+  transition: opacity calc(var(--vp-about-acc-duration) * 0.7) var(--vp-about-acc-ease);
+}
+
+.vp-about-acc.is-open .vp-about-acc__body {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-about-acc,
+  .vp-about-acc__body {
+    transition: none;
+  }
+}

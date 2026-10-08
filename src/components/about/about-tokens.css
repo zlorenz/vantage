@@ -17,7 +17,7 @@
   --vp-candidate-about-display-lh: 1.1;
   /* Fluid between the film rails. 5.55cqi of a 1152px measure is 64px. */
   --vp-candidate-about-statement-size: clamp(1.75rem, 5.55cqi, 4rem);
-  --vp-candidate-about-statement-lh: 1.25;
+  --vp-candidate-about-statement-lh: 1.4;
   /* Extra space above the yellow close. Half a line box, on top of the normal leading. */
   --vp-candidate-about-statement-accent-gap: 0.5lh;
   --vp-candidate-about-feature-title-size: 40px;
@@ -90,6 +90,7 @@
   --vp-candidate-about-mobile-film-frame: 200px;
   --vp-candidate-about-mobile-film-height: 248px;
   --vp-candidate-about-mobile-statement-size: 30px;
+  --vp-candidate-about-mobile-statement-lh: 1.8;
   --vp-candidate-about-mobile-statement-accent-size: 40px;
   --vp-candidate-about-mobile-cta-height: 64px;
 }

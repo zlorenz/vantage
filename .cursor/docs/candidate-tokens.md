@@ -358,7 +358,8 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-header-gap` | `100px` | Eyebrow row → panel | `2466:28808` `gap-100` | pending | |
 | `--vp-candidate-about-display-size` | `64px` | Section headings | h1 on `2466:28641` | pending | |
 | `--vp-candidate-about-statement-size` | `clamp(1.75rem, 5.55cqi, 4rem)` | Statement heading only | About `2466:28641`, scaled to the rail gap | pending | 5.55cqi of a 1152px measure is 64px. Longest line fits because the rail is narrower and the measure cap is 1320px. Lines stay `nowrap`. |
-| `--vp-candidate-about-statement-lh` | `1.25` | Statement heading only, desktop | nudge | pending | Looser than `--vp-candidate-about-display-lh` so the other display headings stay at 1.1. |
+| `--vp-candidate-about-statement-lh` | `1.4` | Statement heading only, desktop | product | pending | Looser than `--vp-candidate-about-display-lh` so the other display headings stay at 1.1. |
+| `--vp-candidate-about-mobile-statement-lh` | `1.8` | Statement heading, mobile | product | pending | |
 | `--vp-candidate-about-statement-accent-gap` | `0.5lh` | Space above the yellow statement close, desktop | nudge | pending | Half a line box of extra space above “THAT'S NOT WHAT WE MAKE.” Declared at `lg` only. |
 | `--vp-candidate-about-display-lh` | `1.1` | same | same | pending | |
 | `--vp-candidate-about-feature-title-size` | `40px` | Workflow titles, production-row titles | h3 on `2466:28887` / `2466:28975` | pending | |

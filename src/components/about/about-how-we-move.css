@@ -338,7 +338,7 @@ section.vp-about-workflow-section {
     height: 24px;
   }
 
-  .vp-how-we-move__item:has(.vp-how-we-move__panel) .vp-how-we-move__panel {
+  .vp-about-acc.is-open .vp-how-we-move__panel {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 24px 15px;

@@ -220,7 +220,7 @@
 .vp-about-statement__heading {
   /* Same 4.85cqi ratio as desktop 64px / 1320px measure, so authored lines stay one line. */
   font-size: clamp(0.75rem, 4.85cqi, 4rem);
-  line-height: var(--vp-candidate-about-statement-lh);
+  line-height: var(--vp-candidate-about-mobile-statement-lh);
   letter-spacing: 0;
 }
 

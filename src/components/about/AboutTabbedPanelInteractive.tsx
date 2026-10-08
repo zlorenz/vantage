@@ -26,6 +26,7 @@ import {
 } from 'react';
 import Image from 'next/image';
 import {useLocale} from 'next-intl';
+import {AboutAccordionReveal} from '@/components/about/AboutAccordionReveal';
 import {AboutLoopingPreview} from '@/components/about/AboutLoopingPreview';
 import {CornerFrame} from '@/components/ui/CornerFrame';
 import './about-tabbed-panel.css';
@@ -271,8 +272,6 @@ export function AboutTabbedPanelInteractive({
   if (items.length === 0) return null;
 
   const headingId = `about-${sectionId}-heading`;
-  const panelId = `about-${sectionId}-panel`;
-  const descriptionId = `about-${sectionId}-description`;
   const themeClasses = THEME_CLASSES[theme];
   /* Desktop side stage: keep first-item media when every tab is collapsed. */
   const mediaIndex = activeIndex ?? 0;
@@ -306,6 +305,8 @@ export function AboutTabbedPanelInteractive({
         >
           {items.map((item, index) => {
             const selected = activeIndex === index;
+            const panelId = `about-${sectionId}-panel-${index}`;
+            const descriptionId = `about-${sectionId}-description-${index}`;
             return (
               <li
                 key={item.label}
@@ -319,7 +320,7 @@ export function AboutTabbedPanelInteractive({
                   type="button"
                   role="tab"
                   id={`about-${sectionId}-tab-${index}`}
-                  aria-controls={selected ? panelId : undefined}
+                  aria-controls={panelId}
                   aria-selected={selected}
                   aria-expanded={selected}
                   tabIndex={rovingIndex === index ? 0 : -1}
@@ -338,30 +339,29 @@ export function AboutTabbedPanelInteractive({
                     aria-hidden="true"
                   />
                 </button>
-                {selected ? (
-                  <div
-                    id={panelId}
-                    role="tabpanel"
-                    aria-labelledby={`about-${sectionId}-tab-${index}`}
-                    className="vp-about-tabs__panel"
+                <AboutAccordionReveal
+                  open={selected}
+                  id={panelId}
+                  role="tabpanel"
+                  aria-labelledby={`about-${sectionId}-tab-${index}`}
+                  bodyClassName="vp-about-tabs__panel"
+                >
+                  <p
+                    id={selected ? descriptionId : undefined}
+                    aria-live={selected ? 'polite' : undefined}
+                    className={`vp-about-tabs__description${themeClasses.description}`}
                   >
-                    <p
-                      id={descriptionId}
-                      aria-live="polite"
-                      className={`vp-about-tabs__description${themeClasses.description}`}
-                    >
-                      {item.description}
-                    </p>
-                    <div className="vp-about-tabs__media-inline">
-                      <AboutTabMediaFrame
-                        items={items}
-                        activeIndex={index}
-                        warmed={warmed}
-                        theme={theme}
-                      />
-                    </div>
+                    {item.description}
+                  </p>
+                  <div className="vp-about-tabs__media-inline">
+                    <AboutTabMediaFrame
+                      items={items}
+                      activeIndex={index}
+                      warmed={warmed}
+                      theme={theme}
+                    />
                   </div>
-                ) : null}
+                </AboutAccordionReveal>
               </li>
             );
           })}

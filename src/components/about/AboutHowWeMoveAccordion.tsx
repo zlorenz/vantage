@@ -5,6 +5,7 @@
  */
 
 import { useId, useState } from 'react';
+import { AboutAccordionReveal } from '@/components/about/AboutAccordionReveal';
 import './about-how-we-move.css';
 
 export type HowWeMoveAccordionItem = {
@@ -102,21 +103,20 @@ export function AboutHowWeMoveAccordion({
                 </button>
               </h3>
 
-              {expanded ? (
-                <div
-                  id={panelId}
-                  role="region"
-                  aria-labelledby={triggerId}
-                  className="vp-how-we-move__panel"
-                >
-                  <p className="vp-how-we-move__headline">{item.headline}</p>
-                  <ul className="vp-how-we-move__bullets">
-                    {item.bullets.map((bullet, bulletIndex) => (
-                      <li key={bulletIndex}>{bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
+              <AboutAccordionReveal
+                open={expanded}
+                id={panelId}
+                role="region"
+                aria-labelledby={triggerId}
+                bodyClassName="vp-how-we-move__panel"
+              >
+                <p className="vp-how-we-move__headline">{item.headline}</p>
+                <ul className="vp-how-we-move__bullets">
+                  {item.bullets.map((bullet, bulletIndex) => (
+                    <li key={bulletIndex}>{bullet}</li>
+                  ))}
+                </ul>
+              </AboutAccordionReveal>
             </div>
           );
         })}

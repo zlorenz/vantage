@@ -199,7 +199,8 @@ section.vp-about-tabs-section {
   height: 1.5px;
   background: currentColor;
   transform: translate(-50%, -50%);
-  transition: transform var(--vp-transition);
+  /* Brandin/Nectar minimal toggle icon timing. */
+  transition: transform 0.45s cubic-bezier(0.3, 0.4, 0.2, 1);
 }
 
 .vp-about-tabs__tab-toggle::after {
@@ -360,7 +361,7 @@ section.vp-about-tabs-section {
   /* Include the last item — menu border-block sits at the stretched media
    * height, so it cannot stand in for the hairline under the final tab. */
   .vp-about-tabs__menu > li > .vp-about-tabs__tab,
-  .vp-about-tabs__menu > li > .vp-about-tabs__panel {
+  .vp-about-tabs__menu > li > .vp-about-acc.is-open {
     border-bottom: 1px solid var(--vp-about-tab-line);
   }
 
