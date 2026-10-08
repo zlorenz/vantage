@@ -4,6 +4,9 @@
  * About hero — full-viewport symbol with Figma copy overlays.
  * Desktop: loupe-clipped quote cards + cursor-tracked chrome.
  * Mobile: idle glass mark + scroll-driven gradient; no loupe, no hotspots.
+ *
+ * Loupe quote cards are temporarily hidden for redesign launch (placeholder
+ * copy). Flip SHOW_HERO_QUOTES when final quotes are ready.
  */
 
 import {useTranslations} from 'next-intl';
@@ -11,6 +14,9 @@ import {type CSSProperties} from 'react';
 import {CornerFrame} from '@/components/ui/CornerFrame';
 import {FooterLensStage} from '@/components/prototype/footer-lens/FooterLensStage';
 import './about-hero-viewport.css';
+
+/** Temporary launch hide — restore when hero quote copy is final. */
+const SHOW_HERO_QUOTES = false;
 
 /**
  * Midway between the Figma-near spots and the outer-edge park, then nudged
@@ -32,23 +38,25 @@ export function AboutHeroViewport() {
     <section className="vp-about-hero" aria-label="Vantage symbol">
       <FooterLensStage className="vp-about-hero__lens" />
 
-      <div className="vp-about-hero__quotes" aria-hidden="true">
-        {QUOTE_SLOTS.map((slot, index) => (
-          <div
-            key={index}
-            className={`vp-about-hero__quote vp-about-hero__quote--${slot.side}`}
-            style={
-              {
-                '--vp-about-hero-quote-inset': `${slot.inset}%`,
-                '--vp-about-hero-quote-top': `${slot.top}%`,
-              } as CSSProperties
-            }
-          >
-            <CornerFrame variant="dark" />
-            <p className="vp-about-hero__quote-text">{quote}</p>
-          </div>
-        ))}
-      </div>
+      {SHOW_HERO_QUOTES ? (
+        <div className="vp-about-hero__quotes" aria-hidden="true">
+          {QUOTE_SLOTS.map((slot, index) => (
+            <div
+              key={index}
+              className={`vp-about-hero__quote vp-about-hero__quote--${slot.side}`}
+              style={
+                {
+                  '--vp-about-hero-quote-inset': `${slot.inset}%`,
+                  '--vp-about-hero-quote-top': `${slot.top}%`,
+                } as CSSProperties
+              }
+            >
+              <CornerFrame variant="dark" />
+              <p className="vp-about-hero__quote-text">{quote}</p>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div className="vp-about-hero__copy">
         <p className="vp-about-hero__title">{t('heroTitle')}</p>
