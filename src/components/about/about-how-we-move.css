@@ -302,13 +302,14 @@ section.vp-about-workflow-section {
 
   .vp-how-we-move__trigger {
     z-index: 1;
+    align-items: center;
     padding: 0 72px 0 0;
     border-top: 0;
   }
 
   .vp-how-we-move__trigger-label {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: baseline;
     gap: 20px;
     font-size: var(--vp-candidate-about-feature-title-size);
     line-height: var(--vp-candidate-about-feature-title-lh);
@@ -316,13 +317,13 @@ section.vp-about-workflow-section {
 
   .vp-how-we-move__trigger-number,
   .vp-how-we-move__trigger-title {
-    text-box-trim: trim-start;
+    /* trim-both: trim-start alone left extra space under the caps. */
+    text-box-trim: trim-both;
     text-box-edge: cap alphabetic;
   }
 
   .vp-how-we-move__trigger-number {
     width: 32px;
-    padding-top: 2px;
   }
 
   .vp-how-we-move__bracket {
