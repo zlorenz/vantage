@@ -17,7 +17,7 @@ export const KEY_VISUAL_VIDEO_FORMAT_TITLE = 'Key Visual'
  * Do not treat as final copy.
  */
 export const KEY_VISUAL_VIDEO_FORMAT_TITLE_ZH_PLACEHOLDER =
-  '【待译】Key Visual'
+  'Key Visual'
 
 export const KEY_VISUAL_VIDEO_FORMAT_SLUG = 'key-visual'
 
@@ -36,7 +36,7 @@ export const KEY_VISUAL_VIDEO_FORMAT_DESCRIPTION =
  * Do not treat as final copy.
  */
 export const KEY_VISUAL_VIDEO_FORMAT_DESCRIPTION_ZH_PLACEHOLDER =
-  '【待译】Still photography and key visuals from Vantage Pictures — campaign stills, product photography, and art-directed images produced alongside our commercial work in Vietnam.'
+  'Still photography and key visuals from Vantage Pictures — campaign stills, product photography, and art-directed images produced alongside our commercial work in Vietnam.'
 
 export function isKeyVisualVideoFormatId(id: string | null | undefined): boolean {
   if (!id) return false
