@@ -330,7 +330,13 @@ export function AboutTabbedPanelInteractive({
                   onKeyDown={(event) => onTabKeyDown(event, index)}
                   onBlur={onTabBlur}
                 >
-                  {item.label}
+                  <span className="vp-about-tabs__tab-label">{item.label}</span>
+                  <span
+                    className={`vp-about-tabs__tab-toggle${
+                      selected ? ' is-open' : ''
+                    }`}
+                    aria-hidden="true"
+                  />
                 </button>
                 {selected ? (
                   <div

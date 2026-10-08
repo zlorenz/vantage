@@ -115,6 +115,9 @@ section.vp-about-workflow-section {
 }
 
 .vp-how-we-move__bracket {
+  /* Ink as a custom property — WebKit often leaves linear-gradient(currentColor)
+     layers stuck when only `color` flips on open/close (partial orange corners). */
+  --vp-how-we-move-bracket-ink: var(--vp-text);
   position: absolute;
   top: 50%;
   right: 0;
@@ -122,20 +125,52 @@ section.vp-about-workflow-section {
   width: 40px;
   height: 40px;
   transform: translateY(-50%);
-  color: var(--vp-text);
+  color: var(--vp-how-we-move-bracket-ink);
   background:
-    linear-gradient(currentColor, currentColor) left top / 8px 1.5px no-repeat,
-    linear-gradient(currentColor, currentColor) left top / 1.5px 8px no-repeat,
-    linear-gradient(currentColor, currentColor) right top / 8px 1.5px no-repeat,
-    linear-gradient(currentColor, currentColor) right top / 1.5px 8px no-repeat,
-    linear-gradient(currentColor, currentColor) left bottom / 8px 1.5px no-repeat,
-    linear-gradient(currentColor, currentColor) left bottom / 1.5px 8px no-repeat,
-    linear-gradient(currentColor, currentColor) right bottom / 8px 1.5px no-repeat,
-    linear-gradient(currentColor, currentColor) right bottom / 1.5px 8px no-repeat;
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      left top / 8px 1.5px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      left top / 1.5px 8px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      right top / 8px 1.5px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      right top / 1.5px 8px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      left bottom / 8px 1.5px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      left bottom / 1.5px 8px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      right bottom / 8px 1.5px no-repeat,
+    linear-gradient(
+        var(--vp-how-we-move-bracket-ink),
+        var(--vp-how-we-move-bracket-ink)
+      )
+      right bottom / 1.5px 8px no-repeat;
 }
 
 .vp-how-we-move__bracket.is-open {
-  color: var(--vp-orange);
+  --vp-how-we-move-bracket-ink: var(--vp-orange);
 }
 
 .vp-how-we-move__bracket-glyph {
@@ -144,7 +179,7 @@ section.vp-about-workflow-section {
   left: 50%;
   width: 20px;
   height: 1.5px;
-  background: currentColor;
+  background: var(--vp-how-we-move-bracket-ink);
   transform: translate(-50%, -50%);
 }
 
@@ -155,7 +190,7 @@ section.vp-about-workflow-section {
   left: 50%;
   width: 1.5px;
   height: 20px;
-  background: currentColor;
+  background: var(--vp-how-we-move-bracket-ink);
   transform: translate(-50%, -50%);
 }
 

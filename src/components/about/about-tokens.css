@@ -81,7 +81,8 @@
   --vp-candidate-about-mobile-pad-block: 50px;
   --vp-candidate-about-mobile-header-gap: 30px;
   --vp-candidate-about-mobile-display-size: 30px;
-  --vp-candidate-about-mobile-tab-size: 24px;
+  /* ~25% under the prior 24px — inactive labels read lighter on mobile. */
+  --vp-candidate-about-mobile-tab-size: 18px;
   --vp-candidate-about-mobile-body-size: 16px;
   /* Same 22/18 dek-to-body ratio as desktop, on the 16px mobile body. */
   --vp-candidate-about-mobile-dek-size: 20px;

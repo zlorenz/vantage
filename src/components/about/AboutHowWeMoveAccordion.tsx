@@ -23,6 +23,8 @@ type AboutHowWeMoveAccordionProps = {
 function BracketToggle({ expanded }: { expanded: boolean }) {
   return (
     <span
+      /* Remount on toggle so iOS Safari cannot keep a half-painted gradient ink. */
+      key={expanded ? 'open' : 'closed'}
       className={`vp-how-we-move__bracket${expanded ? ' is-open' : ''}`}
       aria-hidden="true"
     >

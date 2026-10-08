@@ -413,7 +413,7 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-mobile-pad-block` | `100px` | Section padding, mobile | `2602:27420` | pending | |
 | `--vp-candidate-about-mobile-header-gap` | `60px` | Header → accordion gap | `2602:27420` | pending | |
 | `--vp-candidate-about-mobile-display-size` | `30px` | Section / workflow titles, mobile | `2602:27539` | pending | |
-| `--vp-candidate-about-mobile-tab-size` | `24px` | Accordion tab labels | `2602:27545` | pending | |
+| `--vp-candidate-about-mobile-tab-size` | `18px` | Accordion tab labels, mobile | product | pending | ~25% under prior 24px; rest color uses inactive-hover. |
 | `--vp-candidate-about-mobile-body-size` | `16px` | Body copy, mobile | body_medium | pending | |
 | `--vp-candidate-about-mobile-dek-size` | `20px` | Workflow accordion headlines, mobile | dek/body ratio | pending | Desktop 22/18 scaled to mobile 16px body. |
 | `--vp-candidate-about-mobile-eyebrow-size` | `12px` | Yellow eyebrows, mobile | `2602:27538` | pending | |
