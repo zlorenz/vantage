@@ -11,11 +11,13 @@ section.vp-contact-hero {
   --vp-candidate-contact-hero-title-size: 48px;
   --vp-candidate-contact-hero-title-lh: 0.9;
   --vp-candidate-contact-hero-pad-inline: 16px;
-  /* Figma title→crosshair gap was 100; doubled after dropping the crosshair. */
-  --vp-candidate-contact-cluster-gap: 200px;
-  --vp-candidate-contact-card-gap: 24px;
-  --vp-candidate-contact-cell-pad: 24px;
-  --vp-candidate-contact-contact-size: 16px;
+  /* Mobile: tighter title→contact than the old 100px Figma/crosshair gap. */
+  --vp-candidate-contact-cluster-gap: 56px;
+  --vp-candidate-contact-card-gap: 36px;
+  /* Tight outer pad so brackets hug the label (email must stay one line). */
+  --vp-candidate-contact-cell-pad: 12px;
+  /* ~31% above the prior 16px mobile caption. */
+  --vp-candidate-contact-contact-size: 21px;
   --vp-candidate-contact-contact-lh: 1.5;
   --vp-candidate-contact-mark-width: 153px;
   --vp-candidate-contact-mark-height: 80px;
@@ -26,24 +28,29 @@ section.vp-contact-hero {
   overflow: hidden;
   background: var(--vp-black);
   color: var(--vp-text);
-  min-height: 100svh;
+  /*
+   * Mobile: size to the title+contact stack (not a full viewport). Cap so
+   * tall phones do not re-introduce empty space. Desktop restores 100svh.
+   */
+  max-height: 75svh;
+  padding-top: var(--vp-header-height, 64px);
+  /* Marks sit absolute on the hairline — do not reserve mark height here. */
+  padding-bottom: 0;
 }
 
 /*
- * Title + contact as one block, vertically centered under the nav.
+ * Title + contact as one block. Mobile: in-flow under the nav. Desktop:
+ * absolute and vertically centered in the full-height hero.
  */
 section.vp-contact-hero .vp-contact-hero__cluster {
-  position: absolute;
-  top: var(--vp-header-height, 64px);
-  right: 0;
-  bottom: 0;
-  left: 0;
+  position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--vp-candidate-contact-cluster-gap);
+  padding-block: 114px;
   padding-inline: var(--vp-candidate-contact-hero-pad-inline);
   pointer-events: none;
 }
@@ -88,7 +95,7 @@ section.vp-contact-hero .vp-contact-hero__line--accent {
 section.vp-contact-hero .vp-contact-hero__card {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   gap: var(--vp-candidate-contact-card-gap);
   width: 100%;
   max-width: 370px;
@@ -100,6 +107,8 @@ section.vp-contact-hero .vp-contact-hero__cell {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: fit-content;
+  max-width: 100%;
   padding: var(--vp-candidate-contact-cell-pad);
   text-decoration: none;
   pointer-events: auto;
@@ -117,10 +126,12 @@ section.vp-contact-hero .vp-contact-hero__contact {
   text-decoration: none;
   text-transform: uppercase;
   text-align: center;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
-section.vp-contact-hero .vp-contact-hero__cell:hover .vp-contact-hero__contact {
+/* Mobile: soft fade. Desktop replaces this with a yellow color shift. */
+section.vp-contact-hero .vp-contact-hero__cell:hover .vp-contact-hero__contact,
+section.vp-contact-hero .vp-contact-hero__cell:focus-visible .vp-contact-hero__contact {
   opacity: 0.7;
 }
 
@@ -187,8 +198,8 @@ section.vp-contact-cta {
 
 section.vp-contact-cta .vp-contact-cta__frame {
   position: relative;
+  /* Mobile: full content width inside section side pad (no 370px cap). */
   width: 100%;
-  max-width: 370px;
   margin-inline: auto;
   overflow: hidden;
   padding: var(--vp-candidate-contact-frame-pad-block)
@@ -318,10 +329,19 @@ section.vp-contact-cta .vp-contact-cta__body {
     --vp-candidate-contact-mark-width: calc(327px * var(--vp-contact-scale));
     --vp-candidate-contact-mark-height: calc(171px * var(--vp-contact-scale));
     min-height: max(100svh, 56.25vw);
+    max-height: none;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   section.vp-contact-hero .vp-contact-hero__cluster {
+    position: absolute;
     top: var(--vp-nav-bar-height, 80px);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    padding-block: 0;
   }
 
   section.vp-contact-hero .vp-contact-hero__title {
@@ -339,6 +359,69 @@ section.vp-contact-cta .vp-contact-cta__body {
 
   section.vp-contact-hero .vp-contact-hero__cell {
     flex: 0 0 auto;
+  }
+
+  /*
+   * Desktop contact cells: brackets rest hidden and slide in on hover/focus;
+   * label shifts to brand yellow. Mobile keeps brackets always on.
+   */
+  section.vp-contact-hero .vp-contact-hero__contact {
+    transition: color var(--vp-transition), opacity var(--vp-transition);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell:hover .vp-contact-hero__contact,
+  section.vp-contact-hero .vp-contact-hero__cell:focus-visible .vp-contact-hero__contact {
+    color: var(--vp-link);
+    opacity: 1;
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket {
+    opacity: 0;
+    transition:
+      opacity var(--vp-transition),
+      transform var(--vp-transition),
+      border-color var(--vp-transition);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--tl {
+    transform: translate(-6px, -6px);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--tr {
+    transform: translate(6px, -6px);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--bl {
+    transform: translate(-6px, 6px);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--br {
+    transform: translate(6px, 6px);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell:hover .vp-corner-frame__bracket,
+  section.vp-contact-hero .vp-contact-hero__cell:focus-visible .vp-corner-frame__bracket {
+    opacity: 1;
+    transform: translate(0, 0);
+    border-color: var(--vp-link);
+  }
+
+  section.vp-contact-hero .vp-contact-hero__cell:focus-visible {
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    section.vp-contact-hero .vp-contact-hero__contact,
+    section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket {
+      transition: none;
+    }
+
+    section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--tl,
+    section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--tr,
+    section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--bl,
+    section.vp-contact-hero .vp-contact-hero__cell .vp-corner-frame__bracket--br {
+      transform: none;
+    }
   }
 
   section.vp-contact-cta {
