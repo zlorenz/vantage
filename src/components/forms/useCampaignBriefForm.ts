@@ -102,7 +102,7 @@ const STEP_REQUIRED_FIELDS: Record<number, CampaignBriefFieldKey[]> = {
  * TEMP DEV ONLY — set to `false` before shipping.
  * When true, Next skips required-field checks so empty steps can be skimmed.
  */
-const SKIP_STEP_REQUIRED_VALIDATION = true;
+const SKIP_STEP_REQUIRED_VALIDATION = false;
 
 const ALLOWED_EXTENSIONS = new Set<string>(CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS);
 
