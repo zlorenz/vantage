@@ -1,7 +1,86 @@
 /**
  * Campaign Brief form styles — custom inputs, radios, checkboxes, select chevron.
- * Uses vp-form-* and vp-input-* tokens from globals.css.
+ * Brief candidates scoped here (not on :root). Shipping tokens stay in globals.css.
  */
+
+.vp-brief-section {
+  /* H1 is sr-only; condensed-header clearance still needed under the nav. */
+  padding-top: var(--vp-section-y-header-condensed) !important;
+
+  --vp-candidate-brief-intro-color: rgba(255, 255, 255, 0.6);
+  --vp-candidate-brief-intro-step-gap: 60px;
+  --vp-candidate-brief-step-card-gap: 80px;
+  --vp-candidate-brief-section-title-size: 26px;
+  --vp-candidate-brief-section-title-lh: 1.4;
+  --vp-candidate-brief-card-pad: 30px;
+  --vp-candidate-brief-step-size: 60px;
+  --vp-candidate-brief-step-label-gap: 20px;
+  --vp-candidate-brief-caption-size: 14px;
+  --vp-candidate-brief-caption-lh: 20px;
+  --vp-candidate-brief-label-color: rgba(255, 255, 255, 0.8);
+  --vp-candidate-brief-control-bg: rgba(255, 255, 255, 0.1);
+  --vp-candidate-brief-control-bg-hover: rgba(255, 255, 255, 0.14);
+  --vp-candidate-brief-control-bg-focus: rgba(255, 255, 255, 0.16);
+  --vp-candidate-brief-control-height: 48px;
+  --vp-candidate-brief-control-pad-block: 12px;
+  --vp-candidate-brief-control-pad-inline: 12px;
+  --vp-candidate-brief-control-size: 18px;
+  --vp-candidate-brief-control-lh: 1.5;
+  --vp-candidate-brief-textarea-pad-bottom: 60px;
+  --vp-candidate-brief-field-gap: 60px;
+  --vp-candidate-brief-field-gap-tight: 48px;
+  --vp-candidate-brief-field-row-gap: 24px;
+  --vp-candidate-brief-check-size: 24px;
+  --vp-candidate-brief-check-bg: rgba(255, 255, 255, 0.05);
+  --vp-candidate-brief-check-border: rgba(255, 255, 255, 0.1);
+  --vp-candidate-brief-check-gap: 16px;
+  --vp-candidate-brief-option-gap: 12px;
+  --vp-candidate-brief-group-gap: 24px;
+  --vp-candidate-brief-chip-size: 32px;
+  --vp-candidate-brief-chip-bg: rgba(255, 255, 255, 0.15);
+  --vp-candidate-brief-chip-glyph: 18px;
+  --vp-candidate-brief-btn-height: 80px;
+  --vp-candidate-brief-btn-pad-inline: 32px;
+  --vp-candidate-brief-btn-size: 16px;
+  --vp-candidate-brief-btn-lh: 20px;
+  --vp-candidate-brief-btn-gap: 8px;
+  --vp-candidate-brief-btn-ghost-border: rgba(255, 255, 255, 0.2);
+  --vp-candidate-brief-btn-arrow-size: 24px;
+  --vp-candidate-brief-connector-width: 0.6px;
+  --vp-candidate-brief-connector-dash: 4px;
+  --vp-candidate-brief-connector-gap: 2px;
+  --vp-candidate-brief-step-pending-border-width: 0.6px;
+  --vp-candidate-brief-step-completed-border-width: 1px;
+  --vp-candidate-brief-dropzone-pad-block: 56px;
+  --vp-candidate-brief-dropzone-pad-inline: 24px;
+  --vp-candidate-brief-dropzone-gap: 16px;
+  --vp-candidate-brief-browse-pad: 16px;
+  --vp-candidate-brief-control-hover: rgba(255, 255, 255, 0.4);
+  --vp-candidate-brief-focus-ring: 1px solid var(--vp-link);
+  --vp-candidate-brief-focus-offset: 3px;
+  --vp-candidate-brief-disabled-opacity: 0.4;
+  --vp-candidate-brief-dropzone-active-fill: rgba(255, 255, 255, 0.03);
+  --vp-candidate-brief-transition: 0.3s ease-out;
+}
+
+@media (max-width: 767px) {
+  .vp-brief-section {
+    --vp-candidate-brief-step-card-gap: 40px;
+    --vp-candidate-brief-section-title-size: 22px;
+    --vp-candidate-brief-card-pad: 40px 16px;
+    --vp-candidate-brief-step-size: 48px;
+    --vp-candidate-brief-step-label-gap: 16px;
+    --vp-candidate-brief-caption-size: 12px;
+    --vp-candidate-brief-control-size: 16px;
+    --vp-candidate-brief-field-gap: 40px;
+    --vp-candidate-brief-field-gap-tight: 48px;
+    --vp-candidate-brief-field-row-gap: 24px;
+    --vp-candidate-brief-btn-height: 60px;
+    --vp-candidate-brief-btn-pad-inline: 16px;
+    --vp-candidate-brief-btn-size: 12px;
+    --vp-candidate-brief-btn-lh: 1.6;
+  }
+}
 
 /* ── Multi-column field grids ─────────────────────────────────── */
 
@@ -507,11 +586,6 @@
 
 .vp-form-shell {
   width: 100%;
-}
-
-.vp-brief-section {
-  /* H1 is sr-only; condensed-header clearance still needed under the nav. */
-  padding-top: var(--vp-section-y-header-condensed) !important;
 }
 
 .vp-brief-intro {
