@@ -61,16 +61,9 @@
   --color-vp-btn-primary-text: #000000;
   --color-vp-btn-primary-hover-bg: #a6a6a6;
   --color-vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
-  --color-vp-btn-ghost-text: #ffffff;
-  --color-vp-btn-ghost-border: rgba(255, 255, 255, 0.25);
-  --color-vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.12);
-  --color-vp-btn-ghost-hover-border: rgba(255, 255, 255, 0.5);
 
   /* Colour Palette — Miscellaneous */
 
-  --color-vp-credits-text: #bfbfbf;
-  --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
   --color-vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family
@@ -157,11 +150,8 @@
   /* Border Radius — sharp default with named exceptions */
 
   --radius: 0;
-  --radius-vp-search-card: 0.5rem;
   --radius-vp-nav-pill: 4px;
   --radius-vp-spinner: 50%;
-  --radius-vp-flag: 50%;
-  --radius-vp-comment: 0.25rem;
 
   /* Spacing & Layout — Section vertical padding */
 
@@ -194,16 +184,9 @@
   --font-weight-vp-form-label: 500;
   --color-vp-form-placeholder: rgba(255, 255, 255, 0.5);
   --color-vp-form-helper-muted: rgba(255, 255, 255, 0.55);
-  --color-vp-form-option-label: rgba(255, 255, 255, 0.72);
-  --color-vp-form-focus-border: rgba(255, 255, 255, 0.4);
-  --color-vp-form-step-border: rgba(255, 255, 255, 0.45);
-  --color-vp-form-step-completed-bg: rgba(255, 255, 255, 0.2);
-  --color-vp-form-step-pending-text: rgba(255, 255, 255, 0.7);
   --color-vp-form-validation-border: rgba(255, 92, 92, 0.7);
   --color-vp-form-validation-bg: rgba(255, 92, 92, 0.12);
-  --color-vp-btn-primary-hover-soft: rgba(255, 255, 255, 0.85);
   --tracking-vp-btn: 0.125rem;
-  --tracking-vp-btn-select-files: 0.05em;
   /* Default button label + diagonal arrow glyph (~30% up from 16/18). */
   --text-vp-btn: 1.3rem;
   --leading-vp-btn: 1.625rem;
@@ -308,17 +291,10 @@
   --vp-btn-primary-text: var(--vp-black);
   --vp-btn-primary-hover-bg: #a6a6a6;
   --vp-btn-ghost-bg: rgba(255, 255, 255, 0.08);
-  --vp-btn-ghost-text: #ffffff;
-  --vp-btn-ghost-border: rgba(255, 255, 255, 0.25);
-  --vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.12);
-  --vp-btn-ghost-hover-border: rgba(255, 255, 255, 0.5);
   --vp-btn-yellow-hover: #ffcb55;
 
   /* Colour Palette — Miscellaneous */
 
-  --vp-credits-text: #bfbfbf;
-  --vp-credit-role-label: rgba(255, 255, 255, 0.4);
-  --vp-dropdown-bg: rgba(var(--vp-black-rgb), 0.4);
   --vp-search-thumb-bg: #111111;
 
   /* Typography — Font Family — see --font-vp-sans note above */
@@ -352,9 +328,6 @@
 
   --vp-transition-fast: 0.15s ease;
   --vp-transition: 0.3s ease;
-  --vp-transition-card: 0.35s ease;
-  --vp-transition-spin: 0.8s linear;
-  --vp-transition-card-reveal: 0.45s ease forwards;
 
   /* Breakpoints — for use in custom @media queries */
 
@@ -366,11 +339,8 @@
   /* Border Radius */
 
   --vp-radius: 0;
-  --vp-radius-search-card: 0.5rem;
   --vp-radius-nav-pill: 4px;
   --vp-radius-spinner: 50%;
-  --vp-radius-flag: 50%;
-  --vp-radius-comment: 0.25rem;
 
   /* Spacing & Layout — Section vertical padding */
 
@@ -382,30 +352,13 @@
   /* Form & File Block Tokens — Campaign Brief Form */
 
   --vp-form-gap: 1rem;
-  --vp-form-row-gap: 1.5rem;
   --vp-form-label-size: 1rem;
-  --vp-form-label-weight: 500;
-  --vp-form-label-height: 2.6rem;
-  --vp-form-input-min-height: 2.625rem;
-  --vp-form-input-padding: 0.5rem 0.9rem;
   --vp-form-input-size: 0.9rem;
   --vp-form-placeholder: rgba(255, 255, 255, 0.5);
   --vp-form-helper-muted: rgba(255, 255, 255, 0.55);
-  --vp-form-option-label: rgba(255, 255, 255, 0.72);
-  --vp-form-focus-border: rgba(255, 255, 255, 0.4);
-  --vp-form-textarea-min-height: 120px;
-  --vp-form-dropzone-min-height: 224px;
-  --vp-form-step-circle-size: 2.25rem;
-  --vp-form-step-border: rgba(255, 255, 255, 0.45);
-  --vp-form-step-completed-bg: rgba(255, 255, 255, 0.2);
-  --vp-form-step-pending-text: rgba(255, 255, 255, 0.7);
   --vp-form-validation-border: rgba(255, 92, 92, 0.7);
   --vp-form-validation-bg: rgba(255, 92, 92, 0.12);
   --vp-btn-letter-spacing: 0.125rem;
-  --vp-btn-select-files-spacing: 0.05em;
-  --vp-btn-padding: 0.75rem 2rem;
-  --vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.1);
-  --vp-btn-primary-hover-soft: rgba(255, 255, 255, 0.85);
   /* Default button label + BriefArrow glyph (yellow chrome CTAs + white pills). */
   --vp-btn-font-size: 1.3rem;
   --vp-btn-line-height: 1.625rem;
@@ -413,8 +366,6 @@
 
   /* Form & File Block Tokens — File Block */
 
-  --vp-file-block-padding-top: 1.25rem;
-  --vp-file-block-button-gap: 1.25rem;
 
   /*
    * Campaign brief restyle — pending candidates.

@@ -44,18 +44,13 @@
   --vp-candidate-about-white-60: rgba(255, 255, 255, 0.6);
   --vp-candidate-about-cell-pad: 30px;
   --vp-candidate-about-cta-height: 80px;
-  --vp-candidate-about-crosshair: 40px;
   --vp-candidate-about-crosshair-mark: 60px;
-  --vp-candidate-about-film-frame: 297px;
   /* Leaves a 1320px type measure so the 1201px line keeps ~60px clear of each rail. Caps at 240px. */
   --vp-candidate-about-film-rail: clamp(0px, calc((100vw - 1320px) / 2), 240px);
-  --vp-candidate-about-film-image-width: 237px;
-  --vp-candidate-about-film-image-height: 320px;
   --vp-candidate-about-film-dim: 0.4;
   /* About hero logo stage — Figma 2466:28600 (1920×1080). */
   --vp-candidate-about-hero-inset: 30px;
   --vp-candidate-about-hero-frame-inset: 15px;
-  --vp-candidate-about-hero-title-width: 594px;
   /* Shared bottom for title + caption chrome. */
   --vp-candidate-about-hero-title-bottom: clamp(1.5rem, 3.7vw, 2.5rem);
   /* Midway between Figma 356 and the 300 outer-edge pass. */
@@ -70,13 +65,8 @@
   /* ~20% above the shared 14px step size used on desktop. */
   --vp-candidate-about-hero-mobile-title-size: 17px;
   --vp-candidate-about-hero-mobile-title-lh: 24px;
-  --vp-candidate-about-hero-mobile-caption-size: 12px;
-  --vp-candidate-about-hero-mobile-caption-lh: 20px;
   --vp-candidate-about-hero-mobile-copy-gap: 32px;
   --vp-candidate-about-hero-mobile-copy-bottom: 24px;
-  --vp-candidate-about-hero-mobile-body-size: 16px;
-  --vp-candidate-about-hero-hotspot-size: 12px;
-  --vp-candidate-about-hero-tooltip-width: 300px;
   /* ~50% of the prior 100 / 60 — mobile section rhythm was too airy. */
   --vp-candidate-about-mobile-pad-block: 50px;
   --vp-candidate-about-mobile-header-gap: 30px;
@@ -89,9 +79,7 @@
   --vp-candidate-about-mobile-eyebrow-size: 12px;
   --vp-candidate-about-mobile-film-frame: 200px;
   --vp-candidate-about-mobile-film-height: 248px;
-  --vp-candidate-about-mobile-statement-size: 30px;
   --vp-candidate-about-mobile-statement-lh: 1.8;
-  --vp-candidate-about-mobile-statement-accent-size: 40px;
   --vp-candidate-about-mobile-cta-height: 64px;
 }
 
