@@ -72,13 +72,10 @@ const PAGE_CONTENT_FIELDS = `
   "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS}
 `
 
-/** Homepage — SEO/meta fields, body copy, brand logos (carousel slides via HOME_REDESIGN_CAROUSEL_QUERY). */
+/** Homepage — SEO/meta (carousel slides via HOME_REDESIGN_CAROUSEL_QUERY). */
 export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{
-    ${PAGE_BASE_FIELDS},
-    brandLogos[]{
-      logoId
-    }
+    ${PAGE_BASE_FIELDS}
   }
 `)
 
@@ -167,9 +164,9 @@ const ABOUT_MEDIA_IMAGE_SLOT = `
   }
 `
 
-/** Curated About redesign media — page slug `about-redesign`. */
+/** Curated About media — page slug `about`. */
 export const ABOUT_MEDIA_QUERY = defineQuery(`
-  *[_type == "page" && slug.current == "about-redesign" && !defined(trash.trashedAt)][0]{
+  *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{
     specialties[]{${ABOUT_MEDIA_PREVIEW_SLOT}},
     advantages[]{${ABOUT_MEDIA_PREVIEW_SLOT}},
     productionServicesCta{${ABOUT_MEDIA_PREVIEW_SLOT}},

@@ -31,8 +31,8 @@ Base URLs, API endpoints, and environment-specific values must come from environ
 **Never modify Sanity schemas without approval.**
 Schema changes affect the CMS editor interface and can break existing content. Always present proposed schema changes for review before implementing them.
 
-**Never edit live `blogPost.body` / `bodyZh` for redesign-branch-only content work.**
-The production dataset is shared by `main` and `redesign`. Use parallel `redesignBody` / `redesignBodyZh` (and the same pattern for future doc types). Full policy: `.cursor/docs/redesign-content-fields.md`.
+**Use canonical CMS fields only.**
+Blog articles: `body` / `bodyZh`. Home carousel: `page` slug `home` → `carouselSlides`. About media: `page` slug `about`. Do not reintroduce parallel redesign fields or stub pages. Notes: `.cursor/docs/redesign-content-fields.md`.
 
 **Never write GROQ queries inline in page or component files.**
 All GROQ queries are defined as named exports in `/sanity/queries/` and imported where needed. Inline queries cannot be reused, audited, or maintained cleanly.
@@ -129,27 +129,10 @@ Confirm `.env.local` is in `.gitignore` before the first commit.
 
 ---
 
-## WordPress Legacy Files
+## WordPress
 
-WordPress core has already been removed from this project folder to keep the workspace clean and Cursor's context uncluttered. A full WPvivid backup of the original site is stored safely and separately. What remains in this folder is limited reference material only.
+WordPress has been fully removed from this repository. A WPvivid backup of the original site is stored separately outside the repo.
 
-### What remains and why
+**Do not reintroduce** `wp-content/`, `wp-config.php`, or other WordPress trees into this workspace.
 
-**`wp-content/themes/vantagepictures-child/`** — Read-only. Contains the custom CSS, templates, and JS that Cursor will audit to produce `design-tokens.md`. Remove after the audit phase is complete and `design-tokens.md` has been signed off.
-
-**`wp-content/uploads/`** — Read-only. The WordPress media library. Retain until every media asset is confirmed migrated into Sanity. Remove only when migration is verified.
-
-**`wp-config.php`** — Read-only. Contains database credentials needed for content export. Remove after all content has been exported to JSON and imported into Sanity.
-
-### Rules for all remaining WordPress files
-
-**Never modify any remaining WordPress file.** They are read-only reference material. Treat them as locked.
-
-**Never run destructive WP-CLI commands** (e.g. `wp db reset`, `wp post delete`) without explicit written instruction from Zacharia.
-
-**Never delete any remaining WordPress file or folder** without explicit instruction from Zacharia confirming that the relevant phase is complete:
-- Child theme folder: removed after audit phase sign-off
-- `wp-config.php`: removed after content export and Sanity import are verified
-- `wp-content/uploads/`: removed after all media assets are confirmed in Sanity
-
-**Never use `wp-config.php` credentials for anything other than the approved content export task.** These credentials access a live database. Treat them as sensitive.
+Historical migration exports under `migration-data/` and scripts under `scripts/migration/` are archive/ops tooling — treat as read-only unless Zacharia asks for a specific migration run.

@@ -32,7 +32,6 @@ import { additionalVideo } from './objects/additionalVideo'
 import { portfolioVideo } from './objects/portfolioVideo'
 import { founder } from './objects/founder'
 import { awardItem } from './objects/awardItem'
-import { brandLogoItem } from './objects/brandLogoItem'
 import { campaignCta } from './objects/campaignCta'
 import { pdfDownload } from './objects/pdfDownload'
 import { imageGallery } from './objects/imageGallery'
@@ -54,7 +53,6 @@ export const schemaTypes = [
   portfolioVideo,
   founder,
   awardItem,
-  brandLogoItem,
   campaignCta,
   pdfDownload,
   imageGallery,

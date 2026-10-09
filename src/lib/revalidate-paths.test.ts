@@ -47,7 +47,10 @@ const workPage = pathsForWebhookBody({_type: 'page', slug: 'work'})
 assert.deepEqual(workPage.sort(), ['/en/work', '/sitemap.xml', '/zh/work'].sort())
 
 const homePage = pathsForWebhookBody({_type: 'page', slug: 'home'})
-assert.deepEqual(homePage.sort(), ['/en', '/sitemap.xml', '/zh'].sort())
+assert.deepEqual(
+  homePage.sort(),
+  ['/en', '/en/work', '/sitemap.xml', '/zh', '/zh/work'].sort(),
+)
 
 const unmapped = pathsForWebhookBody({
   _type: 'page',

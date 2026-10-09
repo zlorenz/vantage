@@ -1132,7 +1132,7 @@
         },
         "optional": true
       },
-      "heroSlides": {
+      "carouselSlides": {
         "type": "objectAttribute",
         "value": {
           "type": "array",
@@ -1155,28 +1155,6 @@
         "optional": true
       },
       "featuredWork": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "portfolioEntry.reference"
-            }
-          }
-        },
-        "optional": true
-      },
-      "carouselSlides": {
         "type": "objectAttribute",
         "value": {
           "type": "array",
@@ -1315,28 +1293,6 @@
         "value": {
           "type": "inline",
           "name": "pagePortableText"
-        },
-        "optional": true
-      },
-      "brandLogos": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "brandLogoItem"
-            }
-          }
         },
         "optional": true
       },
@@ -2300,22 +2256,6 @@
         "optional": true
       },
       "bodyZh": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "portableTextBody"
-        },
-        "optional": true
-      },
-      "redesignBody": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "portableTextBody"
-        },
-        "optional": true
-      },
-      "redesignBodyZh": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
@@ -4266,175 +4206,6 @@
                 }
               }
             }
-          },
-          "optional": true
-        }
-      }
-    }
-  },
-  {
-    "name": "brandLogoItem",
-    "type": "type",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "brandLogoItem"
-          }
-        },
-        "logoId": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "union",
-            "of": [
-              {
-                "type": "string",
-                "value": "aquafina"
-              },
-              {
-                "type": "string",
-                "value": "asics"
-              },
-              {
-                "type": "string",
-                "value": "asus"
-              },
-              {
-                "type": "string",
-                "value": "bambu-lab"
-              },
-              {
-                "type": "string",
-                "value": "bitget"
-              },
-              {
-                "type": "string",
-                "value": "braun"
-              },
-              {
-                "type": "string",
-                "value": "brinc"
-              },
-              {
-                "type": "string",
-                "value": "cnn"
-              },
-              {
-                "type": "string",
-                "value": "coca-cola"
-              },
-              {
-                "type": "string",
-                "value": "dji"
-              },
-              {
-                "type": "string",
-                "value": "ecoflow"
-              },
-              {
-                "type": "string",
-                "value": "fujifilm"
-              },
-              {
-                "type": "string",
-                "value": "govee"
-              },
-              {
-                "type": "string",
-                "value": "hasselblad"
-              },
-              {
-                "type": "string",
-                "value": "huawei-horizontal"
-              },
-              {
-                "type": "string",
-                "value": "huawei-vertical"
-              },
-              {
-                "type": "string",
-                "value": "hyundai"
-              },
-              {
-                "type": "string",
-                "value": "insta360"
-              },
-              {
-                "type": "string",
-                "value": "jackery"
-              },
-              {
-                "type": "string",
-                "value": "jw-marriott"
-              },
-              {
-                "type": "string",
-                "value": "msi"
-              },
-              {
-                "type": "string",
-                "value": "old-spice"
-              },
-              {
-                "type": "string",
-                "value": "oneplus"
-              },
-              {
-                "type": "string",
-                "value": "oppo"
-              },
-              {
-                "type": "string",
-                "value": "p-and-g"
-              },
-              {
-                "type": "string",
-                "value": "realme"
-              },
-              {
-                "type": "string",
-                "value": "roborock"
-              },
-              {
-                "type": "string",
-                "value": "samsung"
-              },
-              {
-                "type": "string",
-                "value": "taiwan-excellence"
-              },
-              {
-                "type": "string",
-                "value": "the-north-face"
-              },
-              {
-                "type": "string",
-                "value": "toyota-horizontal"
-              },
-              {
-                "type": "string",
-                "value": "toyota-vertical"
-              },
-              {
-                "type": "string",
-                "value": "unilever"
-              },
-              {
-                "type": "string",
-                "value": "westin"
-              },
-              {
-                "type": "string",
-                "value": "youtube"
-              },
-              {
-                "type": "string",
-                "value": "zhiyun"
-              }
-            ]
           },
           "optional": true
         }

@@ -1,12 +1,10 @@
 /**
  * Client logo registry — authoritative source for homepage / brand-wall SVG assets.
  *
- * Two layers (intentionally split):
- * - **Asset registry** (this file + `/public/logos/*.svg`): curated marks. Adding a
- *   new logo is a design/code change — drop the SVG, add a `CLIENT_LOGOS` entry,
- *   redeploy Studio + Next. Not a CMS upload path.
- * - **Homepage curation** (`page.brandLogos[].logoId` in Sanity): editors reorder /
- *   swap among registry ids only.
+ * Asset registry (this file + `/public/logos/*.svg`): curated marks. Adding a
+ * new logo is a design/code change — drop the SVG, add a `CLIENT_LOGOS` entry,
+ * redeploy. Not a CMS upload path. The old homepage `page.brandLogos` CMS field
+ * was retired with the redesign carousel home.
  *
  * Do not hang logos off legacy `client` docs or `creditIdentity` — the logo set is
  * not 1:1 with either taxonomy (variants, non-client marks, incomplete coverage).

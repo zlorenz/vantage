@@ -1,5 +1,7 @@
 # Migration Data — Vantage Pictures
 
+> **Archive / historical.** WordPress → Sanity migration and redesign cutover are complete. Keep for audit trail; do not treat pre-launch checklists as open work.
+
 This document tracks the status of all content migration from WordPress to Sanity. It is a living document — update it as each phase is completed and verified. Do not mark anything as verified without manually spot-checking samples, not just confirming the import ran without errors.
 
 **Migration phases:**

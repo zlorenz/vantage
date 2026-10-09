@@ -1,5 +1,7 @@
 # Content Schema — Vantage Pictures
 
+> **Archive / historical.** Rebuild complete. Prefer `.cursor/docs/project-context.md`, `site-architecture.md`, and live schemas under `sanity/schemas/` for current truth. Work-internal product URL is now `app.vantage.pictures`.
+
 Phase 1 audit reference for the WordPress → Next.js + Sanity rebuild. Synthesizes findings from the child theme audit (Tasks 1–3), database queries (Tasks 4–7), and cross-references with `site-architecture.md` and `design-tokens.md`.
 
 **Audit date:** 2026-06-21  

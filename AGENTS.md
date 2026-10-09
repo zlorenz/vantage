@@ -4,14 +4,12 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-## Cursor app sessions (not pen.dev)
+## Workspace
 
-Hard stack constraints live in `.cursor/rules/` (always applied). Redesign-branch parallel CMS fields: `.cursor/docs/redesign-content-fields.md` (linked from `stack-guardrails.mdc`).
+Primary workspace is this repo on **`main`**. The redesign branch/worktree is retired — do not assume a parallel checkout.
 
-## Scope for this session
+Hard stack constraints: `.cursor/rules/` (always applied). Project context: `.cursor/docs/project-context.md`.
 
-This Claude Code session is used exclusively for pen.dev / .pen design work.
+## CMS
 
-- ONLY read/write files inside the `design/` folder (e.g. `design/vantage-redesign.pen`) and any exported design-code output you're explicitly asked to generate.
-- Do NOT read, edit, or delete any file under `src/`, `sanity/`, or any other part of the app codebase — those are owned by Cursor sessions and must not be touched here.
-- If a task seems to require touching files outside `design/`, stop and ask for confirmation first.
+Canonical fields/docs: blog `body` / `bodyZh`; pages `home` + `about`. See `.cursor/docs/redesign-content-fields.md` for post-cutover consolidation notes.

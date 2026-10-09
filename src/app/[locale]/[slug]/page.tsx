@@ -162,9 +162,9 @@ export default async function BlogPostPage({ params }: Props) {
     phrases,
   );
   const bodyBlocks =
-    typedLocale === 'zh' && post.redesignBodyZh?.length
-      ? mergeChineseBodyWithEnglishMedia(post.redesignBodyZh, post.redesignBody)
-      : post.redesignBody;
+    typedLocale === 'zh' && post.bodyZh?.length
+      ? mergeChineseBodyWithEnglishMedia(post.bodyZh, post.body)
+      : post.body;
   const suppressVideoUrl = resolveBlogHeroVideoUrl(post);
 
   return (

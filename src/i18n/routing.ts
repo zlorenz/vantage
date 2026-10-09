@@ -41,10 +41,6 @@ export const routing = defineRouting({
       en: '/showreel/[id]/edit',
       zh: '/showreel/[id]/edit',
     },
-    '/prototype/carousel': {
-      en: '/prototype/carousel',
-      zh: '/prototype/carousel',
-    },
     '/portfolio/[slug]': {
       en: '/portfolio/[slug]',
       zh: '/案例/[slug]',

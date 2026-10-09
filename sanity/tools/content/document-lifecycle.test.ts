@@ -22,7 +22,7 @@ const backups: RemovedReferenceBackup[] = [
     referrerPublishedId: 'page-home',
     referrerType: 'page',
     referrerTitle: 'Home',
-    path: 'heroSlides',
+    path: 'carouselSlides',
     kind: 'arrayItem',
     itemKey: 'abc',
     valueJson: '{}',
@@ -32,7 +32,7 @@ const backups: RemovedReferenceBackup[] = [
     referrerPublishedId: 'page-home',
     referrerType: 'page',
     referrerTitle: 'Home',
-    path: 'heroSlides',
+    path: 'carouselSlides',
     kind: 'arrayItem',
     itemKey: 'def',
     valueJson: '{}',
@@ -46,7 +46,7 @@ assert.equal(impacts[0].referrerTitle, 'Home')
 
 const summary = formatImpactSummary(impacts)
 assert.match(summary, /Home/)
-assert.match(summary, /heroSlides/)
+assert.match(summary, /carouselSlides/)
 
 assert.equal(trashRecordId('portfolio-1'), 'trashRecord.portfolio-1')
 assert.equal(typeof hardDeleteDocuments, 'function')

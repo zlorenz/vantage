@@ -1,12 +1,12 @@
 # Implementation Workflow — Vantage Pictures
 
-These rules govern how Cursor should behave throughout the entire rebuild. Follow them in every session, on every task, without exception.
+These rules govern how Cursor should behave on the live Vantage site. Follow them in every session, on every task, without exception.
 
 ---
 
 ## 1. Core Operating Principle
 
-This is a careful, deliberate rebuild of a live production website. Every decision has consequences for SEO, content, and a real client-facing business. Work methodically. Never rush. Never assume.
+This is a careful, deliberate maintenance and evolution of a **live production** website (`vantage.pictures` + `app.vantage.pictures`). Every decision has consequences for SEO, content, and a real client-facing business. Work methodically. Never rush. Never assume.
 
 ---
 
@@ -59,22 +59,16 @@ If you notice something that should be improved or fixed outside the current tas
 
 ## 5. File Safety Rules
 
-### WordPress legacy files
-The WordPress installation in this folder is a **read-only reference**. Do not modify, delete, or move any WordPress files unless explicitly instructed. This includes:
-- `wp-admin/`
-- `wp-includes/`
-- `wp-content/`
-- `wp-config.php`
-- `.htaccess`
-- Any other WordPress core or plugin files
+### WordPress
+WordPress is gone from this repo. Do not reintroduce it. Migration archives under `migration-data/` are historical — do not delete without approval.
 
-### New project files
-All new Next.js application files live within the Next.js project directory. Do not scatter files outside of it.
+### Project files
+App code lives under `src/`. Studio under `sanity/`. Shared helpers under `shared/`. Do not scatter new trees without a reason.
 
 ### Environment variables
-Never hardcode API keys, tokens, secrets, or credentials. Always use `process.env.VARIABLE_NAME` and document which variable is needed. Never commit `.env.local` to version control.
+Never hardcode API keys, tokens, secrets, or credentials. Always use `process.env.VARIABLE_NAME` and document which variable is needed (see `.cursor/docs/env-vars.md`). Never commit `.env.local` to version control.
 
-### `next.config.js`
+### `next.config.ts`
 This file controls routing, redirects, and build behaviour. Treat it as high-risk. Always present proposed changes to this file for approval before implementing.
 
 ---
@@ -102,14 +96,13 @@ export async function getPortfolioEntries() {
 
 ### Structure
 ```
-/app                  → Next.js App Router pages and layouts
-/components           → All reusable UI components
-/sanity               → Sanity client, schemas, and GROQ queries
-/sanity/schemas       → One file per content type
-/sanity/queries       → GROQ query strings, named and exported
-/lib                  → Utility functions, helpers
-/public               → Static assets
-/styles               → Global CSS and Tailwind config
+src/app               → Next.js App Router pages and layouts
+src/components        → Reusable UI components
+src/sanity            → Sanity client + GROQ queries (frontend)
+src/lib               → Utilities / helpers
+sanity/               → Sanity Studio app + schemas
+shared/               → Cross-cutting helpers used by app + scripts
+public/               → Static assets
 ```
 
 ### Component discipline
@@ -136,10 +129,10 @@ URL integrity is critical. The existing site has SEO equity built up over years.
 
 - All English routes must match the live site exactly (see `site-architecture.md`)
 - All Chinese routes must match the live site exactly, including URL-encoded Chinese characters
-- The 301 redirect from `/portfolio/3612/` to `/portfolio/realme-c85-your-ultimate-outdoor-sidekick/` must be implemented in `next.config.js`
 - Blog post URLs live at root level (`/[slug]`), not under `/news/[slug]` — do not change this
+- Internal library canonical host is `app.vantage.pictures` (marketing `/work-internal` redirects there)
 - Never invent new URL patterns without approval
-- When adding redirects to `next.config.js`, always present them for review first
+- When adding redirects to `next.config.ts`, always present them for review first
 
 ---
 
@@ -173,23 +166,16 @@ URL integrity is critical. The existing site has SEO equity built up over years.
 
 ---
 
-## 12. Task Sequencing
+## 12. Post-cutover priorities
 
-Work proceeds in this order. Do not jump ahead.
+The rebuild and redesign cutover are **done**. Prefer this order for leftover work:
 
-1. **Audit phase** — Cursor audits the WordPress installation and produces `content-schema.md` and `design-tokens.md`
-2. **Foundation** — Next.js project initialisation, Sanity project setup, schema definitions, environment configuration
-3. **Content migration** — All WordPress content exported and imported into Sanity
-4. **Design system** — Tailwind config built from design tokens, global styles, base layout components
-5. **Component library** — All reusable UI components built and verified in isolation
-6. **Page build-out** — All routes built and connected to live Sanity data
-7. **Forms & integrations** — Campaign brief form, contact form, Lark webhook, Resend email
-8. **Analytics** — GTM container reconnected, Vimeo SDK event tracking implemented
-9. **SEO layer** — Metadata, structured data, sitemap, hreflang, redirects
-10. **Staging** — Deploy to staging, full QA across devices and browsers
-11. **Production** — DNS cutover, Search Console update, WordPress decommission
+1. **Dead-code / polish** — unused CSS (e.g. brand-logo leftovers), rename `prototype/` component folders, archive migration-data
+2. **Token promotion** — candidate → shipping tokens when a surface stabilizes (`candidate-tokens.md`)
+3. **Docs hygiene** — keep agent docs aligned with production hosts and fields
+4. **New features** — follow the audit → confirm → implement loop above
 
-Do not begin a phase until the previous phase is complete and approved.
+Do not invent a second “rebuild phase.” Treat the site as live production.
 
 ---
 

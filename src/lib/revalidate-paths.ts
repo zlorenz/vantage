@@ -95,7 +95,15 @@ export function pathsForWebhookBody(body: RevalidateWebhookBody): string[] {
     if (mapped || PAGE_ROUTES[slug]) {
       // Internal keys match EN slug segments (home → /en + /zh).
       if (slug === 'home') {
-        return unique([...home, sitemap])
+        // Home carousel also drives the Work featured strip.
+        return unique([...home, ...work, sitemap])
+      }
+      if (slug === 'about') {
+        return unique([
+          localePath('en', '/about'),
+          localePath('zh', '/about'),
+          sitemap,
+        ])
       }
       return unique([localePath('en', `/${slug}`), localePath('zh', `/${slug}`), sitemap])
     }

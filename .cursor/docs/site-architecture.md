@@ -22,20 +22,23 @@ These are singular pages, not driven by a post type loop.
 | `/vietnam-production-service/` | `/zh/越南生产服务/` | Vietnam service page |
 | `/vietnam-location-guide/` | `/zh/越南旅游指南/` | Vietnam location guide |
 | `/video-campaign-brief/` | `/zh/视频活动简介/` | Campaign brief form page |
-| `/work-internal/` | `/zh/work-internal/` | Internal crew portfolio view — see below |
+| App host `/` | — | Internal work library — see below |
 
-### Internal page: Work (Internal)
+### Internal app: work library (`app.vantage.pictures`)
 
 | Property | Value |
 |---|---|
-| Route | `/work-internal/` |
-| Chinese route | `/zh/work-internal/` |
-| Template | Internal crew portfolio view |
-| Filters | Brand / Director / DOP / Art Director (AND logic — not mutually exclusive); backed by `creditIdentity` refs on `crewCredits`, with unlinked-name fallbacks |
+| Canonical host | `https://app.vantage.pictures` |
+| Library index | `/` on the app host |
+| Project detail | `/{slug}` on the app host |
+| Showreel tools | `/showreel/login`, `/showreel/{id}/edit` on the app host |
+| Filesystem routes | Still implemented under `/work-internal` (rewritten by `src/proxy.ts`) |
+| Marketing redirects | `vantage.pictures/work-internal(/*)` → **308** to app host (prefix stripped) |
+| Filters | Brand / Director / DOP / Art Director (AND logic); `creditIdentity` + unlinked-name fallbacks |
 | SEO | `noindex`, excluded from sitemap |
-| Access | No authentication required; not linked from public navigation |
+| Access | No auth for browsing; showreel **edit** gated by `SHOWREEL_EDITOR_PASSWORD` |
 
-Shows all portfolio entries including hidden items. Used for pitch research, crew lookups, and client history.
+Shows all portfolio entries including hidden items. Used for pitch research, crew lookups, and client history. Not linked from public marketing navigation.
 
 ---
 
@@ -215,4 +218,4 @@ Chinese slugs use URL-encoded Chinese characters. These must be preserved exactl
 - Blog post URLs are at root level, not nested under `/news/`. This is intentional and must be preserved.
 - The `/zh/` prefix for Chinese routes uses readable Chinese slugs, not translated English slugs. Sanity schemas must store the Chinese slug separately from the English slug for each piece of content.
 - Do not invent new routes. All routes in this document should exist in the new build. New pages added post-launch will follow the patterns established here.
-- `/work-internal/` is `noindex`, not linked from public navigation, and excluded from the sitemap. A Chinese equivalent exists at `/zh/work-internal/` for routing consistency; the internal team does not require it.
+- Internal library lives on **`app.vantage.pictures`** (`noindex`, not in public nav, excluded from sitemap). Marketing `/work-internal` only redirects there. See `src/lib/site-hosts.ts` and `src/proxy.ts`.

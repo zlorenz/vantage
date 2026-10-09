@@ -2,13 +2,12 @@
 
 ## Project Overview
 
-This is a ground-up rebuild of the Vantage Pictures company website, migrating from a WordPress + ACF Pro installation to a Next.js + Sanity stack. The WordPress codebase exists in this same folder as the starting point and reference. It is being systematically replaced — not modified.
+Vantage Pictures company website: **Next.js (App Router) + Sanity**, deployed on Vercel. The WordPress rebuild is complete; there is no WordPress tree in this repo.
 
-The goal is a fast, maintainable, custom-built site with a purpose-built CMS that gives the team exactly the content management tools they need and nothing else.
-
-**Production URL:** `https://vantage.pictures`
-**Staging URL:** `https://dev.vantage.pictures`
-**Local development root:** `/Users/zacharialorenz/Documents/Cursor/vantage`
+**Marketing URL:** `https://vantage.pictures` (www → apex)  
+**Internal app URL:** `https://app.vantage.pictures` (work library + showreel editor)  
+**Sanity Studio:** `https://vantage-pictures.sanity.studio/`  
+**Local root:** this workspace on `main` only (redesign branch/worktree retired)
 
 ---
 
@@ -16,141 +15,103 @@ The goal is a fast, maintainable, custom-built site with a purpose-built CMS tha
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js (App Router) |
-| CMS | Sanity (hosted) |
-| Styling | Tailwind CSS |
-| Deployment | Vercel |
+| Framework | Next.js (App Router) under `src/app` |
+| CMS | Sanity (hosted Studio + Content Lake) |
+| Styling | Tailwind CSS + component CSS / design tokens in `src/app/globals.css` |
+| Deployment | Vercel (project `vantage`) |
 | Email (transactional) | Resend |
 | Email (company) | SiteGround (unchanged) |
-| Analytics | Google Tag Manager → GA4 |
-| Video embeds | Vimeo Player SDK |
+| Analytics | Google Tag Manager → GA4 (+ other tags in GTM) |
+| Video | Vimeo (Player SDK + server-minted preview URLs) |
 
 ---
 
 ## Repository & Environment
 
-- Local path: `/Users/zacharialorenz/Documents/Cursor/vantage`
-- The WordPress installation remains in this folder during the build phase as a reference and content source. Do not delete WordPress files until explicitly instructed.
-- New Next.js application will be initialized inside this folder as the build progresses.
-- Environment variables (Sanity project ID, dataset, API tokens, Resend API key, showreel editor password) are stored in `.env.local` and must never be committed to version control. See `.cursor/docs/env-vars.md` for the showreel password placeholder.
+- App code: `src/` · Sanity Studio: `sanity/` · Shared helpers: `shared/`
+- Environment variables live in `.env.local` (never commit). Full list: `.cursor/docs/env-vars.md`
+- Hard constraints: `.cursor/rules/stack-guardrails.mdc`, `.cursor/rules/implementation-workflow.mdc`
 
 ---
 
 ## Deployment Architecture
 
-- **Vercel** hosts the Next.js application
-- **Sanity** hosts the CMS (Sanity Studio accessible at `/studio` or a subdomain)
-- **SiteGround Singapore** continues to handle email only (`@vantage.pictures` addresses)
-- On content publish in Sanity, Vercel triggers an automatic rebuild via webhook
-- Staging environment mirrors production on a Vercel preview deployment or `dev.vantage.pictures`
+- **Vercel** hosts the Next.js app (marketing + app host on the same project)
+- **Sanity** hosts Studio and content; publish webhook hits `/api/webhooks/sanity-revalidate`
+- Host routing (`src/proxy.ts` + `src/lib/site-hosts.ts`):
+  - Marketing: public site
+  - App host: library at `/`, project detail at `/{slug}`, showreel login/edit under `/showreel/...`
+  - `/work-internal` on marketing **308s** to the app host
 
 ---
 
 ## CMS Users & Roles
 
-Two active users. A third (digital marketing hire) will be added in the future.
-
 | Name | Role in Sanity | Responsibilities |
 |---|---|---|
-| Zacharia Lorenz | Administrator | Full access — content, schema changes, settings |
-| Leo Nguyen | Editor | Add/edit portfolio entries, blog posts, translations |
+| Zacharia Lorenz | Administrator | Full access — content, schema, settings |
+| Leo Nguyen | Editor | Portfolio, blog, translations |
 
-Sanity permissions should be configured so that the Editor role cannot modify schemas, global settings, navigation structure, or delete published content without admin approval.
+Editor role must not modify schemas, global settings, or delete published content without admin approval.
 
-### Redesign branch — parallel body fields
+### CMS notes
 
-`main` and `redesign` share the same Sanity dataset. Blog body work that is redesign-only must use `redesignBody` / `redesignBodyZh`, not live `body` / `bodyZh`. See `.cursor/docs/redesign-content-fields.md` (also linked from `.cursor/rules/stack-guardrails.mdc` so Cursor agents load the rule automatically).
+Canonical pages: `home` (carousel), `about` (media + founders). Blog bodies use `body` / `bodyZh`. Historical consolidation notes: `.cursor/docs/redesign-content-fields.md`.
 
 ---
 
 ## Content & Language
 
-The site is fully bilingual: **English** (primary) and **Chinese Simplified** (secondary).
+Fully bilingual: **English** (primary) and **Chinese Simplified** (secondary).
 
-- Every content type has English and Chinese field variants
-- English is the canonical language; Chinese is a translation layer
-- Routing: English at root (`/`), Chinese under `/zh/` prefix
-- Chinese URL slugs are stored explicitly — they are not auto-generated from English slugs
-- All new content schemas must include both language variants from day one
-- i18n routing is handled via Next.js built-in internationalization or `next-intl`
+- English at `/`, Chinese under `/zh/`
+- Chinese slugs stored explicitly (`slugZh`) — never auto-derived
+- i18n via `next-intl`
 
 ---
 
 ## Contact & Forms
 
-### Campaign Brief Form (`/video-campaign-brief/`)
-The primary lead generation form on the site. On submission:
-1. A confirmation/notification email is sent to `info@vantage.pictures` via Resend
-2. All form field data is posted to a **Lark group** via a Lark bot webhook
-3. No data is stored in a database — submissions are fire-and-forward only
+### Campaign Brief (`/video-campaign-brief/`)
+1. Email via Resend → `info@vantage.pictures`
+2. Field payload → Lark webhook
+3. Briefing files → Sanity upload token (browser) + optional attachment doc
 
-Lark Suite API documentation: `https://open.larksuite.com/document/home/index`
-
-### Contact Page (`/contact/`)
-Simpler contact form. Same routing as campaign brief — email to `zacharia@vantage.pictures` + Lark bot.
+### Contact (`/contact/`)
+Email + Lark; fire-and-forward (no form DB).
 
 ---
 
 ## Analytics & Tracking
 
-All tracking is implemented via **Google Tag Manager**. Do not implement GA4, Meta Pixel, LinkedIn Insight Tag, or Microsoft Clarity directly — route everything through GTM. The GTM container ID must be stored in an environment variable.
-
-| Tool | Purpose |
-|---|---|
-| Google Analytics 4 | Site analytics |
-| Meta Pixel | Facebook/Instagram ad attribution |
-| LinkedIn Insight Tag | LinkedIn ad attribution |
-| Microsoft Clarity | Session recording and heatmaps |
-| Vimeo Player SDK | Video play event tracking, piped into GTM data layer |
+All tracking through **Google Tag Manager** (`NEXT_PUBLIC_GTM_ID`). Do not implement GA4 / Meta / LinkedIn / Clarity directly in code. Vimeo play events push into the data layer for GTM.
 
 ---
 
 ## Performance Expectations
 
-- All portfolio and blog pages are statically generated at build time (SSG)
-- Taxonomy archive pages (industry, market, video-format, category) are also statically generated
-- Images are served via Next.js `<Image>` component with lazy loading and modern formats (WebP/AVIF)
-- Vimeo embeds are lazy-loaded — do not embed the iframe until user interaction
+- Prefer static / cached rendering for content pages
+- Images via Next.js `<Image>` + Sanity image URLs (`@sanity/image-url`)
+- Homepage carousel uses native Vimeo preview minting (`VIMEO_ACCESS_TOKEN`); iframe is fallback only
 - Core Web Vitals targets: LCP < 2.5s, CLS < 0.1, INP < 200ms
-- No client-side data fetching on page load for content that can be statically rendered
 
 ---
 
 ## SEO Requirements
 
-- Every page has a unique meta title and meta description, sourced from Sanity fields
-- Open Graph tags on all pages (title, description, image)
-- JSON-LD structured data on portfolio entries and blog posts
-- Canonical tags on all pages, with `hreflang` alternates for EN/ZH pairs
-- XML sitemap auto-generated and submitted to Google Search Console
-- All existing URLs preserved exactly or explicitly 301-redirected (see `site-architecture.md`)
+- Preserve existing URL equity; redirects live in `next.config.ts`
+- Blog posts stay at root (`/[slug]`), not under `/news/`
+- App host / work-internal surfaces are `noindex` and excluded from the sitemap
+- Sitemap: `https://vantage.pictures/sitemap.xml`
 
 ---
 
-## Key Development Principles
+## Related docs
 
-- Build for the editor, not just the developer. CMS fields should be clearly labelled and scoped to exactly what each content type needs.
-- Never hardcode content that belongs in Sanity. Page copy, titles, and media all come from the CMS.
-- Prefer static generation. Use server components and ISR only where static generation is insufficient.
-- The site must be fully functional without JavaScript for core content (portfolio, blog, pages). JS enhances; it does not gate.
-- Mobile-first. The majority of client traffic is on mobile in Asia.
-- Do not install packages without a clear reason. Keep `package.json` lean.
-- All components are in `/components`, all Sanity schemas in `/sanity/schemas`, all page routes in `/app`.
-
----
-
-## Reference: Legacy WordPress Installation
-
-The WordPress files in this folder are **read-only reference material** until explicitly told otherwise. They exist to:
-- Provide the design system and CSS to extract into `design-tokens.md`
-- Provide ACF field structures to inform Sanity schema definitions
-- Provide content for migration into Sanity
-- Provide Gravity Forms structure for rebuilding the campaign brief form
-
-Do not modify any WordPress files. Do not run `wp` commands that write to the database without explicit instruction. The WordPress installation is a source of truth for existing content, not an active development target.
-
----
-
-## External Documentation
-
-See `external-docs.md` for all reference links. Always prefer official documentation over third-party tutorials.
+| Doc | Topic |
+|---|---|
+| `site-architecture.md` | Routes and hosts |
+| `env-vars.md` | Environment variables |
+| `redesign-content-fields.md` | CMS consolidation debt |
+| `design-tokens.md` / `candidate-tokens.md` | Tokens |
+| `content-schema.md` / `migration-data.md` | Historical rebuild notes (may be stale) |

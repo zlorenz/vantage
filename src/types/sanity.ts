@@ -343,18 +343,6 @@ export interface WorkPage {
   bodyZh?: PortableTextBlock[];
 }
 
-/** Homepage hero slide — dereferenced portfolio entry. */
-export interface HeroSlideData {
-  slug: string;
-  slugZh?: string;
-  displayTitleParts?: DisplayTitlePartsValue;
-  headerTitleOverride?: string;
-  headerTitleOverrideZh?: string;
-  description?: string;
-  descriptionZh?: string;
-  featuredImage: SanityImage;
-}
-
 /** CMS page document — shared shape for static pages. */
 export interface PageDocument {
   _id: string;
@@ -370,11 +358,10 @@ export interface PageDocument {
   featuredImage?: SanityImage;
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
-  heroSlides?: HeroSlideData[];
-  /** Curated grid entries (order preserved). Home: “A Bit of Our Work”; VPS: “Shot in Vietnam”. */
+  /** Homepage carousel order (also drives Work featured strip). */
+  carouselSlides?: PortfolioCard[];
+  /** Curated grid entries (order preserved). VPS: “Shot in Vietnam”. */
   featuredWork?: PortfolioCard[];
-  /** Homepage brand logo grid (`logoId` from shared registry). */
-  brandLogos?: Array<{ logoId?: string }>;
   founders?: Founder[];
   pdfDownload?: PdfDownload;
   seo?: SeoFields;
@@ -446,12 +433,8 @@ export interface BlogPostMainVideo {
 
 /** Full blog post shape. */
 export interface BlogPost extends BlogPostCard {
-  /** Live body — not selected by POST_BY_SLUG_QUERY on redesign (cards use bodyText). */
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
-  /** Redesign-branch article body (parallel to live body/bodyZh). */
-  redesignBody?: PortableTextBlock[];
-  redesignBodyZh?: PortableTextBlock[];
   _updatedAt?: string;
   seo?: SeoFields;
   noIndex?: boolean;

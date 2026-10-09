@@ -1,15 +1,8 @@
 /**
  * blogPost — Blog / news article document.
  *
- * Source: content-schema.md §4.3
- * WordPress origin: `post` (23 entries)
- *
  * URL pattern: /[slug]/ (EN) — root level, NOT under /news/
  * Chinese: /zh/[slugZh]/
- *
- * Parallel body fields: live `body`/`bodyZh` (main + hosted Studio) vs
- * `redesignBody`/`redesignBodyZh` (redesign branch only). See
- * `.cursor/docs/redesign-content-fields.md`.
  */
 
 import {defineField, defineType} from 'sanity'
@@ -24,11 +17,6 @@ export const blogPost = defineType({
   title: 'Blog Posts',
   type: 'document',
 
-  groups: [
-    {name: 'live', title: 'Legacy / Live Content', default: true},
-    {name: 'redesign', title: 'Redesign Content'},
-  ],
-
   fieldsets: [
     {name: 'card', title: 'Card', options: {columns: 2}},
     // Untitled layout row (legend hidden via studio.css — Sanity auto-titles from name).
@@ -40,7 +28,6 @@ export const blogPost = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      group: 'live',
       validation: (rule) => rule.required(),
       optional: false,
     }),
@@ -49,7 +36,6 @@ export const blogPost = defineType({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
-      group: 'live',
       fieldset: 'card',
       options: {hotspot: true},
       hidden: hiddenForTranslator,
@@ -60,7 +46,6 @@ export const blogPost = defineType({
       title: 'Excerpt',
       type: 'text',
       rows: 3,
-      group: 'live',
       fieldset: 'card',
       description: 'Card / teaser copy. Usually the former body lead paragraph.',
       optional: true,
@@ -70,7 +55,6 @@ export const blogPost = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      group: 'live',
       fieldset: 'slugAndDate',
       description: 'Root-level URL: /[slug]/ — not /news/[slug]/. ZH: /zh/[slug]/',
       options: {source: 'title', maxLength: 96},
@@ -83,7 +67,6 @@ export const blogPost = defineType({
       name: 'publishedAt',
       title: 'Published At',
       type: 'datetime',
-      group: 'live',
       fieldset: 'slugAndDate',
       validation: (rule) => rule.required(),
       hidden: hiddenForTranslator,
@@ -93,7 +76,6 @@ export const blogPost = defineType({
       name: 'categories',
       title: 'Categories',
       type: 'array',
-      group: 'live',
       of: [{type: 'reference', to: [{type: 'category'}]}],
       components: {input: TaxonomyCheckboxInput},
       hidden: hiddenForTranslator,
@@ -103,7 +85,6 @@ export const blogPost = defineType({
       name: 'relatedCase',
       title: 'Related Case',
       type: 'reference',
-      group: 'live',
       to: [{type: 'portfolioEntry'}],
       description:
         'Optional. When set, the post hero plays this portfolio entry’s videos (same carousel as the case page).',
@@ -114,7 +95,6 @@ export const blogPost = defineType({
       name: 'mainVideo',
       title: 'Main Video',
       type: 'videoEmbed',
-      group: 'live',
       description:
         'Fallback hero video when Related Case is empty. Vimeo or YouTube URL. Mid-body videos stay in the body.',
       hidden: hiddenForTranslator,
@@ -124,7 +104,6 @@ export const blogPost = defineType({
       name: 'body',
       title: 'Body (English)',
       type: 'portableTextBody',
-      group: 'live',
       components: {input: BodyPortableTextInput},
       validation: (rule) => rule.required(),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
@@ -135,31 +114,8 @@ export const blogPost = defineType({
       name: 'bodyZh',
       title: 'Body (Chinese)',
       type: 'portableTextBody',
-      group: 'live',
       components: {input: BodyPortableTextInput},
       hidden: hideZhPortableText('body'),
-      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
-    }),
-
-    defineField({
-      name: 'redesignBody',
-      title: 'Redesign Body (English)',
-      type: 'portableTextBody',
-      group: 'redesign',
-      description:
-        'Parallel body for the redesign branch only. Live body/bodyZh stay untouched — see .cursor/docs/redesign-content-fields.md.',
-      components: {input: BodyPortableTextInput},
-      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
-      hidden: hiddenForTranslatorWhenEmpty,
-    }),
-
-    defineField({
-      name: 'redesignBodyZh',
-      title: 'Redesign Body (Chinese)',
-      type: 'portableTextBody',
-      group: 'redesign',
-      components: {input: BodyPortableTextInput},
-      hidden: hideZhPortableText('redesignBody'),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
     }),
 
@@ -167,7 +123,6 @@ export const blogPost = defineType({
       name: 'noIndex',
       title: 'No Index',
       type: 'boolean',
-      group: 'live',
       description: 'Exclude from search indexing and sitemap (typically work-internal).',
       initialValue: false,
       hidden: hiddenForTranslator,
@@ -177,13 +132,11 @@ export const blogPost = defineType({
       name: 'seo',
       title: 'SEO',
       type: 'seoFields',
-      group: 'live',
     }),
 
     defineField({
       name: 'trash',
       type: 'trashMetadata',
-      group: 'live',
       hidden: true,
       readOnly: true,
     }),

@@ -1,5 +1,5 @@
 /**
- * Featured-work carousel GROQ — used by Home and /prototype/carousel.
+ * Featured-work carousel GROQ — used by Home and Work index.
  */
 
 /** Shared portfolio projection for carousel slides. */
@@ -38,9 +38,9 @@ const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
   previewCleanVimeoUrl
 `
 
-/** Redesign homepage carousel — CMS order from page.carouselSlides. */
+/** Homepage carousel — CMS order from page.carouselSlides on canonical `home`. */
 export const HOME_REDESIGN_CAROUSEL_QUERY = `
-  *[_type == "page" && slug.current == "home-redesign"][0]{
+  *[_type == "page" && slug.current == "home"][0]{
     carouselSlides[
       !defined(@->trash.trashedAt)
     ]->{

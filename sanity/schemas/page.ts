@@ -135,20 +135,21 @@ export const page = defineType({
       group: 'details',
     }),
 
-    // —— Content (frontend order on Home) ——
+    // —— Content (frontend order) ——
     defineField({
-      name: 'heroSlides',
-      title: 'Hero Carousel Slides',
+      name: 'carouselSlides',
+      title: 'Carousel Slides',
       type: 'array',
       group: 'content',
       of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
       description:
-        'Full-viewport carousel at the top of the home page (display order). Button label is always “Watch”.',
-      hidden: (ctx) => hideUnlessPageSlug('home')(ctx) || hiddenForTranslator(ctx),
+        'Drag to reorder. Powers the homepage carousel and Work featured strip.',
+      hidden: (ctx) =>
+        hideUnlessPageSlug('home')(ctx) || hiddenForTranslator(ctx),
       components: {input: ClearableArrayInput},
       options: {
         clearAll: {
-          confirmTitle: 'Clear hero carousel?',
+          confirmTitle: 'Clear carousel slides?',
           confirmBody:
             'Remove every carousel slide from this draft? The homepage hero will be empty until you add slides again. Publish to make this live.',
         },
@@ -162,9 +163,9 @@ export const page = defineType({
       group: 'content',
       of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
       description:
-        'Curated portfolio grid (display order). Home: “A Bit of Our Work” (falls back to nine most recent). Vietnam Production Service: “Shot in Vietnam” (falls back to all Vietnam-tagged projects).',
+        'Curated portfolio grid (display order). Vietnam Production Service: “Shot in Vietnam” (falls back to all Vietnam-tagged projects).',
       hidden: (ctx) =>
-        hideUnlessPageSlug(['home', 'vietnam-production-service'])(ctx) ||
+        hideUnlessPageSlug(['vietnam-production-service'])(ctx) ||
         hiddenForTranslator(ctx),
       components: {input: ClearableArrayInput},
       options: {
@@ -176,19 +177,7 @@ export const page = defineType({
       } as never,
     }),
 
-    defineField({
-      name: 'carouselSlides',
-      title: 'Carousel Slides',
-      type: 'array',
-      group: 'content',
-      of: [{type: 'reference', to: [{type: 'portfolioEntry'}]}],
-      description:
-        'Drag to reorder. Powers the redesigned homepage carousel.',
-      hidden: (ctx) =>
-        hideUnlessPageSlug('home-redesign')(ctx) || hiddenForTranslator(ctx),
-    }),
-
-    // —— About Redesign media (slug `about-redesign`) ——
+    // —— About media (slug `about`) ——
     defineField({
       name: 'specialties',
       title: 'Our Specialties',
@@ -206,7 +195,7 @@ export const page = defineType({
           return true
         }),
       hidden: (ctx) =>
-        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslator(ctx),
     }),
 
     defineField({
@@ -226,7 +215,7 @@ export const page = defineType({
           return true
         }),
       hidden: (ctx) =>
-        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslator(ctx),
     }),
 
     defineField({
@@ -237,7 +226,7 @@ export const page = defineType({
       description:
         'Media for the yellow “Get the full rundown” row. Portfolio preview, custom Vimeo/YouTube, or static image. Leave empty for the automatic placeholder.',
       hidden: (ctx) =>
-        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslator(ctx),
     }),
 
     defineField({
@@ -248,7 +237,7 @@ export const page = defineType({
       description:
         'Media for the white “Explore the production log” row. Portfolio preview, custom Vimeo/YouTube, or static image. Leave empty for the automatic placeholder.',
       hidden: (ctx) =>
-        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslator(ctx),
     }),
 
     defineField({
@@ -268,7 +257,7 @@ export const page = defineType({
           return true
         }),
       hidden: (ctx) =>
-        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslator(ctx),
     }),
 
     defineField({
@@ -288,7 +277,7 @@ export const page = defineType({
           return true
         }),
       hidden: (ctx) =>
-        hideUnlessPageSlug('about-redesign')(ctx) || hiddenForTranslator(ctx),
+        hideUnlessPageSlug('about')(ctx) || hiddenForTranslator(ctx),
     }),
 
     defineField({
@@ -296,12 +285,12 @@ export const page = defineType({
       title: 'Body (English)',
       type: 'pagePortableText',
       group: 'content',
-      description: 'Main page copy. On Home: company description under Featured Work.',
-      // News uses Excerpt; redesign stubs (home/about) are media-first for now.
+      description: 'Main page copy.',
+      // News uses Excerpt; Home is media-first (carousel).
       validation: (rule) =>
         rule.custom((value, context) => {
           const doc = context.document as Record<string, unknown>
-          if (isPageSlug(doc, ['news', 'about-redesign', 'home-redesign'])) {
+          if (isPageSlug(doc, ['news', 'home'])) {
             return true
           }
           if (!value || (Array.isArray(value) && value.length === 0)) {
@@ -310,9 +299,7 @@ export const page = defineType({
           return true
         }),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
-      hidden: (ctx) =>
-        isPageSlug(ctx.document as Record<string, unknown>, 'about-redesign') ||
-        Boolean(hiddenForTranslatorWhenEmpty(ctx)),
+      hidden: (ctx) => Boolean(hiddenForTranslatorWhenEmpty(ctx)),
       components: {input: BilingualPortableTextInput},
     }),
 
@@ -321,30 +308,9 @@ export const page = defineType({
       title: 'Body (Chinese)',
       type: 'pagePortableText',
       group: 'content',
-      hidden: (ctx) =>
-        isPageSlug(ctx.document as Record<string, unknown>, 'about-redesign') ||
-        Boolean(hideZhPortableText('body')(ctx)),
+      hidden: (ctx) => Boolean(hideZhPortableText('body')(ctx)),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
       components: {input: BilingualPortableTextInput},
-    }),
-
-    defineField({
-      name: 'brandLogos',
-      title: 'Brand Logos',
-      type: 'array',
-      group: 'content',
-      of: [{type: 'brandLogoItem'}],
-      description:
-        '“Brands We Work With” grid on the home page. Drag to reorder or swap among curated registry logos. Falls back to the default logo set if empty. Adding a new brand mark is a design/code change (SVG + shared/client-logos entry + redeploy), not a Studio upload.',
-      hidden: (ctx) => hideUnlessPageSlug('home')(ctx) || hiddenForTranslator(ctx),
-      components: {input: ClearableArrayInput},
-      options: {
-        clearAll: {
-          confirmTitle: 'Clear brand logos?',
-          confirmBody:
-            'Remove every brand logo from this draft? The homepage grid will fall back to the default logo set until you curate again. Publish to make this live.',
-        },
-      } as never,
     }),
 
     defineField({
