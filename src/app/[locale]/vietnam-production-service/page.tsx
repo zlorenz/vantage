@@ -70,7 +70,6 @@ function ServiceBodyImage({ src, alt, width, height }: BodyImage) {
         sizes={BODY_IMAGE_SIZES}
       />
       <CornerFrame
-        variant="dark"
         crosshair={{ size: 40, color: 'var(--vp-text)' }}
       />
     </div>
@@ -327,7 +326,6 @@ export default async function VietnamProductionServicePage({ params }: Props) {
           <span className="vp-contact-cta__corner vp-contact-cta__corner--br" />
           <div className="vp-contact-cta__rulers">
             <CornerFrame
-              variant="dark"
               showBrackets={false}
               rulers={{ top: true, bottom: true }}
             />

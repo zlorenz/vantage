@@ -79,7 +79,6 @@ export async function AboutProductionHouseSection() {
           eyebrow={t('productionHouseEyebrow')}
           items={items}
           imagePosition="left"
-          theme="dark"
         />
       </div>
     </SectionWrapper>

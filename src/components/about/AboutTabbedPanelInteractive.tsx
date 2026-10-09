@@ -42,8 +42,6 @@ export type AboutTabbedPanelItem = {
   previewEndSeconds?: number | null;
 };
 
-type AboutTabbedPanelTheme = 'light' | 'dark';
-
 type AboutTabbedPanelInteractiveProps = {
   sectionId: string;
   heading: string;
@@ -51,7 +49,6 @@ type AboutTabbedPanelInteractiveProps = {
   items: readonly AboutTabbedPanelItem[];
   /** Menu column side on large screens. Mobile always stacks menu then image. */
   imagePosition?: 'left' | 'right';
-  theme?: AboutTabbedPanelTheme;
 };
 
 function clipKey(item: AboutTabbedPanelItem) {
@@ -153,12 +150,10 @@ function AboutTabMediaFrame({
   items,
   activeIndex,
   warmed,
-  theme,
 }: {
   items: readonly AboutTabbedPanelItem[];
   activeIndex: number;
   warmed: boolean;
-  theme: AboutTabbedPanelTheme;
 }) {
   const item = items[activeIndex];
   if (!item || !(item.imageSrc || item.previewVimeoUrl)) return null;
@@ -168,7 +163,6 @@ function AboutTabMediaFrame({
       <div className="vp-about-tabs__photo">
         <AboutTabMedia items={items} activeIndex={activeIndex} warmed={warmed} />
         <CornerFrame
-          variant={theme === 'dark' ? 'dark' : 'light'}
           crosshair={{size: 40, color: 'var(--vp-text)'}}
         />
       </div>
@@ -176,27 +170,12 @@ function AboutTabMediaFrame({
   );
 }
 
-const THEME_CLASSES: Record<
-  AboutTabbedPanelTheme,
-  {tabSelected: string; description: string}
-> = {
-  light: {
-    tabSelected: ' is-selected',
-    description: ' text-black/75',
-  },
-  dark: {
-    tabSelected: ' is-selected',
-    description: ' text-vp-text-muted',
-  },
-};
-
 export function AboutTabbedPanelInteractive({
   sectionId,
   heading,
   eyebrow,
   items,
   imagePosition = 'right',
-  theme = 'light',
 }: AboutTabbedPanelInteractiveProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [rovingIndex, setRovingIndex] = useState(0);
@@ -272,7 +251,6 @@ export function AboutTabbedPanelInteractive({
   if (items.length === 0) return null;
 
   const headingId = `about-${sectionId}-heading`;
-  const themeClasses = THEME_CLASSES[theme];
   /* Desktop side stage: keep first-item media when every tab is collapsed. */
   const mediaIndex = activeIndex ?? 0;
 
@@ -280,7 +258,6 @@ export function AboutTabbedPanelInteractive({
     <div
       ref={sectionRef}
       className="vp-about-tabs"
-      data-theme={theme}
       aria-labelledby={headingId}
     >
       <div className="vp-about-tabs__header">
@@ -324,9 +301,7 @@ export function AboutTabbedPanelInteractive({
                   aria-selected={selected}
                   aria-expanded={selected}
                   tabIndex={rovingIndex === index ? 0 : -1}
-                  className={`vp-about-tabs__tab${
-                    selected ? themeClasses.tabSelected : ''
-                  }`}
+                  className={`vp-about-tabs__tab${selected ? ' is-selected' : ''}`}
                   onClick={() => activateTab(index)}
                   onKeyDown={(event) => onTabKeyDown(event, index)}
                   onBlur={onTabBlur}
@@ -349,7 +324,7 @@ export function AboutTabbedPanelInteractive({
                   <p
                     id={selected ? descriptionId : undefined}
                     aria-live={selected ? 'polite' : undefined}
-                    className={`vp-about-tabs__description${themeClasses.description}`}
+                    className="vp-about-tabs__description text-vp-text-muted"
                   >
                     {item.description}
                   </p>
@@ -358,7 +333,6 @@ export function AboutTabbedPanelInteractive({
                       items={items}
                       activeIndex={index}
                       warmed={warmed}
-                      theme={theme}
                     />
                   </div>
                 </AboutAccordionReveal>
@@ -373,7 +347,6 @@ export function AboutTabbedPanelInteractive({
             items={items}
             activeIndex={mediaIndex}
             warmed={warmed}
-            theme={theme}
           />
         </div>
       </div>

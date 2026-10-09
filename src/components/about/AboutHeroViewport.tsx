@@ -51,7 +51,7 @@ export function AboutHeroViewport() {
                 } as CSSProperties
               }
             >
-              <CornerFrame variant="dark" />
+              <CornerFrame />
               <p className="vp-about-hero__quote-text">{quote}</p>
             </div>
           ))}

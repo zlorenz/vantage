@@ -78,7 +78,6 @@ export async function AboutWhoWeAreSection() {
           eyebrow={t('whoWeAreEyebrow')}
           items={items}
           imagePosition="right"
-          theme="dark"
         />
       </div>
     </SectionWrapper>

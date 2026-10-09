@@ -27,7 +27,6 @@ export function AboutMoreSection({ title, body, links }: AboutMoreSectionProps) 
     <div className="vp-about-more">
       <div className="vp-about-more__frame">
         <CornerFrame
-          variant="dark"
           rulers={{ top: true, bottom: true }}
           crosshair={{ size: 60, color: 'var(--vp-link)' }}
         />

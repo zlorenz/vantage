@@ -36,10 +36,10 @@ Sitewide chrome + shared ticks/lines promoted out of `--vp-candidate-*`:
 D7 cross-surface type / ink / filter:
 
 - `--vp-section-display-*`, `--vp-feature-title-*`, `--vp-eyebrow-*`, `--vp-dek-*`, `--vp-step-*`
-- `--vp-frame-inset` / `--vp-frame-inset-mobile`
-- `--vp-ink-15` / `--vp-ink-30` / `--vp-ink-50`, `--vp-muted-50`
+- `--vp-frame-inset` / `--vp-frame-inset-mobile`, `--vp-muted-50`
 - `--vp-filter-panel-max-height`, `--vp-filter-term-muted`, `--vp-search-muted`, `--vp-index-inactive`
 - Work-index brand yellow → `--vp-link` (homepage carousel keeps scoped `--vp-home-carousel-brand-accent`)
+- About light theme + CornerFrame `light` + `--vp-ink-*` retired (no light surfaces ship)
 
 Do not reintroduce candidate aliases for these.
 
@@ -318,7 +318,7 @@ Frames: S1 `2602:31406`, S2.1 `2602:32040`, S2.2 `2602:32453`, S3 `2602:32841`, 
 Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2466-28598  
 About-local candidates stay in `src/components/about/about-tokens.css`. Shared type / ink / frame insets promoted to `globals.css` (D7). Special Gothic tracking stays **0**. Section padding is declared only at `min-width: 992px` so it does not change the mobile rhythm or `--vp-section-y`.
 
-**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-struct-tick-size` (12px), `--vp-struct-tick-stroke` (1px), and `--vp-struct-tick-color` (`rgba(255,255,255,0.3)`) for dark corner brackets; `--vp-line-color` (`rgba(255,255,255,0.15)`) for dark hairlines and tick-ruler marks. Light brackets use `--vp-ink-50`.
+**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-struct-tick-size` (12px), `--vp-struct-tick-stroke` (1px), and `--vp-struct-tick-color` (`rgba(255,255,255,0.3)`) for corner brackets; `--vp-line-color` (`rgba(255,255,255,0.15)`) for hairlines and tick-ruler marks. Light About sections / light CornerFrame are retired.
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
@@ -343,11 +343,11 @@ About-local candidates stay in `src/components/about/about-tokens.css`. Shared t
 | `--vp-candidate-about-step-lh` | `20px` | ~~same~~ | same | superseded → `--vp-step-lh` | |
 | `--vp-candidate-about-dek-size` | `22px` | ~~More About dek~~ | body_large on `2466:29066` | superseded → `--vp-dek-size` | |
 | `--vp-candidate-about-dek-lh` | `1.6` | ~~same~~ | same | superseded → `--vp-dek-lh` | |
-| `--vp-candidate-about-black-20` | `rgba(0,0,0,0.2)` | Inactive menu rows, light section | `2466:28819` | pending | |
-| `--vp-candidate-about-black-15` | `rgba(0,0,0,0.15)` | ~~Light-section rules and rulers~~ | `2466:28818` | superseded → `--vp-ink-15` | |
-| `--vp-candidate-about-black-30` | `rgba(0,0,0,0.3)` | ~~Workflow numbers, light ruler labels~~ | `2466:28885` | superseded → `--vp-ink-30` | |
-| `--vp-candidate-about-black-50` | `rgba(0,0,0,0.5)` | ~~Light corner brackets~~ | specialties bracket SVG | superseded → `--vp-ink-50` | Dark brackets reuse the brief tick color. |
-| `--vp-candidate-about-black-70` | `rgba(0,0,0,0.7)` | Body on white | `2466:28825` | pending | |
+| `--vp-candidate-about-black-20` | `rgba(0,0,0,0.2)` | ~~Inactive menu rows, light section~~ | `2466:28819` | retired | Light About surfaces removed; do not reintroduce. |
+| `--vp-candidate-about-black-15` | `rgba(0,0,0,0.15)` | ~~Light-section rules and rulers~~ | `2466:28818` | retired | same |
+| `--vp-candidate-about-black-30` | `rgba(0,0,0,0.3)` | ~~Workflow numbers, light ruler labels~~ | `2466:28885` | retired | same |
+| `--vp-candidate-about-black-50` | `rgba(0,0,0,0.5)` | ~~Light corner brackets~~ | specialties bracket SVG | retired | same |
+| `--vp-candidate-about-black-70` | `rgba(0,0,0,0.7)` | ~~Body on white~~ | `2466:28825` | retired | same |
 | `--vp-candidate-about-white-20` | `rgba(255,255,255,0.2)` | Inactive menu rows, dark section | `2466:28864` | pending | |
 | `--vp-candidate-about-white-50` | `rgba(255,255,255,0.5)` | ~~More About dek~~ | `2466:29066` | superseded → `--vp-muted-50` | |
 | `--vp-candidate-about-white-60` | `rgba(255,255,255,0.6)` | Body on black | `2466:28870` | pending | |

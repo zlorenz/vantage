@@ -380,8 +380,8 @@
   --vp-line-color: rgba(255, 255, 255, 0.15);
 
   /*
-   * Shared section type + light-surface ink (D7).
-   * About, contact CTA, VPS featured header, CornerFrame light rulers.
+   * Shared section type (D7).
+   * About, contact CTA, VPS featured header, CornerFrame rulers.
    */
   --vp-section-display-size: 64px;
   --vp-section-display-size-mobile: 30px;
@@ -398,9 +398,6 @@
   --vp-step-lh: 20px;
   --vp-frame-inset: 15px;
   --vp-frame-inset-mobile: 8px;
-  --vp-ink-15: rgba(0, 0, 0, 0.15);
-  --vp-ink-30: rgba(0, 0, 0, 0.3);
-  --vp-ink-50: rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 767px) {

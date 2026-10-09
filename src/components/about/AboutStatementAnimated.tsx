@@ -345,7 +345,6 @@ function FilmStrip({
               </div>
               {isCenter ? (
                 <CornerFrame
-                  variant="dark"
                   crosshair={{size: 40, color: 'var(--vp-text)'}}
                 />
               ) : null}
@@ -533,7 +532,7 @@ export function AboutStatementAnimated({
         <span className="vp-about-statement__hairline vp-about-statement__hairline--inner-right" aria-hidden="true" />
         <span className="vp-about-statement__baseline" aria-hidden="true" />
         <div className="vp-about-statement__rulers" aria-hidden="true">
-          <CornerFrame variant="dark" rulers={{ top: true, bottom: true }} />
+          <CornerFrame rulers={{ top: true, bottom: true }} />
         </div>
       </div>
     </section>

@@ -10,18 +10,9 @@
   inset: 0;
   pointer-events: none;
   border-radius: 0;
-}
-
-.vp-corner-frame--dark {
   --vp-corner-bracket: var(--vp-struct-tick-color);
   --vp-corner-ruler: var(--vp-line-color);
   --vp-corner-label: var(--vp-muted-30);
-}
-
-.vp-corner-frame--light {
-  --vp-corner-bracket: var(--vp-ink-50, rgba(0, 0, 0, 0.5));
-  --vp-corner-ruler: var(--vp-ink-15, rgba(0, 0, 0, 0.15));
-  --vp-corner-label: var(--vp-ink-30, rgba(0, 0, 0, 0.3));
 }
 
 .vp-corner-frame__bracket {

@@ -119,9 +119,9 @@ Scoped on `#header .vp-mobile-nav-panel__inner` (≤991.98). Promoted from candi
 | `--vp-search-muted` | `rgba(255,255,255,0.4)` | Work SEARCH label |
 | `--vp-index-inactive` | `rgba(255,255,255,0.3)` | Work slide-num inactive ink |
 
-### Shared section type + light ink (D7)
+### Shared section type (D7)
 
-`:root` — about, contact CTA, VPS featured header, CornerFrame light rulers. Work-index brand yellow uses `--vp-link` (same hex as homepage `--vp-home-carousel-brand-accent`).
+`:root` — about, contact CTA, VPS featured header, CornerFrame. Work-index brand yellow uses `--vp-link` (same hex as homepage `--vp-home-carousel-brand-accent`). About light sections were retired; no light-surface ink tokens.
 
 | Token | Value | Usage |
 |---|---|---|
@@ -140,9 +140,6 @@ Scoped on `#header .vp-mobile-nav-panel__inner` (≤991.98). Promoted from candi
 | `--vp-step-lh` | `20px` | same |
 | `--vp-frame-inset` | `15px` | CornerFrame outset (desktop) |
 | `--vp-frame-inset-mobile` | `8px` | CornerFrame outset (mobile) |
-| `--vp-ink-15` | `rgba(0,0,0,0.15)` | Light-surface rules / rulers |
-| `--vp-ink-30` | `rgba(0,0,0,0.3)` | Light ruler labels |
-| `--vp-ink-50` | `rgba(0,0,0,0.5)` | Light corner brackets |
 | `--vp-muted-50` | `rgba(255,255,255,0.5)` | Soft body on black (contact CTA, About dek) |
 
 ### Shared structure ticks / lines

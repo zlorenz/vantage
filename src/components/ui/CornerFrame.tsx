@@ -1,13 +1,12 @@
 /**
  * CornerFrame — decorative brackets, optional crosshair, optional tick rulers.
  *
- * Shared overlay for the About desktop sections. Place it inside a
+ * Shared overlay for dark surfaces (About, contact, VPS). Place it inside a
  * position: relative parent. It does not capture pointer events.
  *
- * Dark brackets reuse the brief tick tokens (12px, 1px, white 0.3).
- * Light brackets use --vp-ink-50. This does not replace
- * the hand-rolled brackets on portfolio nav, blog nav, the campaign brief,
- * or the work index.
+ * Brackets reuse the brief tick tokens (12px, 1px, white 0.3). This does not
+ * replace the hand-rolled brackets on portfolio nav, blog nav, the campaign
+ * brief, or the work index.
  */
 
 import type { CSSProperties } from 'react';
@@ -16,8 +15,6 @@ import './corner-frame.css';
 const MINOR_COUNT = 16;
 
 const LABEL_CYCLE = ['( 01 )', '( 01 )', '( 02 )', '( 03 )', '( 03 )'] as const;
-
-export type CornerFrameVariant = 'light' | 'dark';
 
 export type CornerFrameCrosshair = {
   size: number;
@@ -32,7 +29,6 @@ export type CornerFrameRulers = {
 };
 
 type CornerFrameProps = {
-  variant?: CornerFrameVariant;
   crosshair?: CornerFrameCrosshair;
   rulers?: CornerFrameRulers;
   /** Set false to keep rulers or a crosshair without the corner brackets. */
@@ -86,7 +82,6 @@ function Ruler({
 }
 
 export function CornerFrame({
-  variant = 'dark',
   crosshair,
   rulers,
   showBrackets = true,
@@ -102,7 +97,7 @@ export function CornerFrame({
 
   return (
     <div
-      className={`vp-corner-frame vp-corner-frame--${variant}${className ? ` ${className}` : ''}`}
+      className={`vp-corner-frame${className ? ` ${className}` : ''}`}
       aria-hidden="true"
     >
       {showBrackets ? (

@@ -59,7 +59,7 @@ export function AboutFeatureRow({
                 wash={wash}
               />
             </div>
-            <CornerFrame variant="dark" crosshair={{ size: 40, color: 'var(--vp-text)' }} />
+            <CornerFrame crosshair={{ size: 40, color: 'var(--vp-text)' }} />
           </div>
         </div>
         <div className="vp-about-feature__copy">

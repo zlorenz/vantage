@@ -139,13 +139,13 @@ export default async function ContactPage({ params }: Props) {
           <div className="vp-contact-hero__card">
             {email ? (
               <a href={`mailto:${email}`} className="vp-contact-hero__cell">
-                <CornerFrame variant="dark" />
+                <CornerFrame />
                 <span className="vp-contact-hero__contact">{email}</span>
               </a>
             ) : null}
             {phone && phoneLink ? (
               <a href={phoneLink} className="vp-contact-hero__cell">
-                <CornerFrame variant="dark" />
+                <CornerFrame />
                 <span className="vp-contact-hero__contact">{phone}</span>
               </a>
             ) : null}
@@ -183,7 +183,6 @@ export default async function ContactPage({ params }: Props) {
           <span className="vp-contact-cta__corner vp-contact-cta__corner--br" />
           <div className="vp-contact-cta__rulers">
             <CornerFrame
-              variant="dark"
               showBrackets={false}
               rulers={{ top: true, bottom: true }}
             />
