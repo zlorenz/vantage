@@ -8,7 +8,6 @@ const sharedDisplayTitles = path.resolve(rootDir, '../shared/display-titles')
 const sharedPhraseBook = path.resolve(rootDir, '../shared/phrase-book')
 const sharedAiTranslation = path.resolve(rootDir, '../shared/ai-translation')
 const sharedVideoUrl = path.resolve(rootDir, '../shared/video-url')
-const sharedClientLogos = path.resolve(rootDir, '../shared/client-logos/index.ts')
 const sharedTrashRetention = path.resolve(rootDir, '../shared/trash-retention')
 const sharedStudioOverlayZ = path.resolve(rootDir, '../shared/studio-overlay-z')
 const sharedCarouselRatios = path.resolve(rootDir, '../shared/carousel-ratios')
@@ -67,7 +66,6 @@ export default defineCliConfig({
         '@phrase-book': sharedPhraseBook,
         '@ai-translation': sharedAiTranslation,
         '@video-url': sharedVideoUrl,
-        '@client-logos': sharedClientLogos,
         '@trash-retention': sharedTrashRetention,
         '@studio-overlay-z': sharedStudioOverlayZ,
         '@carousel-ratios': sharedCarouselRatios,

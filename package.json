@@ -37,7 +37,6 @@
     "test:portfolio-videos": "tsx shared/portfolio-videos/resolve.test.ts",
     "test:display-titles": "tsx shared/display-titles/display-titles.test.ts",
     "test:phrase-book": "tsx shared/phrase-book/phrase-book.test.ts",
-    "test:client-logos": "tsx shared/client-logos/client-logos.test.ts",
     "test:identity-usage": "tsx shared/crew-credits/identity-usage.test.ts",
     "test:identity-merge": "tsx shared/crew-credits/identity-merge.test.ts",
     "test:identity-link-match": "tsx shared/crew-credits/identity-link-match.test.ts",
