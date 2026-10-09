@@ -152,7 +152,8 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
 @media (max-width: 575.98px) {
   .vp-site-footer {
     --vp-footer-height: auto;
-    --vp-candidate-site-footer-mobile-band-height: 80px;
+    --vp-site-footer-mobile-band-height: 80px;
+    --vp-site-footer-mobile-email-size: 16px;
 
     flex-direction: column;
     align-items: stretch;
@@ -177,7 +178,7 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
   .vp-site-footer__email-link {
     justify-content: center;
     /* 20px Expanded Bold does not fit 390 with icon + pad — scale to fit. */
-    font-size: var(--vp-candidate-site-footer-mobile-email-size, 16px);
+    font-size: var(--vp-site-footer-mobile-email-size, 16px);
     white-space: nowrap;
     overflow-wrap: normal;
     text-align: center;
@@ -190,12 +191,12 @@ body:has(.vp-portfolio-index.is-grid) .vp-site-footer {
 
   .vp-site-footer__mark {
     width: 100%;
-    height: var(--vp-candidate-site-footer-mobile-band-height, 80px);
+    height: var(--vp-site-footer-mobile-band-height, 80px);
   }
 
   .vp-site-footer__socials {
     width: 100%;
-    height: var(--vp-candidate-site-footer-mobile-band-height, 80px);
+    height: var(--vp-site-footer-mobile-band-height, 80px);
   }
 
   .vp-site-footer__social {

@@ -3,7 +3,7 @@
  */
 
 /** Shared portfolio projection for carousel slides. */
-const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
+const HOME_CAROUSEL_ENTRY_PROJECTION = `
   _id,
   "slug": slug.current,
   "slugZh": slugZh.current,
@@ -39,12 +39,12 @@ const PROTOTYPE_CAROUSEL_ENTRY_PROJECTION = `
 `
 
 /** Homepage carousel — CMS order from page.carouselSlides on canonical `home`. */
-export const HOME_REDESIGN_CAROUSEL_QUERY = `
+export const HOME_CAROUSEL_QUERY = `
   *[_type == "page" && slug.current == "home"][0]{
     carouselSlides[
       !defined(@->trash.trashedAt)
     ]->{
-      ${PROTOTYPE_CAROUSEL_ENTRY_PROJECTION}
+      ${HOME_CAROUSEL_ENTRY_PROJECTION}
     }
   }
 `;

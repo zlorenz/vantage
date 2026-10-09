@@ -237,8 +237,8 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
     min-height: 570px;
     /* Mid: no VAP strip — media + copy share the row 50/50. */
     padding-right: 0;
-    border-top: 1px solid var(--vp-candidate-brief-line);
-    border-bottom: 1px solid var(--vp-candidate-brief-line);
+    border-top: 1px solid var(--vp-line-color);
+    border-bottom: 1px solid var(--vp-line-color);
   }
 
   .vp-about-feature--mirrored .vp-about-feature__row {
@@ -266,12 +266,12 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
     min-height: 570px;
     padding: var(--vp-candidate-about-cell-pad);
     border-block: 0;
-    border-inline-end: 1px solid var(--vp-candidate-brief-line);
+    border-inline-end: 1px solid var(--vp-line-color);
   }
 
   .vp-about-feature--mirrored .vp-about-feature__media {
     border-inline-end: 0;
-    border-inline-start: 1px solid var(--vp-candidate-brief-line);
+    border-inline-start: 1px solid var(--vp-line-color);
   }
 
   .vp-about-feature__photo {
@@ -340,11 +340,11 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
 
   .vp-about-feature__pattern--end {
     right: 0;
-    border-inline-start: 1px solid var(--vp-candidate-brief-line);
+    border-inline-start: 1px solid var(--vp-line-color);
   }
 
   .vp-about-feature__pattern--start {
     left: 0;
-    border-inline-end: 1px solid var(--vp-candidate-brief-line);
+    border-inline-end: 1px solid var(--vp-line-color);
   }
 }

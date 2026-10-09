@@ -77,10 +77,10 @@
     );
     /*
      * Mobile SEARCH/FILTER chrome under 64px nav: circular chips
-     * (--vp-candidate-chrome-chip-size) + py-24 = 5.75rem.
+     * (--vp-chrome-chip-size) + py-24 = 5.75rem.
      */
     --vp-index-top-row-height: 5.75rem;
-    --vp-index-view-toggle-size: var(--vp-candidate-chrome-chip-size, 2.75rem);
+    --vp-index-view-toggle-size: var(--vp-chrome-chip-size, 2.75rem);
     /* Decision 6: omit active-filter pills on mobile for now. */
     justify-content: flex-end;
     /* Prior padding + ~half leftover from centering — keeps bottom edge put. */
@@ -192,7 +192,7 @@
 
   /*
    * Circular glass chip — shared with blog `.vp-news-page__filter-trigger`
-   * via --vp-candidate-chrome-chip-*.
+   * via --vp-chrome-chip-*.
    */
   .vp-portfolio-index__mobile-chrome-search,
   .vp-portfolio-index__mobile-chrome-filter {
@@ -200,13 +200,13 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: var(--vp-candidate-chrome-chip-size, 2.75rem);
-    height: var(--vp-candidate-chrome-chip-size, 2.75rem);
+    width: var(--vp-chrome-chip-size, 2.75rem);
+    height: var(--vp-chrome-chip-size, 2.75rem);
     margin: 0;
     padding: 0;
-    border: var(--vp-candidate-chrome-chip-border);
-    border-radius: var(--vp-candidate-chrome-chip-radius, 9999px);
-    background: var(--vp-candidate-chrome-chip-bg);
+    border: var(--vp-chrome-chip-border);
+    border-radius: var(--vp-chrome-chip-radius, 9999px);
+    background: var(--vp-chrome-chip-bg);
     color: #fff;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -230,8 +230,8 @@
 
   .vp-portfolio-index__mobile-chrome-icon {
     display: block;
-    width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
-    height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
+    width: var(--vp-chrome-chip-icon-size, 1.25rem);
+    height: var(--vp-chrome-chip-icon-size, 1.25rem);
     flex-shrink: 0;
   }
 
@@ -1113,8 +1113,8 @@
 .vp-portfolio-index__tool--search {
   margin-inline-end: 0.35rem;
   /* Empty spacer mirrors filter-trigger width when search button is gone. */
-  width: var(--vp-candidate-chrome-chip-size, 2.75rem);
-  height: var(--vp-candidate-chrome-chip-size, 2.75rem);
+  width: var(--vp-chrome-chip-size, 2.75rem);
+  height: var(--vp-chrome-chip-size, 2.75rem);
 }
 
 /* Positions the desktop filter popout above the funnel (mobile sheet is fixed). */
@@ -1130,13 +1130,13 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--vp-candidate-chrome-chip-size, 2.75rem);
-  height: var(--vp-candidate-chrome-chip-size, 2.75rem);
+  width: var(--vp-chrome-chip-size, 2.75rem);
+  height: var(--vp-chrome-chip-size, 2.75rem);
   margin: 0;
   padding: 0;
-  border: var(--vp-candidate-chrome-chip-border);
-  border-radius: var(--vp-candidate-chrome-chip-radius, 9999px);
-  background: var(--vp-candidate-chrome-chip-bg);
+  border: var(--vp-chrome-chip-border);
+  border-radius: var(--vp-chrome-chip-radius, 9999px);
+  background: var(--vp-chrome-chip-bg);
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1158,8 +1158,8 @@
 
 .vp-portfolio-index__filter-trigger-icon {
   display: block;
-  width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
-  height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
+  width: var(--vp-chrome-chip-icon-size, 1.25rem);
+  height: var(--vp-chrome-chip-icon-size, 1.25rem);
 }
 
 /* Scrubber — Siena-like ticks + dark pill; decorative ticks (not 1:1 slides). */

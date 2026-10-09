@@ -60,7 +60,7 @@ section.vp-about-workflow-section {
 }
 
 .vp-how-we-move__item:last-child {
-  border-bottom: 1px solid var(--vp-candidate-brief-line);
+  border-bottom: 1px solid var(--vp-line-color);
 }
 
 .vp-how-we-move__item-heading {
@@ -77,7 +77,7 @@ section.vp-about-workflow-section {
   margin: 0;
   padding: 32px 48px 32px 0;
   border: 0;
-  border-top: 1px solid var(--vp-candidate-brief-line);
+  border-top: 1px solid var(--vp-line-color);
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -283,7 +283,7 @@ section.vp-about-workflow-section {
   .vp-how-we-move__list::after {
     content: '';
     height: 1px;
-    background: var(--vp-candidate-brief-line);
+    background: var(--vp-line-color);
   }
 
   .vp-how-we-move__item,
@@ -297,7 +297,7 @@ section.vp-about-workflow-section {
   .vp-how-we-move__item::before {
     content: '';
     height: 1px;
-    background: var(--vp-candidate-brief-line);
+    background: var(--vp-line-color);
   }
 
   .vp-how-we-move__trigger {

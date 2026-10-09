@@ -5,7 +5,7 @@
  */
 
 .vp-work-index-filter-sheet .vp-bottom-sheet__scrim {
-  background: var(--vp-candidate-filter-dim, rgba(0, 0, 0, 0.7));
+  background: var(--vp-filter-dim, rgba(0, 0, 0, 0.7));
 }
 
 .vp-bottom-sheet__panel.vp-work-index-filter__panel {
@@ -14,7 +14,7 @@
     76vh
   );
   border-radius: 0;
-  background: var(--vp-candidate-filter-panel-bg, #0f0f0f);
+  background: var(--vp-filter-panel-bg, #0f0f0f);
 }
 
 .vp-work-index-filter__sheet-body {

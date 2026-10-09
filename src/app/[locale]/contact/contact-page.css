@@ -169,7 +169,7 @@ section.vp-contact-hero::after {
   left: 0;
   z-index: 1;
   height: 1px;
-  background: var(--vp-candidate-brief-line);
+  background: var(--vp-line-color);
   pointer-events: none;
 }
 
@@ -221,15 +221,15 @@ section.vp-contact-cta .vp-contact-cta__dash rect {
   width: calc(100% - 1px);
   height: calc(100% - 1px);
   fill: none;
-  stroke: var(--vp-candidate-brief-line);
+  stroke: var(--vp-line-color);
   stroke-width: 1px;
   stroke-dasharray: var(--vp-candidate-contact-dash) var(--vp-candidate-contact-dash-gap);
 }
 
 section.vp-contact-cta .vp-contact-cta__corner {
   position: absolute;
-  width: var(--vp-candidate-brief-tick-size);
-  height: var(--vp-candidate-brief-tick-size);
+  width: var(--vp-struct-tick-size);
+  height: var(--vp-struct-tick-size);
   border: 0 solid var(--vp-link);
   pointer-events: none;
 }
@@ -237,29 +237,29 @@ section.vp-contact-cta .vp-contact-cta__corner {
 section.vp-contact-cta .vp-contact-cta__corner--tl {
   top: 0;
   left: 0;
-  border-top-width: var(--vp-candidate-brief-tick-stroke);
-  border-left-width: var(--vp-candidate-brief-tick-stroke);
+  border-top-width: var(--vp-struct-tick-stroke);
+  border-left-width: var(--vp-struct-tick-stroke);
 }
 
 section.vp-contact-cta .vp-contact-cta__corner--tr {
   top: 0;
   right: 0;
-  border-top-width: var(--vp-candidate-brief-tick-stroke);
-  border-right-width: var(--vp-candidate-brief-tick-stroke);
+  border-top-width: var(--vp-struct-tick-stroke);
+  border-right-width: var(--vp-struct-tick-stroke);
 }
 
 section.vp-contact-cta .vp-contact-cta__corner--bl {
   bottom: 0;
   left: 0;
-  border-bottom-width: var(--vp-candidate-brief-tick-stroke);
-  border-left-width: var(--vp-candidate-brief-tick-stroke);
+  border-bottom-width: var(--vp-struct-tick-stroke);
+  border-left-width: var(--vp-struct-tick-stroke);
 }
 
 section.vp-contact-cta .vp-contact-cta__corner--br {
   right: 0;
   bottom: 0;
-  border-right-width: var(--vp-candidate-brief-tick-stroke);
-  border-bottom-width: var(--vp-candidate-brief-tick-stroke);
+  border-right-width: var(--vp-struct-tick-stroke);
+  border-bottom-width: var(--vp-struct-tick-stroke);
 }
 
 section.vp-contact-cta .vp-contact-cta__rulers {

@@ -72,7 +72,7 @@ const PAGE_CONTENT_FIELDS = `
   "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS}
 `
 
-/** Homepage — SEO/meta (carousel slides via HOME_REDESIGN_CAROUSEL_QUERY). */
+/** Homepage — SEO/meta (carousel slides via HOME_CAROUSEL_QUERY). */
 export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{
     ${PAGE_BASE_FIELDS}

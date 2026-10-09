@@ -3,7 +3,7 @@ export default function robots() {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/studio/', '/prototype/', '/zh/prototype/'],
+      disallow: ['/studio/'],
     },
     sitemap: 'https://vantage.pictures/sitemap.xml',
   };

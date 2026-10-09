@@ -10,7 +10,7 @@ import {urlForImage} from '@/lib/sanity';
 import {sanityFetch} from '@/sanity/lib/live';
 import type {CrewCredit, DisplayTitlePartsValue, PortfolioVideo, SanityImage} from '@/types/sanity';
 import {composeOverlayCopy, joinOverlayList} from './overlay';
-import {HOME_REDESIGN_CAROUSEL_QUERY} from './query';
+import {HOME_CAROUSEL_QUERY} from './query';
 import type {PrototypeCarouselSlide} from './types';
 import {CAROUSEL_RATIOS, objectPositionFromHotspot, posterSize} from '@carousel-ratios';
 
@@ -47,7 +47,7 @@ type CarouselEntry = {
   previewCleanVimeoUrl?: string | null;
 };
 
-type HomeRedesignCarouselResult = {
+type HomeCarouselResult = {
   carouselSlides?: CarouselEntry[] | null;
 };
 
@@ -56,13 +56,13 @@ export async function loadFeaturedWorkSlides(
 ): Promise<PrototypeCarouselSlide[]> {
   const [pageResult, phrases] = await Promise.all([
     sanityFetch({
-      query: HOME_REDESIGN_CAROUSEL_QUERY,
+      query: HOME_CAROUSEL_QUERY,
       stega: false,
     }),
     getPhraseRecord(),
   ]);
 
-  const page = pageResult.data as HomeRedesignCarouselResult | null;
+  const page = pageResult.data as HomeCarouselResult | null;
   const entries = (page?.carouselSlides ?? []).filter(
     (entry): entry is CarouselEntry & {slug: string} => Boolean(entry?.slug),
   );

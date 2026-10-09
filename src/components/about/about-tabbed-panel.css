@@ -81,7 +81,7 @@
 }
 
 .vp-about-tabs[data-theme='dark'] {
-  --vp-about-tab-line: var(--vp-candidate-brief-line);
+  --vp-about-tab-line: var(--vp-line-color);
   --vp-about-tab-body: var(--vp-candidate-about-white-60);
   --vp-about-tab-inactive: var(--vp-candidate-about-white-20);
   --vp-about-tab-inactive-hover: rgba(255, 255, 255, 0.4);

@@ -77,8 +77,64 @@ Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `g
 | Token | Value | Usage |
 |---|---|---|
 | `--vp-nav-bar-height` | `80px` | Desktop `#header` min-height (intentional vs Figma `100px`) |
+| `--vp-nav-bar-height-mobile` | `64px` | `#header` ≤767.98 (promoted from candidate) |
 | `--vp-nav-cell-width` | `94px` | EN / 中文 / hamburger cell width (height tracks bar; not square) |
 | `--vp-nav-cell-tracking` | `0` | Lang-cell letter-spacing (was −0.28px) |
+
+### Mobile nav panel
+
+Scoped on `#header .vp-mobile-nav-panel__inner` (≤991.98). Promoted from candidates.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-mobile-nav-link-size` | `32px` | Panel link labels |
+| `--vp-mobile-nav-list-gap` | `32px` | List gap |
+| `--vp-mobile-nav-list-pad-inline` | `30px` | List / search / CTA pad |
+| `--vp-mobile-nav-list-pad-block` | `60px` | List block pad |
+| `--vp-mobile-nav-social-row-height` | `80px` | Social row |
+| `--vp-mobile-nav-cta-height` | `80px` | Brief CTA row |
+
+### Circular glass chrome chips
+
+`:root` — work SEARCH/FILTER + blog filter trigger. Promoted from candidates.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-chrome-chip-size` | `2.75rem` | Chip box |
+| `--vp-chrome-chip-icon-size` | `1.25rem` | Chip icon |
+| `--vp-chrome-chip-radius` | `9999px` | Pill |
+| `--vp-chrome-chip-border` | `1px solid var(--vp-border-soft)` | Glass border |
+| `--vp-chrome-chip-bg` | `var(--vp-overlay-dark)` | Glass fill |
+
+### Filter sheet
+
+`:root` — work + blog mobile filter dim/panel. Promoted from candidates.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-filter-dim` | `rgba(0,0,0,0.7)` | Backdrop |
+| `--vp-filter-panel-bg` | `#0f0f0f` | Panel fill |
+
+### Shared structure ticks / lines
+
+Promoted from brief candidates; reused by corner frames, contact, about, brief.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-struct-tick-size` | `12px` (≤767: `8px`) | Corner tick length |
+| `--vp-struct-tick-stroke` | `1px` | Corner tick thickness |
+| `--vp-struct-tick-color` | `rgba(255,255,255,0.3)` | Corner tick ink |
+| `--vp-line-color` | `rgba(255,255,255,0.15)` | Hairline color (pairs with `--vp-struct-line` border shorthand) |
+| `--vp-muted-30` | `rgba(255,255,255,0.3)` | Muted label/ink |
+
+### Site footer — mobile
+
+Scoped in `site-footer.css` ≤575. Promoted from candidates.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-site-footer-mobile-band-height` | `80px` | Mark + socials band |
+| `--vp-site-footer-mobile-email-size` | `16px` | Email link |
 
 ---
 
@@ -86,7 +142,7 @@ Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `g
 
 | Token | Value | Usage |
 |---|---|---|
-| `vp-overlay-dark` | `rgba(var(--vp-black-rgb), 0.45)` | Hero image overlays |
+| `vp-overlay-dark` | `rgba(var(--vp-black-rgb), 0.45)` | Hero image overlays; chrome-chip bg |
 | `vp-overlay-light` | `rgba(255,255,255,0.1)` | Hover states on dark surfaces |
 
 ### Form & Input
@@ -104,6 +160,8 @@ Proven across every page via `NavBar.tsx` / `#header`. CSS vars on `:root` in `g
 | `vp-form-error-border` | `rgba(255,92,92,0.95)` | Error field border |
 
 ### Button
+
+Yellow hover (sitewide `.vp-btn`): `--vp-btn-yellow-hover` = `#ffcb55` (promoted from brief candidate).
 
 | State | Background | Text | Border |
 |---|---|---|---|

@@ -16,13 +16,13 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--vp-candidate-chrome-chip-size, 2.75rem);
-  height: var(--vp-candidate-chrome-chip-size, 2.75rem);
+  width: var(--vp-chrome-chip-size, 2.75rem);
+  height: var(--vp-chrome-chip-size, 2.75rem);
   margin: 0;
   padding: 0;
-  border: var(--vp-candidate-chrome-chip-border);
-  border-radius: var(--vp-candidate-chrome-chip-radius, 9999px);
-  background: var(--vp-candidate-chrome-chip-bg);
+  border: var(--vp-chrome-chip-border);
+  border-radius: var(--vp-chrome-chip-radius, 9999px);
+  background: var(--vp-chrome-chip-bg);
   color: #fff;
   cursor: pointer;
   vertical-align: baseline;
@@ -38,8 +38,8 @@
 
 .vp-news-page__filter-trigger-icon {
   display: block;
-  width: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
-  height: var(--vp-candidate-chrome-chip-icon-size, 1.25rem);
+  width: var(--vp-chrome-chip-icon-size, 1.25rem);
+  height: var(--vp-chrome-chip-icon-size, 1.25rem);
 }
 
 @media (min-width: 576px) {

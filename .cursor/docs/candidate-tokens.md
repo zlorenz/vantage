@@ -25,53 +25,15 @@ Naming: `--vp-candidate-[name]`
 
 ---
 
-## Chrome — circular glass chip (pending)
+## Promoted (pass C1) — see `design-tokens.md`
 
-Exact match across work mobile SEARCH/FILTER, work bottom-bar filter trigger, and blog `.vp-news-page__filter-trigger`. Defined on `:root` in `globals.css`.
+Sitewide chrome + shared ticks/lines promoted out of `--vp-candidate-*`:
 
-| Candidate name | Value | Used in | Source | Status | Notes |
-|---|---|---|---|---|---|
-| `--vp-candidate-chrome-chip-size` | `2.75rem` | Work SEARCH/FILTER chips; blog filter trigger; work filter-trigger + search spacer | product parity | pending | Sheet close / header spacer share this size only. |
-| `--vp-candidate-chrome-chip-icon-size` | `1.25rem` | Chip icons (work + blog) | same | pending | |
-| `--vp-candidate-chrome-chip-radius` | `9999px` | Glass chips | same | pending | Sheet icon-btn also circular but transparent. |
-| `--vp-candidate-chrome-chip-border` | `1px solid var(--vp-border-soft)` | Glass chips | same | pending | **Not** sheet close (`border: 0`). |
-| `--vp-candidate-chrome-chip-bg` | `rgba(var(--vp-black-rgb), 0.45)` | Glass chips | same | pending | Same channel as `--vp-overlay-dark`; **not** sheet close (`transparent`). |
+- `--vp-chrome-chip-*`, `--vp-nav-bar-height-mobile`, `--vp-mobile-nav-*`
+- `--vp-site-footer-mobile-*`, `--vp-filter-dim`, `--vp-filter-panel-bg`
+- `--vp-struct-tick-*`, `--vp-line-color`, `--vp-muted-30`, `--vp-btn-yellow-hover`
 
-**Intentional non-wire:** `.vp-bottom-sheet__icon-btn` / `.vp-index-filter-sheet__icon-btn` — same size/radius, different border + fill. Do not force glass tokens onto sheet chrome.
-
----
-
-## Site footer — mobile stack (pending)
-
-| Candidate name | Value | Used in | Source | Status | Notes |
-|---|---|---|---|---|---|
-| `--vp-candidate-site-footer-mobile-band-height` | `80px` | `.vp-site-footer__mark` + `__socials` ≤575 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2283-31053 | pending | Desktop bar stays 100px. Email row is content-height (py 26). Same `.vp-site-footer` markup — column stack only. |
-| `--vp-candidate-site-footer-mobile-email-size` | `16px` | `.vp-site-footer__email-link` ≤575 | product: fit nowrap email @390 | pending | Figma h6 20px overflowed Expanded Bold + icon; keep nowrap. |
-
-## Site nav — mobile bar (pending)
-
-| Candidate name | Value | Used in | Source | Status | Notes |
-|---|---|---|---|---|---|
-| `--vp-candidate-nav-bar-height-mobile` | `64px` | `#header.navbar` ≤767.98; hamburger cell 64×64 | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-29325 | pending | Desktop keeps `--vp-nav-bar-height: 80px` ≥768. |
-
-**Reuse (no candidate):** `--vp-orange` hamburger fill; `--vp-struct-line` bar/logo hairlines.
-
----
-
-## Site nav — mobile panel (pending)
-
-| Candidate name | Value | Used in | Source | Status | Notes |
-|---|---|---|---|---|---|
-| `--vp-candidate-mobile-nav-link-size` | `32px` (was `24px`) | `.vp-desktop-nav-label` inside mobile panel | product: ~33% bump over Figma `h4` | pending | Index scaled 12→16px in lockstep. Desktop rail unchanged. |
-| `--vp-candidate-mobile-nav-list-gap` | `32px` | `.vp-mobile-nav-list` | same | pending | |
-| `--vp-candidate-mobile-nav-list-pad-inline` | `30px` | List + search + brief/email pad | same | pending | |
-| `--vp-candidate-mobile-nav-list-pad-block` | `60px` | `.vp-mobile-nav-list` | same (`py-60`) | pending | |
-| `--vp-candidate-mobile-nav-social-row-height` | `80px` | `.vp-mobile-nav-socials` | same | pending | Desktop rail socials stay 100px. |
-| `--vp-candidate-mobile-nav-cta-height` | `80px` | `.vp-mobile-nav-brief` | same | pending | Desktop brief stays 100px. |
-
-**Reuse (no candidate):** Panel bg `#0f0f0f` (same as desktop rail); index `12px` / `rgba(255,255,255,0.3)` (desktop rail values); CTA yellow `var(--vp-link)`; index markup via shared `NavRailIndexLabel` / `formatNavRailIndex`.
-
-**Not introduced:** `--vp-candidate-mobile-nav-panel-bg`, `--vp-candidate-mobile-nav-index-size`, `--vp-candidate-mobile-nav-index-color` (reuse above).
+Do not reintroduce candidate aliases for these.
 
 ---
 
@@ -110,8 +72,6 @@ Mobile ≤767 language switcher: dedicated `.vp-lang-cell--mobile` toggle for th
 | `--vp-candidate-search-muted` | `rgba(255,255,255,0.4)` | Work SEARCH label | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-index-inactive` | `rgba(255,255,255,0.3)` | Work slide nums `( 01 )` inactive | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-filter-item-muted` | `rgba(255,255,255,0.25)` | Filter panel term rows | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | |
-| `--vp-candidate-filter-panel-bg` | `#0f0f0f` | Work filter slide-out panel | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | Not `--vp-black` (`#000000`). |
-| `--vp-candidate-filter-dim` | `rgba(0,0,0,0.7)` | Full-bleed dim behind open filter | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | True-black channel, not `--vp-black-rgb`. |
 | `--vp-candidate-tracking-tight-26` | `-0.52px` | Work card title 26px | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-index-card-size` | `512×640` | Work carousel card | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | Aspect 4:5. Impl uses height-driven aspect tokens instead. |
 | `--vp-candidate-index-card-gap` | `30px` | Gap between work cards | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
@@ -193,7 +153,7 @@ Frames: index `2301:38421`, single `2304:39785`. Decisions locked: chrome-chip f
 | `--vp-candidate-blog-mobile-post-pill-height` | `40px` | `.vp-blog-hero__*` pills ≤575 | h-40 | pending | Date chip stays yellow/black. |
 | `--vp-candidate-blog-mobile-hero-pad-x` | `16px` | Blog hero/index gutters ≤575 | alias | pending | Prefer `--vp-overlay-mobile-pad-inline` when equal. |
 
-**Reuse (no new names):** `--vp-overlay-mobile-pad-inline` / `pad-block` / `title-size` / `caption-size` / `title-tag-gap`; `--vp-candidate-chrome-chip-*`; filter panel bg/dim/height via blog-scoped classes mirroring work (do not edit `.vp-work-index-filter*`).
+**Reuse (no new names):** `--vp-overlay-mobile-pad-inline` / `pad-block` / `title-size` / `caption-size` / `title-tag-gap`; `--vp-chrome-chip-*`; `--vp-filter-dim` / `--vp-filter-panel-bg` (do not edit `.vp-work-index-filter*`).
 
 ## Portfolio case study — mobile ≤575 (pending)
 
@@ -262,16 +222,16 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-section-title-size` | `26px` | In-card section title + confirm heading | S1 `2426:4372` h5 | pending | |
 | `--vp-candidate-brief-section-title-lh` | `1.4` | same | same | pending | |
 | `--vp-candidate-brief-card-pad` | `30px` | Corner-tick card | S1 `2426:4368` | pending | |
-| `--vp-candidate-brief-tick-size` | `12px` | Corner ticks | SVG `Rectangle 65` viewBox 12.5 | pending | |
-| `--vp-candidate-brief-tick-stroke` | `1px` | same | SVG default stroke (no `stroke-width`) | pending | |
-| `--vp-candidate-brief-tick-color` | `rgba(255,255,255,0.3)` | same | `stroke="white" stroke-opacity="0.3"` | pending | |
+| `--vp-struct-tick-size` | `12px` | Corner ticks | SVG `Rectangle 65` viewBox 12.5 | promoted (C1) | Was `--vp-candidate-brief-tick-*`. |
+| `--vp-struct-tick-stroke` | `1px` | same | SVG default stroke (no `stroke-width`) | promoted (C1) | |
+| `--vp-struct-tick-color` | `rgba(255,255,255,0.3)` | same | `stroke="white" stroke-opacity="0.3"` | promoted (C1) | |
 | `--vp-candidate-brief-step-size` | `60px` | Step squares | S1 `2426:4353` | pending | Mobile override `48px` ≤767. Radius stays 0. |
 | `--vp-candidate-brief-step-label-gap` | `20px` | Square → label | S1 step column gap | pending | |
 | `--vp-candidate-brief-caption-size` | `14px` | Step numbers, step labels, field labels, Browse | caption_2 | pending | |
 | `--vp-candidate-brief-caption-lh` | `20px` | same | same | pending | |
 | `--vp-candidate-brief-label-color` | `rgba(255,255,255,0.8)` | Field labels | white/80 | pending | |
-| `--vp-candidate-brief-muted-30` | `rgba(255,255,255,0.3)` | Placeholders, pending step numbers | white/30 | pending | Not `--vp-form-placeholder` (0.5). |
-| `--vp-candidate-brief-line` | `rgba(255,255,255,0.15)` | Underlines, pending borders, connectors | white/15 | pending | Alpha matches `--vp-struct-line`; width differs. |
+| `--vp-muted-30` | `rgba(255,255,255,0.3)` | Placeholders, pending step numbers | white/30 | promoted (C1) | Was `--vp-candidate-brief-muted-30`. Not `--vp-form-placeholder` (0.5). |
+| `--vp-line-color` | `rgba(255,255,255,0.15)` | Underlines, pending borders, connectors | white/15 | promoted (C1) | Was `--vp-candidate-brief-line-color`. Alpha matches `--vp-struct-line`; width differs. |
 | `--vp-candidate-brief-rule` | `0.6px solid` that line | Unused for fields (kept for docs) | former input border-b | pending | Fields are fill-only now. |
 | `--vp-candidate-brief-control-bg` | `rgba(255,255,255,0.1)` | Text / select / date / textarea fill | **derived — matches blog pills** | pending | Same alpha as `--vp-candidate-blog-pill-bg`. No underline, no blur. |
 | `--vp-candidate-brief-control-bg-hover` | `rgba(255,255,255,0.14)` | Control hover fill | **derived — no Figma frame** | pending | |
@@ -306,7 +266,7 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-connector-width` | `0.6px` | Stepper connectors | connector SVGs | pending | |
 | `--vp-candidate-brief-connector-dash` | `4px` | Pending connector dash | `stroke-dasharray="4 2"` | pending | |
 | `--vp-candidate-brief-connector-gap` | `2px` | Pending connector gap | same | pending | Pending stroke is white 0.15. Into the active step: solid white. Between two completed steps: solid `--vp-link`. |
-| `--vp-candidate-brief-step-pending-border-width` | `0.6px` | Pending square | S1 dashed 0.6px | pending | Color is `--vp-candidate-brief-line`. |
+| `--vp-candidate-brief-step-pending-border-width` | `0.6px` | Pending square | S1 dashed 0.6px | pending | Color is `--vp-line-color`. |
 | `--vp-candidate-brief-step-completed-border-width` | `1px` | Completed square | S2.1 `border` dashed white/15 | pending | Fill is `--vp-link`. |
 | `--vp-candidate-brief-dropzone-pad-block` | `56px` | Dropzone | S3 | pending | |
 | `--vp-candidate-brief-dropzone-pad-inline` | `24px` | Dropzone | S3 | pending | |
@@ -317,7 +277,7 @@ Frames: S1 `2426:4340`, S2.1 `2380:25373`, S2.2 `2382:26251`, S3 `2382:26469`, C
 | `--vp-candidate-brief-focus-ring` | `1px solid var(--vp-link)` | Keyboard focus-visible | **derived — no Figma frame** | pending | Buttons, checks, radios, step squares. |
 | `--vp-candidate-brief-focus-offset` | `3px` | same | **derived — no Figma frame** | pending | |
 | `--vp-candidate-brief-disabled-opacity` | `0.4` | Disabled controls and buttons | **derived — no Figma frame** | pending | No hover shift while disabled. |
-| `--vp-candidate-brief-primary-hover` | `#ffcb55` | Next / Submit hover | **derived — no Figma frame** | pending | No `--vp-yellow-80` token exists. |
+| `--vp-btn-yellow-hover` | `#ffcb55` | Next / Submit hover + `VpButton` yellow | **derived — no Figma frame** | promoted (C1) | Was `--vp-candidate-brief-primary-hover`. No `--vp-yellow-80` token exists. |
 | `--vp-candidate-brief-dropzone-active-fill` | `rgba(255,255,255,0.03)` | Dropzone drag-over | **derived — no Figma frame** | pending | Border becomes `--vp-link`. |
 | `--vp-candidate-brief-transition` | `0.3s ease-out` | Form interaction | **derived — no Figma frame** | pending | Distinct from `--vp-transition` (`0.3s ease`). Honors `prefers-reduced-motion`. |
 
@@ -332,7 +292,7 @@ Frames: S1 `2602:31406`, S2.1 `2602:32040`, S2.2 `2602:32453`, S3 `2602:32841`, 
 | `--vp-candidate-brief-step-card-gap` | `40px` | S1 column gap | |
 | `--vp-candidate-brief-section-title-size` | `22px` | S1 h5 | |
 | `--vp-candidate-brief-card-pad` | `40px 16px` | S1 card | |
-| `--vp-candidate-brief-tick-size` | `8px` | S1 tick SVGs | |
+| `--vp-struct-tick-size` | `8px` | S1 tick SVGs | |
 | `--vp-candidate-brief-step-size` | `48px` | S1 squares | |
 | `--vp-candidate-brief-step-label-gap` | `16px` | S1 step column | |
 | `--vp-candidate-brief-caption-size` | `12px` | caption_2 | Labels, step captions, Browse. |
@@ -350,7 +310,7 @@ Frames: S1 `2602:31406`, S2.1 `2602:32040`, S2.2 `2602:32453`, S3 `2602:32841`, 
 Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2466-28598  
 Defined in `src/components/about/about-tokens.css` (imported by the About page). Not in `globals.css`. Pending reuse outside About. Special Gothic tracking stays **0**. Section padding is declared only at `min-width: 1200px` so it does not change the mobile rhythm or `--vp-section-y`.
 
-**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-candidate-brief-tick-size` (12px), `--vp-candidate-brief-tick-stroke` (1px), and `--vp-candidate-brief-tick-color` (`rgba(255,255,255,0.3)`) for dark corner brackets; `--vp-candidate-brief-line` (`rgba(255,255,255,0.15)`) for dark hairlines and tick-ruler marks. Light brackets use `--vp-candidate-about-black-50`.
+**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-struct-tick-size` (12px), `--vp-struct-tick-stroke` (1px), and `--vp-struct-tick-color` (`rgba(255,255,255,0.3)`) for dark corner brackets; `--vp-line-color` (`rgba(255,255,255,0.15)`) for dark hairlines and tick-ruler marks. Light brackets use `--vp-candidate-about-black-50`.
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
@@ -450,7 +410,7 @@ Defined in `src/app/[locale]/contact/contact-page.css` inside `@media (min-width
 | `--vp-candidate-contact-section-pad` | `160px` | CTA block padding | `2602:33735` | pending | Contact-scoped. Does not change `--vp-section-y`. |
 | `--vp-candidate-contact-frame-width` | `1236px` | Dashed CTA frame | `2602:33736` | pending | Centered. Side margin 342px at 1920. |
 | `--vp-candidate-contact-frame-pad` | `30px` | same | same | pending | |
-| `--vp-candidate-contact-dash` | `5px` | Dashed stroke dash | same dash `[5, 2]` | pending | Gap is `--vp-candidate-contact-dash-gap` `2px`. Drawn as an SVG rect, stroke White/15 (`--vp-candidate-brief-line`). |
+| `--vp-candidate-contact-dash` | `5px` | Dashed stroke dash | same dash `[5, 2]` | pending | Gap is `--vp-candidate-contact-dash-gap` `2px`. Drawn as an SVG rect, stroke White/15 (`--vp-line-color`). |
 | `--vp-candidate-contact-dash-gap` | `2px` | Dashed stroke gap | same | pending | |
 | `--vp-candidate-contact-inner-pad-block` | `60px` | Type column | CTA inner | pending | Inline pad 40px. |
 | `--vp-candidate-contact-inner-pad-inline` | `40px` | same | same | pending | |

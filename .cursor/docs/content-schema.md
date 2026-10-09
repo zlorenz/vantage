@@ -349,11 +349,9 @@ CSV import, frontend rendering, and migration.
   heroTitleZh?: string
   body: portableText
   bodyZh?: portableText
-  heroSlides?: array<ref → portfolioEntry>  // homepage carousel (order = display; CTA always “Watch”)
-  featuredWork?: array<ref → portfolioEntry>  // Home “A Bit of Our Work”; VPS “Shot in Vietnam”
-  brandLogos?: array<{             // homepage “Brands We Work With” — logoId from shared/client-logos registry (+ /public/logos SVGs)
-    logoId: string                 // curated enum; new marks = design/code PR, not CMS upload
-  }>
+  carouselSlides?: array<ref → portfolioEntry>  // homepage carousel + Work featured strip
+  featuredWork?: array<ref → portfolioEntry>  // VPS “Shot in Vietnam” (home grid retired)
+  // retired: heroSlides, brandLogos
   founders?: array<{               // About page only
     name: string
     jobTitle: string
@@ -369,7 +367,7 @@ CSV import, frontend rendering, and migration.
 }
 ```
 
-**Studio UX:** Two tabs — **Page Details** and **Content**. Page Details matches blog posts: Title → **Card** (Featured Image | Excerpt) → Slug, then hero chrome / noindex / SEO. Slug-gated Content fields: Home (`heroSlides`, `featuredWork`, `brandLogos`), Vietnam Production Service (`featuredWork`), About (`founders`), Vietnam Location Guide (`pdfDownload`). Hero title hides when Show Hero Header is off. Carousel / Featured Work / Brand Logos include Clear all with confirm.
+**Studio UX (current):** Two tabs — **Page Details** and **Content**. Slug-gated Content fields: Home (`carouselSlides`), Vietnam Production Service (`featuredWork`), About (media slots + `founders`), Vietnam Location Guide (`pdfDownload`). See live `sanity/schemas/page.ts` — this archive section may lag.
 
 **Published pages:**
 

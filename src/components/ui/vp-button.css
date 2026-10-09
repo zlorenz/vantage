@@ -12,7 +12,7 @@
   --vp-btn-scale: 0.75;
   --vp-btn-yellow-bg: var(--vp-link);
   --vp-btn-yellow-text: var(--vp-black);
-  --vp-btn-yellow-hover: var(--vp-candidate-brief-primary-hover, #ffcb55);
+  --vp-btn-yellow-hover: #ffcb55;
   --vp-btn-white-bg: #ffffff;
   --vp-btn-white-text: var(--vp-black);
   --vp-btn-white-hover: #e6e6e6;

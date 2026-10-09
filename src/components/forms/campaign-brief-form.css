@@ -114,7 +114,7 @@
 }
 
 .vp-form-control::placeholder {
-  color: var(--vp-candidate-brief-muted-30);
+  color: var(--vp-muted-30);
   opacity: 1;
 }
 
@@ -232,7 +232,7 @@
 }
 
 .vp-form-select:has(option[value=""]:checked) {
-  color: var(--vp-candidate-brief-muted-30);
+  color: var(--vp-muted-30);
 }
 
 .vp-form-select option {
@@ -371,7 +371,7 @@
   padding: var(--vp-candidate-brief-dropzone-pad-block)
     var(--vp-candidate-brief-dropzone-pad-inline);
   border: var(--vp-candidate-brief-step-pending-border-width) dashed
-    var(--vp-candidate-brief-line);
+    var(--vp-line-color);
   background: transparent;
   text-align: center;
 }
@@ -398,7 +398,7 @@
 
 .vp-form-dropzone-title {
   margin: 0;
-  color: var(--vp-candidate-brief-muted-30);
+  color: var(--vp-muted-30);
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-brief-control-size);
   font-weight: var(--font-vp-body-weight);
@@ -532,22 +532,22 @@
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      left top / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      left top / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      right top / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      right top / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      left bottom / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      left bottom / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      right bottom / var(--vp-candidate-brief-tick-size) var(--vp-candidate-brief-tick-stroke) no-repeat,
-    linear-gradient(var(--vp-candidate-brief-tick-color), var(--vp-candidate-brief-tick-color))
-      right bottom / var(--vp-candidate-brief-tick-stroke) var(--vp-candidate-brief-tick-size) no-repeat;
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      left top / var(--vp-struct-tick-size) var(--vp-struct-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      left top / var(--vp-struct-tick-stroke) var(--vp-struct-tick-size) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      right top / var(--vp-struct-tick-size) var(--vp-struct-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      right top / var(--vp-struct-tick-stroke) var(--vp-struct-tick-size) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      left bottom / var(--vp-struct-tick-size) var(--vp-struct-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      left bottom / var(--vp-struct-tick-stroke) var(--vp-struct-tick-size) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      right bottom / var(--vp-struct-tick-size) var(--vp-struct-tick-stroke) no-repeat,
+    linear-gradient(var(--vp-struct-tick-color), var(--vp-struct-tick-color))
+      right bottom / var(--vp-struct-tick-stroke) var(--vp-struct-tick-size) no-repeat;
 }
 
 .vp-brief-card--tight .vp-form-step-heading {
@@ -626,7 +626,7 @@
   height: var(--vp-candidate-brief-connector-width);
   background: repeating-linear-gradient(
     to right,
-    var(--vp-candidate-brief-line) 0 var(--vp-candidate-brief-connector-dash),
+    var(--vp-line-color) 0 var(--vp-candidate-brief-connector-dash),
     transparent var(--vp-candidate-brief-connector-dash)
       calc(
         var(--vp-candidate-brief-connector-dash) +
@@ -709,10 +709,10 @@
   width: var(--vp-brief-step-size);
   height: var(--vp-brief-step-size);
   border: var(--vp-candidate-brief-step-pending-border-width) dashed
-    var(--vp-candidate-brief-line);
+    var(--vp-line-color);
   border-radius: 0;
   background: transparent;
-  color: var(--vp-candidate-brief-muted-30);
+  color: var(--vp-muted-30);
   font-family: var(--font-vp-heading);
   font-size: var(--vp-candidate-brief-caption-size);
   font-weight: var(--font-vp-heading-weight);
@@ -726,7 +726,7 @@
 .vp-form-step-progress-item--completed .vp-form-step-progress-circle {
   border-width: var(--vp-candidate-brief-step-completed-border-width);
   border-style: dashed;
-  border-color: var(--vp-candidate-brief-line);
+  border-color: var(--vp-line-color);
   background: var(--vp-link);
   color: var(--vp-black);
   cursor: pointer;
@@ -761,7 +761,7 @@
 }
 
 .vp-form-step-progress-item--pending .vp-form-step-progress-label {
-  color: var(--vp-candidate-brief-muted-30);
+  color: var(--vp-muted-30);
 }
 
 .vp-form-step-progress-item--completed .vp-form-step-progress-label {

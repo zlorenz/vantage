@@ -5,8 +5,8 @@
  * (992px) so it cannot change the current mobile rhythm.
  *
  * Reused elsewhere, not redefined here:
- *   dark 12px brackets — --vp-candidate-brief-tick-size / -stroke / -color
- *   white 0.15 rules and ruler ticks — --vp-candidate-brief-line
+ *   dark 12px brackets — --vp-struct-tick-size / -stroke / -color
+ *   white 0.15 rules and ruler ticks — --vp-line-color
  *   yellow — --vp-link
  *   open accordion bracket — --vp-orange
  */

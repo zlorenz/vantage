@@ -68,7 +68,6 @@
 
   /* Colour Palette — Miscellaneous */
 
-  --color-vp-logo-grid-border: #5c5c5c;
   --color-vp-credits-text: #bfbfbf;
   --color-vp-credit-role-label: rgba(255, 255, 255, 0.4);
   --color-vp-dropdown-bg: rgba(0, 0, 0, 0.4);
@@ -278,14 +277,18 @@
   /*
    * Circular glass chrome chips — work SEARCH/FILTER + blog filter trigger
    * (exact match). Sheet close buttons share size/radius only (transparent,
-   * no border) — see candidate-tokens.md.
+   * no border).
    */
-  --vp-candidate-chrome-chip-size: 2.75rem;
-  --vp-candidate-chrome-chip-icon-size: 1.25rem;
-  --vp-candidate-chrome-chip-radius: 9999px;
-  --vp-candidate-chrome-chip-border: 1px solid
+  --vp-chrome-chip-size: 2.75rem;
+  --vp-chrome-chip-icon-size: 1.25rem;
+  --vp-chrome-chip-radius: 9999px;
+  --vp-chrome-chip-border: 1px solid
     var(--vp-border-soft, rgba(255, 255, 255, 0.12));
-  --vp-candidate-chrome-chip-bg: rgba(var(--vp-black-rgb), 0.45);
+  --vp-chrome-chip-bg: var(--vp-overlay-dark);
+
+  /* Work / blog mobile filter sheet */
+  --vp-filter-dim: rgba(0, 0, 0, 0.7);
+  --vp-filter-panel-bg: #0f0f0f;
 
   /* Colour Palette — Form & Input */
 
@@ -309,10 +312,10 @@
   --vp-btn-ghost-border: rgba(255, 255, 255, 0.25);
   --vp-btn-ghost-hover-bg: rgba(255, 255, 255, 0.12);
   --vp-btn-ghost-hover-border: rgba(255, 255, 255, 0.5);
+  --vp-btn-yellow-hover: #ffcb55;
 
   /* Colour Palette — Miscellaneous */
 
-  --vp-logo-grid-border: #5c5c5c;
   --vp-credits-text: #bfbfbf;
   --vp-credit-role-label: rgba(255, 255, 255, 0.4);
   --vp-dropdown-bg: rgba(var(--vp-black-rgb), 0.4);
@@ -418,28 +421,22 @@
    * Documented in .cursor/docs/candidate-tokens.md. Do not promote yet.
    * Tracking stays 0 (Special Gothic floor). Content column stays 900px.
    */
-  --vp-candidate-brief-title-size: 48px;
-  --vp-candidate-brief-title-lh: 1.2;
-  --vp-candidate-brief-intro-size: 18px;
-  --vp-candidate-brief-intro-lh: 1.5;
   --vp-candidate-brief-intro-color: rgba(255, 255, 255, 0.6);
-  --vp-candidate-brief-title-intro-gap: 40px;
   --vp-candidate-brief-intro-step-gap: 60px;
   --vp-candidate-brief-step-card-gap: 80px;
   --vp-candidate-brief-section-title-size: 26px;
   --vp-candidate-brief-section-title-lh: 1.4;
   --vp-candidate-brief-card-pad: 30px;
-  --vp-candidate-brief-tick-size: 12px;
-  --vp-candidate-brief-tick-stroke: 1px;
-  --vp-candidate-brief-tick-color: rgba(255, 255, 255, 0.3);
+  --vp-struct-tick-size: 12px;
+  --vp-struct-tick-stroke: 1px;
+  --vp-struct-tick-color: rgba(255, 255, 255, 0.3);
   --vp-candidate-brief-step-size: 60px;
   --vp-candidate-brief-step-label-gap: 20px;
   --vp-candidate-brief-caption-size: 14px;
   --vp-candidate-brief-caption-lh: 20px;
   --vp-candidate-brief-label-color: rgba(255, 255, 255, 0.8);
-  --vp-candidate-brief-muted-30: rgba(255, 255, 255, 0.3);
-  --vp-candidate-brief-line: rgba(255, 255, 255, 0.15);
-  --vp-candidate-brief-rule: 0.6px solid var(--vp-candidate-brief-line);
+  --vp-muted-30: rgba(255, 255, 255, 0.3);
+  --vp-line-color: rgba(255, 255, 255, 0.15);
   --vp-candidate-brief-control-bg: rgba(255, 255, 255, 0.1);
   --vp-candidate-brief-control-bg-hover: rgba(255, 255, 255, 0.14);
   --vp-candidate-brief-control-bg-focus: rgba(255, 255, 255, 0.16);
@@ -454,7 +451,6 @@
   /* Row gap between field stacks only — column gutter stays `--vp-form-gap`. */
   --vp-candidate-brief-field-row-gap: 24px;
   --vp-candidate-brief-check-size: 24px;
-  --vp-candidate-brief-check-icon-size: 20px;
   --vp-candidate-brief-check-bg: rgba(255, 255, 255, 0.05);
   --vp-candidate-brief-check-border: rgba(255, 255, 255, 0.1);
   --vp-candidate-brief-check-gap: 16px;
@@ -470,7 +466,6 @@
   --vp-candidate-brief-btn-gap: 8px;
   --vp-candidate-brief-btn-ghost-border: rgba(255, 255, 255, 0.2);
   --vp-candidate-brief-btn-arrow-size: 24px;
-  --vp-candidate-brief-btn-arrow-gap: 16px;
   --vp-candidate-brief-connector-width: 0.6px;
   --vp-candidate-brief-connector-dash: 4px;
   --vp-candidate-brief-connector-gap: 2px;
@@ -482,11 +477,9 @@
   --vp-candidate-brief-browse-pad: 16px;
   /* Derived — no Figma frame. Stay in the white-alpha + yellow palette. */
   --vp-candidate-brief-control-hover: rgba(255, 255, 255, 0.4);
-  --vp-candidate-brief-control-focus: #ffffff;
   --vp-candidate-brief-focus-ring: 1px solid var(--vp-link);
   --vp-candidate-brief-focus-offset: 3px;
   --vp-candidate-brief-disabled-opacity: 0.4;
-  --vp-candidate-brief-primary-hover: #ffcb55;
   --vp-candidate-brief-dropzone-active-fill: rgba(255, 255, 255, 0.03);
   --vp-candidate-brief-transition: 0.3s ease-out;
 }
@@ -498,12 +491,10 @@
  */
 @media (max-width: 767px) {
   :root {
-    --vp-candidate-brief-title-size: 28px;
-    --vp-candidate-brief-intro-size: 16px;
     --vp-candidate-brief-step-card-gap: 40px;
     --vp-candidate-brief-section-title-size: 22px;
     --vp-candidate-brief-card-pad: 40px 16px;
-    --vp-candidate-brief-tick-size: 8px;
+    --vp-struct-tick-size: 8px;
     --vp-candidate-brief-step-size: 48px;
     --vp-candidate-brief-step-label-gap: 16px;
     --vp-candidate-brief-caption-size: 12px;
@@ -885,16 +876,16 @@
 
 /*
  * Mobile panel inner — Figma 2282:29325 visual language (fullscreen deviation;
- * lang stays in top bar). Candidates scoped here for ≤991.98 panel only.
+ * lang stays in top bar). Tokens scoped here for ≤991.98 panel only.
  */
 #header .vp-mobile-nav-panel__inner {
   /* ~33% over Figma h4 24px — product bump for mobile panel readability. */
-  --vp-candidate-mobile-nav-link-size: 32px;
-  --vp-candidate-mobile-nav-list-gap: 32px;
-  --vp-candidate-mobile-nav-list-pad-inline: 30px;
-  --vp-candidate-mobile-nav-list-pad-block: 60px;
-  --vp-candidate-mobile-nav-social-row-height: 80px;
-  --vp-candidate-mobile-nav-cta-height: 80px;
+  --vp-mobile-nav-link-size: 32px;
+  --vp-mobile-nav-list-gap: 32px;
+  --vp-mobile-nav-list-pad-inline: 30px;
+  --vp-mobile-nav-list-pad-block: 60px;
+  --vp-mobile-nav-social-row-height: 80px;
+  --vp-mobile-nav-cta-height: 80px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -914,12 +905,12 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--vp-candidate-mobile-nav-list-gap);
+  gap: var(--vp-mobile-nav-list-gap);
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
-  padding: var(--vp-candidate-mobile-nav-list-pad-block)
-    var(--vp-candidate-mobile-nav-list-pad-inline);
+  padding: var(--vp-mobile-nav-list-pad-block)
+    var(--vp-mobile-nav-list-pad-inline);
   list-style: none;
 }
 
@@ -970,7 +961,7 @@
   flex: 1 1 auto;
   min-width: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-mobile-nav-link-size);
+  font-size: var(--vp-mobile-nav-link-size);
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: 0;
@@ -985,7 +976,7 @@
   flex-shrink: 0;
   align-items: stretch;
   width: 100%;
-  height: var(--vp-candidate-mobile-nav-social-row-height);
+  height: var(--vp-mobile-nav-social-row-height);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1049,9 +1040,9 @@
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  height: var(--vp-candidate-mobile-nav-cta-height);
+  height: var(--vp-mobile-nav-cta-height);
   padding: 1rem
-    var(--vp-candidate-mobile-nav-list-pad-inline); /* 16px / 30px */
+    var(--vp-mobile-nav-list-pad-inline); /* 16px / 30px */
   border: 0;
   border-left: 1px solid rgba(255, 255, 255, 0.15);
   background: var(--vp-link); /* #fdb913 — same yellow as desktop brief */
@@ -1455,7 +1446,7 @@
   margin: 0;
   /* Bottom pad on the form (not the wrapper) so absolute icon centering
    * matches the SEARCH text row between the hairlines. */
-  padding: 1.25rem var(--vp-candidate-mobile-nav-list-pad-inline, 30px)
+  padding: 1.25rem var(--vp-mobile-nav-list-pad-inline, 30px)
     1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
@@ -1567,12 +1558,12 @@
  */
 @media (max-width: 767.98px) {
   #header.navbar {
-    --vp-candidate-nav-bar-height-mobile: 64px;
+    --vp-nav-bar-height-mobile: 64px;
     /* Narrower lang cell so logo + toggle + 64px hamburger fit ~390. */
     --vp-nav-cell-width: 72px;
     box-sizing: border-box;
-    height: var(--vp-candidate-nav-bar-height-mobile);
-    min-height: var(--vp-candidate-nav-bar-height-mobile);
+    height: var(--vp-nav-bar-height-mobile);
+    min-height: var(--vp-nav-bar-height-mobile);
     padding-block: 0;
   }
 
@@ -1580,7 +1571,7 @@
     align-items: stretch;
     box-sizing: border-box;
     height: 100%;
-    min-height: var(--vp-candidate-nav-bar-height-mobile);
+    min-height: var(--vp-nav-bar-height-mobile);
     padding-inline: 0;
   }
 
@@ -1609,9 +1600,9 @@
     flex-shrink: 0;
     align-self: stretch;
     box-sizing: border-box;
-    width: var(--vp-candidate-nav-bar-height-mobile);
-    min-width: var(--vp-candidate-nav-bar-height-mobile);
-    height: var(--vp-candidate-nav-bar-height-mobile);
+    width: var(--vp-nav-bar-height-mobile);
+    min-width: var(--vp-nav-bar-height-mobile);
+    height: var(--vp-nav-bar-height-mobile);
   }
 
   #header .navbar-toggler {
@@ -1636,7 +1627,7 @@
   #header .vp-mobile-nav-panel__inner {
     padding-top: var(
       --vp-header-height,
-      var(--vp-candidate-nav-bar-height-mobile, 64px)
+      var(--vp-nav-bar-height-mobile, 64px)
     );
   }
 }
@@ -2622,66 +2613,6 @@
     margin-left: -0.75rem;
     margin-right: -0.75rem;
   }
-}
-
-/* ==========================================================================
-   Brand logo grid — matches live .wp-block-gallery.brand-logos.is-cropped
-   ========================================================================== */
-
-.vp-brand-logos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  max-width: 1100px;
-  margin-inline: auto;
-  border-top: 1px solid var(--color-vp-logo-grid-border);
-  border-left: 1px solid var(--color-vp-logo-grid-border);
-}
-
-@media (min-width: 640px) {
-  .vp-brand-logos {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.vp-brand-logos__cell {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 718 / 412;
-  padding: 1.5rem;
-  background: transparent;
-  border-right: 1px solid var(--color-vp-logo-grid-border);
-  border-bottom: 1px solid var(--color-vp-logo-grid-border);
-}
-
-.vp-brand-logos__figure {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 68%;
-  max-width: 152px;
-  height: 68%;
-  max-height: 44px;
-  margin: 0;
-  background: transparent;
-}
-
-.vp-brand-logos__img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  background: transparent;
-  filter: brightness(0) invert(1);
-}
-
-/* Zhiyun SVG includes a square background path — screen drops it on dark bg */
-.vp-brand-logos__figure--zhiyun {
-  mix-blend-mode: screen;
-  isolation: isolate;
 }
 
 /* ==========================================================================

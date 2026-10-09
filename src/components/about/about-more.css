@@ -14,7 +14,7 @@ section.vp-about-more-section {
   position: relative;
   width: 100%;
   padding: var(--vp-candidate-about-hero-mobile-inset);
-  border: 1px dashed var(--vp-candidate-brief-line);
+  border: 1px dashed var(--vp-line-color);
 }
 
 .vp-about-more__inner {
@@ -92,8 +92,8 @@ section.vp-about-more-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  border-top: 1px solid var(--vp-candidate-brief-line);
-  border-bottom: 1px solid var(--vp-candidate-brief-line);
+  border-top: 1px solid var(--vp-line-color);
+  border-bottom: 1px solid var(--vp-line-color);
 }
 
 .vp-about-more__links a {
@@ -102,8 +102,8 @@ section.vp-about-more-section {
   justify-content: center;
   min-height: 64px;
   padding: 20px 12px;
-  border-right: 1px solid var(--vp-candidate-brief-line);
-  border-bottom: 1px solid var(--vp-candidate-brief-line);
+  border-right: 1px solid var(--vp-line-color);
+  border-bottom: 1px solid var(--vp-line-color);
   font-family: var(--font-vp-heading);
   font-size: var(--vp-candidate-about-step-size);
   font-weight: var(--font-vp-heading-weight);
@@ -203,7 +203,7 @@ section.vp-about-more-section {
   .vp-about-more__links a:nth-last-child(-n + 2),
   .vp-about-more__links a:last-child:nth-child(odd) {
     grid-column: auto;
-    border-right: 1px solid var(--vp-candidate-brief-line);
+    border-right: 1px solid var(--vp-line-color);
     border-bottom: 0;
   }
 

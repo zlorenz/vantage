@@ -11,7 +11,7 @@ import {
   preparePortfolioIndexSlides,
   type FeaturedCarouselRef,
 } from '@/components/portfolio/prepare-portfolio-index-slides';
-import {HOME_REDESIGN_CAROUSEL_QUERY} from '@/components/prototype/carousel/query';
+import {HOME_CAROUSEL_QUERY} from '@/components/prototype/carousel/query';
 import {routing, type Locale} from '@/i18n/routing';
 import {
   workPageTitle,
@@ -45,7 +45,7 @@ import type {
 } from '@/sanity/sanity.types';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 
-type HomeRedesignCarouselPage = {
+type HomeCarouselPage = {
   carouselSlides?: Array<{
     slug?: string | null;
     slugZh?: string | null;
@@ -53,7 +53,7 @@ type HomeRedesignCarouselPage = {
 };
 
 function featuredCarouselRefsFromPage(
-  page: HomeRedesignCarouselPage | null,
+  page: HomeCarouselPage | null,
   locale: Locale,
 ): FeaturedCarouselRef[] {
   const refs: FeaturedCarouselRef[] = [];
@@ -110,7 +110,7 @@ export default async function WorkPage({params}: Props) {
     workPageResult,
     workMetaResult,
     entriesResult,
-    homeRedesignResult,
+    homeCarouselResult,
     videoFormatsResult,
     industriesResult,
     marketsResult,
@@ -122,7 +122,7 @@ export default async function WorkPage({params}: Props) {
     sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
     // Same GROQ as homepage carousel — light refs only (not loadFeaturedWorkSlides:
     // that rebuilds PrototypeCarouselSlide + re-fetches phrases we already have).
-    sanityFetch({query: HOME_REDESIGN_CAROUSEL_QUERY, stega: false}),
+    sanityFetch({query: HOME_CAROUSEL_QUERY, stega: false}),
     sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
     sanityFetch({query: INDUSTRIES_QUERY, stega: false}),
     sanityFetch({query: MARKETS_QUERY, stega: false}),
@@ -141,7 +141,7 @@ export default async function WorkPage({params}: Props) {
     phrases,
   );
   const featuredRefs = featuredCarouselRefsFromPage(
-    homeRedesignResult.data as HomeRedesignCarouselPage | null,
+    homeCarouselResult.data as HomeCarouselPage | null,
     typedLocale,
   );
   const slides = appendFeaturedPortfolioIndexSlides(

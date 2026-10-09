@@ -157,7 +157,7 @@
   .vp-case-shell {
     --vp-section-y-header-condensed: var(
       --vp-header-height,
-      var(--vp-candidate-nav-bar-height-mobile, 64px)
+      var(--vp-nav-bar-height-mobile, 64px)
     );
   }
 }

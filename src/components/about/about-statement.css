@@ -181,13 +181,13 @@
   width: var(--vp-candidate-about-mobile-film-frame);
   height: 100%;
   padding: 16px;
-  border-block: 1px solid var(--vp-candidate-brief-line);
-  border-inline-start: 1px solid var(--vp-candidate-brief-line);
+  border-block: 1px solid var(--vp-line-color);
+  border-inline-start: 1px solid var(--vp-line-color);
 }
 
 .vp-about-statement__rail--right .vp-about-statement__frame:last-child,
 .vp-about-statement__rail--left .vp-about-statement__frame:last-child {
-  border-inline-end: 1px solid var(--vp-candidate-brief-line);
+  border-inline-end: 1px solid var(--vp-line-color);
 }
 
 .vp-about-statement__frame-media {
@@ -346,7 +346,7 @@
     left: 0;
     z-index: 1;
     height: 1px;
-    background: var(--vp-candidate-brief-line);
+    background: var(--vp-line-color);
   }
 
   .vp-about-statement__frame-media {
@@ -374,7 +374,7 @@
     bottom: 0;
     z-index: 1;
     width: 1px;
-    background: var(--vp-candidate-brief-line);
+    background: var(--vp-line-color);
   }
 
   .vp-about-statement__hairline--inner-left {
@@ -393,7 +393,7 @@
     left: 0;
     z-index: 2;
     height: 1px;
-    background: var(--vp-candidate-brief-line);
+    background: var(--vp-line-color);
   }
 
   .vp-about-statement__rulers {
