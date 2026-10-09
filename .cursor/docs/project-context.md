@@ -112,6 +112,6 @@ All tracking through **Google Tag Manager** (`NEXT_PUBLIC_GTM_ID`). Do not imple
 |---|---|
 | `site-architecture.md` | Routes and hosts |
 | `env-vars.md` | Environment variables |
-| `redesign-content-fields.md` | CMS consolidation debt |
+| `redesign-content-fields.md` | Historical CMS consolidation notes (complete) |
 | `design-tokens.md` / `candidate-tokens.md` | Tokens |
 | `content-schema.md` / `migration-data.md` | Historical rebuild notes (may be stale) |

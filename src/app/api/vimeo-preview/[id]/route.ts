@@ -1,5 +1,5 @@
 /**
- * Mint a short-lived Vimeo playback URL for the carousel prototype.
+ * Mint a short-lived Vimeo playback URL for the featured-work carousel.
  * Reads VIMEO_ACCESS_TOKEN server-side only — never forwarded to the client.
  *
  * Defaults to a progressive MP4. `?format=hls` mints the HLS manifest

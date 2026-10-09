@@ -5,8 +5,8 @@
  * Desktop: loupe-clipped quote cards + cursor-tracked chrome.
  * Mobile: idle glass mark + scroll-driven gradient; no loupe, no hotspots.
  *
- * Loupe quote cards are temporarily hidden for redesign launch (placeholder
- * copy). Flip SHOW_HERO_QUOTES when final quotes are ready.
+ * Loupe quote cards are temporarily hidden (placeholder copy). Flip
+ * SHOW_HERO_QUOTES when final quotes are ready.
  */
 
 import {useTranslations} from 'next-intl';

@@ -12,7 +12,7 @@ Naming: `--vp-candidate-[name]`
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-home-carousel-mobile-title-size` | `28px` | ~~`.vp-proto-carousel__campaign` ≤767~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-27788 | superseded → `--vp-overlay-mobile-title-size` | |
+| `--vp-candidate-home-carousel-mobile-title-size` | `28px` | ~~`.vp-home-carousel__campaign` ≤767~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-27788 | superseded → `--vp-overlay-mobile-title-size` | |
 | `--vp-candidate-home-carousel-mobile-caption-size` | `12px` | ~~Brand, format, counter ≤767~~ | same | superseded → `--vp-overlay-mobile-caption-size` | |
 | `--vp-candidate-home-carousel-mobile-overlay-pad-inline` | `16px` | ~~Overlay L/R ≤767~~ | same (`px-16`) | superseded → `--vp-overlay-mobile-pad-inline` | |
 | `--vp-candidate-home-carousel-mobile-overlay-pad-block` | `40px` | ~~Overlay top/bottom ≤767~~ | same (`py-40`) | superseded → `--vp-overlay-mobile-pad-block` | |

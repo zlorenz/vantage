@@ -12,8 +12,8 @@
  * intentionally untouched; `page.founders` is still used below for
  * Organization JSON-LD.
  *
- * PageHero was removed for the redesign; featuredImage stays in
- * ABOUT_PAGE_QUERY for OG image fallback via resolveMetadataImage.
+ * PageHero is not used; featuredImage stays in ABOUT_PAGE_QUERY for OG
+ * image fallback via resolveMetadataImage.
  */
 
 import type { Metadata } from 'next';

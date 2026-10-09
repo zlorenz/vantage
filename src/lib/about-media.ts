@@ -1,5 +1,5 @@
 /**
- * Resolve About Redesign page media slots into poster / preview props.
+ * Resolve About page media slots into poster / preview props.
  * Empty curated sections keep using the automatic portfolio placeholders.
  */
 

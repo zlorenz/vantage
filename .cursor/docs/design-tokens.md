@@ -1,12 +1,12 @@
 # Design Tokens — Vantage Pictures
 
-Extracted directly from `wp-content/themes/vantagepictures-child/style.css`. These are the authoritative visual values for the new Next.js build. All values must be translated into `tailwind.config.js` as named tokens. Never use raw hex values or arbitrary numbers in component code — always reference token names.
+Authoritative visual values for the Next.js app. Shipping tokens live as `--vp-*` custom properties in [`src/app/globals.css`](../../src/app/globals.css) (and component CSS where scoped). Tailwind v4 maps colours/fonts via `@theme` `--color-vp-*` / `--font-vp-*` in that file — there is no `tailwind.config.js` colour extend. Prefer token names over raw hex in new UI code.
 
 ---
 
 ## Locked, component-scoped (`--vp-home-carousel-*`)
 
-Stable tokens used only by the homepage featured-work carousel. **Not** sitewide — do not reuse elsewhere until a second component needs the same value (then promote to a shared `--vp-*`). CSS lives under `.vp-proto-carousel` in `carousel.css`.
+Stable tokens used only by the homepage featured-work carousel. **Not** sitewide — do not reuse elsewhere until a second component needs the same value (then promote to a shared `--vp-*`). CSS lives under `.vp-home-carousel` in [`src/components/home/featured-work-carousel/carousel.css`](../../src/components/home/featured-work-carousel/carousel.css).
 
 | Token | Value | Usage | Notes |
 |---|---|---|---|
@@ -433,7 +433,7 @@ Tokens live in `src/app/globals.css` (`@theme` for utilities, `:root` `--vp-*` f
 
 ## Form & File Block Tokens
 
-Extracted from `video-campaign-brief-form.css` and `file-block.css`. Add to `tailwind.config.js` before building `CampaignBriefForm` and `FileDownloadBlock` components.
+Historical form tokens (many superseded by brief candidates / promoted chrome). Prefer live values in `campaign-brief-form.css` and `:root` in `globals.css`.
 
 ### Campaign Brief Form
 
