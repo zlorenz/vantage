@@ -37,6 +37,11 @@
   --vp-candidate-brief-option-gap: 12px;
   --vp-candidate-brief-group-gap: 24px;
   --vp-candidate-brief-chip-size: 32px;
+  /* Equal inset on all sides: (control height − chip) / 2. */
+  --vp-candidate-brief-chip-inset: calc(
+    (var(--vp-candidate-brief-control-height) - var(--vp-candidate-brief-chip-size)) /
+      2
+  );
   --vp-candidate-brief-chip-bg: rgba(255, 255, 255, 0.15);
   --vp-candidate-brief-chip-glyph: 18px;
   --vp-candidate-brief-btn-height: 80px;
@@ -212,11 +217,26 @@
 }
 
 .vp-form-control--date {
+  /* iOS WebKit inflates native date fields; pin the box and strip appearance. */
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: var(--vp-candidate-brief-control-height);
+  min-height: var(--vp-candidate-brief-control-height);
+  max-height: var(--vp-candidate-brief-control-height);
   color-scheme: dark;
+  padding-block: 0;
+  padding-inline: var(--vp-candidate-brief-control-pad-inline);
   padding-right: calc(
-    var(--vp-candidate-brief-chip-size) +
-      var(--vp-candidate-brief-control-pad-inline) + 8px
+    var(--vp-candidate-brief-chip-size) + var(--vp-candidate-brief-chip-inset) +
+      8px
   );
+  line-height: var(--vp-candidate-brief-control-height);
+  overflow: hidden;
 }
 
 .vp-form-date-field {
@@ -227,13 +247,34 @@
 
 .vp-form-date-control {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: var(--vp-candidate-brief-control-height);
+}
+
+/* iOS: constrain the shadow-DOM value so it doesn't force a taller control. */
+.vp-form-control--date::-webkit-date-and-time-value {
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  height: var(--vp-candidate-brief-control-height);
+  line-height: var(--vp-candidate-brief-control-height);
+  text-align: left;
+}
+
+.vp-form-control--date::-webkit-datetime-edit {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
 }
 
 /* Native picker stays clickable; the glyph is hidden so our chip is the visible control. */
 .vp-form-control--date::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 50%;
-  right: var(--vp-candidate-brief-control-pad-inline);
+  right: var(--vp-candidate-brief-chip-inset);
   bottom: auto;
   width: var(--vp-candidate-brief-chip-size);
   height: var(--vp-candidate-brief-chip-size);
@@ -246,7 +287,7 @@
 .vp-form-chip {
   position: absolute;
   top: 50%;
-  right: var(--vp-candidate-brief-control-pad-inline);
+  right: var(--vp-candidate-brief-chip-inset);
   bottom: auto;
   display: flex;
   align-items: center;
@@ -283,8 +324,8 @@
 }
 
 .vp-field-hint--before {
-  margin-top: var(--vp-candidate-brief-option-gap);
-  margin-bottom: var(--vp-candidate-brief-group-gap);
+  margin-top: 8px;
+  margin-bottom: 16px;
   color: var(--vp-form-placeholder);
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-brief-caption-size);
@@ -305,8 +346,8 @@
   appearance: none;
   cursor: pointer;
   padding-right: calc(
-    var(--vp-candidate-brief-chip-size) +
-      var(--vp-candidate-brief-control-pad-inline) + 8px
+    var(--vp-candidate-brief-chip-size) + var(--vp-candidate-brief-chip-inset) +
+      8px
   );
 }
 
