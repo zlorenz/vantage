@@ -28,7 +28,6 @@ import {LazyXinpianchangPlayer} from '@/components/portfolio/LazyXinpianchangPla
 import type {Locale} from '@/i18n/routing';
 import type {
   InternalLibraryEntry,
-  NamedSlugTerm,
   TaxonomyTerm,
 } from '@/types/sanity';
 import {openPortfolioEntry} from './entry-url';
@@ -43,12 +42,6 @@ function taxonomyLabel(term: TaxonomyTerm, locale: Locale): string {
   const raw =
     locale === 'zh' && term.titleZh?.trim() ? term.titleZh : term.title;
   return decodeHtmlEntities(raw);
-}
-
-function namedLabels(terms: NamedSlugTerm[] | undefined): string[] {
-  return (terms ?? [])
-    .map((t) => t.name?.trim())
-    .filter((name): name is string => Boolean(name));
 }
 
 function isPlayableVideo(video: PortfolioVideoFields): boolean {
@@ -327,7 +320,6 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
   const title = getDisplayTitle(entry, locale);
   const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
   const campaignText = campaignLine || title;
-  const platforms = namedLabels(entry.platforms);
   const formats = (entry.videoFormats ?? []).map((t) =>
     taxonomyLabel(t, locale),
   );
@@ -445,15 +437,6 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
             ) : null}
             <span className="vp-internal-list__campaign">{campaignText}</span>
           </h1>
-
-          {platforms.length > 0 ? (
-            <dl className="vp-internal-detail__facts">
-              <div>
-                <dt>Platform</dt>
-                <dd>{platforms.join(', ')}</dd>
-              </div>
-            </dl>
-          ) : null}
 
           {(formats.length > 0 ||
             industries.length > 0 ||

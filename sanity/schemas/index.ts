@@ -10,8 +10,6 @@ import { category } from './category';
 import { videoFormat } from './videoFormat';
 import { industry } from './industry';
 import { market } from './market';
-import { client } from './client';
-import { crewMember } from './crewMember';
 import { creditIdentity } from './creditIdentity';
 import { translatedPhrase } from './translatedPhrase';
 import { platform } from './platform';
@@ -72,8 +70,6 @@ export const schemaTypes = [
   videoFormat,
   industry,
   market,
-  client,
-  crewMember,
   creditIdentity,
   translatedPhrase,
   platform,

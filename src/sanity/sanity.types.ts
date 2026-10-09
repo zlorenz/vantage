@@ -461,27 +461,6 @@ export type TranslatedPhrase = {
   notes?: string;
 };
 
-export type CrewMember = {
-  _id: string;
-  _type: "crewMember";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  slug?: Slug;
-  role?: "director" | "dop" | "art-director";
-};
-
-export type Client = {
-  _id: string;
-  _type: "client";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  slug?: Slug;
-};
-
 export type MarketReference = {
   _ref: string;
   _type: "reference";
@@ -711,27 +690,6 @@ export type AwardItem = {
   portfolioEntry?: PortfolioEntryReference;
 };
 
-export type ClientReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "client";
-};
-
-export type CrewMemberReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "crewMember";
-};
-
-export type PlatformReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "platform";
-};
-
 export type PortfolioEntry = {
   _id: string;
   _type: "portfolioEntry";
@@ -809,21 +767,6 @@ export type PortfolioEntry = {
     _type: "image";
     _key: string;
   }>;
-  clients?: Array<
-    {
-      _key: string;
-    } & ClientReference
-  >;
-  crewMembers?: Array<
-    {
-      _key: string;
-    } & CrewMemberReference
-  >;
-  platforms?: Array<
-    {
-      _key: string;
-    } & PlatformReference
-  >;
   crewCredits?: Array<
     {
       _key: string;
@@ -1123,8 +1066,6 @@ export type AllSanitySchemaTypes =
   | VideoEmbed
   | Platform
   | TranslatedPhrase
-  | CrewMember
-  | Client
   | MarketReference
   | Market
   | IndustryReference
@@ -1141,9 +1082,6 @@ export type AllSanitySchemaTypes =
   | CtaButton
   | ImageGallery
   | AwardItem
-  | ClientReference
-  | CrewMemberReference
-  | PlatformReference
   | PortfolioEntry
   | Founder
   | PortfolioVideo

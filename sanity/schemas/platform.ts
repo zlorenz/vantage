@@ -4,7 +4,8 @@
  * Source: content-schema.md §4.9
  * WordPress origin: `platform` taxonomy (108 terms)
  *
- * Referenced from portfolioEntry.platforms. Not exposed on public taxonomy archives.
+ * `portfolioEntry.platforms` was removed; docs remain browsable in Studio Content
+ * (admin) for historical reference. Not exposed on public taxonomy archives.
  */
 
 import { defineField, defineType } from 'sanity';

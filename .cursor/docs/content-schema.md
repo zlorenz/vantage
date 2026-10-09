@@ -180,14 +180,14 @@ Bilingual routing: English at `/`, Chinese at `/zh/`. See `site-architecture.md`
 
 ### 3.5 Internal reference data (Sanity document types)
 
-Mapped from WordPress crew/client/platform taxonomies. **Credit Identities** are the preferred entity for Work Library filters. Legacy `client` / `crewMember` docs remain in the dataset as orphaned WP mirrors (desk-hidden; Create blocked) after the 2026-07-22 retire pass cleared `portfolioEntry.clients` / `crewMembers`.
+Mapped from WordPress crew/client/platform taxonomies. **Credit Identities** are the live entity for Work Library filters. Legacy `client` / `crewMember` schema types and `portfolioEntry.clients` / `crewMembers` / `platforms` fields were removed (D10); orphan docs may remain in the dataset (Vision-only).
 
 | WordPress taxonomy | Terms (live Sanity) | Sanity type | Role |
 |---|---|---|---|
 | (new) | 180 | `creditIdentity` | Stable vendor entity (opaque `ci_…` id); Brand / Director / DOP / Art Director / Editor |
-| `client` | 59 (legacy) | `client` | Orphaned Brand taxonomy; **0** live portfolio refs |
-| `director` / `dop` / `art-director` | 105 (legacy) | `crewMember` | Orphaned role-scoped crew taxonomy; **0** live portfolio refs |
-| `platform` | 108 | `platform` | Distribution/platform tags |
+| `client` | 59 (orphan docs) | — (schema removed) | Historical Brand taxonomy; no Studio type |
+| `director` / `dop` / `art-director` | 105 (orphan docs) | — (schema removed) | Historical role-scoped crew; no Studio type |
+| `platform` | 108 | `platform` | Historical distribution tags (no portfolio field) |
 
 **Dropped from migration:** `portfolio_visibility` taxonomy — consolidated into `portfolioEntry.isHidden` (see §4.8).
 
@@ -205,10 +205,8 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
 | `blogPost` | `post` | 23 |
 | `page` | `page` | 9 (8 public bilingual + 1 internal EN-only) |
 | `siteSettings` | ACF Options (Contact Info) | 1 singleton |
-| `client` | `client` taxonomy | 59 (legacy; orphaned, desk-hidden) |
-| `crewMember` | `director`, `dop`, `art-director` taxonomies | 105 (legacy; orphaned, desk-hidden) |
 | `creditIdentity` | backfilled from clients/crew/credits | 180 |
-| `platform` | `platform` taxonomy | 108 |
+| `platform` | `platform` taxonomy | 108 (no portfolio refs; Studio admin browse) |
 | Public taxonomy refs | `category`, `video-format`, `industry`, `market` | 23 terms |
 
 ### 4.2 `portfolioEntry`
@@ -253,9 +251,6 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
   videoFormats: array<ref>         // taxonomy: video-format
   industries: array<ref>           // taxonomy: industry
   markets: array<ref>              // taxonomy: market
-  clients: array<ref>              // legacy → client; prefer creditIdentity on Brand credits
-  crewMembers: array<ref>          // legacy → crewMember; prefer creditIdentity on Director/DOP/AD
-  platforms: array<ref>           // ref → platform
   isHidden: boolean                // see §4.8 — migration: true for WP ID 3187 only
   crewCredits?: array<crewCredit>  // sole live credits source; filter roles link identity refs
   seo: seoFields
@@ -283,14 +278,15 @@ legacy document-level `credits` object (WP ACF department shape) was migrated
 into `crewCredits` and then unset from all portfolio documents (2026-07-31);
 it is no longer in the schema or live data.
 
-**Crew taxonomy sync (from `crewCredits` roleKeys → Sanity refs):**
+**Filterable credit roles** (`crewCredits` → `creditIdentity` on people):
 
-| roleKey | Sanity document type |
+| roleKey | Linked entity |
 |---|---|
-| `brand` | `client` (legacy) / prefer `creditIdentity` |
-| `director` | `crewMember` (`role: director`) / prefer `creditIdentity` |
-| `dop` | `crewMember` (`role: dop`) / prefer `creditIdentity` |
-| `art_director` | `crewMember` (`role: art-director`) / prefer `creditIdentity` |
+| `brand` | `creditIdentity` |
+| `director` | `creditIdentity` |
+| `dop` | `creditIdentity` |
+| `art_director` | `creditIdentity` |
+| `editor` | `creditIdentity` |
 
 The canonical role catalog lives in `shared/crew-credits/` and is shared by Studio,
 CSV import, frontend rendering, and migration.
@@ -433,20 +429,9 @@ CSV import, frontend rendering, and migration.
 }
 ```
 
-### 4.7 `client` (legacy)
+### 4.7 `client` / `crewMember` (removed)
 
-```typescript
-{
-  _type: 'client'
-  name: string                     // term name from client taxonomy
-  slug: slug
-  // Legacy Brand taxonomy. Prefer creditIdentity linked from Brand credits.
-  // Not exposed on public taxonomy archive pages
-  // Studio: desk-hidden; Create blocked (structure.ts / sanity.config.ts)
-}
-```
-
-**Count:** 59 documents (live, 2026-07-26). **Live refs:** 0 `portfolioEntry` docs with non-empty `clients` (published or draft) after the 2026-07-22 retire pass. Docs kept for historical reference only.
+Schema types and `portfolioEntry.clients` / `crewMembers` fields removed (D10). Orphan documents may remain in the Content Lake (Vision-only). Live brand/crew record is `crewCredits` + `creditIdentity`.
 
 ### 4.7b `creditIdentity`
 
@@ -463,22 +448,6 @@ CSV import, frontend rendering, and migration.
 
 **Count:** 180 documents (live, 2026-07-26).
 
-### 4.8 `crewMember` (legacy)
-
-```typescript
-{
-  _type: 'crewMember'
-  name: string                     // term name
-  slug: slug
-  role: 'director' | 'dop' | 'art-director'
-  // Legacy role-scoped taxonomy. Prefer creditIdentity (one vendor across roles).
-  // Not exposed on public taxonomy archive pages
-  // Studio: desk-hidden; Create blocked (structure.ts / sanity.config.ts)
-}
-```
-
-**Count:** 105 documents (live, 2026-07-26). **Live refs:** 0 `portfolioEntry` docs with non-empty `crewMembers` (published or draft) after the 2026-07-22 retire pass. Docs kept for historical reference only.
-
 ### 4.9 `platform`
 
 ```typescript
@@ -486,7 +455,7 @@ CSV import, frontend rendering, and migration.
   _type: 'platform'
   name: string                     // term name from platform taxonomy
   slug: slug
-  // Referenced from portfolioEntry.platforms
+  // portfolioEntry.platforms field removed; docs browsable in Studio (admin)
   // Not exposed on public taxonomy archive pages
 }
 ```
@@ -856,9 +825,9 @@ All audit decisions confirmed 2026-06-21.
 | 2 | **Blog comments** | **Drop entirely.** No comment display, forms, or moderation in Next.js. Noted in §4.3 (`blogPost`). |
 | 3 | **Visibility consolidation** | **Confirmed.** Single `isHidden: boolean` on `portfolioEntry`. Drop disabled ACF `hide_from_public` and `portfolio_visibility` taxonomy. Migration: set `isHidden: true` for WP ID 3187 (Bitget – Elite Traders) only. Documented in §4.11. |
 | 4 | **Chinese Campaign Brief form** | **v1 requirement, sequential build.** Fully translated 42-field, 7-step form at `/zh/视频活动简介/`. Build after English form is complete and verified — not simultaneously. Documented in §5.0. |
-| 5 | **Crew taxonomies** | **Original (2026-06-21):** keep `client` / `crewMember` / `platform` mapped from WP. **Post-migration (2026-07-22):** Work Library filters via `creditIdentity` on `crewCredits` (not `clients` / `crewMembers` arrays). Legacy `client` (59) and `crewMember` (105) docs remain orphaned; Studio desk-hidden + Create blocked. `platform` (108) unchanged. Documented in §4.7–4.9. |
+| 5 | **Crew taxonomies** | **Original (2026-06-21):** keep `client` / `crewMember` / `platform` mapped from WP. **Post-migration (2026-07-22):** Work Library filters via `creditIdentity` on `crewCredits`. **D10:** schema types `client` / `crewMember` and fields `clients` / `crewMembers` / `platforms` removed; orphan docs Vision-only. `platform` type kept for admin browse. |
 | 6 | **Brand logo wall / `brandLogoItem`** | **Removed (post-cutover cleanup).** Homepage brand wall + CMS field + `shared/client-logos` registry + `/public/logos` SVGs deleted — no UI consumer after cutover. Restore would be a new design/code pass, not a schema enum. |
-| 7 | **`client` / `crewMember` retired** | **Confirmed (2026-07-22 data, 2026-07-26 desk, `bd8e833c`).** 59 `client` and 105 `crewMember` orphan docs remain; 0 `portfolioEntry` refs to either, published and drafts. Both removed from `sanity/structure.ts` and blocked in `newDocumentOptions`. Schema types stay registered, documents untouched — orphans are Vision-only. Live brand record is `crewCredits` Brand rows + `creditIdentity`. Do not re-run `link-credit-identities-on-credits.ts` unfiltered — stale map can write dangling weak refs (see script header). |
+| 7 | **`client` / `crewMember` retired** | **Schema removed (D10).** Orphan docs may remain in the dataset; no Studio types. Live brand record is `crewCredits` Brand rows + `creditIdentity`. Do not re-run `link-credit-identities-on-credits.ts` unfiltered — stale map can write dangling weak refs (see script header). |
 
 ### Remaining items (not blocking build start)
 

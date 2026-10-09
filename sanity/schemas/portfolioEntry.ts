@@ -509,41 +509,6 @@ export const portfolioEntry = defineType({
     }),
 
     defineField({
-      name: 'clients',
-      title: 'Clients (legacy)',
-      type: 'array',
-      group: 'content',
-      hidden: true,
-      readOnly: true,
-      description:
-        'Legacy Brand taxonomy refs. Prefer creditIdentity links on Crew Credits → Brand. Kept for historical data.',
-      of: [{ type: 'reference', to: [{ type: 'client' }] }],
-    }),
-
-    defineField({
-      name: 'crewMembers',
-      title: 'Crew Members (legacy)',
-      type: 'array',
-      group: 'content',
-      hidden: true,
-      readOnly: true,
-      description:
-        'Legacy Director / DOP / Art Director taxonomy refs. Prefer creditIdentity links on Crew Credits. Kept for historical data.',
-      of: [{ type: 'reference', to: [{ type: 'crewMember' }] }],
-    }),
-
-    defineField({
-      name: 'platforms',
-      title: 'Platforms',
-      type: 'array',
-      group: 'content',
-      hidden: true,
-      readOnly: true,
-      description: 'Legacy field — not used. Kept on documents for historical data only.',
-      of: [{ type: 'reference', to: [{ type: 'platform' }] }],
-    }),
-
-    defineField({
       name: 'crewCredits',
       title: 'Crew Credits',
       type: 'array',

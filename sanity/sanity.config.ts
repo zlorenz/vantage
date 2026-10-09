@@ -97,13 +97,10 @@ export default defineConfig({
   },
 
   document: {
-    // Orphaned WP taxonomy mirrors — keep schema types for historical docs,
-    // but do not offer Create in the global + menu.
+    // Singletons / internal docs — do not offer Create in the global + menu.
     newDocumentOptions: (prev) =>
       prev.filter(
         (t) =>
-          t.templateId !== 'client' &&
-          t.templateId !== 'crewMember' &&
           t.templateId !== 'siteSettings' &&
           t.templateId !== 'trashRecord' &&
           t.templateId !== 'duplicateDismissal' &&

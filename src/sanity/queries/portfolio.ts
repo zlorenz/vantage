@@ -241,10 +241,6 @@ const INTERNAL_LIBRARY_ENTRY_FIELDS = `
     videoTitle,
     videoTitleZh
   },
-  platforms[]->{
-    name,
-    "slug": slug.current
-  },
   videoFormats[]->{
     title,
     titleZh,

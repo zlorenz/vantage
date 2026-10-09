@@ -23,11 +23,6 @@ import {
 import {mapCrewCreditsCsvRows} from './csv-map'
 import {buildRoleCatalogIndexes} from './name-catalog-index'
 import {
-  planTaxonomySyncFromCredits,
-  resolveTaxonomyPatch,
-  slugifyPersonName,
-} from './sync-taxonomies-from-credits'
-import {
   identityLinkPolicyForDepartments,
   planIdentitySyncFromCredits,
   resolveIdentityLinksOnCredits,
@@ -804,80 +799,6 @@ const roleIndexesWithIdentity = buildRoleCatalogIndexes([
 assert.equal(
   roleIndexesWithIdentity.roleCatalogByKey.get('photographer')?.[0]?.identityId,
   'ci_jane_photo',
-)
-
-// --- taxonomy sync from Brand / Director / DOP / Art Director ---------------
-
-assert.equal(slugifyPersonName('Zacharia Lorenz'), 'zacharia-lorenz')
-assert.equal(slugifyPersonName('Minh Thuận'), 'minh-thuan')
-assert.equal(slugifyPersonName('Nguyễn Đức Hải'), 'nguyen-duc-hai')
-
-const taxonomyPlan = planTaxonomySyncFromCredits([
-  {
-    _type: 'crewCredit',
-    department: 'production',
-    roleKey: 'brand',
-    role: 'Brand',
-    people: [
-      {_type: 'crewPerson', name: 'Mammotion'},
-      {_type: 'crewPerson', name: 'Mammotion'},
-    ],
-  },
-  {
-    _type: 'crewCredit',
-    department: 'production',
-    roleKey: 'director',
-    role: 'Director',
-    people: [
-      {_type: 'crewPerson', name: 'Zacharia Lorenz'},
-      {_type: 'crewPerson', name: 'Paul Moore'},
-    ],
-  },
-  {
-    _type: 'crewCredit',
-    department: 'camera',
-    roleKey: 'dop',
-    role: 'DOP',
-    people: [{_type: 'crewPerson', name: 'Robin Taylor'}],
-  },
-  {
-    _type: 'crewCredit',
-    department: 'art',
-    roleKey: 'art_director',
-    role: 'Art Director',
-    people: [{_type: 'crewPerson', name: 'Deen Abrahams'}],
-  },
-])
-
-assert.deepEqual(taxonomyPlan.clientNames, ['Mammotion'])
-assert.deepEqual(taxonomyPlan.crewByRole.director, ['Zacharia Lorenz', 'Paul Moore'])
-assert.deepEqual(taxonomyPlan.crewByRole.dop, ['Robin Taylor'])
-assert.deepEqual(taxonomyPlan.crewByRole['art-director'], ['Deen Abrahams'])
-
-const taxonomyPatch = resolveTaxonomyPatch(
-  taxonomyPlan,
-  [{_id: 'client-mammotion', name: 'Mammotion', slug: 'mammotion'}],
-  [
-    {
-      _id: 'crew-director-paul-moore',
-      name: 'Paul Moore',
-      slug: 'paul-moore',
-      role: 'director',
-    },
-  ],
-)
-assert.equal(taxonomyPatch.clients.length, 1)
-assert.equal(taxonomyPatch.clients[0]._ref, 'client-mammotion')
-assert.equal(taxonomyPatch.createClients.length, 0)
-assert.equal(taxonomyPatch.crewMembers.length, 4)
-assert.equal(taxonomyPatch.createCrewMembers.length, 3)
-assert.ok(
-  taxonomyPatch.crewMembers.some((ref) => ref._ref === 'crew-director-paul-moore'),
-)
-assert.ok(
-  taxonomyPatch.createCrewMembers.some(
-    (doc) => doc.name === 'Zacharia Lorenz' && doc.role === 'director',
-  ),
 )
 
 // --- creditIdentity link resolve --------------------------------------------

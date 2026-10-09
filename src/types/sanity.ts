@@ -133,12 +133,6 @@ export interface PortfolioGridEntry extends PortfolioCard {
 /** @deprecated PortfolioGrid internal filterMode — unused; kept for type compat. */
 export type PortfolioInternalGridEntry = PortfolioCard;
 
-/** Named platform refs for internal library (legacy field; removed in D10). */
-export interface NamedSlugTerm {
-  name: string;
-  slug: string;
-}
-
 /** Platform term for work-internal filters. */
 export interface PlatformTerm {
   _id: string;
@@ -191,8 +185,6 @@ export interface InternalLibraryEntry {
   videos?: PortfolioVideo[];
   /** @deprecated Prefer videos. */
   additionalVideos?: PortfolioVideo[];
-  /** @deprecated Legacy WP platform refs — removed from schema in D10. */
-  platforms?: NamedSlugTerm[];
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];
