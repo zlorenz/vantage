@@ -4,8 +4,12 @@
  */
 
 .vp-brief-section {
-  /* H1 is sr-only; condensed-header clearance still needed under the nav. */
-  padding-top: calc(var(--vp-section-y-header-condensed) * 0.5) !important;
+  /*
+   * Clear the fixed nav, then the same gap under it on every breakpoint.
+   * Mobile nav is 64px; desktop uses --vp-nav-bar-height (80px).
+   */
+  --vp-brief-below-nav-gap: 12px;
+  padding-top: calc(64px + var(--vp-brief-below-nav-gap)) !important;
 
   --vp-candidate-brief-step-card-gap: 80px;
   --vp-candidate-brief-section-title-size: 26px;
@@ -67,11 +71,19 @@
   --vp-candidate-brief-transition: 0.3s ease-out;
 }
 
+@media (min-width: 768px) {
+  .vp-brief-section {
+    padding-top: calc(
+      var(--vp-nav-bar-height) + var(--vp-brief-below-nav-gap)
+    ) !important;
+  }
+}
+
 @media (max-width: 767px) {
   .vp-brief-section {
     --vp-candidate-brief-step-card-gap: 40px;
     --vp-candidate-brief-section-title-size: 22px;
-    --vp-candidate-brief-card-pad-block: 40px;
+    --vp-candidate-brief-card-pad-block: 16px;
     --vp-candidate-brief-card-pad-inline: 16px;
     --vp-candidate-brief-step-size: 48px;
     --vp-candidate-brief-step-label-gap: 16px;
@@ -220,7 +232,8 @@
   /* iOS WebKit inflates native date fields; pin the box and strip appearance. */
   -webkit-appearance: none;
   appearance: none;
-  display: block;
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
@@ -235,7 +248,7 @@
     var(--vp-candidate-brief-chip-size) + var(--vp-candidate-brief-chip-inset) +
       8px
   );
-  line-height: var(--vp-candidate-brief-control-height);
+  line-height: var(--vp-candidate-brief-control-lh);
   overflow: hidden;
 }
 
@@ -252,14 +265,18 @@
   height: var(--vp-candidate-brief-control-height);
 }
 
-/* iOS: constrain the shadow-DOM value so it doesn't force a taller control. */
+/*
+ * iOS: keep the value glyph at text size. Stretching it to the full control
+ * height parks the date string on the bottom edge of the field.
+ */
 .vp-form-control--date::-webkit-date-and-time-value {
   margin: 0;
   padding: 0;
   min-height: 0;
-  height: var(--vp-candidate-brief-control-height);
-  line-height: var(--vp-candidate-brief-control-height);
+  height: auto;
+  line-height: var(--vp-candidate-brief-control-lh);
   text-align: left;
+  vertical-align: middle;
 }
 
 .vp-form-control--date::-webkit-datetime-edit {
@@ -267,6 +284,13 @@
   align-items: center;
   min-width: 0;
   height: 100%;
+  padding: 0;
+  line-height: var(--vp-candidate-brief-control-lh);
+}
+
+.vp-form-control--date::-webkit-datetime-edit-fields-wrapper {
+  display: flex;
+  align-items: center;
   padding: 0;
 }
 
@@ -632,7 +656,7 @@
 /* Intro info chip — same chrome tokens as /work mobile search/filter. */
 .vp-brief-intro-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin: 0 0 24px;
 }
 
@@ -694,7 +718,7 @@
   .vp-brief-intro-popout {
     position: absolute;
     top: calc(100% + 0.35rem);
-    right: 0;
+    left: 0;
     z-index: 60;
     display: block;
     width: max-content;
@@ -1103,10 +1127,10 @@
 }
 
 @media (max-width: 767px) {
-  /* Mobile Figma: section title → fields is 48px on every step. */
+  /* Compact gap from step heading into the bracketed fields. */
   .vp-form-step-heading,
   .vp-brief-card--tight .vp-form-step-heading {
-    margin-bottom: var(--vp-candidate-brief-field-gap-tight);
+    margin-bottom: 32px;
   }
 
   /* Mobile Figma: fields → nav is 60px even when field rows are 40px. */
