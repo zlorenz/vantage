@@ -50,8 +50,7 @@ type Props = {
 function resolveBlogHeroVideoUrl(post: BlogPost): string | undefined {
   if (post.relatedCase?._id) {
     const main = resolveMainPortfolioVideo(post.relatedCase);
-    const url =
-      main?.vimeoUrl?.trim() || post.relatedCase.vimeoUrl?.trim() || '';
+    const url = main?.vimeoUrl?.trim() || '';
     return url || undefined;
   }
   const mainUrl = post.mainVideo?.url?.trim();

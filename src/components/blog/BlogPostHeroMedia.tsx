@@ -42,12 +42,7 @@ type BlogPostHeroMediaProps = {
 
 function relatedCaseHasPlayableVideo(relatedCase: BlogPostRelatedCase): boolean {
   const main = resolveMainPortfolioVideo(relatedCase);
-  return Boolean(
-    main?.vimeoUrl?.trim() ||
-      main?.xinpianchangUrl?.trim() ||
-      relatedCase.vimeoUrl?.trim() ||
-      relatedCase.xinpianchangUrl?.trim(),
-  );
+  return Boolean(main?.vimeoUrl?.trim() || main?.xinpianchangUrl?.trim());
 }
 
 /** Single-video shell — empty rail column + framed media (multi uses carousel-row). */
