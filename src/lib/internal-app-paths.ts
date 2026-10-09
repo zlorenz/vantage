@@ -119,8 +119,20 @@ export function isShowreelEditorChromePath(pathname: string): boolean {
   return /^\/showreel\/(?!login(?:\/|$))[^/]+\/edit\/?$/.test(pathname)
 }
 
-/** Routes that use the minimal internal nav + footer instead of marketing chrome. */
-export function isInternalAppChromePath(pathname: string): boolean {
+/**
+ * Routes that use the minimal internal nav + footer instead of marketing chrome.
+ *
+ * On the app host the browser path is `/` or `/{slug}` (rewrite hides
+ * `/work-internal`), so host wins over pathname. Pass `hostname` from the
+ * request Host header for SSR; omit it in the browser to use `window`.
+ */
+export function isInternalAppChromePath(
+  pathname: string,
+  hostname?: string,
+): boolean {
+  if (hostname !== undefined ? isAppHostname(hostname) : isAppHostClient()) {
+    return true
+  }
   return isWorkInternalPath(pathname) || isShowreelEditorChromePath(pathname)
 }
 

@@ -3,8 +3,9 @@
  *
  * Locale layouts are shared and cached across sibling routes, so a server-only
  * pathname check would not update on client navigations. usePathname keeps
- * SiteHeader / SiteFooter in sync when entering/leaving internal app routes
- * (`/work-internal`, showreel editor/login).
+ * SiteHeader / SiteFooter in sync when entering/leaving internal app routes.
+ * `onAppHost` comes from the request Host header so SSR matches the app host
+ * (browser path is `/`, not `/work-internal`).
  */
 
 'use client';
@@ -15,6 +16,8 @@ import { isInternalAppChromePath } from '@/lib/internal-app-paths';
 import '@/components/work-internal/work-internal-theme.css';
 
 interface LayoutChromeProps {
+  /** True when the request Host is the app subdomain (incl. app.localhost). */
+  onAppHost?: boolean;
   header: ReactNode;
   footer: ReactNode;
   children: ReactNode;
@@ -31,9 +34,15 @@ function WorkInternalFooter() {
   );
 }
 
-export function LayoutChrome({ header, footer, children }: LayoutChromeProps) {
+export function LayoutChrome({
+  onAppHost = false,
+  header,
+  footer,
+  children,
+}: LayoutChromeProps) {
   const pathname = usePathname();
-  const useInternalChrome = isInternalAppChromePath(pathname);
+  const useInternalChrome =
+    onAppHost || isInternalAppChromePath(pathname);
 
   return (
     <>

@@ -8,8 +8,10 @@
  */
 
 import type { ReactNode } from 'react';
+import { headers } from 'next/headers';
 import type { NavPage, SiteSettings } from '@/types/sanity';
 import type { Locale } from '@/i18n/routing';
+import { hostnameFromHostHeader, isAppHostname } from '@/lib/site-hosts';
 import { RouteTransitionOverlay } from '@/components/navigation/RouteTransitionOverlay';
 import { LayoutChrome } from './LayoutChrome';
 import { SiteFooter } from './SiteFooter';
@@ -28,10 +30,14 @@ export async function LayoutShell({
   navPages,
   children,
 }: LayoutShellProps) {
+  const host = hostnameFromHostHeader((await headers()).get('host'));
+  const onAppHost = isAppHostname(host);
+
   return (
     <>
       <RouteTransitionOverlay />
       <LayoutChrome
+        onAppHost={onAppHost}
         header={
           <SiteHeader
             locale={locale}
