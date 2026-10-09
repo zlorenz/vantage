@@ -5,14 +5,13 @@
 
 .vp-brief-section {
   /* H1 is sr-only; condensed-header clearance still needed under the nav. */
-  padding-top: var(--vp-section-y-header-condensed) !important;
+  padding-top: calc(var(--vp-section-y-header-condensed) * 0.5) !important;
 
-  --vp-candidate-brief-intro-color: rgba(255, 255, 255, 0.6);
-  --vp-candidate-brief-intro-step-gap: 60px;
   --vp-candidate-brief-step-card-gap: 80px;
   --vp-candidate-brief-section-title-size: 26px;
   --vp-candidate-brief-section-title-lh: 1.4;
-  --vp-candidate-brief-card-pad: 30px;
+  --vp-candidate-brief-card-pad-block: 30px;
+  --vp-candidate-brief-card-pad-inline: 30px;
   --vp-candidate-brief-step-size: 60px;
   --vp-candidate-brief-step-label-gap: 20px;
   --vp-candidate-brief-caption-size: 14px;
@@ -72,7 +71,8 @@
   .vp-brief-section {
     --vp-candidate-brief-step-card-gap: 40px;
     --vp-candidate-brief-section-title-size: 22px;
-    --vp-candidate-brief-card-pad: 40px 16px;
+    --vp-candidate-brief-card-pad-block: 40px;
+    --vp-candidate-brief-card-pad-inline: 16px;
     --vp-candidate-brief-step-size: 48px;
     --vp-candidate-brief-step-label-gap: 16px;
     --vp-candidate-brief-caption-size: 12px;
@@ -629,19 +629,194 @@
   width: 100%;
 }
 
-.vp-brief-intro {
-  margin: 0 0 var(--vp-candidate-brief-intro-step-gap);
-  color: var(--vp-candidate-brief-intro-color);
+/* Intro info chip — same chrome tokens as /work mobile search/filter. */
+.vp-brief-intro-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 24px;
+}
+
+.vp-brief-intro-anchor {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.vp-brief-intro-chip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--vp-chrome-chip-size, 2.75rem);
+  height: var(--vp-chrome-chip-size, 2.75rem);
+  margin: 0;
+  padding: 0;
+  border: var(--vp-chrome-chip-border);
+  border-radius: var(--vp-chrome-chip-radius, 9999px);
+  background: var(--vp-chrome-chip-bg);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--vp-transition),
+    background-color var(--vp-transition);
+}
+
+.vp-brief-intro-chip:hover,
+.vp-brief-intro-chip:focus-visible,
+.vp-brief-intro-chip.is-open {
+  border-color: var(--vp-border, rgba(255, 255, 255, 0.6));
+  outline: none;
+}
+
+.vp-brief-intro-chip__icon {
+  display: block;
+  width: var(--vp-chrome-chip-icon-size, 1.25rem);
+  height: var(--vp-chrome-chip-icon-size, 1.25rem);
+  flex-shrink: 0;
+}
+
+.vp-brief-intro-panel__text {
+  margin: 0;
+  padding: 0 1.25rem 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
   font-family: var(--font-vp-sans);
+  font-size: 0.9375rem;
   font-weight: var(--font-vp-body-weight);
+  line-height: 1.55;
+}
+
+/* Desktop: anchored popout below the chip (filter sheet language, opens down). */
+.vp-brief-intro-popout {
+  display: none;
+}
+
+@media (min-width: 576px) {
+  .vp-brief-intro-popout {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    z-index: 60;
+    display: block;
+    width: max-content;
+    max-width: min(24rem, calc(100vw - 2rem));
+    min-width: 16rem;
+    pointer-events: none;
+  }
+
+  .vp-brief-intro-popout.is-open {
+    pointer-events: auto;
+  }
+
+  .vp-brief-intro-popout__panel {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: min(70vh, 28rem);
+    margin: 0;
+    border-radius: 0.75rem;
+    background: #111111;
+    color: #fff;
+    box-shadow: 0 12px 40px rgba(var(--vp-black-rgb), 0.45);
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    pointer-events: none;
+    will-change: opacity, transform;
+    transition:
+      opacity 0.18s ease-in,
+      transform 0.18s ease-in;
+  }
+
+  .vp-brief-intro-popout.is-open .vp-brief-intro-popout__panel {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.28s ease-out,
+      transform 0.28s ease-out;
+  }
+
+  .vp-brief-intro-popout:not(.is-open) .vp-brief-intro-popout__panel {
+    transition:
+      opacity 0.18s ease-in,
+      transform 0.18s ease-in;
+  }
+
+  .vp-brief-intro-popout__header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 3.25rem;
+    padding: 0.25rem 0.75rem 0;
+  }
+
+  .vp-brief-intro-popout__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color var(--vp-transition);
+  }
+
+  .vp-brief-intro-popout__icon-btn svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .vp-brief-intro-popout__icon-btn:hover,
+  .vp-brief-intro-popout__icon-btn:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+    outline: none;
+  }
+
+  .vp-brief-intro-popout__body {
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vp-brief-intro-popout__body .vp-brief-intro-panel__text {
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 576px) and (prefers-reduced-motion: reduce) {
+  .vp-brief-intro-popout__panel,
+  .vp-brief-intro-popout.is-open .vp-brief-intro-popout__panel,
+  .vp-brief-intro-popout:not(.is-open) .vp-brief-intro-popout__panel {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .vp-brief-intro-bar {
+    margin-bottom: 16px;
+  }
 }
 
 .vp-brief-card {
   position: relative;
-  padding: var(--vp-candidate-brief-card-pad);
 }
 
-.vp-brief-card::before {
+/* Corner ticks frame the fields only — heading + nav sit outside. */
+.vp-brief-fields {
+  position: relative;
+  padding: var(--vp-candidate-brief-card-pad-block)
+    var(--vp-candidate-brief-card-pad-inline);
+}
+
+.vp-brief-fields::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -665,6 +840,12 @@
       right bottom / var(--vp-struct-tick-stroke) var(--vp-struct-tick-size) no-repeat;
 }
 
+/* Keep heading / nav / errors aligned with field content inside the ticks. */
+.vp-form-step-heading,
+.vp-form-nav {
+  padding-inline: var(--vp-candidate-brief-card-pad-inline);
+}
+
 .vp-brief-card--tight .vp-form-step-heading {
   margin-bottom: var(--vp-candidate-brief-field-gap-tight);
 }
@@ -679,6 +860,13 @@
   letter-spacing: 0;
   line-height: var(--vp-candidate-brief-section-title-lh);
   text-transform: uppercase;
+}
+
+/* Mobile compact step label — yellow "STEP N:" before the title. */
+.vp-form-step-heading__step {
+  color: var(--vp-link);
+  font-size: 0.72em;
+  vertical-align: baseline;
 }
 
 @media (min-width: 768px) {
@@ -705,6 +893,12 @@
   margin: 0 0 var(--vp-candidate-brief-step-card-gap);
   padding: 0;
   list-style: none;
+}
+
+@media (max-width: 767px) {
+  .vp-form-step-progress {
+    display: none;
+  }
 }
 
 .vp-form-step-progress-item {
@@ -935,6 +1129,7 @@
 
 .vp-form-error-banner {
   margin-top: 1.5rem;
+  margin-inline: var(--vp-candidate-brief-card-pad-inline);
   padding: 0.85rem 1rem;
   border: 1px solid var(--vp-form-validation-border);
   background: var(--vp-form-validation-bg);
@@ -1005,6 +1200,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--vp-candidate-brief-field-gap);
+  padding: var(--vp-candidate-brief-card-pad-block)
+    var(--vp-candidate-brief-card-pad-inline);
   text-align: center;
 }
 

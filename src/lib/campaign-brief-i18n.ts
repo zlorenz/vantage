@@ -32,9 +32,15 @@ export type CampaignBriefLabeledOption = {
 
 export type CampaignBriefUi = {
   formDescription: string;
+  /** Aria label for the intro info chip (closed). */
+  infoOpenAria: string;
+  /** Aria label to dismiss the intro panel / sheet. */
+  infoCloseAria: string;
   successMessage: string;
   submitAnother: string;
   stepCount: (current: number, total?: number) => string;
+  /** Mobile heading prefix, e.g. "Step 2". */
+  stepHeadingPrefix: (step: number) => string;
   previous: string;
   next: string;
   submitBrief: string;
@@ -232,9 +238,12 @@ const FIELD_LABELS_EN: Record<CampaignBriefFieldKey, string> = {
 
 const UI_EN: CampaignBriefUi = {
   formDescription: CAMPAIGN_BRIEF_FORM_DESCRIPTION,
+  infoOpenAria: 'About this form',
+  infoCloseAria: 'Close info',
   successMessage: CAMPAIGN_BRIEF_SUCCESS_MESSAGE,
   submitAnother: 'Submit another brief',
   stepCount: (current, total = 3) => `STEP ${current} OF ${total}`,
+  stepHeadingPrefix: (step) => `Step ${step}`,
   previous: 'Previous',
   next: 'Next',
   submitBrief: 'Submit Brief',
@@ -273,9 +282,12 @@ const FORM_DESCRIPTION_ZH =
 
 const UI_ZH: CampaignBriefUi = {
   formDescription: FORM_DESCRIPTION_ZH,
+  infoOpenAria: '关于此表单',
+  infoCloseAria: '关闭说明',
   successMessage: '感谢您提交简介——我们会尽快与您联系。',
   submitAnother: '再提交一份简介',
   stepCount: (current, total = 3) => `第 ${current} 步，共 ${total} 步`,
+  stepHeadingPrefix: (step) => `第 ${step} 步`,
   previous: '上一页',
   next: '下一页',
   submitBrief: '提交简介',
@@ -349,9 +361,12 @@ export function listCampaignBriefPhrasePairs(): CampaignBriefPhrasePair[] {
   }
 
   push(UI_EN.formDescription, UI_ZH.formDescription, 'formDescription')
+  push(UI_EN.infoOpenAria, UI_ZH.infoOpenAria, 'infoOpenAria')
+  push(UI_EN.infoCloseAria, UI_ZH.infoCloseAria, 'infoCloseAria')
   push(UI_EN.successMessage, UI_ZH.successMessage, 'successMessage')
   push(UI_EN.submitAnother, UI_ZH.submitAnother, 'submitAnother')
   push(UI_EN.stepCount(1, 3), UI_ZH.stepCount(1, 3), 'stepCount')
+  push(UI_EN.stepHeadingPrefix(2), UI_ZH.stepHeadingPrefix(2), 'stepHeadingPrefix')
   push(UI_EN.previous, UI_ZH.previous, 'previous')
   push(UI_EN.next, UI_ZH.next, 'next')
   push(UI_EN.submitBrief, UI_ZH.submitBrief, 'submitBrief')

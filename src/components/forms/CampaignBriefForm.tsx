@@ -11,6 +11,7 @@ import type { Locale } from '@/i18n/routing';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { VpButton } from '@/components/ui/VpButton';
 import { BriefForwardArrow, BriefPreviousArrow } from '@/components/forms/brief-icons';
+import { CampaignBriefIntroInfo } from '@/components/forms/CampaignBriefIntroInfo';
 import { FormStepIndicator } from '@/components/forms/FormStepIndicator';
 import { useCampaignBriefForm } from '@/components/forms/useCampaignBriefForm';
 import {
@@ -144,6 +145,14 @@ export function CampaignBriefForm() {
 
   return (
     <div className="vp-form-shell">
+      <div className="vp-brief-intro-bar">
+        <CampaignBriefIntroInfo
+          description={ui.formDescription}
+          openAriaLabel={ui.infoOpenAria}
+          closeAriaLabel={ui.infoCloseAria}
+        />
+      </div>
+
       <FormStepIndicator
         steps={steps}
         currentStep={currentStep}
@@ -156,7 +165,12 @@ export function CampaignBriefForm() {
           currentStep > 1 ? ' vp-brief-card--tight' : ''
         }`}
       >
-        <h2 className="vp-form-step-heading">{currentStepConfig.title}</h2>
+        <h2 className="vp-form-step-heading">
+          <span className="vp-form-step-heading__step">
+            {ui.stepHeadingPrefix(currentStep)}:
+          </span>{' '}
+          {currentStepConfig.title}
+        </h2>
 
         <form onSubmit={handleSubmit} noValidate>
         <input
@@ -170,9 +184,11 @@ export function CampaignBriefForm() {
           aria-hidden="true"
         />
 
-        <fieldset disabled={isDisabled} className="min-w-0 border-0 p-0">
-          {renderStep()}
-        </fieldset>
+        <div className="vp-brief-fields">
+          <fieldset disabled={isDisabled} className="min-w-0 border-0 p-0">
+            {renderStep()}
+          </fieldset>
+        </div>
 
         {submissionState === 'error' && (
           <div className="vp-form-error-banner" role="alert">

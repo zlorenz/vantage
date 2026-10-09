@@ -8,7 +8,6 @@ import { setRequestLocale } from 'next-intl/server';
 import { CampaignBriefForm } from '@/components/forms/CampaignBriefForm';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
-import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import {
   resolveMetadataImage,
   campaignBriefPageTitle,
@@ -64,7 +63,6 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
   const typedLocale = locale as Locale;
   const title =
     typedLocale === 'zh' && page.titleZh ? page.titleZh : page.title;
-  const ui = getCampaignBriefUi(typedLocale);
 
   return (
     <>
@@ -84,7 +82,6 @@ export default async function VideoCampaignBriefPage({ params }: Props) {
       <SectionWrapper fullBleed={true} className="vp-brief-section">
         <h1 className="sr-only">{title}</h1>
         <div className="container-fluid mx-auto max-w-[900px] px-3 md:px-4">
-          <p className="vp-brief-intro text-sm">{ui.formDescription}</p>
           <CampaignBriefForm />
         </div>
       </SectionWrapper>
