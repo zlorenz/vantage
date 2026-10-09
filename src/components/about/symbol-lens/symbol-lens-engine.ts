@@ -57,7 +57,7 @@ export type AboutLensEngine = {
  * Placeholder-resolution photo collage (alpha-masked to the "A").
  * Expect a higher-res re-export before shipping — pipeline test asset only.
  */
-const COLLAGE_SRC = "/about/symbol-lens/vantage-logo-photo-collage-01.png";
+const COLLAGE_SRC = "/about/symbol-lens/vantage-logo-photo-collage-01.webp";
 
 /**
  * Loupe warp — collage-readable:
