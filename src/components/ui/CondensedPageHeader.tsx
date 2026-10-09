@@ -1,7 +1,7 @@
 /**
  * CondensedPageHeader — top spacing for pages without a hero image.
  *
- * Server component. Used when showHeroHeader is false (Home, Campaign Brief).
+ * Server component. Used on Home and Campaign Brief (no full-bleed PageHero).
  * Adds padding so content clears the fixed navbar.
  */
 

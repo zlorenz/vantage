@@ -512,8 +512,6 @@ function buildQuery(documentType: string): string {
         navLabelZh,
         excerpt,
         excerptZh,
-        heroTitle,
-        heroTitleZh,
         "slug": slug.current,
         "slugZh": slugZh.current,
         "_updatedAt": _updatedAt,
@@ -1274,8 +1272,6 @@ export function DocumentTable({
               descriptionZh,
               navLabel,
               navLabelZh,
-              heroTitle,
-              heroTitleZh,
               videos[]{
                 videoTitle,
                 videoTitleZh,

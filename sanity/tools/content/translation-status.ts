@@ -275,9 +275,6 @@ function pageStatus(doc: Loose, gaps: TranslationGap[]): number {
   if (consider(gaps, 'critical', 'Nav label', doc.navLabel, doc.navLabelZh)) {
     applicable += 1
   }
-  if (consider(gaps, 'critical', 'Hero title', doc.heroTitle, doc.heroTitleZh)) {
-    applicable += 1
-  }
 
   asRecords(doc.founders).forEach((founder, index) => {
     const who = text(founder.name) || `Founder ${index + 1}`

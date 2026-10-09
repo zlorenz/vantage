@@ -1096,27 +1096,6 @@
         },
         "optional": true
       },
-      "showHeroHeader": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
-        },
-        "optional": true
-      },
-      "heroTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "heroTitleZh": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "noIndex": {
         "type": "objectAttribute",
         "value": {

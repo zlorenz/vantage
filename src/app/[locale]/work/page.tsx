@@ -20,6 +20,7 @@ import {
   seoDescription,
   seoMetaTitle,
 } from '@/lib/metadata';
+import {pageHeroTitle} from '@/lib/page-hero-titles';
 import {getPhraseRecord} from '@/lib/phrase-book';
 import {
   buildBreadcrumbs,
@@ -37,12 +38,8 @@ import {
   INDUSTRIES_QUERY,
   MARKETS_QUERY,
   VIDEO_FORMATS_QUERY,
-  WORK_PAGE_QUERY,
 } from '@/sanity/queries/portfolio';
-import type {
-  WORK_PAGE_META_QUERY_RESULT,
-  WORK_PAGE_QUERY_RESULT,
-} from '@/sanity/sanity.types';
+import type {WORK_PAGE_META_QUERY_RESULT} from '@/sanity/sanity.types';
 import type {PortfolioGridEntry, TaxonomyTerm} from '@/types/sanity';
 
 type HomeCarouselPage = {
@@ -107,7 +104,6 @@ export default async function WorkPage({params}: Props) {
   const t = await getTranslations('Work');
 
   const [
-    workPageResult,
     workMetaResult,
     entriesResult,
     homeCarouselResult,
@@ -117,7 +113,6 @@ export default async function WorkPage({params}: Props) {
     phrases,
     organization,
   ] = await Promise.all([
-    sanityFetch({query: WORK_PAGE_QUERY}),
     sanityFetch({query: WORK_PAGE_META_QUERY, stega: false}),
     sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
     // Same GROQ as homepage carousel — light refs only (not loadFeaturedWorkSlides:
@@ -129,7 +124,6 @@ export default async function WorkPage({params}: Props) {
     getPhraseRecord(),
     loadOrganizationSchemaInput(typedLocale),
   ]);
-  const workPage = workPageResult.data as WORK_PAGE_QUERY_RESULT;
   const workPageMeta = workMetaResult.data as WORK_PAGE_META_QUERY_RESULT;
   const entries = entriesResult.data as PortfolioGridEntry[];
   const videoFormats = videoFormatsResult.data as TaxonomyTerm[];
@@ -152,10 +146,7 @@ export default async function WorkPage({params}: Props) {
     phrases,
   );
 
-  const heroTitle =
-    typedLocale === 'zh' && workPage?.heroTitleZh
-      ? workPage.heroTitleZh
-      : workPage?.heroTitle || workPage?.title || 'Work';
+  const heroTitle = pageHeroTitle('work', typedLocale);
 
   const workUrl = workBreadcrumb(typedLocale).url;
 
@@ -169,7 +160,7 @@ export default async function WorkPage({params}: Props) {
             workPageMeta?.seo ?? undefined,
             typedLocale,
           ),
-          image: workPage?.featuredImage ?? undefined,
+          image: workPageMeta?.featuredImage ?? undefined,
           url: workUrl,
           locale: typedLocale,
         })}

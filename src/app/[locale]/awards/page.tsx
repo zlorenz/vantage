@@ -17,6 +17,7 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { pageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
+import { pageHeroTitle } from '@/lib/page-hero-titles';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, staticPageUrl } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -70,10 +71,7 @@ export default async function AwardsPage({ params }: Props) {
 
   if (!page) notFound();
 
-  const heroTitle =
-    typedLocale === 'zh' && page.heroTitleZh
-      ? page.heroTitleZh
-      : page.heroTitle || 'Our <span class="vp-outline">Awards</span>';
+  const heroTitle = pageHeroTitle('awards', typedLocale);
 
   const bodyBlocks = typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body;
 

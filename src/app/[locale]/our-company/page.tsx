@@ -17,6 +17,7 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { routing, type Locale } from '@/i18n/routing';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { pageTitle, seoDescription, resolveMetadataImage, buildPageMetadata, seoMetaTitle } from '@/lib/metadata';
+import { pageHeroTitle } from '@/lib/page-hero-titles';
 import { mergeChineseBodyWithEnglishMedia } from '@/lib/portable-text-media';
 import { getPhraseRecord } from '@/lib/phrase-book';
 import { buildBreadcrumbs, homeBreadcrumb, staticPageUrl } from '@/lib/structured-data';
@@ -77,10 +78,7 @@ export default async function OurCompanyPage({ params }: Props) {
 
   if (!page) notFound();
 
-  const heroTitle =
-    typedLocale === 'zh' && page.heroTitleZh
-      ? page.heroTitleZh
-      : page.heroTitle || 'Our <span class="vp-outline">Company</span>';
+  const heroTitle = pageHeroTitle('our-company', typedLocale);
 
   const bodyBlocks =
     typedLocale === 'zh' && page.bodyZh?.length

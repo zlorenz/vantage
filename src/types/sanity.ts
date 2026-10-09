@@ -312,8 +312,6 @@ export interface CreditIdentityTerm {
 export interface WorkPage {
   title: string;
   titleZh?: string;
-  heroTitle?: string;
-  heroTitleZh?: string;
   featuredImage?: SanityImage;
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];
@@ -328,9 +326,6 @@ export interface PageDocument {
   slugZh?: string;
   excerpt?: string;
   excerptZh?: string;
-  showHeroHeader?: boolean;
-  heroTitle?: string;
-  heroTitleZh?: string;
   featuredImage?: SanityImage;
   body?: PortableTextBlock[];
   bodyZh?: PortableTextBlock[];

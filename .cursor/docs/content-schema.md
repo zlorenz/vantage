@@ -340,9 +340,7 @@ CSV import, frontend rendering, and migration.
   excerptZh?: text
   slug: slug
   slugZh?: slug
-  showHeroHeader: boolean          // vp_show_hero_header — off for Home, Campaign Brief
-  heroTitle?: string               // vp_hero_title — supports <span class="vp-outline">
-  heroTitleZh?: string
+  // retired: showHeroHeader, heroTitle, heroTitleZh — PageHero titles live in src/lib/page-hero-titles.ts
   body: portableText
   bodyZh?: portableText
   carouselSlides?: array<ref → portfolioEntry>  // homepage carousel + Work featured strip

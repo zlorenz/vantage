@@ -9,8 +9,6 @@
 
 import {defineQuery} from 'groq'
 
-import {PORTABLE_TEXT_WITH_IMAGE_ASSETS} from './portable-text'
-
 /** Fields needed by PortfolioCard and client-side grid filtering. */
 const PORTFOLIO_CARD_FIELDS = `
   _id,
@@ -381,15 +379,3 @@ export const ALL_CREDIT_IDENTITIES_QUERY = `
   }
 `;
 
-/** Work page CMS content (hero, intro body). */
-export const WORK_PAGE_QUERY = defineQuery(`
-  *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{
-    title,
-    titleZh,
-    heroTitle,
-    heroTitleZh,
-    featuredImage,
-    "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
-    "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS}
-  }
-`)

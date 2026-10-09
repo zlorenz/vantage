@@ -13,9 +13,6 @@ const PAGE_BASE_FIELDS = `
   titleZh,
   "slug": slug.current,
   "slugZh": slugZh.current,
-  showHeroHeader,
-  heroTitle,
-  heroTitleZh,
   featuredImage,
   "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
   "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
@@ -64,10 +61,8 @@ const PAGE_META_FIELDS = `
   noIndex
 `
 
-/** Shared hero + body fields for content pages. */
+/** Shared body fields for content pages. */
 const PAGE_CONTENT_FIELDS = `
-  heroTitle,
-  heroTitleZh,
   "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
   "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS}
 `
@@ -327,7 +322,7 @@ export const AWARDS_PAGE_QUERY = defineQuery(`
   }
 `)
 
-/** Work index metadata (SEO / OG). Body still from WORK_PAGE_QUERY. */
+/** Work index metadata (SEO / OG). */
 export const WORK_PAGE_META_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "work" && !defined(trash.trashedAt)][0]{
     ${PAGE_META_FIELDS}

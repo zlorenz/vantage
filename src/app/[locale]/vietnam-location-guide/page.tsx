@@ -18,6 +18,7 @@ import {
   buildPageMetadata,
   seoMetaTitle,
 } from '@/lib/metadata';
+import { pageHeroTitle } from '@/lib/page-hero-titles';
 import {
   buildBreadcrumbs,
   homeBreadcrumb,
@@ -71,11 +72,7 @@ export default async function VietnamLocationGuidePage({ params }: Props) {
 
   if (!page) notFound();
 
-  const heroTitle =
-    typedLocale === 'zh' && page.heroTitleZh
-      ? page.heroTitleZh
-      : page.heroTitle ||
-        '<span class="vp-outline">Vietnam</span> Location Guidebook';
+  const heroTitle = pageHeroTitle('vietnam-location-guide', typedLocale);
 
   const bodyBlocks = filterPdfDownloadArtifactBlocks(
     typedLocale === 'zh' && page.bodyZh?.length ? page.bodyZh : page.body,

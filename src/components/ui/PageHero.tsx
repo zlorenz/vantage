@@ -1,9 +1,9 @@
 /**
  * PageHero — full-width hero with background image and centred title.
  *
- * Server component. Used on pages where showHeroHeader is true.
+ * Server component for static marketing pages with a full-bleed hero.
  * Title supports <span class="vp-outline"> via dangerouslySetInnerHTML
- * (Sanity editor-controlled content, not user input).
+ * (hardcoded page strings in `page-hero-titles`, not CMS / user input).
  * Optional description matches homepage hero carousel logline styling.
  *
  * Uses CSS background-image (same approach as the WordPress theme) so the

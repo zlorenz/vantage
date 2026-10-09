@@ -98,27 +98,6 @@ export const page = defineType({
     }),
 
     defineField({
-      name: 'showHeroHeader',
-      title: 'Show Hero Header',
-      type: 'boolean',
-      group: 'details',
-      description: 'Off for Home and Campaign Brief pages.',
-      initialValue: true,
-      hidden: hiddenForTranslator,
-    }),
-
-    ...defineLocalePair({
-      name: 'heroTitle',
-      title: 'Hero Title',
-      type: 'text',
-      rows: 2,
-      group: 'details',
-      description: 'Supports <span class="vp-outline">.',
-      optional: true,
-      hidden: ({document}) => document?.showHeroHeader === false,
-    }),
-
-    defineField({
       name: 'noIndex',
       title: 'No Index',
       type: 'boolean',

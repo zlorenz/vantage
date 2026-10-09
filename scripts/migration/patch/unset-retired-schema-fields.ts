@@ -4,6 +4,7 @@
  *
  * Targets:
  *   - page.brandLogos, page.heroSlides (replaced by carouselSlides; logos removed)
+ *   - page.showHeroHeader, page.heroTitle, page.heroTitleZh (hardcoded in Next)
  *   - portfolioEntry.clients, crewMembers, platforms (creditIdentity / D10)
  *
  * Dry-run by default:
@@ -16,7 +17,13 @@ import '../config'
 
 const APPLY = process.argv.includes('--apply')
 
-const PAGE_FIELDS = ['brandLogos', 'heroSlides'] as const
+const PAGE_FIELDS = [
+  'brandLogos',
+  'heroSlides',
+  'showHeroHeader',
+  'heroTitle',
+  'heroTitleZh',
+] as const
 const PORTFOLIO_FIELDS = ['clients', 'crewMembers', 'platforms'] as const
 
 async function main() {
@@ -25,12 +32,18 @@ async function main() {
   const pages = await client.fetch<
     Array<{_id: string; slug?: string; fields: string[]}>
   >(
-    `*[_type == "page" && (defined(brandLogos) || defined(heroSlides))]{
+    `*[_type == "page" && (
+      defined(brandLogos) || defined(heroSlides) ||
+      defined(showHeroHeader) || defined(heroTitle) || defined(heroTitleZh)
+    )]{
       _id,
       "slug": slug.current,
       "fields": [
         select(defined(brandLogos) => "brandLogos"),
-        select(defined(heroSlides) => "heroSlides")
+        select(defined(heroSlides) => "heroSlides"),
+        select(defined(showHeroHeader) => "showHeroHeader"),
+        select(defined(heroTitle) => "heroTitle"),
+        select(defined(heroTitleZh) => "heroTitleZh")
       ]
     }`,
   )
