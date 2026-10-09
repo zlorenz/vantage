@@ -41,10 +41,6 @@ export const PAGE_ROUTES: Record<string, {en: string; zh: string}> = {
     en: '/vietnam-production-service/',
     zh: '/zh/越南生产服务/',
   },
-  'vietnam-location-guide': {
-    en: '/vietnam-location-guide/',
-    zh: '/zh/越南旅游指南/',
-  },
   'video-campaign-brief': {
     en: '/video-campaign-brief/',
     zh: '/zh/视频活动简介/',

@@ -20,7 +20,6 @@ These are singular pages, not driven by a post type loop.
 | `/news/` | `/zh/新闻/` | Blog/news index |
 | `/contact/` | `/zh/联系/` | Contact page |
 | `/vietnam-production-service/` | `/zh/越南生产服务/` | Vietnam service page |
-| `/vietnam-location-guide/` | `/zh/越南旅游指南/` | Vietnam location guide |
 | `/video-campaign-brief/` | `/zh/视频活动简介/` | Campaign brief form page |
 | App host `/` | — | Internal work library — see below |
 

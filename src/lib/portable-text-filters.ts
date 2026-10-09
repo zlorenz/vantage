@@ -11,23 +11,6 @@ function blockPlainTextForFilter(block: PortableTextBlock): string {
   return stegaClean(getPortableTextBlockPlainText(block));
 }
 
-/** wp:file blocks collapsed to "filename.pdfDownload" plain-text paragraphs. */
-export function isPdfDownloadArtifactBlock(block: PortableTextBlock): boolean {
-  if (block._type !== 'block') return false;
-  const compact = blockPlainTextForFilter(block).replace(/\s+/g, '');
-  return /\.pdfdownload$/i.test(compact);
-}
-
-export function filterPdfDownloadArtifactBlocks<T>(
-  blocks?: readonly T[] | null,
-): T[] | undefined {
-  if (!blocks?.length) return undefined;
-  const filtered = blocks.filter(
-    (block) => !isPdfDownloadArtifactBlock(block as PortableTextBlock),
-  );
-  return filtered.length ? filtered : undefined;
-}
-
 /** Gallery captions collapsed into one paragraph during failed migration. */
 function isGalleryCaptionArtifact(block: PortableTextBlock): boolean {
   if (block._type !== 'block' || block.style !== 'normal') return false;

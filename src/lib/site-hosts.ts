@@ -86,7 +86,6 @@ export const APP_HOST_RESERVED_SEGMENTS = [
   'market',
   'video-format',
   'vietnam-production-service',
-  'vietnam-location-guide',
   'video-campaign-brief',
   'our-industry',
   'our-company',

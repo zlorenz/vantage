@@ -45,7 +45,6 @@ const PAGE_SITEMAP_META: Record<
   about: { changeFrequency: 'monthly', priority: 0.6 },
   news: { changeFrequency: 'monthly', priority: 0.6 },
   'vietnam-production-service': { changeFrequency: 'monthly', priority: 0.6 },
-  'vietnam-location-guide': { changeFrequency: 'monthly', priority: 0.6 },
   'video-campaign-brief': {
     changeFrequency: 'monthly',
     priority: 0.6,

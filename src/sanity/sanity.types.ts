@@ -235,7 +235,6 @@ export type Page = {
       _key: string;
     } & Founder
   >;
-  pdfDownload?: PdfDownload;
   awardItems?: Array<
     {
       _key: string;
@@ -250,16 +249,6 @@ export type TrashMetadata = {
   trashedBy?: string;
   purgeAfter?: string;
   batchId?: string;
-};
-
-export type PdfDownload = {
-  _type: "pdfDownload";
-  file?: {
-    asset?: SanityFileAssetReference;
-    media?: unknown;
-    _type: "file";
-  };
-  label?: string;
 };
 
 export type PagePortableText = Array<
@@ -1050,7 +1039,6 @@ export type AllSanitySchemaTypes =
   | TrashRecord
   | Page
   | TrashMetadata
-  | PdfDownload
   | PagePortableText
   | AboutMediaSlot
   | SeoFields
@@ -2291,205 +2279,6 @@ export type NEWS_PAGE_QUERY_RESULT = {
 } | null;
 
 // Source: ../src/sanity/queries/pages.ts
-// Variable: VIETNAM_LOCATION_GUIDE_PAGE_QUERY
-// Query: *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{      title,  titleZh,  "slugZh": slugZh.current,  featuredImage,  seo{    metaDescription,    metaDescriptionZh,    metaTitle,    metaTitleZh,    ogImage  },  noIndex,      "body": body[]{  ...,  asset->{  _id,  _type,  url,  altText,  description,  metadata},  headshot{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  left{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  right{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  }},  "bodyZh": bodyZh[]{  ...,  asset->{  _id,  _type,  url,  altText,  description,  metadata},  headshot{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  left{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  right{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  }},    pdfDownload{      label,      file{        asset->{          _id,          url        }      }    }  }
-export type VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT = {
-  title: string | null;
-  titleZh: string | null;
-  slugZh: string | null;
-  featuredImage: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  } | null;
-  seo: {
-    metaDescription: string | null;
-    metaDescriptionZh: string | null;
-    metaTitle: string | null;
-    metaTitleZh: string | null;
-    ogImage: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
-  } | null;
-  noIndex: boolean | null;
-  body: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?:
-          | "blockquote"
-          | "h1"
-          | "h2"
-          | "h3"
-          | "h4"
-          | "h5"
-          | "h6"
-          | "normal";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-        asset: null;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-    | {
-        _key: string;
-        _type: "ctaButton";
-        label?: string;
-        url?: string;
-        asset: null;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-    | {
-        asset: {
-          _id: string;
-          _type: "sanity.imageAsset";
-          url: string | null;
-          altText: string | null;
-          description: string | null;
-          metadata: SanityImageMetadata | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-    | {
-        _key: string;
-        _type: "imageGallery";
-        columns?: number;
-        images?: Array<{
-          image?: GalleryImageImage;
-          alt?: string;
-          caption?: string;
-          _type: "galleryImage";
-          _key: string;
-        }>;
-        asset: null;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-  > | null;
-  bodyZh: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?:
-          | "blockquote"
-          | "h1"
-          | "h2"
-          | "h3"
-          | "h4"
-          | "h5"
-          | "h6"
-          | "normal";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-        asset: null;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-    | {
-        _key: string;
-        _type: "ctaButton";
-        label?: string;
-        url?: string;
-        asset: null;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-    | {
-        asset: {
-          _id: string;
-          _type: "sanity.imageAsset";
-          url: string | null;
-          altText: string | null;
-          description: string | null;
-          metadata: SanityImageMetadata | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-    | {
-        _key: string;
-        _type: "imageGallery";
-        columns?: number;
-        images?: Array<{
-          image?: GalleryImageImage;
-          alt?: string;
-          caption?: string;
-          _type: "galleryImage";
-          _key: string;
-        }>;
-        asset: null;
-        headshot: null;
-        left: null;
-        right: null;
-      }
-  > | null;
-  pdfDownload: {
-    label: string | null;
-    file: {
-      asset: {
-        _id: string;
-        url: string | null;
-      } | null;
-    } | null;
-  } | null;
-} | null;
-
-// Source: ../src/sanity/queries/pages.ts
-// Variable: VIETNAM_LOCATION_GUIDE_PDF_QUERY
-// Query: *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{    "pdfUrl": pdfDownload.file.asset->url,    "pdfLabel": pdfDownload.label  }
-export type VIETNAM_LOCATION_GUIDE_PDF_QUERY_RESULT = {
-  pdfUrl: string | null;
-  pdfLabel: string | null;
-} | null;
-
-// Source: ../src/sanity/queries/pages.ts
 // Variable: VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY
 // Query: *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{      title,  titleZh,  "slugZh": slugZh.current,  featuredImage,  seo{    metaDescription,    metaDescriptionZh,    metaTitle,    metaTitleZh,    ogImage  },  noIndex,    excerpt,    excerptZh,      "body": body[]{  ...,  asset->{  _id,  _type,  url,  altText,  description,  metadata},  headshot{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  left{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  right{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  }},  "bodyZh": bodyZh[]{  ...,  asset->{  _id,  _type,  url,  altText,  description,  metadata},  headshot{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  left{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  },  right{    ...,    asset->{  _id,  _type,  url,  altText,  description,  metadata}  }},    "featuredWork": featuredWork[      !defined(@->trash.trashedAt) && @->isHidden != true    ]->{        _id,  "slug": slug.current,  "slugZh": slugZh.current,  displayTitleParts{    brandName,    productName,    campaignTitle,    brandNameZh,    productNameZh,    campaignTitleZh  },  thumbTitleOverride,  thumbTitleOverrideZh,  featuredImage,  isHidden    }  }
 export type VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT = {
@@ -3602,7 +3391,7 @@ export type PORTFOLIO_NAV_CARDS_BY_IDS_QUERY_RESULT = Array<{
 
 // Source: ../src/sanity/queries/sitemap.ts
 // Variable: SITEMAP_PAGES_QUERY
-// Query: *[_type == "page"    && slug.current in ["home", "work", "about", "news",        "vietnam-production-service", "vietnam-location-guide",        "video-campaign-brief"]    && noIndex != true    && !defined(trash.trashedAt)] {    "slug": slug.current,    "slugZh": slugZh.current,    "_updatedAt": _updatedAt  }
+// Query: *[_type == "page"    && slug.current in ["home", "work", "about", "news",        "vietnam-production-service",        "video-campaign-brief"]    && noIndex != true    && !defined(trash.trashedAt)] {    "slug": slug.current,    "slugZh": slugZh.current,    "_updatedAt": _updatedAt  }
 export type SITEMAP_PAGES_QUERY_RESULT = Array<{
   slug: string | null;
   slugZh: string | null;
@@ -3623,8 +3412,6 @@ declare global {
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && defined(featuredImage)]\n  | order(publishedAt desc) [8..17] {\n    title,\n    featuredImage\n  }\n': ABOUT_STATEMENT_FILM_STRIP_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "news" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    excerpt,\n    excerptZh\n  }\n': NEWS_PAGE_QUERY_RESULT;
-    '\n  *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n,\n    pdfDownload{\n      label,\n      file{\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  }\n': VIETNAM_LOCATION_GUIDE_PAGE_QUERY_RESULT;
-    '\n  *[_type == "page" && slug.current == "vietnam-location-guide" && !defined(trash.trashedAt)][0]{\n    "pdfUrl": pdfDownload.file.asset->url,\n    "pdfLabel": pdfDownload.label\n  }\n': VIETNAM_LOCATION_GUIDE_PDF_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    excerpt,\n    excerptZh,\n    \n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n,\n    "featuredWork": featuredWork[\n      !defined(@->trash.trashedAt) && @->isHidden != true\n    ]->{\n      \n  _id,\n  "slug": slug.current,\n  "slugZh": slugZh.current,\n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  featuredImage,\n  isHidden\n\n    }\n  }\n': VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "our-industry" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n\n  }\n': OUR_INDUSTRY_PAGE_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == "our-company" && !defined(trash.trashedAt)][0]{\n    \n  title,\n  titleZh,\n  "slugZh": slugZh.current,\n  featuredImage,\n  seo{\n    metaDescription,\n    metaDescriptionZh,\n    metaTitle,\n    metaTitleZh,\n    ogImage\n  },\n  noIndex\n,\n    \n  "body": body[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n},\n  "bodyZh": bodyZh[]{\n  ...,\n  asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n},\n  headshot{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  left{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  },\n  right{\n    ...,\n    asset->{\n  _id,\n  _type,\n  url,\n  altText,\n  description,\n  metadata\n}\n  }\n}\n\n  }\n': OUR_COMPANY_PAGE_QUERY_RESULT;
@@ -3635,7 +3422,7 @@ declare global {
     '\n  *[_type == "portfolioEntry" && !defined(trash.trashedAt) && (\n    slug.current == $slug || slugZh.current == $slug\n  )][0]{\n    _id,\n    title,\n    titleZh,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    \n  displayTitleParts{\n    brandName,\n    productName,\n    campaignTitle,\n    brandNameZh,\n    productNameZh,\n    campaignTitleZh\n  },\n  heroFilmTitle,\n  heroFilmTitleZh,\n  thumbTitleOverride,\n  thumbTitleOverrideZh,\n  headerTitleOverride,\n  headerTitleOverrideZh,\n  longTitleOverride,\n  longTitleOverrideZh\n,\n    excerpt,\n    excerptZh,\n    description,\n    descriptionZh,\n    featuredImage,\n    videos[]{\n      _key,\n      vimeoUrl,\n      xinpianchangUrl,\n      videoTitle,\n      videoTitleZh,\n      description,\n      descriptionZh,\n      previewCleanVimeoUrl,\n      previewStartSeconds,\n      previewEndSeconds\n    },\n    vimeoUrl,\n    xinpianchangUrl,\n    previewCleanVimeoUrl,\n    previewStartSeconds,\n    previewEndSeconds,\n    publishedAt,\n    isHidden,\n    additionalVideos[]{\n      _key,\n      vimeoUrl,\n      xinpianchangUrl,\n      videoTitle,\n      videoTitleZh,\n      description,\n      descriptionZh\n    },\n    keyVisuals[]{\n      ...,\n      asset->{\n        _id,\n        _type,\n        url,\n        title,\n        altText,\n        description,\n        creditLine,\n        metadata { dimensions { width, height, aspectRatio } }\n      }\n    },\n    videoFormats[]->{\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    industries[]->{\n      _id,\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current,\n      "parentId": parent._ref,\n      parent->{ title, titleZh }\n    },\n    markets[]->{\n      title,\n      titleZh,\n      "slug": slug.current,\n      "slugZh": slugZh.current\n    },\n    \n  crewCredits[]{\n    _key,\n    department,\n    roleKey,\n    role,\n    isCustomRole,\n    people[]{\n      _key,\n      name,\n      "url": coalesce(identity->url, url),\n      linkTitle,\n      "identityId": identity._ref,\n      "identityName": identity->name,\n      "identityNameZh": identity->nameZh\n    }\n  }\n,\n    seo{\n      metaDescription,\n      metaDescriptionZh,\n      metaTitle,\n      metaTitleZh,\n      ogImage\n    }\n  }\n': PORTFOLIO_ENTRY_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt)]\n    | order(publishedAt desc, title asc) {\n      _id,\n      "slug": slug.current,\n      "slugZh": slugZh.current,\n      publishedAt\n    }\n': PORTFOLIO_NAV_RING_QUERY_RESULT;
     '\n  *[_type == "portfolioEntry" && _id in $ids && isHidden != true && !defined(trash.trashedAt)] {\n    _id,\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    publishedAt,\n    title,\n    titleZh,\n    displayTitleParts{\n      brandName,\n      productName,\n      campaignTitle,\n      brandNameZh,\n      productNameZh,\n      campaignTitleZh\n    },\n    featuredImage,\n    // Skip system Key Visual \u2014 public titles show film formats only.\n    "primaryFormat": (\n      videoFormats[]->{\n        _id,\n        title,\n        titleZh,\n        "slug": slug.current\n      }\n    )[\n      !(\n        _id in ["videoFormat-key-visual", "drafts.videoFormat-key-visual"]\n        || slug == "key-visual"\n      )\n    ][0]{\n      title,\n      titleZh\n    }\n  }\n': PORTFOLIO_NAV_CARDS_BY_IDS_QUERY_RESULT;
-    '\n  *[_type == "page"\n    && slug.current in ["home", "work", "about", "news",\n        "vietnam-production-service", "vietnam-location-guide",\n        "video-campaign-brief"]\n    && noIndex != true\n    && !defined(trash.trashedAt)] {\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    "_updatedAt": _updatedAt\n  }\n': SITEMAP_PAGES_QUERY_RESULT;
+    '\n  *[_type == "page"\n    && slug.current in ["home", "work", "about", "news",\n        "vietnam-production-service",\n        "video-campaign-brief"]\n    && noIndex != true\n    && !defined(trash.trashedAt)] {\n    "slug": slug.current,\n    "slugZh": slugZh.current,\n    "_updatedAt": _updatedAt\n  }\n': SITEMAP_PAGES_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

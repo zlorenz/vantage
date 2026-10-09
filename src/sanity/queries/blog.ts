@@ -201,7 +201,6 @@ export const RESERVED_PAGE_SLUGS = [
   'news',
   'contact',
   'vietnam-production-service',
-  'vietnam-location-guide',
   'video-campaign-brief',
   'search',
 ] as const;

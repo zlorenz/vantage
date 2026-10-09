@@ -334,7 +334,6 @@ export interface PageDocument {
   /** Curated grid entries (order preserved). VPS: “Shot in Vietnam”. */
   featuredWork?: PortfolioCard[];
   founders?: Founder[];
-  pdfDownload?: PdfDownload;
   seo?: SeoFields;
   noIndex?: boolean;
 }
@@ -349,16 +348,6 @@ export interface Founder {
   bio?: string;
   bioZh?: string;
   sameAs?: string[];
-}
-
-export interface PdfDownload {
-  label: string;
-  file?: {
-    asset?: {
-      _id: string;
-      url: string;
-    };
-  };
 }
 
 /** Blog post card shape for index and archives. */

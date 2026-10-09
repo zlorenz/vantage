@@ -100,6 +100,27 @@ const nextConfig: NextConfig = {
         destination: '/zh/工作/',
         permanent: true,
       }),
+      // Retired Vietnam Location Guide page → Production Service (PDF CTA lives there)
+      {
+        source: '/vietnam-location-guide',
+        destination: '/vietnam-production-service',
+        permanent: true,
+      },
+      {
+        source: '/vietnam-location-guide/',
+        destination: '/vietnam-production-service/',
+        permanent: true,
+      },
+      encodeRedirectRule({
+        source: '/zh/越南旅游指南',
+        destination: '/zh/越南生产服务',
+        permanent: true,
+      }),
+      encodeRedirectRule({
+        source: '/zh/越南旅游指南/',
+        destination: '/zh/越南生产服务/',
+        permanent: true,
+      }),
       // Live WP ZH slug → current Sanity slugZh (see src/lib/legacy-zh-redirects.ts)
       ...legacyZhRedirects,
     ];

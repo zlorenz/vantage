@@ -352,16 +352,13 @@ CSV import, frontend rendering, and migration.
     jobTitleZh?: string
     image: image
   }>
-  pdfDownload?: {                  // Vietnam Location Guide only
-    file: file
-    label: string
-  }
+  // retired: pdfDownload (Location Guide page removed; PDF hardcoded on VPS)
   seo: seoFields
   noIndex?: boolean                 // work-internal only
 }
 ```
 
-**Studio UX (current):** Two tabs — **Page Details** and **Content**. Slug-gated Content fields: Home (`carouselSlides`), Vietnam Production Service (`featuredWork`), About (media slots + `founders`), Vietnam Location Guide (`pdfDownload`). See live `sanity/schemas/page.ts` — this archive section may lag.
+**Studio UX (current):** Two tabs — **Page Details** and **Content**. Slug-gated Content fields: Home (`carouselSlides`), Vietnam Production Service (`featuredWork`), About (media slots + `founders`). See live `sanity/schemas/page.ts` — this archive section may lag.
 
 **Published pages:**
 
@@ -373,8 +370,7 @@ CSV import, frontend rendering, and migration.
 | `work-internal` | On | Internal crew view; English-only route; noindex; not in public nav |
 | `news` | On | Blog index |
 | `contact` | On | Contact page (nav opens modal) |
-| `vietnam-production-service` | On | Featured Work → “Shot in Vietnam” grid |
-| `vietnam-location-guide` | On | File download block |
+| `vietnam-production-service` | On | Featured Work → “Shot in Vietnam” grid; location guide PDF CTA |
 | `video-campaign-brief` | Off | Campaign Brief form |
 
 ### 4.5 `siteSettings` (singleton)
@@ -670,7 +666,6 @@ Verified against `site-architecture.md` on 2026-06-21.
 | `news` | News | Yes |
 | `contact` | Contact | Yes |
 | `vietnam-production-service` | Vietnam Production Service | Yes |
-| `vietnam-location-guide` | Vietnam Location Guidebook | Yes |
 | `video-campaign-brief` | Video Campaign Brief | Yes |
 
 ### 6.3 Blog categories
@@ -780,7 +775,6 @@ No hand-written titles exist. Replicate Yoast global templates:
 | Work | `{sitename} \| Commercial Film Portfolio` |
 | News | `Commercial Film Production {title} \| {sitename}` |
 | Video Campaign Brief | `Start Your Project \| {sitename}` |
-| Vietnam Location Guide | `Vietnam Filming Location Guide \| Production Resource` |
 | About / Contact | `{title} {sitename} \| {sitedesc}` |
 
 ### 7.4 OG / social

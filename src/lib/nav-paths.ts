@@ -28,7 +28,6 @@ const PATHNAME_KEYS: Record<
   | '/news'
   | '/contact'
   | '/vietnam-production-service'
-  | '/vietnam-location-guide'
   | '/video-campaign-brief'
 > = {
   home: '/',
@@ -39,7 +38,6 @@ const PATHNAME_KEYS: Record<
   news: '/news',
   contact: '/contact',
   'vietnam-production-service': '/vietnam-production-service',
-  'vietnam-location-guide': '/vietnam-location-guide',
   'video-campaign-brief': '/video-campaign-brief',
 };
 

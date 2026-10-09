@@ -23,10 +23,7 @@ import {
 } from '@/lib/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { sanityFetch } from '@/sanity/lib/live';
-import {
-  VIETNAM_LOCATION_GUIDE_PDF_QUERY,
-  VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY,
-} from '@/sanity/queries/pages';
+import { VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY } from '@/sanity/queries/pages';
 import {
   MARKET_BY_SLUG_QUERY,
   PORTFOLIO_BY_MARKET_QUERY,
@@ -38,11 +35,6 @@ import '@/components/ui/image-pair.css';
 import '@/app/[locale]/contact/contact-page.css';
 import './vietnam-production-service.css';
 
-type LocationGuidePdf = {
-  pdfUrl?: string | null;
-  pdfLabel?: string | null;
-};
-
 type BodyImage = {
   src: string;
   alt: string;
@@ -52,6 +44,9 @@ type BodyImage = {
 
 const BODY_IMAGE_SIZES = '(max-width: 900px) 100vw, 900px';
 
+/** Sanity CDN file — formerly page-vietnam-location-guide.pdfDownload. */
+const GUIDE_PDF_URL =
+  'https://cdn.sanity.io/files/7oesp86l/production/460d3acfd0d2e33edffa91a0dbf72209f4d501ef.pdf';
 const GUIDE_PDF_FILENAME = 'Vietnam_Location_Guide_Vantage_Pictures.pdf';
 
 const BRIEF_ARROW = (
@@ -182,15 +177,12 @@ export default async function VietnamProductionServicePage({ params }: Props) {
 
   const typedLocale = locale as Locale;
 
-  const [{data}, guidePdfResult, organization, phrases] = await Promise.all([
+  const [{data}, organization, phrases] = await Promise.all([
     sanityFetch({query: VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY}),
-    sanityFetch({query: VIETNAM_LOCATION_GUIDE_PDF_QUERY, stega: false}),
     loadOrganizationSchemaInput(typedLocale),
     getPhraseRecord(),
   ]);
   const page = data as VpsPage;
-  const guidePdf = guidePdfResult.data as LocationGuidePdf | null;
-  const guidePdfUrl = guidePdf?.pdfUrl ?? null;
 
   if (!page) notFound();
 
@@ -345,18 +337,16 @@ export default async function VietnamProductionServicePage({ params }: Props) {
               <h2 className="vp-contact-cta__heading">{copy('guideHeading')}</h2>
               <p className="vp-contact-cta__body">{copy('guideBody')}</p>
             </div>
-            {guidePdfUrl ? (
-              <a
-                href={guidePdfUrl}
-                download={guidePdf?.pdfLabel || GUIDE_PDF_FILENAME}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="vp-btn vp-btn--yellow h-auto! min-h-[var(--vp-btn-height)] whitespace-normal!"
-              >
-                {copy('guideCta')}
-                {BRIEF_ARROW}
-              </a>
-            ) : null}
+            <a
+              href={GUIDE_PDF_URL}
+              download={GUIDE_PDF_FILENAME}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vp-btn vp-btn--yellow h-auto! min-h-[var(--vp-btn-height)] whitespace-normal!"
+            >
+              {copy('guideCta')}
+              {BRIEF_ARROW}
+            </a>
           </div>
         </div>
       </section>

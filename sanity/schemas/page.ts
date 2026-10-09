@@ -305,15 +305,6 @@ export const page = defineType({
     }),
 
     defineField({
-      name: 'pdfDownload',
-      title: 'PDF Download',
-      type: 'pdfDownload',
-      group: 'content',
-      description: 'Downloadable PDF shown on the Vietnam Location Guide page.',
-      hidden: hideUnlessPageSlug('vietnam-location-guide'),
-    }),
-
-    defineField({
       name: 'awardItems',
       title: 'Award Items',
       type: 'array',

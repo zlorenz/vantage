@@ -18,10 +18,6 @@ const TITLES = {
     en: 'Our <span class="vp-outline">Industry</span>',
     zh: 'Our <span class="vp-outline">Industry</span>',
   },
-  'vietnam-location-guide': {
-    en: '<span class="vp-outline">Vietnam</span> Location Guidebook',
-    zh: '越南<span class="vp-outline">拍摄取景指南 </span>',
-  },
   work: {
     en: '<span class="vp-outline">Our</span> Work',
     zh: '<span class="vp-outline">我们的</span> 视频作品集',

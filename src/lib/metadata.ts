@@ -6,7 +6,6 @@
  *   Work:                         %%sitename%% %%sep%% Commercial Film Portfolio
  *   News:                         Commercial Film Production %%title%% %%sep%% %%sitename%%
  *   Campaign brief:               Start Your Project %%sep%% %%sitename%%
- *   Vietnam location guide:       Vietnam Filming Location Guide %%sep%% Production Resource
  *   About / Contact:              %%title%% %%sitename%% %%sep%% %%sitedesc%%
  *   Vietnam production service:   %%title%% %%sep%% %%sitename%%
  *   Portfolio / blog / default:   %%title%% %%sep%% %%sitename%%
@@ -251,13 +250,6 @@ export function pageTitle(title: string): string {
 export function aboutContactPageTitle(title: string, locale: Locale = 'en'): string {
   const description = locale === 'zh' ? SITE_DESCRIPTION_ZH : SITE_DESCRIPTION_TAGLINE;
   return `${title} ${SITE_NAME} | ${description}`;
-}
-
-/** Yoast: `Vietnam Filming Location Guide %%sep%% Production Resource` */
-export function vietnamLocationGuideTitle(locale: Locale = 'en'): string {
-  return locale === 'zh'
-    ? '越南拍摄地点指南 | 制作资源'
-    : 'Vietnam Filming Location Guide | Production Resource';
 }
 
 /** Yoast: `Start Your Project %%sep%% %%sitename%%` */

@@ -1297,14 +1297,6 @@
         },
         "optional": true
       },
-      "pdfDownload": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "pdfDownload"
-        },
-        "optional": true
-      },
       "awardItems": {
         "type": "objectAttribute",
         "value": {
@@ -1372,60 +1364,6 @@
           "optional": true
         },
         "batchId": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        }
-      }
-    }
-  },
-  {
-    "name": "pdfDownload",
-    "type": "type",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "pdfDownload"
-          }
-        },
-        "file": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "object",
-            "attributes": {
-              "asset": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "inline",
-                  "name": "sanity.fileAsset.reference"
-                },
-                "optional": true
-              },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
-                },
-                "optional": true
-              },
-              "_type": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string",
-                  "value": "file"
-                }
-              }
-            }
-          },
-          "optional": true
-        },
-        "label": {
           "type": "objectAttribute",
           "value": {
             "type": "string"

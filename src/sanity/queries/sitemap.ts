@@ -24,7 +24,7 @@ export const SITEMAP_BLOG_POSTS_QUERY = `
 export const SITEMAP_PAGES_QUERY = defineQuery(`
   *[_type == "page"
     && slug.current in ["home", "work", "about", "news",
-        "vietnam-production-service", "vietnam-location-guide",
+        "vietnam-production-service",
         "video-campaign-brief"]
     && noIndex != true
     && !defined(trash.trashedAt)] {
