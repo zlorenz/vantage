@@ -8,7 +8,7 @@
  */
 
 import {useEffect, useRef} from 'react';
-import {createFooterLensEngine, footerLensRadiusCss} from './symbol-lens-engine';
+import {createAboutLensEngine, aboutLensRadiusCss} from './symbol-lens-engine';
 import {createGradientBgEngine} from './gradient-bg-engine';
 import './symbol-lens.css';
 
@@ -16,7 +16,7 @@ import './symbol-lens.css';
 const FOLLOW = 0.1;
 const FRAME_MS = 1000 / 60;
 
-type FooterLensStageProps = {
+type AboutLensStageProps = {
   className?: string;
   canvasLabel?: string;
 };
@@ -25,10 +25,10 @@ function clamp01(value: number) {
   return Math.min(1, Math.max(0, value));
 }
 
-export function FooterLensStage({
+export function AboutLensStage({
   className,
   canvasLabel = 'Vantage symbol with magnifying-glass hover effect',
-}: FooterLensStageProps) {
+}: AboutLensStageProps) {
   const lensCanvasRef = useRef<HTMLCanvasElement>(null);
   const gradientCanvasRef = useRef<HTMLCanvasElement>(null);
   const glassRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ export function FooterLensStage({
     const wrap = wrapRef.current;
     if (!lensCanvas || !gradientCanvas || !wrap) return;
 
-    const lens = createFooterLensEngine(lensCanvas);
+    const lens = createAboutLensEngine(lensCanvas);
     lens.setGlassHost(glassRef.current);
     let gradient: ReturnType<typeof createGradientBgEngine> | null = null;
     try {
@@ -86,7 +86,7 @@ export function FooterLensStage({
 
     const syncLoupeVars = (active: boolean) => {
       const host = loupeHost();
-      const r = active ? footerLensRadiusCss(cssW, cssH) : 0;
+      const r = active ? aboutLensRadiusCss(cssW, cssH) : 0;
       host.style.setProperty('--vp-loupe-x', `${smoothX}px`);
       host.style.setProperty('--vp-loupe-y', `${smoothY}px`);
       host.style.setProperty('--vp-loupe-r', `${r}px`);

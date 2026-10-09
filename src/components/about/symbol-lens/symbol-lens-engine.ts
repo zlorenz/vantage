@@ -43,7 +43,7 @@ import {
   SYMBOL_VIEWBOX_W,
 } from "./symbol-path";
 
-export type FooterLensEngine = {
+export type AboutLensEngine = {
   setSize: (cssWidth: number, cssHeight: number) => void;
   /** Inline SVG host for the glass mark. The loupe canvas stays above it. */
   setGlassHost: (host: HTMLElement | null) => void;
@@ -133,7 +133,7 @@ function lensRadiusCss(logoW: number): number {
 }
 
 /** Public loupe radius for layers that clip to the same disc (e.g. hero quote cards). */
-export function footerLensRadiusCss(cssW: number, cssH: number): number {
+export function aboutLensRadiusCss(cssW: number, cssH: number): number {
   return lensRadiusCss(logoFit(cssW, cssH).logoW);
 }
 
@@ -1033,7 +1033,7 @@ function loadCollageImage(): Promise<HTMLImageElement> {
   });
 }
 
-export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEngine {
+export function createAboutLensEngine(canvas: HTMLCanvasElement): AboutLensEngine {
   const ctx = canvas.getContext("2d", { alpha: true });
   if (!ctx) {
     throw new Error("2d context unavailable");

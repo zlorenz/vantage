@@ -12,7 +12,7 @@
 import {useTranslations} from 'next-intl';
 import {type CSSProperties} from 'react';
 import {CornerFrame} from '@/components/ui/CornerFrame';
-import {FooterLensStage} from '@/components/about/symbol-lens/FooterLensStage';
+import {AboutLensStage} from '@/components/about/symbol-lens/AboutLensStage';
 import './about-hero-viewport.css';
 
 /** Temporary launch hide — restore when hero quote copy is final. */
@@ -36,7 +36,7 @@ export function AboutHeroViewport() {
 
   return (
     <section className="vp-about-hero" aria-label="Vantage symbol">
-      <FooterLensStage className="vp-about-hero__lens" />
+      <AboutLensStage className="vp-about-hero__lens" />
 
       {SHOW_HERO_QUOTES ? (
         <div className="vp-about-hero__quotes" aria-hidden="true">
