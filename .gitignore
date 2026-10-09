@@ -66,6 +66,8 @@ Thumbs.db
 # --------------------------------------------------
 
 migration-data/blog-zh-html/
+# Regenerable TranslatePress harvest dumps (local WP only). Not a post-cutover SoT.
+migration-data/wp-translation-audit/
 
 # --------------------------------------------------
 # WordPress legacy (local reference only — not part of Next app)

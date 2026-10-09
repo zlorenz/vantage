@@ -1,6 +1,8 @@
 # Migration Data — Vantage Pictures
 
 > **Archive / historical.** WordPress → Sanity migration and redesign cutover are complete. Keep for audit trail; do not treat pre-launch checklists as open work.
+>
+> `migration-data/wp-translation-audit/` was removed from the repo (regenerable TranslatePress harvest; ZH SoT is Sanity). Audit scripts under `scripts/migration/audit/` may still write there locally if a WP DB is present — the path is gitignored.
 
 This document tracks the status of all content migration from WordPress to Sanity. It is a living document — update it as each phase is completed and verified. Do not mark anything as verified without manually spot-checking samples, not just confirming the import ran without errors.
 

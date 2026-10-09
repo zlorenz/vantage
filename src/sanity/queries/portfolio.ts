@@ -312,15 +312,6 @@ export const INTERNAL_LIBRARY_ENTRY_BY_SLUG_QUERY = `
   }
 `;
 
-/** Platform terms for work-internal filter dropdown. */
-export const ALL_PLATFORMS_QUERY = `
-  *[_type == "platform"] | order(name asc) {
-    _id,
-    name,
-    "slug": slug.current
-  }
-`;
-
 /** Video format terms for public filter dropdowns. */
 export const VIDEO_FORMATS_QUERY = `
   *[_type == "videoFormat"] | order(title asc) {
@@ -413,32 +404,6 @@ export const PORTFOLIO_BY_MARKET_QUERY = `
 export const TAXONOMY_HERO_IMAGE_QUERY = `
   *[_type == "portfolioEntry" && isHidden != true && !defined(trash.trashedAt) && references($termId)]
     | order(publishedAt desc, title asc)[0].featuredImage
-`;
-
-/**
- * Client terms for work-internal filter dropdown (legacy — prefer identities from credits).
- * @deprecated Use credit identities resolved from crewCredits.
- */
-export const ALL_CLIENTS_QUERY = `
-  *[_type == "client"] | order(name asc) {
-    _id,
-    name,
-    "slug": slug.current
-  }
-`;
-
-/**
- * Crew members for Director / DOP / Art Director filter dropdowns (legacy).
- * @deprecated Use credit identities resolved from crewCredits.
- * $role: "director" | "dop" | "art-director"
- */
-export const CREW_MEMBERS_BY_ROLE_QUERY = `
-  *[_type == "crewMember" && role == $role] | order(name asc) {
-    _id,
-    name,
-    "slug": slug.current,
-    role
-  }
 `;
 
 /** All credit identities (opaque vendor entities). */
