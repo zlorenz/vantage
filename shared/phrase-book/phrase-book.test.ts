@@ -113,7 +113,6 @@ function testCategories() {
   )
   assert.equal(categoryForCmsField('industry', 'title'), 'work-filters')
   assert.equal(categoryForCmsField('blogPost', 'title'), 'pages-news')
-  assert.equal(categoryForCmsField('siteSettings', 'contactModalTitle'), 'interface')
   assert.equal(preferCategory('companies', 'campaigns'), 'companies')
   assert.equal(preferCategory('descriptions', 'crew-roles'), 'crew-roles')
   assert.equal(isCompanyCrewRole('brand', 'Brand'), true)

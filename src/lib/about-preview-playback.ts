@@ -18,10 +18,6 @@ export type AboutPreviewPlaybackSlot = {
   videoUrl?: string | null
   portfolioEntry?: {
     videos?: Array<PortfolioPreviewRow | null> | null
-    vimeoUrl?: string | null
-    previewCleanVimeoUrl?: string | null
-    previewStartSeconds?: number | null
-    previewEndSeconds?: number | null
   } | null
 }
 
@@ -63,10 +59,6 @@ export function resolveAboutPreviewPlayback(
     videos: (entry.videos ?? []).filter(
       (row): row is PortfolioPreviewRow => row != null,
     ),
-    vimeoUrl: entry.vimeoUrl,
-    previewCleanVimeoUrl: entry.previewCleanVimeoUrl,
-    previewStartSeconds: entry.previewStartSeconds,
-    previewEndSeconds: entry.previewEndSeconds,
   })
 
   return {

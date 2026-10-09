@@ -15,10 +15,6 @@ type PortfolioImageEntry = {
   title?: string | null;
   featuredImage?: Parameters<typeof aboutPreviewPosterUrl>[0] | null;
   videos?: Array<PortfolioPreviewRow | null> | null;
-  vimeoUrl?: string | null;
-  previewCleanVimeoUrl?: string | null;
-  previewStartSeconds?: number | null;
-  previewEndSeconds?: number | null;
 };
 
 export function mapPortfolioFeaturedImages(
@@ -33,10 +29,6 @@ export function mapPortfolioFeaturedImages(
         videos: (entry.videos ?? []).filter(
           (row): row is PortfolioPreviewRow => row != null,
         ),
-        vimeoUrl: entry.vimeoUrl,
-        previewCleanVimeoUrl: entry.previewCleanVimeoUrl,
-        previewStartSeconds: entry.previewStartSeconds,
-        previewEndSeconds: entry.previewEndSeconds,
       });
 
       return {

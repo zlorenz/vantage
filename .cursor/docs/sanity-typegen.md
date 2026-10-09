@@ -68,8 +68,8 @@ augmentation via `import '@/sanity/sanity.types'` in `src/lib/sanity.ts`.
 
 ## Status (as of #4 page-query typegen)
 
-- **9** `*_QUERY_RESULT` types are generated (HOME, WORK, WORK_PAGE_META, ABOUT,
-  CONTACT, NEWS, VIETNAM_LOCATION_GUIDE, VIETNAM_PRODUCTION_SERVICE,
-  VIDEO_CAMPAIGN_BRIEF).
+- Page `*_QUERY_RESULT` types are generated for live routes (HOME, WORK,
+  WORK_PAGE_META, ABOUT, CONTACT, NEWS, VIETNAM_PRODUCTION_SERVICE,
+  VIDEO_CAMPAIGN_BRIEF, hub pages). Vietnam Location Guide is retired.
 - `ClientReturn` / `sanityClient.fetch(QUERY)` inference is confirmed working
   (not `any`) with `overloadClientMethods: true`.

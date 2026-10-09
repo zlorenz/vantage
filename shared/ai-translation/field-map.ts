@@ -49,13 +49,6 @@ export const FIELD_MAPS: Record<TranslateDocumentType, FieldMapping[]> = {
       where: 'Display title campaign',
     },
     {
-      enPath: 'heroFilmTitle',
-      zhPath: 'heroFilmTitleZh',
-      kind: 'plain',
-      label: 'Hero film title (legacy)',
-      where: 'Legacy main-film episode title — prefer videos[0].videoTitle',
-    },
-    {
       enPath: 'excerpt',
       zhPath: 'excerptZh',
       kind: 'plain',
@@ -82,20 +75,6 @@ export const FIELD_MAPS: Record<TranslateDocumentType, FieldMapping[]> = {
       kind: 'plain',
       label: 'Video description',
       where: 'Portfolio video row description',
-    },
-    {
-      enPath: 'additionalVideos[].videoTitle',
-      zhPath: 'additionalVideos[].videoTitleZh',
-      kind: 'plain',
-      label: 'Additional video title (legacy)',
-      where: 'Legacy extra video row — prefer videos[]',
-    },
-    {
-      enPath: 'additionalVideos[].description',
-      zhPath: 'additionalVideos[].descriptionZh',
-      kind: 'plain',
-      label: 'Additional video description (legacy)',
-      where: 'Legacy extra video row — prefer videos[]',
     },
     SEO_META,
   ],
@@ -143,25 +122,18 @@ export const FIELD_MAPS: Record<TranslateDocumentType, FieldMapping[]> = {
     },
     SLUG,
     {
-      enPath: 'heroTitle',
-      zhPath: 'heroTitleZh',
-      kind: 'html',
-      label: 'Hero title',
-      where: 'Page hero heading',
-    },
-    {
       enPath: 'body',
       zhPath: 'bodyZh',
       kind: 'portableText',
       label: 'Body',
-      where: 'Page body',
+      where: 'Page body (Our Company / Our Industry / Awards)',
     },
     {
       enPath: 'founders[].jobTitle',
       zhPath: 'founders[].jobTitleZh',
       kind: 'plain',
       label: 'Founder job title',
-      where: 'About page founder card',
+      where: 'Our Company leadership card',
     },
     SEO_META,
   ],
@@ -231,43 +203,7 @@ export const FIELD_MAPS: Record<TranslateDocumentType, FieldMapping[]> = {
     SLUG,
   ],
 
-  siteSettings: [
-    {
-      enPath: 'contactAddress',
-      zhPath: 'contactAddressZh',
-      kind: 'plain',
-      label: 'Contact address',
-      where: 'Contact modal',
-    },
-    {
-      enPath: 'contactModalTitle',
-      zhPath: 'contactModalTitleZh',
-      kind: 'plain',
-      label: 'Contact modal title',
-      where: 'Contact modal heading',
-    },
-    {
-      enPath: 'contactModalIntro',
-      zhPath: 'contactModalIntroZh',
-      kind: 'plain',
-      label: 'Contact modal intro',
-      where: 'Contact modal intro',
-    },
-    {
-      enPath: 'contactModalContent',
-      zhPath: 'contactModalContentZh',
-      kind: 'portableText',
-      label: 'Contact modal content',
-      where: 'Contact modal body',
-    },
-    {
-      enPath: 'contactCtaText',
-      zhPath: 'contactCtaTextZh',
-      kind: 'plain',
-      label: 'Contact CTA text',
-      where: 'Contact modal CTA',
-    },
-  ],
+  siteSettings: [],
 }
 
 /** Document types with bilingual CMS fields shown on the Translations dashboard. */

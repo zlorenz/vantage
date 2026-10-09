@@ -1,7 +1,8 @@
 /**
- * founder — About page team card (name, title, photo).
+ * founder — Leadership card on Our Company (name, title, photo).
+ * Also used for Organization / Person JSON-LD on About.
  *
- * Source: content-schema.md §4.4 (page.founders array)
+ * Source: content-schema.md §4.4 (page.founders array on about)
  */
 
 import {defineField, defineType} from 'sanity'

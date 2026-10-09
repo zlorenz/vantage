@@ -38,8 +38,6 @@ const PORTFOLIO_DISPLAY_TITLE_FIELDS = `
     productNameZh,
     campaignTitleZh
   },
-  heroFilmTitle,
-  heroFilmTitleZh,
   thumbTitleOverride,
   thumbTitleOverrideZh,
   headerTitleOverride,
@@ -137,22 +135,8 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
       previewStartSeconds,
       previewEndSeconds
     },
-    vimeoUrl,
-    xinpianchangUrl,
-    previewCleanVimeoUrl,
-    previewStartSeconds,
-    previewEndSeconds,
     publishedAt,
     isHidden,
-    additionalVideos[]{
-      _key,
-      vimeoUrl,
-      xinpianchangUrl,
-      videoTitle,
-      videoTitleZh,
-      description,
-      descriptionZh
-    },
     keyVisuals[]{
       ...,
       asset->{
@@ -224,15 +208,6 @@ const INTERNAL_LIBRARY_ENTRY_FIELDS = `
   isHidden,
   publishedAt,
   videos[]{
-    _key,
-    vimeoUrl,
-    xinpianchangUrl,
-    videoTitle,
-    videoTitleZh
-  },
-  vimeoUrl,
-  xinpianchangUrl,
-  additionalVideos[]{
     _key,
     vimeoUrl,
     xinpianchangUrl,

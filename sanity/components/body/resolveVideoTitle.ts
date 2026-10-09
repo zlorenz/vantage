@@ -18,12 +18,6 @@ type PortfolioHit = {
     vimeoUrl?: string
     videoTitle?: string
   }>
-  vimeoUrl?: string
-  heroFilmTitle?: string
-  additionalVideos?: Array<{
-    vimeoUrl?: string
-    videoTitle?: string
-  }>
 }
 
 function entryLabel(doc: PortfolioHit): string {
@@ -48,17 +42,12 @@ export async function fetchPortfolioVideoTitle(
   if (!videoId) return null
 
   const rows = await client.fetch<PortfolioHit[]>(
-    `*[_type == "portfolioEntry" && !(_id in path("drafts.**")) && (
-      vimeoUrl match $needle ||
-      count((videos[defined(vimeoUrl) && vimeoUrl match $needle])) > 0 ||
-      count((additionalVideos[defined(vimeoUrl) && vimeoUrl match $needle])) > 0
-    )][0...16]{
+    `*[_type == "portfolioEntry" && !(_id in path("drafts.**")) &&
+      count((videos[defined(vimeoUrl) && vimeoUrl match $needle])) > 0
+    ][0...16]{
       title,
       displayTitleParts,
-      videos[]{vimeoUrl, videoTitle},
-      vimeoUrl,
-      heroFilmTitle,
-      additionalVideos[]{vimeoUrl, videoTitle}
+      videos[]{vimeoUrl, videoTitle}
     }`,
     {needle: `*${videoId}*`},
   )

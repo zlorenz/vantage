@@ -1,10 +1,8 @@
 /**
  * Backfill portfolioEntry.videos[] from legacy main-film fields + additionalVideos.
  *
- * Option A: keep document-level featuredImage and leave legacy video fields in
- * place for dual-read. Does not unset vimeoUrl / heroFilmTitle / additionalVideos.
- *
  * Idempotent: skips docs that already have a non-empty videos array.
+ * After cutover, run unset-retired-schema-fields.ts --apply to drop legacy roots.
  *
  * Usage:
  *   npx tsx scripts/migration/patch/consolidate-portfolio-videos.ts

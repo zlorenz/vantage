@@ -173,7 +173,6 @@ export default async function IndustryArchivePage({ params }: Props) {
             <PortfolioGrid
               locale={typedLocale}
               entries={entries}
-              filterMode="public"
               videoFormats={videoFormats}
               industries={industries}
               markets={markets}

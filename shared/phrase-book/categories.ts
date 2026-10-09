@@ -102,9 +102,7 @@ export function categoryForCmsField(
   if (
     enPath === 'displayTitleParts.productName' ||
     enPath === 'displayTitleParts.campaignTitle' ||
-    enPath === 'heroFilmTitle' ||
     enPath === 'videos[].videoTitle' ||
-    enPath === 'additionalVideos[].videoTitle' ||
     enPath.endsWith('.videoTitle')
   ) {
     return 'campaigns'
@@ -120,17 +118,6 @@ export function categoryForCmsField(
   }
 
   if (documentType === 'category' && enPath === 'title') return 'pages-news'
-
-  if (
-    enPath === 'contactModalTitle' ||
-    enPath === 'contactModalIntro' ||
-    enPath === 'contactAddress' ||
-    enPath === 'contactCtaText' ||
-    enPath === 'campaignCta.buttonLabel' ||
-    enPath.endsWith('.buttonLabel')
-  ) {
-    return 'interface'
-  }
 
   if (
     (documentType === 'page' || documentType === 'blogPost') &&
@@ -151,7 +138,6 @@ export function categoryForCmsField(
     enPath === 'excerpt' ||
     enPath === 'description' ||
     enPath === 'videos[].description' ||
-    enPath === 'additionalVideos[].description' ||
     enPath.endsWith('.description') ||
     enPath === 'seo.metaDescription'
   ) {

@@ -31,11 +31,7 @@ const HOME_CAROUSEL_ENTRY_PROJECTION = `
     previewStartSeconds,
     previewEndSeconds,
     previewCleanVimeoUrl
-  },
-  vimeoUrl,
-  previewStartSeconds,
-  previewEndSeconds,
-  previewCleanVimeoUrl
+  }
 `
 
 /** Homepage carousel — CMS order from page.carouselSlides on canonical `home`. */

@@ -64,11 +64,6 @@ async function PortfolioCaseMediaContent({
       description: entry.description,
       descriptionZh: entry.descriptionZh,
       videos: entry.videos,
-      vimeoUrl: entry.vimeoUrl,
-      xinpianchangUrl: entry.xinpianchangUrl,
-      heroFilmTitle: entry.heroFilmTitle,
-      heroFilmTitleZh: entry.heroFilmTitleZh,
-      additionalVideos: entry.additionalVideos,
     })
   }
 
@@ -87,10 +82,8 @@ async function PortfolioCaseMediaContent({
     <div className="vp-case-video">
       <PortfolioVideoEmbed
         locale={locale}
-        vimeoUrl={main?.vimeoUrl ?? entry.vimeoUrl ?? ''}
-        xinpianchangUrl={
-          main?.xinpianchangUrl ?? entry.xinpianchangUrl ?? undefined
-        }
+        vimeoUrl={main?.vimeoUrl ?? ''}
+        xinpianchangUrl={main?.xinpianchangUrl ?? undefined}
         portfolioEntryRef={entry._id}
         featuredImage={entry.featuredImage}
       />

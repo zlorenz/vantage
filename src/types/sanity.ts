@@ -36,18 +36,6 @@ export type PortableTextBlock = Record<string, unknown>;
 export interface SiteSettings {
   contactEmail: string;
   contactPhone?: string;
-  contactWhatsapp?: string;
-  contactAddress?: string;
-  contactAddressZh?: string;
-  contactModalTitle?: string;
-  contactModalTitleZh?: string;
-  contactModalIntro?: string;
-  contactModalIntroZh?: string;
-  contactModalContent?: PortableTextBlock[];
-  contactModalContentZh?: PortableTextBlock[];
-  contactCtaText?: string;
-  contactCtaTextZh?: string;
-  contactCtaUrl?: string;
   legalName?: string;
   foundingDate?: string;
   numberOfEmployees?: {
@@ -62,18 +50,6 @@ export interface SiteSettings {
   socialXinpianchang?: string;
   socialXiaohongshu?: string;
   defaultOgImage?: SanityImage;
-  campaignCta?: CampaignCta;
-}
-
-/** Shared Campaign Brief CTA (Site Settings). */
-export interface CampaignCta {
-  heading?: string;
-  headingZh?: string;
-  paragraphs?: string[];
-  paragraphsZh?: string[];
-  buttonLabel?: string;
-  buttonLabelZh?: string;
-  buttonHref?: string;
 }
 
 /** Minimal page shape for navigation labels and slug resolution. */
@@ -130,9 +106,6 @@ export interface PortfolioGridEntry extends PortfolioCard {
   crewCredits?: CrewCredit[];
 }
 
-/** @deprecated PortfolioGrid internal filterMode — unused; kept for type compat. */
-export type PortfolioInternalGridEntry = PortfolioCard;
-
 /** Platform term for work-internal filters. */
 export interface PlatformTerm {
   _id: string;
@@ -158,16 +131,11 @@ export interface PortfolioVideo {
   previewEndSeconds?: number;
 }
 
-/** @deprecated Use PortfolioVideo — legacy additionalVideos[] row shape. */
-export type AdditionalVideo = PortfolioVideo;
-
 export interface InternalLibraryEntry {
   _id: string;
   title: string;
   titleZh?: string;
   displayTitleParts?: DisplayTitlePartsValue;
-  heroFilmTitle?: string;
-  heroFilmTitleZh?: string;
   thumbTitleOverride?: string;
   thumbTitleOverrideZh?: string;
   headerTitleOverride?: string;
@@ -179,12 +147,7 @@ export interface InternalLibraryEntry {
   featuredImage: SanityImage;
   isHidden?: boolean;
   publishedAt?: string;
-  /** @deprecated Prefer videos[0]. */
-  vimeoUrl?: string;
-  xinpianchangUrl?: string;
   videos?: PortfolioVideo[];
-  /** @deprecated Prefer videos. */
-  additionalVideos?: PortfolioVideo[];
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];
@@ -230,10 +193,6 @@ export interface PortfolioEntry {
   slug: string;
   slugZh?: string;
   displayTitleParts?: DisplayTitlePartsValue;
-  /** @deprecated Prefer videos[0].videoTitle via resolveMainFilmTitle. */
-  heroFilmTitle?: string;
-  /** @deprecated Prefer videos[0].videoTitleZh. */
-  heroFilmTitleZh?: string;
   thumbTitleOverride?: string;
   thumbTitleOverrideZh?: string;
   headerTitleOverride?: string;
@@ -245,20 +204,10 @@ export interface PortfolioEntry {
   description: string;
   descriptionZh?: string;
   featuredImage: SanityImage;
-  /** @deprecated Prefer videos[0].vimeoUrl via resolveMainPortfolioVideo. */
-  vimeoUrl?: string;
-  /** @deprecated Prefer videos[0].xinpianchangUrl. */
-  xinpianchangUrl?: string;
-  /** @deprecated Prefer videos[0].preview*. */
-  previewCleanVimeoUrl?: string;
-  previewStartSeconds?: number;
-  previewEndSeconds?: number;
   publishedAt?: string;
   isHidden?: boolean;
-  /** Unified ordered films — first item is the main film. */
+  /** Ordered films — first item is the main film. */
   videos?: PortfolioVideo[];
-  /** @deprecated Prefer videos[1..]. */
-  additionalVideos?: PortfolioVideo[];
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];
@@ -376,14 +325,6 @@ export interface BlogPostRelatedCase {
   descriptionZh?: string;
   displayTitleParts?: DisplayTitlePartsValue;
   videos?: PortfolioVideo[];
-  vimeoUrl?: string;
-  xinpianchangUrl?: string;
-  previewCleanVimeoUrl?: string;
-  previewStartSeconds?: number;
-  previewEndSeconds?: number;
-  additionalVideos?: PortfolioVideo[];
-  heroFilmTitle?: string;
-  heroFilmTitleZh?: string;
 }
 
 export interface BlogPostMainVideo {

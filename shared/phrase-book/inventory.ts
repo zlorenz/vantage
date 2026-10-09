@@ -110,20 +110,14 @@ export const PHRASE_INVENTORY_DOCS_QUERY = `*[_type in [
 ] && !defined(trash.trashedAt) && !(_id in path("versions.**"))]{
   _id, _type, title, titleZh, name,
   displayTitleParts,
-  heroFilmTitle, heroFilmTitleZh,
   excerpt, excerptZh, description, descriptionZh,
   videos[]{videoTitle, videoTitleZh, description, descriptionZh},
-  additionalVideos[]{videoTitle, videoTitleZh, description, descriptionZh},
   founders[]{jobTitle, jobTitleZh},
   crewCredits[]{
     role, roleKey, isCustomRole, department,
     people[]{name, "identityName": identity->name}
   },
-  seo,
-  contactAddress, contactAddressZh,
-  contactModalTitle, contactModalTitleZh,
-  contactModalIntro, contactModalIntroZh,
-  contactCtaText, contactCtaTextZh
+  seo
 }`
 
 export const PHRASE_INVENTORY_PHRASES_QUERY = `*[_type == "translatedPhrase" && !(_id in path("versions.**"))]{_id, en, zh}`
@@ -143,16 +137,6 @@ export function isPhraseBookStatusPath(enPath: string | undefined | null): boole
   ) {
     return true
   }
-  if (
-    enPath === 'contactAddress' ||
-    enPath === 'contactModalTitle' ||
-    enPath === 'contactModalIntro' ||
-    enPath === 'contactCtaText' ||
-    enPath === 'campaignCta.buttonLabel' ||
-    enPath.endsWith('.buttonLabel')
-  ) {
-    return true
-  }
   return false
 }
 
@@ -165,16 +149,9 @@ export function zhSiblingPathFor(enPath: string): string | null {
     'displayTitleParts.brandName': 'displayTitleParts.brandNameZh',
     'displayTitleParts.productName': 'displayTitleParts.productNameZh',
     'displayTitleParts.campaignTitle': 'displayTitleParts.campaignTitleZh',
-    heroFilmTitle: 'heroFilmTitleZh',
     'videos[].videoTitle': 'videos[].videoTitleZh',
     'videos[].description': 'videos[].descriptionZh',
-    'additionalVideos[].videoTitle': 'additionalVideos[].videoTitleZh',
-    'additionalVideos[].description': 'additionalVideos[].descriptionZh',
     'founders[].jobTitle': 'founders[].jobTitleZh',
-    contactAddress: 'contactAddressZh',
-    contactModalTitle: 'contactModalTitleZh',
-    contactModalIntro: 'contactModalIntroZh',
-    contactCtaText: 'contactCtaTextZh',
   }
   return map[enPath] ?? null
 }

@@ -1,9 +1,6 @@
 /**
- * Resolve ordered portfolio videos with dual-read for the legacy main-film
- * fields + additionalVideos[] shape.
- *
- * Prefer `videos[]` when present (first item = main film). Otherwise synthesize
- * from root vimeoUrl / heroFilmTitle / preview* + additionalVideos.
+ * Resolve ordered portfolio videos from unified `videos[]`
+ * (first item = main film).
  */
 
 export type PortfolioVideoFields = {
@@ -22,14 +19,6 @@ export type PortfolioVideoFields = {
 
 export type PortfolioVideoSource = {
   videos?: PortfolioVideoFields[] | null
-  vimeoUrl?: string | null
-  xinpianchangUrl?: string | null
-  heroFilmTitle?: string | null
-  heroFilmTitleZh?: string | null
-  previewCleanVimeoUrl?: string | null
-  previewStartSeconds?: number | null
-  previewEndSeconds?: number | null
-  additionalVideos?: PortfolioVideoFields[] | null
 }
 
 function trimOrUndefined(value?: string | null): string | undefined {
@@ -45,54 +34,33 @@ export function hasUnifiedVideos(
 }
 
 /**
- * Ordered playable rows. Empty array when neither unified nor legacy main URL
- * is present.
+ * Ordered playable rows. Empty array when `videos` is missing or empty.
  */
 export function resolvePortfolioVideos(
   entry: PortfolioVideoSource,
 ): PortfolioVideoFields[] {
-  if (Array.isArray(entry.videos) && entry.videos.length > 0) {
-    return entry.videos
-  }
-
-  const mainUrl = trimOrUndefined(entry.vimeoUrl)
-  const mainXpc = trimOrUndefined(entry.xinpianchangUrl)
-  const additionals = entry.additionalVideos ?? []
-
-  if (!mainUrl && !mainXpc && additionals.length === 0) {
+  if (!Array.isArray(entry.videos) || entry.videos.length === 0) {
     return []
   }
-
-  const main: PortfolioVideoFields = {
-    _key: 'legacy-main',
-    vimeoUrl: mainUrl,
-    xinpianchangUrl: mainXpc,
-    videoTitle: trimOrUndefined(entry.heroFilmTitle),
-    videoTitleZh: trimOrUndefined(entry.heroFilmTitleZh),
-    previewCleanVimeoUrl: trimOrUndefined(entry.previewCleanVimeoUrl),
-    previewStartSeconds: entry.previewStartSeconds ?? undefined,
-    previewEndSeconds: entry.previewEndSeconds ?? undefined,
-  }
-
-  return [main, ...additionals]
+  return entry.videos
 }
 
-/** Main film = first resolved video (unified or legacy). */
+/** Main film = first video. */
 export function resolveMainPortfolioVideo(
   entry: PortfolioVideoSource,
 ): PortfolioVideoFields | null {
   return resolvePortfolioVideos(entry)[0] ?? null
 }
 
-/** Episode title for the main film (videos[0].videoTitle or legacy heroFilmTitle). */
+/** Episode title for the main film (videos[0].videoTitle). */
 export function resolveMainFilmTitle(entry: PortfolioVideoSource): {
   videoTitle?: string
   videoTitleZh?: string
 } {
   const main = resolveMainPortfolioVideo(entry)
   return {
-    videoTitle: trimOrUndefined(main?.videoTitle ?? entry.heroFilmTitle),
-    videoTitleZh: trimOrUndefined(main?.videoTitleZh ?? entry.heroFilmTitleZh),
+    videoTitle: trimOrUndefined(main?.videoTitle),
+    videoTitleZh: trimOrUndefined(main?.videoTitleZh),
   }
 }
 
@@ -103,16 +71,11 @@ export function resolveCarouselPreviewPlayback(entry: PortfolioVideoSource): {
   previewEndSeconds: number | null
 } {
   const main = resolveMainPortfolioVideo(entry)
-  const clean =
-    trimOrUndefined(main?.previewCleanVimeoUrl) ??
-    trimOrUndefined(entry.previewCleanVimeoUrl)
-  const master =
-    trimOrUndefined(main?.vimeoUrl) ?? trimOrUndefined(entry.vimeoUrl)
+  const clean = trimOrUndefined(main?.previewCleanVimeoUrl)
+  const master = trimOrUndefined(main?.vimeoUrl)
   return {
     vimeoUrl: clean ?? master ?? null,
-    previewStartSeconds:
-      main?.previewStartSeconds ?? entry.previewStartSeconds ?? null,
-    previewEndSeconds:
-      main?.previewEndSeconds ?? entry.previewEndSeconds ?? null,
+    previewStartSeconds: main?.previewStartSeconds ?? null,
+    previewEndSeconds: main?.previewEndSeconds ?? null,
   }
 }

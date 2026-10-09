@@ -103,10 +103,6 @@ export async function loadFeaturedWorkSlides(
       videos: (entry.videos ?? undefined)?.filter(
         (row): row is NonNullable<typeof row> => row != null,
       ),
-      vimeoUrl: entry.vimeoUrl,
-      previewCleanVimeoUrl: entry.previewCleanVimeoUrl,
-      previewStartSeconds: entry.previewStartSeconds,
-      previewEndSeconds: entry.previewEndSeconds,
     });
 
     return {

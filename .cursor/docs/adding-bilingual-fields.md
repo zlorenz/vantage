@@ -137,8 +137,8 @@ Existing PT pairs already in the schema (use any as a reference):
 
 ## Case 3 — Arrays (e.g. array of text) → build both fields by hand
 
-Also unsupported by the helper. Two `defineField`s, mirroring
-`campaignCta.paragraphs` / `campaignCta.paragraphsZh`.
+Also unsupported by the helper. Two `defineField`s (array of text EN + Zh),
+built by hand.
 
 ```ts
 defineField({

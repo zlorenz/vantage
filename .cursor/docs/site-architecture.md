@@ -14,7 +14,7 @@ These are singular pages, not driven by a post type loop.
 
 | Route | Chinese Route | Notes |
 |---|---|---|
-| `/` | `/zh/` | Home — hero, portfolio grid, brand wall, CTA |
+| `/` | `/zh/` | Home — featured-work carousel |
 | `/about/` | `/zh/关于/` | About page |
 | `/work/` | `/zh/工作/` | Portfolio index |
 | `/news/` | `/zh/新闻/` | Blog/news index |

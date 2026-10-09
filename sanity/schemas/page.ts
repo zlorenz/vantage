@@ -4,9 +4,8 @@
  * Source: content-schema.md §4.4
  *
  * Tabs:
- * - Page Details — Title → Card (image | excerpt) → slug, hero chrome, SEO
- * - Content — frontend-aligned widgets (carousel → featured work → body → logos…)
- *   Hidden on the news (Production Log) page — intro lives in Excerpt.
+ * - Page Details — Title → Card (image | excerpt) → slug, SEO
+ * - Content — page-specific widgets (carousel, about media, body on hub pages)
  */
 
 import {defineField, defineType} from 'sanity'
@@ -264,12 +263,15 @@ export const page = defineType({
       title: 'Body (English)',
       type: 'pagePortableText',
       group: 'content',
-      description: 'Main page copy.',
-      // News uses Excerpt; Home is media-first (carousel).
+      description:
+        'Main page copy. Only Our Company, Our Industry, and Awards render body.',
+      // Redesign pages (home/about/contact/VPS/work/brief/news) are code-owned.
       validation: (rule) =>
         rule.custom((value, context) => {
           const doc = context.document as Record<string, unknown>
-          if (isPageSlug(doc, ['news', 'home'])) {
+          if (
+            !isPageSlug(doc, ['our-company', 'our-industry', 'awards'])
+          ) {
             return true
           }
           if (!value || (Array.isArray(value) && value.length === 0)) {
@@ -278,7 +280,9 @@ export const page = defineType({
           return true
         }),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
-      hidden: (ctx) => Boolean(hiddenForTranslatorWhenEmpty(ctx)),
+      hidden: (ctx) =>
+        hideUnlessPageSlug(['our-company', 'our-industry', 'awards'])(ctx) ||
+        Boolean(hiddenForTranslatorWhenEmpty(ctx)),
       components: {input: BilingualPortableTextInput},
     }),
 
@@ -287,7 +291,9 @@ export const page = defineType({
       title: 'Body (Chinese)',
       type: 'pagePortableText',
       group: 'content',
-      hidden: (ctx) => Boolean(hideZhPortableText('body')(ctx)),
+      hidden: (ctx) =>
+        hideUnlessPageSlug(['our-company', 'our-industry', 'awards'])(ctx) ||
+        Boolean(hideZhPortableText('body')(ctx)),
       readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
       components: {input: BilingualPortableTextInput},
     }),
@@ -298,7 +304,8 @@ export const page = defineType({
       type: 'array',
       group: 'content',
       of: [{type: 'founder'}],
-      description: 'Team cards on the About page (name, title, photo).',
+      description:
+        'Leadership cards on Our Company (name, title, photo). Also feeds Organization JSON-LD on About.',
       hidden: (ctx) =>
         hideUnlessPageSlug('about')(ctx) || hiddenForTranslatorWhenEmpty(ctx),
       components: {input: TranslatorLockedArrayInput},

@@ -430,19 +430,11 @@ function buildQuery(documentType: string): string {
         headerTitleOverrideZh,
         longTitleOverride,
         longTitleOverrideZh,
-        heroFilmTitle,
-        heroFilmTitleZh,
         excerpt,
         excerptZh,
         description,
         descriptionZh,
         videos[]{
-          videoTitle,
-          videoTitleZh,
-          description,
-          descriptionZh
-        },
-        additionalVideos[]{
           videoTitle,
           videoTitleZh,
           description,
@@ -599,25 +591,7 @@ function buildQuery(documentType: string): string {
       return `*[_type == "siteSettings" && !(_id in path("versions.**"))]{
         _id,
         _type,
-        "title": "Site Settings",
-        contactAddress,
-        contactAddressZh,
-        contactModalTitle,
-        contactModalTitleZh,
-        contactModalIntro,
-        contactModalIntroZh,
-        contactCtaText,
-        contactCtaTextZh,
-        "contactModalHasText": ${portableTextHasText('contactModalContent')},
-        "contactModalZhHasText": ${portableTextHasText('contactModalContentZh')},
-        campaignCta{
-          heading,
-          headingZh,
-          paragraphs,
-          paragraphsZh,
-          buttonLabel,
-          buttonLabelZh
-        }
+        "title": "Site Settings"
       }`
     default:
       return `*[_type == $type && !(_id in path("versions.**"))] | order(_updatedAt desc) {
@@ -1264,8 +1238,6 @@ export function DocumentTable({
               headerTitleOverrideZh,
               longTitleOverride,
               longTitleOverrideZh,
-              heroFilmTitle,
-              heroFilmTitleZh,
               excerpt,
               excerptZh,
               description,
@@ -1273,12 +1245,6 @@ export function DocumentTable({
               navLabel,
               navLabelZh,
               videos[]{
-                videoTitle,
-                videoTitleZh,
-                description,
-                descriptionZh
-              },
-              additionalVideos[]{
                 videoTitle,
                 videoTitleZh,
                 description,
@@ -1298,24 +1264,6 @@ export function DocumentTable({
                 titleZh,
                 category,
                 categoryZh
-              },
-              contactAddress,
-              contactAddressZh,
-              contactModalTitle,
-              contactModalTitleZh,
-              contactModalIntro,
-              contactModalIntroZh,
-              contactCtaText,
-              contactCtaTextZh,
-              "contactModalHasText": ${portableTextHasText('contactModalContent')},
-              "contactModalZhHasText": ${portableTextHasText('contactModalContentZh')},
-              campaignCta{
-                heading,
-                headingZh,
-                paragraphs,
-                paragraphsZh,
-                buttonLabel,
-                buttonLabelZh
               },
               "bodyHasText": ${portableTextHasText('body')},
               "bodyZhHasText": ${portableTextHasText('bodyZh')},

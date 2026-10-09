@@ -143,15 +143,10 @@ export default async function PortfolioEntryPage({ params }: Props) {
     description: entry.description,
     descriptionZh: entry.descriptionZh,
     videos: entry.videos,
-    vimeoUrl: entry.vimeoUrl,
-    xinpianchangUrl: entry.xinpianchangUrl,
-    heroFilmTitle: entry.heroFilmTitle,
-    heroFilmTitleZh: entry.heroFilmTitleZh,
-    additionalVideos: entry.additionalVideos,
   });
 
   const mainVideo = resolveMainPortfolioVideo(entry);
-  const mainVimeoUrl = mainVideo?.vimeoUrl?.trim() || entry.vimeoUrl?.trim() || '';
+  const mainVimeoUrl = mainVideo?.vimeoUrl?.trim() || '';
 
   const caseHeader = (
     <PortfolioCaseHeader

@@ -90,20 +90,6 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
         previewCleanVimeoUrl,
         previewStartSeconds,
         previewEndSeconds
-      },
-      vimeoUrl,
-      xinpianchangUrl,
-      previewCleanVimeoUrl,
-      previewStartSeconds,
-      previewEndSeconds,
-      additionalVideos[]{
-        _key,
-        vimeoUrl,
-        xinpianchangUrl,
-        videoTitle,
-        videoTitleZh,
-        description,
-        descriptionZh
       }
     },
     "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},

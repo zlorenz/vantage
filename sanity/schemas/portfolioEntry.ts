@@ -17,9 +17,6 @@ import {isKeyVisualVideoFormatId, KEY_VISUAL_VIDEO_FORMAT_ID} from '@video-forma
 import {CrewCreditsInput} from '../components/crew-credits/CrewCreditsInput'
 import {DisplayTitlesInput} from '../components/display-titles/DisplayTitlesInput'
 import {FeaturedImageHotspotInput} from '../components/featured-image/FeaturedImageHotspotInput'
-import {OptionalField} from '../components/OptionalField'
-import {PreviewBoundsPairField} from '../components/PreviewBoundsInput'
-import {VimeoUrlInput} from '../components/video/VimeoUrlInput'
 import {LocalePairHeadingField} from '../components/locale-pair/LocalePairHeadingField'
 import {NullField} from '../components/locale-pair/NullField'
 import {TaxonomyCheckboxInput} from '../components/TaxonomyCheckboxInput'
@@ -66,8 +63,7 @@ export const portfolioEntry = defineType({
     {name: 'copy', title: 'Description', options: {columns: 2}},
     {name: 'taxonomy', title: 'Formats / Industries / Markets', options: {columns: 3}},
     // Untitled layout row (legend hidden via studio.css) — featured image alone.
-    // Video URLs live in `videos[]` (first = main). Legacy root video fields stay
-    // hidden for dual-read until Option B / cutover.
+    // Video URLs live in `videos[]` (first = main).
     {name: 'featuredAndVideo', options: {columns: 1}},
   ],
 
@@ -343,8 +339,7 @@ export const portfolioEntry = defineType({
       fieldset: 'featuredAndVideo',
       // hotspot UI is custom (FeaturedImageHotspotInput); keep stock upload via renderDefault.
       // Data still writes standard hotspot/crop for urlForImage().
-      // Campaign-level poster (cards, OG, homepage stills) — Option A keeps this
-      // on the document; Option B may later mirror from videos[0].
+      // Campaign-level poster (cards, OG, homepage stills).
       options: {hotspot: false},
       components: {input: FeaturedImageHotspotInput},
       validation: (rule) => rule.required(),
@@ -362,13 +357,9 @@ export const portfolioEntry = defineType({
       hidden: hiddenForTranslatorWhenEmpty,
       components: {input: TranslatorLockedArrayInput},
       validation: (rule) =>
-        rule.custom((videos, context) => {
+        rule.custom((videos) => {
           const rows = Array.isArray(videos) ? videos : []
           if (rows.length === 0) {
-            const legacyUrl = (
-              context.document as {vimeoUrl?: string} | undefined
-            )?.vimeoUrl
-            if (legacyUrl?.trim()) return true
             return 'Add at least one video — the first item is the main film.'
           }
           for (let i = 0; i < rows.length; i++) {
@@ -387,78 +378,6 @@ export const portfolioEntry = defineType({
           }
           return true
         }),
-    }),
-
-    // --- Legacy main-film fields (hidden; dual-read until cutover) ---
-    ...defineLocalePair({
-      name: 'vimeoUrl',
-      zhName: 'xinpianchangUrl',
-      title: 'Video URL (legacy)',
-      type: 'url',
-      group: 'media',
-      vimeoPicker: true,
-      description: 'Legacy main film URL — prefer Videos[0]. Kept for dual-read.',
-      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
-      zhValidation: (rule) => rule.uri({scheme: ['http', 'https']}),
-      optional: true,
-      editorCanEditZh: true,
-      hidden: () => true,
-    }),
-
-    defineField({
-      name: 'previewCleanVimeoUrl',
-      title: 'Clean Preview Video URL (legacy)',
-      type: 'url',
-      group: 'media',
-      hidden: () => true,
-      components: {field: OptionalField, input: VimeoUrlInput},
-      validation: (rule) => rule.uri({scheme: ['http', 'https']}),
-    }),
-
-    defineField({
-      name: 'previewStartSeconds',
-      title: 'In and Out Points (legacy)',
-      type: 'number',
-      group: 'media',
-      hidden: () => true,
-      components: {field: PreviewBoundsPairField},
-      validation: (rule) => rule.min(0),
-    }),
-
-    defineField({
-      name: 'previewEndSeconds',
-      title: 'End (legacy)',
-      type: 'number',
-      group: 'media',
-      hidden: () => true,
-      components: {field: NullField},
-      validation: (rule) =>
-        rule.min(0).custom((end, context) => {
-          const start = (context.parent as {previewStartSeconds?: number} | undefined)
-            ?.previewStartSeconds
-          if (end == null || start == null) return true
-          return end > start ? true : 'End must be greater than Start'
-        }),
-    }),
-
-    ...defineLocalePair({
-      name: 'heroFilmTitle',
-      title: 'Hero Film Title (legacy)',
-      type: 'string',
-      group: 'media',
-      description: 'Legacy — prefer Videos[0] Video Title. Kept for dual-read.',
-      hidden: () => true,
-    }),
-
-    defineField({
-      name: 'additionalVideos',
-      title: 'Additional Videos (legacy)',
-      type: 'array',
-      group: 'media',
-      of: [{type: 'additionalVideo'}],
-      description: 'Legacy — prefer Videos. Kept for dual-read.',
-      hidden: () => true,
-      components: {input: TranslatorLockedArrayInput},
     }),
 
     defineField({

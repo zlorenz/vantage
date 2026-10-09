@@ -350,8 +350,6 @@ export function buildSearchText(entry: InternalLibraryEntry): string {
     parts?.brandNameZh ?? '',
     parts?.productNameZh ?? '',
     parts?.campaignTitleZh ?? '',
-    entry.heroFilmTitle ?? '',
-    entry.heroFilmTitleZh ?? '',
     mainFilm.videoTitle ?? '',
     mainFilm.videoTitleZh ?? '',
     ...videoTitles,

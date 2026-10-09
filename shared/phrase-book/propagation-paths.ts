@@ -3,8 +3,8 @@
  *
  * Base: FIELD_MAPS plain pairs, excluding slugs, Portable Text, HTML, and the
  * read-only portfolioEntry title/titleZh pair (recomputed from display parts).
- * Extras: seo.metaTitle, campaignCta, creditIdentity (confirmed assisted but
- * missing from FIELD_MAPS).
+ * Extras: seo.metaTitle, creditIdentity (confirmed assisted but missing from
+ * FIELD_MAPS).
  */
 
 import {FIELD_MAPS} from '../ai-translation/field-map'
@@ -30,16 +30,6 @@ const EXTRAS: PhrasePropagationPath[] = [
     docType: 'page',
     enPath: 'seo.metaTitle',
     zhPath: 'seo.metaTitleZh',
-  },
-  {
-    docType: 'siteSettings',
-    enPath: 'campaignCta.heading',
-    zhPath: 'campaignCta.headingZh',
-  },
-  {
-    docType: 'siteSettings',
-    enPath: 'campaignCta.buttonLabel',
-    zhPath: 'campaignCta.buttonLabelZh',
   },
   {
     docType: 'creditIdentity',
@@ -98,7 +88,7 @@ export const PROPAGATION_DOC_TYPES: string[] = [
   ...new Set(PHRASE_PROPAGATION_PATHS.map((p) => p.docType)),
 ]
 
-/** Split `additionalVideos[].videoTitle` → {arrayPath, field}. */
+/** Split `videos[].videoTitle` → {arrayPath, field}. */
 export function splitArrayPath(path: string): {
   arrayPath: string
   field: string

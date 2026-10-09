@@ -1,15 +1,13 @@
 /**
  * siteSettings — Singleton global site configuration.
  *
- * Source: content-schema.md §4.5
- * WordPress origin: ACF Options page (Contact Info)
+ * Contact email/phone for footer + /contact. Organization for JSON-LD.
+ * Social + default OG. Contact modal and campaign CTA blocks retired.
  */
 
 import {defineField, defineType} from 'sanity'
 
-import {BilingualPortableTextInput} from '../components/body/BilingualPortableTextInput'
-import {defineLocalePair, hideZhPortableText, hiddenForTranslatorWhenEmpty} from '../lib/define-locale-pair'
-import {getStudioRole, hiddenForTranslator} from '../lib/studio-roles'
+import {hiddenForTranslator} from '../lib/studio-roles'
 
 export const siteSettings = defineType({
   name: 'siteSettings',
@@ -19,15 +17,8 @@ export const siteSettings = defineType({
   groups: [
     {name: 'contact', title: 'Contact', default: true},
     {name: 'organization', title: 'Organization'},
-    {name: 'cta', title: 'Campaign CTA'},
     {name: 'social', title: 'Social'},
     {name: 'seo', title: 'SEO'},
-  ],
-
-  fieldsets: [
-    // Untitled layout rows (legend hidden via studio.css — Sanity auto-titles from name).
-    {name: 'contactPhoneWhatsapp', options: {columns: 2}},
-    {name: 'contactModalTitleCta', options: {columns: 2}},
   ],
 
   fields: [
@@ -37,7 +28,7 @@ export const siteSettings = defineType({
       type: 'string',
       group: 'contact',
       description:
-        'Primary contact email displayed in the footer and contact modal. ' +
+        'Primary contact email in the footer and on /contact. ' +
         'WordPress default: info@vantage.pictures',
       validation: (rule) => rule.required().email(),
       hidden: hiddenForTranslator,
@@ -48,91 +39,8 @@ export const siteSettings = defineType({
       title: 'Contact Phone',
       type: 'string',
       group: 'contact',
-      fieldset: 'contactPhoneWhatsapp',
-      description: 'Optional phone number shown in the contact modal.',
+      description: 'Optional phone number in the footer and on /contact.',
       hidden: hiddenForTranslator,
-    }),
-
-    defineField({
-      name: 'contactWhatsapp',
-      title: 'Contact WhatsApp',
-      type: 'string',
-      group: 'contact',
-      fieldset: 'contactPhoneWhatsapp',
-      description: 'Optional WhatsApp number or link for the contact modal.',
-      hidden: hiddenForTranslator,
-    }),
-
-    ...defineLocalePair({
-      name: 'contactAddress',
-      title: 'Contact Address',
-      type: 'text',
-      rows: 3,
-      group: 'contact',
-      description: 'Optional physical address shown in the contact modal.',
-      optional: true,
-    }),
-
-    ...defineLocalePair({
-      name: 'contactModalTitle',
-      title: 'Contact Modal Title',
-      type: 'string',
-      group: 'contact',
-      fieldset: 'contactModalTitleCta',
-      description: 'Heading displayed inside the contact modal.',
-      optional: true,
-    }),
-
-    defineField({
-      name: 'contactCtaUrl',
-      title: 'Contact CTA URL',
-      type: 'url',
-      group: 'contact',
-      fieldset: 'contactModalTitleCta',
-      description: 'Optional call-to-action button link in the contact modal.',
-      validation: (rule) =>
-        rule.uri({allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel']}),
-      hidden: hiddenForTranslator,
-    }),
-
-    ...defineLocalePair({
-      name: 'contactModalIntro',
-      title: 'Contact Modal Intro',
-      type: 'text',
-      rows: 3,
-      group: 'contact',
-      description: 'Short introductory text above the contact modal body.',
-      optional: true,
-    }),
-
-    defineField({
-      name: 'contactModalContent',
-      title: 'Contact Modal Content (English)',
-      type: 'plainPortableText',
-      group: 'contact',
-      description: 'Rich text body content for the contact modal (Portable Text).',
-      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'translator',
-      hidden: hiddenForTranslatorWhenEmpty,
-      components: {input: BilingualPortableTextInput},
-    }),
-
-    defineField({
-      name: 'contactModalContentZh',
-      title: 'Contact Modal Content (Chinese)',
-      type: 'plainPortableText',
-      group: 'contact',
-      hidden: hideZhPortableText('contactModalContent'),
-      readOnly: ({currentUser}) => getStudioRole(currentUser) === 'editor',
-      components: {input: BilingualPortableTextInput},
-    }),
-
-    ...defineLocalePair({
-      name: 'contactCtaText',
-      title: 'Contact CTA Text',
-      type: 'string',
-      group: 'contact',
-      description: 'Optional call-to-action button label in the contact modal.',
-      optional: true,
     }),
 
     defineField({
@@ -176,15 +84,6 @@ export const siteSettings = defineType({
         }),
       ],
       hidden: hiddenForTranslator,
-    }),
-
-    defineField({
-      name: 'campaignCta',
-      title: 'Campaign Brief CTA',
-      type: 'campaignCta',
-      group: 'cta',
-      description:
-        'Shared CTA block on Home, About, and Vietnam Production Service. Button usually links to the Campaign Brief form.',
     }),
 
     defineField({

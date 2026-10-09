@@ -161,8 +161,6 @@ export function computeTitleZhAfterPatches(
   const parts = {
     ...((doc.displayTitleParts as Record<string, unknown> | undefined) ?? {}),
   }
-  let heroFilmTitleZh =
-    typeof doc.heroFilmTitleZh === 'string' ? doc.heroFilmTitleZh : undefined
 
   for (const patch of patches) {
     if (patch.docId !== String(doc._id)) continue
@@ -172,8 +170,6 @@ export function computeTitleZhAfterPatches(
       parts.productNameZh = patch.newValue
     } else if (patch.setPath === 'displayTitleParts.campaignTitleZh') {
       parts.campaignTitleZh = patch.newValue
-    } else if (patch.setPath === 'heroFilmTitleZh') {
-      heroFilmTitleZh = patch.newValue
     }
   }
 
@@ -182,11 +178,9 @@ export function computeTitleZhAfterPatches(
       brandName: asPlainString(parts.brandName),
       productName: asPlainString(parts.productName),
       campaignTitle: asPlainString(parts.campaignTitle),
-      heroFilmTitle: asPlainString(doc.heroFilmTitle),
       brandNameZh: asPlainString(parts.brandNameZh),
       productNameZh: asPlainString(parts.productNameZh),
       campaignTitleZh: asPlainString(parts.campaignTitleZh),
-      heroFilmTitleZh: asPlainString(heroFilmTitleZh),
     },
     'zh',
   )

@@ -6,26 +6,6 @@ import {defineQuery} from 'groq'
 
 import {PORTABLE_TEXT_WITH_IMAGE_ASSETS} from './portable-text'
 
-/** Fat base used only by HOME_PAGE_QUERY (unchanged). */
-const PAGE_BASE_FIELDS = `
-  _id,
-  title,
-  titleZh,
-  "slug": slug.current,
-  "slugZh": slugZh.current,
-  featuredImage,
-  "body": body${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
-  "bodyZh": bodyZh${PORTABLE_TEXT_WITH_IMAGE_ASSETS},
-  seo{
-    metaDescription,
-    metaDescriptionZh,
-    metaTitle,
-    metaTitleZh,
-    ogImage
-  },
-  noIndex
-`
-
 /** Card fields for curated featured-work grids (mirrors portfolio card shape). */
 const FEATURED_WORK_FIELDS = `
   _id,
@@ -70,15 +50,16 @@ const PAGE_CONTENT_FIELDS = `
 /** Homepage — SEO/meta (carousel slides via HOME_CAROUSEL_QUERY). */
 export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "home" && !defined(trash.trashedAt)][0]{
-    ${PAGE_BASE_FIELDS}
+    _id,
+    "slug": slug.current,
+    ${PAGE_META_FIELDS}
   }
 `)
 
-/** About — meta, hero/body, founders. */
+/** About — meta + founders (JSON-LD / Our Company). Body is code-owned. */
 export const ABOUT_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "about" && !defined(trash.trashedAt)][0]{
     ${PAGE_META_FIELDS},
-    ${PAGE_CONTENT_FIELDS},
     founders[]{
       name,
       jobTitle,
@@ -115,11 +96,7 @@ const ABOUT_TAB_PLACEHOLDER_PROJECTION = `
     previewStartSeconds,
     previewEndSeconds,
     previewCleanVimeoUrl
-  },
-  vimeoUrl,
-  previewStartSeconds,
-  previewEndSeconds,
-  previewCleanVimeoUrl
+  }
 `
 
 const ABOUT_MEDIA_PORTFOLIO_PROJECTION = `
@@ -130,11 +107,7 @@ const ABOUT_MEDIA_PORTFOLIO_PROJECTION = `
     previewStartSeconds,
     previewEndSeconds,
     previewCleanVimeoUrl
-  },
-  vimeoUrl,
-  previewStartSeconds,
-  previewEndSeconds,
-  previewCleanVimeoUrl
+  }
 `
 
 const ABOUT_MEDIA_PREVIEW_SLOT = `
@@ -208,11 +181,10 @@ export const ABOUT_STATEMENT_FILM_STRIP_QUERY = defineQuery(`
   }
 `)
 
-/** Contact — meta + optional hero/body; real contact fields come from siteSettings. */
+/** Contact — meta only; copy is code-owned; details from siteSettings. */
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "contact" && !defined(trash.trashedAt)][0]{
-    ${PAGE_META_FIELDS},
-    ${PAGE_CONTENT_FIELDS}
+    ${PAGE_META_FIELDS}
   }
 `)
 
@@ -225,13 +197,12 @@ export const NEWS_PAGE_QUERY = defineQuery(`
   }
 `)
 
-/** Vietnam Production Service — meta, excerpt intro, body, curated featured work. */
+/** Vietnam Production Service — meta, excerpt intro, curated featured work. */
 export const VIETNAM_PRODUCTION_SERVICE_PAGE_QUERY = defineQuery(`
   *[_type == "page" && slug.current == "vietnam-production-service" && !defined(trash.trashedAt)][0]{
     ${PAGE_META_FIELDS},
     excerpt,
     excerptZh,
-    ${PAGE_CONTENT_FIELDS},
     "featuredWork": featuredWork[
       !defined(@->trash.trashedAt) && @->isHidden != true
     ]->{

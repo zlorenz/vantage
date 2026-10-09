@@ -226,9 +226,6 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
     productNameZh?: string
     campaignTitleZh?: string
   }
-  // Media tab: first-video episode when it differs from Campaign (multi-video series)
-  heroFilmTitle?: string           // outlines Full title only; Header stays Brand + Campaign/Product
-  heroFilmTitleZh?: string
   // Optional HTML overrides when Brand/Product/Campaign cannot express layout
   thumbTitleOverride?: text
   headerTitleOverride?: text
@@ -238,16 +235,17 @@ Mapped from ACF field groups (6 in DB + 2 PHP-only). Field types show ACF → Sa
   descriptionZh?: text
   featuredImage: image
   publishedAt: date                // Studio: Original Release Date (client video release)
-  vimeoUrl: url                    // oembed → extract Vimeo ID
-  xinpianchangUrl?: url            // 72 entries populated; shown on /zh/
-  additionalVideos?: array<{
+  videos: array<{                  // first item = main film; rest = additional films
     vimeoUrl: url
     xinpianchangUrl?: url
-    videoTitle?: string            // episode / film title (outlined in Full title)
+    videoTitle?: string
     videoTitleZh?: string
     description?: text
     descriptionZh?: text
-  }>                                // 28 entries have rows
+    previewCleanVimeoUrl?: url
+    previewStartSeconds?: number
+    previewEndSeconds?: number
+  }>
   videoFormats: array<ref>         // taxonomy: video-format
   industries: array<ref>           // taxonomy: industry
   markets: array<ref>              // taxonomy: market
@@ -369,8 +367,8 @@ CSV import, frontend rendering, and migration.
 | `work` | On | Portfolio index |
 | `work-internal` | On | Internal crew view; English-only route; noindex; not in public nav |
 | `news` | On | Blog index |
-| `contact` | On | Contact page (nav opens modal) |
-| `vietnam-production-service` | On | Featured Work → “Shot in Vietnam” grid; location guide PDF CTA |
+| `contact` | On | Contact page |
+| `vietnam-production-service` | On | Featured Work → “Shot in Vietnam” grid; guide PDF CTA (hardcoded CDN) |
 | `video-campaign-brief` | Off | Campaign Brief form |
 
 ### 4.5 `siteSettings` (singleton)
@@ -378,24 +376,11 @@ CSV import, frontend rendering, and migration.
 ```typescript
 {
   _type: 'siteSettings'
-  contactEmail: string             // info@vantage.pictures
+  contactEmail: string             // info@vantage.pictures — footer + /contact
   contactPhone?: string
-  contactWhatsapp?: string
-  contactAddress?: string
-  contactModalTitle?: string
-  contactModalIntro?: text         // empty in production
-  contactModalContent?: portableText  // empty in production
-  contactCtaText?: string          // empty in production
-  contactCtaUrl?: url              // empty in production
-  campaignCta?: {                  // shared Home / About / Vietnam CTA
-    heading: string                // supports vp-outline HTML
-    headingZh?: string
-    paragraphs: array<text>
-    paragraphsZh?: array<text>
-    buttonLabel: string
-    buttonLabelZh?: string
-    buttonHref?: string            // default /video-campaign-brief
-  }
+  legalName?: string
+  foundingDate?: date
+  numberOfEmployees?: { minValue?: number; maxValue?: number }
   socialVimeo?: url
   socialInstagram?: url
   socialFacebook?: url
@@ -405,6 +390,8 @@ CSV import, frontend rendering, and migration.
   socialXiaohongshu?: url          // empty = hidden in footer
   defaultOgImage?: image           // vantage-pictures-default.jpg (ID 3627)
 }
+// Retired: contact modal cluster + campaignCta (contact is a real page; CTA blocks unused)
+
 ```
 
 ### 4.6 Public taxonomy documents

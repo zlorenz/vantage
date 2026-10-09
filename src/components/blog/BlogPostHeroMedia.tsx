@@ -115,11 +115,6 @@ export async function BlogPostHeroMedia({
       description: relatedCase.description,
       descriptionZh: relatedCase.descriptionZh,
       videos: relatedCase.videos,
-      vimeoUrl: relatedCase.vimeoUrl,
-      xinpianchangUrl: relatedCase.xinpianchangUrl,
-      heroFilmTitle: relatedCase.heroFilmTitle,
-      heroFilmTitleZh: relatedCase.heroFilmTitleZh,
-      additionalVideos: relatedCase.additionalVideos,
     });
 
     const parts = resolveEntryDisplayTitleParts(

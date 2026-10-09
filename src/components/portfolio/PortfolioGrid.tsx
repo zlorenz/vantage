@@ -8,26 +8,17 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/navigation';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import { trackInteractionEvent } from '@/lib/interaction-events';
 import { pickLocaleFieldWithPhrases } from '@/lib/locale-field';
 import { flattenTaxonomyTree, optionIndent } from '@/lib/taxonomy-tree';
 import { PortfolioCard } from './PortfolioCard';
 import type { Locale } from '@/i18n/routing';
-import type {
-  ClientTerm,
-  CrewMemberTerm,
-  PortfolioGridEntry,
-  PortfolioInternalGridEntry,
-  TaxonomyTerm,
-} from '@/types/sanity';
+import type { PortfolioGridEntry, TaxonomyTerm } from '@/types/sanity';
 
 const PER_PAGE = 12;
-
-export type PortfolioFilterMode = 'public' | 'internal';
 
 export interface PublicPresetFilters {
   format?: string;
@@ -37,15 +28,10 @@ export interface PublicPresetFilters {
 
 interface PortfolioGridProps {
   locale: Locale;
-  entries: PortfolioGridEntry[] | PortfolioInternalGridEntry[];
-  filterMode: PortfolioFilterMode;
+  entries: PortfolioGridEntry[];
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];
-  clients?: ClientTerm[];
-  directors?: CrewMemberTerm[];
-  dops?: CrewMemberTerm[];
-  artDirectors?: CrewMemberTerm[];
   /** Pre-select taxonomy filters on archive pages. */
   presetFilters?: PublicPresetFilters;
   /** Exact EN→ZH phrase book for card titles and filter labels. */
@@ -56,13 +42,6 @@ export interface PublicFilters {
   format: string;
   industry: string;
   market: string;
-}
-
-interface InternalFilters {
-  client: string;
-  director: string;
-  dop: string;
-  'art-director': string;
 }
 
 function termSlug(term: TaxonomyTerm, locale: Locale): string {
@@ -91,15 +70,6 @@ export function readPublicFilters(
     format: params.get('format') || preset?.format || '',
     industry: params.get('industry') || preset?.industry || '',
     market: params.get('market') || preset?.market || '',
-  };
-}
-
-function readInternalFilters(params: URLSearchParams): InternalFilters {
-  return {
-    client: params.get('client') || '',
-    director: params.get('director') || '',
-    dop: params.get('dop') || '',
-    'art-director': params.get('art-director') || '',
   };
 }
 
@@ -187,14 +157,6 @@ export function publicFilterOptions(
     );
 }
 
-/** @deprecated Internal grid filters used legacy clients/crewMembers — unused. */
-function matchesInternalFilters(
-  _entry: PortfolioInternalGridEntry,
-  _filters: InternalFilters,
-): boolean {
-  return true;
-}
-
 export function buildPublicQuery(filters: PublicFilters): Record<string, string> {
   const query: Record<string, string> = {};
   if (filters.format) query.format = filters.format;
@@ -244,33 +206,16 @@ export function replacePublicFiltersUrl(
   window.history.replaceState(window.history.state, '', next);
 }
 
-function buildInternalQuery(filters: InternalFilters): Record<string, string> {
-  const query: Record<string, string> = {};
-  if (filters.client) query.client = filters.client;
-  if (filters.director) query.director = filters.director;
-  if (filters.dop) query.dop = filters.dop;
-  if (filters['art-director']) query['art-director'] = filters['art-director'];
-  return query;
-}
-
 export function PortfolioGrid({
   locale,
   entries,
-  filterMode,
   videoFormats = [],
   industries = [],
   markets = [],
-  clients = [],
-  directors = [],
-  dops = [],
-  artDirectors = [],
   presetFilters,
   phrases,
 }: PortfolioGridProps) {
   const t = useTranslations('Filters');
-  const router = useRouter();
-  const pathname = usePathname();
-  const routeParams = useParams();
   const searchParams = useSearchParams();
   const filterBarRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -295,10 +240,8 @@ export function PortfolioGrid({
   );
 
   useEffect(() => {
-    if (filterMode !== 'public') return;
     replacePublicFiltersUrl(publicFilters, publicPresets);
   }, [
-    filterMode,
     publicFilters,
     presetFormat,
     presetIndustry,
@@ -306,7 +249,6 @@ export function PortfolioGrid({
   ]);
 
   useEffect(() => {
-    if (filterMode !== 'public') return;
     function onPopState() {
       const params = new URLSearchParams(window.location.search);
       setPublicFilters(
@@ -319,78 +261,58 @@ export function PortfolioGrid({
     }
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [filterMode, presetFormat, presetIndustry, presetMarket]);
-
-  const internalFilters = useMemo(
-    () => readInternalFilters(searchParams),
-    [searchParams],
-  );
+  }, [presetFormat, presetIndustry, presetMarket]);
 
   const filterSignature = [
     publicFilters.format,
     publicFilters.industry,
     publicFilters.market,
-    internalFilters.client,
-    internalFilters.director,
-    internalFilters.dop,
-    internalFilters['art-director'],
   ].join('|');
 
-  const filteredEntries = useMemo(() => {
-    if (filterMode === 'internal') {
-      return (entries as PortfolioInternalGridEntry[]).filter((entry) =>
-        matchesInternalFilters(entry, internalFilters),
-      );
-    }
-    return (entries as PortfolioGridEntry[]).filter((entry) =>
-      matchesPublicFilters(entry, publicFilters),
-    );
-  }, [entries, filterMode, internalFilters, publicFilters]);
+  const filteredEntries = useMemo(
+    () =>
+      entries.filter((entry) => matchesPublicFilters(entry, publicFilters)),
+    [entries, publicFilters],
+  );
 
   const formatOptions = useMemo(
     () =>
-      filterMode === 'public'
-        ? publicFilterOptions(
-            entries as PortfolioGridEntry[],
-            publicFilters,
-            'format',
-            videoFormats,
-            locale,
-            phrases,
-            publicPresets,
-          )
-        : [],
-    [filterMode, entries, publicFilters, videoFormats, locale, phrases, publicPresets],
+      publicFilterOptions(
+        entries,
+        publicFilters,
+        'format',
+        videoFormats,
+        locale,
+        phrases,
+        publicPresets,
+      ),
+    [entries, publicFilters, videoFormats, locale, phrases, publicPresets],
   );
   const industryOptions = useMemo(
     () =>
-      filterMode === 'public'
-        ? publicFilterOptions(
-            entries as PortfolioGridEntry[],
-            publicFilters,
-            'industry',
-            industries,
-            locale,
-            phrases,
-            publicPresets,
-          )
-        : [],
-    [filterMode, entries, publicFilters, industries, locale, phrases, publicPresets],
+      publicFilterOptions(
+        entries,
+        publicFilters,
+        'industry',
+        industries,
+        locale,
+        phrases,
+        publicPresets,
+      ),
+    [entries, publicFilters, industries, locale, phrases, publicPresets],
   );
   const marketOptions = useMemo(
     () =>
-      filterMode === 'public'
-        ? publicFilterOptions(
-            entries as PortfolioGridEntry[],
-            publicFilters,
-            'market',
-            markets,
-            locale,
-            phrases,
-            publicPresets,
-          )
-        : [],
-    [filterMode, entries, publicFilters, markets, locale, phrases, publicPresets],
+      publicFilterOptions(
+        entries,
+        publicFilters,
+        'market',
+        markets,
+        locale,
+        phrases,
+        publicPresets,
+      ),
+    [entries, publicFilters, markets, locale, phrases, publicPresets],
   );
 
   const [visibleCount, setVisibleCount] = useState(PER_PAGE);
@@ -461,13 +383,11 @@ export function PortfolioGrid({
   const updatePublicFilter = (key: keyof PublicFilters, value: string) => {
     const next = { ...publicFilters, [key]: value };
     setPublicFilters(next);
-    if (filterMode === 'public') {
-      trackInteractionEvent({
-        eventType: 'filter_change',
-        sourceSurface: 'taxonomy_archive',
-        filters: next,
-      });
-    }
+    trackInteractionEvent({
+      eventType: 'filter_change',
+      sourceSurface: 'taxonomy_archive',
+      filters: next,
+    });
     keepFiltersInView();
   };
 
@@ -478,222 +398,108 @@ export function PortfolioGrid({
       market: presetMarket,
     };
     setPublicFilters(next);
-    if (filterMode === 'public') {
-      trackInteractionEvent({
-        eventType: 'filter_change',
-        sourceSurface: 'taxonomy_archive',
-        filters: next,
-      });
-    }
+    trackInteractionEvent({
+      eventType: 'filter_change',
+      sourceSurface: 'taxonomy_archive',
+      filters: next,
+    });
     keepFiltersInView();
   };
-
-  const updateInternalFilter = (key: keyof InternalFilters, value: string) => {
-    const next = { ...internalFilters, [key]: value };
-    router.replace(
-      {
-        pathname,
-        params: routeParams,
-        query: buildInternalQuery(next),
-      } as Parameters<typeof router.replace>[0],
-      { scroll: false },
-    );
-    keepFiltersInView();
-  };
-
-  const filterBar = filterMode === 'public' ? (
-    <div
-      ref={filterBarRef}
-      className="vp-filterbar"
-      aria-label={t('portfolioAria')}
-    >
-      <div className="vp-filterbar__inner">
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-format">
-            {t('videoFormat')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-format"
-              className="vp-filterbar__select"
-              name="format"
-              value={publicFilters.format}
-              onChange={(e) => updatePublicFilter('format', e.target.value)}
-            >
-              <option value="">{t('all')}</option>
-              {formatOptions.map((opt) => (
-                <option
-                  key={opt.value}
-                  value={opt.value}
-                  disabled={opt.disabled}
-                >
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-industry">
-            {t('industry')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-industry"
-              className="vp-filterbar__select"
-              name="industry"
-              value={publicFilters.industry}
-              onChange={(e) => updatePublicFilter('industry', e.target.value)}
-            >
-              <option value="">{t('all')}</option>
-              {industryOptions.map((opt) => (
-                <option
-                  key={opt.value}
-                  value={opt.value}
-                  disabled={opt.disabled}
-                >
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-market">
-            {t('market')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-market"
-              className="vp-filterbar__select"
-              name="market"
-              value={publicFilters.market}
-              onChange={(e) => updatePublicFilter('market', e.target.value)}
-            >
-              <option value="">{t('all')}</option>
-              {marketOptions.map((opt) => (
-                <option
-                  key={opt.value}
-                  value={opt.value}
-                  disabled={opt.disabled}
-                >
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        {hasActivePublicFilters ? (
-          <button
-            type="button"
-            className="vp-filterbar__clear"
-            onClick={clearPublicFilters}
-          >
-            {t('clear')}
-          </button>
-        ) : null}
-      </div>
-    </div>
-  ) : (
-    <div
-      ref={filterBarRef}
-      className="vp-filterbar"
-      aria-label={t('crewAria')}
-    >
-      <div className="vp-filterbar__inner">
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-client">
-            {t('client')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-client"
-              className="vp-filterbar__select"
-              name="client"
-              value={internalFilters.client}
-              onChange={(e) => updateInternalFilter('client', e.target.value)}
-            >
-              <option value="">{t('all')}</option>
-              {clients.map((client) => (
-                <option key={client._id} value={client.slug}>
-                  {client.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-director">
-            {t('director')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-director"
-              className="vp-filterbar__select"
-              name="director"
-              value={internalFilters.director}
-              onChange={(e) => updateInternalFilter('director', e.target.value)}
-            >
-              <option value="">{t('all')}</option>
-              {directors.map((member) => (
-                <option key={member._id} value={member.slug}>
-                  {member.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-dop">
-            {t('dop')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-dop"
-              className="vp-filterbar__select"
-              name="dop"
-              value={internalFilters.dop}
-              onChange={(e) => updateInternalFilter('dop', e.target.value)}
-            >
-              <option value="">{t('all')}</option>
-              {dops.map((member) => (
-                <option key={member._id} value={member.slug}>
-                  {member.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="vp-filterbar__group">
-          <label className="vp-filterbar__label" htmlFor="vp-filter-art-director">
-            {t('artDirector')}
-          </label>
-          <div className="vp-select-wrap">
-            <select
-              id="vp-filter-art-director"
-              className="vp-filterbar__select"
-              name="art-director"
-              value={internalFilters['art-director']}
-              onChange={(e) =>
-                updateInternalFilter('art-director', e.target.value)
-              }
-            >
-              <option value="">{t('all')}</option>
-              {artDirectors.map((member) => (
-                <option key={member._id} value={member.slug}>
-                  {member.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <>
-      {filterBar}
+      <div
+        ref={filterBarRef}
+        className="vp-filterbar"
+        aria-label={t('portfolioAria')}
+      >
+        <div className="vp-filterbar__inner">
+          <div className="vp-filterbar__group">
+            <label className="vp-filterbar__label" htmlFor="vp-filter-format">
+              {t('videoFormat')}
+            </label>
+            <div className="vp-select-wrap">
+              <select
+                id="vp-filter-format"
+                className="vp-filterbar__select"
+                name="format"
+                value={publicFilters.format}
+                onChange={(e) => updatePublicFilter('format', e.target.value)}
+              >
+                <option value="">{t('all')}</option>
+                {formatOptions.map((opt) => (
+                  <option
+                    key={opt.value}
+                    value={opt.value}
+                    disabled={opt.disabled}
+                  >
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="vp-filterbar__group">
+            <label className="vp-filterbar__label" htmlFor="vp-filter-industry">
+              {t('industry')}
+            </label>
+            <div className="vp-select-wrap">
+              <select
+                id="vp-filter-industry"
+                className="vp-filterbar__select"
+                name="industry"
+                value={publicFilters.industry}
+                onChange={(e) => updatePublicFilter('industry', e.target.value)}
+              >
+                <option value="">{t('all')}</option>
+                {industryOptions.map((opt) => (
+                  <option
+                    key={opt.value}
+                    value={opt.value}
+                    disabled={opt.disabled}
+                  >
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="vp-filterbar__group">
+            <label className="vp-filterbar__label" htmlFor="vp-filter-market">
+              {t('market')}
+            </label>
+            <div className="vp-select-wrap">
+              <select
+                id="vp-filter-market"
+                className="vp-filterbar__select"
+                name="market"
+                value={publicFilters.market}
+                onChange={(e) => updatePublicFilter('market', e.target.value)}
+              >
+                <option value="">{t('all')}</option>
+                {marketOptions.map((opt) => (
+                  <option
+                    key={opt.value}
+                    value={opt.value}
+                    disabled={opt.disabled}
+                  >
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          {hasActivePublicFilters ? (
+            <button
+              type="button"
+              className="vp-filterbar__clear"
+              onClick={clearPublicFilters}
+            >
+              {t('clear')}
+            </button>
+          ) : null}
+        </div>
+      </div>
       {visibleEntries.length > 0 ? (
         <div id="vp-portfolio-grid" className="vp-portfolio-gallery">
           {visibleEntries.map((entry, index) => (

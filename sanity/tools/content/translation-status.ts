@@ -3,7 +3,7 @@
  *
  * A field counts only when its English value is non-empty. Critical fields are
  * copy a visitor sees on load. Secondary fields are SEO, URL slugs, and copy
- * behind an info button or the contact modal.
+ * behind an info button.
  *
  * Portable Text is a presence check (the list query projects booleans). A
  * shorter but real Chinese body still counts as translated.
@@ -104,26 +104,6 @@ function considerPresence(
   if (enHasText !== true) return false
   if (zhHasText !== true) gaps.push({tier, label})
   return true
-}
-
-function considerParagraphs(
-  gaps: TranslationGap[],
-  tier: TranslationTier,
-  label: string,
-  en: unknown,
-  zh: unknown,
-): boolean {
-  if (!Array.isArray(en)) return false
-  const zhItems = Array.isArray(zh) ? zh : []
-  let applicable = false
-  let missing = false
-  en.forEach((item, index) => {
-    if (!text(item)) return
-    applicable = true
-    if (!text(zhItems[index])) missing = true
-  })
-  if (missing) gaps.push({tier, label})
-  return applicable
 }
 
 function considerSeo(gaps: TranslationGap[], doc: Loose): number {
@@ -234,17 +214,7 @@ function portfolioStatus(doc: Loose, gaps: TranslationGap[]): number {
     applicable += 1
   }
 
-  const videos = asRecords(doc.videos)
-  if (videos.length > 0) {
-    applicable += considerVideos(gaps, videos, true)
-  } else {
-    if (
-      consider(gaps, 'critical', 'Hero film title', doc.heroFilmTitle, doc.heroFilmTitleZh)
-    ) {
-      applicable += 1
-    }
-    applicable += considerVideos(gaps, asRecords(doc.additionalVideos), true)
-  }
+  applicable += considerVideos(gaps, asRecords(doc.videos), true)
 
   if (consider(gaps, 'secondary', 'Logline', doc.excerpt, doc.excerptZh)) {
     applicable += 1
@@ -327,64 +297,9 @@ function taxonomyStatus(doc: Loose, gaps: TranslationGap[], withDescription: boo
   return applicable
 }
 
-function siteSettingsStatus(doc: Loose, gaps: TranslationGap[]): number {
-  let applicable = 0
-  const cta = isRecord(doc.campaignCta) ? doc.campaignCta : {}
-  if (consider(gaps, 'critical', 'CTA heading', cta.heading, cta.headingZh)) {
-    applicable += 1
-  }
-  if (
-    considerParagraphs(gaps, 'critical', 'CTA paragraphs', cta.paragraphs, cta.paragraphsZh)
-  ) {
-    applicable += 1
-  }
-  if (consider(gaps, 'critical', 'CTA button', cta.buttonLabel, cta.buttonLabelZh)) {
-    applicable += 1
-  }
-  if (
-    consider(gaps, 'secondary', 'Contact address', doc.contactAddress, doc.contactAddressZh)
-  ) {
-    applicable += 1
-  }
-  if (
-    consider(
-      gaps,
-      'secondary',
-      'Contact modal title',
-      doc.contactModalTitle,
-      doc.contactModalTitleZh,
-    )
-  ) {
-    applicable += 1
-  }
-  if (
-    consider(
-      gaps,
-      'secondary',
-      'Contact modal intro',
-      doc.contactModalIntro,
-      doc.contactModalIntroZh,
-    )
-  ) {
-    applicable += 1
-  }
-  if (
-    consider(gaps, 'secondary', 'Contact button', doc.contactCtaText, doc.contactCtaTextZh)
-  ) {
-    applicable += 1
-  }
-  if (
-    considerPresence(
-      gaps,
-      'secondary',
-      'Contact modal body',
-      doc.contactModalHasText,
-      doc.contactModalZhHasText,
-    )
-  ) {
-    applicable += 1
-  }
-  return applicable
+/** Contact modal + campaign CTA retired; no visitor-facing EN/ZH pairs remain. */
+function siteSettingsStatus(_doc: Loose, _gaps: TranslationGap[]): number {
+  return 0
 }
 
 function finalize(applicable: number, gaps: TranslationGap[]): TranslationStatus | null {

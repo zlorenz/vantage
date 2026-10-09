@@ -1,5 +1,5 @@
 /**
- * PortfolioVideoPicker — Search portfolio hero + additional videos to insert a URL.
+ * PortfolioVideoPicker — Search portfolio videos to insert a URL.
  */
 
 import {CloseIcon} from '@sanity/icons'
@@ -29,13 +29,6 @@ type PortfolioVideoRow = {
     campaignTitle?: string
   }
   videos?: Array<{
-    _key?: string
-    vimeoUrl?: string
-    videoTitle?: string
-  }>
-  vimeoUrl?: string
-  heroFilmTitle?: string
-  additionalVideos?: Array<{
     _key?: string
     vimeoUrl?: string
     videoTitle?: string
@@ -110,10 +103,7 @@ export function PortfolioVideoPicker({onSelect, onClose}: PortfolioVideoPickerPr
           _id,
           title,
           displayTitleParts,
-          videos[]{vimeoUrl, videoTitle, _key},
-          vimeoUrl,
-          heroFilmTitle,
-          additionalVideos[]{vimeoUrl, videoTitle, _key}
+          videos[]{vimeoUrl, videoTitle, _key}
         } | order(title asc)`,
       )
       .then((data) => {

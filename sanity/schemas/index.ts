@@ -26,11 +26,9 @@ import { seoFields } from './objects/seoFields';
 import { trashMetadata } from './objects/trashMetadata';
 import { crewPerson } from './objects/crewPerson';
 import { crewCredit } from './objects/crewCredit';
-import { additionalVideo } from './objects/additionalVideo'
 import { portfolioVideo } from './objects/portfolioVideo'
 import { founder } from './objects/founder'
 import { awardItem } from './objects/awardItem'
-import { campaignCta } from './objects/campaignCta'
 import { imageGallery } from './objects/imageGallery'
 import { ctaButton } from './objects/ctaButton'
 import { videoEmbed } from './objects/videoEmbed'
@@ -46,11 +44,9 @@ export const schemaTypes = [
   trashMetadata,
   crewPerson,
   crewCredit,
-  additionalVideo,
   portfolioVideo,
   founder,
   awardItem,
-  campaignCta,
   imageGallery,
   ctaButton,
   videoEmbed,

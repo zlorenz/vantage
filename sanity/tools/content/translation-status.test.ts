@@ -165,30 +165,23 @@ function testPortfolioDescriptionIsSecondary() {
   ])
 }
 
-function testPortfolioVideosIgnoreLegacyFields() {
+function testPortfolioVideosOnly() {
   const status = translationStatus({
     _type: 'portfolioEntry',
     displayTitleParts: {brandName: 'Govee', brandNameZh: 'Govee'},
     videos: [{videoTitle: 'Episode', videoTitleZh: '一集'}],
-    heroFilmTitle: 'Legacy',
-    additionalVideos: [{videoTitle: 'Old film', description: 'Old notes'}],
   })
   assert.equal(status?.level, 'green')
 }
 
-function testPortfolioLegacyVideosWhenVideosArrayEmpty() {
+function testPortfolioEmptyVideosIsGreenWhenTitlesPresent() {
   const status = translationStatus({
     _type: 'portfolioEntry',
     displayTitleParts: {brandName: 'Govee', brandNameZh: 'Govee'},
     videos: [],
-    heroFilmTitle: 'Legacy episode',
-    additionalVideos: [{videoTitle: 'Old film'}],
   })
-  assert.equal(status?.level, 'red')
-  assert.deepEqual(status?.missing.map((gap) => gap.label), [
-    'Hero film title',
-    'Video 1 title',
-  ])
+  assert.equal(status?.level, 'green')
+  assert.deepEqual(status?.missing, [])
 }
 
 function testPageFounderAndAwardTiers() {
@@ -264,40 +257,14 @@ function testTaxonomyDescriptionIsCriticalAndSlugIsSecondary() {
   assert.deepEqual(yellow?.missing.map((gap) => gap.label), ['Slug'])
 }
 
-function testSiteSettingsCtaCriticalAndContactSecondary() {
-  const red = translationStatus({
-    _type: 'siteSettings',
-    campaignCta: {
-      heading: 'Start a brief',
-      headingZh: '开始简报',
-      paragraphs: ['First', 'Second'],
-      paragraphsZh: ['第一'],
-      buttonLabel: 'Go',
-      buttonLabelZh: '前往',
-    },
-  })
-  assert.equal(red?.level, 'red')
-  assert.deepEqual(red?.missing.map((gap) => gap.label), ['CTA paragraphs'])
-
-  const yellow = translationStatus({
-    _type: 'siteSettings',
-    campaignCta: {
-      heading: 'Start a brief',
-      headingZh: '开始简报',
-      paragraphs: ['First', ''],
-      paragraphsZh: ['第一'],
-      buttonLabel: 'Go',
-      buttonLabelZh: '前往',
-    },
-    contactModalTitle: 'Contact',
-    contactModalHasText: true,
-    contactModalZhHasText: false,
-  })
-  assert.equal(yellow?.level, 'yellow')
-  assert.deepEqual(yellow?.missing.map((gap) => gap.label), [
-    'Contact modal title',
-    'Contact modal body',
-  ])
+function testSiteSettingsHasNoTranslationFields() {
+  assert.equal(
+    translationStatus({
+      _type: 'siteSettings',
+      contactEmail: 'info@vantage.pictures',
+    }),
+    null,
+  )
 }
 
 function testCrewAndPlatformAreOmitted() {
@@ -332,11 +299,11 @@ const tests = [
   testPortfolioEmptyProductIsSkipped,
   testPortfolioOverrideOnlyWhenEnglishIsSet,
   testPortfolioDescriptionIsSecondary,
-  testPortfolioVideosIgnoreLegacyFields,
-  testPortfolioLegacyVideosWhenVideosArrayEmpty,
+  testPortfolioVideosOnly,
+  testPortfolioEmptyVideosIsGreenWhenTitlesPresent,
   testPageFounderAndAwardTiers,
   testTaxonomyDescriptionIsCriticalAndSlugIsSecondary,
-  testSiteSettingsCtaCriticalAndContactSecondary,
+  testSiteSettingsHasNoTranslationFields,
   testCrewAndPlatformAreOmitted,
   testSortRankIsRedThenYellowThenGreen,
   testPortableTextExpressionCoversBlocksAndPullQuotes,

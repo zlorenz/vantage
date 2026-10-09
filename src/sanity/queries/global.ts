@@ -17,18 +17,6 @@
 export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   contactEmail,
   contactPhone,
-  contactWhatsapp,
-  contactAddress,
-  contactAddressZh,
-  contactModalTitle,
-  contactModalTitleZh,
-  contactModalIntro,
-  contactModalIntroZh,
-  contactModalContent,
-  contactModalContentZh,
-  contactCtaText,
-  contactCtaTextZh,
-  contactCtaUrl,
   legalName,
   foundingDate,
   numberOfEmployees{minValue, maxValue},
@@ -39,16 +27,7 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   socialYoutube,
   socialXinpianchang,
   socialXiaohongshu,
-  defaultOgImage,
-  campaignCta{
-    heading,
-    headingZh,
-    paragraphs,
-    paragraphsZh,
-    buttonLabel,
-    buttonLabelZh,
-    buttonHref
-  }
+  defaultOgImage
 }`;
 
 /**
