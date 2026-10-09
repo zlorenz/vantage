@@ -8,8 +8,8 @@
 
 import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
-import {FeaturedWorkCarouselShell} from '@/components/prototype/carousel/FeaturedWorkCarouselShell';
-import {loadFeaturedWorkSlides} from '@/components/prototype/carousel/load-slides';
+import {FeaturedWorkCarouselShell} from '@/components/home/featured-work-carousel/FeaturedWorkCarouselShell';
+import {loadFeaturedWorkSlides} from '@/components/home/featured-work-carousel/load-slides';
 import {JsonLd} from '@/components/seo/JsonLd';
 import {routing, type Locale} from '@/i18n/routing';
 import {

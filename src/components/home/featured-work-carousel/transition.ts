@@ -44,11 +44,11 @@ export type ScrollTransitionState =
       incomingIndex: number;
     };
 
-const MEDIA_SELECTOR = '.vp-proto-carousel__media';
+const MEDIA_SELECTOR = '.vp-home-carousel__media';
 /** Opacity/blur target inside media — keeps filter halo clipped by overflow. */
-const MEDIA_STACK_SELECTOR = '.vp-proto-carousel__media-stack';
+const MEDIA_STACK_SELECTOR = '.vp-home-carousel__media-stack';
 /** Parallax target: copy wrapper only — scrim sibling stays static. */
-const OVERLAY_SELECTOR = '.vp-proto-carousel__overlay-copy';
+const OVERLAY_SELECTOR = '.vp-home-carousel__overlay-copy';
 
 function clamp01(value: number): number {
   if (value <= 0) return 0;

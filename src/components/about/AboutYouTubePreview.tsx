@@ -46,11 +46,11 @@ export function AboutYouTubePreview({
   if (!active) return null;
 
   return (
-    <div className="vp-proto-carousel__player" aria-hidden data-player="youtube">
+    <div className="vp-home-carousel__player" aria-hidden data-player="youtube">
       <iframe
         src={mutedLoopSrc(videoId)}
         title="About preview video"
-        className="vp-proto-carousel__iframe"
+        className="vp-home-carousel__iframe"
         allow="autoplay; encrypted-media"
         referrerPolicy="strict-origin-when-cross-origin"
         tabIndex={-1}

@@ -6,7 +6,7 @@
  */
 
 import {parseVideoUrl} from '@/lib/video-url';
-import {CarouselVimeo} from '@/components/prototype/carousel/CarouselVimeo';
+import {CarouselVimeo} from '@/components/home/featured-work-carousel/CarouselVimeo';
 import {AboutYouTubePreview} from '@/components/about/AboutYouTubePreview';
 
 type AboutLoopingPreviewProps = {

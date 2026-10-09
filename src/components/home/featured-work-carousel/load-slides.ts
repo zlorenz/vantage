@@ -11,7 +11,7 @@ import {sanityFetch} from '@/sanity/lib/live';
 import type {CrewCredit, DisplayTitlePartsValue, PortfolioVideo, SanityImage} from '@/types/sanity';
 import {composeOverlayCopy, joinOverlayList} from '@/lib/overlay-copy';
 import {HOME_CAROUSEL_QUERY} from '@/sanity/queries/home-carousel';
-import type {PrototypeCarouselSlide} from './types';
+import type {FeaturedWorkSlide} from './types';
 import {CAROUSEL_RATIOS, objectPositionFromHotspot, posterSize} from '@carousel-ratios';
 
 /**
@@ -53,7 +53,7 @@ type HomeCarouselResult = {
 
 export async function loadFeaturedWorkSlides(
   locale: Locale,
-): Promise<PrototypeCarouselSlide[]> {
+): Promise<FeaturedWorkSlide[]> {
   const [pageResult, phrases] = await Promise.all([
     sanityFetch({
       query: HOME_CAROUSEL_QUERY,

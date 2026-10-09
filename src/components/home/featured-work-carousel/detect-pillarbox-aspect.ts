@@ -15,7 +15,7 @@
  * stuttered Embla drags.
  */
 
-/** Matches `.vp-proto-carousel` desktop overlay / cover-math breakpoint. */
+/** Matches `.vp-home-carousel` desktop overlay / cover-math breakpoint. */
 export const CAROUSEL_COVER_MATH_MQ = '(min-width: 768px)';
 
 /** About preview clips use container-relative cover CSS (see about-*-panel.css). */

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Prototype player layer — mount only inside the 3-item window.
+ * Featured-work player layer — mount only inside the 3-item window.
  * Tries a server-minted native source first; falls back to the Vimeo iframe
  * for that slide if minting or playback fails.
  *

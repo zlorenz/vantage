@@ -1,6 +1,6 @@
 /* Full Portfolio Index — horizontal peek carousel (Embla).
  *
- * INTENTIONAL DEVIATION from homepage .vp-proto-carousel: that stage is
+ * INTENTIONAL DEVIATION from homepage .vp-home-carousel: that stage is
  * 100vh/100svh with the fixed nav overlaying media. Here the root fills
  * the band from the BOTTOM of the fixed nav to the BOTTOM of the visual
  * viewport (safe-area aware), then flex-centers the card stage column
@@ -971,7 +971,7 @@
   flex-direction: column;
   justify-content: flex-end;
   /*
-   * Shared with homepage mobile carousel overlay (`.vp-proto-carousel`
+   * Shared with homepage mobile carousel overlay (`.vp-home-carousel`
    * ≤767) — same type, brand→title gap, and inset. Desktop work cards
    * reuse these metrics for cohesion; tokens fall back when not inherited.
    */

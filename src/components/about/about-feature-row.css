@@ -93,15 +93,15 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
   z-index: 1;
 }
 
-.vp-about-feature__photo-clip .vp-proto-carousel__player {
+.vp-about-feature__photo-clip .vp-home-carousel__player {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
 
-.vp-about-feature__photo-clip .vp-proto-carousel__iframe,
-.vp-about-feature__photo-clip .vp-proto-carousel__video {
+.vp-about-feature__photo-clip .vp-home-carousel__iframe,
+.vp-about-feature__photo-clip .vp-home-carousel__video {
   /* Container-relative cover — see about-tabbed-panel.css. */
   position: absolute;
   inset: auto;
@@ -119,11 +119,11 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
   border: 0;
 }
 
-.vp-about-feature__photo-clip .vp-proto-carousel__video {
+.vp-about-feature__photo-clip .vp-home-carousel__video {
   opacity: 0;
 }
 
-.vp-about-feature__photo-clip .vp-proto-carousel__video.is-visible {
+.vp-about-feature__photo-clip .vp-home-carousel__video.is-visible {
   opacity: 1;
 }
 

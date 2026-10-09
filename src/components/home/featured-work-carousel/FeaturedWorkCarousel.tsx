@@ -25,12 +25,12 @@ import {
 import {
   shouldMountCarouselPlayer,
   wrapSlideIndex,
-  type PrototypeCarouselSlide,
+  type FeaturedWorkSlide,
 } from './types';
 import './carousel.css';
 
 interface FeaturedWorkCarouselProps {
-  slides: PrototypeCarouselSlide[];
+  slides: FeaturedWorkSlide[];
 }
 
 /** Hold before a newly entered neighbor mounts. */
@@ -304,33 +304,33 @@ export function FeaturedWorkCarousel({slides}: FeaturedWorkCarouselProps) {
 
   if (!slideCount) {
     return (
-      <div className="vp-proto-carousel">
-        <p className="vp-proto-carousel__overlay">No featured work slides resolved.</p>
+      <div className="vp-home-carousel">
+        <p className="vp-home-carousel__overlay">No featured work slides resolved.</p>
       </div>
     );
   }
 
   return (
-    <div ref={rootRef} className="vp-proto-carousel">
+    <div ref={rootRef} className="vp-home-carousel">
       <div
-        className="vp-proto-carousel__counter"
+        className="vp-home-carousel__counter"
         role="status"
         aria-label={`Slide ${activeIndex + 1} of ${slideCount}`}
       >
-        <span className="vp-proto-carousel__counter-current" aria-hidden>
+        <span className="vp-home-carousel__counter-current" aria-hidden>
           {String(activeIndex + 1).padStart(2, '0')}
         </span>
-        <span className="vp-proto-carousel__counter-rule" aria-hidden />
-        <span className="vp-proto-carousel__counter-total" aria-hidden>
+        <span className="vp-home-carousel__counter-rule" aria-hidden />
+        <span className="vp-home-carousel__counter-total" aria-hidden>
           {String(slideCount).padStart(2, '0')}
         </span>
       </div>
       <div
         ref={emblaRef}
-        className="vp-proto-carousel__viewport"
+        className="vp-home-carousel__viewport"
         aria-label="Featured work carousel"
       >
-        <div className="vp-proto-carousel__container">
+        <div className="vp-home-carousel__container">
           {slides.map((slide, index) => (
             <CarouselSlide
               key={slide.slug}

@@ -217,7 +217,7 @@ export function CarouselNativeVideo({
     const player = playerRef.current;
     if (!shouldWritePreviewCoverAspect(player)) return;
     const stack = player?.closest(
-      '.vp-proto-carousel__media-stack',
+      '.vp-home-carousel__media-stack',
     ) as HTMLElement | null;
     const aboutClip = player?.closest(
       ABOUT_PREVIEW_CLIP_SELECTOR,
@@ -355,7 +355,7 @@ export function CarouselNativeVideo({
       hasBeenReadyRef.current = false;
       appliedAspectRef.current = null;
       const stack = player?.closest(
-        '.vp-proto-carousel__media-stack',
+        '.vp-home-carousel__media-stack',
       ) as HTMLElement | null;
       const aboutClip = player?.closest(
         ABOUT_PREVIEW_CLIP_SELECTOR,
@@ -644,7 +644,7 @@ export function CarouselNativeVideo({
   return (
     <div
       ref={playerRef}
-      className="vp-proto-carousel__player"
+      className="vp-home-carousel__player"
       aria-hidden
       data-player="native"
       data-format={playbackFormat}
@@ -653,8 +653,8 @@ export function CarouselNativeVideo({
         ref={videoRef}
         className={
           showVideo
-            ? 'vp-proto-carousel__video is-visible'
-            : 'vp-proto-carousel__video'
+            ? 'vp-home-carousel__video is-visible'
+            : 'vp-home-carousel__video'
         }
         src={src}
         crossOrigin="anonymous"

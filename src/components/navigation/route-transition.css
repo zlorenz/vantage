@@ -102,14 +102,3 @@
 .vp-link-pending-hint {
   display: none;
 }
-
-.vp-proto-carousel__explore:has(.vp-link-pending-hint.is-pending),
-.vp-proto-carousel__watch:has(.vp-link-pending-hint.is-pending) {
-  cursor: wait;
-  opacity: 0.72;
-}
-
-.vp-proto-carousel__explore:has(.vp-link-pending-hint.is-pending) .vp-proto-carousel__explore-caret,
-.vp-proto-carousel__watch:has(.vp-link-pending-hint.is-pending) .vp-proto-carousel__watch-caret {
-  animation: vp-route-transition-bar 0.9s ease-in-out infinite;
-}

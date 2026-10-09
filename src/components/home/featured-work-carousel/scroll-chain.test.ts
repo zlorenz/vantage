@@ -1,5 +1,5 @@
 /**
- *   npx tsx src/components/prototype/carousel/scroll-chain.test.ts
+ *   npx tsx src/components/home/featured-work-carousel/scroll-chain.test.ts
  */
 
 import assert from 'node:assert/strict';

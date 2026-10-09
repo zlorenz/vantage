@@ -18,7 +18,7 @@ interface CarouselVimeoEmbedProps {
   onReadyChange?: (ready: boolean) => void;
 }
 
-function prototypeVimeoSrc(url: string): string | null {
+function carouselVimeoSrc(url: string): string | null {
   const id = extractVimeoId(url);
   if (!id) return null;
 
@@ -55,7 +55,7 @@ export function CarouselVimeoEmbed({
   onReadyChangeRef.current = onReadyChange;
 
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
-  const embedSrc = prototypeVimeoSrc(normalizedUrl);
+  const embedSrc = carouselVimeoSrc(normalizedUrl);
 
   useEffect(() => {
     activeRef.current = active;
@@ -177,12 +177,12 @@ export function CarouselVimeoEmbed({
   if (!embedSrc) return null;
 
   return (
-    <div className="vp-proto-carousel__player" aria-hidden data-player="iframe">
+    <div className="vp-home-carousel__player" aria-hidden data-player="iframe">
       <iframe
         ref={iframeRef}
         src={embedSrc}
         title="Featured work video"
-        className="vp-proto-carousel__iframe"
+        className="vp-home-carousel__iframe"
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         referrerPolicy="strict-origin-when-cross-origin"
         tabIndex={-1}

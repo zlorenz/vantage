@@ -91,7 +91,6 @@ export const APP_HOST_RESERVED_SEGMENTS = [
   'our-industry',
   'our-company',
   'awards',
-  'prototype',
   'zh',
   'en',
 ] as const

@@ -121,7 +121,7 @@ export default async function WorkPage({params}: Props) {
     sanityFetch({query: WORK_PAGE_META_QUERY, stega: false}),
     sanityFetch({query: ALL_PORTFOLIO_QUERY, stega: false}),
     // Same GROQ as homepage carousel — light refs only (not loadFeaturedWorkSlides:
-    // that rebuilds PrototypeCarouselSlide + re-fetches phrases we already have).
+    // that rebuilds FeaturedWorkSlide + re-fetches phrases we already have).
     sanityFetch({query: HOME_CAROUSEL_QUERY, stega: false}),
     sanityFetch({query: VIDEO_FORMATS_QUERY, stega: false}),
     sanityFetch({query: INDUSTRIES_QUERY, stega: false}),

@@ -1,4 +1,4 @@
-export type PrototypeCarouselSlide = {
+export type FeaturedWorkSlide = {
   /** Sanity portfolioEntry document id — weak ref for video events. */
   portfolioEntryRef: string;
   slug: string;

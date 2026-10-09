@@ -5,10 +5,10 @@
  */
 
 import {FeaturedWorkCarousel} from './FeaturedWorkCarousel';
-import type {PrototypeCarouselSlide} from './types';
+import type {FeaturedWorkSlide} from './types';
 
 interface FeaturedWorkCarouselShellProps {
-  slides: PrototypeCarouselSlide[];
+  slides: FeaturedWorkSlide[];
 }
 
 export function FeaturedWorkCarouselShell({slides}: FeaturedWorkCarouselShellProps) {

@@ -1,5 +1,5 @@
 /**
- *   npx tsx src/components/prototype/carousel/transition.test.ts
+ *   npx tsx src/components/home/featured-work-carousel/transition.test.ts
  */
 
 import assert from 'node:assert/strict';

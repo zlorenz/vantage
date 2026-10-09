@@ -20,10 +20,10 @@ import {
   isCarouselCoverMathEnabled,
   scheduleIdleWork,
 } from './detect-pillarbox-aspect';
-import type {PrototypeCarouselSlide} from './types';
+import type {FeaturedWorkSlide} from './types';
 
 interface CarouselSlideProps {
-  slide: PrototypeCarouselSlide;
+  slide: FeaturedWorkSlide;
   index: number;
   active: boolean;
   mountPlayer: boolean;
@@ -155,17 +155,17 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
     return (
       <article
         ref={ref}
-        className="vp-proto-carousel__slide"
+        className="vp-home-carousel__slide"
         aria-hidden={!active}
         data-index={index}
       >
-        <div className="vp-proto-carousel__media">
+        <div className="vp-home-carousel__media">
           <div
-            className="vp-proto-carousel__media-stack"
+            className="vp-home-carousel__media-stack"
             style={mediaStackStyle}
           >
             {slide.posterUrl && !playerReady ? (
-              <div className="vp-proto-carousel__poster-shell">
+              <div className="vp-home-carousel__poster-shell">
                 <picture>
                   {slide.posterUrlDesktop ? (
                     <source
@@ -176,7 +176,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                   <img
                     src={slide.posterUrl}
                     alt=""
-                    className="vp-proto-carousel__poster"
+                    className="vp-home-carousel__poster"
                     decoding="async"
                     loading="eager"
                     fetchPriority={index === 0 ? 'high' : 'auto'}
@@ -198,30 +198,30 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
           </div>
         </div>
 
-        <div className="vp-proto-carousel__overlay">
-          <div className="vp-proto-carousel__overlay-scrim" aria-hidden />
-          <div className="vp-proto-carousel__overlay-copy">
-            <div className="vp-proto-carousel__overlay-main">
-              <div className="vp-proto-carousel__brand-row">
-                <p className="vp-proto-carousel__brand">{slide.brandLine}</p>
+        <div className="vp-home-carousel__overlay">
+          <div className="vp-home-carousel__overlay-scrim" aria-hidden />
+          <div className="vp-home-carousel__overlay-copy">
+            <div className="vp-home-carousel__overlay-main">
+              <div className="vp-home-carousel__brand-row">
+                <p className="vp-home-carousel__brand">{slide.brandLine}</p>
                 {slide.formatLine ? (
                   <>
                     <span
-                      className="vp-proto-carousel__brand-rule"
+                      className="vp-home-carousel__brand-rule"
                       aria-hidden
                     />
-                    <p className="vp-proto-carousel__format">{slide.formatLine}</p>
+                    <p className="vp-home-carousel__format">{slide.formatLine}</p>
                   </>
                 ) : null}
               </div>
-              <h2 className="vp-proto-carousel__campaign">{slide.campaignLine}</h2>
+              <h2 className="vp-home-carousel__campaign">{slide.campaignLine}</h2>
             </div>
-            <dl className="vp-proto-carousel__credits">
-              <div className="vp-proto-carousel__credit">
+            <dl className="vp-home-carousel__credits">
+              <div className="vp-home-carousel__credit">
                 <dt>Director</dt>
                 <dd>{slide.directorNames}</dd>
               </div>
-              <div className="vp-proto-carousel__credit">
+              <div className="vp-home-carousel__credit">
                 <dt>DOP</dt>
                 <dd>{slide.dopNames}</dd>
               </div>
@@ -232,7 +232,7 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
         {portfolioSlug ? (
           <PortfolioEntryLink
             slug={portfolioSlug}
-            className={`vp-proto-carousel__card-link${
+            className={`vp-home-carousel__card-link${
               interactive ? ' is-active' : ''
             }`}
             aria-label={
