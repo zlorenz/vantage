@@ -114,6 +114,21 @@
   pointer-events: none;
 }
 
+/*
+ * YouTube still paints title/channel (top corners) and watermark with
+ * controls=0. Widen + scale past overflow:hidden so corner chrome sits
+ * off-screen (classic background-embed crop). Mid-frame transport is avoided
+ * in AboutYouTubePreview (API loop, no playlist=) — crop cannot hide that.
+ */
+.vp-home-carousel__player[data-player='youtube'] .vp-home-carousel__iframe {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 100%;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
 .vp-home-carousel__video {
   position: absolute;
   inset: 0;
@@ -376,6 +391,14 @@
     max-height: none;
     min-width: 100%;
     min-height: 100%;
+    transform: translate(-50%, -50%);
+  }
+
+  .vp-home-carousel__player[data-player='youtube'] .vp-home-carousel__iframe {
+    /* Keep cover-math width/height from the rule above; oversize for chrome. */
+    width: max(300%, calc(var(--vp-preview-aspect) * 100vh));
+    width: max(300%, calc(var(--vp-preview-aspect) * 100svh));
+    height: max(120%, calc(100vw / var(--vp-preview-aspect)));
     transform: translate(-50%, -50%);
   }
 

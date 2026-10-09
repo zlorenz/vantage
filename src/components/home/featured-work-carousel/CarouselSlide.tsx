@@ -10,10 +10,10 @@ import {
   type PointerEvent,
 } from 'react';
 import {useLocale} from 'next-intl';
+import {AboutYouTubePreview} from '@/components/about/AboutYouTubePreview';
 import {PortfolioEntryLink} from '@/components/navigation/PortfolioEntryLink';
 import {trackImpressionOnce, trackVideoEvent} from '@/lib/video-events';
-import {normalizeStoredVideoUrl} from '@/lib/video-url';
-import {extractVimeoId} from '@/lib/vimeo';
+import {parseVideoUrl} from '@/lib/video-url';
 import {CarouselVimeo} from './CarouselVimeo';
 import {
   detectPillarboxContentAspect,
@@ -40,18 +40,20 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
     const pointerStartRef = useRef<{x: number; y: number} | null>(null);
     const portfolioSlug = slide.hrefSlug?.trim() || null;
     const slideKey = slide.portfolioEntryRef || slide.slug;
-    const videoId = slide.vimeoUrl
-      ? extractVimeoId(normalizeStoredVideoUrl(slide.vimeoUrl)) ?? undefined
-      : undefined;
+    const parsedPreview = slide.vimeoUrl
+      ? parseVideoUrl(slide.vimeoUrl)
+      : null;
+    const videoId = parsedPreview?.id;
     const carouselEventBase = {
       source: 'native_carousel' as const,
       videoId,
       portfolioEntryRef: slide.portfolioEntryRef,
     };
     const interactive = active;
-    // ZH: static featuredImage poster only — no Vimeo/XPC preview (autoplay unreliable).
+    // ZH: static featuredImage poster only — no Vimeo/YouTube preview (autoplay unreliable).
     const allowVideoPreview = locale !== 'zh';
-    const shouldMountVideo = allowVideoPreview && mountPlayer && Boolean(slide.vimeoUrl);
+    const shouldMountVideo =
+      allowVideoPreview && mountPlayer && Boolean(parsedPreview);
 
     useEffect(() => {
       if (!shouldMountVideo) {
@@ -185,7 +187,16 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
                 </picture>
               </div>
             ) : null}
-            {shouldMountVideo && slide.vimeoUrl ? (
+            {shouldMountVideo && parsedPreview?.provider === 'youtube' ? (
+              <AboutYouTubePreview
+                videoId={parsedPreview.id}
+                active={active}
+                onReadyChange={setPlayerReady}
+              />
+            ) : null}
+            {shouldMountVideo &&
+            parsedPreview?.provider === 'vimeo' &&
+            slide.vimeoUrl ? (
               <CarouselVimeo
                 vimeoUrl={slide.vimeoUrl}
                 active={active}

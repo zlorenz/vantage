@@ -64,6 +64,14 @@
   border: 0;
 }
 
+.vp-about-tabs__photo-clip
+  .vp-home-carousel__player[data-player='youtube']
+  .vp-home-carousel__iframe {
+  width: max(300cqi, calc(var(--vp-preview-aspect) * 100cqb));
+  height: max(120cqb, calc(100cqi / var(--vp-preview-aspect)));
+  transform: translate(-50%, -50%);
+}
+
 .vp-about-tabs__photo-clip .vp-home-carousel__video {
   opacity: 0;
 }
