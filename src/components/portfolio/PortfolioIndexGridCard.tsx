@@ -7,7 +7,7 @@
 import Image from 'next/image';
 import type { SanityImageSource } from '@sanity/image-url';
 import { PortfolioEntryLink } from '@/components/navigation/PortfolioEntryLink';
-import { composeOverlayCopy } from '@/components/prototype/carousel/overlay';
+import { composeOverlayCopy } from '@/lib/overlay-copy';
 import { PortfolioIndexGridHover } from '@/components/portfolio/PortfolioIndexGridHover';
 import { phraseRecordToMap } from '@phrase-book';
 import {

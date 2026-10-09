@@ -6,7 +6,7 @@ import {
   resolveEntryDisplayTitleParts,
   resolveEntryDocumentTitle,
 } from '@/lib/display-titles';
-import { composeOverlayCopy } from '@/components/prototype/carousel/overlay';
+import { composeOverlayCopy } from '@/lib/overlay-copy';
 import { decodeHtmlEntities } from '@/lib/decode-html-entities';
 import type { Locale } from '@/i18n/routing';
 import type { InternalLibraryEntry } from '@/types/sanity';

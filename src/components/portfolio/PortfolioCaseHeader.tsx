@@ -6,7 +6,7 @@
  * carousel and case-study styles can diverge independently.
  */
 
-import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
+import {composeOverlayCopy} from '@/lib/overlay-copy';
 import type {Locale} from '@/i18n/routing';
 import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';

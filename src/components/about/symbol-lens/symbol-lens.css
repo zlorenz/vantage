@@ -1,6 +1,6 @@
 /* About hero loupe stage. */
 
-.vp-footer-lens-proto__lens-wrap {
+.vp-about-lens__lens-wrap {
   width: 100%;
   height: 100%;
   min-height: min(92dvh, 92vw);
@@ -8,9 +8,9 @@
   overflow: hidden;
 }
 
-.vp-footer-lens-proto__gradient,
-.vp-footer-lens-proto__canvas,
-.vp-footer-lens-proto__glass {
+.vp-about-lens__gradient,
+.vp-about-lens__canvas,
+.vp-about-lens__glass {
   position: absolute;
   left: 0;
   top: 0;
@@ -19,29 +19,29 @@
      display exactly — inset+100% stretch would turn circles into ellipses. */
 }
 
-.vp-footer-lens-proto__gradient {
+.vp-about-lens__gradient {
   z-index: 0;
   pointer-events: none;
 }
 
-.vp-footer-lens-proto__glass {
+.vp-about-lens__glass {
   z-index: 1;
   pointer-events: none;
   overflow: visible;
 }
 
-.vp-footer-lens-proto__canvas {
+.vp-about-lens__canvas {
   z-index: 2;
   cursor: default;
   touch-action: none;
 }
 
 /* Mobile: page scroll owns the gesture; loupe canvas stays idle (no disc). */
-.vp-footer-lens-proto__lens-wrap.is-scroll-driven {
+.vp-about-lens__lens-wrap.is-scroll-driven {
   pointer-events: none;
 }
 
-.vp-footer-lens-proto__lens-wrap.is-scroll-driven .vp-footer-lens-proto__canvas {
+.vp-about-lens__lens-wrap.is-scroll-driven .vp-about-lens__canvas {
   visibility: hidden;
   pointer-events: none;
   touch-action: pan-y;

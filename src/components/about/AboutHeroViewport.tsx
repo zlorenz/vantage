@@ -12,7 +12,7 @@
 import {useTranslations} from 'next-intl';
 import {type CSSProperties} from 'react';
 import {CornerFrame} from '@/components/ui/CornerFrame';
-import {FooterLensStage} from '@/components/prototype/footer-lens/FooterLensStage';
+import {FooterLensStage} from '@/components/about/symbol-lens/FooterLensStage';
 import './about-hero-viewport.css';
 
 /** Temporary launch hide — restore when hero quote copy is final. */

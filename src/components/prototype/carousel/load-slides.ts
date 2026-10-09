@@ -9,8 +9,8 @@ import {getPhraseRecord} from '@/lib/phrase-book';
 import {urlForImage} from '@/lib/sanity';
 import {sanityFetch} from '@/sanity/lib/live';
 import type {CrewCredit, DisplayTitlePartsValue, PortfolioVideo, SanityImage} from '@/types/sanity';
-import {composeOverlayCopy, joinOverlayList} from './overlay';
-import {HOME_CAROUSEL_QUERY} from './query';
+import {composeOverlayCopy, joinOverlayList} from '@/lib/overlay-copy';
+import {HOME_CAROUSEL_QUERY} from '@/sanity/queries/home-carousel';
 import type {PrototypeCarouselSlide} from './types';
 import {CAROUSEL_RATIOS, objectPositionFromHotspot, posterSize} from '@carousel-ratios';
 

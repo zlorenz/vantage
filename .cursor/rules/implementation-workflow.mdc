@@ -170,8 +170,8 @@ URL integrity is critical. The existing site has SEO equity built up over years.
 
 The rebuild and redesign cutover are **done**. Prefer this order for leftover work:
 
-1. **Dead-code / polish** — unused CSS (e.g. brand-logo leftovers), rename `prototype/` component folders, archive migration-data
-2. **Token promotion** — candidate → shipping tokens when a surface stabilizes (`candidate-tokens.md`)
+1. **Dead-code / polish** — move remaining `prototype/carousel` → `home/featured-work-carousel` + `.vp-home-carousel` BEM; migration-data stays archived in-repo
+2. **Token promotion** — remaining page-scoped candidates when a surface stabilizes (`candidate-tokens.md`)
 3. **Docs hygiene** — keep agent docs aligned with production hosts and fields
 4. **New features** — follow the audit → confirm → implement loop above
 

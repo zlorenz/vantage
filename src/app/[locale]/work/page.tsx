@@ -11,7 +11,7 @@ import {
   preparePortfolioIndexSlides,
   type FeaturedCarouselRef,
 } from '@/components/portfolio/prepare-portfolio-index-slides';
-import {HOME_CAROUSEL_QUERY} from '@/components/prototype/carousel/query';
+import {HOME_CAROUSEL_QUERY} from '@/sanity/queries/home-carousel';
 import {routing, type Locale} from '@/i18n/routing';
 import {
   workPageTitle,

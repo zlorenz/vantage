@@ -8,9 +8,9 @@
  */
 
 import {useEffect, useRef} from 'react';
-import {createFooterLensEngine, footerLensRadiusCss} from './footer-lens-engine';
+import {createFooterLensEngine, footerLensRadiusCss} from './symbol-lens-engine';
 import {createGradientBgEngine} from './gradient-bg-engine';
-import './footer-lens.css';
+import './symbol-lens.css';
 
 /** Fraction of the remaining gap closed per 60fps frame. Matches Monopo's 0.1 follow. */
 const FOLLOW = 0.1;
@@ -46,7 +46,7 @@ export function FooterLensStage({
     try {
       gradient = createGradientBgEngine(gradientCanvas);
     } catch (err) {
-      console.warn('[footer-lens] gradient WebGL unavailable', err);
+      console.warn('[about-lens] gradient WebGL unavailable', err);
     }
 
     const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -233,12 +233,12 @@ export function FooterLensStage({
       try {
         gradient?.setSize(cssW, cssH);
       } catch (err) {
-        console.warn('[footer-lens] gradient resize failed', err);
+        console.warn('[about-lens] gradient resize failed', err);
       }
       try {
         lens.setSize(cssW, cssH);
       } catch (err) {
-        console.error('[footer-lens] lens resize failed', err);
+        console.error('[about-lens] lens resize failed', err);
       }
       if (scrollDriven) {
         paintScrollFrame();
@@ -313,17 +313,17 @@ export function FooterLensStage({
   return (
     <div
       ref={wrapRef}
-      className={['vp-footer-lens-proto__lens-wrap', className].filter(Boolean).join(' ')}
+      className={['vp-about-lens__lens-wrap', className].filter(Boolean).join(' ')}
     >
       <canvas
         ref={gradientCanvasRef}
-        className="vp-footer-lens-proto__gradient"
+        className="vp-about-lens__gradient"
         aria-hidden
       />
-      <div ref={glassRef} className="vp-footer-lens-proto__glass" aria-hidden />
+      <div ref={glassRef} className="vp-about-lens__glass" aria-hidden />
       <canvas
         ref={lensCanvasRef}
-        className="vp-footer-lens-proto__canvas"
+        className="vp-about-lens__canvas"
         aria-label={canvasLabel}
       />
     </div>

@@ -8,7 +8,7 @@
  * (same column as .vp-blog-hero__rail / case carousel-row).
  */
 
-import {composeOverlayCopy} from '@/components/prototype/carousel/overlay';
+import {composeOverlayCopy} from '@/lib/overlay-copy';
 import {PortfolioCaseMedia} from '@/components/portfolio/PortfolioCaseMedia';
 import {buildPortfolioCaseSlides} from '@/components/portfolio/prepare-portfolio-case-slides';
 import {PortableTextVideoEmbed} from '@/components/ui/PortableTextVideoEmbed';

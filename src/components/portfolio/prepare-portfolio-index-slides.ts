@@ -8,7 +8,7 @@ import {withoutKeyVisualVideoFormats} from '@video-formats';
 import {
   composeOverlayCopy,
   joinOverlayList,
-} from '@/components/prototype/carousel/overlay';
+} from '@/lib/overlay-copy';
 import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';

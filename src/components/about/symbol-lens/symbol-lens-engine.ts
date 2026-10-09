@@ -57,7 +57,7 @@ export type FooterLensEngine = {
  * Placeholder-resolution photo collage (alpha-masked to the "A").
  * Expect a higher-res re-export before shipping — pipeline test asset only.
  */
-const COLLAGE_SRC = "/prototype/footer-lens/vantage-logo-photo-collage-01.png";
+const COLLAGE_SRC = "/about/symbol-lens/vantage-logo-photo-collage-01.png";
 
 /**
  * Loupe warp — collage-readable:
@@ -1072,7 +1072,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
     try {
       rebuildCacheFromCollage();
     } catch (err) {
-      console.error("[footer-lens] cache rebuild failed", err);
+      console.error("[about-lens] cache rebuild failed", err);
       cache = null;
     }
   };
@@ -1242,7 +1242,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
         });
         usedGpu = true;
       } catch (err) {
-        console.warn('[footer-lens] GPU loupe unavailable', err);
+        console.warn('[about-lens] GPU loupe unavailable', err);
         loupeGlFailed = true;
         loupeGl?.destroy();
         loupeGl = null;
@@ -1287,7 +1287,7 @@ export function createFooterLensEngine(canvas: HTMLCanvasElement): FooterLensEng
       redraw();
     })
     .catch((err) => {
-      console.error("[footer-lens]", err);
+      console.error("[about-lens]", err);
     });
 
   return {

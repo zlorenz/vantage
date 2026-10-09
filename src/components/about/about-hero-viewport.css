@@ -54,7 +54,7 @@
 
 .vp-about-hero__title {
   /* Mark is centered and fitted to 64% of the hero's shorter side
-     (footer-lens LOGO_PAD_FRAC 0.18). Sit this line just under that box,
+     (symbol-lens LOGO_PAD_FRAC 0.18). Sit this line just under that box,
      no wider than the mark itself. */
   top: calc(
     50% + min(32vw, 32svh) + var(--vp-candidate-about-hero-mobile-copy-gap)

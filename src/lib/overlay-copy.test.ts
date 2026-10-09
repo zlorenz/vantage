@@ -1,9 +1,9 @@
 /**
- *   npx tsx src/components/prototype/carousel/overlay.test.ts
+ *   npx tsx src/lib/overlay-copy.test.ts
  */
 
 import assert from 'node:assert/strict';
-import {composeOverlayCopy, joinOverlayList} from './overlay';
+import {composeOverlayCopy, joinOverlayList} from './overlay-copy';
 
 function testCampaignPresentJoinsBrandProduct() {
   const result = composeOverlayCopy({
