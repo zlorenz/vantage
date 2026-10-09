@@ -46,7 +46,7 @@
   width: 100%;
   margin: 0;
   padding: 0;
-  color: var(--vp-candidate-index-inactive, rgba(255, 255, 255, 0.3));
+  color: var(--vp-index-inactive, rgba(255, 255, 255, 0.3));
   font-family: var(--font-vp-heading);
   font-size: 0.875rem; /* 14px desktop */
   font-weight: 700;

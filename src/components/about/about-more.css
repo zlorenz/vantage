@@ -37,9 +37,9 @@ section.vp-about-more-section {
 .vp-about-more__title {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-display-size);
+  font-size: var(--vp-section-display-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-display-lh);
+  line-height: var(--vp-section-display-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--vp-link);
@@ -51,7 +51,7 @@ section.vp-about-more-section {
   font-size: var(--vp-candidate-about-mobile-body-size);
   font-weight: var(--font-vp-body-weight);
   line-height: var(--vp-candidate-about-body-lh);
-  color: var(--vp-candidate-about-white-50);
+  color: var(--vp-muted-50);
 }
 
 .vp-about-more__plus {
@@ -105,9 +105,9 @@ section.vp-about-more-section {
   border-right: 1px solid var(--vp-line-color);
   border-bottom: 1px solid var(--vp-line-color);
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-step-size);
+  font-size: var(--vp-step-size);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-step-lh);
+  line-height: var(--vp-step-lh);
   letter-spacing: 0;
   text-align: center;
   text-transform: uppercase;
@@ -179,12 +179,12 @@ section.vp-about-more-section {
   }
 
   .vp-about-more__title {
-    font-size: var(--vp-candidate-about-display-size);
+    font-size: var(--vp-section-display-size);
   }
 
   .vp-about-more__dek {
-    font-size: var(--vp-candidate-about-dek-size);
-    line-height: var(--vp-candidate-about-dek-lh);
+    font-size: var(--vp-dek-size);
+    line-height: var(--vp-dek-lh);
   }
 
   .vp-about-more__links {

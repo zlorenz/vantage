@@ -282,7 +282,7 @@
   }
 
   .vp-portfolio-index__mobile-chrome-search-input::placeholder {
-    color: var(--vp-candidate-search-muted, rgba(255, 255, 255, 0.4));
+    color: var(--vp-search-muted, rgba(255, 255, 255, 0.4));
     text-transform: uppercase;
   }
 
@@ -1005,7 +1005,7 @@
 }
 
 .vp-portfolio-index__brand {
-  color: var(--vp-home-carousel-brand-accent, #fdb913);
+  color: var(--vp-link);
 }
 
 .vp-portfolio-index__format {
@@ -1033,7 +1033,7 @@
   height: var(--vp-home-carousel-brand-dot-size, 0.8em);
   margin-right: 0.55em;
   border-radius: 50%;
-  background: var(--vp-home-carousel-brand-accent, #fdb913);
+  background: var(--vp-link);
   vertical-align: 0.05em;
 }
 

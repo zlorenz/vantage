@@ -114,6 +114,36 @@ Scoped on `#header .vp-mobile-nav-panel__inner` (≤991.98). Promoted from candi
 |---|---|---|
 | `--vp-filter-dim` | `rgba(0,0,0,0.7)` | Backdrop |
 | `--vp-filter-panel-bg` | `#0f0f0f` | Panel fill |
+| `--vp-filter-panel-max-height` | `76vh` | BottomSheet panel max-height |
+| `--vp-filter-term-muted` | `rgba(255,255,255,0.2)` | Inactive term rows (mobile filter) |
+| `--vp-search-muted` | `rgba(255,255,255,0.4)` | Work SEARCH label |
+| `--vp-index-inactive` | `rgba(255,255,255,0.3)` | Work slide-num inactive ink |
+
+### Shared section type + light ink (D7)
+
+`:root` — about, contact CTA, VPS featured header, CornerFrame light rulers. Work-index brand yellow uses `--vp-link` (same hex as homepage `--vp-home-carousel-brand-accent`).
+
+| Token | Value | Usage |
+|---|---|---|
+| `--vp-section-display-size` | `64px` | Section headings (desktop) |
+| `--vp-section-display-size-mobile` | `30px` | Section headings (mobile) |
+| `--vp-section-display-lh` | `1.1` | Section heading line-height |
+| `--vp-feature-title-size` | `40px` | Feature / workflow titles; VPS guide CTA |
+| `--vp-feature-title-lh` | `1.2` | same |
+| `--vp-eyebrow-size` | `16px` | Eyebrow labels (desktop) |
+| `--vp-eyebrow-size-mobile` | `12px` | Eyebrow labels (mobile) |
+| `--vp-eyebrow-lh` | `1.6` | Eyebrow line-height |
+| `--vp-eyebrow-gap` | `0.5em` | Dot → label gap |
+| `--vp-dek-size` | `22px` | Dek / contact CTA body |
+| `--vp-dek-lh` | `1.6` | same |
+| `--vp-step-size` | `14px` | Step nums, hero caption type |
+| `--vp-step-lh` | `20px` | same |
+| `--vp-frame-inset` | `15px` | CornerFrame outset (desktop) |
+| `--vp-frame-inset-mobile` | `8px` | CornerFrame outset (mobile) |
+| `--vp-ink-15` | `rgba(0,0,0,0.15)` | Light-surface rules / rulers |
+| `--vp-ink-30` | `rgba(0,0,0,0.3)` | Light ruler labels |
+| `--vp-ink-50` | `rgba(0,0,0,0.5)` | Light corner brackets |
+| `--vp-muted-50` | `rgba(255,255,255,0.5)` | Soft body on black (contact CTA, About dek) |
 
 ### Shared structure ticks / lines
 

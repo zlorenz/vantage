@@ -17,7 +17,7 @@
   padding: 0.4rem 0.8rem;
   border: 0;
   border-radius: 0;
-  background: var(--vp-home-carousel-brand-accent, #fdb913);
+  background: var(--vp-link);
   color: #000;
   font-family: var(--font-vp-heading);
   font-size: 0.72rem;

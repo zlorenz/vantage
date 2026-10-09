@@ -128,7 +128,7 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
 }
 
 .vp-about-feature__photo .vp-corner-frame {
-  inset: calc(-1 * var(--vp-candidate-about-hero-mobile-frame-inset));
+  inset: calc(-1 * var(--vp-frame-inset-mobile));
   /* Above preview iframe/video + wash so the center cross stays visible. */
   z-index: 3;
 }
@@ -151,9 +151,9 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
 .vp-about-feature__title {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-display-size);
+  font-size: var(--vp-section-display-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-display-lh);
+  line-height: var(--vp-section-display-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--vp-text);
@@ -281,12 +281,12 @@ section.vp-about-workflow-section + section.vp-about-feature-section {
   }
 
   .vp-about-feature__photo .vp-corner-frame {
-    inset: calc(-1 * var(--vp-candidate-about-hero-frame-inset));
+    inset: calc(-1 * var(--vp-frame-inset));
   }
 
   .vp-about-feature__title {
-    font-size: var(--vp-candidate-about-feature-title-size);
-    line-height: var(--vp-candidate-about-feature-title-lh);
+    font-size: var(--vp-feature-title-size);
+    line-height: var(--vp-feature-title-lh);
   }
 
   .vp-about-feature__lower {

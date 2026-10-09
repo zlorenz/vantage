@@ -306,7 +306,7 @@ section.vp-contact-cta .vp-contact-cta__heading {
 section.vp-contact-cta .vp-contact-cta__body {
   width: 100%;
   margin: 0;
-  color: var(--vp-candidate-about-white-50);
+  color: var(--vp-muted-50);
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-contact-body-size);
   font-weight: var(--font-vp-body-weight);
@@ -435,13 +435,13 @@ section.vp-contact-cta .vp-contact-cta__body {
     --vp-candidate-contact-copy-gap: calc(24px * var(--vp-contact-scale));
     --vp-candidate-contact-action-gap: calc(60px * var(--vp-contact-scale));
     --vp-candidate-contact-heading-size: calc(
-      var(--vp-candidate-about-display-size) * var(--vp-contact-scale)
+      var(--vp-section-display-size) * var(--vp-contact-scale)
     );
-    --vp-candidate-contact-heading-lh: var(--vp-candidate-about-display-lh);
+    --vp-candidate-contact-heading-lh: var(--vp-section-display-lh);
     --vp-candidate-contact-body-size: calc(
-      var(--vp-candidate-about-dek-size) * var(--vp-contact-scale)
+      var(--vp-dek-size) * var(--vp-contact-scale)
     );
-    --vp-candidate-contact-body-lh: var(--vp-candidate-about-dek-lh);
+    --vp-candidate-contact-body-lh: var(--vp-dek-lh);
     --vp-candidate-contact-body-width: calc(632px * var(--vp-contact-scale));
     --vp-candidate-contact-bracket-inset: 15px;
     padding: var(--vp-candidate-contact-section-pad) 0;

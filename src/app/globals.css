@@ -272,6 +272,10 @@
   /* Work / blog mobile filter sheet */
   --vp-filter-dim: rgba(0, 0, 0, 0.7);
   --vp-filter-panel-bg: #0f0f0f;
+  --vp-filter-panel-max-height: 76vh;
+  --vp-filter-term-muted: rgba(255, 255, 255, 0.2);
+  --vp-search-muted: rgba(255, 255, 255, 0.4);
+  --vp-index-inactive: rgba(255, 255, 255, 0.3);
 
   /* Colour Palette — Form & Input */
 
@@ -372,7 +376,31 @@
   --vp-struct-tick-stroke: 1px;
   --vp-struct-tick-color: rgba(255, 255, 255, 0.3);
   --vp-muted-30: rgba(255, 255, 255, 0.3);
+  --vp-muted-50: rgba(255, 255, 255, 0.5);
   --vp-line-color: rgba(255, 255, 255, 0.15);
+
+  /*
+   * Shared section type + light-surface ink (D7).
+   * About, contact CTA, VPS featured header, CornerFrame light rulers.
+   */
+  --vp-section-display-size: 64px;
+  --vp-section-display-size-mobile: 30px;
+  --vp-section-display-lh: 1.1;
+  --vp-feature-title-size: 40px;
+  --vp-feature-title-lh: 1.2;
+  --vp-eyebrow-size: 16px;
+  --vp-eyebrow-size-mobile: 12px;
+  --vp-eyebrow-lh: 1.6;
+  --vp-eyebrow-gap: 0.5em;
+  --vp-dek-size: 22px;
+  --vp-dek-lh: 1.6;
+  --vp-step-size: 14px;
+  --vp-step-lh: 20px;
+  --vp-frame-inset: 15px;
+  --vp-frame-inset-mobile: 8px;
+  --vp-ink-15: rgba(0, 0, 0, 0.15);
+  --vp-ink-30: rgba(0, 0, 0, 0.3);
+  --vp-ink-50: rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 767px) {

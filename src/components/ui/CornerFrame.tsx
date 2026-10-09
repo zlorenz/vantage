@@ -5,7 +5,7 @@
  * position: relative parent. It does not capture pointer events.
  *
  * Dark brackets reuse the brief tick tokens (12px, 1px, white 0.3).
- * Light brackets use --vp-candidate-about-black-50. This does not replace
+ * Light brackets use --vp-ink-50. This does not replace
  * the hand-rolled brackets on portfolio nav, blog nav, the campaign brief,
  * or the work index.
  */

@@ -42,9 +42,9 @@
   margin: 0;
   width: calc(50% - 24px);
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-step-size);
+  font-size: var(--vp-step-size);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-step-lh);
+  line-height: var(--vp-step-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-box-trim: trim-both;
@@ -176,8 +176,8 @@
     right: auto;
     width: min(340px, calc(100% - (2 * var(--vp-candidate-about-hero-inset))));
     max-width: none;
-    font-size: var(--vp-candidate-about-step-size);
-    line-height: var(--vp-candidate-about-step-lh);
+    font-size: var(--vp-step-size);
+    line-height: var(--vp-step-lh);
     text-align: start;
     transform: none;
   }

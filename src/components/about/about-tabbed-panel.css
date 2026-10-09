@@ -73,7 +73,7 @@
 }
 
 .vp-about-tabs[data-theme='light'] {
-  --vp-about-tab-line: var(--vp-candidate-about-black-15);
+  --vp-about-tab-line: var(--vp-ink-15);
   --vp-about-tab-body: var(--vp-candidate-about-black-70);
   --vp-about-tab-inactive: var(--vp-candidate-about-black-20);
   --vp-about-tab-inactive-hover: rgba(0, 0, 0, 0.4);
@@ -109,12 +109,12 @@ section.vp-about-tabs-section {
 .vp-about-tabs__eyebrow {
   display: flex;
   align-items: center;
-  gap: var(--vp-candidate-about-eyebrow-gap);
+  gap: var(--vp-eyebrow-gap);
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-eyebrow-size);
+  font-size: var(--vp-eyebrow-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-eyebrow-lh);
+  line-height: var(--vp-eyebrow-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-box-trim: trim-both;
@@ -125,9 +125,9 @@ section.vp-about-tabs-section {
 .vp-about-tabs__heading {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-display-size);
+  font-size: var(--vp-section-display-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-display-lh);
+  line-height: var(--vp-section-display-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-align: left;
@@ -284,7 +284,7 @@ section.vp-about-tabs-section {
 
 .vp-about-tabs__photo .vp-corner-frame {
   display: block;
-  inset: calc(-1 * var(--vp-candidate-about-hero-mobile-frame-inset));
+  inset: calc(-1 * var(--vp-frame-inset-mobile));
   /* Above preview iframe/video so the center cross stays visible. */
   z-index: 3;
 }
@@ -311,12 +311,12 @@ section.vp-about-tabs-section {
   .vp-about-tabs__eyebrow {
     flex: none;
     width: 300px;
-    font-size: var(--vp-candidate-about-eyebrow-size);
+    font-size: var(--vp-eyebrow-size);
   }
 
   .vp-about-tabs__heading {
     flex: 1;
-    font-size: var(--vp-candidate-about-display-size);
+    font-size: var(--vp-section-display-size);
     text-align: right;
   }
 

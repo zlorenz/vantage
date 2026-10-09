@@ -20,13 +20,13 @@ section.vp-about-workflow-section {
 .vp-how-we-move__subtitle {
   display: flex;
   align-items: center;
-  gap: var(--vp-candidate-about-eyebrow-gap);
+  gap: var(--vp-eyebrow-gap);
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-eyebrow-size);
+  font-size: var(--vp-eyebrow-size-mobile);
   font-weight: var(--font-vp-heading-weight);
   letter-spacing: 0;
-  line-height: var(--vp-candidate-about-eyebrow-lh);
+  line-height: var(--vp-eyebrow-lh);
   text-transform: uppercase;
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
@@ -40,9 +40,9 @@ section.vp-about-workflow-section {
 .vp-how-we-move__heading {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-display-size);
+  font-size: var(--vp-section-display-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-display-lh);
+  line-height: var(--vp-section-display-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-align: left;
@@ -90,9 +90,9 @@ section.vp-about-workflow-section {
   align-items: baseline;
   gap: 12px;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-display-size);
+  font-size: var(--vp-section-display-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-display-lh);
+  line-height: var(--vp-section-display-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--vp-text);
@@ -100,8 +100,8 @@ section.vp-about-workflow-section {
 
 .vp-how-we-move__trigger-number {
   flex-shrink: 0;
-  font-size: var(--vp-candidate-about-step-size);
-  line-height: var(--vp-candidate-about-step-lh);
+  font-size: var(--vp-step-size);
+  line-height: var(--vp-step-lh);
   font-variant-numeric: tabular-nums;
   color: rgba(255, 255, 255, 0.3);
 }
@@ -213,7 +213,7 @@ section.vp-about-workflow-section {
   font-family: var(--font-vp-sans);
   font-size: var(--vp-candidate-about-mobile-dek-size);
   font-weight: var(--font-vp-body-weight);
-  line-height: var(--vp-candidate-about-dek-lh);
+  line-height: var(--vp-dek-lh);
   color: var(--vp-link);
 }
 
@@ -265,12 +265,12 @@ section.vp-about-workflow-section {
   .vp-how-we-move__subtitle {
     flex: none;
     width: 300px;
-    font-size: var(--vp-candidate-about-eyebrow-size);
+    font-size: var(--vp-eyebrow-size);
   }
 
   .vp-how-we-move__heading {
     flex: 1;
-    font-size: var(--vp-candidate-about-display-size);
+    font-size: var(--vp-section-display-size);
     text-align: right;
   }
 
@@ -311,8 +311,8 @@ section.vp-about-workflow-section {
     flex-direction: row;
     align-items: baseline;
     gap: 20px;
-    font-size: var(--vp-candidate-about-feature-title-size);
-    line-height: var(--vp-candidate-about-feature-title-lh);
+    font-size: var(--vp-feature-title-size);
+    line-height: var(--vp-feature-title-lh);
   }
 
   .vp-how-we-move__trigger-number,
@@ -350,9 +350,9 @@ section.vp-about-workflow-section {
   .vp-how-we-move__headline {
     margin-top: 72px;
     padding-top: 0;
-    font-size: var(--vp-candidate-about-dek-size);
+    font-size: var(--vp-dek-size);
     font-weight: var(--font-vp-body-weight);
-    line-height: var(--vp-candidate-about-dek-lh);
+    line-height: var(--vp-dek-lh);
   }
 
   .vp-how-we-move__bullets {

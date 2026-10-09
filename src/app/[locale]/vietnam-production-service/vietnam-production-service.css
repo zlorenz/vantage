@@ -11,13 +11,13 @@
 }
 
 .vp-service-body-image .vp-corner-frame {
-  inset: calc(-1 * var(--vp-candidate-about-hero-mobile-frame-inset, 8px));
+  inset: calc(-1 * var(--vp-frame-inset-mobile));
   z-index: 1;
 }
 
 @media (min-width: 768px) {
   .vp-service-body-image .vp-corner-frame {
-    inset: calc(-1 * var(--vp-candidate-about-hero-frame-inset, 15px));
+    inset: calc(-1 * var(--vp-frame-inset));
   }
 }
 
@@ -32,13 +32,13 @@
 .vp-service-featured__eyebrow {
   display: flex;
   align-items: center;
-  gap: var(--vp-candidate-about-eyebrow-gap, 0.5em);
+  gap: var(--vp-eyebrow-gap);
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-eyebrow-size, 12px);
+  font-size: var(--vp-eyebrow-size-mobile);
   font-weight: var(--font-vp-heading-weight);
   letter-spacing: 0;
-  line-height: var(--vp-candidate-about-eyebrow-lh, 1.6);
+  line-height: var(--vp-eyebrow-lh);
   text-transform: uppercase;
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
@@ -52,9 +52,9 @@
 .vp-service-featured__heading {
   margin: 0;
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-mobile-display-size, clamp(2.325rem, 4.07vw, 3.49rem));
+  font-size: var(--vp-section-display-size-mobile);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-display-lh, 1.15);
+  line-height: var(--vp-section-display-lh);
   letter-spacing: 0;
   text-transform: uppercase;
   text-align: left;
@@ -80,12 +80,12 @@
   .vp-service-featured__eyebrow {
     flex: none;
     width: 300px;
-    font-size: var(--vp-candidate-about-eyebrow-size, 16px);
+    font-size: var(--vp-eyebrow-size);
   }
 
   .vp-service-featured__heading {
     flex: 1;
-    font-size: var(--vp-candidate-about-display-size, clamp(2.325rem, 4.07vw, 3.49rem));
+    font-size: var(--vp-section-display-size);
     text-align: right;
   }
 }
@@ -94,11 +94,8 @@
 @media (min-width: 768px) {
   section.vp-contact-cta.vp-contact-cta--guide {
     --vp-candidate-contact-heading-size: calc(
-      var(--vp-candidate-about-feature-title-size, 40px) * var(--vp-contact-scale, 1)
+      var(--vp-feature-title-size) * var(--vp-contact-scale, 1)
     );
-    --vp-candidate-contact-heading-lh: var(
-      --vp-candidate-about-feature-title-lh,
-      1.2
-    );
+    --vp-candidate-contact-heading-lh: var(--vp-feature-title-lh);
   }
 }

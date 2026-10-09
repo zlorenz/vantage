@@ -19,9 +19,9 @@
 }
 
 .vp-corner-frame--light {
-  --vp-corner-bracket: var(--vp-candidate-about-black-50, rgba(0, 0, 0, 0.5));
-  --vp-corner-ruler: var(--vp-candidate-about-black-15, rgba(0, 0, 0, 0.15));
-  --vp-corner-label: var(--vp-candidate-about-black-30, rgba(0, 0, 0, 0.3));
+  --vp-corner-bracket: var(--vp-ink-50, rgba(0, 0, 0, 0.5));
+  --vp-corner-ruler: var(--vp-ink-15, rgba(0, 0, 0, 0.15));
+  --vp-corner-label: var(--vp-ink-30, rgba(0, 0, 0, 0.3));
 }
 
 .vp-corner-frame__bracket {
@@ -127,9 +127,9 @@
 
 .vp-corner-frame__ruler-label {
   font-family: var(--font-vp-heading);
-  font-size: var(--vp-candidate-about-step-size, 14px);
+  font-size: var(--vp-step-size, 14px);
   font-weight: var(--font-vp-heading-weight);
-  line-height: var(--vp-candidate-about-step-lh, 20px);
+  line-height: var(--vp-step-lh, 20px);
   letter-spacing: 0;
   color: var(--vp-corner-label);
   white-space: nowrap;

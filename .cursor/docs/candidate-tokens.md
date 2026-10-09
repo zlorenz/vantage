@@ -25,13 +25,21 @@ Naming: `--vp-candidate-[name]`
 
 ---
 
-## Promoted (pass C1) — see `design-tokens.md`
+## Promoted (pass C1 + D7) — see `design-tokens.md`
 
 Sitewide chrome + shared ticks/lines promoted out of `--vp-candidate-*`:
 
 - `--vp-chrome-chip-*`, `--vp-nav-bar-height-mobile`, `--vp-mobile-nav-*`
 - `--vp-site-footer-mobile-*`, `--vp-filter-dim`, `--vp-filter-panel-bg`
 - `--vp-struct-tick-*`, `--vp-line-color`, `--vp-muted-30`, `--vp-btn-yellow-hover`
+
+D7 cross-surface type / ink / filter:
+
+- `--vp-section-display-*`, `--vp-feature-title-*`, `--vp-eyebrow-*`, `--vp-dek-*`, `--vp-step-*`
+- `--vp-frame-inset` / `--vp-frame-inset-mobile`
+- `--vp-ink-15` / `--vp-ink-30` / `--vp-ink-50`, `--vp-muted-50`
+- `--vp-filter-panel-max-height`, `--vp-filter-term-muted`, `--vp-search-muted`, `--vp-index-inactive`
+- Work-index brand yellow → `--vp-link` (homepage carousel keeps scoped `--vp-home-carousel-brand-accent`)
 
 Do not reintroduce candidate aliases for these.
 
@@ -69,8 +77,8 @@ Mobile ≤767 language switcher: dedicated `.vp-lang-cell--mobile` toggle for th
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-search-muted` | `rgba(255,255,255,0.4)` | Work SEARCH label | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
-| `--vp-candidate-index-inactive` | `rgba(255,255,255,0.3)` | Work slide nums `( 01 )` inactive | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
+| `--vp-candidate-search-muted` | `rgba(255,255,255,0.4)` | ~~Work SEARCH label~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded → `--vp-search-muted` | |
+| `--vp-candidate-index-inactive` | `rgba(255,255,255,0.3)` | ~~Work slide nums `( 01 )` inactive~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | superseded → `--vp-index-inactive` | |
 | `--vp-candidate-filter-item-muted` | `rgba(255,255,255,0.25)` | Filter panel term rows | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | |
 | `--vp-candidate-tracking-tight-26` | `-0.52px` | Work card title 26px | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | |
 | `--vp-candidate-index-card-size` | `512×640` | Work carousel card | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=77-12472 | pending | Aspect 4:5. Impl uses height-driven aspect tokens instead. |
@@ -87,8 +95,8 @@ Mobile ≤767 language switcher: dedicated `.vp-lang-cell--mobile` toggle for th
 | `--vp-candidate-work-index-mobile-overlay-pad-block` | `30px` | ~~Active card copy inset bottom ≤575~~ | same | superseded | Reuses `--vp-overlay-mobile-pad-block` (40px). |
 | `--vp-candidate-work-index-mobile-brand-gap` | `24px` | ~~Brand \| category gap ≤575~~ | same | superseded | Matches homepage mobile brand-row `0.75rem` (12px). |
 | `--vp-candidate-work-index-mobile-copy-stack-gap` | `12px` | ~~Brand row → title ≤575~~ | product | superseded | Alias of `--vp-overlay-mobile-title-tag-gap`. |
-| `--vp-candidate-work-index-mobile-filter-panel-height` | `76vh` | Work filter BottomSheet max-height | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | pending | Figma panel 667/874 ≈ 76%. |
-| `--vp-candidate-work-index-mobile-term-muted` | `rgba(255,255,255,0.2)` | Inactive term rows in mobile work filter | same | pending | Distinct from desktop `--vp-candidate-filter-item-muted` (0.25). |
+| `--vp-candidate-work-index-mobile-filter-panel-height` | `76vh` | ~~Work filter BottomSheet max-height~~ | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | superseded → `--vp-filter-panel-max-height` | Figma panel 667/874 ≈ 76%. |
+| `--vp-candidate-work-index-mobile-term-muted` | `rgba(255,255,255,0.2)` | ~~Inactive term rows in mobile work filter~~ | same | superseded → `--vp-filter-term-muted` | Distinct from desktop `--vp-candidate-filter-item-muted` (0.25). |
 | `--vp-candidate-work-index-mobile-tab-pad-inline` | `8px` (impl) / Figma `16px` | ~~Taxonomy tab pad~~ — **superseded** | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2282-28724 | superseded | Phone QC Fix 2 removed horizontal tabs; root→nested drill restored. Keep logged for audit. |
 | `--vp-candidate-work-index-mobile-tab-pad-block` | `20px` | ~~Taxonomy tab pad-block~~ | same | superseded | Same — tabs removed. |
 | `--vp-candidate-filter-panel-width` | `530px` | Open filter panel | https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=84-36076 | pending | |
@@ -305,43 +313,43 @@ Frames: S1 `2602:31406`, S2.1 `2602:32040`, S2.2 `2602:32453`, S3 `2602:32841`, 
 | `--vp-candidate-brief-btn-size` | `12px` | caption_1 | |
 | `--vp-candidate-brief-btn-lh` | `1.6` | caption_1 | |
 
-## About page — desktop restyle (pending)
+## About page — desktop restyle (pending / partial promote)
 
 Frame: https://www.figma.com/design/uhiQCoaWAWYqk1ILLcAw2j/Vantage-Website-Redesign?node-id=2466-28598  
-Defined in `src/components/about/about-tokens.css` (imported by the About page). Not in `globals.css`. Pending reuse outside About. Special Gothic tracking stays **0**. Section padding is declared only at `min-width: 1200px` so it does not change the mobile rhythm or `--vp-section-y`.
+About-local candidates stay in `src/components/about/about-tokens.css`. Shared type / ink / frame insets promoted to `globals.css` (D7). Special Gothic tracking stays **0**. Section padding is declared only at `min-width: 992px` so it does not change the mobile rhythm or `--vp-section-y`.
 
-**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-struct-tick-size` (12px), `--vp-struct-tick-stroke` (1px), and `--vp-struct-tick-color` (`rgba(255,255,255,0.3)`) for dark corner brackets; `--vp-line-color` (`rgba(255,255,255,0.15)`) for dark hairlines and tick-ruler marks. Light brackets use `--vp-candidate-about-black-50`.
+**Reuse (no new name):** `--vp-link` (`#fdb913`) for the yellow emphasis, More About headline, and 60px crosshair; `--vp-orange` (`#f04e23`) for eyebrows and the open accordion icon; `--vp-black` / `--vp-text` / `--vp-bg`; `--vp-struct-tick-size` (12px), `--vp-struct-tick-stroke` (1px), and `--vp-struct-tick-color` (`rgba(255,255,255,0.3)`) for dark corner brackets; `--vp-line-color` (`rgba(255,255,255,0.15)`) for dark hairlines and tick-ruler marks. Light brackets use `--vp-ink-50`.
 
 | Candidate name | Value | Used in | Source | Status | Notes |
 |---|---|---|---|---|---|
-| `--vp-candidate-about-section-pad-block` | `200px` | About section padding, desktop only | `2466:28808` `py-200` | pending | Declared inside `@media (min-width: 1200px)` only. |
+| `--vp-candidate-about-section-pad-block` | `150px` | About section padding, desktop only | `2466:28808` `py-200` | pending | Declared inside `@media (min-width: 992px)` only. Live value 150px. |
 | `--vp-candidate-about-header-gap` | `100px` | Eyebrow row → panel | `2466:28808` `gap-100` | pending | |
-| `--vp-candidate-about-display-size` | `64px` | Section headings | h1 on `2466:28641` | pending | |
+| `--vp-candidate-about-display-size` | `64px` | ~~Section headings~~ | h1 on `2466:28641` | superseded → `--vp-section-display-size` | |
 | `--vp-candidate-about-statement-size` | `clamp(1.75rem, 5.55cqi, 4rem)` | Statement heading only | About `2466:28641`, scaled to the rail gap | pending | 5.55cqi of a 1152px measure is 64px. Longest line fits because the rail is narrower and the measure cap is 1320px. Lines stay `nowrap`. |
-| `--vp-candidate-about-statement-lh` | `1.4` | Statement heading only, desktop | product | pending | Looser than `--vp-candidate-about-display-lh` so the other display headings stay at 1.1. |
+| `--vp-candidate-about-statement-lh` | `1.4` | Statement heading only, desktop | product | pending | Looser than `--vp-section-display-lh` so the other display headings stay at 1.1. |
 | `--vp-candidate-about-mobile-statement-lh` | `1.8` | Statement heading, mobile | product | pending | |
 | `--vp-candidate-about-statement-accent-gap` | `0.5lh` | Space above the yellow statement close, desktop | nudge | pending | Half a line box of extra space above “THAT'S NOT WHAT WE MAKE.” Declared at `lg` only. |
-| `--vp-candidate-about-display-lh` | `1.1` | same | same | pending | |
-| `--vp-candidate-about-feature-title-size` | `40px` | Workflow titles, production-row titles | h3 on `2466:28887` / `2466:28975` | pending | |
-| `--vp-candidate-about-feature-title-lh` | `1.2` | same | same | pending | |
+| `--vp-candidate-about-display-lh` | `1.1` | ~~same~~ | same | superseded → `--vp-section-display-lh` | |
+| `--vp-candidate-about-feature-title-size` | `40px` | ~~Workflow titles, production-row titles~~ | h3 on `2466:28887` / `2466:28975` | superseded → `--vp-feature-title-size` | |
+| `--vp-candidate-about-feature-title-lh` | `1.2` | ~~same~~ | same | superseded → `--vp-feature-title-lh` | |
 | `--vp-candidate-about-tab-size` | `32px` | Specialties / Advantages menu rows | h4 on `2466:28817` | pending | |
 | `--vp-candidate-about-tab-lh` | `1.3` | same | same | pending | |
 | `--vp-candidate-about-body-size` | `18px` | Tab descriptions, accordion copy, feature bodies | body_medium | pending | |
 | `--vp-candidate-about-body-lh` | `1.5` | same | same | pending | |
-| `--vp-candidate-about-eyebrow-size` | `16px` | Orange eyebrows | caption_1 on `2466:28812` | pending | |
-| `--vp-candidate-about-eyebrow-gap` | `0.5em` | Dot → label on About eyebrows | `2466:28812` whitespace-pre `●  LABEL` | pending | Two spaces in the 16px heading face. Specialties, Advantages, and How We Move. |
-| `--vp-candidate-about-eyebrow-lh` | `1.6` | same | same | pending | |
-| `--vp-candidate-about-step-size` | `14px` | Workflow numbers, More About link cells | caption_2 | pending | |
-| `--vp-candidate-about-step-lh` | `20px` | same | same | pending | |
-| `--vp-candidate-about-dek-size` | `22px` | More About dek | body_large on `2466:29066` | pending | |
-| `--vp-candidate-about-dek-lh` | `1.6` | same | same | pending | |
+| `--vp-candidate-about-eyebrow-size` | `16px` | ~~Orange eyebrows~~ | caption_1 on `2466:28812` | superseded → `--vp-eyebrow-size` | |
+| `--vp-candidate-about-eyebrow-gap` | `0.5em` | ~~Dot → label on About eyebrows~~ | `2466:28812` whitespace-pre `●  LABEL` | superseded → `--vp-eyebrow-gap` | Two spaces in the 16px heading face. |
+| `--vp-candidate-about-eyebrow-lh` | `1.6` | ~~same~~ | same | superseded → `--vp-eyebrow-lh` | |
+| `--vp-candidate-about-step-size` | `14px` | ~~Workflow numbers, More About link cells~~ | caption_2 | superseded → `--vp-step-size` | |
+| `--vp-candidate-about-step-lh` | `20px` | ~~same~~ | same | superseded → `--vp-step-lh` | |
+| `--vp-candidate-about-dek-size` | `22px` | ~~More About dek~~ | body_large on `2466:29066` | superseded → `--vp-dek-size` | |
+| `--vp-candidate-about-dek-lh` | `1.6` | ~~same~~ | same | superseded → `--vp-dek-lh` | |
 | `--vp-candidate-about-black-20` | `rgba(0,0,0,0.2)` | Inactive menu rows, light section | `2466:28819` | pending | |
-| `--vp-candidate-about-black-15` | `rgba(0,0,0,0.15)` | Light-section rules and rulers | `2466:28818` | pending | |
-| `--vp-candidate-about-black-30` | `rgba(0,0,0,0.3)` | Workflow numbers, light ruler labels | `2466:28885` | pending | |
-| `--vp-candidate-about-black-50` | `rgba(0,0,0,0.5)` | Light corner brackets | specialties bracket SVG | pending | Dark brackets reuse the brief tick color. |
+| `--vp-candidate-about-black-15` | `rgba(0,0,0,0.15)` | ~~Light-section rules and rulers~~ | `2466:28818` | superseded → `--vp-ink-15` | |
+| `--vp-candidate-about-black-30` | `rgba(0,0,0,0.3)` | ~~Workflow numbers, light ruler labels~~ | `2466:28885` | superseded → `--vp-ink-30` | |
+| `--vp-candidate-about-black-50` | `rgba(0,0,0,0.5)` | ~~Light corner brackets~~ | specialties bracket SVG | superseded → `--vp-ink-50` | Dark brackets reuse the brief tick color. |
 | `--vp-candidate-about-black-70` | `rgba(0,0,0,0.7)` | Body on white | `2466:28825` | pending | |
 | `--vp-candidate-about-white-20` | `rgba(255,255,255,0.2)` | Inactive menu rows, dark section | `2466:28864` | pending | |
-| `--vp-candidate-about-white-50` | `rgba(255,255,255,0.5)` | More About dek | `2466:29066` | pending | |
+| `--vp-candidate-about-white-50` | `rgba(255,255,255,0.5)` | ~~More About dek~~ | `2466:29066` | superseded → `--vp-muted-50` | |
 | `--vp-candidate-about-white-60` | `rgba(255,255,255,0.6)` | Body on black | `2466:28870` | pending | |
 | `--vp-candidate-about-cell-pad` | `30px` | Menu rows, image frames, More About frame | `p-30` | pending | |
 | `--vp-candidate-about-cta-height` | `80px` | Production-row buttons | `2466:28978` | pending | Same height as `--vp-candidate-brief-btn-height`; kept separate so About does not depend on the form. |
@@ -353,15 +361,15 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-film-image-height` | `320px` | same | same | pending | |
 | `--vp-candidate-about-film-dim` | `0.4` | Non-center film frames | `opacity-40` on `2466:28697` | pending | |
 | `--vp-candidate-about-hero-inset` | `30px` | Hero title/caption side inset | `2466:28637` x=30 | pending | |
-| `--vp-candidate-about-hero-frame-inset` | `15px` | Hero corner ticks | `2466:28604` pad 15 | pending | |
-| `--vp-candidate-about-hero-title-width` | `594px` | Hero bottom title measure | `2466:28637` | pending | Title + caption type share `--vp-candidate-about-step-size` / `--vp-candidate-about-step-lh` + `--vp-text`. |
+| `--vp-candidate-about-hero-frame-inset` | `15px` | ~~Hero corner ticks~~ | `2466:28604` pad 15 | superseded → `--vp-frame-inset` | |
+| `--vp-candidate-about-hero-title-width` | `594px` | Hero bottom title measure | `2466:28637` | pending | Title + caption type share `--vp-step-size` / `--vp-step-lh` + `--vp-text`. |
 | `--vp-candidate-about-hero-quote-width` | `328px` | Loupe-only quote cards | `2466:28609` (was 356) | pending | Midway between Figma 356 and the 300 outer-edge pass. |
 | `--vp-candidate-about-hero-quote-pad` | `16px` | same | same | pending | |
 | `--vp-candidate-about-hero-quote-bg` | `rgba(255,255,255,0.1)` | same | same | pending | |
 | `--vp-candidate-about-hero-quote-blur` | `25px` | same | `backdrop-blur` 25 | pending | |
 | `--vp-candidate-about-hero-scroll-size` | `24px` | Hero bottom scroll cue | helper | pending | Thin down-arrow with stem; decorative only. |
 | `--vp-candidate-about-hero-mobile-inset` | `16px` | Hero / section side inset, mobile | `2602:26878` | pending | |
-| `--vp-candidate-about-hero-mobile-frame-inset` | `8px` | Hero corner ticks, mobile | `2602:26920` | pending | |
+| `--vp-candidate-about-hero-mobile-frame-inset` | `8px` | ~~Hero corner ticks, mobile~~ | `2602:26920` | superseded → `--vp-frame-inset-mobile` | |
 | `--vp-candidate-about-hero-mobile-title-size` | `17px` | Hero company line under mark, mobile | product | pending | ~20% above desktop 14px step size. |
 | `--vp-candidate-about-hero-mobile-title-lh` | `24px` | same | product | pending | |
 | `--vp-candidate-about-hero-mobile-caption-size` | `12px` | Hero caption, mobile | `2602:26876` | pending | Pure white (desktop tweak). |
@@ -373,11 +381,11 @@ Defined in `src/components/about/about-tokens.css` (imported by the About page).
 | `--vp-candidate-about-hero-tooltip-width` | `300px` | Hotspot tooltip max width | `2602:29252` | pending | |
 | `--vp-candidate-about-mobile-pad-block` | `100px` | Section padding, mobile | `2602:27420` | pending | |
 | `--vp-candidate-about-mobile-header-gap` | `60px` | Header → accordion gap | `2602:27420` | pending | |
-| `--vp-candidate-about-mobile-display-size` | `30px` | Section / workflow titles, mobile | `2602:27539` | pending | |
+| `--vp-candidate-about-mobile-display-size` | `30px` | ~~Section / workflow titles, mobile~~ | `2602:27539` | superseded → `--vp-section-display-size-mobile` | |
 | `--vp-candidate-about-mobile-tab-size` | `18px` | Accordion tab labels, mobile | product | pending | ~25% under prior 24px; rest color uses inactive-hover. |
 | `--vp-candidate-about-mobile-body-size` | `16px` | Body copy, mobile | body_medium | pending | |
 | `--vp-candidate-about-mobile-dek-size` | `20px` | Workflow accordion headlines, mobile | dek/body ratio | pending | Desktop 22/18 scaled to mobile 16px body. |
-| `--vp-candidate-about-mobile-eyebrow-size` | `12px` | Yellow eyebrows, mobile | `2602:27538` | pending | |
+| `--vp-candidate-about-mobile-eyebrow-size` | `12px` | ~~Yellow eyebrows, mobile~~ | `2602:27538` | superseded → `--vp-eyebrow-size-mobile` | |
 | `--vp-candidate-about-mobile-statement-size` | `30px` | Statement body, mobile | `2602:27028` | pending | |
 | `--vp-candidate-about-mobile-statement-accent-size` | `40px` | Yellow close line, mobile | `2602:27028` | pending | |
 | `--vp-candidate-about-mobile-film-frame` | `200px` | Horizontal film cell | `2602:27281` | pending | |
@@ -416,5 +424,5 @@ Defined in `src/app/[locale]/contact/contact-page.css` inside `@media (min-width
 | `--vp-candidate-contact-inner-pad-inline` | `40px` | same | same | pending | |
 | `--vp-candidate-contact-copy-gap` | `24px` | Heading to body | same | pending | |
 | `--vp-candidate-contact-action-gap` | `60px` | Body to button | same | pending | |
-| `--vp-candidate-contact-body-width` | `632px` | CTA body measure | same | pending | Color reuses `--vp-candidate-about-white-50`, not `--vp-text-muted`. |
+| `--vp-candidate-contact-body-width` | `632px` | CTA body measure | same | pending | Color reuses `--vp-muted-50`, not `--vp-text-muted`. |
 | `--vp-candidate-contact-ruler-width` | `1074px` | Tick ruler clip | same | pending | Rulers reuse `CornerFrame` at its 4px inset. |

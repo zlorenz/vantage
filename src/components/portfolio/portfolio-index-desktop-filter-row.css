@@ -330,7 +330,7 @@
   bottom: 0;
   left: 0;
   width: var(--vp-index-view-toggle-size, 2.5rem);
-  background: var(--vp-home-carousel-brand-accent, #fdb913);
+  background: var(--vp-link);
   transform: translateX(0);
   transition: transform 0.28s ease;
   pointer-events: none;
