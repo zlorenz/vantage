@@ -130,25 +130,10 @@ export interface PortfolioGridEntry extends PortfolioCard {
   crewCredits?: CrewCredit[];
 }
 
-/** Card + internal filter metadata for work-internal grid. */
-export interface PortfolioInternalGridEntry extends PortfolioCard {
-  clientSlugs?: string[];
-  crewMembers?: CrewMemberRef[];
-}
+/** @deprecated PortfolioGrid internal filterMode — unused; kept for type compat. */
+export type PortfolioInternalGridEntry = PortfolioCard;
 
-export interface CrewMemberRef {
-  slug: string;
-  role: 'director' | 'dop' | 'art-director';
-}
-
-/** Named crew member for internal library skim + filters. */
-export interface InternalCrewMember {
-  name: string;
-  slug: string;
-  role: 'director' | 'dop' | 'art-director';
-}
-
-/** Named client/platform refs for internal library. */
+/** Named platform refs for internal library (legacy field; removed in D10). */
 export interface NamedSlugTerm {
   name: string;
   slug: string;
@@ -206,8 +191,7 @@ export interface InternalLibraryEntry {
   videos?: PortfolioVideo[];
   /** @deprecated Prefer videos. */
   additionalVideos?: PortfolioVideo[];
-  clients?: NamedSlugTerm[];
-  crewMembers?: InternalCrewMember[];
+  /** @deprecated Legacy WP platform refs — removed from schema in D10. */
   platforms?: NamedSlugTerm[];
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];

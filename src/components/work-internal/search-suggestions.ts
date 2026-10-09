@@ -50,10 +50,6 @@ export function buildSearchSuggestionIndex(
     addPhrase(counts, parts.productName);
     addPhrase(counts, parts.campaignTitle);
 
-    for (const client of entry.clients ?? []) {
-      addPhrase(counts, client.name);
-    }
-
     for (const brand of getStructuredRoleNames(entry.crewCredits, 'brand')) {
       addPhrase(counts, brand);
     }

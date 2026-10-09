@@ -187,31 +187,11 @@ export function publicFilterOptions(
     );
 }
 
+/** @deprecated Internal grid filters used legacy clients/crewMembers — unused. */
 function matchesInternalFilters(
-  entry: PortfolioInternalGridEntry,
-  filters: InternalFilters,
+  _entry: PortfolioInternalGridEntry,
+  _filters: InternalFilters,
 ): boolean {
-  if (filters.client && !entry.clientSlugs?.includes(filters.client)) {
-    return false;
-  }
-  if (filters.director) {
-    const hasDirector = entry.crewMembers?.some(
-      (m) => m.role === 'director' && m.slug === filters.director,
-    );
-    if (!hasDirector) return false;
-  }
-  if (filters.dop) {
-    const hasDop = entry.crewMembers?.some(
-      (m) => m.role === 'dop' && m.slug === filters.dop,
-    );
-    if (!hasDop) return false;
-  }
-  if (filters['art-director']) {
-    const hasArtDirector = entry.crewMembers?.some(
-      (m) => m.role === 'art-director' && m.slug === filters['art-director'],
-    );
-    if (!hasArtDirector) return false;
-  }
   return true;
 }
 

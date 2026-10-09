@@ -163,25 +163,6 @@ function matchesRoleFilter(
     }
   }
 
-  // Legacy taxonomy slug arrays (until clients/crewMembers are retired).
-  if (roleKey === 'brand' && entry.clients?.some((c) => c.slug === filterId)) {
-    return true;
-  }
-  if (
-    roleKey !== 'brand' &&
-    roleKey !== 'editor' &&
-    roleKey !== 'vfx_online' &&
-    entry.crewMembers?.some(
-      (m) =>
-        m.slug === filterId &&
-        (roleKey === 'art_director'
-          ? m.role === 'art-director'
-          : m.role === roleKey),
-    )
-  ) {
-    return true;
-  }
-
   return false;
 }
 
@@ -323,19 +304,12 @@ export function getCrewName(
     role === 'art-director' ? 'art_director' : role;
   const fromCredits = getCreditRoleNames(entry, roleKey);
   if (fromCredits.length) return fromCredits.join(', ');
-
-  const fromTaxonomy = entry.crewMembers
-    ?.filter((m) => m.role === role)
-    .map((m) => m.name)
-    .filter(Boolean);
-  if (fromTaxonomy?.length) return fromTaxonomy.join(', ');
   return '—';
 }
 
 export function getPrimaryClientName(entry: InternalLibraryEntry): string {
   const brands = getBrandNames(entry);
   if (brands[0]) return brands[0];
-  if (entry.clients?.[0]?.name) return entry.clients[0].name;
   return '—';
 }
 
@@ -383,8 +357,6 @@ export function buildSearchText(entry: InternalLibraryEntry): string {
     ...videoTitles,
     editor === '—' ? '' : editor,
     art === '—' ? '' : art,
-    ...(entry.clients?.map((c) => c.name) ?? []),
-    ...(entry.crewMembers?.map((m) => m.name) ?? []),
     ...getBrandNames(entry),
     ...peopleNames,
   ];

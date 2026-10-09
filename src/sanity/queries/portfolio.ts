@@ -65,15 +65,6 @@ const PORTFOLIO_FILTER_FIELDS = `
   }
 `;
 
-/** Crew/client slug data for work-internal AND-logic filters. */
-const PORTFOLIO_INTERNAL_FILTER_FIELDS = `
-  "clientSlugs": clients[]->slug.current,
-  "crewMembers": crewMembers[]->{
-    "slug": slug.current,
-    role
-  }
-`;
-
 /** Structured crew credits for portfolio detail and work-internal filters. */
 const PORTFOLIO_CREDITS_FIELDS = `
   crewCredits[]{
@@ -220,17 +211,6 @@ export const PORTFOLIO_SLUGS_QUERY = `
 `;
 
 /**
- * All portfolio entries for work-internal — includes isHidden entries.
- * Kept for PortfolioGrid internal filterMode compatibility.
- */
-export const ALL_PORTFOLIO_INTERNAL_QUERY = `
-  *[_type == "portfolioEntry" && !defined(trash.trashedAt)] | order(publishedAt desc, title asc) {
-    ${PORTFOLIO_CARD_FIELDS},
-    ${PORTFOLIO_INTERNAL_FILTER_FIELDS}
-  }
-`;
-
-/**
  * Enriched library rows for the internal work tool — skim meta + detail pane.
  * Includes hidden entries; resolves names (not just slugs) for filters/display.
  */
@@ -260,15 +240,6 @@ const INTERNAL_LIBRARY_ENTRY_FIELDS = `
     xinpianchangUrl,
     videoTitle,
     videoTitleZh
-  },
-  clients[]->{
-    name,
-    "slug": slug.current
-  },
-  crewMembers[]->{
-    name,
-    "slug": slug.current,
-    role
   },
   platforms[]->{
     name,
