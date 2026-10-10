@@ -2,9 +2,11 @@
 
 /**
  * useCampaignBriefForm — state for the 3-step branching Campaign Brief form.
+ * Syncs step to `?step=` (pushState/popstate) and persists field values in
+ * sessionStorage so refresh / Back-Forward restore progress.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS,
   CAMPAIGN_BRIEF_MAX_FILES,
@@ -16,43 +18,28 @@ import {
   type CampaignBriefFieldKey,
   type CampaignBriefStepConfig,
 } from '@/lib/campaign-brief-fields';
+import {
+  BRIEF_STEP_REQUIRED_FIELDS,
+  clearBriefDraft,
+  clampBriefStep,
+  createInitialBriefValues,
+  pushBriefStepUrl,
+  readBriefStepFromLocation,
+  replaceBriefStepUrl,
+  resolveBriefInitialState,
+  saveBriefDraft,
+  type CampaignBriefFormValues,
+} from '@/lib/campaign-brief-draft';
 import { getCampaignBriefUi } from '@/lib/campaign-brief-i18n';
 import { uploadBriefFilesToSanity } from '@/lib/campaign-brief-client-upload';
 import type { BriefAttachmentMeta } from '@/lib/campaign-brief-attachments';
 import type { Locale } from '@/i18n/routing';
 
+export type { CampaignBriefFormValues };
+
 export type CampaignBriefSubmissionState = 'idle' | 'submitting' | 'success' | 'error';
 
 export type CampaignBriefFieldErrors = Partial<Record<CampaignBriefFieldKey | 'files', string>>;
-
-export interface CampaignBriefFormValues {
-  contact_name_first: string;
-  contact_name_last: string;
-  company_name: string;
-  contact_email: string;
-  discovery_source: string;
-  campaign_title: string;
-  campaign_type: string;
-  brand_description: string;
-  product_description: string;
-  campaign_description: string;
-  target_audience: string;
-  reference_videos: string;
-  delivery_deadline: string;
-  delivery_deadline_unknown: boolean;
-  delivery_deadline_note: string;
-  extra_deliverables: string[];
-  extra_deliverables_other_note: string;
-  budget_range: string;
-  project_description: string;
-  shoot_event_date: string;
-  shoot_event_date_unknown: boolean;
-  shoot_event_date_note: string;
-  production_scope: string;
-  social_channels: string[];
-  aspect_ratios: string[];
-  additional_notes: string;
-}
 
 export interface CampaignBriefVisibility {
   showProductBranch: boolean;
@@ -83,6 +70,8 @@ export interface UseCampaignBriefFormReturn {
   addFiles: (incoming: FileList | File[]) => void;
   removeFile: (index: number) => void;
   fileError: string | null;
+  /** True when a session draft was restored (files are never restored). */
+  restoredFromDraft: boolean;
   submissionState: CampaignBriefSubmissionState;
   submitError: string | null;
   submit: () => Promise<void>;
@@ -93,49 +82,15 @@ export interface UseCampaignBriefFormReturn {
   setHoneypot: (value: string) => void;
 }
 
-const STEP_REQUIRED_FIELDS: Record<number, CampaignBriefFieldKey[]> = {
-  1: ['contact_name_first', 'contact_name_last', 'company_name', 'contact_email'],
-  2: ['campaign_title', 'campaign_type', 'budget_range'],
-};
-
 /**
  * TEMP DEV ONLY — set to `false` before shipping.
  * When true, Next skips required-field checks so empty steps can be skimmed.
  */
 const SKIP_STEP_REQUIRED_VALIDATION = false;
 
-const ALLOWED_EXTENSIONS = new Set<string>(CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS);
+const DRAFT_SAVE_DEBOUNCE_MS = 300;
 
-function createInitialValues(): CampaignBriefFormValues {
-  return {
-    contact_name_first: '',
-    contact_name_last: '',
-    company_name: '',
-    contact_email: '',
-    discovery_source: '',
-    campaign_title: '',
-    campaign_type: '',
-    brand_description: '',
-    product_description: '',
-    campaign_description: '',
-    target_audience: '',
-    reference_videos: '',
-    delivery_deadline: '',
-    delivery_deadline_unknown: false,
-    delivery_deadline_note: '',
-    extra_deliverables: [],
-    extra_deliverables_other_note: '',
-    budget_range: '',
-    project_description: '',
-    shoot_event_date: '',
-    shoot_event_date_unknown: false,
-    shoot_event_date_note: '',
-    production_scope: '',
-    social_channels: [],
-    aspect_ratios: [],
-    additional_notes: '',
-  };
-}
+const ALLOWED_EXTENSIONS = new Set<string>(CAMPAIGN_BRIEF_ALLOWED_EXTENSIONS);
 
 function computeVisibility(values: CampaignBriefFormValues): CampaignBriefVisibility {
   const type = values.campaign_type;
@@ -255,14 +210,24 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
     [ui.fieldRequired, ui.invalidEmail],
   );
 
+  // SSR + first paint use empty defaults; session draft hydrates in useEffect
+  // (useState initializers do not re-run on the client after SSR).
   const [currentStep, setCurrentStep] = useState(1);
-  const [values, setValues] = useState<CampaignBriefFormValues>(createInitialValues);
+  const [values, setValues] = useState<CampaignBriefFormValues>(createInitialBriefValues);
+  const [restoredFromDraft, setRestoredFromDraft] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const [errors, setErrors] = useState<CampaignBriefFieldErrors>({});
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
   const [submissionState, setSubmissionState] = useState<CampaignBriefSubmissionState>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState('');
+
+  /** How many step advances we pushed this session (for Previous → history.back). */
+  const pushedDepthRef = useRef(0);
+  const skipDraftSaveRef = useRef(false);
+  const valuesRef = useRef(values);
+  valuesRef.current = values;
 
   const visibility = useMemo(() => computeVisibility(values), [values]);
 
@@ -273,6 +238,50 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
 
   const isDisabled = submissionState === 'submitting';
   const totalSteps = CAMPAIGN_BRIEF_STEPS.length;
+
+  // Restore draft + align URL once on the client.
+  useEffect(() => {
+    const resolved = resolveBriefInitialState();
+    skipDraftSaveRef.current = true;
+    setValues(resolved.values);
+    setCurrentStep(resolved.step);
+    setRestoredFromDraft(resolved.restoredFromDraft);
+    replaceBriefStepUrl(resolved.step);
+    setHydrated(true);
+  }, []);
+
+  // Debounced draft persistence (after hydrate).
+  useEffect(() => {
+    if (!hydrated) return;
+    if (skipDraftSaveRef.current) {
+      skipDraftSaveRef.current = false;
+      return;
+    }
+    if (submissionState === 'success') return;
+
+    const timer = window.setTimeout(() => {
+      saveBriefDraft(currentStep, values);
+    }, DRAFT_SAVE_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [hydrated, currentStep, values, submissionState]);
+
+  // Browser Back/Forward → sync step from URL (clamp to completed steps).
+  useEffect(() => {
+    function onPopState() {
+      const urlStep = readBriefStepFromLocation() ?? 1;
+      const next = clampBriefStep(urlStep, valuesRef.current);
+      setCurrentStep(next);
+      if (next !== urlStep) {
+        replaceBriefStepUrl(next);
+      }
+      // Depth unknown after arbitrary history traversal; fall back to replaceState.
+      pushedDepthRef.current = 0;
+    }
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const setFieldValue = useCallback(
     (key: CampaignBriefFieldKey, value: string | string[] | boolean) => {
@@ -308,7 +317,7 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
   );
 
   const clearStepErrors = useCallback(() => {
-    const stepFields = STEP_REQUIRED_FIELDS[currentStep] ?? [];
+    const stepFields = BRIEF_STEP_REQUIRED_FIELDS[currentStep] ?? [];
     setErrors((prev) => {
       const next = { ...prev };
       for (const key of stepFields) {
@@ -319,7 +328,7 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
   }, [currentStep]);
 
   const nextStep = useCallback((): boolean => {
-    const stepFields = STEP_REQUIRED_FIELDS[currentStep] ?? [];
+    const stepFields = BRIEF_STEP_REQUIRED_FIELDS[currentStep] ?? [];
 
     if (!SKIP_STEP_REQUIRED_VALIDATION) {
       const stepErrors = validateFields(values, stepFields, validationMessages);
@@ -339,7 +348,10 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
     });
 
     if (currentStep < totalSteps) {
-      setCurrentStep((s) => s + 1);
+      const next = currentStep + 1;
+      setCurrentStep(next);
+      pushBriefStepUrl(next);
+      pushedDepthRef.current += 1;
     }
 
     return true;
@@ -348,14 +360,33 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
   const prevStep = useCallback(() => {
     if (currentStep <= 1) return;
     clearStepErrors();
-    setCurrentStep((s) => s - 1);
+
+    if (pushedDepthRef.current > 0) {
+      pushedDepthRef.current -= 1;
+      window.history.back();
+      return;
+    }
+
+    const prev = currentStep - 1;
+    setCurrentStep(prev);
+    replaceBriefStepUrl(prev);
   }, [currentStep, clearStepErrors]);
 
   const goToStep = useCallback(
     (step: number) => {
       if (step < 1 || step >= currentStep) return;
       clearStepErrors();
+
+      const delta = step - currentStep;
+      if (pushedDepthRef.current > 0 && delta < 0 && -delta <= pushedDepthRef.current) {
+        pushedDepthRef.current += delta;
+        window.history.go(delta);
+        return;
+      }
+
+      pushedDepthRef.current = 0;
       setCurrentStep(step);
+      replaceBriefStepUrl(step);
     },
     [currentStep, clearStepErrors],
   );
@@ -476,6 +507,8 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
       }
 
       pushBriefSubmitEvent();
+      clearBriefDraft();
+      setRestoredFromDraft(false);
       setSubmissionState('success');
     } catch {
       setSubmitError(ui.submitError);
@@ -485,14 +518,19 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
 
   const resetForm = useCallback(() => {
     formStartTimeRef.current = Date.now();
+    skipDraftSaveRef.current = true;
+    clearBriefDraft();
+    pushedDepthRef.current = 0;
     setCurrentStep(1);
-    setValues(createInitialValues());
+    setValues(createInitialBriefValues());
+    setRestoredFromDraft(false);
     setErrors({});
     setFiles([]);
     setFileError(null);
     setSubmissionState('idle');
     setSubmitError(null);
     setHoneypot('');
+    replaceBriefStepUrl(1);
 
     if (typeof window !== 'undefined') {
       const w = window as Window & { _vp_brief_pushed?: boolean };
@@ -518,6 +556,7 @@ export function useCampaignBriefForm(locale: Locale = 'en'): UseCampaignBriefFor
     addFiles,
     removeFile,
     fileError,
+    restoredFromDraft,
     submissionState,
     submitError,
     submit,

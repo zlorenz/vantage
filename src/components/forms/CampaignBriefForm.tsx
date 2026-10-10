@@ -51,6 +51,7 @@ export function CampaignBriefForm() {
     addFiles,
     removeFile,
     fileError,
+    restoredFromDraft,
     submissionState,
     submit,
     resetForm,
@@ -133,6 +134,7 @@ export function CampaignBriefForm() {
             onAddFiles={addFiles}
             onRemoveFile={removeFile}
             fileError={fileError}
+            showFilesRestoreHint={restoredFromDraft && files.length === 0}
             hasError={hasError}
             errors={errors}
             disabled={isDisabled}

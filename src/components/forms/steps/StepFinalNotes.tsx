@@ -23,6 +23,8 @@ export interface StepFinalNotesProps {
   onAddFiles: (files: FileList | File[]) => void;
   onRemoveFile: (index: number) => void;
   fileError: string | null;
+  /** After a session draft restore — File picks are not persisted. */
+  showFilesRestoreHint?: boolean;
   hasError: (key: CampaignBriefFieldKey | 'files') => boolean;
   errors: CampaignBriefFieldErrors;
   disabled: boolean;
@@ -38,6 +40,7 @@ export function StepFinalNotes({
   onAddFiles,
   onRemoveFile,
   fileError,
+  showFilesRestoreHint = false,
   hasError,
   errors,
   disabled,
@@ -115,6 +118,9 @@ export function StepFinalNotes({
         </label>
         {ui.acceptedFilesHelp && (
           <p className="vp-field-hint vp-field-hint--before">{ui.acceptedFilesHelp}</p>
+        )}
+        {showFilesRestoreHint && (
+          <p className="vp-field-hint vp-field-hint--before">{ui.filesRestoreHint}</p>
         )}
 
         <input

@@ -52,6 +52,8 @@ export type CampaignBriefUi = {
   attachFiles: string;
   removeFile: string;
   acceptedFilesHelp: string;
+  /** Shown on step 3 after a draft restore (File picks are not persisted). */
+  filesRestoreHint: string;
   dropzonePrompt: string;
   dropzoneOr: string;
   maxFilesAllowed: (max: number) => string;
@@ -256,6 +258,8 @@ const UI_EN: CampaignBriefUi = {
   attachFiles: 'Browse files',
   removeFile: 'Remove',
   acceptedFilesHelp: BRIEFING_MATERIALS_HINT_EN,
+  filesRestoreHint:
+    "Re-attach any briefing materials — file picks aren't saved across reloads.",
   dropzonePrompt: DROPZONE_PROMPT_EN,
   dropzoneOr: DROPZONE_OR_EN,
   maxFilesAllowed: (max) => `Maximum ${max} files allowed.`,
@@ -299,6 +303,7 @@ const UI_ZH: CampaignBriefUi = {
   attachFiles: '浏览文件',
   removeFile: '移除',
   acceptedFilesHelp: BRIEFING_MATERIALS_HINT_ZH,
+  filesRestoreHint: '请重新添加简介附件——文件选择不会在刷新后保留。',
   dropzonePrompt: DROPZONE_PROMPT_ZH,
   dropzoneOr: DROPZONE_OR_ZH,
   maxFilesAllowed: (max) => `最多允许 ${max} 个文件。`,
@@ -378,6 +383,7 @@ export function listCampaignBriefPhrasePairs(): CampaignBriefPhrasePair[] {
   push(UI_EN.attachFiles, UI_ZH.attachFiles, 'attachFiles')
   push(UI_EN.removeFile, UI_ZH.removeFile, 'removeFile')
   push(UI_EN.acceptedFilesHelp, UI_ZH.acceptedFilesHelp, 'acceptedFilesHelp')
+  push(UI_EN.filesRestoreHint, UI_ZH.filesRestoreHint, 'filesRestoreHint')
   push(UI_EN.dropzonePrompt, UI_ZH.dropzonePrompt, 'dropzonePrompt')
   push(UI_EN.dropzoneOr, UI_ZH.dropzoneOr, 'dropzoneOr')
   push(
