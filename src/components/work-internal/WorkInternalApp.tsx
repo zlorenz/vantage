@@ -311,7 +311,7 @@ export function WorkInternalApp({
                     className="vp-internal-clear"
                     onClick={clearFilters}
                   >
-                    Clear filters
+                    Clear all
                   </button>
                 </>
               ) : null}

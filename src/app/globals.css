@@ -3619,7 +3619,7 @@
 
 .vp-internal-fchip__option {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   width: 100%;
@@ -4721,23 +4721,34 @@
 
 /* Mobile filter / sort sheet body */
 
-.vp-internal-sheet__body {
-  padding: 0;
+/*
+ * Filter sheet: fixed panel height (same as BottomSheet max) so drill-ins
+ * don’t resize the sheet when option lists are short vs tall. Content stays
+ * top-aligned; short menus leave empty space below.
+ */
+.vp-bottom-sheet__panel.vp-internal-sheet__panel {
+  height: min(78vh, 40rem);
+  max-height: min(78vh, 40rem);
 }
 
-.vp-internal-sheet__clear {
-  padding: 0.45rem 0.65rem;
-  font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-vp-link);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+.vp-internal-sheet__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  /* Viewport owns scrolling so short/tall menus don’t resize the panel. */
+  overflow: hidden;
 }
 
 /* Drill-in viewport (mirrors /work index filter sheet motion) */
+
+.vp-internal-sheet__viewport-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 .vp-internal-sheet__viewport-wrap.is-drilling,
 .vp-bottom-sheet__body.is-drilling {
@@ -4746,6 +4757,15 @@
 }
 
 .vp-internal-sheet__viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.vp-internal-sheet__viewport-wrap.is-drilling .vp-internal-sheet__viewport {
   overflow: hidden;
 }
 
@@ -4753,6 +4773,7 @@
   display: flex;
   align-items: flex-start;
   width: 100%;
+  min-height: 100%;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   will-change: transform;
@@ -4767,6 +4788,8 @@
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
+  /* Fill viewport height so short lists stay top-aligned with space below. */
+  min-height: 100%;
 }
 
 .vp-internal-sheet__pane--incoming {
@@ -4922,8 +4945,9 @@
 }
 
 .vp-internal-sheet__pane-inner .vp-internal-fchip__option {
+  align-items: center;
   min-height: 2.85rem;
-  padding: 0.7rem 0.35rem;
+  padding: 0.65rem 0.35rem;
   font-size: 0.9375rem;
   border-bottom-color: var(--color-vp-border-soft);
   -webkit-tap-highlight-color: transparent;
@@ -5036,7 +5060,10 @@
   .vp-internal-nav__inner {
     grid-template-columns: auto minmax(0, 1fr);
     gap: 0.65rem;
+    /* Match bottom inset — search was hugging the top of the bar. */
+    padding-block: 0.5rem;
     padding-inline: 0.75rem;
+    box-sizing: border-box;
   }
 
   .vp-internal-nav__title {

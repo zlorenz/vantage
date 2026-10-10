@@ -442,7 +442,7 @@ export function WorkInternalToolbar({
             <span className="vp-internal-clear__icon" aria-hidden="true">
               ×
             </span>
-            Clear filters
+            Clear all
           </button>
         ) : null}
       </div>

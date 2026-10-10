@@ -370,7 +370,6 @@ export function WorkInternalFilterSheet({
       return (
         <div className="vp-internal-sheet__pane-inner">
           <div className="vp-internal-sheet__section">
-            <h3 className="vp-internal-sheet__section-label">Visibility</h3>
             <div
               className="vp-internal-sheet__segment"
               role="group"
@@ -575,10 +574,13 @@ export function WorkInternalFilterSheet({
       hasActiveFilters ? (
         <button
           type="button"
-          className="vp-internal-sheet__clear"
+          className="vp-internal-clear vp-internal-clear--danger"
           onClick={onClear}
         >
-          Clear
+          <span className="vp-internal-clear__icon" aria-hidden="true">
+            ×
+          </span>
+          Clear all
         </button>
       ) : undefined
     ) : (
@@ -640,6 +642,7 @@ export function WorkInternalFilterSheet({
       onClose={onClose}
       title={titleFor(chromeView)}
       closeAriaLabel="Close filters"
+      panelClassName="vp-internal-sheet__panel"
       bodyClassName={
         drill
           ? 'vp-internal-sheet__body is-drilling'

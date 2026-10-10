@@ -48,6 +48,13 @@ body:has(.vp-internal-page) .vp-internal-page {
   color: var(--vp-wi-text);
 }
 
+/* Mobile: taller nav so equal padding-block around search can breathe. */
+@media (max-width: 767.98px) {
+  body:has(.vp-internal-page) .vp-internal-page {
+    --vp-internal-nav-height: 4rem;
+  }
+}
+
 body:has(.vp-internal-page) .vp-internal-footer {
   flex-shrink: 0;
   margin-top: auto;
@@ -860,9 +867,13 @@ body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea:focus {
 
   body:has(.vp-internal-page) .vp-internal-sheet__segment-btn.is-active,
   body:has(.vp-internal-page) .vp-internal-sheet__choice.is-selected,
-  body:has(.vp-internal-page) .vp-internal-sheet__nav-row.has-selection .vp-internal-sheet__nav-label,
-  body:has(.vp-internal-page) .vp-internal-sheet__clear {
+  body:has(.vp-internal-page) .vp-internal-sheet__nav-row.has-selection .vp-internal-sheet__nav-label {
     color: var(--vp-wi-accent);
+  }
+
+  body:has(.vp-internal-page) .vp-bottom-sheet__title {
+    font-family: var(--font-vp-sans);
+    letter-spacing: 0.02em;
   }
 
   body:has(.vp-internal-page) .vp-internal-sheet__segment-btn.is-active {
