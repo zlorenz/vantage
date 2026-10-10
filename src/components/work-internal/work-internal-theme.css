@@ -213,8 +213,19 @@ body:has(.vp-internal-page) .vp-internal-nav-index__item {
   color: var(--vp-wi-text-muted);
 }
 
-body:has(.vp-internal-page) .vp-internal-nav-index__item:hover {
+body:has(.vp-internal-page) .vp-internal-nav-index__item:hover,
+body:has(.vp-internal-page) .vp-internal-nav-index__item.is-current {
   color: var(--vp-wi-text);
+  background: var(--vp-wi-surface-hover);
+}
+
+body:has(.vp-internal-page) .vp-internal-nav-index__menu-btn {
+  color: var(--vp-wi-text);
+  border-radius: var(--vp-wi-radius-sm);
+}
+
+body:has(.vp-internal-page) .vp-internal-nav-index__menu-btn:hover,
+body:has(.vp-internal-page) .vp-internal-nav-index__menu-btn:focus-visible {
   background: var(--vp-wi-surface-hover);
 }
 

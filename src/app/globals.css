@@ -3096,6 +3096,34 @@
   cursor: pointer;
 }
 
+/* Mobile-only hamburger — desktop uses the title + caret trigger. */
+.vp-internal-nav-index__menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  color: var(--color-vp-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0.45rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vp-internal-nav-index__menu-btn:hover,
+.vp-internal-nav-index__menu-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  outline: none;
+}
+
+.vp-internal-nav-index__item.is-current {
+  color: var(--color-vp-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .vp-internal-nav-index__label {
   min-width: 0;
   overflow: hidden;
@@ -3119,7 +3147,7 @@
   top: calc(100% + 0.4rem);
   right: 0;
   z-index: 80;
-  min-width: 100%;
+  min-width: max(100%, 12.5rem);
   padding: 0.25rem 0;
   background: #141416;
   border: 1px solid var(--color-vp-border-soft);
@@ -5072,7 +5100,7 @@
   }
 
   .vp-internal-nav__inner {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 0.65rem;
     /* Match bottom inset — search was hugging the top of the bar. */
     padding-block: 0.5rem;
@@ -5080,15 +5108,17 @@
     box-sizing: border-box;
   }
 
-  .vp-internal-nav__title {
+  /* Hide desktop title+caret; hamburger handles index switching. */
+  .vp-internal-nav-index .vp-internal-nav__title {
     display: none;
   }
 
-  .vp-internal-page--utility .vp-internal-nav__inner {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+  .vp-internal-nav-index__menu-btn {
+    display: inline-flex;
   }
 
-  .vp-internal-page--utility .vp-internal-nav__title {
+  /* Static utility titles (editor, etc.) still show when not the index menu. */
+  .vp-internal-page--utility .vp-internal-nav__inner > .vp-internal-nav__title {
     display: block;
   }
 
