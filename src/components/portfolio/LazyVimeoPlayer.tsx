@@ -60,6 +60,11 @@ interface LazyVimeoPlayerProps {
    * Best-effort — iOS may still require a second tap if the SDK was not ready.
    */
   autoPlay?: boolean;
+  /**
+   * Keep playback inline (no mobile/carousel fullscreen-on-play).
+   * Use for lightbox where a separate fullscreen control is available.
+   */
+  inlinePlayback?: boolean;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -143,6 +148,7 @@ export function LazyVimeoPlayer({
   fullscreenOnPlay = false,
   prefetch = false,
   autoPlay = false,
+  inlinePlayback = false,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
@@ -177,15 +183,18 @@ export function LazyVimeoPlayer({
   const normalizedUrl = normalizeStoredVideoUrl(vimeoUrl);
   const videoId = extractVimeoId(normalizedUrl);
 
-  // No autoplay/muted in the URL — we call play() + setMuted(false) from the tap.
+  // Poster taps: play() + unmute from the gesture. Lightbox autoPlay: muted
+  // autoplay in the embed URL (gesture is gone by the time the SDK is ready).
+  const stayInline = inlinePlayback || autoPlay;
   const embedSrc =
-    isMobile === null && !fullscreenOnPlay
+    isMobile === null && !fullscreenOnPlay && !stayInline
       ? null
       : vimeoPlayerEmbedSrc(normalizedUrl, {
-          playsinline: !(fullscreenOnPlay || isMobile),
+          playsinline: stayInline || !(fullscreenOnPlay || isMobile),
           // Warm enough of the stream that play() from the poster tap is immediate.
           preload: 'auto',
           minimalUi: true,
+          ...(autoPlay ? {autoplay: true, muted: true} : {}),
         });
 
   useEffect(() => {
@@ -407,9 +416,20 @@ export function LazyVimeoPlayer({
   useEffect(() => clearPlaybackWatchdog, [clearPlaybackWatchdog]);
 
   const attemptPlayback = useCallback(
-    async (player: Player, wantsFullscreen: boolean) => {
+    async (
+      player: Player,
+      wantsFullscreen: boolean,
+      options?: {allowMutedFallback?: boolean},
+    ) => {
       clearPlaybackWatchdog();
       const wrap = wrapRef.current;
+      const allowMutedFallback = options?.allowMutedFallback === true;
+
+      const finishStarted = () => {
+        pendingStartRef.current = false;
+        awaitingTapToPlayRef.current = false;
+        setAwaitingTapToPlay(false);
+      };
 
       try {
         // Keep FS + play in one gesture — awaiting requestFullscreen before
@@ -422,10 +442,7 @@ export function LazyVimeoPlayer({
           void player.requestFullscreen().catch(() => {});
         }
         await player.play();
-
-        pendingStartRef.current = false;
-        awaitingTapToPlayRef.current = false;
-        setAwaitingTapToPlay(false);
+        finishStarted();
 
         // Only prompt for a second tap if still paused after buffer time.
         playbackWatchdogRef.current = setTimeout(() => {
@@ -438,6 +455,13 @@ export function LazyVimeoPlayer({
               const time = await player.getCurrentTime();
               if (time > 0.1) return;
 
+              if (allowMutedFallback) {
+                await player.setMuted(true);
+                await player.play();
+                finishStarted();
+                return;
+              }
+
               await exitVimeoFullscreen(player);
               if (fullscreenPlaybackRef.current && wrapRef.current) {
                 requestElementFullscreen(wrapRef.current);
@@ -449,6 +473,16 @@ export function LazyVimeoPlayer({
           })();
         }, 1500);
       } catch {
+        if (allowMutedFallback) {
+          try {
+            await player.setMuted(true);
+            await player.play();
+            finishStarted();
+            return;
+          } catch {
+            // Fall through to tap-to-play.
+          }
+        }
         if (wantsFullscreen && wrap) {
           requestElementFullscreen(wrap);
         }
@@ -464,7 +498,8 @@ export function LazyVimeoPlayer({
     setAwaitingTapToPlay(false);
 
     const mobile = isMobile ?? prefersMobileFullscreen();
-    const wantsFullscreen = fullscreenOnPlay || mobile;
+    const wantsFullscreen =
+      !stayInline && (fullscreenOnPlay || mobile);
     fullscreenPlaybackRef.current = wantsFullscreen;
     const wrap = wrapRef.current;
     const player = playerRef.current;
@@ -487,7 +522,9 @@ export function LazyVimeoPlayer({
 
     if (readyNow) {
       pendingStartRef.current = false;
-      void attemptPlayback(player!, wantsFullscreen);
+      void attemptPlayback(player!, wantsFullscreen, {
+        allowMutedFallback: autoPlay || inlinePlayback,
+      });
     } else {
       pendingStartRef.current = true;
     }
@@ -518,19 +555,40 @@ export function LazyVimeoPlayer({
     void attemptPlayback(player, wantsFullscreen);
   };
 
-  // SDK became ready after poster tap — ask for a fresh gesture instead of
-  // auto-playing (iOS blocks play/FS without user activation).
+  // SDK became ready after poster tap / lightbox autoPlay start.
+  // Poster taps: ask for a fresh gesture (iOS). Lightbox: retry play (muted
+  // fallback) because the opening click gesture is already gone.
   useEffect(() => {
     if (!playing || !playerReady || !pendingStartRef.current) return;
     if (playerReadyAtTapRef.current) return;
 
+    const player = playerRef.current;
+    if ((autoPlay || inlinePlayback) && player) {
+      pendingStartRef.current = false;
+      void attemptPlayback(player, fullscreenPlaybackRef.current, {
+        allowMutedFallback: true,
+      });
+      return;
+    }
+
     pendingStartRef.current = false;
     setAwaitingTapToPlay(true);
-  }, [playing, playerReady]);
+  }, [playing, playerReady, autoPlay, inlinePlayback, attemptPlayback]);
 
-  const wantsFsSession = fullscreenOnPlay || isMobile === true;
+  const wantsFsSession =
+    !stayInline && (fullscreenOnPlay || isMobile === true);
   const showFsLoading = playing && wantsFsSession && !playerReady && !awaitingTapToPlay;
   const showTapToPlay = playing && awaitingTapToPlay && playerReady;
+
+  const toggleFullscreen = () => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    if (getFullscreenElement() === wrap) {
+      exitDocumentFullscreen();
+      return;
+    }
+    requestElementFullscreen(wrap);
+  };
 
   if (!videoId) {
     return (
@@ -626,6 +684,7 @@ export function LazyVimeoPlayer({
             void player.setCurrentTime(seconds);
             setClock((clock) => ({...clock, current: seconds}));
           }}
+          onFullscreen={toggleFullscreen}
         />
       ) : null}
 

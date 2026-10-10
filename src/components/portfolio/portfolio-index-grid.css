@@ -47,6 +47,22 @@
   cursor: pointer;
 }
 
+/* Showreel public grid uses the same chrome as a <button> (lightbox open). */
+button.vp-portfolio-index__grid-link {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+}
+
+button.vp-portfolio-index__grid-link:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
 .vp-portfolio-index__grid-link:hover,
 .vp-portfolio-index__grid-link:focus-visible {
   z-index: 1;

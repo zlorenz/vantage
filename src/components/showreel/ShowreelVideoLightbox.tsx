@@ -41,6 +41,8 @@ function LightboxPlayer({item}: {item: ShowreelPublicItem}) {
       <LazyYouTubePlayer
         videoId={parsed.id}
         portfolioEntryRef={item._id}
+        autoPlay
+        inlinePlayback
       />
     )
   }
@@ -52,6 +54,7 @@ function LightboxPlayer({item}: {item: ShowreelPublicItem}) {
         posterUrl={posterUrl}
         portfolioEntryRef={item._id}
         autoPlay
+        inlinePlayback
         posterSizes="(max-width: 992px) 100vw, min(1100px, 92vw)"
         priority
       />
@@ -64,6 +67,8 @@ function LightboxPlayer({item}: {item: ShowreelPublicItem}) {
         embedUrl={xinpianchangUrl}
         posterUrl={posterUrl}
         portfolioEntryRef={item._id}
+        autoPlay
+        inlinePlayback
       />
     )
   }

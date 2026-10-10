@@ -14,7 +14,14 @@
  * and restores the poster. Desktop without `fullscreenOnPlay` stays inline.
  */
 
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { flushSync } from 'react-dom';
 import Image from 'next/image';
 import { youTubePosterUrl } from '@/lib/youtube';
@@ -37,6 +44,16 @@ interface LazyYouTubePlayerProps {
   fullscreenOnPlay?: boolean;
   /** Hidden iframe warm-up for inactive carousel slides (no poster UI). */
   prefetch?: boolean;
+  /**
+   * Start playback on mount (e.g. lightbox opened from a poster click).
+   * Best-effort — browsers may still require a second tap if the frame is cold.
+   */
+  autoPlay?: boolean;
+  /**
+   * Keep playback inline (no mobile/carousel fullscreen-on-play).
+   * Use for lightbox where a separate fullscreen control is available.
+   */
+  inlinePlayback?: boolean;
 }
 
 /** YT.PlayerState — numeric so we don't depend on the iframe API script. */
@@ -88,6 +105,7 @@ function youTubeEmbedSrc(
   playsInline: boolean,
   origin: string,
   frameId: string,
+  options?: {autoplay?: boolean; mute?: boolean},
 ): string {
   const params = new URLSearchParams({
     enablejsapi: '1',
@@ -100,6 +118,8 @@ function youTubeEmbedSrc(
     fs: '0',
     widgetid: frameId,
   });
+  if (options?.autoplay) params.set('autoplay', '1');
+  if (options?.mute) params.set('mute', '1');
   return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`;
 }
 
@@ -132,6 +152,8 @@ export function LazyYouTubePlayer({
   hidePlayButton = false,
   fullscreenOnPlay = false,
   prefetch = false,
+  autoPlay = false,
+  inlinePlayback = false,
 }: LazyYouTubePlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — playsinline must match the real viewport. */
@@ -171,11 +193,15 @@ export function LazyYouTubePlayer({
   playingRef.current = playing;
   playerReadyRef.current = playerReady;
 
-  const wantsInline = !(fullscreenOnPlay || isMobile === true);
+  const stayInline = inlinePlayback || autoPlay;
+  const wantsInline =
+    stayInline || !(fullscreenOnPlay || isMobile === true);
   const embedSrc =
-    !origin || (isMobile === null && !fullscreenOnPlay)
+    !origin || (isMobile === null && !fullscreenOnPlay && !stayInline)
       ? null
-      : youTubeEmbedSrc(videoId, wantsInline, origin, frameId);
+      : youTubeEmbedSrc(videoId, wantsInline, origin, frameId, {
+          ...(autoPlay ? {autoplay: true, mute: true} : {}),
+        });
 
   useEffect(() => {
     setPosterSrc(youTubePosterUrl(videoId, 'maxres'));
@@ -407,7 +433,10 @@ export function LazyYouTubePlayer({
   useEffect(() => clearPlaybackWatchdog, [clearPlaybackWatchdog]);
 
   const attemptPlayback = useCallback(
-    (wantsFullscreen: boolean) => {
+    (
+      wantsFullscreen: boolean,
+      options?: {allowMutedFallback?: boolean},
+    ) => {
       const iframe = iframeRef.current;
       const wrap = wrapRef.current;
       if (!iframe) {
@@ -416,11 +445,18 @@ export function LazyYouTubePlayer({
       }
 
       clearPlaybackWatchdog();
+      const allowMutedFallback = options?.allowMutedFallback === true;
 
       // Don't await fullscreen before play — that drops iOS activation
       // and leaves the player paused in (or out of) fullscreen.
-      commandFrame(iframe, frameId, 'unMute');
-      commandFrame(iframe, frameId, 'setVolume', [100]);
+      if (allowMutedFallback) {
+        // Lightbox: muted play is allowed without a user gesture.
+        commandFrame(iframe, frameId, 'mute');
+        commandFrame(iframe, frameId, 'setVolume', [0]);
+      } else {
+        commandFrame(iframe, frameId, 'unMute');
+        commandFrame(iframe, frameId, 'setVolume', [100]);
+      }
       if (wantsFullscreen && wrap) {
         requestElementFullscreen(wrap);
       }
@@ -437,13 +473,18 @@ export function LazyYouTubePlayer({
         const state = playerStateRef.current;
         if (state === YT_PLAYING || state === YT_BUFFERING) return;
         if (hasPlayedRef.current) return;
+        if (allowMutedFallback) {
+          commandFrame(iframe, frameId, 'mute');
+          commandFrame(iframe, frameId, 'playVideo');
+          return;
+        }
         promptTapToPlay();
       }, 1500);
     },
     [clearPlaybackWatchdog, frameId, promptTapToPlay],
   );
 
-  const startPlayback = () => {
+  const startPlayback = (options?: {syncFlush?: boolean}) => {
     if (startedFromGestureRef.current) return;
     startedFromGestureRef.current = true;
     setAwaitingTapToPlay(false);
@@ -456,13 +497,19 @@ export function LazyYouTubePlayer({
     });
 
     const mobile = isMobile ?? prefersMobileFullscreen();
-    const wantsFullscreen = fullscreenOnPlay || mobile;
+    const wantsFullscreen =
+      !stayInline && (fullscreenOnPlay || mobile);
     fullscreenPlaybackRef.current = wantsFullscreen;
     const wrap = wrapRef.current;
     const readyNow = playerReadyRef.current;
     playerReadyAtTapRef.current = readyNow;
 
-    flushSync(() => setPlaying(true));
+    // flushSync is for user-gesture taps. autoPlay mounts from useLayoutEffect.
+    if (options?.syncFlush === false) {
+      setPlaying(true);
+    } else {
+      flushSync(() => setPlaying(true));
+    }
 
     if (wantsFullscreen && wrap) {
       requestElementFullscreen(wrap);
@@ -472,7 +519,9 @@ export function LazyYouTubePlayer({
 
     if (readyNow) {
       pendingStartRef.current = false;
-      attemptPlayback(wantsFullscreen);
+      attemptPlayback(wantsFullscreen, {
+        allowMutedFallback: autoPlay || inlinePlayback,
+      });
     } else {
       pendingStartRef.current = true;
     }
@@ -485,18 +534,45 @@ export function LazyYouTubePlayer({
     attemptPlayback(fullscreenPlaybackRef.current);
   };
 
-  // Player became ready after the poster tap — ask for a fresh gesture.
+  // Lightbox / parent-opened sessions: attempt play once after mount.
+  useLayoutEffect(() => {
+    if (!autoPlay || prefetch) return;
+    startPlayback({syncFlush: false});
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount autoplay
+  }, [autoPlay, prefetch]);
+
+  // Player became ready after poster tap / lightbox autoPlay start.
   useEffect(() => {
     if (!playing || !playerReady || !pendingStartRef.current) return;
     if (playerReadyAtTapRef.current) return;
+
+    if (autoPlay || inlinePlayback) {
+      pendingStartRef.current = false;
+      attemptPlayback(fullscreenPlaybackRef.current, {
+        allowMutedFallback: true,
+      });
+      return;
+    }
+
     pendingStartRef.current = false;
     setAwaitingTapToPlay(true);
-  }, [playing, playerReady]);
+  }, [playing, playerReady, autoPlay, inlinePlayback, attemptPlayback]);
 
-  const wantsFsSession = fullscreenOnPlay || isMobile === true;
+  const wantsFsSession =
+    !stayInline && (fullscreenOnPlay || isMobile === true);
   const showFsLoading =
     playing && wantsFsSession && !playerReady && !awaitingTapToPlay;
   const showTapToPlay = playing && awaitingTapToPlay && playerReady;
+
+  const toggleFullscreen = () => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    if (getFullscreenElement() === wrap) {
+      exitDocumentFullscreen();
+      return;
+    }
+    requestElementFullscreen(wrap);
+  };
 
   const frame = embedSrc ? (
     <iframe
@@ -589,6 +665,7 @@ export function LazyYouTubePlayer({
             commandFrame(iframe, frameId, 'seekTo', [seconds, true]);
             setClock((clock) => ({...clock, current: seconds}));
           }}
+          onFullscreen={toggleFullscreen}
         />
       ) : null}
 
@@ -596,7 +673,7 @@ export function LazyYouTubePlayer({
         <button
           type="button"
           className="group absolute inset-0 z-[2] block w-full cursor-pointer border-0 bg-black p-0"
-          onClick={startPlayback}
+          onClick={() => startPlayback()}
           aria-label={`Play ${title}`}
         >
           <Image

@@ -1,24 +1,32 @@
 /**
- * ShowreelPortfolioCard — poster play (lightbox) + independent Explore link.
+ * Showreel portfolio card — same chrome as /work?view=grid.
+ * Opens the film lightbox instead of navigating to the case page.
  */
 
 'use client'
 
 import Image from 'next/image'
+import {composeOverlayCopy} from '@/lib/overlay-copy'
+import {
+  resolveEntryDisplayTitleParts,
+  resolveEntryDocumentTitle,
+} from '@/lib/display-titles'
 import {urlForImage} from '@/lib/sanity'
-import {resolveEntryDisplayTitles} from '@/lib/display-titles'
+import type {Locale} from '@/i18n/routing'
+import {PortfolioIndexGridHover} from '@/components/portfolio/PortfolioIndexGridHover'
 import type {ShowreelPublicItem} from './showreel-public-types'
 import {showreelItemVideoUrls} from './showreel-public-types'
+import '@/components/portfolio/portfolio-index-grid.css'
 
 interface ShowreelPortfolioCardProps {
   item: ShowreelPublicItem
-  revealIndex?: number
+  locale: Locale
   onPlay: (item: ShowreelPublicItem) => void
 }
 
 export function ShowreelPortfolioCard({
   item,
-  revealIndex = 0,
+  locale,
   onPlay,
 }: ShowreelPortfolioCardProps) {
   if (!item.featuredImage || !item.slug) return null
@@ -29,65 +37,51 @@ export function ShowreelPortfolioCard({
     .fit('crop')
     .url()
 
-  // Public showreel is English-only for v1 (ZH route mirrors EN).
-  const {thumbTitle} = resolveEntryDisplayTitles(
-    {
-      displayTitleParts: item.displayTitleParts ?? undefined,
-      thumbTitleOverride: item.thumbTitleOverride ?? undefined,
-    },
-    'en',
-  )
-  const exploreHref = `/portfolio/${item.slug}`
+  const parts = resolveEntryDisplayTitleParts(item, locale)
+  const {brandLine, campaignLine} = composeOverlayCopy(parts)
+  const campaign =
+    campaignLine && campaignLine !== brandLine ? campaignLine : ''
+  const fallbackTitle =
+    !brandLine && !campaign ? resolveEntryDocumentTitle(item, locale) : ''
+  const campaignText = campaign || fallbackTitle
   const {vimeoUrl, xinpianchangUrl} = showreelItemVideoUrls(item)
   const hasVideo = Boolean(vimeoUrl || xinpianchangUrl)
+  const labelBase = campaignText || brandLine || item.title
 
   return (
-    <article
-      className="vp-showreel-card vp-card-reveal"
-      style={{animationDelay: `${revealIndex * 40}ms`}}
-    >
+    <li className="vp-portfolio-index__grid-item">
       <button
         type="button"
-        className="vp-showreel-card__poster group"
+        className="vp-portfolio-index__grid-link"
         onClick={() => onPlay(item)}
         aria-label={
-          hasVideo
-            ? `Play ${item.title}`
-            : `Open video for ${item.title}`
+          hasVideo ? `Play ${labelBase}` : `Open video for ${labelBase}`
         }
         disabled={!hasVideo}
       >
-        <div className="vp-showreel-card__media">
+        <div className="vp-portfolio-index__grid-media">
           <Image
             src={imageUrl}
             alt=""
             fill
-            sizes="(max-width: 575px) 100vw, (max-width: 992px) 50vw, 33vw"
-            className="object-cover"
+            sizes="(min-width: 2800px) 25vw, (min-width: 1200px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="vp-portfolio-index__grid-poster"
           />
-          <div className="vp-card__overlay" aria-hidden />
-          {hasVideo ? (
-            <span className="vp-showreel-card__play" aria-hidden>
-              <span className="vp-showreel-card__play-circle">
-                <span className="vp-showreel-card__play-triangle" />
-              </span>
-            </span>
+          {brandLine || campaignText ? (
+            <div className="vp-portfolio-index__grid-copy">
+              {brandLine ? (
+                <p className="vp-portfolio-index__grid-brand">{brandLine}</p>
+              ) : null}
+              {campaignText ? (
+                <p className="vp-portfolio-index__grid-campaign">
+                  {campaignText}
+                </p>
+              ) : null}
+            </div>
           ) : null}
-          <h2
-            className="vp-card__title"
-            dangerouslySetInnerHTML={{__html: thumbTitle}}
-          />
         </div>
+        <PortfolioIndexGridHover />
       </button>
-
-      <a
-        href={exploreHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="vp-showreel-card__explore"
-      >
-        Explore
-      </a>
-    </article>
+    </li>
   )
 }
