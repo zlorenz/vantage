@@ -39,7 +39,7 @@ Secrets live in `.env.local` (never committed). Mirror Production values from th
 
 | Variable | Required | Notes |
 |----------|----------|--------|
-| `SHOWREEL_EDITOR_PASSWORD` | Yes (for editor) | Server-only shared password. Gates `/showreel/[id]/edit` (app host). Does **not** gate library browsing. |
+| `SHOWREEL_EDITOR_PASSWORD` | When auth re-enabled | Server-only shared password. Auth is currently off via `SHOWREEL_AUTH_ENABLED` in `src/lib/showreel-auth-session.ts`. When that flag is `true`, gates `/showreel/[id]/edit` + mutate APIs. Does **not** gate library browsing. |
 
 ## Forms
 

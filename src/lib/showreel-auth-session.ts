@@ -3,10 +3,20 @@
  *
  * v1 intentionally has no login rate-limiting / lockout — small trusted team,
  * accepted risk (not an oversight). Revisit before broader exposure.
+ *
+ * Password gate is currently off (`SHOWREEL_AUTH_ENABLED = false`) so producers
+ * can create/edit without the login round-trip. Flip the flag to restore cookie
+ * + password checks (proxy, APIs, session probe). Login UI/routes stay wired.
  */
 
 import {createHmac, timingSafeEqual} from 'node:crypto'
 import type {NextRequest} from 'next/server'
+
+/**
+ * When false, edit/create APIs and `/showreel/*/edit` skip auth.
+ * Set `true` to re-enable `SHOWREEL_EDITOR_PASSWORD` gating.
+ */
+export const SHOWREEL_AUTH_ENABLED = false
 
 export const SHOWREEL_AUTH_COOKIE = 'vp_showreel_editor'
 
@@ -71,6 +81,7 @@ export function verifyShowreelSessionValue(
 }
 
 export function requestHasShowreelAuth(request: NextRequest): boolean {
+  if (!SHOWREEL_AUTH_ENABLED) return true
   return verifyShowreelSessionValue(
     request.cookies.get(SHOWREEL_AUTH_COOKIE)?.value,
   )

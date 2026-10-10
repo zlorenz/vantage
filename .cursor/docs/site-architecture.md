@@ -35,7 +35,7 @@ These are singular pages, not driven by a post type loop.
 | Marketing redirects | `vantage.pictures/work-internal(/*)` → **308** to app host (prefix stripped) |
 | Filters | Brand / Director / DOP / Art Director (AND logic); `creditIdentity` + unlinked-name fallbacks |
 | SEO | `noindex`, excluded from sitemap |
-| Access | No auth for browsing; showreel **edit** gated by `SHOWREEL_EDITOR_PASSWORD` |
+| Access | No auth for browsing; showreel edit auth currently **off** (`SHOWREEL_AUTH_ENABLED` in `showreel-auth-session.ts`; password gate retained for re-enable) |
 
 Shows all portfolio entries including hidden items. Used for pitch research, crew lookups, and client history. Not linked from public marketing navigation.
 

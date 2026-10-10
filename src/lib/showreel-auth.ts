@@ -13,10 +13,12 @@ import {
   requestHasShowreelAuth,
   verifyShowreelSessionValue,
   SHOWREEL_AUTH_COOKIE,
+  SHOWREEL_AUTH_ENABLED,
 } from './showreel-auth-session'
 
 export {
   SHOWREEL_AUTH_COOKIE,
+  SHOWREEL_AUTH_ENABLED,
   SHOWREEL_AUTH_MAX_AGE_SEC,
   createShowreelSessionValue,
   requestHasShowreelAuth,
@@ -36,12 +38,14 @@ export {
  * Returns null when authorized; otherwise a 401 JSON response.
  */
 export function requireShowreelAuth(request: NextRequest): NextResponse | null {
+  if (!SHOWREEL_AUTH_ENABLED) return null
   if (requestHasShowreelAuth(request)) return null
   return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 }
 
 /** Server Components / Server Actions — read cookie from next/headers. */
 export async function hasShowreelAuthFromCookies(): Promise<boolean> {
+  if (!SHOWREEL_AUTH_ENABLED) return true
   const jar = await cookies()
   return verifyShowreelSessionValue(jar.get(SHOWREEL_AUTH_COOKIE)?.value)
 }
