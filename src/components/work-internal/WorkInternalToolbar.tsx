@@ -426,13 +426,6 @@ export function WorkInternalToolbar({
         aria-label="Active filters"
         aria-hidden={activePills.length === 0 && !active ? true : undefined}
       >
-        {activePills.map((pill) => (
-          <FilterActivePill
-            key={pill.key}
-            label={pill.label}
-            onRemove={() => patchFilter(pill.filterKey, '')}
-          />
-        ))}
         {active ? (
           <button
             type="button"
@@ -442,9 +435,16 @@ export function WorkInternalToolbar({
             <span className="vp-internal-clear__icon" aria-hidden="true">
               ×
             </span>
-            Clear all
+            <span className="vp-internal-clear__label">Clear all</span>
           </button>
         ) : null}
+        {activePills.map((pill) => (
+          <FilterActivePill
+            key={pill.key}
+            label={pill.label}
+            onRemove={() => patchFilter(pill.filterKey, '')}
+          />
+        ))}
       </div>
 
       {/* Mobile chrome (<768px): view toggle + filter/sort icon buttons */}

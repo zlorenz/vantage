@@ -241,7 +241,8 @@ body:has(.vp-internal-page) .vp-internal-clear--danger {
   color: var(--vp-wi-danger-text);
   background: var(--vp-wi-danger);
   border-color: var(--vp-wi-danger);
-  border-radius: var(--vp-wi-radius-sm);
+  /* Same radius as filter pills so Clear all reads as a sibling chip. */
+  border-radius: var(--vp-wi-radius);
 }
 
 body:has(.vp-internal-page) .vp-internal-clear--danger:hover {
@@ -835,7 +836,8 @@ body:has(.vp-internal-page) .vp-internal-showreel-dialog__meta {
 
 body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea {
   color: var(--vp-wi-text);
-  background: var(--vp-wi-surface-raised);
+  /* Match title / client-link inputs (--vp-wi-surface), not raised. */
+  background: var(--vp-wi-surface);
   border: 1px solid var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-sm);
 }
@@ -843,6 +845,7 @@ body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea {
 body:has(.vp-internal-page) .vp-internal-showreel-dialog__textarea:focus {
   background: var(--vp-wi-surface-raised);
   border-color: var(--vp-wi-border-strong);
+  box-shadow: 0 0 0 1px rgba(var(--vp-wi-accent-rgb), 0.25);
 }
 
 @media (max-width: 767.98px) {

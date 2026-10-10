@@ -3260,7 +3260,11 @@
 
 @media (min-width: 768px) {
   .vp-internal-toolbar {
-    padding: 1.25rem 0 1rem;
+    /* Pills sit flush under the sticky nav; row gap separates pills → filters. */
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0 0 0.85rem;
   }
 }
 
@@ -3351,15 +3355,22 @@
 }
 
 .vp-internal-clear--danger {
+  /* Match .vp-internal-fpill height / type so Clear all sits in the same row rhythm. */
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.65rem;
+  gap: 0.2rem;
+  flex: 0 0 auto;
+  /* Stay pinned to the leading edge when the pills row scrolls. */
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-height: 1.35rem;
+  padding: 0.1rem 0.45rem 0.1rem 0.35rem;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 1.25;
   color: #fff5f5;
   background: #c43b3b;
   border: 1px solid #c43b3b;
@@ -3380,7 +3391,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  font-size: 0.85rem;
   font-weight: 500;
   line-height: 1;
 }
@@ -3434,10 +3447,11 @@
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.35rem;
   /* Reserve one pill-row so the filter controls + grid don’t jump. */
-  min-height: 2rem;
-  margin: 0 0 0.65rem;
+  min-height: 1.5rem;
+  /* Desktop spacing comes from toolbar column gap; mobile sets its own margin. */
+  margin: 0;
 }
 
 .vp-internal-toolbar__row--pills.is-empty {
@@ -3698,10 +3712,12 @@
 .vp-internal-fpill {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   max-width: 100%;
-  padding: 0.15rem 0.2rem 0.15rem 0.5rem;
-  font-size: 0.75rem;
+  min-height: 1.35rem;
+  padding: 0.1rem 0.15rem 0.1rem 0.4rem;
+  font-size: 0.6875rem;
+  line-height: 1.25;
   color: var(--color-vp-text);
   background: rgba(249, 219, 36, 0.1);
   border: 1px solid rgba(253, 185, 19, 0.45);
@@ -3719,11 +3735,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.1rem;
+  height: 1.1rem;
   padding: 0;
   font: inherit;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   line-height: 1;
   color: var(--color-vp-text-soft);
   background: transparent;
@@ -5158,6 +5174,27 @@
 
   .vp-internal-toolbar__row--pills::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Icon-only Clear all — label stays for desktop / a11y via sr-only. */
+  .vp-internal-toolbar__row--pills .vp-internal-clear--danger {
+    justify-content: center;
+    width: 1.35rem;
+    min-height: 1.35rem;
+    padding: 0;
+    gap: 0;
+  }
+
+  .vp-internal-toolbar__row--pills .vp-internal-clear__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .vp-internal-fpill {
