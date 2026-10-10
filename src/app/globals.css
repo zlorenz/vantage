@@ -3282,6 +3282,7 @@
 }
 
 .vp-internal-select-all {
+  flex: 0 0 auto;
   padding: 0;
   font: inherit;
   font-size: 0.75rem;
@@ -3294,6 +3295,11 @@
   cursor: pointer;
   white-space: nowrap;
   transition: color var(--vp-transition);
+}
+
+/* Sit beside the Sort control’s select (row aligns to flex-end). */
+.vp-internal-toolbar__row--filters > .vp-internal-select-all {
+  margin-bottom: 0.45rem;
 }
 
 .vp-internal-select-all:hover {
@@ -3710,10 +3716,18 @@
   flex: 0 0 auto;
 }
 
-/* Keep Sort’s layout height in list view so the toolbar doesn’t jump. */
+/*
+ * List view: hide Sort but keep its vertical footprint so the toolbar
+ * doesn’t jump — collapse width so Select all can sit next to the chips.
+ */
 .vp-internal-filter.is-spacer {
   visibility: hidden;
   pointer-events: none;
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .vp-internal-filter__label {

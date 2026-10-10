@@ -513,19 +513,20 @@ export function WorkInternalToolbar({
           </button>
         </div>
 
+        {canBulkSelectVisible ? (
+          <button
+            type="button"
+            className="vp-internal-select-all"
+            onClick={() => {
+              if (allVisibleSelected) onDeselectVisible?.();
+              else onSelectAllVisible?.();
+            }}
+          >
+            {allVisibleSelected ? 'Deselect all' : 'Select all'}
+          </button>
+        ) : null}
+
         <div className="vp-internal-toolbar__mobile-actions">
-          {canBulkSelectVisible ? (
-            <button
-              type="button"
-              className="vp-internal-select-all"
-              onClick={() => {
-                if (allVisibleSelected) onDeselectVisible?.();
-                else onSelectAllVisible?.();
-              }}
-            >
-              {allVisibleSelected ? 'Deselect all' : 'Select all'}
-            </button>
-          ) : null}
           <span
             className="vp-internal-count"
             aria-live="polite"
@@ -786,21 +787,22 @@ export function WorkInternalToolbar({
             </select>
           </label>
 
+          {canBulkSelectVisible ? (
+            <button
+              type="button"
+              className="vp-internal-select-all"
+              onClick={() => {
+                if (allVisibleSelected) onDeselectVisible?.();
+                else onSelectAllVisible?.();
+              }}
+            >
+              {allVisibleSelected
+                ? 'Deselect all'
+                : `Select all${resultCount ? ` (${resultCount})` : ''}`}
+            </button>
+          ) : null}
+
           <div className="vp-internal-toolbar__meta">
-            {canBulkSelectVisible ? (
-              <button
-                type="button"
-                className="vp-internal-select-all"
-                onClick={() => {
-                  if (allVisibleSelected) onDeselectVisible?.();
-                  else onSelectAllVisible?.();
-                }}
-              >
-                {allVisibleSelected
-                  ? 'Deselect all'
-                  : `Select all${resultCount ? ` (${resultCount})` : ''}`}
-              </button>
-            ) : null}
             <span
               className="vp-internal-count"
               aria-live="polite"
