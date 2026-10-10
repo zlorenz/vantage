@@ -28,10 +28,10 @@ export default async function ShowreelLoginPage({params}: Props) {
 
   return (
     <div className="vp-internal-page vp-internal-page--utility">
-      <WorkInternalUtilityChrome navTitle="Showreel editor" showBack>
+      <WorkInternalUtilityChrome navTitle="Showreel Editor" showBack>
         <div className="vp-showreel-login">
           <header className="vp-showreel-login__header">
-            <h1 className="vp-internal-app__title">Showreel editor</h1>
+            <h1 className="vp-internal-app__title">Showreel Editor</h1>
             <p className="vp-showreel-editor__hint">
               Enter the shared editor password to continue.
             </p>

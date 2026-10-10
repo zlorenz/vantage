@@ -19,7 +19,7 @@ import {
 } from './WorkInternalNavIndexMenu'
 
 interface WorkInternalUtilityChromeProps {
-  /** Right-side label in the fixed nav (e.g. "Showreel editor"). */
+  /** Right-side label in the fixed nav (e.g. "Showreel Editor"). */
   navTitle: string
   ariaLabel?: string
   /**

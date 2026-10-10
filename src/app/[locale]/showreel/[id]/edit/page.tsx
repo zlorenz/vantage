@@ -58,7 +58,7 @@ export default async function ShowreelEditPage({params}: Props) {
     return (
       <div className="vp-internal-page vp-internal-page--utility">
         <WorkInternalUtilityChrome
-          navTitle="Showreel editor"
+          navTitle="Showreel Editor"
           showBack
           backLabel="← All Showreels"
           backHref={showreelIndexPath(typedLocale)}
@@ -95,7 +95,7 @@ export default async function ShowreelEditPage({params}: Props) {
   return (
     <div className="vp-internal-page vp-internal-page--utility">
       <WorkInternalUtilityChrome
-        navTitle="Showreel editor"
+        navTitle="Showreel Editor"
         showBack
         backLabel="← All Showreels"
         backHref={showreelIndexPath(typedLocale)}

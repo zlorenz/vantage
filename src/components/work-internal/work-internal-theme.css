@@ -116,15 +116,31 @@ body:has(.vp-internal-page) .vp-showreel-editor__share-input {
   color: var(--vp-wi-text);
 }
 
-body:has(.vp-internal-page) .vp-showreel-editor__copy-btn {
+body:has(.vp-internal-page) .vp-showreel-editor__share-btn {
   color: var(--vp-wi-text-faint);
   border-left-color: var(--vp-wi-border);
 }
 
-body:has(.vp-internal-page) .vp-showreel-editor__copy-btn:hover,
-body:has(.vp-internal-page) .vp-showreel-editor__copy-btn.is-copied {
+body:has(.vp-internal-page) .vp-showreel-editor__share-btn:hover,
+body:has(.vp-internal-page) .vp-showreel-editor__share-btn.is-copied {
   color: var(--vp-wi-text);
   background: var(--vp-wi-surface-hover);
+}
+
+body:has(.vp-internal-page) .vp-showreel-editor__row.is-dragging {
+  background: var(--vp-wi-surface-raised);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+body:has(.vp-internal-page) .vp-showreel-editor__drag-handle {
+  color: var(--vp-wi-text-faint);
+}
+
+body:has(.vp-internal-page) .vp-showreel-editor__drag-handle:hover:not(:disabled),
+body:has(.vp-internal-page) .vp-showreel-editor__drag-handle:focus-visible:not(:disabled) {
+  color: var(--vp-wi-text);
+  background: var(--vp-wi-surface-hover);
+  border-color: var(--vp-wi-border);
 }
 
 body:has(.vp-internal-page) .vp-internal-search__suggestions {
@@ -169,6 +185,14 @@ body:has(.vp-internal-page) .vp-internal-toolbar {
 
 body:has(.vp-internal-page) .vp-internal-count {
   color: var(--vp-wi-text-muted);
+}
+
+body:has(.vp-internal-page) .vp-internal-select-all {
+  color: var(--vp-wi-text-muted);
+}
+
+body:has(.vp-internal-page) .vp-internal-select-all:hover {
+  color: var(--vp-wi-text);
 }
 
 body:has(.vp-internal-page) .vp-internal-nav-index__panel {

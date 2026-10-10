@@ -3,8 +3,7 @@
  *
  * Item mutations update local order immediately, then debounced-PATCH the full
  * ordered `portfolioItemIds` list on `/api/showreel/[id]`. Reorder uses
- * up/down buttons — @dnd-kit is only a Sanity transitive dep, not used in
- * the Next app.
+ * @dnd-kit drag-and-drop (pointer + keyboard).
  */
 
 'use client'
@@ -17,9 +16,25 @@ import {
   useRef,
   useState,
   useTransition,
-  type CSSProperties,
   type FormEvent,
 } from 'react'
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import {CSS} from '@dnd-kit/utilities'
 import {useRouter} from 'next/navigation'
 import {workInternalLibraryBrowserPath} from '@/lib/internal-app-paths'
 import {urlForImage} from '@/lib/sanity'
@@ -61,22 +76,112 @@ function itemOrderKey(list: ShowreelEditorItem[]): string {
   return list.map((item) => item._id).join('\0')
 }
 
-function viewTransitionNameFor(id: string): string {
-  return `vp-showreel-row-${id.replace(/[^a-zA-Z0-9_-]/g, '_')}`
+function DragHandleIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M9 5h2v2H9V5zm4 0h2v2h-2V5zM9 11h2v2H9v-2zm4 0h2v2h-2v-2zM9 17h2v2H9v-2zm4 0h2v2h-2v-2z"
+      />
+    </svg>
+  )
 }
 
-function runWithOptionalViewTransition(update: () => void) {
-  const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const doc = document as Document & {
-    startViewTransition?: (callback: () => void) => unknown
-  }
-  if (!reduceMotion && typeof doc.startViewTransition === 'function') {
-    doc.startViewTransition(update)
-    return
-  }
-  update()
+function SortableShowreelRow({
+  item,
+  locale,
+  disabled,
+  canRemove,
+  onRemove,
+}: {
+  item: ShowreelEditorItem
+  locale: Locale
+  disabled: boolean
+  canRemove: boolean
+  onRemove: (id: string) => void
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({id: item._id, disabled})
+
+  const titleText = getDisplayTitle(item as InternalLibraryEntry, locale)
+  const {brandLine, campaignLine} = getDisplayTitleParts(
+    item as InternalLibraryEntry,
+    locale,
+  )
+  const campaignText = campaignLine || titleText
+  const imageUrl = item.featuredImage
+    ? urlForImage(item.featuredImage).width(160).height(90).fit('crop').url()
+    : null
+
+  return (
+    <li
+      ref={setNodeRef}
+      className={
+        isDragging
+          ? 'vp-showreel-editor__row is-dragging'
+          : 'vp-showreel-editor__row'
+      }
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+    >
+      <button
+        type="button"
+        ref={setActivatorNodeRef}
+        className="vp-showreel-editor__drag-handle"
+        aria-label={`Reorder ${campaignText}`}
+        title="Drag to reorder"
+        disabled={disabled}
+        {...listeners}
+        {...attributes}
+      >
+        <DragHandleIcon />
+      </button>
+      <span className="vp-showreel-editor__thumb">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt=""
+            fill
+            sizes="80px"
+            className="object-cover"
+          />
+        ) : null}
+      </span>
+      <span className="vp-showreel-editor__row-title">
+        {brandLine ? (
+          <span className="vp-internal-list__brand">{brandLine}</span>
+        ) : null}
+        <span className="vp-internal-list__campaign">{campaignText}</span>
+      </span>
+      <div className="vp-showreel-editor__row-actions">
+        <button
+          type="button"
+          className="vp-showreel-editor__remove-btn"
+          aria-label="Remove"
+          disabled={disabled || !canRemove}
+          onClick={() => onRemove(item._id)}
+          title={canRemove ? 'Remove' : 'At least one item is required'}
+        >
+          ×
+        </button>
+      </div>
+    </li>
+  )
 }
 
 async function patchShowreel(
@@ -171,7 +276,6 @@ export function ShowreelEditor({
   const [fieldsSaved, setFieldsSaved] = useState(false)
   const [itemsError, setItemsError] = useState<string | null>(null)
   const [itemsSaving, setItemsSaving] = useState(false)
-  const [movedItemId, setMovedItemId] = useState<string | null>(null)
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
     'idle',
   )
@@ -188,10 +292,20 @@ export function ShowreelEditor({
   const savedItemsRef = useRef(items)
   const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const persistEpochRef = useRef(0)
-  const movedClearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const publicPath = showreelPublicPath(showreel._id, locale)
   const destructiveBusy = savingFields || itemsSaving || deleting
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {distance: 6},
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
+
+  const itemIds = useMemo(() => items.map((item) => item._id), [items])
 
   useEffect(() => {
     itemsRef.current = items
@@ -204,7 +318,6 @@ export function ShowreelEditor({
 
   useEffect(() => {
     return () => {
-      if (movedClearTimerRef.current) clearTimeout(movedClearTimerRef.current)
       if (persistTimerRef.current) {
         clearTimeout(persistTimerRef.current)
         persistTimerRef.current = null
@@ -294,38 +407,15 @@ export function ShowreelEditor({
     setItemsSaving(false)
   }
 
-  function commitItemsLocally(
-    nextItems: ShowreelEditorItem[],
-    options?: {movedId?: string; animate?: boolean},
-  ) {
+  function commitItemsLocally(nextItems: ShowreelEditorItem[]) {
     if (nextItems.length < 1) {
       setItemsError('A showreel needs at least one portfolio item.')
       return
     }
 
     persistEpochRef.current += 1
-
-    const apply = () => {
-      itemsRef.current = nextItems
-      setItems(nextItems)
-    }
-
-    if (options?.animate) {
-      runWithOptionalViewTransition(apply)
-    } else {
-      apply()
-    }
-
-    if (options?.movedId) {
-      setMovedItemId(options.movedId)
-      if (movedClearTimerRef.current) clearTimeout(movedClearTimerRef.current)
-      movedClearTimerRef.current = setTimeout(() => {
-        setMovedItemId((current) =>
-          current === options.movedId ? null : current,
-        )
-      }, 280)
-    }
-
+    itemsRef.current = nextItems
+    setItems(nextItems)
     setItemsError(null)
     schedulePersistItems()
   }
@@ -358,13 +448,14 @@ export function ShowreelEditor({
     })
   }
 
-  function moveItem(index: number, delta: -1 | 1) {
-    const target = index + delta
-    if (target < 0 || target >= items.length) return
-    const next = [...items]
-    const [row] = next.splice(index, 1)
-    next.splice(target, 0, row)
-    commitItemsLocally(next, {movedId: row._id, animate: true})
+  function onDragEnd(event: DragEndEvent) {
+    const {active, over} = event
+    if (!over || active.id === over.id || deleting) return
+    const current = itemsRef.current
+    const oldIndex = current.findIndex((item) => item._id === active.id)
+    const newIndex = current.findIndex((item) => item._id === over.id)
+    if (oldIndex < 0 || newIndex < 0 || oldIndex === newIndex) return
+    commitItemsLocally(arrayMove(current, oldIndex, newIndex))
   }
 
   function removeItem(id: string) {
@@ -447,10 +538,7 @@ export function ShowreelEditor({
 
   return (
     <div className="vp-showreel-editor">
-      <header className="vp-showreel-editor__header">
-        <h1 className="vp-internal-app__title">Showreel editor</h1>
-      </header>
-
+      <h1 className="sr-only">Showreel Editor</h1>
       <section
         className="vp-showreel-editor__share"
         aria-label="Client link"
@@ -464,14 +552,35 @@ export function ShowreelEditor({
             aria-label="Client showreel link"
             onFocus={(e) => e.currentTarget.select()}
           />
+          <a
+            className="vp-showreel-editor__share-btn"
+            href={publicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open client link in a new tab"
+            title="Open"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="currentColor"
+                d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"
+              />
+            </svg>
+          </a>
           <button
             type="button"
             className={
               copyState === 'copied'
-                ? 'vp-showreel-editor__copy-btn is-copied'
+                ? 'vp-showreel-editor__share-btn is-copied'
                 : copyState === 'failed'
-                  ? 'vp-showreel-editor__copy-btn is-failed'
-                  : 'vp-showreel-editor__copy-btn'
+                  ? 'vp-showreel-editor__share-btn is-failed'
+                  : 'vp-showreel-editor__share-btn'
             }
             onClick={copyPublicUrl}
             aria-label={
@@ -525,7 +634,7 @@ export function ShowreelEditor({
           <span className="vp-internal-filter__label">Title</span>
           <input
             type="text"
-            className="vp-internal-search__input"
+            className="vp-internal-search__input vp-showreel-editor__title-input"
             value={title}
             onChange={(e) => {
               setTitle(e.target.value)
@@ -582,95 +691,29 @@ export function ShowreelEditor({
             {itemsError}
           </p>
         ) : null}
-        <ul className="vp-showreel-editor__list">
-          {items.map((item, index) => {
-            const titleText = getDisplayTitle(
-              item as InternalLibraryEntry,
-              locale,
-            )
-            const {brandLine, campaignLine} = getDisplayTitleParts(
-              item as InternalLibraryEntry,
-              locale,
-            )
-            const campaignText = campaignLine || titleText
-            const imageUrl = item.featuredImage
-              ? urlForImage(item.featuredImage)
-                  .width(160)
-                  .height(90)
-                  .fit('crop')
-                  .url()
-              : null
-            return (
-              <li
-                key={item._id}
-                className={
-                  movedItemId === item._id
-                    ? 'vp-showreel-editor__row is-moved'
-                    : 'vp-showreel-editor__row'
-                }
-                style={
-                  {
-                    viewTransitionName: viewTransitionNameFor(item._id),
-                  } as CSSProperties
-                }
-              >
-                <span className="vp-showreel-editor__thumb">
-                  {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt=""
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  ) : null}
-                </span>
-                <span className="vp-showreel-editor__row-title">
-                  {brandLine ? (
-                    <span className="vp-internal-list__brand">{brandLine}</span>
-                  ) : null}
-                  <span className="vp-internal-list__campaign">
-                    {campaignText}
-                  </span>
-                </span>
-                <div className="vp-showreel-editor__row-actions">
-                  <button
-                    type="button"
-                    className="vp-showreel-editor__icon-btn"
-                    aria-label="Move up"
-                    disabled={deleting || index === 0}
-                    onClick={() => moveItem(index, -1)}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className="vp-showreel-editor__icon-btn"
-                    aria-label="Move down"
-                    disabled={deleting || index === items.length - 1}
-                    onClick={() => moveItem(index, 1)}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className="vp-showreel-editor__remove-btn"
-                    aria-label="Remove"
-                    disabled={deleting || items.length <= 1}
-                    onClick={() => removeItem(item._id)}
-                    title={
-                      items.length <= 1
-                        ? 'At least one item is required'
-                        : 'Remove'
-                    }
-                  >
-                    ×
-                  </button>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={onDragEnd}
+        >
+          <SortableContext
+            items={itemIds}
+            strategy={verticalListSortingStrategy}
+          >
+            <ul className="vp-showreel-editor__list">
+              {items.map((item) => (
+                <SortableShowreelRow
+                  key={item._id}
+                  item={item}
+                  locale={locale}
+                  disabled={deleting || items.length < 2}
+                  canRemove={items.length > 1}
+                  onRemove={removeItem}
+                />
+              ))}
+            </ul>
+          </SortableContext>
+        </DndContext>
       </section>
 
       <ShowreelItemPicker
