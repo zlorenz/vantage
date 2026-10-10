@@ -20,7 +20,6 @@ import {
 } from '@/lib/internal-app-paths';
 import {urlForImage} from '@/lib/sanity';
 import {parseVideoUrl} from '@/lib/video-url';
-import {vimeoThumbnailUrl} from '@/lib/vimeo';
 import {xinpianchangToEmbedUrl} from '@/lib/xinpianchang';
 import {LazyVimeoPlayer} from '@/components/portfolio/LazyVimeoPlayer';
 import {LazyYouTubePlayer} from '@/components/ui/LazyYouTubePlayer';
@@ -32,10 +31,13 @@ import type {
 } from '@/types/sanity';
 import {getPublicPortfolioUrl} from './entry-url';
 import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
+import {workInternalVideoPosterKey} from './video-poster-key';
 
 interface WorkInternalDetailProps {
   entry: InternalLibraryEntry;
   locale: Locale;
+  /** Server-resolved posters (Vimeo API/oEmbed, YouTube CDN). */
+  videoPosters?: Record<string, string>;
 }
 
 function taxonomyLabel(term: TaxonomyTerm, locale: Locale): string {
@@ -73,21 +75,13 @@ function episodeTitle(
 function posterForVideo(
   entry: InternalLibraryEntry,
   video: PortfolioVideoFields,
-  isMain: boolean,
+  index: number,
+  videoPosters: Record<string, string>,
 ): string | undefined {
-  if (isMain && entry.featuredImage) {
-    return urlForImage(entry.featuredImage)
-      .width(960)
-      .height(540)
-      .fit('crop')
-      .url();
-  }
-  const parsed = video.vimeoUrl?.trim()
-    ? parseVideoUrl(video.vimeoUrl)
-    : null;
-  if (parsed?.provider === 'vimeo') {
-    return vimeoThumbnailUrl(parsed.url) ?? undefined;
-  }
+  const fromServer = videoPosters[workInternalVideoPosterKey(video, index)];
+  if (fromServer) return fromServer;
+
+  // Fallback when server map is missing (e.g. partial hydrate).
   if (entry.featuredImage) {
     return urlForImage(entry.featuredImage)
       .width(960)
@@ -116,11 +110,6 @@ function VideoPlayer({
   const parsed = video.vimeoUrl?.trim()
     ? parseVideoUrl(video.vimeoUrl)
     : null;
-  const vimeoPoster =
-    parsed?.provider === 'vimeo'
-      ? (vimeoThumbnailUrl(parsed.url) ?? undefined)
-      : undefined;
-  const resolvedPoster = posterUrl ?? vimeoPoster;
 
   if (parsed?.provider === 'youtube') {
     return (
@@ -132,7 +121,7 @@ function VideoPlayer({
     return (
       <LazyVimeoPlayer
         vimeoUrl={parsed.url}
-        posterUrl={resolvedPoster}
+        posterUrl={posterUrl}
         portfolioEntryRef={entryId}
         autoPlay={autoPlay}
         posterSizes={posterSizes}
@@ -148,7 +137,7 @@ function VideoPlayer({
     return (
       <LazyXinpianchangPlayer
         embedUrl={video.xinpianchangUrl}
-        posterUrl={resolvedPoster}
+        posterUrl={posterUrl}
         portfolioEntryRef={entryId}
       />
     );
@@ -242,12 +231,14 @@ function DetailVideoGrid({
   videos,
   locale,
   campaignTitle,
+  videoPosters,
   onOpen,
 }: {
   entry: InternalLibraryEntry;
   videos: PortfolioVideoFields[];
   locale: Locale;
   campaignTitle: string;
+  videoPosters: Record<string, string>;
   onOpen: (video: PortfolioVideoFields, index: number) => void;
 }) {
   return (
@@ -263,7 +254,7 @@ function DetailVideoGrid({
           locale,
           isMain ? campaignTitle : `Film ${index + 1}`,
         );
-        const poster = posterForVideo(entry, video, isMain);
+        const poster = posterForVideo(entry, video, index, videoPosters);
 
         return (
           <div key={video._key ?? `film-${index}`} role="listitem" className="vp-internal-card">
@@ -316,7 +307,11 @@ function BackToLibraryButton() {
   );
 }
 
-export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
+export function WorkInternalDetail({
+  entry,
+  locale,
+  videoPosters = {},
+}: WorkInternalDetailProps) {
   const title = getDisplayTitle(entry, locale);
   const {brandLine, campaignLine} = getDisplayTitleParts(entry, locale);
   const campaignText = campaignLine || title;
@@ -447,7 +442,12 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
               <VideoPlayer
                 entryId={entry._id}
                 video={playableVideos[0]}
-                posterUrl={posterForVideo(entry, playableVideos[0], true)}
+                posterUrl={posterForVideo(
+                  entry,
+                  playableVideos[0],
+                  0,
+                  videoPosters,
+                )}
                 priority
                 posterSizes="(max-width: 992px) 100vw, min(1100px, 70vw)"
               />
@@ -458,6 +458,7 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
               videos={playableVideos}
               locale={locale}
               campaignTitle={title}
+              videoPosters={videoPosters}
               onOpen={(_video, index) => setActiveVideoIndex(index)}
             />
           )}
@@ -566,7 +567,8 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
           posterUrl={posterForVideo(
             entry,
             activeVideo,
-            activeVideoIndex === 0,
+            activeVideoIndex ?? 0,
+            videoPosters,
           )}
           onClose={() => setActiveVideoIndex(null)}
         />

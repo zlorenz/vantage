@@ -7,6 +7,7 @@ import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import {setRequestLocale} from 'next-intl/server';
 import {WorkInternalDetail} from '@/components/work-internal/WorkInternalDetail';
+import {resolveWorkInternalVideoPosters} from '@/components/work-internal/resolve-video-posters';
 import {getDisplayTitle} from '@/components/work-internal/text';
 import type {Locale} from '@/i18n/routing';
 import {decodePathSlug} from '@/lib/path-slug';
@@ -57,9 +58,15 @@ export default async function WorkInternalEntryPage({params}: Props) {
     notFound();
   }
 
+  const videoPosters = await resolveWorkInternalVideoPosters(entry);
+
   return (
     <div className="vp-internal-page">
-      <WorkInternalDetail entry={entry} locale={typedLocale} />
+      <WorkInternalDetail
+        entry={entry}
+        locale={typedLocale}
+        videoPosters={videoPosters}
+      />
     </div>
   );
 }
