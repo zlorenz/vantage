@@ -408,6 +408,38 @@ export function WorkInternalToolbar({
 
   return (
     <div className="vp-internal-toolbar">
+      {/* Always rendered (min-height reserved) so the grid doesn’t jump when
+          filters are applied/cleared. Sits above filter/sort controls. */}
+      <div
+        className={
+          activePills.length > 0
+            ? 'vp-internal-toolbar__row vp-internal-toolbar__row--pills'
+            : 'vp-internal-toolbar__row vp-internal-toolbar__row--pills is-empty'
+        }
+        aria-label="Active filters"
+        aria-hidden={activePills.length === 0 ? true : undefined}
+      >
+        {activePills.map((pill) => (
+          <FilterActivePill
+            key={pill.key}
+            label={pill.label}
+            onRemove={() => patchFilter(pill.filterKey, '')}
+          />
+        ))}
+        {active ? (
+          <button
+            type="button"
+            className="vp-internal-clear vp-internal-clear--danger"
+            onClick={onClear}
+          >
+            <span className="vp-internal-clear__icon" aria-hidden="true">
+              ×
+            </span>
+            Clear filters
+          </button>
+        ) : null}
+      </div>
+
       {/* Mobile chrome (<768px): view toggle + filter/sort icon buttons */}
       <div className="vp-internal-toolbar__mobile">
         <div
@@ -736,15 +768,6 @@ export function WorkInternalToolbar({
           </label>
 
           <div className="vp-internal-toolbar__meta">
-            {active ? (
-              <button
-                type="button"
-                className="vp-internal-clear"
-                onClick={onClear}
-              >
-                Clear filters
-              </button>
-            ) : null}
             <span
               className="vp-internal-count"
               aria-live="polite"
@@ -756,21 +779,6 @@ export function WorkInternalToolbar({
             </span>
           </div>
       </div>
-
-      {activePills.length > 0 ? (
-        <div
-          className="vp-internal-toolbar__row vp-internal-toolbar__row--pills"
-          aria-label="Active filters"
-        >
-          {activePills.map((pill) => (
-            <FilterActivePill
-              key={pill.key}
-              label={pill.label}
-              onRemove={() => patchFilter(pill.filterKey, '')}
-            />
-          ))}
-        </div>
-      ) : null}
 
       <WorkInternalFilterSheet
         open={filterSheetOpen}
