@@ -419,12 +419,12 @@ export function WorkInternalToolbar({
           filters are applied/cleared. Sits above filter/sort controls. */}
       <div
         className={
-          activePills.length > 0
+          activePills.length > 0 || active
             ? 'vp-internal-toolbar__row vp-internal-toolbar__row--pills'
             : 'vp-internal-toolbar__row vp-internal-toolbar__row--pills is-empty'
         }
         aria-label="Active filters"
-        aria-hidden={activePills.length === 0 ? true : undefined}
+        aria-hidden={activePills.length === 0 && !active ? true : undefined}
       >
         {activePills.map((pill) => (
           <FilterActivePill
