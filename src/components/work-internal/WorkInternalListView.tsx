@@ -33,7 +33,9 @@ interface WorkInternalListViewProps {
   sort: LibrarySort;
   onSortChange: (sort: LibrarySort) => void;
   selectedIds: Set<string>;
-  onToggleSelect: (id: string, selected: boolean) => void;
+  onToggleSelect: (id: string, selected: boolean, shiftKey?: boolean) => void;
+  allVisibleSelected: boolean;
+  onToggleSelectAllVisible: () => void;
 }
 
 function sortColumnFor(sort: LibrarySort): SortColumn {
@@ -135,13 +137,23 @@ export function WorkInternalListView({
   onSortChange,
   selectedIds,
   onToggleSelect,
+  allVisibleSelected,
+  onToggleSelectAllVisible,
   onAppHost = false,
 }: WorkInternalListViewProps) {
   return (
     <div className="vp-internal-list" role="table" aria-label="Portfolio library">
       <div className="vp-internal-list__head" role="row">
         <span role="columnheader" className="vp-internal-list__select-col">
-          <span className="sr-only">Select</span>
+          <WorkInternalSelectCheckbox
+            checked={allVisibleSelected}
+            label={
+              allVisibleSelected
+                ? 'Deselect all visible projects'
+                : 'Select all visible projects'
+            }
+            onChange={() => onToggleSelectAllVisible()}
+          />
         </span>
         <span role="columnheader" className="vp-internal-list__thumb-col" />
         <SortableHeader
@@ -211,7 +223,9 @@ export function WorkInternalListView({
                 <WorkInternalSelectCheckbox
                   checked={selected}
                   label={`Select ${title}`}
-                  onChange={(checked) => onToggleSelect(entry._id, checked)}
+                  onChange={(checked, shiftKey) =>
+                    onToggleSelect(entry._id, checked, shiftKey)
+                  }
                 />
               </span>
               <Link

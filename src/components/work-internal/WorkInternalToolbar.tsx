@@ -70,6 +70,9 @@ interface WorkInternalToolbarProps {
   onSortChange: (sort: LibrarySort) => void;
   onViewChange: (view: LibraryViewMode) => void;
   onClear: () => void;
+  allVisibleSelected?: boolean;
+  onSelectAllVisible?: () => void;
+  onDeselectVisible?: () => void;
 }
 
 function toTaxonomyPanelOptions(
@@ -134,8 +137,12 @@ export function WorkInternalToolbar({
   onSortChange,
   onViewChange,
   onClear,
+  allVisibleSelected = false,
+  onSelectAllVisible,
+  onDeselectVisible,
 }: WorkInternalToolbarProps) {
   const active = hasActiveFilters(filters);
+  const canBulkSelectVisible = resultCount > 0 && Boolean(onSelectAllVisible);
   const [openPanel, setOpenPanel] = useState<ChipPanelId | null>(null);
   const [clientQuery, setClientQuery] = useState('');
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
@@ -507,6 +514,18 @@ export function WorkInternalToolbar({
         </div>
 
         <div className="vp-internal-toolbar__mobile-actions">
+          {canBulkSelectVisible ? (
+            <button
+              type="button"
+              className="vp-internal-select-all"
+              onClick={() => {
+                if (allVisibleSelected) onDeselectVisible?.();
+                else onSelectAllVisible?.();
+              }}
+            >
+              {allVisibleSelected ? 'Deselect all' : 'Select all'}
+            </button>
+          ) : null}
           <span
             className="vp-internal-count"
             aria-live="polite"
@@ -768,6 +787,20 @@ export function WorkInternalToolbar({
           </label>
 
           <div className="vp-internal-toolbar__meta">
+            {canBulkSelectVisible ? (
+              <button
+                type="button"
+                className="vp-internal-select-all"
+                onClick={() => {
+                  if (allVisibleSelected) onDeselectVisible?.();
+                  else onSelectAllVisible?.();
+                }}
+              >
+                {allVisibleSelected
+                  ? 'Deselect all'
+                  : `Select all${resultCount ? ` (${resultCount})` : ''}`}
+              </button>
+            ) : null}
             <span
               className="vp-internal-count"
               aria-live="polite"

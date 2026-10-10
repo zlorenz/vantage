@@ -14,6 +14,7 @@ import {
   useDeferredValue,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 // useDeferredValue also drives search suggestions so the dropdown never
@@ -99,6 +100,8 @@ export function WorkInternalApp({
   const [view, setView] = useState(() => readView(searchParams));
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [createOpen, setCreateOpen] = useState(false);
+  /** Anchor for shift-click range select over the visible (filtered) list. */
+  const selectAnchorIdRef = useRef<string | null>(null);
 
   // Keep grid/facet work off the typing critical path.
   const deferredFilters = useDeferredValue(filters);
@@ -192,18 +195,70 @@ export function WorkInternalApp({
     setSort(DEFAULT_SORT);
   }, []);
 
-  const toggleSelect = useCallback((id: string, selected: boolean) => {
+  // Visible order drives range select — drop the anchor when it changes.
+  useEffect(() => {
+    selectAnchorIdRef.current = null;
+  }, [deferredFilters, deferredSort, locale]);
+
+  const toggleSelect = useCallback(
+    (id: string, selected: boolean, shiftKey = false) => {
+      const visibleIds = filteredSorted.map((entry) => entry._id);
+      const anchorId = selectAnchorIdRef.current;
+
+      if (shiftKey && anchorId) {
+        const from = visibleIds.indexOf(anchorId);
+        const to = visibleIds.indexOf(id);
+        if (from >= 0 && to >= 0) {
+          const start = Math.min(from, to);
+          const end = Math.max(from, to);
+          setSelectedIds((prev) => {
+            const next = new Set(prev);
+            for (let i = start; i <= end; i++) {
+              const itemId = visibleIds[i]!;
+              if (selected) next.add(itemId);
+              else next.delete(itemId);
+            }
+            return next;
+          });
+          return;
+        }
+      }
+
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        if (selected) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+      selectAnchorIdRef.current = id;
+    },
+    [filteredSorted],
+  );
+
+  const allVisibleSelected =
+    filteredSorted.length > 0 &&
+    filteredSorted.every((entry) => selectedIds.has(entry._id));
+
+  const selectAllVisible = useCallback(() => {
+    setSelectedIds(new Set(filteredSorted.map((entry) => entry._id)));
+  }, [filteredSorted]);
+
+  const deselectVisible = useCallback(() => {
+    const visible = new Set(filteredSorted.map((entry) => entry._id));
     setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (selected) next.add(id);
-      else next.delete(id);
+      const next = new Set<string>();
+      for (const id of prev) {
+        if (!visible.has(id)) next.add(id);
+      }
       return next;
     });
-  }, []);
+    selectAnchorIdRef.current = null;
+  }, [filteredSorted]);
 
   const clearSelection = useCallback(() => {
     setSelectedIds(new Set());
     setCreateOpen(false);
+    selectAnchorIdRef.current = null;
   }, []);
 
   const selectedIdList = useMemo(() => [...selectedIds], [selectedIds]);
@@ -235,6 +290,9 @@ export function WorkInternalApp({
         onSortChange={setSort}
         onViewChange={setView}
         onClear={clearFilters}
+        allVisibleSelected={allVisibleSelected}
+        onSelectAllVisible={selectAllVisible}
+        onDeselectVisible={deselectVisible}
       />
 
       <div
@@ -266,6 +324,11 @@ export function WorkInternalApp({
               onSortChange={setSort}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
+              allVisibleSelected={allVisibleSelected}
+              onToggleSelectAllVisible={() => {
+                if (allVisibleSelected) deselectVisible();
+                else selectAllVisible();
+              }}
               onAppHost={onAppHost}
             />
           ) : (

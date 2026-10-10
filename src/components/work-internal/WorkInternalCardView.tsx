@@ -26,7 +26,7 @@ interface WorkInternalCardViewProps {
   entries: InternalLibraryEntry[];
   locale: Locale;
   selectedIds: Set<string>;
-  onToggleSelect: (id: string, selected: boolean) => void;
+  onToggleSelect: (id: string, selected: boolean, shiftKey?: boolean) => void;
   onAppHost?: boolean;
 }
 
@@ -78,7 +78,9 @@ export function WorkInternalCardView({
             <WorkInternalSelectCheckbox
               checked={selected}
               label={`Select ${title}`}
-              onChange={(checked) => onToggleSelect(entry._id, checked)}
+              onChange={(checked, shiftKey) =>
+                onToggleSelect(entry._id, checked, shiftKey)
+              }
             />
             <WorkInternalCopyLinkButton entry={entry} locale={locale} />
             <Link
