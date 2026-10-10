@@ -20,18 +20,17 @@ export function getPortfolioSlug(
   return getPublicPortfolioSlug(entry, locale)
 }
 
-export function openPortfolioEntry(
+/** Absolute client-facing portfolio URL on the marketing origin. */
+export function getPublicPortfolioUrl(
   entry: InternalLibraryEntry,
   locale: Locale,
-): void {
+): string {
   const slug = getPortfolioSlug(entry, locale)
   const path = getPathname({
     locale,
     href: {pathname: '/portfolio/[slug]', params: {slug}},
   })
-  // Always open the public case on the marketing origin (app host has no
-  // portfolio routes — middleware would bounce unknown paths anyway).
-  window.open(`${getSiteOrigin()}${path}`, '_blank', 'noopener,noreferrer')
+  return `${getSiteOrigin()}${path}`
 }
 
 /** Browser-visible href for the internal detail page for this entry. */

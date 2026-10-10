@@ -21,7 +21,7 @@ import {
 } from './filter-entries';
 import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
 import type {LibrarySort} from './types';
-import {WorkInternalItemMenu} from './WorkInternalItemMenu';
+import {WorkInternalCopyLinkButton} from './WorkInternalCopyLinkButton';
 import {WorkInternalSelectCheckbox} from './WorkInternalSelectCheckbox';
 
 type SortColumn = 'title' | 'date' | 'client';
@@ -179,7 +179,7 @@ export function WorkInternalListView({
           Status
         </span>
         <span role="columnheader" className="vp-internal-list__menu-col">
-          <span className="sr-only">Actions</span>
+          <span className="sr-only">Copy link</span>
         </span>
       </div>
       <div className="vp-internal-list__body" role="rowgroup">
@@ -289,11 +289,7 @@ export function WorkInternalListView({
                 </span>
               </Link>
               <span className="vp-internal-list__menu-col" role="cell">
-                <WorkInternalItemMenu
-                  entry={entry}
-                  locale={locale}
-                  onAppHost={onAppHost}
-                />
+                <WorkInternalCopyLinkButton entry={entry} locale={locale} />
               </span>
             </div>
           );

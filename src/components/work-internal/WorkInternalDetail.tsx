@@ -30,7 +30,7 @@ import type {
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
-import {openPortfolioEntry} from './entry-url';
+import {getPublicPortfolioUrl} from './entry-url';
 import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
 
 interface WorkInternalDetailProps {
@@ -340,8 +340,24 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
   const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(
     null,
   );
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
+    'idle',
+  );
   const activeVideo =
     activeVideoIndex !== null ? playableVideos[activeVideoIndex] : null;
+
+  async function copyPublicLink() {
+    try {
+      await navigator.clipboard.writeText(
+        getPublicPortfolioUrl(entry, locale),
+      );
+      setCopyState('copied');
+      setTimeout(() => setCopyState('idle'), 2000);
+    } catch {
+      setCopyState('failed');
+      setTimeout(() => setCopyState('idle'), 2000);
+    }
+  }
 
   return (
     <div className="vp-internal-detail">
@@ -387,10 +403,27 @@ export function WorkInternalDetail({entry, locale}: WorkInternalDetailProps) {
           ) : null}
           <button
             type="button"
-            className="vp-internal-detail__open-public"
-            onClick={() => openPortfolioEntry(entry, locale)}
+            className={
+              copyState === 'copied'
+                ? 'vp-internal-detail__copy-link is-copied'
+                : copyState === 'failed'
+                  ? 'vp-internal-detail__copy-link is-failed'
+                  : 'vp-internal-detail__copy-link'
+            }
+            onClick={copyPublicLink}
+            aria-label={
+              copyState === 'copied'
+                ? 'Copied'
+                : copyState === 'failed'
+                  ? 'Copy failed'
+                  : 'Copy public link to clipboard'
+            }
           >
-            Open public page ↗
+            {copyState === 'copied'
+              ? 'Copied'
+              : copyState === 'failed'
+                ? 'Copy failed'
+                : 'Copy to clipboard'}
           </button>
         </div>
       </div>

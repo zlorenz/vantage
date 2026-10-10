@@ -28,6 +28,8 @@ body:has(.vp-internal-page) {
   --vp-wi-text: #f0f0f2;
   --vp-wi-text-muted: #9a9aa3;
   --vp-wi-text-faint: #6c6c74;
+  --vp-wi-danger: #c43b3b;
+  --vp-wi-danger-text: #fff5f5;
   --vp-wi-radius: 0.5rem;
   --vp-wi-radius-sm: 0.375rem;
   --vp-wi-radius-lg: 0.625rem;
@@ -236,7 +238,7 @@ body:has(.vp-internal-page) .vp-internal-fchip__btn.is-active {
   border-color: var(--vp-wi-accent-mid);
 }
 
-body:has(.vp-internal-page) .vp-internal-fchip__panel, body:has(.vp-internal-page) .vp-internal-menu__panel, body:has(.vp-internal-page) .vp-internal-showreel-dialog__panel {
+body:has(.vp-internal-page) .vp-internal-fchip__panel, body:has(.vp-internal-page) .vp-internal-showreel-dialog__panel {
   background: var(--vp-wi-surface);
   border: 1px solid var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-lg);
@@ -334,7 +336,7 @@ body:has(.vp-internal-page) .vp-internal-filter__label {
 
 body:has(.vp-internal-page) .vp-internal-filter__select {
   color: var(--vp-wi-text);
-  background: var(--vp-wi-surface);
+  background-color: var(--vp-wi-surface);
   border: 1px solid var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-sm);
 }
@@ -426,9 +428,9 @@ body:has(.vp-internal-page) .vp-internal-badge {
 }
 
 body:has(.vp-internal-page) .vp-internal-badge--hidden {
-  color: #0c0c0d;
-  background: var(--vp-wi-accent);
-  border-color: var(--vp-wi-accent);
+  color: var(--vp-wi-danger-text);
+  background: var(--vp-wi-danger);
+  border-color: var(--vp-wi-danger);
 }
 
 body:has(.vp-internal-page) .vp-internal-badge--public {
@@ -531,7 +533,7 @@ body:has(.vp-internal-page) .vp-internal-list__row [role='cell'] .vp-internal-ba
 }
 
 /* --------------------------------------------------------------------------
-   Select / menu / Project detail / showreel chrome
+   Select / copy-link / Project detail / showreel chrome
    -------------------------------------------------------------------------- */
 
 body:has(.vp-internal-page) .vp-internal-select__box {
@@ -555,25 +557,32 @@ body:has(.vp-internal-page) .vp-internal-select.is-checked .vp-internal-select__
   border-bottom-color: #0c0c0d;
 }
 
-body:has(.vp-internal-page) .vp-internal-menu__btn {
+body:has(.vp-internal-page) .vp-internal-copy-link {
   color: var(--vp-wi-text);
   background: rgba(12, 12, 13, 0.72);
   border: 1px solid var(--vp-wi-border-strong);
   border-radius: var(--vp-wi-radius-sm);
 }
 
-body:has(.vp-internal-page) .vp-internal-menu__btn:hover, body:has(.vp-internal-page) .vp-internal-menu.is-open .vp-internal-menu__btn {
+body:has(.vp-internal-page) .vp-internal-copy-link:hover {
   border-color: var(--vp-wi-accent-mid);
   background: rgba(12, 12, 13, 0.88);
 }
 
-body:has(.vp-internal-page) .vp-internal-menu__item {
-  color: var(--vp-wi-text-muted);
+body:has(.vp-internal-page) .vp-internal-copy-link.is-copied {
+  color: #f5fff7;
+  background: rgba(47, 107, 58, 0.85);
+  border-color: #3d8a4d;
 }
 
-body:has(.vp-internal-page) .vp-internal-menu__item:hover {
-  color: var(--vp-wi-text);
-  background: var(--vp-wi-surface-hover);
+body:has(.vp-internal-page) .vp-internal-copy-link.is-failed {
+  color: var(--vp-wi-danger-text);
+  background: var(--vp-wi-danger);
+  border-color: var(--vp-wi-danger);
+}
+
+body:has(.vp-internal-page) .vp-internal-list__menu-col .vp-internal-copy-link {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 body:has(.vp-internal-page) .vp-internal-detail__toolbar {
@@ -626,15 +635,27 @@ body:has(.vp-internal-page) .vp-internal-detail__empty-credits {
   color: var(--vp-wi-text-muted);
 }
 
-body:has(.vp-internal-page) .vp-internal-detail__open-public {
+body:has(.vp-internal-page) .vp-internal-detail__copy-link {
   color: var(--vp-wi-text);
   background: var(--vp-wi-accent-soft);
   border-color: var(--vp-wi-accent-mid);
   border-radius: var(--vp-wi-radius-sm);
 }
 
-body:has(.vp-internal-page) .vp-internal-detail__open-public:hover {
+body:has(.vp-internal-page) .vp-internal-detail__copy-link:hover {
   background: rgba(var(--vp-wi-accent-rgb), 0.28);
+}
+
+body:has(.vp-internal-page) .vp-internal-detail__copy-link.is-copied {
+  color: #f5fff7;
+  background: rgba(47, 107, 58, 0.85);
+  border-color: #3d8a4d;
+}
+
+body:has(.vp-internal-page) .vp-internal-detail__copy-link.is-failed {
+  color: var(--vp-wi-danger-text);
+  background: var(--vp-wi-danger);
+  border-color: var(--vp-wi-danger);
 }
 
 body:has(.vp-internal-page) .vp-internal-detail__player {
