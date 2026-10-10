@@ -13,8 +13,8 @@ import {createHmac, timingSafeEqual} from 'node:crypto'
 import type {NextRequest} from 'next/server'
 
 /**
- * When false, edit/create APIs and `/showreel/*/edit` skip auth.
- * Set `true` to re-enable `SHOWREEL_EDITOR_PASSWORD` gating.
+ * When false, edit/create APIs and showreel edit pages skip auth.
+ * Set true to re-enable SHOWREEL_EDITOR_PASSWORD gating.
  */
 export const SHOWREEL_AUTH_ENABLED = false
 
