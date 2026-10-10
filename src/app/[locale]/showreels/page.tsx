@@ -32,8 +32,14 @@ export default async function ShowreelIndexPage({params}: Props) {
   })
 
   const showreels = (Array.isArray(data) ? data : []).filter(
-    (row): row is {_id: string; title?: string | null; _updatedAt?: string | null} =>
-      Boolean(row && typeof row === 'object' && '_id' in row && row._id),
+    (
+      row,
+    ): row is {
+      _id: string
+      title?: string | null
+      _createdAt?: string | null
+      itemCount?: number | null
+    } => Boolean(row && typeof row === 'object' && '_id' in row && row._id),
   )
 
   return (

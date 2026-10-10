@@ -240,14 +240,18 @@ body:has(.vp-internal-page) .vp-showreel-index__title {
   color: var(--vp-wi-text);
 }
 
-body:has(.vp-internal-page) .vp-showreel-index__btn {
+body:has(.vp-internal-page) .vp-showreel-index__meta {
+  color: var(--vp-wi-text-muted);
+}
+
+body:has(.vp-internal-page) .vp-showreel-index__icon-btn {
   color: var(--vp-wi-text);
   background: rgba(255, 255, 255, 0.06);
   border-color: var(--vp-wi-border-strong);
   border-radius: var(--vp-wi-radius-sm);
 }
 
-body:has(.vp-internal-page) .vp-showreel-index__btn:hover {
+body:has(.vp-internal-page) .vp-showreel-index__icon-btn:hover {
   border-color: var(--vp-wi-accent-mid);
   background: rgba(12, 12, 13, 0.88);
 }

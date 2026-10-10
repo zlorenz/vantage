@@ -4,10 +4,11 @@
 
 /** Producer index — all published showreels (title + id for editor/client links). */
 export const SHOWREEL_INDEX_QUERY = `
-  *[_type == "showreel" && !(_id in path("drafts.**"))] | order(title asc) {
+  *[_type == "showreel" && !(_id in path("drafts.**"))] | order(_createdAt desc) {
     _id,
     title,
-    _updatedAt
+    _createdAt,
+    "itemCount": count(portfolioItems)
   }
 `
 
