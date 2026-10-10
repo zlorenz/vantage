@@ -131,6 +131,28 @@ export interface PortfolioVideo {
   previewEndSeconds?: number;
 }
 
+/** Key visual still from INTERNAL_LIBRARY_ENTRY_BY_SLUG_QUERY (detail only). */
+export interface InternalLibraryKeyVisual {
+  _key: string;
+  _type?: 'image';
+  asset?: {
+    _id: string;
+    _type?: string;
+    url?: string | null;
+    title?: string | null;
+    altText?: string | null;
+    description?: string | null;
+    creditLine?: string | null;
+    metadata?: {
+      dimensions?: {
+        width?: number | null;
+        height?: number | null;
+        aspectRatio?: number | null;
+      } | null;
+    } | null;
+  } | null;
+}
+
 export interface InternalLibraryEntry {
   _id: string;
   title: string;
@@ -148,6 +170,8 @@ export interface InternalLibraryEntry {
   isHidden?: boolean;
   publishedAt?: string;
   videos?: PortfolioVideo[];
+  /** Present on detail fetch only — not on the library index query. */
+  keyVisuals?: InternalLibraryKeyVisual[] | null;
   videoFormats?: TaxonomyTerm[];
   industries?: TaxonomyTerm[];
   markets?: TaxonomyTerm[];

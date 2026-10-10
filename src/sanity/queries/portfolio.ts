@@ -248,7 +248,20 @@ export const INTERNAL_LIBRARY_ENTRY_BY_SLUG_QUERY = `
     !defined(trash.trashedAt) &&
     (slug.current == $slug || slugZh.current == $slug)
   ][0]{
-    ${INTERNAL_LIBRARY_ENTRY_FIELDS}
+    ${INTERNAL_LIBRARY_ENTRY_FIELDS},
+    keyVisuals[]{
+      ...,
+      asset->{
+        _id,
+        _type,
+        url,
+        title,
+        altText,
+        description,
+        creditLine,
+        metadata { dimensions { width, height, aspectRatio } }
+      }
+    }
   }
 `;
 

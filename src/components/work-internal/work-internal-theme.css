@@ -717,6 +717,12 @@ body:has(.vp-internal-page) .vp-internal-detail__empty-credits {
   color: var(--vp-wi-text-muted);
 }
 
+body:has(.vp-internal-page)
+  .vp-internal-detail__media-section
+  .vp-internal-detail__section-title {
+  color: #fff;
+}
+
 body:has(.vp-internal-page) .vp-internal-detail__copy-link {
   color: var(--vp-wi-text);
   background: var(--vp-wi-accent-soft);
@@ -744,6 +750,14 @@ body:has(.vp-internal-page) .vp-internal-detail__player {
   border-color: var(--vp-wi-border);
   border-radius: var(--vp-wi-radius-lg);
   overflow: hidden;
+}
+
+/* Lightbox title/counter — Mona Sans like WI titles, not marketing display. */
+body:has(.vp-internal-page) .vp-showreel-lightbox__title,
+body:has(.vp-internal-page) .vp-showreel-lightbox__count {
+  font-family: var(--font-vp-sans);
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 body:has(.vp-internal-page) .vp-internal-detail__taxonomy {

@@ -169,7 +169,7 @@ export function ShowreelVideoLightbox({
   onClose,
 }: ShowreelVideoLightboxProps) {
   const titleId = useId()
-  const closeRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
   const videos = useMemo(() => showreelPlayableVideos(item), [item])
   const [activeIndex, setActiveIndex] = useState(0)
   const [slideDir, setSlideDir] = useState<1 | -1>(1)
@@ -196,7 +196,8 @@ export function ShowreelVideoLightbox({
   useEffect(() => {
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    closeRef.current?.focus()
+    // Focus the dialog (not Close) so arrow keys don't paint :focus-visible on X.
+    panelRef.current?.focus({preventScroll: true})
     return () => {
       document.body.style.overflow = prev
     }
@@ -259,13 +260,14 @@ export function ShowreelVideoLightbox({
         }}
       >
         <div
+          ref={panelRef}
           className="vp-showreel-lightbox__panel"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
+          tabIndex={-1}
         >
           <button
-            ref={closeRef}
             type="button"
             className="vp-showreel-lightbox__close"
             onClick={onClose}
@@ -290,14 +292,15 @@ export function ShowreelVideoLightbox({
       }}
     >
       <div
+        ref={panelRef}
         className="vp-showreel-lightbox__panel"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        tabIndex={-1}
       >
         <div className="vp-showreel-lightbox__stage">
           <button
-            ref={closeRef}
             type="button"
             className="vp-showreel-lightbox__close"
             onClick={onClose}
