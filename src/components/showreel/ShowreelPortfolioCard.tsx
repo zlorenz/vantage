@@ -15,7 +15,7 @@ import {urlForImage} from '@/lib/sanity'
 import type {Locale} from '@/i18n/routing'
 import {PortfolioIndexGridHover} from '@/components/portfolio/PortfolioIndexGridHover'
 import type {ShowreelPublicItem} from './showreel-public-types'
-import {showreelItemVideoUrls} from './showreel-public-types'
+import {showreelPlayableVideos} from './showreel-public-types'
 import '@/components/portfolio/portfolio-index-grid.css'
 
 interface ShowreelPortfolioCardProps {
@@ -44,8 +44,7 @@ export function ShowreelPortfolioCard({
   const fallbackTitle =
     !brandLine && !campaign ? resolveEntryDocumentTitle(item, locale) : ''
   const campaignText = campaign || fallbackTitle
-  const {vimeoUrl, xinpianchangUrl} = showreelItemVideoUrls(item)
-  const hasVideo = Boolean(vimeoUrl || xinpianchangUrl)
+  const hasVideo = showreelPlayableVideos(item).length > 0
   const labelBase = campaignText || brandLine || item.title
 
   return (

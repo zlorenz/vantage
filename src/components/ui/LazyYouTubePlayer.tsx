@@ -54,6 +54,10 @@ interface LazyYouTubePlayerProps {
    * Use for lightbox where a separate fullscreen control is available.
    */
   inlinePlayback?: boolean;
+  /** Resume playback at this time (seconds) after play starts. */
+  startAtSeconds?: number;
+  /** Fires on playback progress (lightbox resume bookmarks). */
+  onTimeUpdate?: (seconds: number) => void;
 }
 
 /** YT.PlayerState — numeric so we don't depend on the iframe API script. */
@@ -105,7 +109,7 @@ function youTubeEmbedSrc(
   playsInline: boolean,
   origin: string,
   frameId: string,
-  options?: {autoplay?: boolean; mute?: boolean},
+  options?: {autoplay?: boolean; mute?: boolean; start?: number},
 ): string {
   const params = new URLSearchParams({
     enablejsapi: '1',
@@ -120,6 +124,9 @@ function youTubeEmbedSrc(
   });
   if (options?.autoplay) params.set('autoplay', '1');
   if (options?.mute) params.set('mute', '1');
+  if (options?.start && options.start > 0) {
+    params.set('start', String(Math.floor(options.start)));
+  }
   return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`;
 }
 
@@ -154,6 +161,8 @@ export function LazyYouTubePlayer({
   prefetch = false,
   autoPlay = false,
   inlinePlayback = false,
+  startAtSeconds = 0,
+  onTimeUpdate,
 }: LazyYouTubePlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — playsinline must match the real viewport. */
@@ -189,7 +198,12 @@ export function LazyYouTubePlayer({
   const playerStateRef = useRef<number | null>(null);
   const playbackWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onStopRef = useRef(onStop);
+  const startAtSecondsRef = useRef(startAtSeconds);
+  const onTimeUpdateRef = useRef(onTimeUpdate);
+  const didSeekStartRef = useRef(false);
   onStopRef.current = onStop;
+  startAtSecondsRef.current = startAtSeconds;
+  onTimeUpdateRef.current = onTimeUpdate;
   playingRef.current = playing;
   playerReadyRef.current = playerReady;
 
@@ -201,6 +215,9 @@ export function LazyYouTubePlayer({
       ? null
       : youTubeEmbedSrc(videoId, wantsInline, origin, frameId, {
           ...(autoPlay ? {autoplay: true, mute: true} : {}),
+          ...(startAtSeconds > 0.25
+            ? {start: Math.floor(startAtSeconds)}
+            : {}),
         });
 
   useEffect(() => {
@@ -377,6 +394,9 @@ export function LazyYouTubePlayer({
           typeof info.duration === 'number' ||
           typeof info.playerState === 'number'
         ) {
+          if (typeof info.currentTime === 'number') {
+            onTimeUpdateRef.current?.(info.currentTime);
+          }
           setClock((clock) => ({
             current:
               typeof info.currentTime === 'number'
@@ -461,6 +481,11 @@ export function LazyYouTubePlayer({
         requestElementFullscreen(wrap);
       }
       commandFrame(iframe, frameId, 'playVideo');
+      const resumeAt = startAtSecondsRef.current;
+      if (!didSeekStartRef.current && resumeAt > 0.25) {
+        didSeekStartRef.current = true;
+        commandFrame(iframe, frameId, 'seekTo', [resumeAt, true]);
+      }
 
       pendingStartRef.current = false;
       awaitingTapToPlayRef.current = false;
@@ -476,6 +501,10 @@ export function LazyYouTubePlayer({
         if (allowMutedFallback) {
           commandFrame(iframe, frameId, 'mute');
           commandFrame(iframe, frameId, 'playVideo');
+          if (!didSeekStartRef.current && resumeAt > 0.25) {
+            didSeekStartRef.current = true;
+            commandFrame(iframe, frameId, 'seekTo', [resumeAt, true]);
+          }
           return;
         }
         promptTapToPlay();

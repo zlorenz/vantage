@@ -65,6 +65,10 @@ interface LazyVimeoPlayerProps {
    * Use for lightbox where a separate fullscreen control is available.
    */
   inlinePlayback?: boolean;
+  /** Resume playback at this time (seconds) after play starts. */
+  startAtSeconds?: number;
+  /** Fires on playback progress (lightbox resume bookmarks). */
+  onTimeUpdate?: (seconds: number) => void;
 }
 
 /** WP / GTM progress milestones — 0–100 scale (SDK `percent` is 0–1). */
@@ -149,6 +153,8 @@ export function LazyVimeoPlayer({
   prefetch = false,
   autoPlay = false,
   inlinePlayback = false,
+  startAtSeconds = 0,
+  onTimeUpdate,
 }: LazyVimeoPlayerProps) {
   const [playing, setPlaying] = useState(false);
   /** null until client mount — avoids wrong playsinline on SSR/hydration. */
@@ -163,6 +169,11 @@ export function LazyVimeoPlayer({
   const playerRef = useRef<Player | null>(null);
   const milestonesFiredRef = useRef(new Set<number>());
   const startedFromGestureRef = useRef(false);
+  const startAtSecondsRef = useRef(startAtSeconds);
+  const onTimeUpdateRef = useRef(onTimeUpdate);
+  const didSeekStartRef = useRef(false);
+  startAtSecondsRef.current = startAtSeconds;
+  onTimeUpdateRef.current = onTimeUpdate;
   /** FS-on-play: only restore poster after we actually entered fullscreen once. */
   const enteredFullscreenRef = useRef(false);
   /** Set on play when this session should be fullscreen-only (mobile or carousel). */
@@ -291,6 +302,7 @@ export function LazyVimeoPlayer({
         duration: data.duration,
         running: true,
       });
+      onTimeUpdateRef.current?.(data.seconds);
       const progressPercent = Math.round(data.percent * 100);
       for (const milestone of PROGRESS_MILESTONES) {
         if (
@@ -431,6 +443,17 @@ export function LazyVimeoPlayer({
         setAwaitingTapToPlay(false);
       };
 
+      const seekResumeIfNeeded = async () => {
+        const resumeAt = startAtSecondsRef.current;
+        if (didSeekStartRef.current || !(resumeAt > 0.25)) return;
+        didSeekStartRef.current = true;
+        try {
+          await player.setCurrentTime(resumeAt);
+        } catch {
+          // Ignore — play from start if seek fails.
+        }
+      };
+
       try {
         // Keep FS + play in one gesture — awaiting requestFullscreen before
         // play() drops iOS user activation and leaves Vimeo paused in FS.
@@ -442,6 +465,7 @@ export function LazyVimeoPlayer({
           void player.requestFullscreen().catch(() => {});
         }
         await player.play();
+        await seekResumeIfNeeded();
         finishStarted();
 
         // Only prompt for a second tap if still paused after buffer time.
@@ -458,6 +482,7 @@ export function LazyVimeoPlayer({
               if (allowMutedFallback) {
                 await player.setMuted(true);
                 await player.play();
+                await seekResumeIfNeeded();
                 finishStarted();
                 return;
               }
@@ -477,6 +502,7 @@ export function LazyVimeoPlayer({
           try {
             await player.setMuted(true);
             await player.play();
+            await seekResumeIfNeeded();
             finishStarted();
             return;
           } catch {

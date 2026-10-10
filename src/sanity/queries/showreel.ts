@@ -57,7 +57,13 @@ export const SHOWREEL_PUBLIC_QUERY = `
       thumbTitleOverride,
       featuredImage,
       "slug": slug.current,
-      "videos": videos[0...1]{vimeoUrl, xinpianchangUrl}
+      "videos": videos[]{
+        _key,
+        vimeoUrl,
+        xinpianchangUrl,
+        videoTitle,
+        videoTitleZh
+      }
     }
   }
 `
