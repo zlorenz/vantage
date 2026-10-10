@@ -1,6 +1,9 @@
 /**
  * Case-study header — parallel to homepage carousel overlay type treatments.
  * Keep selectors under .vp-case-header so carousel styles stay independent.
+ *
+ * Composition (all breakpoints): brand → campaign → left-aligned taxonomy pills.
+ * Key crew lives in PortfolioCredits below the fold — not in this header.
  */
 
 .vp-case-header {
@@ -15,15 +18,6 @@
   min-width: 0;
   flex-direction: column;
   gap: 0.35rem;
-  /* Former header gap — space above the title↔meta hairline. */
-  padding-bottom: 3rem;
-}
-
-.vp-case-header__rule {
-  flex-shrink: 0;
-  width: calc(100% + 2rem);
-  margin-inline: -1rem;
-  border-top: var(--vp-struct-line);
 }
 
 .vp-case-header__brand {
@@ -58,70 +52,19 @@
 .vp-case-header__meta {
   display: flex;
   flex-wrap: wrap;
-  /* Vertically center credits block with taxonomy chips (not last-baseline). */
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem 1.5rem;
-  /* Space below the title↔meta hairline (Figma meta py ~40). */
-  padding-top: 2.5rem;
-}
-
-.vp-case-header__credits {
-  /* Mobile: hide key-crew block so only taxonomy pills sit under the title. */
-  display: none;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  /* Figma 80px between credit groups. */
-  gap: 0.75rem 5rem;
-  margin: 0;
-}
-
-.vp-case-header__credit {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  /* Figma 12px label → name. */
-  gap: 0.75rem;
-  margin: 0;
-}
-
-.vp-case-header__credit dt {
-  margin: 0;
-  font-family: var(--font-vp-sans);
-  font-size: 1rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: normal;
-  text-transform: uppercase;
-  line-height: 1.25rem;
-  font-variant: normal;
-}
-
-.vp-case-header__credit dd {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: flex-start;
   gap: 0;
-  margin: 0;
-  /* Zalando primary — VN-heavy credit names; weight tunable (Special Gothic is 400-only). */
-  font-family: var(--font-vp-heading-fallback), system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 0;
-  line-height: 1.5;
-  text-transform: uppercase;
-}
-
-.vp-case-header__credit-name {
-  display: block;
-  max-width: 100%;
+  /* Tight campaign → pills (same 16px as phone). */
+  padding-top: var(
+    --vp-candidate-portfolio-case-mobile-title-pills-gap,
+    16px
+  );
 }
 
 .vp-case-header__pills {
   display: flex;
   flex-wrap: wrap;
-  /* Mobile: left-align under title; desktop re-asserts end/auto beside credits. */
   justify-content: flex-start;
   align-items: center;
   /* Figma 2px between pills. */
@@ -135,7 +78,6 @@
 
 /*
  * Phone ≤575 — Figma 2283:29693. No left hairline (decision 5).
- * Agency credit hidden (decision 4). Key credits L/R rows.
  */
 @media (max-width: 575.98px) {
   .vp-case-header {
@@ -183,21 +125,10 @@
     text-box-edge: cap alphabetic;
   }
 
-  /* Phone: drop title↔meta hairline — tags follow campaign directly. */
-  .vp-case-header__rule {
-    display: none;
-  }
-
   .vp-case-header__meta {
     flex-direction: column;
     align-items: stretch;
-    justify-content: flex-start;
-    gap: 0;
-    /* Tight title→pills; keep bottom air before media. */
-    padding-top: var(
-      --vp-candidate-portfolio-case-mobile-title-pills-gap,
-      16px
-    );
+    /* Keep bottom air before media. */
     padding-bottom: var(
       --vp-candidate-portfolio-case-mobile-meta-pad-block,
       40px
@@ -205,15 +136,8 @@
     padding-inline: 0;
   }
 
-  /* QC: remove key crew on mobile — title → rule → category tags → media. */
-  .vp-case-header__credits {
-    display: none;
-  }
-
   .vp-case-header__pills {
     width: 100%;
-    justify-content: flex-start;
-    margin: 0;
   }
 }
 
@@ -222,27 +146,9 @@
     margin-bottom: 2.5rem;
   }
 
-  .vp-case-header__title-block {
-    padding-bottom: 3.5rem;
-  }
-
-  .vp-case-header__rule {
-    width: calc(100% + 3rem);
-    margin-inline: -1.5rem;
-  }
-
   .vp-case-header__brand {
     font-size: 1rem;
     letter-spacing: 0;
-  }
-
-  .vp-case-header__credits {
-    display: flex;
-  }
-
-  .vp-case-header__pills {
-    justify-content: flex-end;
-    margin: 0 0 0 auto;
   }
 }
 
@@ -254,11 +160,6 @@
    */
   .vp-case-header {
     padding-top: 12.5rem;
-  }
-
-  .vp-case-header__rule {
-    width: calc(100% + 2 * var(--vp-case-shell-pad-x, 1.875rem));
-    margin-inline: calc(-1 * var(--vp-case-shell-pad-x, 1.875rem));
   }
 }
 

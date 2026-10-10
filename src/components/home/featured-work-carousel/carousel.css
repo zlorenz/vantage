@@ -517,7 +517,7 @@
     line-height: 1.25;
     color: var(--vp-home-carousel-credit-role);
     font-variant: normal;
-    /* Figma: DIRECTOR / DOP — keep mobile source casing; uppercase desktop only. */
+    /* Figma: DIRECTOR — keep mobile source casing; uppercase desktop only. */
     text-transform: uppercase;
   }
 

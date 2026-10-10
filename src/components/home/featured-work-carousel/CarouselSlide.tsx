@@ -227,16 +227,14 @@ export const CarouselSlide = forwardRef<HTMLElement, CarouselSlideProps>(
               </div>
               <h2 className="vp-home-carousel__campaign">{slide.campaignLine}</h2>
             </div>
-            <dl className="vp-home-carousel__credits">
-              <div className="vp-home-carousel__credit">
-                <dt>Director</dt>
-                <dd>{slide.directorNames}</dd>
-              </div>
-              <div className="vp-home-carousel__credit">
-                <dt>DOP</dt>
-                <dd>{slide.dopNames}</dd>
-              </div>
-            </dl>
+            {slide.directorNames ? (
+              <dl className="vp-home-carousel__credits">
+                <div className="vp-home-carousel__credit">
+                  <dt>Director</dt>
+                  <dd>{slide.directorNames}</dd>
+                </div>
+              </dl>
+            ) : null}
           </div>
         </div>
 

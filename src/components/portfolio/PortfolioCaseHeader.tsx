@@ -1,17 +1,16 @@
 /**
- * PortfolioCaseHeader — minimal case-study title, taxonomy pills, and key credits.
+ * PortfolioCaseHeader — case-study title + taxonomy pills.
  *
- * Visual treatment parallels the homepage carousel overlay (brand / campaign /
- * label-above-value credits) via dedicated `.vp-case-header__*` classes so
- * carousel and case-study styles can diverge independently.
+ * Visual treatment parallels the homepage carousel overlay (brand / campaign)
+ * via dedicated `.vp-case-header__*` classes so carousel and case-study styles
+ * can diverge independently. Key crew lives in PortfolioCredits below the fold.
  */
 
 import {composeOverlayCopy} from '@/lib/overlay-copy';
 import type {Locale} from '@/i18n/routing';
-import {getStructuredRoleNames} from '@/lib/credits-config';
 import {resolveEntryDisplayTitleParts} from '@/lib/display-titles';
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field';
-import type {CrewCredit, DisplayTitlePartsValue, TaxonomyTerm} from '@/types/sanity';
+import type {DisplayTitlePartsValue, TaxonomyTerm} from '@/types/sanity';
 import type {PhraseLookup} from '@display-titles';
 import '@/components/blog/blog-post-page.css';
 import './portfolio-case-header.css';
@@ -32,18 +31,7 @@ type PortfolioCaseHeaderProps = {
   videoFormats?: TaxonomyRef[] | null;
   industries?: IndustryPillTerm[] | null;
   markets?: TaxonomyRef[] | null;
-  crewCredits?: CrewCredit[] | null;
 };
-
-const CREDIT_ROLES = [
-  {roleKey: 'agency', label: 'Agency'},
-  {roleKey: 'director', label: 'Director'},
-  {roleKey: 'dop', label: 'DOP'},
-  {roleKey: 'art_director', label: 'Art Director'},
-] as const;
-
-/** Agency is desktop-only — hidden ≤575 via CSS (decision 4). */
-const AGENCY_ROLE_KEY = 'agency';
 
 function termLabel(
   term: Pick<TaxonomyTerm, 'title' | 'titleZh'> | null | undefined,
@@ -136,7 +124,6 @@ export function PortfolioCaseHeader({
   videoFormats,
   industries,
   markets,
-  crewCredits,
 }: PortfolioCaseHeaderProps) {
   const parts = resolveEntryDisplayTitleParts(
     {displayTitleParts},
@@ -151,14 +138,7 @@ export function PortfolioCaseHeader({
     ...taxonomyPillLabels(markets, locale, phrases),
   ];
 
-  const credits = CREDIT_ROLES.flatMap(({roleKey, label}) => {
-    const names = getStructuredRoleNames(crewCredits ?? [], roleKey).filter(
-      (name) => name.trim().length > 0,
-    );
-    return names.length > 0 ? [{roleKey, label, names}] : [];
-  });
-
-  if (!brandLine && !campaignLine && pills.length === 0 && credits.length === 0) {
+  if (!brandLine && !campaignLine && pills.length === 0) {
     return null;
   }
 
@@ -184,39 +164,8 @@ export function PortfolioCaseHeader({
         ) : null}
       </div>
 
-      {credits.length > 0 || pillsList ? (
-        <>
-          <div className="vp-case-header__rule" aria-hidden="true" />
-          <div className="vp-case-header__meta">
-            {credits.length > 0 ? (
-              <dl className="vp-case-header__credits">
-                {credits.map((credit) => (
-                  <div
-                    key={credit.roleKey}
-                    className={
-                      credit.roleKey === AGENCY_ROLE_KEY
-                        ? 'vp-case-header__credit vp-case-header__credit--agency'
-                        : 'vp-case-header__credit'
-                    }
-                  >
-                    <dt>{credit.label}</dt>
-                    <dd>
-                      {credit.names.map((name, index) => (
-                        <span
-                          key={`${credit.roleKey}-${index}-${name}`}
-                          className="vp-case-header__credit-name"
-                        >
-                          {name}
-                        </span>
-                      ))}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            ) : null}
-            {pillsList}
-          </div>
-        </>
+      {pillsList ? (
+        <div className="vp-case-header__meta">{pillsList}</div>
       ) : null}
     </header>
   );

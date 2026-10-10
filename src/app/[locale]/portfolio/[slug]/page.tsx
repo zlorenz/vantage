@@ -156,7 +156,6 @@ export default async function PortfolioEntryPage({ params }: Props) {
       videoFormats={entry.videoFormats}
       industries={entry.industries}
       markets={entry.markets}
-      crewCredits={entry.crewCredits}
     />
   );
 

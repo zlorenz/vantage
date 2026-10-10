@@ -6,7 +6,6 @@ export type FeaturedWorkSlide = {
   brandLine: string;
   campaignLine: string;
   directorNames: string;
-  dopNames: string;
   formatLine: string;
   posterUrl: string | null;
   /** Desktop (≥768px) — 16:9 Sanity crop matching Homepage Cards (Desktop). */

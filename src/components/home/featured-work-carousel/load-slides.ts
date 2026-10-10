@@ -112,7 +112,6 @@ export async function loadFeaturedWorkSlides(
       brandLine,
       campaignLine,
       directorNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'director')),
-      dopNames: joinOverlayList(getStructuredRoleNames(entry.crewCredits ?? [], 'dop')),
       formatLine,
       posterUrl,
       posterUrlDesktop,

@@ -18,7 +18,7 @@ Stable tokens used only by the homepage featured-work carousel. **Not** sitewide
 | `--vp-home-carousel-tracking-tight-16` | `0` | Brand/format + credit names (was −0.32px; Special Gothic minimum tracking is 0) | |
 | `--vp-home-carousel-tracking-tight-48` | `0` | Campaign title 48px (was −0.96px) | |
 | `--vp-home-carousel-tracking-tight-14` | `0` | Slide counter (was −0.28px) | |
-| `--vp-home-carousel-credit-role` | `rgba(255,255,255,0.5)` | DIRECTOR / DOP labels | |
+| `--vp-home-carousel-credit-role` | `rgba(255,255,255,0.5)` | DIRECTOR label | |
 | `--vp-home-carousel-credit-col-gap` | `80px` | Gap between credit columns | |
 | `--vp-home-carousel-counter-muted` | `rgba(255,255,255,0.6)` | Counter numerals + rule | |
 | `--vp-home-carousel-scrim` | symmetric `rgba(0,0,0,0.3)` vignette | Desktop overlay scrim | Mobile keeps prior bottom-weighted scrim. |
