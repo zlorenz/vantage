@@ -29,6 +29,7 @@ export const WORK_INTERNAL_PATH_PREFIX = '/work-internal' as const
  */
 export const APP_SUBDOMAIN_RESERVED_SEGMENTS = [
   'showreel',
+  'showreels',
   'login',
   'api',
   'studio',
@@ -111,6 +112,8 @@ export function isWorkInternalPath(pathname: string): boolean {
  */
 export function isShowreelEditorChromePath(pathname: string): boolean {
   if (
+    pathname === '/showreels' ||
+    pathname === '/showreels/' ||
     pathname === '/showreel/login' ||
     pathname.startsWith('/showreel/login/')
   ) {
@@ -188,8 +191,7 @@ export function getPublicPortfolioSlug(
 
 /** Marketing homepage URL for the brand mark (opens in a new tab). */
 export function marketingHomeUrl(): string {
-  if (typeof window !== 'undefined' && isAppHostname(window.location.hostname)) {
-    return `${getSiteOrigin()}/`
-  }
-  return '/'
+  // Always absolute — avoids SSR/client href mismatch on the app host
+  // (client components can't read the request Host during SSR).
+  return `${getSiteOrigin()}/`
 }

@@ -8,12 +8,12 @@
  * App host (NEXT_PUBLIC_APP_HOST, default app.vantage.pictures):
  *   /              → rewrite → /work-internal
  *   /:slug         → rewrite → /work-internal/:slug
- *   /showreel/.../edit + /showreel/login stay on app
+ *   /showreels (index) + /showreel/.../edit + /showreel/login stay on app
  *   everything else → redirect to marketing origin
  *
  * Marketing host:
  *   /work-internal(/:slug) → 308 → app host (prefix stripped)
- *   showreel login + edit  → 308 → app host
+ *   showreels index + showreel login + edit  → 308 → app host
  *
  * Showreel edit pages are gated AFTER next-intl runs. API routes are excluded
  * from this matcher — mutating showreel endpoints must call
@@ -25,6 +25,7 @@ import {NextResponse, type NextRequest} from 'next/server'
 import {routing} from './i18n/routing'
 import {
   isShowreelEditPath,
+  isShowreelIndexPath,
   showreelLoginPathFor,
 } from './lib/showreel-auth-paths'
 import {requestHasShowreelAuth} from './lib/showreel-auth-session'
@@ -90,7 +91,11 @@ export default function proxy(request: NextRequest) {
       )
     }
 
-    if (isShowreelLoginPath(browserPathname) || isShowreelEditPath(browserPathname)) {
+    if (
+      isShowreelIndexPath(browserPathname) ||
+      isShowreelLoginPath(browserPathname) ||
+      isShowreelEditPath(browserPathname)
+    ) {
       const destPath = browserPathname.startsWith('/zh/')
         ? browserPathname.replace(/^\/zh/, '') || '/'
         : browserPathname
@@ -114,6 +119,7 @@ export default function proxy(request: NextRequest) {
   } else if (browserPathname === '/' || browserPathname === '') {
     request.nextUrl.pathname = '/work-internal'
   } else if (
+    isShowreelIndexPath(browserPathname) ||
     isShowreelLoginPath(browserPathname) ||
     isShowreelEditPath(browserPathname)
   ) {

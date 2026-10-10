@@ -71,6 +71,7 @@ export function isAppHostname(hostname: string): boolean {
  */
 export const APP_HOST_RESERVED_SEGMENTS = [
   'showreel',
+  'showreels',
   'login',
   'api',
   'studio',

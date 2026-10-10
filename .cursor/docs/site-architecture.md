@@ -30,7 +30,7 @@ These are singular pages, not driven by a post type loop.
 | Canonical host | `https://app.vantage.pictures` |
 | Library index | `/` on the app host |
 | Project detail | `/{slug}` on the app host |
-| Showreel tools | `/showreel/login`, `/showreel/{id}/edit` on the app host |
+| Showreel tools | `/showreels` (index), `/showreel/login`, `/showreel/{id}/edit` on the app host; public share at marketing `/showreel/{id}` |
 | Filesystem routes | Still implemented under `/work-internal` (rewritten by `src/proxy.ts`) |
 | Marketing redirects | `vantage.pictures/work-internal(/*)` → **308** to app host (prefix stripped) |
 | Filters | Brand / Director / DOP / Art Director (AND logic); `creditIdentity` + unlinked-name fallbacks |

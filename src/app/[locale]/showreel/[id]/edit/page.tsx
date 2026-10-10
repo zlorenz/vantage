@@ -8,6 +8,7 @@ import Link from 'next/link'
 import type {Locale} from '@/i18n/routing'
 import {ShowreelEditor} from '@/components/showreel/ShowreelEditor'
 import {WorkInternalUtilityChrome} from '@/components/work-internal/WorkInternalUtilityChrome'
+import {showreelIndexPath} from '@/lib/showreel-urls'
 import {sanityFetch} from '@/sanity/lib/live'
 import {INTERNAL_LIBRARY_QUERY} from '@/sanity/queries/portfolio'
 import {SHOWREEL_EDITOR_QUERY} from '@/sanity/queries/showreel'
@@ -56,7 +57,12 @@ export default async function ShowreelEditPage({params}: Props) {
   if (!showreel?._id || !showreel.title) {
     return (
       <div className="vp-internal-page vp-internal-page--utility">
-        <WorkInternalUtilityChrome navTitle="Showreel editor" showBack>
+        <WorkInternalUtilityChrome
+          navTitle="Showreel editor"
+          showBack
+          backLabel="← All Showreels"
+          backHref={showreelIndexPath(typedLocale)}
+        >
           <div className="vp-showreel-editor">
             <header className="vp-showreel-editor__header">
               <h1 className="vp-internal-app__title">Showreel not found</h1>
@@ -68,8 +74,11 @@ export default async function ShowreelEditPage({params}: Props) {
               <code>{id}</code>
             </p>
             <p>
-              <Link href="/" className="vp-internal-clear">
-                Back to Work Library
+              <Link
+                href={showreelIndexPath(typedLocale)}
+                className="vp-internal-clear"
+              >
+                All Showreels
               </Link>
             </p>
           </div>
@@ -85,7 +94,12 @@ export default async function ShowreelEditPage({params}: Props) {
 
   return (
     <div className="vp-internal-page vp-internal-page--utility">
-      <WorkInternalUtilityChrome navTitle="Showreel editor" showBack>
+      <WorkInternalUtilityChrome
+        navTitle="Showreel editor"
+        showBack
+        backLabel="← All Showreels"
+        backHref={showreelIndexPath(typedLocale)}
+      >
         <ShowreelEditor
           locale={typedLocale}
           showreel={{

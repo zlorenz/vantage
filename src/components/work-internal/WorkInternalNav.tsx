@@ -16,6 +16,7 @@ import {
   type TouchEvent,
 } from 'react';
 import {marketingHomeUrl} from '@/lib/internal-app-paths';
+import {WorkInternalNavIndexMenu} from './WorkInternalNavIndexMenu';
 
 interface WorkInternalNavProps {
   searchQuery: string;
@@ -250,7 +251,7 @@ export function WorkInternalNav({
           ) : null}
         </div>
 
-        <h1 className="vp-internal-nav__title">Full Work Library</h1>
+        <WorkInternalNavIndexMenu current="library" asHeading />
       </div>
     </header>
   );

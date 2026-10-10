@@ -1,6 +1,15 @@
 /**
- * Showreel GROQ queries — editor + public share page.
+ * Showreel GROQ queries — index, editor + public share page.
  */
+
+/** Producer index — all published showreels (title + id for editor/client links). */
+export const SHOWREEL_INDEX_QUERY = `
+  *[_type == "showreel" && !(_id in path("drafts.**"))] | order(title asc) {
+    _id,
+    title,
+    _updatedAt
+  }
+`
 
 /** Editor payload: fields + dereferenced portfolio rows for the utility list. */
 export const SHOWREEL_EDITOR_QUERY = `

@@ -1,10 +1,15 @@
 /**
- * Public / edit URL helpers for showreel documents.
+ * Public / edit / index URL helpers for showreel documents.
  */
 
 import type {Locale} from '@/i18n/routing'
 
-/** Public share path (page lands in a later prompt — string only for now). */
+/** Producer index of all showreels (app host). */
+export function showreelIndexPath(locale: Locale = 'en'): string {
+  return locale === 'zh' ? '/zh/showreels' : '/showreels'
+}
+
+/** Public share path on the marketing host. */
 export function showreelPublicPath(id: string, locale: Locale = 'en'): string {
   const base = `/showreel/${id}`
   return locale === 'zh' ? `/zh${base}` : base

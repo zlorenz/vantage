@@ -13,6 +13,7 @@ assert.equal(isWorkInternalPath('/work-internal'), true);
 assert.equal(isWorkInternalPath('/work-internal/foo'), true);
 assert.equal(isWorkInternalPath('/'), false);
 
+assert.equal(isShowreelEditorChromePath('/showreels'), true);
 assert.equal(isShowreelEditorChromePath('/showreel/login'), true);
 assert.equal(isShowreelEditorChromePath('/showreel/abc/edit'), true);
 assert.equal(isShowreelEditorChromePath('/showreel/abc'), false);

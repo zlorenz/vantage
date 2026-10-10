@@ -61,6 +61,7 @@ export function shouldSkipInteractionAnalytics(pathname: string): boolean {
   }
   const path = pathnameWithoutLocale(pathname)
   if (path === '/work-internal' || path.startsWith('/work-internal/')) return true
+  if (path === '/showreels' || path.startsWith('/showreels/')) return true
   if (path === '/showreel' || path.startsWith('/showreel/')) return true
   return false
 }

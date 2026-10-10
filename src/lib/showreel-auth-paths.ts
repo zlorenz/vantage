@@ -3,6 +3,16 @@
  * Cookie/password crypto lives in `showreel-auth.ts` (server-only).
  */
 
+/** `/showreels` and `/zh/showreels` — producer index (app host). */
+export function isShowreelIndexPath(pathname: string): boolean {
+  return (
+    pathname === '/showreels' ||
+    pathname === '/showreels/' ||
+    pathname === '/zh/showreels' ||
+    pathname === '/zh/showreels/'
+  )
+}
+
 /** `/showreel/:id/edit` and `/zh/showreel/:id/edit` (id ≠ "login"). */
 export function isShowreelEditPath(pathname: string): boolean {
   return (

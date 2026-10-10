@@ -29,6 +29,7 @@ export {
 
 export {
   isShowreelEditPath,
+  isShowreelIndexPath,
   safeShowreelNextPath,
   showreelLoginPathFor,
 } from './showreel-auth-paths'

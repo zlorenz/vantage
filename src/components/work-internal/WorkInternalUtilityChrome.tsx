@@ -13,22 +13,35 @@ import {
   libraryReturnBrowserPath,
   marketingHomeUrl,
 } from '@/lib/internal-app-paths'
+import {
+  WorkInternalNavIndexMenu,
+  type WorkInternalNavSection,
+} from './WorkInternalNavIndexMenu'
 
 interface WorkInternalUtilityChromeProps {
   /** Right-side label in the fixed nav (e.g. "Showreel editor"). */
   navTitle: string
   ariaLabel?: string
-  /** Show “← Back to Full Work” under the nav. */
+  /**
+   * When set, replace the static nav title with the library ↔ showreels
+   * index switcher (current section highlighted).
+   */
+  sectionNav?: WorkInternalNavSection
+  /** Show a back control under the nav. */
   showBack?: boolean
   backLabel?: string
+  /** Override destination (defaults to the work library return path). */
+  backHref?: string
   children: ReactNode
 }
 
 export function WorkInternalUtilityChrome({
   navTitle,
   ariaLabel,
+  sectionNav,
   showBack = false,
   backLabel = '← Back to Full Work',
+  backHref,
   children,
 }: WorkInternalUtilityChromeProps) {
   const router = useRouter()
@@ -54,7 +67,11 @@ export function WorkInternalUtilityChrome({
             />
           </a>
           <span aria-hidden="true" />
-          <span className="vp-internal-nav__title">{navTitle}</span>
+          {sectionNav ? (
+            <WorkInternalNavIndexMenu current={sectionNav} />
+          ) : (
+            <span className="vp-internal-nav__title">{navTitle}</span>
+          )}
         </div>
       </header>
 
@@ -64,7 +81,7 @@ export function WorkInternalUtilityChrome({
             type="button"
             className="vp-internal-detail__back"
             onClick={() => {
-              router.push(libraryReturnBrowserPath())
+              router.push(backHref ?? libraryReturnBrowserPath())
             }}
           >
             {backLabel}
