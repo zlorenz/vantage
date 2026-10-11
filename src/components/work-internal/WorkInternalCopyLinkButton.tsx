@@ -1,11 +1,21 @@
 /**
- * Copy-link control for library cards, table rows, and project detail.
- * Opens a small menu: Client Link and (when present) Vimeo / YouTube.
+ * Copy-link control for library cards, table rows, project detail toolbar,
+ * and (multi-film) per-video thumbs on detail.
+ *
+ * Entry mode:
+ * - Single playable film → menu: Client Link + Vimeo/YouTube + Xinpianchang
+ * - Multi-film → one-click Client Link only (platform links live on each video)
+ *
+ * Video mode: menu (or one-click) for that film’s Vimeo/YouTube / Xinpianchang.
  */
 
 'use client';
 
 import {useEffect, useId, useRef, useState, type MouseEvent} from 'react';
+import {
+  resolvePortfolioVideos,
+  type PortfolioVideoFields,
+} from '@portfolio-videos';
 import type {Locale} from '@/i18n/routing';
 import {parseVideoUrl} from '@/lib/video-url';
 import {xinpianchangToEmbedUrl} from '@/lib/xinpianchang';
@@ -13,16 +23,19 @@ import type {InternalLibraryEntry} from '@/types/sanity';
 import {getPublicPortfolioUrl} from './entry-url';
 
 interface WorkInternalCopyLinkButtonProps {
-  entry: InternalLibraryEntry;
-  locale: Locale;
-  /** Icon control (grid/table) vs toolbar placement (detail). */
-  variant?: 'icon' | 'detail';
+  /** Entry-level control (grid / table / detail toolbar). */
+  entry?: InternalLibraryEntry;
+  locale?: Locale;
+  /** Per-film control on multi-video detail grid. */
+  video?: PortfolioVideoFields;
+  /** icon = overlay/table; detail = toolbar; media = detail video thumb. */
+  variant?: 'icon' | 'detail' | 'media';
 }
 
 type CopyState = 'idle' | 'copied' | 'failed';
 
 type CopyTarget = {
-  id: 'client' | 'video' | 'xinpianchang';
+  id: string;
   label: string;
   url: string;
 };
@@ -61,43 +74,57 @@ function CheckIcon() {
   );
 }
 
-/** First playable Vimeo/YouTube URL on the entry (canonical watch/page link). */
-export function getPrimaryVideoShareLink(
-  entry: InternalLibraryEntry,
-): {url: string; label: 'Vimeo' | 'YouTube'} | null {
-  for (const video of entry.videos ?? []) {
-    const raw = video.vimeoUrl?.trim();
-    if (!raw) continue;
-    const parsed = parseVideoUrl(raw);
-    if (!parsed) continue;
-    if (parsed.provider === 'youtube') {
-      return {
-        url: `https://www.youtube.com/watch?v=${parsed.id}`,
-        label: 'YouTube',
-      };
+function isPlayableVideo(video: PortfolioVideoFields): boolean {
+  if (video.vimeoUrl?.trim()) {
+    const parsed = parseVideoUrl(video.vimeoUrl);
+    if (parsed?.provider === 'vimeo' || parsed?.provider === 'youtube') {
+      return true;
     }
-    return {
-      url: `https://vimeo.com/${parsed.id}`,
-      label: 'Vimeo',
-    };
   }
-  return null;
+  return Boolean(
+    video.xinpianchangUrl && xinpianchangToEmbedUrl(video.xinpianchangUrl),
+  );
 }
 
-/** First valid Xinpianchang player URL on the entry. */
-export function getPrimaryXinpianchangShareLink(
-  entry: InternalLibraryEntry,
-): string | null {
-  for (const video of entry.videos ?? []) {
-    const raw = video.xinpianchangUrl?.trim();
-    if (!raw) continue;
-    const embed = xinpianchangToEmbedUrl(raw);
-    if (embed) return embed;
-  }
-  return null;
+function countPlayableVideos(entry: InternalLibraryEntry): number {
+  return resolvePortfolioVideos(entry).filter(isPlayableVideo).length;
 }
 
-function buildTargets(
+/** Platform share targets for one film (Vimeo/YouTube and/or Xinpianchang). */
+export function getVideoShareTargets(video: PortfolioVideoFields): CopyTarget[] {
+  const targets: CopyTarget[] = [];
+  const rawVimeo = video.vimeoUrl?.trim();
+  if (rawVimeo) {
+    const parsed = parseVideoUrl(rawVimeo);
+    if (parsed?.provider === 'youtube') {
+      targets.push({
+        id: 'youtube',
+        label: 'YouTube',
+        url: `https://www.youtube.com/watch?v=${parsed.id}`,
+      });
+    } else if (parsed?.provider === 'vimeo') {
+      targets.push({
+        id: 'vimeo',
+        label: 'Vimeo',
+        url: `https://vimeo.com/${parsed.id}`,
+      });
+    }
+  }
+  const rawXpc = video.xinpianchangUrl?.trim();
+  if (rawXpc) {
+    const embed = xinpianchangToEmbedUrl(rawXpc);
+    if (embed) {
+      targets.push({
+        id: 'xinpianchang',
+        label: 'Xinpianchang',
+        url: embed,
+      });
+    }
+  }
+  return targets;
+}
+
+function buildEntryTargets(
   entry: InternalLibraryEntry,
   locale: Locale,
 ): CopyTarget[] {
@@ -108,21 +135,16 @@ function buildTargets(
       url: getPublicPortfolioUrl(entry, locale),
     },
   ];
-  const video = getPrimaryVideoShareLink(entry);
-  if (video) {
-    targets.push({
-      id: 'video',
-      label: video.label,
-      url: video.url,
-    });
+
+  // Multi-film campaigns: toolbar/index only copies the client page.
+  // Platform URLs live on each film thumb on the detail page.
+  if (countPlayableVideos(entry) > 1) {
+    return targets;
   }
-  const xinpianchang = getPrimaryXinpianchangShareLink(entry);
-  if (xinpianchang) {
-    targets.push({
-      id: 'xinpianchang',
-      label: 'Xinpianchang',
-      url: xinpianchang,
-    });
+
+  const primary = resolvePortfolioVideos(entry).find(isPlayableVideo);
+  if (primary) {
+    targets.push(...getVideoShareTargets(primary));
   }
   return targets;
 }
@@ -130,14 +152,23 @@ function buildTargets(
 export function WorkInternalCopyLinkButton({
   entry,
   locale,
+  video,
   variant = 'icon',
 }: WorkInternalCopyLinkButtonProps) {
   const [open, setOpen] = useState(false);
   const [copyState, setCopyState] = useState<CopyState>('idle');
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
-  const targets = buildTargets(entry, locale);
+
+  const targets = video
+    ? getVideoShareTargets(video)
+    : entry && locale
+      ? buildEntryTargets(entry, locale)
+      : [];
+
+  const useMenu = targets.length > 1;
   const isDetail = variant === 'detail';
+  const isMedia = variant === 'media';
 
   useEffect(() => {
     if (!open) return;
@@ -160,6 +191,10 @@ export function WorkInternalCopyLinkButton({
     };
   }, [open]);
 
+  if (targets.length === 0) {
+    return null;
+  }
+
   async function copyTarget(target: CopyTarget) {
     try {
       await navigator.clipboard.writeText(target.url);
@@ -176,6 +211,10 @@ export function WorkInternalCopyLinkButton({
   function onTriggerClick(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
+    if (!useMenu) {
+      void copyTarget(targets[0]);
+      return;
+    }
     setOpen((prev) => !prev);
   }
 
@@ -184,7 +223,11 @@ export function WorkInternalCopyLinkButton({
       ? 'Copied'
       : copyState === 'failed'
         ? 'Copy failed'
-        : 'Copy link';
+        : useMenu
+          ? 'Copy link'
+          : targets[0]?.id === 'client'
+            ? 'Copy client link'
+            : `Copy ${targets[0]?.label ?? 'link'}`;
 
   const triggerClassName =
     copyState === 'copied'
@@ -193,14 +236,19 @@ export function WorkInternalCopyLinkButton({
         ? 'vp-internal-copy-link is-failed'
         : 'vp-internal-copy-link';
 
+  const rootClass = [
+    'vp-internal-copy-link-menu',
+    open ? 'is-open' : '',
+    isDetail ? 'vp-internal-copy-link-menu--detail' : '',
+    isMedia ? 'vp-internal-copy-link-menu--media' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <div
       ref={rootRef}
-      className={
-        open
-          ? `vp-internal-copy-link-menu is-open${isDetail ? ' vp-internal-copy-link-menu--detail' : ''}`
-          : `vp-internal-copy-link-menu${isDetail ? ' vp-internal-copy-link-menu--detail' : ''}`
-      }
+      className={rootClass}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -211,14 +259,14 @@ export function WorkInternalCopyLinkButton({
         className={triggerClassName}
         aria-label={triggerLabel}
         title={triggerLabel}
-        aria-expanded={open}
-        aria-haspopup="menu"
-        aria-controls={menuId}
+        aria-expanded={useMenu ? open : undefined}
+        aria-haspopup={useMenu ? 'menu' : undefined}
+        aria-controls={useMenu ? menuId : undefined}
         onClick={onTriggerClick}
       >
         {copyState === 'copied' ? <CheckIcon /> : <CopyIcon />}
       </button>
-      {open ? (
+      {open && useMenu ? (
         <div
           id={menuId}
           className="vp-internal-copy-link-menu__panel"

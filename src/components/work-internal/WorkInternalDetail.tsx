@@ -521,7 +521,12 @@ function DetailVideoGrid({
         const poster = posterForVideo(entry, video, index, videoPosters);
 
         return (
-          <div key={video._key ?? `film-${index}`} role="listitem" className="vp-internal-card">
+          <div
+            key={video._key ?? `film-${index}`}
+            role="listitem"
+            className="vp-internal-card"
+          >
+            <WorkInternalCopyLinkButton video={video} variant="media" />
             <button
               type="button"
               className="vp-internal-card__hit"

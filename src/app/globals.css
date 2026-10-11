@@ -4393,6 +4393,18 @@
   right: 0;
 }
 
+/* Detail multi-film thumbs — top-right so it clears the Main badge. */
+.vp-internal-copy-link-menu--media {
+  top: 0.5rem;
+  left: auto;
+  right: 0.5rem;
+}
+
+.vp-internal-copy-link-menu--media .vp-internal-copy-link-menu__panel {
+  left: auto;
+  right: 0;
+}
+
 .vp-internal-list__menu-col {
   display: flex;
   align-items: center;
