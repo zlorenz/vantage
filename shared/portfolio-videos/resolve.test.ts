@@ -7,6 +7,7 @@ import {
   resolveCarouselPreviewPlayback,
   resolveMainFilmTitle,
   resolveMainPortfolioVideo,
+  resolvePortfolioVideoPosterSource,
   resolvePortfolioVideos,
 } from './index'
 
@@ -35,5 +36,39 @@ assert.deepEqual(resolveCarouselPreviewPlayback(unified), {
   previewStartSeconds: 2,
   previewEndSeconds: 8,
 })
+
+const featured = {asset: {_ref: 'image-featured'}}
+const override = {asset: {_ref: 'image-override'}}
+
+assert.equal(
+  resolvePortfolioVideoPosterSource({
+    featuredImage: featured,
+    isMainFilm: true,
+  }),
+  featured,
+)
+assert.equal(
+  resolvePortfolioVideoPosterSource({
+    thumbnail: override,
+    featuredImage: featured,
+    isMainFilm: true,
+  }),
+  override,
+)
+assert.equal(
+  resolvePortfolioVideoPosterSource({
+    featuredImage: featured,
+    isMainFilm: false,
+  }),
+  undefined,
+)
+assert.equal(
+  resolvePortfolioVideoPosterSource({
+    thumbnail: override,
+    featuredImage: featured,
+    isMainFilm: false,
+  }),
+  override,
+)
 
 console.log('portfolio-videos resolve: ok')

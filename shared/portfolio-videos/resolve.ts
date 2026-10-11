@@ -3,6 +3,14 @@
  * (first item = main film).
  */
 
+/** Minimal Sanity image shape for per-video poster overrides. */
+export type PortfolioVideoThumbnail = {
+  _type?: string
+  asset?: {_type?: string; _ref?: string} | null
+  hotspot?: {x?: number; y?: number; height?: number; width?: number}
+  crop?: {top?: number; bottom?: number; left?: number; right?: number}
+}
+
 export type PortfolioVideoFields = {
   _key?: string
   _type?: string
@@ -12,9 +20,29 @@ export type PortfolioVideoFields = {
   videoTitleZh?: string | null
   description?: string | null
   descriptionZh?: string | null
+  /** Optional player-only poster; overrides featured (main) or provider thumb. */
+  thumbnail?: PortfolioVideoThumbnail | null
   previewCleanVimeoUrl?: string | null
   previewStartSeconds?: number | null
   previewEndSeconds?: number | null
+}
+
+/**
+ * Sanity image preferred for a film’s embed poster (not campaign cards / OG).
+ * Per-video thumbnail wins; main film otherwise uses featuredImage.
+ */
+export function resolvePortfolioVideoPosterSource(args: {
+  thumbnail?: PortfolioVideoThumbnail | null
+  featuredImage?: PortfolioVideoThumbnail | null
+  isMainFilm: boolean
+}): PortfolioVideoThumbnail | undefined {
+  const thumb = args.thumbnail
+  if (thumb?.asset?._ref) return thumb
+  if (args.isMainFilm) {
+    const featured = args.featuredImage
+    if (featured?.asset?._ref) return featured
+  }
+  return undefined
 }
 
 export type PortfolioVideoSource = {

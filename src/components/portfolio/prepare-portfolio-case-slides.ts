@@ -1,17 +1,21 @@
 /**
  * Build serializable slide props for PortfolioCaseCarousel.
  *
- * Slide 0 = main film (full-resolution featuredImage as poster when set).
- * Slides 1+ = playable additional videos (highest-res Vimeo still / YouTube maxres).
+ * Poster priority per slide:
+ * 1. videos[].thumbnail (player-only override)
+ * 2. Main film only: campaign featuredImage
+ * 3. Provider still (highest-res Vimeo / YouTube maxres)
  *
  * Overlay titles are plain episode strings only (videoTitle / legacy heroFilmTitle) —
  * never the composed Brand+Product+Campaign long title.
  */
 
 import {
+  resolvePortfolioVideoPosterSource,
   resolvePortfolioVideos,
   type PortfolioVideoFields,
   type PortfolioVideoSource,
+  type PortfolioVideoThumbnail,
 } from '@portfolio-videos'
 import {urlForImage} from '@/lib/sanity'
 import {pickLocaleFieldWithPhrases} from '@/lib/locale-field'
@@ -65,9 +69,11 @@ export function isPlayablePortfolioVideo(
 export const isPlayableAdditionalVideo = isPlayablePortfolioVideo
 
 /** Original Sanity upload — no width/height downscale. */
-function featuredPosterUrl(featuredImage?: SanityImage): string | undefined {
-  if (!featuredImage) return undefined
-  return urlForImage(featuredImage).url() ?? undefined
+function sanityPosterUrl(
+  image?: PortfolioVideoThumbnail | SanityImage | null,
+): string | undefined {
+  if (!image?.asset) return undefined
+  return urlForImage(image as SanityImage).url() ?? undefined
 }
 
 async function providerPosterUrl(
@@ -87,8 +93,11 @@ async function resolveSlide(args: {
   locale: Locale
   vimeoUrl?: string | null
   xinpianchangUrl?: string | null
-  /** Preferred poster (main film only) — full-res Sanity featured image. */
+  /** Optional per-video player poster override. */
+  thumbnail?: PortfolioVideoThumbnail | null
+  /** Campaign featured image — used as main-film default when no thumbnail. */
   featuredImage?: SanityImage
+  isMainFilm?: boolean
   overlayTitle?: string
   description?: string
   portfolioEntryRef?: string
@@ -98,16 +107,24 @@ async function resolveSlide(args: {
     locale,
     vimeoUrl,
     xinpianchangUrl,
+    thumbnail,
     featuredImage,
+    isMainFilm = false,
     overlayTitle,
     description,
     portfolioEntryRef,
   } = args
-  const featured = featuredPosterUrl(featuredImage)
+  const sanityPoster = sanityPosterUrl(
+    resolvePortfolioVideoPosterSource({
+      thumbnail,
+      featuredImage,
+      isMainFilm,
+    }),
+  )
   const parsed = vimeoUrl?.trim() ? parseVideoUrl(vimeoUrl) : null
   const providerPoster =
-    featured || !parsed ? undefined : await providerPosterUrl(parsed)
-  const posterUrl = featured ?? providerPoster
+    sanityPoster || !parsed ? undefined : await providerPosterUrl(parsed)
+  const posterUrl = sanityPoster ?? providerPoster
   const title = overlayTitle?.trim() || undefined
   const body = description?.trim() || undefined
 
@@ -207,7 +224,9 @@ export async function buildPortfolioCaseSlides(
     locale,
     vimeoUrl: mainVideo.vimeoUrl,
     xinpianchangUrl: mainVideo.xinpianchangUrl,
+    thumbnail: mainVideo.thumbnail,
     featuredImage,
+    isMainFilm: true,
     overlayTitle: mainOverlay || undefined,
     description: mainDescription || undefined,
     portfolioEntryRef,
@@ -234,6 +253,7 @@ export async function buildPortfolioCaseSlides(
           locale,
           vimeoUrl: video.vimeoUrl,
           xinpianchangUrl: video.xinpianchangUrl,
+          thumbnail: video.thumbnail,
           overlayTitle: episodeTitle || undefined,
           description: episodeDescription || undefined,
           portfolioEntryRef,

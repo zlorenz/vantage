@@ -9,6 +9,7 @@ import {useEffect, useId, useMemo, useRef, useState} from 'react';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import {
+  resolvePortfolioVideoPosterSource,
   resolvePortfolioVideos,
   type PortfolioVideoFields,
 } from '@portfolio-videos';
@@ -27,6 +28,7 @@ import {LazyXinpianchangPlayer} from '@/components/portfolio/LazyXinpianchangPla
 import type {Locale} from '@/i18n/routing';
 import type {
   InternalLibraryEntry,
+  SanityImage,
   TaxonomyTerm,
 } from '@/types/sanity';
 import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
@@ -83,8 +85,13 @@ function posterForVideo(
   if (fromServer) return fromServer;
 
   // Fallback when server map is missing (e.g. partial hydrate).
-  if (entry.featuredImage) {
-    return urlForImage(entry.featuredImage)
+  const sanity = resolvePortfolioVideoPosterSource({
+    thumbnail: video.thumbnail,
+    featuredImage: entry.featuredImage,
+    isMainFilm: index === 0,
+  });
+  if (sanity) {
+    return urlForImage(sanity as SanityImage)
       .width(960)
       .height(540)
       .fit('crop')
@@ -190,6 +197,7 @@ function VideoPlayer({
     return (
       <LazyYouTubePlayer
         videoId={parsed.id}
+        posterUrl={posterUrl}
         portfolioEntryRef={entryId}
         autoPlay={autoPlay}
         inlinePlayback={inlinePlayback}

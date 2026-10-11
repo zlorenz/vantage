@@ -126,6 +126,8 @@ export interface PortfolioVideo {
   videoTitleZh?: string;
   description?: string;
   descriptionZh?: string;
+  /** Optional player-only poster override (does not replace campaign featuredImage). */
+  thumbnail?: SanityImage;
   previewCleanVimeoUrl?: string;
   previewStartSeconds?: number;
   previewEndSeconds?: number;

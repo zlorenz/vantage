@@ -131,6 +131,7 @@ export const PORTFOLIO_ENTRY_QUERY = defineQuery(`
       videoTitleZh,
       description,
       descriptionZh,
+      thumbnail,
       previewCleanVimeoUrl,
       previewStartSeconds,
       previewEndSeconds
@@ -212,7 +213,8 @@ const INTERNAL_LIBRARY_ENTRY_FIELDS = `
     vimeoUrl,
     xinpianchangUrl,
     videoTitle,
-    videoTitleZh
+    videoTitleZh,
+    thumbnail
   },
   videoFormats[]->{
     title,

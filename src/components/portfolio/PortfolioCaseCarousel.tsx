@@ -195,6 +195,7 @@ function ActiveSlidePlayer({
     return (
       <LazyYouTubePlayer
         videoId={slide.videoId}
+        posterUrl={slide.posterUrl}
         portfolioEntryRef={slide.portfolioEntryRef}
         onPlay={prefetch ? undefined : onPlay}
         onStop={prefetch ? undefined : onStop}

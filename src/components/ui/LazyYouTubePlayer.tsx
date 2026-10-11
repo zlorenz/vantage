@@ -32,6 +32,11 @@ import './lazy-youtube-player.css';
 interface LazyYouTubePlayerProps {
   videoId: string;
   title?: string;
+  /**
+   * Optional custom poster (Sanity thumbnail / featured image).
+   * When omitted, uses YouTube maxres with hq fallback on error.
+   */
+  posterUrl?: string;
   /** Sanity portfolioEntry document id (weak ref on analytics write). */
   portfolioEntryRef?: string;
   /** Fires once when the user starts playback from the poster. */
@@ -153,6 +158,7 @@ function commandFrame(
 export function LazyYouTubePlayer({
   videoId,
   title = 'YouTube video',
+  posterUrl,
   portfolioEntryRef,
   onPlay,
   onStop,
@@ -169,8 +175,8 @@ export function LazyYouTubePlayer({
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [playerReady, setPlayerReady] = useState(false);
   const [awaitingTapToPlay, setAwaitingTapToPlay] = useState(false);
-  const [posterSrc, setPosterSrc] = useState(() =>
-    youTubePosterUrl(videoId, 'maxres'),
+  const [posterSrc, setPosterSrc] = useState(
+    () => posterUrl ?? youTubePosterUrl(videoId, 'maxres'),
   );
   /** Set on mount so the embed URL matches SSR (null) through hydration. */
   const [origin, setOrigin] = useState<string | null>(null);
@@ -221,8 +227,8 @@ export function LazyYouTubePlayer({
         });
 
   useEffect(() => {
-    setPosterSrc(youTubePosterUrl(videoId, 'maxres'));
-  }, [videoId]);
+    setPosterSrc(posterUrl ?? youTubePosterUrl(videoId, 'maxres'));
+  }, [videoId, posterUrl]);
 
   useEffect(() => {
     awaitingTapToPlayRef.current = awaitingTapToPlay;

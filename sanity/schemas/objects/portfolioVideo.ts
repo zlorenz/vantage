@@ -2,6 +2,8 @@
  * portfolioVideo — One film on a portfolio entry.
  *
  * First item in portfolioEntry.videos is the main film; the rest are additional.
+ * Optional `thumbnail` overrides the player poster only (main film otherwise uses
+ * campaign featuredImage; additional films otherwise use Vimeo/YouTube thumbs).
  * Carousel preview fields apply per row (homepage currently uses videos[0] only).
  */
 
@@ -64,6 +66,17 @@ export const portfolioVideo = defineType({
     }),
 
     defineField({
+      name: 'thumbnail',
+      title: 'Thumbnail',
+      type: 'image',
+      description:
+        'Optional poster for this film’s player only. Overrides the default: main film uses the campaign Featured Image; additional films use the Vimeo/YouTube thumb. Does not change portfolio cards, OG, or homepage stills.',
+      options: {hotspot: false},
+      hidden: hiddenForTranslator,
+      components: {field: OptionalField},
+    }),
+
+    defineField({
       name: 'previewCleanVimeoUrl',
       title: 'Clean Preview Video URL',
       type: 'url',
@@ -109,11 +122,13 @@ export const portfolioVideo = defineType({
     select: {
       title: 'videoTitle',
       subtitle: 'vimeoUrl',
+      media: 'thumbnail',
     },
-    prepare({title, subtitle}) {
+    prepare({title, subtitle, media}) {
       return {
         title: title || 'Video',
         subtitle,
+        media,
       }
     },
   },

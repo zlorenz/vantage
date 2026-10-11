@@ -85,7 +85,9 @@ async function PortfolioCaseMediaContent({
         vimeoUrl={main?.vimeoUrl ?? ''}
         xinpianchangUrl={main?.xinpianchangUrl ?? undefined}
         portfolioEntryRef={entry._id}
+        thumbnail={main?.thumbnail}
         featuredImage={entry.featuredImage}
+        isMainFilm
       />
     </div>
   )

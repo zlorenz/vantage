@@ -339,7 +339,8 @@ export const portfolioEntry = defineType({
       fieldset: 'featuredAndVideo',
       // hotspot UI is custom (FeaturedImageHotspotInput); keep stock upload via renderDefault.
       // Data still writes standard hotspot/crop for urlForImage().
-      // Campaign-level poster (cards, OG, homepage stills).
+      // Campaign-level poster (cards, OG, homepage stills). Also the default
+      // player poster for the main film unless videos[0].thumbnail overrides it.
       options: {hotspot: false},
       components: {input: FeaturedImageHotspotInput},
       validation: (rule) => rule.required(),

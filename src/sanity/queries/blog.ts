@@ -87,6 +87,7 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
         videoTitleZh,
         description,
         descriptionZh,
+        thumbnail,
         previewCleanVimeoUrl,
         previewStartSeconds,
         previewEndSeconds
