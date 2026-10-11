@@ -29,9 +29,9 @@ import type {
   InternalLibraryEntry,
   TaxonomyTerm,
 } from '@/types/sanity';
-import {getPublicPortfolioUrl} from './entry-url';
 import {formatPublishDate, getDisplayTitle, getDisplayTitleParts} from './text';
 import {workInternalVideoPosterKey} from './video-poster-key';
+import {WorkInternalCopyLinkButton} from './WorkInternalCopyLinkButton';
 import {WorkInternalKeyVisuals} from './WorkInternalKeyVisuals';
 
 interface WorkInternalDetailProps {
@@ -602,22 +602,6 @@ export function WorkInternalDetail({
   const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(
     null,
   );
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
-    'idle',
-  );
-
-  async function copyPublicLink() {
-    try {
-      await navigator.clipboard.writeText(
-        getPublicPortfolioUrl(entry, locale),
-      );
-      setCopyState('copied');
-      setTimeout(() => setCopyState('idle'), 2000);
-    } catch {
-      setCopyState('failed');
-      setTimeout(() => setCopyState('idle'), 2000);
-    }
-  }
 
   return (
     <div className="vp-internal-detail">
@@ -661,30 +645,11 @@ export function WorkInternalDetail({
               {formatPublishDate(entry.publishedAt)}
             </span>
           ) : null}
-          <button
-            type="button"
-            className={
-              copyState === 'copied'
-                ? 'vp-internal-detail__copy-link is-copied'
-                : copyState === 'failed'
-                  ? 'vp-internal-detail__copy-link is-failed'
-                  : 'vp-internal-detail__copy-link'
-            }
-            onClick={copyPublicLink}
-            aria-label={
-              copyState === 'copied'
-                ? 'Copied'
-                : copyState === 'failed'
-                  ? 'Copy failed'
-                  : 'Copy public link to clipboard'
-            }
-          >
-            {copyState === 'copied'
-              ? 'Copied'
-              : copyState === 'failed'
-                ? 'Copy failed'
-                : 'Copy to clipboard'}
-          </button>
+          <WorkInternalCopyLinkButton
+            entry={entry}
+            locale={locale}
+            variant="detail"
+          />
         </div>
       </div>
 
