@@ -137,23 +137,11 @@ export function PortfolioIndexViewToggle({
   return (
     <div
       className={`vp-portfolio-index-desktop-filters__view${
-        browseMode === 'grid' ? ' is-grid' : ''
+        browseMode === 'carousel' ? ' is-carousel' : ''
       }`}
       role="group"
       aria-label={t('browseModeAria')}
     >
-      <button
-        type="button"
-        className={`vp-portfolio-index-desktop-filters__view-btn${
-          browseMode === 'carousel' ? ' is-selected' : ''
-        }`}
-        aria-pressed={browseMode === 'carousel'}
-        aria-label={t('viewCarouselAria')}
-        title={t('viewCarouselTitle')}
-        onClick={() => onBrowseModeChange('carousel')}
-      >
-        <CarouselViewIcon />
-      </button>
       <button
         type="button"
         className={`vp-portfolio-index-desktop-filters__view-btn${
@@ -165,6 +153,18 @@ export function PortfolioIndexViewToggle({
         onClick={() => onBrowseModeChange('grid')}
       >
         <GridViewIcon />
+      </button>
+      <button
+        type="button"
+        className={`vp-portfolio-index-desktop-filters__view-btn${
+          browseMode === 'carousel' ? ' is-selected' : ''
+        }`}
+        aria-pressed={browseMode === 'carousel'}
+        aria-label={t('viewCarouselAria')}
+        title={t('viewCarouselTitle')}
+        onClick={() => onBrowseModeChange('carousel')}
+      >
+        <CarouselViewIcon />
       </button>
     </div>
   );

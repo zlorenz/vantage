@@ -336,7 +336,7 @@
   pointer-events: none;
 }
 
-.vp-portfolio-index-desktop-filters__view.is-grid::before {
+.vp-portfolio-index-desktop-filters__view.is-carousel::before {
   transform: translateX(100%);
 }
 

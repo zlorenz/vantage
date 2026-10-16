@@ -9,8 +9,9 @@
  * mutually exclusive at the UI layer; this module still accepts both so URL
  * restore stays a single pipeline.
  *
- * `view=grid` keeps the desktop grid across reload. Carousel is the default
- * and omits the param so a fresh /work URL stays clean.
+ * Grid is the default and omits the param so a fresh /work URL stays clean.
+ * `view=carousel` keeps the carousel across reload. `view=grid` still reads
+ * as grid so older links stay valid.
  */
 
 import type {PublicFilters} from './PortfolioGrid';
@@ -18,7 +19,7 @@ import type {PublicFilters} from './PortfolioGrid';
 export const WORK_INDEX_ITEM_PARAM = 'item';
 export const WORK_INDEX_SEARCH_PARAM = 'q';
 export const WORK_INDEX_VIEW_PARAM = 'view';
-export const WORK_INDEX_GRID_VIEW = 'grid';
+export const WORK_INDEX_CAROUSEL_VIEW = 'carousel';
 
 export type WorkIndexBrowseMode = 'carousel' | 'grid';
 
@@ -43,11 +44,11 @@ export function readWorkIndexSearch(params: URLSearchParams): string {
   return params.get(WORK_INDEX_SEARCH_PARAM)?.trim() || '';
 }
 
-/** Anything other than `view=grid` is the carousel. */
+/** Anything other than `view=carousel` is the grid. */
 export function readWorkIndexView(params: URLSearchParams): WorkIndexBrowseMode {
-  return params.get(WORK_INDEX_VIEW_PARAM) === WORK_INDEX_GRID_VIEW
-    ? 'grid'
-    : 'carousel';
+  return params.get(WORK_INDEX_VIEW_PARAM) === WORK_INDEX_CAROUSEL_VIEW
+    ? 'carousel'
+    : 'grid';
 }
 
 function slideMatchesPublicFilters(
@@ -114,12 +115,12 @@ export function workIndexItemQuery(
   return {[WORK_INDEX_ITEM_PARAM]: slug};
 }
 
-/** Omit carousel so a fresh /work URL stays clean. */
+/** Omit grid so a fresh /work URL stays clean. */
 export function workIndexViewQuery(
   mode: WorkIndexBrowseMode,
 ): Record<string, string> {
-  if (mode !== 'grid') return {};
-  return {[WORK_INDEX_VIEW_PARAM]: WORK_INDEX_GRID_VIEW};
+  if (mode !== 'carousel') return {};
+  return {[WORK_INDEX_VIEW_PARAM]: WORK_INDEX_CAROUSEL_VIEW};
 }
 
 /** Omit empty search so a fresh /work URL stays clean. */

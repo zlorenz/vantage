@@ -67,8 +67,8 @@ function testItemQueryOmitsFirstSnap() {
   assert.deepEqual(workIndexItemQuery(undefined, 4), {});
 }
 
-function testViewQueryOmitsCarousel() {
-  assert.equal(readWorkIndexView(new URLSearchParams('')), 'carousel');
+function testViewQueryOmitsGrid() {
+  assert.equal(readWorkIndexView(new URLSearchParams('')), 'grid');
   assert.equal(
     readWorkIndexView(new URLSearchParams(`${WORK_INDEX_VIEW_PARAM}=grid`)),
     'grid',
@@ -77,9 +77,9 @@ function testViewQueryOmitsCarousel() {
     readWorkIndexView(new URLSearchParams(`${WORK_INDEX_VIEW_PARAM}=carousel`)),
     'carousel',
   );
-  assert.deepEqual(workIndexViewQuery('carousel'), {});
-  assert.deepEqual(workIndexViewQuery('grid'), {
-    [WORK_INDEX_VIEW_PARAM]: 'grid',
+  assert.deepEqual(workIndexViewQuery('grid'), {});
+  assert.deepEqual(workIndexViewQuery('carousel'), {
+    [WORK_INDEX_VIEW_PARAM]: 'carousel',
   });
 }
 
@@ -147,7 +147,7 @@ function testSearchMatchesHaystackAndDropsFeatured() {
 testReadWorkIndexItem();
 testReadWorkIndexSearch();
 testItemQueryOmitsFirstSnap();
-testViewQueryOmitsCarousel();
+testViewQueryOmitsGrid();
 testSearchQueryOmitsEmpty();
 testStartIndexFromSlug();
 testStartIndexHonorsFiltersAndPrefersLibraryCopy();
