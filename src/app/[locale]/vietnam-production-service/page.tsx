@@ -46,7 +46,7 @@ const BODY_IMAGE_SIZES = '(max-width: 900px) 100vw, 900px';
 
 /** Sanity CDN file — formerly page-vietnam-location-guide.pdfDownload. */
 const GUIDE_PDF_URL =
-  'https://cdn.sanity.io/files/7oesp86l/production/460d3acfd0d2e33edffa91a0dbf72209f4d501ef.pdf';
+  'https://cdn.sanity.io/files/7oesp86l/production/b766c9ae7717ee3615c87b330c588924786eb085.pdf';
 const GUIDE_PDF_FILENAME = 'Vietnam_Location_Guide_Vantage_Pictures.pdf';
 
 const BRIEF_ARROW = (
