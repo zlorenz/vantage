@@ -283,6 +283,7 @@ export function LazyVimeoPlayer({
     let player: Player | null = null;
 
     const onPlayEvent = () => {
+      setClock((clock) => ({...clock, running: true}));
       pushVimeoDataLayerEvent('CE - Vimeo play', videoId, 0);
       trackVideoEvent({
         eventType: 'view_start',
@@ -297,11 +298,12 @@ export function LazyVimeoPlayer({
       seconds: number;
       duration: number;
     }) => {
-      setClock({
+      // Seek while paused still fires timeupdate — do not treat that as playing.
+      setClock((clock) => ({
+        ...clock,
         current: data.seconds,
         duration: data.duration,
-        running: true,
-      });
+      }));
       onTimeUpdateRef.current?.(data.seconds);
       const progressPercent = Math.round(data.percent * 100);
       for (const milestone of PROGRESS_MILESTONES) {
@@ -701,8 +703,16 @@ export function LazyVimeoPlayer({
           onToggle={() => {
             const player = playerRef.current;
             if (!player) return;
-            if (clock.running) void player.pause();
-            else void player.play();
+            // Prefer live paused state over clock — seek-while-paused can
+            // desync UI chrome if a provider event races the clock.
+            void (async () => {
+              try {
+                if (await player.getPaused()) await player.play();
+                else await player.pause();
+              } catch {
+                // Ignore — user can retry.
+              }
+            })();
           }}
           onSeek={(seconds) => {
             const player = playerRef.current;
